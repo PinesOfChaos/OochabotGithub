@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-//const Discord = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,23 +16,21 @@ module.exports = {
         switch(dirstring){
             case('l'):
                 dir = 180;
-                interaction.channel.send(`${target} moves left.`);
+                interaction.editReply(`${target} moves left.`);
             break;
             case('r'):
                 dir = 0;
-                interaction.channel.send(`${target} moves right.`);
+                interaction.editReply(`${target} moves right.`);
             break;
             case('u'):
                 dir  = 90;
-                interaction.channel.send(`${target} moves up.`);
+                interaction.editReply(`${target} moves up.`);
             break;
             case('d'):
                 dir = 270;
-                interaction.channel.send(`${target} moves down.`);
+                interaction.editReply(`${target} moves down.`);
             break;
         }
-
-        interaction.deleteReply();
         
     },
 };

@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { channel } = require('diagnostics_channel');
 const Discord = require('discord.js');
 
 module.exports = {
@@ -10,6 +9,6 @@ module.exports = {
         const embad = new Discord.MessageEmbed()
             .setColor('#808080')
             .setTitle('Pong');
-        interaction.editReply({ embeds: [embad] });
+        interaction.reply({ embeds: [embad] });
     },
 };

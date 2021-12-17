@@ -1,5 +1,3 @@
-
-
 // require the discord.js module
 const fs = require('fs');
 const Discord = require('discord.js');
@@ -65,26 +63,9 @@ client.on('interactionCreate', async interaction => {
 
     if (!interaction.isCommand() && !interaction.isContextMenu()) return;
 
-    await interaction.deferReply();
-
     const command = client.commands.get(interaction.commandName);
 
-    if(interaction.commandName == 'setup'){
-        const row = new Discord.MessageActionRow()
-            .addComponents(
-                new Discord.MessageButton()
-                    .setCustomId('sporbee')
-                    .setLabel('Sporbee')
-                    .setStyle('SPORBEE')
-                    .setEmoji('<:ifrmgkng:898658599574859816>'),
-            )
-
-        await interaction.reply({content: 'Sporbee!',components: [row] })
-    }
-
     if (!command) return;
-
-   
 
     try {
         await command.execute(interaction, client);
@@ -97,8 +78,7 @@ client.on('interactionCreate', async interaction => {
 
 //
 client.on('messageCreate', async message => {
-
-    let rand = Math.floor(Math.random() * (1000)); 
+    /*let rand = Math.floor(Math.random() * (1000)); 
     console.log(rand);
     if(rand == 2){
         message.member.setNickname('OOCHABOT');
@@ -108,7 +88,7 @@ client.on('messageCreate', async message => {
     }
     if(rand == 0){
         message.react('<:consumption_sphere:920855223675813898>');
-    }
+    }*/
 })
 
 
