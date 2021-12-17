@@ -54,8 +54,60 @@ module.exports = {
 
         //Hounuke
         create_monster('8', '<:hounuke:921182808804847686>', 'Hounuke',
-        'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 'flame', 15, 22, 13, 20, //total 80
+        'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 'flame', 16, 26, 18, 20, //total 80
         [ [0, 'Bash'] ], [ 'Conflicted', 'Radiant' ], -1, -1)
+
+        //Glither
+        create_monster('9', '<:glither:921444285264584814>', 'Glither',
+        'Its diamond-hard skin protects it from the most brutal of sandstorms.', 'stone', 15, 9, 14, 12, //total 50
+        [ [0, 'Bash'] ], [ 'Tough', 'Reactive' ], 10, 18)
+
+        //Sparafura
+        create_monster('10', '<:sparafura:921444285063258113>', 'Sparafura',
+        'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 'stone', 18, 25, 16, 11, //total 70
+        [ [0, 'Bash'] ], [ 'Burrower', 'Reactive' ], -1, -1)
+        
+        //Constone
+        create_monster('11', '<:constone:921452962608472084>', 'Constone',
+        'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 'stone', 10, 10, 10, 20, //total 50
+        [ [0, 'Bash'] ], [ 'Inertia', 'Dense' ], 12, 25)
+
+        //Amephyst
+        create_monster('12', '<:amephyst:921452962549735524>', 'Amephyst',
+        'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 'stone', 15, 20, 15, 30, //total 80
+        [ [0, 'Bash'] ], [ 'Inertia', 'Dense' ], -1, -1)
+
+        //Widew
+        create_monster('13', '<:widew:921460528247894066>', 'Widew',
+        'The growth on its back forms a symbyotic relationship with the host, maximizing the amount of nutrients each can absorb.', 'fungal', 14, 10, 9, 12, //total 35
+        [ [0, 'Bash'] ], [ 'Moist', 'Miniscule' ], 14, 12)
+
+        //Tarotula
+        create_monster('14', '<:tarotula:921460528306618438>', 'Tarotula',
+        'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 'fungal', 21, 17, 12, 15, //total 65
+        [ [0, 'Bash'] ], [ 'Moist', 'Alert' ], -1, -1)
+
+        //Moldot
+        create_monster('15', '<:moldot:921464022182797392>', 'Moldot',
+        'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.', 'fungal', 5, 5, 25, 5, //total 40
+        [ [0, 'Bash'] ], [ 'Gentle', 'Burrower' ], 16, 30)
+
+        //Moldire
+        create_monster('16', '<:moldire:921464022115700857>', 'Moldire',
+        'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.', 'fungal', 25, 25, 30, 5, //total 85
+        [ [0, 'Bash'] ], [ 'Gentle', 'Reactive' ], -1, -1)
+
+        //Charlite
+        create_monster('17', '<:charlite:921472869630885938>', 'Charlite',
+        'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.', 'flame', 5, 15, 5, 10, //total 35
+        [ [0, 'Bash'] ], [ 'Fleeting', 'Warm' ], 18, 15)
+
+        //Darcoal
+        create_monster('17', '<:darcoal:921472869643456532>', 'Darcoal',
+        'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', 'flame', 15, 35, 13, 12, //total 75
+        [ [0, 'Bash'] ], [ 'Efficient', 'Warm' ], -1, -1)
+
+
 
         interaction.reply('Generated monster data.');
     },
