@@ -103,11 +103,24 @@ module.exports = {
         [ [0, 'Bash'] ], [ 'Fleeting', 'Warm' ], 18, 15)
 
         //Darcoal
-        create_monster('17', '<:darcoal:921472869643456532>', 'Darcoal',
+        create_monster('18', '<:darcoal:921472869643456532>', 'Darcoal',
         'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', 'flame', 15, 35, 13, 12, //total 75
         [ [0, 'Bash'] ], [ 'Efficient', 'Warm' ], -1, -1)
 
+        //Torchoir
+        create_monster('19', '<:torchoir:921480638178136065>', 'Torchoir',
+        'A sentient torch that hums a haunting tune. Its song fills people with dread.', 'flame', 12, 13, 11, 9, //total 45
+        [ [0, 'Bash'] ], [ 'Boisterous', 'Choir' ], 20, 28)
 
+        //Chantern
+        create_monster('19', '<:chantern:921480638543036436>', 'Chantern',
+        'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 'flame', 21, 20, 24, 15, //total 80
+        [ [0, 'Bash'] ], [ 'Boisterous', 'Haunted' ], -1, -1)
+
+        //Eluslug
+        create_monster('19', '<:eluslug:921483721197105162>', 'Eluslug',
+        'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 'tech', 11, 12, 12, 14, //total 50
+        [ [0, 'Bash'] ], [ 'Leech', 'Icky' ], -1, -1)
 
         interaction.reply('Generated monster data.');
     },
