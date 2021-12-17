@@ -1,0 +1,87 @@
+/setup 	- responds with 3 buttons with the starter creatures (preferably in emoji form) for the player to choose from
+	- sets up the player's account info:
+		-CREATURE_INVENTORY
+		-CREATURE_INVENTORY_HUB
+		-ITEMS_INVENTORY
+		-CURRENCY 
+	- selecting one of the buttons adds the relevant creature to the player's CREATURE_INVENTORY
+	- display the player in the HUB area
+	- PLAYER MUST USE SETUP BEFORE USING ANY OF THE FOLLOWING COMMANDS
+
+/travel	- Only functions outside of combat
+	- Gives the options of HUB, Fungal Grove, Desert, or Obsidian Caves
+	- Moves the player to the Spawn Location of the selected area
+
+/shop	- Only functions while the player is in the HUB area
+	- Options include all purchaseable items (Potions, Prisms(this games equivalent of pokeballs),etc)
+	- If the player has enough currency, subtract the cost, then add the selected Item to the player's ITEM_INVENTORY
+	- If not, inform the player they don't have enough currency
+
+/move	- Only functions outside of combat
+	- Choices: Left, Right, Up Down
+	- if direction is blocked, don't display that choice/button
+	- %chance of the player encountering a creature, allowing them to fight it
+		-creature generated should be in the range of LV(1,player's max creature level*1.05) clamped between 1 & 100
+		-%chance of it being an ambush and forcing the player into combat
+	- %chance of the player finding an item
+/check
+	-re-shows the player's most recent state(used so they don't have to scroll back up or something i guess)	
+
+Combat State:
+	choices: Attack, Switch, Item, Run
+	- if the player chooses Attack, resolve the combat turn
+		-creature with higher Speed attacks first
+		-check for victory/defeat, if so end the battle
+		-creature with lower Speed attacks
+		-check for victory/defeat, if so end the battle
+		-Re-Display Combat State
+	- if the player chooses Run, %chance to end the battle with no rewards
+		-if Run fails:
+			- enemy creature attacks
+			- check for victory/defeat
+	- if the player chooses Item, let them select from the items in their inventory
+		-if Potion item, heal the active creature for that amount
+		-if Prism item, %chance to capture based on the creature's level & base value of the prism
+			-if Prism successful:
+				-if player's CREATURE INVENTORY is full
+					-add to player's CREATURE_INVENTORY_HUB
+				-else
+					-add to player's CREATURE_INVENTORY
+		-if Non-Prism Item used or if Prism Failed
+			-enemy creature attacks
+			-check for victory/defeat
+			-Re-Display Combat State
+	- if the player chooses Switch, let them choose a creature from their list
+		-enemy creature attacks
+		-check for victory/defeat
+		-Re-Display Combat State
+	-Victory/Defeat Check
+		-If player creature's HP <= 0
+			- set player creature's HP = 0
+			- if player team has no more creatures: 
+				-Defeat
+			- else
+				- send out player's next creature
+		
+		-If enemy creature's HP <= 0
+			- set enemy creature's HP = 0
+			- if enemy team has no more creatures: 
+				-Victory
+			- else
+				- send out enemy's next creature
+
+Wild Creature Generator:
+	- level = random*player's max creature level*1.05 clamped between 1 & 100
+	- species = (get area's list of creatures)
+	- pull HP, ATK, DEF, SPD, & Move List from species references
+	- for(var i = 0; i<level; i++){
+		- if it can learn a move this level, randomly replace one of its move slots
+		- if it can evolve at this level or a previous level, %chance to evolve to the next form
+			-if it does evolve, re-get the base values
+	}
+	- HP, ATK, DEF, SPD = floor(base values*(1.05^level))
+	
+			
+			
+			
+	
