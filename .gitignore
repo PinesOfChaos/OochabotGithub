@@ -74,6 +74,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
-discord-bot/config.json
-discord-bot/package-lock.json
-discord-bot/package.json
+OOCHABOT_Folder/config.json
+OOCHABOT_Folder/package-lock.json
+OOCHABOT_Folder/package.json
