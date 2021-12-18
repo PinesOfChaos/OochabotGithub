@@ -17,4 +17,13 @@ module.exports = {
         db.monster_data.set(id, evo_lvl, 'evo_lvl')
     },
 
+    create_move: function(id, name, type, damage, accuracy, effect, chance, descrition){
+        db.move_data.set(id, name, 'name')
+        db.move_data.set(id, type, 'type')
+        db.move_data.set(id, damage, 'damage')
+        db.move_data.set(id, damage, 'accuracy')
+        db.move_data.set(id, effect, 'effect')
+        db.move_data.set(id, chance, 'chance')
+        db.move_data.set(id, descrition, 'description')
+    },
 }
