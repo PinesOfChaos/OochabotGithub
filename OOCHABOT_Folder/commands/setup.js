@@ -51,7 +51,7 @@ module.exports = {
             db.profile.set(interaction.user.id, [], 'creature_pc')
             db.profile.set(interaction.user.id, [], 'item_inventory')
             db.profile.set(interaction.user.id, 0, 'currency')
-            db.profile.set(interaction.user.id, 'idle', 'player_state')
+            db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
             db.profile.set(interaction.user.id, { area: 'Hub', x: 5, y: 5 }, 'location_data')
         });
 
