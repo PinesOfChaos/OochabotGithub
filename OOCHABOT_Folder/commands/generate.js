@@ -145,14 +145,79 @@ module.exports = {
         [ [1, 'Bash'] ], [ 'Boisterous', 'Choir' ], 20, 28)
 
         //Chantern
-        create_monster('19', '<:chantern:921480638543036436>', 'Chantern', 'https://cdn.discordapp.com/attachments/921949708971294750/921950839004880896/chantern.png',
+        create_monster('20', '<:chantern:921480638543036436>', 'Chantern', 'https://cdn.discordapp.com/attachments/921949708971294750/921950839004880896/chantern.png',
         'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 'flame', 21, 20, 24, 15, //total 80
         [ [1, 'Bash'] ], [ 'Boisterous', 'Haunted' ], -1, -1)
 
         //Eluslug
-        create_monster('19', '<:eluslug:921483721197105162>', 'Eluslug', 'https://cdn.discordapp.com/attachments/921949708971294750/921950857396912138/eluslug.png',
+        create_monster('21', '<:eluslug:921483721197105162>', 'Eluslug', 'https://cdn.discordapp.com/attachments/921949708971294750/921950857396912138/eluslug.png',
         'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 'tech', 11, 12, 12, 14, //total 50
         [ [1, 'Bash'] ], [ 'Leech', 'Icky' ], -1, -1)
+
+        //Jellime
+        create_monster('22', '<:jellime:921979911382654997>', 'Jelime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987464854401044/jellime.png',
+        'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', 'ooze', 14, 10, 16, 10, //total 50
+        [ [1, 'Bash'] ], [ 'Ensnare', 'Icky' ], 23, 26)
+
+        //Meduslime
+        create_monster('23', '<:meduslime:921979911634313216>', 'Meduslime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987499214127104/meduslime.png',
+        'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 'ooze', 16, 25, 19, 15, //total 75
+        [ [1, 'Bash'] ], [ 'Ensnare', 'Icky' ], -1, -1)
+
+        //Tisparc
+        create_monster('24', '<:tisparc:921979911604949052>', 'Tisparc', 'https://cdn.discordapp.com/attachments/921949708971294750/921987527676674058/tisparc.png',
+        'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', 'magic', 8, 15, 7, 10, //total 45
+        [ [1, 'Bash'] ], [ 'Uncontrolled', 'Apprentice' ], 25, 18)
+
+        //Wizzap
+        create_monster('25', '<:wizzap:921979911802068992>', 'Wizzap', 'https://cdn.discordapp.com/attachments/921949708971294750/921987540641280062/wizzap.png',
+        'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', 'magic', 13, 23, 12, 12, //total 65
+        [ [1, 'Bash'] ], [ 'Focused', 'Patient' ], -1, -1)
+
+        //Blipoint
+        create_monster('26', '<:blipoint:921986441280634880>', 'Blipoint', 'https://cdn.discordapp.com/attachments/921949708971294750/921987566956347392/blipoint.png',
+        'An eye peeks through a rift in space-time.', 'magic', 10, 7, 6, 7, //total 30
+        [ [1, 'Bash'] ], [ 'Unstable', 'Reactive' ], 27, 20)        
+
+        //Rerune
+        create_monster('27', '<:rerune:921986441213526016>', 'Rerune', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
+        'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 'magic', 10, 15, 15, 15, //total 55
+        [ [1, 'Bash'] ], [ 'Unstable', 'Reactive' ], 28, 40)   
+
+        //Temporath
+        create_monster('28', '<:temporath:921986441192562761>', 'Temporath', 'https://cdn.discordapp.com/attachments/921949708971294750/921987610262536192/temporath.png',
+        'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', 'magic', 20, 20, 20, 20, //total 80
+        [ [1, 'Bash'] ], [ 'Blind Rage', 'Withering' ], -1, -1)
+
+        //Nucleorb
+        create_monster('29', '<:nucleorb:922285098550849556>', 'Nucleorb', 'https://cdn.discordapp.com/attachments/921949708971294750/922300388202397726/nucleorb.png',
+        'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', 'ooze', 7, 13, 9, 11, //total 40
+        [ [1, 'Bash'] ], [ 'Miniscule', 'Gentle' ], 30, 12)
+
+        //Amebite
+        create_monster('30', '<:amebite:922285098244669483>', 'Amebite', 'https://cdn.discordapp.com/attachments/921949708971294750/922300401720655923/amebite.png',
+        'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', 'ooze', 11, 18, 12, 14, //total 55
+        [ [1, 'Bash'] ], [ 'Tough', 'Ravenous' ], 31, 28)
+
+        //Amalgrime
+        create_monster('31', '<:amalgrime:922285098567602176>', 'Amalgrime', 'https://cdn.discordapp.com/attachments/921949708971294750/922300413590519848/amalgrime.png',
+        'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 'ooze', 11, 18, 12, 14, //total 85
+        [ [1, 'Bash'] ], [ 'Immense', 'Gentle' ], -1, -1)
+
+        //Drilline
+        create_monster('32', '<:drilline:922298875677642772>', 'Drilline', 'https://cdn.discordapp.com/attachments/921949708971294750/922300426114715658/drilline.png',
+        'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', 'tech', 11, 14, 15, 5, //total 45
+        [ [1, 'Bash'] ], [ 'Armored', 'Inertia' ], 33, 21)
+
+        //Erwrek
+        create_monster('33', '<:erwrek:922298875644100608>', 'Erwrek', 'https://cdn.discordapp.com/attachments/921949708971294750/922300437690982431/erwrek.png',
+        'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', 'tech', 15, 19, 25, 16, //total 75
+        [ [1, 'Bash'] ], [ 'Armored', 'Leech' ], -1, -1)
+
+        //i_
+        create_monster('34', '<:i_:922299745987346433>', 'i', 'https://cdn.discordapp.com/attachments/921949708971294750/922300450206801950/i.png',
+        'ERROR: entry not found', 'void', 1, 1, 1, 1, //total 30
+        [ [1, 'Bash'] ], [ '0000', '0000' ], -1, -1)
 
         //#endregion
 
