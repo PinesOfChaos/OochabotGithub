@@ -11,7 +11,8 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
         let target = interaction.options.getUser('name');
-        interaction.deleteReply();
         interaction.channel.send(`OOCHABOT slaps ${target}`);
+        interaction.reply('Sending slap');
+        interaction.deleteReply();
     },
 };

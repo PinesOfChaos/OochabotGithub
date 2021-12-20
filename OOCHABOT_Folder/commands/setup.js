@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
 const db = require('../db.js');
-const { create_monster } = require('../func.js');
+const { random_number } = require('../func.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -30,7 +30,7 @@ module.exports = {
                     .setEmoji('<:puppyre:921176686102454282>'),
             );
 
-        if (db.profile.has(interaction.user.id)) return interaction.editReply('You have already set up the game! Go play it!')
+        // if (db.profile.has(interaction.user.id)) return interaction.editReply('You have already set up the game! Go play it!')
 
         let starter;
 
@@ -46,13 +46,40 @@ module.exports = {
             }
 
             // Setup user data
-            db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name')
-            db.profile.set(interaction.user.id, [starter], 'creature_inventory')
-            db.profile.set(interaction.user.id, [], 'creature_pc')
+            db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
+            db.profile.set(interaction.user.id, [], 'ooch_pc')
             db.profile.set(interaction.user.id, [], 'item_inventory')
             db.profile.set(interaction.user.id, 0, 'currency')
             db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
+            db.profile.set(interaction.user.id, -1, 'battle_thread_id')
             db.profile.set(interaction.user.id, { area: 'Hub', x: 5, y: 5 }, 'location_data')
+
+            // Setup starter data
+            let move_list = db.monster_data.get(starter, 'move_list');
+            let ability_list = db.monster_data.get(starter, 'abilities');
+
+            // Pick a random ability
+            let rand_ability = ability_list[random_number(0, ability_list.length - 1)]
+
+            move_list = move_list.filter(x => x[0] <= 5 && x[0] != -1)
+
+            db.profile.set(interaction.user.id, { 
+                [starter]: { 
+                    name: db.monster_data.get(starter, 'name'), 
+                    nickname: false,
+                    item: false,
+                    ability: false,
+                    level: 5,
+                    moveset: move_list,
+                    stats: {
+                        hp: db.monster_data.get(starter, 'hp'),
+                        atk: db.monster_data.get(starter, 'atk'),
+                        def: db.monster_data.get(starter, 'def'),
+                        spd: db.monster_data.get(starter, 'spd')
+                    }
+                }
+            }, 'ooch_inventory')
+
         });
 
     }

@@ -9,7 +9,7 @@ const wait = require('wait');
 // create a new Discord client and give it some variables
 const { Client, Intents } = require('discord.js');
 const db = require('./db.js');
-const { move, battle } = require('./func');
+const { move, battle, generate_battle } = require('./func');
 const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
@@ -81,64 +81,72 @@ client.on('interactionCreate', async interaction => {
 //
 client.on('messageCreate', async message => {
 
+    if (message.guild.id == '688947207893942314') {
+        return;
+    }
+
     if (message.author.id == '397879158962782219') {
         if (message.type == 'THREAD_CREATED') {
             console.log('type')
-            await wait(5000)
+            await wait(10000)
             return message.delete();
+        } else {
+            return;
         }
     }
 
-    /*let rand = Math.floor(Math.random() * (1000)); 
-    console.log(rand);
-    if(rand == 2){
-        message.member.setNickname('OOCHABOT');
-    }
-    if(rand == 1){
-        message.channel.send(`OOCHABOT slaps <@${message.author.id}>`);
-    }
-    if(rand == 0){
-        message.react('<:consumption_sphere:920855223675813898>');
-    }*/
-
     if (message.content == 'start battle') {
         const thread = await message.channel.threads.create({
-            name: `${message.member.displayName} wild battle`,
+            name: `${message.member.displayName} wild battle, join this to battle`,
             autoArchiveDuration: 60,
             reason: 'Battle thread',
         });
 
         if (thread.joinable) await thread.join();
+        await thread.members.add(message.author.id);
         await thread.setLocked(true);
+        ooch_gen = generate_battle(db.profile.get(message.author.id, 'ooch_inventory'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
+        console.log(ooch_gen);
+        await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.level} ${db.monster_data.get(ooch_gen.id, 'name')}!`)
+
+        await db.profile.set(message.author.id, 'battle', 'player_state')
+        await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
+
+        message.delete();
         
         console.log(`Created thread: ${thread.name}`);
     }
 
     // Funi game logic for controlling the game
-    if (message.channel.id == '921969875482738749' || message.channel.id == '921977447510081547') {
+    if (db.profile.has(message.author.id)) {
         player_state = db.profile.get(message.author.id, 'player_state')
         switch (player_state) {
             case 'overworld': 
-                switch (message.content) {
-                    case 'r': move(message.author.id, 0); break;
-                    case 'd': move(message.author.id, 90); break;
-                    case 'l': move(message.author.id, 180); break; 
-                    case 'u': move(message.author.id, 270); break;
+                if (message.channel.id == '921969875482738749') {
+                    switch (message.content) {
+                        case 'r': move(message.author.id, 0); break;
+                        case 'd': move(message.author.id, 90); break;
+                        case 'l': move(message.author.id, 180); break; 
+                        case 'u': move(message.author.id, 270); break;
+                    }
+                    message.delete();
                 }
             break;
 
             case 'battle':
-                switch (message.content) {
-                    case 'fight': battle(message.author.id, 'fight'); break;
-                    case 'bag': battle(message.author.id, 'bag'); break;
-                    case 'oochamon': battle(message.author.id, 'oochamon'); break;
-                    case 'run': battle(message.author.id, 'run'); break;
+                thread_id = db.profile.get(message.author.id, 'battle_thread_id')
+                if (message.channel.id === db.profile.get(message.author.id, 'battle_thread_id')) {
+                    switch (message.content) {
+                        case 'fight': battle(message, 'fight'); break;
+                        case 'bag': battle(message, 'bag'); break;
+                        case 'oochamon': battle(message, 'oochamon'); break;
+                        case 'run': battle(message, 'run'); break;
+                    }
+                    message.delete();
                 }
             break;
         }
-        message.delete()
     }
-
 })
 
 
