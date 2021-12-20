@@ -2,8 +2,9 @@ const db = require("./db")
 
 module.exports = {
 
-    create_monster: function(id, emote, name, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
+    create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
         db.monster_data.set(id, emote, 'emote')
+        db.monster_data.set(id, image, 'image')
         db.monster_data.set(id, name, 'name')
         db.monster_data.set(id, oochive_entry, 'oochive_entry')
         db.monster_data.set(id, type, 'type')
@@ -26,4 +27,12 @@ module.exports = {
         db.move_data.set(id, chance, 'chance')
         db.move_data.set(id, descrition, 'description')
     },
+
+    move: function(user_id, direction) {
+        console.log(user_id, direction)
+    },
+    
+    battle: function(user_id, choice) {
+        console.log(user_id, choice)
+    }
 }

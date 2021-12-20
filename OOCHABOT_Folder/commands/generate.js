@@ -14,7 +14,7 @@ module.exports = {
 
         //#region Move Data
 
-        //          ID, NAME,           TYPE,  DMG,ACCURACY,EFF,CHANCE,     DESCRIPTION
+        //          ID, NAME,           TYPE,  DMG,ACCURACY, EFF,EFF_CHANCE,     DESCRIPTION
         create_move('0','Hit',          'neutral',10,100,   -1,0,           'The user hits the target to deal damage.')
         create_move('1','Bash',         'neutral',20,100,   -1,0,           'The target is dealt some blunt damage.')
         create_move('2','Spore Shot',   'fungal',30,100,    -1,0,           'A puff of spore burst from the user\'s body.')
@@ -43,114 +43,114 @@ module.exports = {
         //#endregion
 
         //#region Creature Data
-        //ID, Emote, Name, Description, Type, HP, ATK, DEF, SPD, Move List[[Lvl,ID]...], Abilities, Evolution ID
+        //ID, Emote, Name, Image, Description, Type, HP, ATK, DEF, SPD, Move List[[Lvl,ID]...], Abilities, Evolution ID, Evolution Level
         // Sporbee
-        create_monster('0', '<:sporbee:921141752029646938>', 'Sporbee',
+        create_monster('0', '<:sporbee:921141752029646938>', 'Sporbee', 'https://cdn.discordapp.com/attachments/921949708971294750/921950169560387644/sporbee.png',
         'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', 'fungal', 8, 12, 8, 12, //total 40
         [ [1,1],[3,2],[8,5],[13,6],[17,10],[27,13],[-1,18] ], [ 'Miniscule', 'Icky' ],  1, 16)
 
         //Stingrowth
-        create_monster('1', '<:stingrowth:921147233750110298>', 'Stingrowth',
+        create_monster('1', '<:stingrowth:921147233750110298>', 'Stingrowth', 'https://cdn.discordapp.com/attachments/921949708971294750/921950181845532722/stingrowth.png',
         'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', 'fungal', 15, 20, 11, 14, //total 60
         [ [1,1],[5,2],[9,5],[16,6],[20,10],[33,13],[-1,18] ], [ 'Burdened', 'Icky' ],  2, 32)
 
         //Queenect
-        create_monster('2', '<:queenect:921150332376076288>', 'Queenect',
+        create_monster('2', '<:queenect:921150332376076288>', 'Queenect', 'https://cdn.discordapp.com/attachments/921949708971294750/921950201080610906/queenect.png',
         'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', 'fungal', 25, 25, 16, 14, //total 80
         [ [1,1],[6,2],[12,5],[20,6],[25,10],[36,13],[-1,18] ], [ 'Burdened', 'Broodmother' ],  -1, -1)
 
         // Roocky
-        create_monster('3', '<:roocky:921156272512974868>', 'Roocky', 
+        create_monster('3', '<:roocky:921156272512974868>', 'Roocky', 'https://cdn.discordapp.com/attachments/921949708971294750/921950312300957776/roock.png',
         'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', 'stone', 12, 8, 12, 8, //total 40
         [ [1,1],[3,3],[8,7],[13,7],[17,11],[27,14],[-1,20] ], [ 'Sturdy', 'Shadow' ], 4, 16)
 
         //Graknight
-        create_monster('4', '<:graknight:921158515995848736>', 'Graknight', 
+        create_monster('4', '<:graknight:921158515995848736>', 'Graknight', 'https://cdn.discordapp.com/attachments/921949708971294750/921950330516807731/graknight.png',
         'The stones have continued deteriorating revealing a gremlin-like form, it weilds fragments of its former body as a spear.', 'stone', 18, 15, 15, 12, //total 60
         [ [1,1],[5,3],[9,7],[16,7],[20,11],[33,14],[-1,20] ], [ 'Withering', 'Shadow' ], 5, 32)
 
         //Diamount
-        create_monster('5', '<:diamount:921160903230095392>', 'Diamount', 
+        create_monster('5', '<:diamount:921160903230095392>', 'Diamount', 'https://cdn.discordapp.com/attachments/921949708971294750/921950340826407022/diamount.png',
         'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.', 'stone', 22, 18, 22, 18, //total 80
         [ [1,1],[6,3],[12,7],[20,7],[25,11],[36,14],[-1,20] ], [ 'Withering', 'Darkbright'], -1, -1)
 
         //Puppyre
-        create_monster('6', '<:puppyre:921176686102454282>', 'Puppyre',
+        create_monster('6', '<:puppyre:921176686102454282>', 'Puppyre', 'https://cdn.discordapp.com/attachments/921949708971294750/921950375316172841/puppyre.png',
         'A very good boy, empowered by the spiraling patterns on its body.', 'flame', 10, 12, 8, 10, //total 40
         [ [1,1],[3,4],[8,8],[12,12],[17,23],[27,15],[-1,21] ], [ 'Gentle', 'Warm' ], 7, 16)
 
         //Dogglow
-        create_monster('7', '<:dogglow:921179530402603069>', 'Dogglow',
+        create_monster('7', '<:dogglow:921179530402603069>', 'Dogglow', 'https://cdn.discordapp.com/attachments/921949708971294750/921950394492518432/dogglow.png',
         'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', 'flame', 13, 18, 14, 15, //total 60
         [ [1,1],[5,4],[9,8],[16,12],[20,23],[33,15],[-1,21] ], [ 'Gentle', 'Radiant' ], 8, 32)
 
         //Hounuke
-        create_monster('8', '<:hounuke:921182808804847686>', 'Hounuke',
+        create_monster('8', '<:hounuke:921182808804847686>', 'Hounuke', 'https://cdn.discordapp.com/attachments/921949708971294750/921950404923760700/hounuke.png',
         'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 'flame', 16, 26, 18, 20, //total 80
         [ [1,1],[6,4],[12,8],[20,12],[25,23],[36,15],[-1,21] ], [ 'Conflicted', 'Radiant' ], -1, -1)
 
         //Glither
-        create_monster('9', '<:glither:921444285264584814>', 'Glither',
+        create_monster('9', '<:glither:921444285264584814>', 'Glither', 'https://cdn.discordapp.com/attachments/921949708971294750/921950503754141786/glither.png',
         'Its diamond-hard skin protects it from the most brutal of sandstorms.', 'stone', 15, 9, 14, 12, //total 50
         [ [1, 'Bash'] ], [ 'Tough', 'Reactive' ], 10, 18)
 
         //Sparafura
-        create_monster('10', '<:sparafura:921444285063258113>', 'Sparafura',
+        create_monster('10', '<:sparafura:921444285063258113>', 'Sparafura', 'https://cdn.discordapp.com/attachments/921949708971294750/921950515410112553/sparafuna.png',
         'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 'stone', 18, 25, 16, 11, //total 70
         [ [1, 'Bash'] ], [ 'Burrower', 'Reactive' ], -1, -1)
         
         //Constone
-        create_monster('11', '<:constone:921452962608472084>', 'Constone',
+        create_monster('11', '<:constone:921452962608472084>', 'Constone', 'https://cdn.discordapp.com/attachments/921949708971294750/921950553695715388/constone.png',
         'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 'stone', 10, 10, 10, 20, //total 50
         [ [1, 'Bash'] ], [ 'Inertia', 'Dense' ], 12, 25)
 
         //Amephyst
-        create_monster('12', '<:amephyst:921452962549735524>', 'Amephyst',
+        create_monster('12', '<:amephyst:921452962549735524>', 'Amephyst', 'https://cdn.discordapp.com/attachments/921949708971294750/921950566777757736/amephyst.png',
         'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 'stone', 15, 20, 15, 30, //total 80
         [ [1, 'Bash'] ], [ 'Inertia', 'Dense' ], -1, -1)
 
         //Widew
-        create_monster('13', '<:widew:921460528247894066>', 'Widew',
+        create_monster('13', '<:widew:921460528247894066>', 'Widew', 'https://cdn.discordapp.com/attachments/921949708971294750/921950600042790942/widew.png',
         'The growth on its back forms a symbyotic relationship with the host, maximizing the amount of nutrients each can absorb.', 'fungal', 14, 10, 9, 12, //total 35
         [ [1, 'Bash'] ], [ 'Moist', 'Miniscule' ], 14, 12)
 
         //Tarotula
-        create_monster('14', '<:tarotula:921460528306618438>', 'Tarotula',
+        create_monster('14', '<:tarotula:921460528306618438>', 'Tarotula', 'https://cdn.discordapp.com/attachments/921949708971294750/921950611686191124/tarotula.png',
         'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 'fungal', 21, 17, 12, 15, //total 65
         [ [1, 'Bash'] ], [ 'Moist', 'Alert' ], -1, -1)
 
         //Moldot
-        create_monster('15', '<:moldot:921464022182797392>', 'Moldot',
+        create_monster('15', '<:moldot:921464022182797392>', 'Moldot', 'https://cdn.discordapp.com/attachments/921949708971294750/921950639355994172/moldot.png',
         'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.', 'fungal', 5, 5, 25, 5, //total 40
         [ [1, 'Bash'] ], [ 'Gentle', 'Burrower' ], 16, 30)
 
         //Moldire
-        create_monster('16', '<:moldire:921464022115700857>', 'Moldire',
+        create_monster('16', '<:moldire:921464022115700857>', 'Moldire', 'https://cdn.discordapp.com/attachments/921949708971294750/921950651049734144/moldire.png',
         'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.', 'fungal', 25, 25, 30, 5, //total 85
         [ [1, 'Bash'] ], [ 'Gentle', 'Reactive' ], -1, -1)
 
         //Charlite
-        create_monster('17', '<:charlite:921472869630885938>', 'Charlite',
+        create_monster('17', '<:charlite:921472869630885938>', 'Charlite', 'https://cdn.discordapp.com/attachments/921949708971294750/921950791105908766/charlite.png',
         'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.', 'flame', 5, 15, 5, 10, //total 35
         [ [1, 'Bash'] ], [ 'Fleeting', 'Warm' ], 18, 15)
 
         //Darcoal
-        create_monster('18', '<:darcoal:921472869643456532>', 'Darcoal',
+        create_monster('18', '<:darcoal:921472869643456532>', 'Darcoal', 'https://cdn.discordapp.com/attachments/921949708971294750/921950803445579776/darcoal.png',
         'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', 'flame', 15, 35, 13, 12, //total 75
         [ [1, 'Bash'] ], [ 'Efficient', 'Warm' ], -1, -1)
 
         //Torchoir
-        create_monster('19', '<:torchoir:921480638178136065>', 'Torchoir',
+        create_monster('19', '<:torchoir:921480638178136065>', 'Torchoir', 'https://cdn.discordapp.com/attachments/921949708971294750/921950825977364510/tochoir.png',
         'A sentient torch that hums a haunting tune. Its song fills people with dread.', 'flame', 12, 13, 11, 9, //total 45
         [ [1, 'Bash'] ], [ 'Boisterous', 'Choir' ], 20, 28)
 
         //Chantern
-        create_monster('19', '<:chantern:921480638543036436>', 'Chantern',
+        create_monster('19', '<:chantern:921480638543036436>', 'Chantern', 'https://cdn.discordapp.com/attachments/921949708971294750/921950839004880896/chantern.png',
         'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 'flame', 21, 20, 24, 15, //total 80
         [ [1, 'Bash'] ], [ 'Boisterous', 'Haunted' ], -1, -1)
 
         //Eluslug
-        create_monster('19', '<:eluslug:921483721197105162>', 'Eluslug',
+        create_monster('19', '<:eluslug:921483721197105162>', 'Eluslug', 'https://cdn.discordapp.com/attachments/921949708971294750/921950857396912138/eluslug.png',
         'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 'tech', 11, 12, 12, 14, //total 50
         [ [1, 'Bash'] ], [ 'Leech', 'Icky' ], -1, -1)
 

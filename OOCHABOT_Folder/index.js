@@ -4,10 +4,12 @@ const Discord = require('discord.js');
 const { token, client_id, guild_ids } = require('./config.json');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const wait = require('wait');
 
 // create a new Discord client and give it some variables
 const { Client, Intents } = require('discord.js');
-const { Console } = require('console');
+const db = require('./db.js');
+const { move, battle } = require('./func');
 const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
@@ -78,6 +80,15 @@ client.on('interactionCreate', async interaction => {
 
 //
 client.on('messageCreate', async message => {
+
+    if (message.author.id == '397879158962782219') {
+        if (message.type == 'THREAD_CREATED') {
+            console.log('type')
+            await wait(5000)
+            return message.delete();
+        }
+    }
+
     /*let rand = Math.floor(Math.random() * (1000)); 
     console.log(rand);
     if(rand == 2){
@@ -89,6 +100,45 @@ client.on('messageCreate', async message => {
     if(rand == 0){
         message.react('<:consumption_sphere:920855223675813898>');
     }*/
+
+    if (message.content == 'start battle') {
+        const thread = await message.channel.threads.create({
+            name: `${message.member.displayName} wild battle`,
+            autoArchiveDuration: 60,
+            reason: 'Battle thread',
+        });
+
+        if (thread.joinable) await thread.join();
+        await thread.setLocked(true);
+        
+        console.log(`Created thread: ${thread.name}`);
+    }
+
+    // Funi game logic for controlling the game
+    if (message.channel.id == '921969875482738749' || message.channel.id == '921977447510081547') {
+        player_state = db.profile.get(message.author.id, 'player_state')
+        switch (player_state) {
+            case 'overworld': 
+                switch (message.content) {
+                    case 'r': move(message.author.id, 0); break;
+                    case 'd': move(message.author.id, 90); break;
+                    case 'l': move(message.author.id, 180); break; 
+                    case 'u': move(message.author.id, 270); break;
+                }
+            break;
+
+            case 'battle':
+                switch (message.content) {
+                    case 'fight': battle(message.author.id, 'fight'); break;
+                    case 'bag': battle(message.author.id, 'bag'); break;
+                    case 'oochamon': battle(message.author.id, 'oochamon'); break;
+                    case 'run': battle(message.author.id, 'run'); break;
+                }
+            break;
+        }
+        message.delete()
+    }
+
 })
 
 
