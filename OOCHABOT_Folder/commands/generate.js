@@ -201,7 +201,7 @@ module.exports = {
 
         //Amalgrime
         create_monster('31', '<:amalgrime:922285098567602176>', 'Amalgrime', 'https://cdn.discordapp.com/attachments/921949708971294750/922300413590519848/amalgrime.png',
-        'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 'ooze', 11, 18, 12, 14, //total 85
+        'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 'ooze', 25, 20, 20, 20, //total 85
         [ [1, 'Bash'] ], [ 'Immense', 'Gentle' ], -1, -1)
 
         //Drilline
