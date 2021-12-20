@@ -96,8 +96,9 @@ client.on('messageCreate', async message => {
     }
 
     if (message.content == 'start battle') {
+        ooch_gen = generate_battle(db.profile.get(message.author.id, 'ooch_inventory'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
         const thread = await message.channel.threads.create({
-            name: `${message.member.displayName} wild battle, join this to battle`,
+            name: `${message.member.displayName} Wild Battle, join this to battle!`,
             autoArchiveDuration: 60,
             reason: 'Battle thread',
         });
@@ -105,16 +106,12 @@ client.on('messageCreate', async message => {
         if (thread.joinable) await thread.join();
         await thread.members.add(message.author.id);
         await thread.setLocked(true);
-        ooch_gen = generate_battle(db.profile.get(message.author.id, 'ooch_inventory'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
-        console.log(ooch_gen);
         await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.level} ${db.monster_data.get(ooch_gen.id, 'name')}!`)
 
         await db.profile.set(message.author.id, 'battle', 'player_state')
         await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
 
         message.delete();
-        
-        console.log(`Created thread: ${thread.name}`);
     }
 
     // Funi game logic for controlling the game

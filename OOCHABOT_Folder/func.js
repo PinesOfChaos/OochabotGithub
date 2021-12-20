@@ -54,10 +54,10 @@ module.exports = {
         }
 
         // Get wild oochamon stats
-        hp = Math.floor(db.monster_data.get(ooch_pick, 'hp') * (1.05^lvl) + 10)
-        atk = Math.floor(db.monster_data.get(ooch_pick, 'atk') * (1.05^lvl))
-        def = Math.floor(db.monster_data.get(ooch_pick, 'def') * (1.05^lvl))
-        spd = Math.floor(db.monster_data.get(ooch_pick, 'spd') * (1.05^lvl))
+        hp = Math.floor(db.monster_data.get(ooch_pick, 'hp') * (1.05 ** lvl) + 10)
+        atk = Math.floor(db.monster_data.get(ooch_pick, 'atk') * (1.05 ** lvl))
+        def = Math.floor(db.monster_data.get(ooch_pick, 'def') * (1.05 ** lvl))
+        spd = Math.floor(db.monster_data.get(ooch_pick, 'spd') * (1.05 ** lvl))
         move_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= 5 && x[0] != -1)
 
         // Make sure the move_list is 4 moves
