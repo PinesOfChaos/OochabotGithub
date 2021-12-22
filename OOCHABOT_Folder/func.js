@@ -68,6 +68,7 @@ module.exports = {
 
         return {
             id: ooch_pick,
+            name: db.monster_data.get(ooch_pick, 'name'),
             level: lvl,
             ability: false,
             moveset: move_list,
@@ -76,7 +77,8 @@ module.exports = {
                 atk: atk,
                 def: def,
                 spd: spd
-            }
+            },
+            current_hp: hp,
         }
 
     },
@@ -97,22 +99,96 @@ module.exports = {
         db.monster_data.set(id, evo_lvl, 'evo_lvl')
     },
 
-    create_move: function(id, name, type, damage, accuracy, effect, chance, descrition){
+    create_move: function(id, name, type, damage, accuracy, effect, chance, description){
         db.move_data.set(id, name, 'name')
         db.move_data.set(id, type, 'type')
         db.move_data.set(id, damage, 'damage')
         db.move_data.set(id, accuracy, 'accuracy')
         db.move_data.set(id, effect, 'effect')
         db.move_data.set(id, chance, 'chance')
-        db.move_data.set(id, descrition, 'description')
+        db.move_data.set(id, description, 'description')
     },
 
     move: function(user_id, direction) {
         console.log(user_id, direction)
     },
     
-    battle: function(message, choice) {
-        message.channel.send('Test');
-        console.log(message.author.id, choice)
+    battle: async function(message, choice) {
+        const wait = require('wait');
+        
+        // Get enemy oochamon data that was previously generated
+        let ooch_enemy = db.profile.get(message.author.id, 'ooch_enemy')
+        let ooch_plr = db.profile.get(message.author.id, 'ooch_inventory')[0]
+        let ooch_pos = 0;
+        let dmg = 0;
+        let battle_over = false;
+
+        await message.channel.send(`**You input:** \`${choice}\`\n`);
+
+        // Handle player turn
+        switch(choice) {
+            case 'fight':
+                if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
+
+                    message.channel.send(`**------------ Enemy Turn ------------**`)
+                    // Enemy attacks player
+                    dmg = 1
+                    ooch_plr.current_hp -= dmg
+                    db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
+                    await message.channel.send(
+                            `The enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.\n` +
+                            `**------------ Player Turn ------------**`)
+
+                    // Player attacks enemy
+                    dmg = 2
+                    ooch_enemy.current_hp -= dmg
+                    await message.channel.send(`Your ${ooch_plr.name} deals ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.`)
+
+                } else if (ooch_enemy.stats.spd <= ooch_plr.stats.spd) { // Player goes first
+
+                    message.channel.send(`**------------ Player Turn ------------**`)
+                    // Player attacks enemy
+                    dmg = 2
+                    ooch_enemy.current_hp -= dmg
+                    await message.channel.send(
+                        `Your ${ooch_plr.name} deals ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.\n` +
+                        `**------------ Enemy Turn ------------**`)
+
+                    // Enemy attacks player
+                    dmg = 1
+                    ooch_plr.current_hp -= dmg
+                    db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
+                    await message.channel.send(`The enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`)
+
+                }
+
+                // Victory/Defeat Check
+                if (ooch_enemy.current_hp <= 0) { // Victory
+
+                    message.channel.send(`**You win!**\nHead back to the Hub to continue playing.`)
+                    db.profile.set(message.author.id, `overworld`, 'player_state')
+                    db.profile.set(message.author.id, {}, 'ooch_enemy')
+                    await wait(20000);
+                    battle_over = true;
+                    await message.channel.delete();
+
+                } else if (ooch_plr.current_hp <= 0) {
+
+                    message.channel.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
+                    db.profile.set(message.author.id, `overworld`, 'player_state')
+                    db.profile.set(message.author.id, {}, 'ooch_enemy')
+                    db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+                    await wait(20000);
+                    battle_over = true;
+                    await message.channel.delete();
+
+                }
+            break;
+            case 'bag': break;
+            case 'switch': break;
+            case 'run': break;
+        }
+        
+        if (battle_over == false) message.channel.send(`**----------- Select A Move ----------**\nSelect your next move!\nYour input options are: \`fight\`, \`bag\`, \`switch\`, and \`run\`.`)
     }
 }

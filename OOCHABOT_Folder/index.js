@@ -19,8 +19,6 @@ client.commands = new Discord.Collection();
 const registerCommands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
-
-
 //#region 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
@@ -56,7 +54,6 @@ for(let i = 0; i < guild_ids.length; i++){
 //#endregion
 
 client.on('ready',  async() => {
-    client.user.setStatus('invisible')
     console.log('Bot Ready')
 })
 
@@ -109,6 +106,7 @@ client.on('messageCreate', async message => {
         await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.level} ${db.monster_data.get(ooch_gen.id, 'name')}!`)
 
         await db.profile.set(message.author.id, 'battle', 'player_state')
+        await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
         await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
 
         message.delete();
@@ -136,7 +134,7 @@ client.on('messageCreate', async message => {
                     switch (message.content) {
                         case 'fight': battle(message, 'fight'); break;
                         case 'bag': battle(message, 'bag'); break;
-                        case 'oochamon': battle(message, 'oochamon'); break;
+                        case 'switch': battle(message, 'switch'); break;
                         case 'run': battle(message, 'run'); break;
                     }
                     message.delete();

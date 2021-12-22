@@ -52,6 +52,7 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'currency')
             db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
             db.profile.set(interaction.user.id, -1, 'battle_thread_id')
+            db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'Hub', x: 5, y: 5 }, 'location_data')
 
             // Setup starter data
@@ -63,8 +64,9 @@ module.exports = {
 
             move_list = move_list.filter(x => x[0] <= 5 && x[0] != -1)
 
-            db.profile.set(interaction.user.id, { 
-                [starter]: { 
+            db.profile.set(interaction.user.id, [ 
+                { 
+                    id: starter,
                     name: db.monster_data.get(starter, 'name'), 
                     nickname: false,
                     item: false,
@@ -76,9 +78,11 @@ module.exports = {
                         atk: db.monster_data.get(starter, 'atk'),
                         def: db.monster_data.get(starter, 'def'),
                         spd: db.monster_data.get(starter, 'spd')
-                    }
+                    },
+                    current_hp: db.monster_data.get(starter, 'hp'),
+                    alive: true,
                 }
-            }, 'ooch_inventory')
+            ], 'ooch_inventory')
 
         });
 
