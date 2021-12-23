@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('generate map')
+        .setName('generate_map')
         .setDescription('Builds a randomly generated map.'),
     async execute(interaction) {
         //interaction.editReply(`Map generated; see console.`);
