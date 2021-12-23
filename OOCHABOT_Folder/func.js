@@ -184,9 +184,23 @@ module.exports = {
 
                 }
             break;
-            case 'bag': break;
+            case 'bag': 
+                
+            break;
             case 'switch': break;
-            case 'run': break;
+            case 'run':
+                if (ooch_plr.stats.spd / (ooch_plr.stats.spd + ooch_enemy.stats.spd) > Math.random()) {
+                    message.channel.send(`You successfully ran away!`)
+                    db.profile.set(message.author.id, `overworld`, 'player_state')
+                    db.profile.set(message.author.id, {}, 'ooch_enemy')
+                    db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+                    await wait(20000);
+                    battle_over = true;
+                    await message.channel.delete(); 
+                } else {
+                    
+                }
+            break;
         }
         
         if (battle_over == false) message.channel.send(`**----------- Select A Move ----------**\nSelect your next move!\nYour input options are: \`fight\`, \`bag\`, \`switch\`, and \`run\`.`)

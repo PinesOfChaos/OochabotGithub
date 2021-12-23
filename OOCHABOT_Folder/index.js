@@ -104,6 +104,7 @@ client.on('messageCreate', async message => {
         await thread.members.add(message.author.id);
         await thread.setLocked(true);
         await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.level} ${db.monster_data.get(ooch_gen.id, 'name')}!`)
+        await thread.send(`**----------- Select A Move ----------**\nSelect your first move!\nYour input options are: \`fight\`, \`bag\`, \`switch\`, and \`run\`.`)
 
         await db.profile.set(message.author.id, 'battle', 'player_state')
         await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
