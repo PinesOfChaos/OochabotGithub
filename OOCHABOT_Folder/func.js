@@ -207,77 +207,99 @@ module.exports = {
     },
 
     gen_map: function(map_size, chests) {
-    let map = [];
-    let center = floor(map_size/2);
+        let map = [];
+        let center = Math.floor(map_size/2);
+        //===========================
+        //HEY READ THIS DUMMI
 
         //0 path
         //1 block
         //2 spawn
         //3 chest
+        //===========================
 
-    //fill map with blocked spaces
-    for(let i = 0; i < map_size; i++){
-        for(let j = 0; j < map_size; j++){	
-            map[i][j] = 1;	
+        //fill map with blocked spaces
+        for(let i = 0; i < map_size; i++){
+            map[i] = [];
+            for(let j = 0; j < map_size; j++){	
+                map[i][j] = 1;	
+            }
         }
-    }
 
-    //setup some reuseable variables
-    let rand_dir = 0;
-    let rand_len = 0;
-    let xpos = 0;
-    let ypos = 0;
-    let chest_positions = [];
+        //setup some reuseable variables
+        let rand_dir = 0;
+        let rand_len = 0;
+        let xpos = 0;
+        let ypos = 0;
+        let chest_positions = [];
 
-    //generate chests
-    for(let i = 0; i < chests; i++){
-        rand_dir = math.random()*360;
-        rand_len = math.random()*map_size/8+map_size/4;
-        xpos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
-        ypos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
-        chest_positions[i] = [xpos,ypos]
-    }
+        //generate chests
+        for(let i = 0; i < chests; i++){
+            rand_dir = Math.random()*360;
+            rand_len = Math.random()*map_size/8+map_size/4;
+            xpos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
+            ypos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
+            chest_positions[i] = [xpos,ypos]
 
-    //create paths to chests
-    for(let i = 0; i < chests; i++){
-        xpos = chest_positions[i][0];
-        ypos = chest_positions[i][1];
+            //console.log('Chest X/Y')
+            //console.log(xpos)
+            //console.log(ypos)
+        }
 
-        while(abs(xpos-center)+abs(ypos-center) > 1){
-            if(xpos > center){
-                xpos -=1;
-            }
-            if(xpos < center){
-                xpos +=1;
-            }
-            if(ypos > center){
-                ypos -=1;
-            }
-            if(ypos < center){
-                ypos +=1;
-            }
+        
 
-            xpos+=Math.round(Math.random*2)-1;
-            ypos+=Math.round(Math.random*2)-1;
-            
-            for(let j = -1; j < 2; j++){
-                for(let k = -1; k < 2; k++){
-                    map[xpos+j][ypos+k] = 0
+        //create paths to chests
+        for(let i = 0; i < chests; i++){
+            xpos = chest_positions[i][0];
+            ypos = chest_positions[i][1];
+
+            //console.log('Chest Finder X/Y')
+            //console.log(xpos)
+            //console.log(ypos)
+
+            while(Math.abs(xpos-center)+Math.abs(ypos-center) > 1){
+                if(xpos > center){
+                    xpos -=1;
+                }
+                else if(xpos < center){
+                    xpos +=1;
+                }
+                else if(ypos > center){
+                    ypos -=1;
+                }
+                else if(ypos < center){
+                    ypos +=1;
+                }
+
+                //console.log('Path X/Y')
+                //console.log(xpos)
+                //console.log(ypos)
+
+                xpos += Math.round(Math.random()*2)-1;
+                ypos += Math.round(Math.random()*2)-1;
+                
+                //console.log('Path Random Added X/Y')
+                //console.log(xpos)
+                //console.log(ypos)
+
+                for(let j = -1; j < 2; j++){
+                    for(let k = -1; k < 2; k++){
+                        map[xpos+j][ypos+k] = 0
+                    }
                 }
             }
         }
-    }
 
-    //place chests
-    for(let i = 0; i < chests; i++){
-        map[chest_positions[i][0]][chest_positions[i][1]] = 3
-    }
+        //place chests
+        for(let i = 0; i < chests; i++){
+            map[chest_positions[i][0]][chest_positions[i][1]] = 3
+        }
 
-    //place spawn position
-    map[center][center] = 2
+        //place spawn position
+        map[center][center] = 2
 
-    console.log(map)
-    return(map);
+        //console.log(map)
+        return(map);
 
     }
 }
