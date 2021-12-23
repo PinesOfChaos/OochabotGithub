@@ -20,8 +20,9 @@ module.exports = {
         let size = interaction.options.getInteger('size');
         let chests = interaction.options.getInteger('chests');
         
-        gen_map(size,chests);
+        let maps = gen_map(size,chests);
 
-        interaction.reply('Finished generating map.');
+        console.log(maps[0]);
+        interaction.reply({ content: `Finished generating map:\n${maps[1]}`, ephemeral: true });
     },
 };

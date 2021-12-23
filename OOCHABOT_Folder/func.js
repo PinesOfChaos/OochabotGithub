@@ -118,7 +118,8 @@ module.exports = {
         
         // Get enemy oochamon data that was previously generated
         let ooch_enemy = db.profile.get(message.author.id, 'ooch_enemy')
-        let ooch_plr = db.profile.get(message.author.id, 'ooch_inventory')[0]
+        // Get the players oochamon in the first spot of their party
+        let ooch_plr = db.profile.get(message.author.id, 'ooch_inventory')[0];
         let ooch_pos = 0;
         let dmg = 0;
         let battle_over = false;
@@ -189,7 +190,7 @@ module.exports = {
             break;
             case 'switch': break;
             case 'run':
-                if (ooch_plr.stats.spd / (ooch_plr.stats.spd + ooch_enemy.stats.spd) > Math.random()) { // If we ran 
+                if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) { // If we succeed
                     message.channel.send(`You successfully ran away!`)
                     db.profile.set(message.author.id, `overworld`, 'player_state')
                     db.profile.set(message.author.id, {}, 'ooch_enemy')
@@ -198,7 +199,12 @@ module.exports = {
                     battle_over = true;
                     await message.channel.delete(); 
                 } else {
-                    
+                    message.channel.send(`You failed to run away!`)
+                    // Enemy attacks player
+                    dmg = 1
+                    ooch_plr.current_hp -= dmg
+                    db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
+                    await message.channel.send(`The enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`)
                 }
             break;
         }
@@ -209,6 +215,7 @@ module.exports = {
     gen_map: function(map_size, chests) {
         let map = [];
         let center = Math.floor(map_size/2);
+        let tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
         //===========================
         //HEY READ THIS DUMMI
 
@@ -237,7 +244,7 @@ module.exports = {
         for(let i = 0; i < chests; i++){
             rand_dir = Math.random()*360;
             rand_len = Math.random()*map_size/8+map_size/4;
-            xpos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
+            xpos = Math.floor(center+(Math.cos(rand_dir)*rand_len))
             ypos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
             chest_positions[i] = [xpos,ypos]
 
@@ -298,8 +305,19 @@ module.exports = {
         //place spawn position
         map[center][center] = 2
 
-        //console.log(map)
-        return(map);
+        let emote_map = map;
+
+        for (let x = 0; x < map.length; x++) {
+            for (let y = 0; y < map[x].length; y++) {
+                tile_value = map[x][y]
+                emote_map[x][y] = tile_emotes[tile_value]
+            }
+            emote_map[x] = emote_map[x].join('');
+        }
+ 
+        emote_map = emote_map.join('\n')
+
+        return([map, emote_map]);
 
     }
 }
