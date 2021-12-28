@@ -379,7 +379,7 @@ module.exports = {
                     tile_value = map_array[i+x_pos][j+y_pos]
                 }
                 
-                emote_map[i][j] = tile_emotes[tile_value]
+                emote_map[i+view_size][j+view_size] = tile_emotes[tile_value]
             }
             emote_map[i] = emote_map[j].join('');
         }
