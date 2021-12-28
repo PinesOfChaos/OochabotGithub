@@ -109,67 +109,67 @@ module.exports = {
         //Glither
         create_monster('9', '<:glither:921444285264584814>', 'Glither', 'https://cdn.discordapp.com/attachments/921949708971294750/921950503754141786/glither.png',
         'Its diamond-hard skin protects it from the most brutal of sandstorms.', 'stone', 15, 9, 14, 12, //total 50
-        [ [1, 'Bash'] ], [ 'Tough', 'Reactive' ], 10, 18)
+        [ [1,1],[3,3],[8,5],[13,7],[21,9],[27,16],[34,39],[-1,17] ], [ 'Tough', 'Reactive' ], 10, 18)
 
         //Sparafura
         create_monster('10', '<:sparafura:921444285063258113>', 'Sparafura', 'https://cdn.discordapp.com/attachments/921949708971294750/921950515410112553/sparafuna.png',
         'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 'stone', 18, 25, 16, 11, //total 70
-        [ [1, 'Bash'] ], [ 'Burrower', 'Reactive' ], -1, -1)
+        [ [1,1],[4,3],[12,5],[18,7],[25,9],[31,16],[40,39],[-1,17] ], [ 'Burrower', 'Reactive' ], -1, -1)
         
         //Constone
         create_monster('11', '<:constone:921452962608472084>', 'Constone', 'https://cdn.discordapp.com/attachments/921949708971294750/921950553695715388/constone.png',
         'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 'stone', 10, 10, 10, 20, //total 50
-        [ [1, 'Bash'] ], [ 'Inertia', 'Dense' ], 12, 25)
+        [ [1,0],[4,3],[7,24],[18,11],[26,35],[-1,26] ], [ 'Inertia', 'Dense' ], 12, 25)
 
         //Amephyst
         create_monster('12', '<:amephyst:921452962549735524>', 'Amephyst', 'https://cdn.discordapp.com/attachments/921949708971294750/921950566777757736/amephyst.png',
         'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 'stone', 15, 20, 15, 30, //total 80
-        [ [1, 'Bash'] ], [ 'Inertia', 'Dense' ], -1, -1)
+        [ [1,1],[5,3],[8,24],[21,11],[30,35],[33,17],[-1,26] ], [ 'Inertia', 'Dense' ], -1, -1)
 
         //Widew
         create_monster('13', '<:widew:921460528247894066>', 'Widew', 'https://cdn.discordapp.com/attachments/921949708971294750/921950600042790942/widew.png',
         'The growth on its back forms a symbyotic relationship with the host, maximizing the amount of nutrients each can absorb.', 'fungal', 14, 10, 9, 12, //total 35
-        [ [1, 'Bash'] ], [ 'Moist', 'Miniscule' ], 14, 12)
+        [ [1,0],[3,2],[7,9],[11,28],[-1,16] ], [ 'Moist', 'Miniscule' ], 14, 12)
 
         //Tarotula
         create_monster('14', '<:tarotula:921460528306618438>', 'Tarotula', 'https://cdn.discordapp.com/attachments/921949708971294750/921950611686191124/tarotula.png',
         'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 'fungal', 21, 17, 12, 15, //total 65
-        [ [1, 'Bash'] ], [ 'Moist', 'Alert' ], -1, -1)
+        [ [1,0],[4,2],[8,9],[13,28],[18,6],[24,10],[32,13],[-1,16] ], [ 'Moist', 'Alert' ], -1, -1)
 
         //Moldot
         create_monster('15', '<:moldot:921464022182797392>', 'Moldot', 'https://cdn.discordapp.com/attachments/921949708971294750/921950639355994172/moldot.png',
         'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.', 'fungal', 5, 5, 25, 5, //total 40
-        [ [1, 'Bash'] ], [ 'Gentle', 'Burrower' ], 16, 30)
+        [ [1,1],[5,2],[12,6],[17,23],[24,19],[40,13],[-1,39] ], [ 'Gentle', 'Burrower' ], 16, 30)
 
         //Moldire
         create_monster('16', '<:moldire:921464022115700857>', 'Moldire', 'https://cdn.discordapp.com/attachments/921949708971294750/921950651049734144/moldire.png',
         'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.', 'fungal', 25, 25, 30, 5, //total 85
-        [ [1, 'Bash'] ], [ 'Gentle', 'Reactive' ], -1, -1)
+        [ [1,1],[7,2],[14,6],[20,23],[32,19],[40,34],[50,13],[-1,39] ], [ 'Gentle', 'Reactive' ], -1, -1)
 
         //Charlite
         create_monster('17', '<:charlite:921472869630885938>', 'Charlite', 'https://cdn.discordapp.com/attachments/921949708971294750/921950791105908766/charlite.png',
         'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.', 'flame', 5, 15, 5, 10, //total 35
-        [ [1, 'Bash'] ], [ 'Fleeting', 'Warm' ], 18, 15)
+        [ [1,0],[4,4],[10,7],[16,25],[22,8],[27,20],[37,12],[-1,21] ], [ 'Fleeting', 'Warm' ], 18, 15)
 
         //Darcoal
         create_monster('18', '<:darcoal:921472869643456532>', 'Darcoal', 'https://cdn.discordapp.com/attachments/921949708971294750/921950803445579776/darcoal.png',
         'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', 'flame', 15, 35, 13, 12, //total 75
-        [ [1, 'Bash'] ], [ 'Efficient', 'Warm' ], -1, -1)
+        [ [1,0],[6,4],[12,7],[18,25],[24,8],[30,20],[40,12],[-1,21] ], [ 'Efficient', 'Warm' ], -1, -1)
 
         //Torchoir
         create_monster('19', '<:torchoir:921480638178136065>', 'Torchoir', 'https://cdn.discordapp.com/attachments/921949708971294750/921950825977364510/tochoir.png',
         'A sentient torch that hums a haunting tune. Its song fills people with dread.', 'flame', 12, 13, 11, 9, //total 45
-        [ [1, 'Bash'] ], [ 'Boisterous', 'Choir' ], 20, 28)
+        [ [1,1],[3,4],[7,9],[12,24],[17,12],[21,23],[27,30],[-1,26] ], [ 'Boisterous', 'Choir' ], 20, 28)
 
         //Chantern
         create_monster('20', '<:chantern:921480638543036436>', 'Chantern', 'https://cdn.discordapp.com/attachments/921949708971294750/921950839004880896/chantern.png',
         'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 'flame', 21, 20, 24, 15, //total 80
-        [ [1, 'Bash'] ], [ 'Boisterous', 'Haunted' ], -1, -1)
+        [ [1,1],[5,4],[8,9],[13,24],[19,12],[25,23],[32,30],[-1,26] ], [ 'Boisterous', 'Haunted' ], -1, -1)
 
         //Eluslug
         create_monster('21', '<:eluslug:921483721197105162>', 'Eluslug', 'https://cdn.discordapp.com/attachments/921949708971294750/921950857396912138/eluslug.png',
         'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 'tech', 11, 12, 12, 14, //total 50
-        [ [1, 'Bash'] ], [ 'Leech', 'Icky' ], -1, -1)
+        [ [1,1],[10,22],[-1,38] ], [ 'Leech', 'Icky' ], -1, -1)
 
         //Jellime
         create_monster('22', '<:jellime:921979911382654997>', 'Jelime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987464854401044/jellime.png',
@@ -234,7 +234,7 @@ module.exports = {
         //i_
         create_monster('34', '<:i_:922299745987346433>', 'i', 'https://cdn.discordapp.com/attachments/921949708971294750/922300450206801950/i.png',
         'ERROR: entry not found', 'void', 1, 1, 1, 1, //total 30
-        [ [1, 'Bash'] ], [ '0000', '0000' ], -1, -1)
+        [ [1,40] ], [ '0000', '0000' ], -1, -1)
 
         //#endregion
 

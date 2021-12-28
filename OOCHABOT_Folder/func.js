@@ -212,18 +212,10 @@ module.exports = {
         if (battle_over == false) message.channel.send(`**----------- Select A Move ----------**\nSelect your next move!\nYour input options are: \`fight\`, \`bag\`, \`switch\`, and \`run\`.`)
     },
 
-    gen_map: function(map_size, chests) {
+    gen_map: function(map_size, chests, biome) {
         let map = [];
         let center = Math.floor(map_size/2);
-        let tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
-        //===========================
-        //HEY READ THIS DUMMI
-
-        //0 path
-        //1 block
-        //2 spawn
-        //3 chest
-        //===========================
+        
 
         //fill map with blocked spaces
         for(let i = 0; i < map_size; i++){
@@ -304,20 +296,95 @@ module.exports = {
 
         //place spawn position
         map[center][center] = 2
+        
 
-        let emote_map = map;
-
-        for (let x = 0; x < map.length; x++) {
-            for (let y = 0; y < map[x].length; y++) {
-                tile_value = map[x][y]
-                emote_map[x][y] = tile_emotes[tile_value]
-            }
-            emote_map[x] = emote_map[x].join('');
+        //Create the list of creatures that can spawn in a given biome
+        //Gives each a base chance and an additional chance value 
+        let spawns = [];
+        switch(biome){
+            case 'obsidian':
+                //ID,Chance
+                spawns[0] = [6,  5+Math.round(Math.random()*10)] //Puppyre
+                spawns[1] = [17,40+Math.round(Math.random()*10)] //Charlite
+                spawns[2] = [19,40+Math.round(Math.random()*10)] //Torchoir
+                spawns[3] = [24,20+Math.round(Math.random()*10)] //Tisparc
+                spawns[4] = [32,15+Math.round(Math.random()*10)] //Drilline
+            break;
+            case 'desert':
+                //ID,Chance
+                spawns[0] = [3,  5+Math.round(Math.random()*10)] //Roocky
+                spawns[1] = [9, 40+Math.round(Math.random()*10)] //Glither
+                spawns[2] = [11,40+Math.round(Math.random()*10)] //Constone
+                spawns[3] = [21,10+Math.round(Math.random()*10)] //Eluslug
+                spawns[4] = [26,10+Math.round(Math.random()*10)] //Blipoint
+            break;
+            case 'fungal':
+                //ID,Chance
+                spawns[0] = [0,  5+Math.round(Math.random()*10)] //Sporbee
+                spawns[1] = [13,30+Math.round(Math.random()*10)] //Widew
+                spawns[2] = [15,30+Math.round(Math.random()*10)] //Moldot
+                spawns[3] = [22,30+Math.round(Math.random()*10)] //Jellime
+                spawns[4] = [29,10+Math.round(Math.random()*10)] //Nucleorb
+            break;
         }
- 
+
+        return([biome, map, spawns]);
+
+    },
+
+    map_emote_string: function(biome, map_array, x_pos, y_pos) {
+        //biome can be obsidian, desert or fungal, anything else will default to the HUB tileset
+        let tile_emotes = [];
+
+        //===========================
+        //HEY READ THIS DUMMI
+
+        //0 path
+        //1 block
+        //2 spawn
+        //3 chest
+
+        
+        //===========================
+
+        switch(biome){
+            case('obsidian'):
+                tile_emotes = ['<:tObsd:921225027557412975>', '<:tObsdB:921225027624501268>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+            break;
+            
+            case('desert'):
+                tile_emotes = ['<:tSand:921220712641986572>', '<:tSandB:921220723110977606>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+            break;
+
+            case('fungal'):
+                tile_emotes = ['<:tShrm:921230053499617331>', '<:tShrmB:921230053503819777>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+            break;
+
+            default:
+                tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+            break;
+        }
+
+        let emote_map = [];
+        let size = map_array.length;
+        let view_size = 2;
+
+        for (let i = -view_size; i < view_size; i++) {
+            emote_map[i] = [];
+            for (let j = -view_size; j < view_size; j++) {
+                if(i+x_pos<0 || j+y_pos<0 || i+x_pos >= size || j+ypos >= size){
+                    tile_value = '<:tHUBB:921240940641919056>';
+                }
+                else{
+                    tile_value = map_array[i+x_pos][j+y_pos]
+                }
+                
+                emote_map[i][j] = tile_emotes[tile_value]
+            }
+            emote_map[i] = emote_map[j].join('');
+        }
         emote_map = emote_map.join('\n')
 
-        return([map, emote_map]);
-
+        return([emote_map]);
     }
 }

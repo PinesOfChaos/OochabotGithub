@@ -14,15 +14,19 @@ module.exports = {
     .addIntegerOption(option => 
         option.setName('chests')
             .setDescription('Determines how many chests will spawn.')
-            .setRequired(true)),
-
+            .setRequired(true))
+    .addStringOption(option => 
+            option.setName('biome')
+                .setDescription('Set the biome of the generated map')
+                .setRequired(true)
+                .addChoices([['Desert','desert'],['Obsidian','obsidian'],['Fungal','fungal']])),
     async execute(interaction) {
         let size = interaction.options.getInteger('size');
         let chests = interaction.options.getInteger('chests');
-        
-        let maps = gen_map(size,chests);
+        let biome = interaction.options.getString('biome');
 
-        console.log(maps[0]);
-        interaction.reply({ content: `Finished generating map:\n${maps[1]}`, ephemeral: true });
+        let maps = gen_map(size,chests,biome);
+        
+        console.log(maps[1]);
     },
 };
