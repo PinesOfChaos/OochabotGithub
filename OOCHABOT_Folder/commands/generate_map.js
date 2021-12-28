@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
 const { gen_map } = require('../func');
+const db = require('../db.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,8 +26,8 @@ module.exports = {
         let chests = interaction.options.getInteger('chests');
         let biome = interaction.options.getString('biome');
 
-        let maps = gen_map(size,chests,biome);
-        
-        console.log(maps[1]);
+        db.maps.set(biome, gen_map(size, chests, biome));
+
+        return interaction.reply(`Generated map of ${biome}`);
     },
 };
