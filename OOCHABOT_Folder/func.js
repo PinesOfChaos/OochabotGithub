@@ -369,11 +369,14 @@ module.exports = {
         let size = map_array.length;
         let view_size = 2;
 
-        for (let i = -view_size; i < view_size; i++) {
+        for (let i = -view_size; i < view_size+1; i++) {
             emote_map[i] = [];
-            for (let j = -view_size; j < view_size; j++) {
+            for (let j = -view_size; j < view_size+1; j++) {
                 if(i+x_pos<0 || j+y_pos<0 || i+x_pos >= size || j+ypos >= size){
                     tile_value = '<:tHUBB:921240940641919056>';
+                }
+                else if(i == 0 && j == 0){
+                    tile_value = '<:tile_player:921492132966060042>';
                 }
                 else{
                     tile_value = map_array[i+x_pos][j+y_pos]

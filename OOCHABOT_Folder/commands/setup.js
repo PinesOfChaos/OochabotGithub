@@ -53,7 +53,7 @@ module.exports = {
             db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
             db.profile.set(interaction.user.id, -1, 'battle_thread_id')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
-            db.profile.set(interaction.user.id, { area: 'Hub', x: 5, y: 5 }, 'location_data')
+            db.profile.set(interaction.user.id, { area: 'hub', x: 5, y: 5 }, 'location_data')
 
             // Setup starter data
             let move_list = db.monster_data.get(starter, 'move_list');
