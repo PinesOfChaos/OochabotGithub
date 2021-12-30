@@ -1,3 +1,4 @@
+const { spawn } = require("child_process");
 const db = require("./db")
 
 module.exports = {
@@ -110,6 +111,10 @@ module.exports = {
     },
 
     move: function(message, direction) {
+        /*
+            db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
+        */
+
         const Discord = require('discord.js');
         const { map_emote_string } = require('./func.js');
 
@@ -179,6 +184,9 @@ module.exports = {
         (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
             msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery), components: [row] });
         });
+
+        db.player_positions.set(interaction.user.id, [biome,playerx,playery], 'position');
+        
     },
     
     battle: async function(message, choice) {
@@ -399,6 +407,7 @@ module.exports = {
     map_emote_string: function(biome, map_array, x_pos, y_pos) {
         //biome can be obsidian, desert or fungal, anything else will default to the HUB tileset
         let tile_emotes = [];
+        
 
         //===========================
         //HEY READ THIS DUMMI
@@ -433,6 +442,18 @@ module.exports = {
         let size = map_array.length;
         let view_size = 2;
 
+        //finds positions of all players and applies them to the map array
+        let other_players_pos_list = db.player_positions.get();
+        let pos_find = -1;
+
+        for (let i = 0; i < other_players_pos_list.length; i++) {
+            pos_find = other_players_pos_list[i];
+            //should pull an array [biome, x, y]
+            if(pos_find[0] == biome){
+                map_array[pos_find[1]] [pos_find[2]] = 2;
+            }
+        }
+
         for (let i = -view_size; i < view_size + 1; i++) {
             emote_map.push([]);
             for (let j = -view_size; j < view_size + 1; j++) {
@@ -451,5 +472,26 @@ module.exports = {
         emote_map = emote_map.join('\n')
 
         return(emote_map);
+    },
+
+    battle_choose_species: function(spawn_arr) {
+        let sum_val = 0;
+        let target_val = 0;
+        let i = 0;
+
+        for(i = 0; i < spawn_arr.length; i++) {
+            sum_val += spawn_arr[i][1];
+        }
+
+        sum_val *= Math.random();
+
+        for(i = 0; i < spawn_arr.length; i++) {
+            target_val += spawn_arr[i][1];
+            if(target_val >= sum_val){
+                break;
+            }
+        }
+
+        return(spawn_arr[i][0]);
     }
 }
