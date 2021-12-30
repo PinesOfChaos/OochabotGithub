@@ -54,6 +54,7 @@ module.exports = {
             db.profile.set(interaction.user.id, -1, 'battle_thread_id')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'hub', x: 5, y: 5 }, 'location_data')
+            db.profile.set(interaction.user.id, -1, 'display_msg_id')
 
             // Setup starter data
             let move_list = db.monster_data.get(starter, 'move_list');

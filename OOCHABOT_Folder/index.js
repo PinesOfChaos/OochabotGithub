@@ -120,10 +120,10 @@ client.on('messageCreate', async message => {
             case 'overworld': 
                 if (message.channel.id == '921969875482738749') {
                     switch (message.content) {
-                        case 'r': move(message.author.id, 0); break;
-                        case 'd': move(message.author.id, 90); break;
-                        case 'l': move(message.author.id, 180); break; 
-                        case 'u': move(message.author.id, 270); break;
+                        case 'd': move(message, 'd'); break;
+                        case 's': move(message, 's'); break;
+                        case 'a': move(message, 'a'); break; 
+                        case 'w': move(message, 'w'); break;
                     }
                     message.delete();
                 }
