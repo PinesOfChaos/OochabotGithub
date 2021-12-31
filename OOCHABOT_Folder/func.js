@@ -185,7 +185,16 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery), components: [row] });
         });
 
-        db.player_positions.set(interaction.user.id, [biome,playerx,playery], 'position');
+        let db_iterate = db.player_positions.get(biome, 'positions');
+        let i = 0;
+
+        for(i = 0; i < db_iterate.length; i++){
+            if(db_iterate[i][0] == target){
+                break;
+            }
+        }
+
+        db.player_positions.set(biome, [i][target, playerx, playery], 'positions');
         
     },
     
@@ -292,6 +301,12 @@ module.exports = {
         let map = [];
         let center = Math.floor(map_size/2);
         
+        db.player_positions.set(biome, [], 'positions');
+
+        if(biome == 'hub'){
+            map = [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,4,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]];
+            return([biome, map, []]);
+        }
 
         //fill map with blocked spaces
         for(let i = 0; i < map_size; i++){
@@ -316,21 +331,12 @@ module.exports = {
             ypos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
             chest_positions[i] = [xpos,ypos]
 
-            //console.log('Chest X/Y')
-            //console.log(xpos)
-            //console.log(ypos)
         }
-
-        
 
         //create paths to chests
         for(let i = 0; i < chests; i++){
             xpos = chest_positions[i][0];
             ypos = chest_positions[i][1];
-
-            //console.log('Chest Finder X/Y')
-            //console.log(xpos)
-            //console.log(ypos)
 
             while(Math.abs(xpos-center)+Math.abs(ypos-center) > 1){
                 if(xpos > center){
@@ -346,16 +352,8 @@ module.exports = {
                     ypos +=1;
                 }
 
-                //console.log('Path X/Y')
-                //console.log(xpos)
-                //console.log(ypos)
-
                 xpos += Math.round(Math.random()*2)-1;
                 ypos += Math.round(Math.random()*2)-1;
-                
-                //console.log('Path Random Added X/Y')
-                //console.log(xpos)
-                //console.log(ypos)
 
                 for(let j = -1; j < 2; j++){
                     for(let k = -1; k < 2; k++){
@@ -369,6 +367,8 @@ module.exports = {
         for(let i = 0; i < chests; i++){
             map[chest_positions[i][0]][chest_positions[i][1]] = 3
         }
+
+        map[center][center] = 4;
 
         //Create the list of creatures that can spawn in a given biome
         //Gives each a base chance and an additional chance value 
@@ -414,27 +414,27 @@ module.exports = {
 
         //0 path
         //1 block
-        //2 spawn
+        //2 player
         //3 chest
-
+        //4 spawn
         
         //===========================
 
         switch(biome){
             case('obsidian'):
-                tile_emotes = ['<:tObsd:921225027557412975>', '<:tObsdB:921225027624501268>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+                tile_emotes = ['<:tObsd:921225027557412975>', '<:tObsdB:921225027624501268>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
             break;
             
             case('desert'):
-                tile_emotes = ['<:tSand:921220712641986572>', '<:tSandB:921220723110977606>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+                tile_emotes = ['<:tSand:921220712641986572>', '<:tSandB:921220723110977606>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
             break;
 
             case('fungal'):
-                tile_emotes = ['<:tShrm:921230053499617331>', '<:tShrmB:921230053503819777>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+                tile_emotes = ['<:tShrm:921230053499617331>', '<:tShrmB:921230053503819777>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
             break;
 
             default:
-                tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>']
+                tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
             break;
         }
 
@@ -443,15 +443,16 @@ module.exports = {
         let view_size = 2;
 
         //finds positions of all players and applies them to the map array
-        let other_players_pos_list = db.player_positions.get();
+        let other_players_pos_list = db.player_positions.get(biome, 'positions');
         let pos_find = -1;
 
+        console.log(other_players_pos_list)
+
         for (let i = 0; i < other_players_pos_list.length; i++) {
+            
             pos_find = other_players_pos_list[i];
-            //should pull an array [biome, x, y]
-            if(pos_find[0] == biome){
-                map_array[pos_find[1]] [pos_find[2]] = 2;
-            }
+            map_array[pos_find[1]][pos_find[2]] = 2;
+            
         }
 
         for (let i = -view_size; i < view_size + 1; i++) {

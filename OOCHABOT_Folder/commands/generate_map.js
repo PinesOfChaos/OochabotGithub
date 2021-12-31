@@ -20,7 +20,7 @@ module.exports = {
             option.setName('biome')
                 .setDescription('Set the biome of the generated map')
                 .setRequired(true)
-                .addChoices([['Desert','desert'],['Obsidian','obsidian'],['Fungal','fungal']])),
+                .addChoices([['Desert','desert'],['Obsidian','obsidian'],['Fungal','fungal'],['Hub','hub']])),
     async execute(interaction) {
         let size = interaction.options.getInteger('size');
         let chests = interaction.options.getInteger('chests');
