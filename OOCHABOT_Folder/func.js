@@ -171,16 +171,18 @@ module.exports = {
             //Get the player's location
             let other_player_location = db.profile.get(profile_arr[i], 'location_data');
             let other_biome = other_player_location.area;
-            let other_x = other_player_location.x;
-            let other_y = other_player_location.y;
+            if(other_biome == biome){
+                let other_x = other_player_location.x;
+                let other_y = other_player_location.y;
 
-            //Get the map array based on the player's current biome
-            let other_map_obj = db.maps.get(biome);
-            let other_map_arr = other_map_obj[1]; //this should be the actual map array
+                //Get the map array based on the player's current biome
+                let other_map_obj = db.maps.get(biome);
+                let other_map_arr = other_map_obj[1]; //this should be the actual map array
 
-            (message.channel.messages.fetch(db.profile.get(profile_arr[i], 'display_msg_id'))).then(async (msg) => {
-                await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) });
-            });
+                (message.channel.messages.fetch(db.profile.get(profile_arr[i], 'display_msg_id'))).then(async (msg) => {
+                    await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) });
+                });
+            }
         }
 
     },
