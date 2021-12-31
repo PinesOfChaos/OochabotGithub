@@ -1,4 +1,3 @@
-const { spawn } = require("child_process");
 const db = require("./db")
 
 module.exports = {
@@ -115,13 +114,14 @@ module.exports = {
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
         */
 
-        const Discord = require('discord.js');
         const { map_emote_string } = require('./func.js');
 
         let target = message.author.id;
         let xmove = 0;
         let ymove = 0;
         let msg_to_edit = db.profile.get(message.author.id, 'display_msg_id');
+        let profile_arr = db.profile.keyArray();
+        profile_arr = profile_arr.filter(val => val != message.author.id);
         
         //Get the player's location
         let player_location = db.profile.get(target, 'location_data');
@@ -159,43 +159,30 @@ module.exports = {
         //Update the player's profile with their new x & y positions
         db.profile.set(target, { area: biome, x: playerx, y: playery }, 'location_data');
 
-        const row = new Discord.MessageActionRow()
-			.addComponents(
-				new Discord.MessageSelectMenu()
-					.setCustomId('select')
-					.setPlaceholder('Choose one piece of loot to keep!')
-                    .setMinValues(1)
-					.setMaxValues(1)
-					.addOptions([
-						{
-							label: 'Select me',
-							description: 'This is a description',
-							value: 'first_option',
-						},
-						{
-							label: 'You can select me too',
-							description: 'This is also a description',
-							value: 'second_option',
-						},
-					]),
-			);
+        // Update player position
+        db.player_positions.set(biome, { x: playerx, y: playery }, target);
 
         //Send reply displaying the player's location on the map
         (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery), components: [row] });
+            msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery) });
         });
 
-        let db_iterate = db.player_positions.get(biome, 'positions');
-        let i = 0;
+        for (let i = 0; i < profile_arr.length; i++) {
+            //Get the player's location
+            let other_player_location = db.profile.get(profile_arr[i], 'location_data');
+            let other_biome = other_player_location.area;
+            let other_x = other_player_location.x;
+            let other_y = other_player_location.y;
 
-        for(i = 0; i < db_iterate.length; i++){
-            if(db_iterate[i][0] == target){
-                break;
-            }
+            //Get the map array based on the player's current biome
+            let other_map_obj = db.maps.get(biome);
+            let other_map_arr = other_map_obj[1]; //this should be the actual map array
+
+            (message.channel.messages.fetch(db.profile.get(profile_arr[i], 'display_msg_id'))).then(async (msg) => {
+                await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) });
+            });
         }
 
-        db.player_positions.set(biome, [i][target, playerx, playery], 'positions');
-        
     },
     
     battle: async function(message, choice) {
@@ -301,10 +288,10 @@ module.exports = {
         let map = [];
         let center = Math.floor(map_size/2);
         
-        db.player_positions.set(biome, [], 'positions');
+        db.player_positions.set(biome, {});
 
         if(biome == 'hub'){
-            map = [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,4,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]];
+            map = [[1,1,1,1,1],[1,0,0,0,1],[1,0,4,0,1],[1,0,0,0,1],[1,1,1,1,1]];
             return([biome, map, []]);
         }
 
@@ -443,23 +430,19 @@ module.exports = {
         let view_size = 2;
 
         //finds positions of all players and applies them to the map array
-        let other_players_pos_list = db.player_positions.get(biome, 'positions');
+        let other_players_pos_list = Object.keys(db.player_positions.get(biome));
         let pos_find = -1;
 
-        console.log(other_players_pos_list)
-
         for (let i = 0; i < other_players_pos_list.length; i++) {
-            
-            pos_find = other_players_pos_list[i];
-            map_array[pos_find[1]][pos_find[2]] = 2;
-            
+            pos_find = db.player_positions.get(biome, other_players_pos_list[i]);
+            map_array[pos_find.x][pos_find.y] = 2;
         }
 
         for (let i = -view_size; i < view_size + 1; i++) {
             emote_map.push([]);
             for (let j = -view_size; j < view_size + 1; j++) {
                 if (i + x_pos < 0 || j + y_pos < 0 || i + x_pos >= size || j + y_pos >= size) {
-                    tile_value = 0;
+                    tile_value = 1;
                 } else if (i == 0 && j == 0) {
                     tile_value = 2;
                 } else {

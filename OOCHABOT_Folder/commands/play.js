@@ -20,9 +20,13 @@ module.exports = {
         let map_obj = db.maps.get(biome.toLowerCase());
         let map_arr = map_obj[1]; //this should be the actual map array
 
+        // Set player position data into the global multiplayer player position db
+        db.player_positions.set(biome, { x: playerx, y: playery }, target);
+
         //Send reply displaying the player's location on the map
         interaction.reply({ content: `Made your playspace! Play with \`wasd\` to move around the world!`, ephemeral: true })
-        interaction.channel.send({ content: `${map_emote_string(biome, map_arr, playerx, playery)}` }).then(msg => {
+        interaction.channel.send(`${interaction.member.displayName}'s Playspace`)
+        interaction.channel.send({ content: `${map_emote_string(biome.toLowerCase(), map_arr, playerx, playery)}` }).then(msg => {
             db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
     },
