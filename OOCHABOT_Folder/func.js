@@ -44,13 +44,15 @@ module.exports = {
         let evo1_lvl = db.monster_data.get(ooch_pick, 'evo_lvl')
         let evo2_id = db.monster_data.get(evo1_id, 'evo_id')
         let evo2_lvl = db.monster_data.get(evo2_id, 'evo_lvl')
-
+        let stg = 0;
         // Have a chance to make the wild oochamon be the evolved form
         let evo_chance = random_number(0, 1) + random_number(0, 1)
         if (evo_chance == 2 && lvl >= evo2_lvl && evo2_lvl != -1) {
             ooch_pick = evo2_id;
+            stg = 2;
         } else if (evo_chance == 1 && lvl >= evo1_lvl && evo1_lvl != -1) {
             ooch_pick = evo1_id;
+            stg = 1;
         }
 
         // Get wild oochamon stats
@@ -79,6 +81,7 @@ module.exports = {
                 spd: spd
             },
             current_hp: hp,
+            evo_stage: stg,
         }
 
     },
@@ -204,10 +207,9 @@ module.exports = {
         switch(choice) {
             case 'fight':
                 if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
-
                     message.channel.send(`**------------ Enemy Turn ------------**`)
                     // Enemy attacks player
-                    dmg = 1
+                    dmg = 1;
                     ooch_plr.current_hp -= dmg
                     db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
                     await message.channel.send(
@@ -400,13 +402,7 @@ module.exports = {
 
         //===========================
         //HEY READ THIS DUMMI
-
-        //0 path
-        //1 block
-        //2 player
-        //3 chest
-        //4 spawn
-        
+        //0 path, 1 block, 2 player, 3 chest, 4 spawn
         //===========================
 
         switch(biome){
@@ -479,5 +475,20 @@ module.exports = {
         }
 
         return(spawn_arr[i][0]);
-    }
+    },
+
+    battle_calc_damage: function(attack_damage,attacker,defender){ //takes the attack's damage, the attacker object, and defender object
+        let damage = Math.ceil((2*attacker.level/5+2)*attack_damage*attacker.atk/defender.def)/50+2;
+        return(damage); 
+    },
+
+    battle_calc_exp: function(enemy){ //takes enemy object
+        let exp = Math.round((1.015^enemy.level) * (2^enemy.evo_stage) * 5 * enemy.level);
+        return(exp);
+    },
+    
+    exp_to_next_level: function(exp,level){
+        let exp_needed = (level*level*level) - exp;
+        return(exp_needed);
+    },
 }
