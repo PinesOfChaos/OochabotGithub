@@ -56,10 +56,16 @@ module.exports = {
         }
 
         // Get wild oochamon stats
+        hp_iv = random_number(0,10)/20+1
+        atk_iv = random_number(0,10)/20+1
+        def_iv = random_number(0,10)/20+1
+        spd_iv = random_number(0,10)/20+1
         hp = Math.floor(db.monster_data.get(ooch_pick, 'hp') * (1.05 ** lvl) + 10)
         atk = Math.floor(db.monster_data.get(ooch_pick, 'atk') * (1.05 ** lvl))
         def = Math.floor(db.monster_data.get(ooch_pick, 'def') * (1.05 ** lvl))
         spd = Math.floor(db.monster_data.get(ooch_pick, 'spd') * (1.05 ** lvl))
+        
+
         move_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= 5 && x[0] != -1)
 
         // Make sure the move_list is 4 moves
@@ -78,7 +84,11 @@ module.exports = {
                 hp: hp,
                 atk: atk,
                 def: def,
-                spd: spd
+                spd: spd,
+                hp_iv: hp_iv,
+                atk_iv: atk_iv,
+                def_iv: def_iv,
+                spd_iv: spd_iv,
             },
             current_hp: hp,
             evo_stage: stg,
@@ -192,11 +202,12 @@ module.exports = {
     
     battle: async function(message, choice) {
         const wait = require('wait');
+        const battle_calc_damage = require('battle_calc_damage');
         
         // Get enemy oochamon data that was previously generated
         let ooch_enemy = db.profile.get(message.author.id, 'ooch_enemy')
         // Get the players oochamon in the first spot of their party
-        let ooch_plr = db.profile.get(message.author.id, 'ooch_inventory')[0];
+        let ooch_plr = db.profile.get(message.author.id, 'ooch_inventory')[db.profile.get(message.author.id, 'ooch_active_slot')];
         let ooch_pos = 0;
         let dmg = 0;
         let battle_over = false;
@@ -205,11 +216,12 @@ module.exports = {
 
         // Handle player turn
         switch(choice) {
+            
             case 'fight':
                 if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
                     message.channel.send(`**------------ Enemy Turn ------------**`)
                     // Enemy attacks player
-                    dmg = 1;
+                    dmg = battle_calc_damage(10, ooch_enemy.stats.level, ooch_enemy.stats.atk * ooch_enemy.stats.atk_iv, ooch_plr.stats.def * ooch_plr.stats.def_iv);
                     ooch_plr.current_hp -= dmg
                     db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
                     await message.channel.send(
@@ -217,7 +229,7 @@ module.exports = {
                             `**------------ Player Turn ------------**`)
 
                     // Player attacks enemy
-                    dmg = 2
+                    dmg = battle_calc_damage(10, ooch_plr.stats.level, ooch_plr.stats.atk * ooch_plr.stats.atk_iv, ooch_enemy.stats.def * ooch_plr.stats.def_iv);
                     ooch_enemy.current_hp -= dmg
                     await message.channel.send(`Your ${ooch_plr.name} deals ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.`)
 
@@ -225,14 +237,14 @@ module.exports = {
 
                     message.channel.send(`**------------ Player Turn ------------**`)
                     // Player attacks enemy
-                    dmg = 2
+                    dmg = battle_calc_damage(10, ooch_plr.stats.level, ooch_plr.stats.atk * ooch_plr.stats.atk_iv, ooch_enemy.stats.def * ooch_plr.stats.def_iv);
                     ooch_enemy.current_hp -= dmg
                     await message.channel.send(
                         `Your ${ooch_plr.name} deals ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.\n` +
                         `**------------ Enemy Turn ------------**`)
 
                     // Enemy attacks player
-                    dmg = 1
+                    dmg = battle_calc_damage(10, ooch_enemy.stats.level, ooch_enemy.stats.atk * ooch_enemy.stats.atk_iv, ooch_plr.stats.def * ooch_plr.stats.def_iv);
                     ooch_plr.current_hp -= dmg
                     db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
                     await message.channel.send(`The enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`)
@@ -264,7 +276,30 @@ module.exports = {
             case 'bag': 
                 
             break;
-            case 'switch': break;
+            case 'switch': 
+                
+                
+                let swap_string = `Choose an Oochamon to switch to.\n`;
+                let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
+                let ooch_check, ooch_emote, ooch_name, ooch_hp;
+                for(let i = 0; i < db.profile.get(message.author.id, 'ooch_inventory').length; i++){
+                    ooch_check = ooch_inv[i];
+                    ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                    ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
+                    ooch_hp = `HP ` + ooch_check.current_hp + `/` + ooch_check.hp;
+
+                    if(i == db.profile.get(message.author.id, 'ooch_active_slot')){
+                        ooch_name += `[Currently Active]`
+                    }
+
+                    swap_string += `[${i+1}] ${ooch_emote} HP: ${ooch_hp} ${ooch_name} \n`
+                }
+                
+                await message.channel.send(swap_string);
+
+                db.profile.set(interaction.user.id, 'battle', 'battle_switch');
+
+            break;
             case 'run':
                 if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) { // If we succeed
                     message.channel.send(`You successfully ran away!`)
@@ -477,13 +512,13 @@ module.exports = {
         return(spawn_arr[i][0]);
     },
 
-    battle_calc_damage: function(attack_damage,attacker,defender){ //takes the attack's damage, the attacker object, and defender object
-        let damage = Math.ceil((2*attacker.level/5+2)*attack_damage*attacker.atk/defender.def)/50+2;
+    battle_calc_damage: function(attack_damage,attacker_level,attacker_atk,defender_def){ //takes the attack's damage value, the attacker object, and defender object
+        let damage = Math.ceil((2*attacker_level/5+2)*attack_damage*attacker_atk/defender_def)/50+2;
         return(damage); 
     },
 
-    battle_calc_exp: function(enemy){ //takes enemy object
-        let exp = Math.round((1.015^enemy.level) * (2^enemy.evo_stage) * 5 * enemy.level);
+    battle_calc_exp: function(enemy_level,enemy_evo_stage){ //takes enemy object
+        let exp = Math.round((1.015^enemy_level) * (2^enemy_evo_stage) * 5 * enemy_level);
         return(exp);
     },
     

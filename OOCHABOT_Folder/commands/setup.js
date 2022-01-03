@@ -48,6 +48,7 @@ module.exports = {
             // Setup user data
             db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
             db.profile.set(interaction.user.id, [], 'ooch_pc')
+            db.profile.set(interaction.user.id, 0, 'ooch_active_slot')
             db.profile.set(interaction.user.id, [], 'item_inventory')
             db.profile.set(interaction.user.id, 0, 'currency')
             db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
@@ -55,6 +56,7 @@ module.exports = {
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'hub', x: 2, y: 2 }, 'location_data')
             db.profile.set(interaction.user.id, -1, 'display_msg_id')
+            
 
             // Setup starter data
             let move_list = db.monster_data.get(starter, 'move_list');
@@ -69,8 +71,8 @@ module.exports = {
                 { 
                     id: starter,
                     name: db.monster_data.get(starter, 'name'), 
-                    nickname: false,
-                    item: false,
+                    nickname: -1,
+                    item: -1,
                     ability: false,
                     level: 5,
                     moveset: move_list,
@@ -78,7 +80,11 @@ module.exports = {
                         hp: db.monster_data.get(starter, 'hp'),
                         atk: db.monster_data.get(starter, 'atk'),
                         def: db.monster_data.get(starter, 'def'),
-                        spd: db.monster_data.get(starter, 'spd')
+                        spd: db.monster_data.get(starter, 'spd'),
+                        hp_iv: random_number(0,10)/20+1,
+                        atk_iv: random_number(0,10)/20+1,
+                        def_iv: random_number(0,10)/20+1,
+                        spd_iv: random_number(0,10)/20+1,
                     },
                     current_hp: db.monster_data.get(starter, 'hp'),
                     alive: true,

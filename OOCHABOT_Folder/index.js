@@ -141,6 +141,24 @@ client.on('messageCreate', async message => {
                     message.delete();
                 }
             break;
+
+            case 'battle_switch':
+                thread_id = db.profile.get(message.author.id, 'battle_thread_id')
+                if (message.channel.id === db.profile.get(message.author.id, 'battle_thread_id')) {
+                    let swapval = parseInt(1, message.content) //only way i found to get the integer from a message
+                    if(message.content == 'q'){
+                        db.profile.set(interaction.user.id, 'battle', 'player_state');
+                        await message.channel.send(`Returned to battle state.`)
+                    }
+                    else if(swapval>= 1 && swapval <= db.profile.get(message.author.id, 'ooch_inventory').length ){   
+                        battle_switch(swapval-1);
+                    }
+                    else{
+                        await message.channel.send(`Invalid Entry`)
+                    }
+                    message.delete();
+                }
+            break;
         }
     }
 })
