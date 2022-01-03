@@ -37,6 +37,6 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome_to, map_arr, center, center) });
         });
 
-        //interaction.reply();
+        interaction.reply({ content: `Successfully traveled to ${biome_to}!`, ephemeral: true });
     },
 };

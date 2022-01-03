@@ -94,6 +94,7 @@ client.on('messageCreate', async message => {
 
     if (message.content == 'start battle') {
         ooch_gen = generate_battle(db.profile.get(message.author.id, 'ooch_inventory'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
+        db.profile.set(message.author.id, 0, 'ooch_active_slot');
         const thread = await message.channel.threads.create({
             name: `${message.member.displayName} Wild Battle, join this to battle!`,
             autoArchiveDuration: 60,
@@ -145,7 +146,7 @@ client.on('messageCreate', async message => {
             case 'battle_switch':
                 thread_id = db.profile.get(message.author.id, 'battle_thread_id')
                 if (message.channel.id === db.profile.get(message.author.id, 'battle_thread_id')) {
-                    let swapval = parseInt(1, message.content) //only way i found to get the integer from a message
+                    let swapval = parseInt(message.content) //only way i found to get the integer from a message
                     if(message.content == 'q'){
                         db.profile.set(interaction.user.id, 'battle', 'player_state');
                         await message.channel.send(`Returned to battle state.`)
