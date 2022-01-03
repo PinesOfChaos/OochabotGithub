@@ -278,7 +278,6 @@ module.exports = {
             break;
             case 'switch': 
                 
-                
                 let swap_string = `Choose an Oochamon to switch to.\n`;
                 let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
                 let ooch_check, ooch_emote, ooch_name, ooch_hp;
@@ -297,7 +296,7 @@ module.exports = {
                 
                 await message.channel.send(swap_string);
 
-                db.profile.set(interaction.user.id, 'battle', 'battle_switch');
+                db.profile.set(interaction.user.id, 'battle_switch', 'player_state');
 
             break;
             case 'run':
@@ -526,4 +525,15 @@ module.exports = {
         let exp_needed = (level*level*level) - exp;
         return(exp_needed);
     },
+
+    battle_switch: function(slot_to_switch_to){
+        db.profile.get(message.author.id, 'ooch_active_slot') = slot_to_switch_to;
+             
+        let ooch_check = ooch_inv[db.profile.get(message.author.id, 'ooch_active_slot')];
+        
+        await message.channel.send(`${((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name)} switches in!`);
+        db.profile.set(interaction.user.id, 'battle', 'player_state');
+        
+        return;
+    }
 }
