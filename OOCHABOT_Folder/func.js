@@ -705,6 +705,8 @@ module.exports = {
     },
 
     player_attack: function(thread, message, atk_id,ooch_plr,ooch_enemy){
+        const { type_effectiveness, battle_calc_damage } = require('./func.js');
+        const Discord = require('discord.js');
 
         let move_name =     db.move_data.get(`${atk_id}`, 'name');
         let move_type =     db.move_data.get(`${atk_id}`, 'type');
@@ -744,7 +746,10 @@ module.exports = {
 
     },
 
-    enemy_attack: function(thread, message, ooch_plr, ooch_enemy){
+    enemy_attack: function(thread, message, ooch_plr, ooch_enemy){    
+        const { type_effectiveness, battle_calc_damage } = require('./func.js');
+        const Discord = require('discord.js');
+
         let moves = ooch_enemy.moveset;
         let atk_id = moves[random_number(0,moves.length-1)];
                         
