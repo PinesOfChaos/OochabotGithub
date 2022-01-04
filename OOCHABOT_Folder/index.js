@@ -9,7 +9,7 @@ const wait = require('wait');
 // create a new Discord client and give it some variables
 const { Client, Intents } = require('discord.js');
 const db = require('./db.js');
-const { move, battle, generate_battle } = require('./func');
+const { move, prompt_battle_input, generate_battle } = require('./func');
 const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
@@ -53,7 +53,7 @@ for(let i = 0; i < guild_ids.length; i++){
 }
 //#endregion
 
-client.on('ready',  async() => {
+client.on('ready', async () => {
     console.log('Bot Ready')
 })
 
@@ -105,11 +105,12 @@ client.on('messageCreate', async message => {
         await thread.members.add(message.author.id);
         await thread.setLocked(true);
         await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.level} ${db.monster_data.get(ooch_gen.id, 'name')}!`)
-        await thread.send(`**----------- Select A Move ----------**\nSelect your first move!\nYour input options are: \`fight\`, \`bag\`, \`switch\`, and \`run\`.`)
 
         await db.profile.set(message.author.id, 'battle', 'player_state')
         await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
         await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
+
+        await prompt_battle_input(thread, message);
 
         message.delete();
     }
@@ -125,37 +126,6 @@ client.on('messageCreate', async message => {
                         case 's': move(message, 's'); break;
                         case 'a': move(message, 'a'); break; 
                         case 'w': move(message, 'w'); break;
-                    }
-                    message.delete();
-                }
-            break;
-
-            case 'battle':
-                thread_id = db.profile.get(message.author.id, 'battle_thread_id')
-                if (message.channel.id === db.profile.get(message.author.id, 'battle_thread_id')) {
-                    switch (message.content) {
-                        case 'fight': battle(message, 'fight'); break;
-                        case 'bag': battle(message, 'bag'); break;
-                        case 'switch': battle(message, 'switch'); break;
-                        case 'run': battle(message, 'run'); break;
-                    }
-                    message.delete();
-                }
-            break;
-
-            case 'battle_switch':
-                thread_id = db.profile.get(message.author.id, 'battle_thread_id')
-                if (message.channel.id === db.profile.get(message.author.id, 'battle_thread_id')) {
-                    let swapval = parseInt(message.content) //only way i found to get the integer from a message
-                    if(message.content == 'q'){
-                        db.profile.set(interaction.user.id, 'battle', 'player_state');
-                        await message.channel.send(`Returned to battle state.`)
-                    }
-                    else if(swapval>= 1 && swapval <= db.profile.get(message.author.id, 'ooch_inventory').length ){   
-                        battle_switch(swapval-1);
-                    }
-                    else{
-                        await message.channel.send(`Invalid Entry`)
                     }
                     message.delete();
                 }
