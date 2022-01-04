@@ -124,6 +124,15 @@ module.exports = {
         db.move_data.set(id, description, 'description')
     },
 
+    create_item: function(id, name, emote, category, type, value, description) {
+        db.item_data.set(id, name, 'name');
+        db.item_data.set(id, emote, 'emote');
+        db.item_data.set(id, category, 'category');
+        db.item_data.set(id, type, 'type');
+        db.item_data.set(id, value, 'value');
+        db.item_data.set(id, description, 'description');
+    },
+
     move: function(message, direction) {
         /*
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
@@ -704,7 +713,7 @@ module.exports = {
         return emote_return;
     },
 
-    player_attack: function(thread, message, atk_id,ooch_plr,ooch_enemy){
+    player_attack: async function(thread, message, atk_id,ooch_plr,ooch_enemy){
         const { type_effectiveness, battle_calc_damage } = require('./func.js');
         const Discord = require('discord.js');
 
@@ -746,7 +755,7 @@ module.exports = {
 
     },
 
-    enemy_attack: function(thread, message, ooch_plr, ooch_enemy){    
+    enemy_attack: async function(thread, message, ooch_plr, ooch_enemy){    
         const { type_effectiveness, battle_calc_damage } = require('./func.js');
         const Discord = require('discord.js');
 

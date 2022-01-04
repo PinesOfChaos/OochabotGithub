@@ -1,16 +1,26 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
-const { create_monster, create_move } = require('../func');
+const { create_monster, create_move, create_item } = require('../func');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('generate')
-        .setDescription('Generates the monsters data in the game'),
+        .setDescription('Generates the game data.'),
     async execute(interaction) {
 
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
             return interaction.reply('This command isn\'t for you!')
         }
+
+        //#region Item Data
+
+        //          ID   Name             Emote                                       Category     Type      Value   Description
+        create_item('0', 'Potion',        '<:item_potion:926592477631221790>',        'heal_inv',  'potion', 0.25,   'Used to quickly heal 25% of an Oochamon\'s HP')
+        create_item('1', 'Hi-Potion',     '<:item_potion_hi:926592477698326538>',     'heal_inv',  'potion', 0.5,    'An advanced potion which heals 50% of an Oochamon\'s HP')
+        create_item('2', 'Prism',         '<:item_prism:921502013634777149>',         'prism_inv', 'prism',  1,      'A device used to capture Oochamon.')
+        create_item('3', 'Greater Prism', '<:item_prism_greater:926582245333032960>', 'prism_inv', 'prism',  1.5,    'An improved prism with a higher capture rate.')
+
+        //#endregion
 
         //#region Move Data
 
@@ -238,7 +248,7 @@ module.exports = {
 
         //#endregion
 
-        interaction.reply('Generated monster data.');
+        interaction.reply('Generated game data.');
     },
 };
 

@@ -50,8 +50,10 @@ module.exports = {
             db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
             db.profile.set(interaction.user.id, [], 'ooch_pc')
             db.profile.set(interaction.user.id, 0, 'ooch_active_slot')
-            db.profile.set(interaction.user.id, [], 'item_inventory')
-            db.profile.set(interaction.user.id, 0, 'currency')
+            db.profile.set(interaction.user.id, [], 'other_inv')
+            db.profile.set(interaction.user.id, [], 'prism_inv')
+            db.profile.set(interaction.user.id, [], 'heal_inv')
+            db.profile.set(interaction.user.id, 0, 'oochabux')
             db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
             db.profile.set(interaction.user.id, -1, 'battle_thread_id')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
