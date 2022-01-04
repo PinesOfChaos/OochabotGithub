@@ -300,27 +300,13 @@ module.exports = {
                         for (let i = 0; i < turn_order.length; i++) {
 
                             let atk_id = atk.customId;
-                            let move_name =     db.move_data.get(`${atk_id}`, 'name');
-                            let move_type =     db.move_data.get(`${atk_id}`, 'type');
-                            let move_damage =   db.move_data.get(`${atk_id}`, 'damage');
-                            let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
-                            let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
-                            let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
 
                             if (turn_order[i] == 'p') {
                                 // Player attacks enemy
-                                dmg = battle_calc_damage(move_damage, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
-                                ooch_enemy.current_hp -= dmg
-                                db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
-                                await thread.send(`**------------ Player Turn ------------**` + 
-                                `\nYour ${ooch_plr.name} uses ${move_name} to deal ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.`)
+                                player_attack(thread, message, atk_id, ooch_plr, ooch_enemy);
                             } else {
                                 // Enemy attacks player
-                                dmg = battle_calc_damage(10, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
-                                ooch_plr.current_hp -= dmg
-                                db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
-                                await thread.send(`**------------ Enemy Turn ------------**` + 
-                                `\nThe enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`);
+                                enemy_attack(thread, message, ooch_plr, ooch_enemy);
                             }
 
                             // Victory/Defeat Check
@@ -402,11 +388,7 @@ module.exports = {
                         ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
     
                         // Enemy attacks player
-                        dmg = battle_calc_damage(10, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
-                        ooch_plr.current_hp -= dmg
-                        db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
-                        await thread.send(`**------------ Enemy Turn ------------**` + 
-                        `\nThe enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`);
+                        enemy_attack(thread, message, ooch_plr, ooch_enemy);
 
                         // Victory/Defeat Check
                         if (ooch_enemy.current_hp <= 0) { // Victory
@@ -450,11 +432,7 @@ module.exports = {
                         `\nYou failed to run away!`)
 
                         // Enemy attacks player
-                        dmg = battle_calc_damage(10, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
-                        ooch_plr.current_hp -= dmg
-                        db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
-                        await thread.send(`**------------ Enemy Turn ------------**` + 
-                        `\nThe enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`);
+                        enemy_attack(thread, message, ooch_plr, ooch_enemy);
 
                         // Victory/Defeat Check
                         if (ooch_enemy.current_hp <= 0) { // Victory
@@ -724,5 +702,91 @@ module.exports = {
             break;
         }
         return emote_return;
+    },
+
+    player_attack: function(thread, message, atk_id,ooch_plr,ooch_enemy){
+
+        let move_name =     db.move_data.get(`${atk_id}`, 'name');
+        let move_type =     db.move_data.get(`${atk_id}`, 'type');
+        let move_damage =   db.move_data.get(`${atk_id}`, 'damage');
+        let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
+        let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
+        let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
+        let type_multiplier = type_effectiveness(move_type, ooch_enemy.type);
+        let crit_multiplier = (Math.random() > 0.95 ? 2 : 1)
+        let string_to_send = `**------------ Player Turn ------------**`;
+
+
+        dmg = battle_calc_damage(move_damage * type_multiplier * crit_multiplier, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
+        
+        db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
+
+        if(move_accuracy/100 > Math.random()){
+            ooch_enemy.current_hp -= dmg
+            string_to_send +=  `\nYour ${ooch_plr.name} uses ${move_name} and deals ${dmg} damage to the enemy ${ooch_enemy.name}! `
+            if(crit_multiplier >= 2){
+                string_to_send += `\nA critical hit!`
+            }
+            if(Math.random() > move_chance/100){ //Apply status effect
+                string_to_send += `\nThe enemy ${ooch_enemy.name} was ${move_effect}!`
+            }
+            else if(-Math.random() < move_chance/100){
+                string_to_send += `\nYour ${ooch_plr.name} was ${move_effect}!`
+            }
+        }
+        else{
+            string_to_send +=  `\nYour ${ooch_plr.name} used ${move_name} but it missed!`
+        }
+        
+        string_to_send += `\n*Enemy HP (${ooch_enemy.current_hp}/${ooch_enemy.hp})*`
+
+        await thread.send(string_to_send)
+
+    },
+
+    enemy_attack: function(thread, message, ooch_plr, ooch_enemy){
+        let moves = ooch_enemy.moveset;
+        let atk_id = moves[random_number(0,moves.length-1)];
+                        
+        let move_name =     db.move_data.get(`${atk_id}`, 'name');
+        let move_type =     db.move_data.get(`${atk_id}`, 'type');
+        let move_damage =   db.move_data.get(`${atk_id}`, 'damage');
+        let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
+        let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
+        let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
+        let type_multiplier = type_effectiveness(move_type, ooch_plr.type);
+        let crit_multiplier = (Math.random() > 0.95 ? 2 : 1)
+        let string_to_send = `**------------ Player Turn ------------**`;
+
+
+        dmg = battle_calc_damage(move_damage * type_multiplier * crit_multiplier, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
+        
+        db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
+
+        if(move_accuracy/100 > Math.random()){
+            ooch_plr.current_hp -= dmg
+            string_to_send +=  `\nThe enemy ${ooch_enemy.name} uses ${move_name} and deals ${dmg} damage to your ${ooch_plr.name}! `
+            if(crit_multiplier >= 2){
+                string_to_send += `\nA critical hit!`
+            }
+            if(Math.random() > move_chance/100){ //Apply status effect
+                string_to_send += `\nThe enemy ${ooch_plr.name} was ${move_effect}!`
+            }
+            else if(-Math.random() < move_chance/100){
+                string_to_send += `\nYour ${ooch_enemy.name} was ${move_effect}!`
+            }
+        }
+        else{
+            string_to_send +=  `\nThe enemy ${ooch_enemy.name} used ${move_name} but it missed!`
+        }
+        
+        string_to_send += `\n*Player HP (${ooch_plr.current_hp}/${ooch_plr.hp})*`
+
+        await thread.send(string_to_send)
+    },
+
+    type_effectiveness(attack_type, target_type){
+        let multiplier = 1;
+        return(multiplier)
     }
 }
