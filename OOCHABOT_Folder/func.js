@@ -16,7 +16,8 @@ module.exports = {
 
     generate_battle: function(plr_ooch, ooch_species) {
     
-        const { random_number } = require('./func.js') 
+        const { random_number } = require('./func.js'); 
+        const { get_stats } = require('./func.js');
 
         // Get the wild oochamon's level
         let ooch_inv_arr = Object.keys(plr_ooch)
@@ -56,17 +57,18 @@ module.exports = {
         }
 
         // Get wild oochamon stats
-        hp_iv = random_number(0,10)/20+1
-        atk_iv = random_number(0,10)/20+1
-        def_iv = random_number(0,10)/20+1
-        spd_iv = random_number(0,10)/20+1
-        hp = Math.floor(db.monster_data.get(ooch_pick, 'hp') * (1.05 ** lvl) + 10)
-        atk = Math.floor(db.monster_data.get(ooch_pick, 'atk') * (1.05 ** lvl))
-        def = Math.floor(db.monster_data.get(ooch_pick, 'def') * (1.05 ** lvl))
-        spd = Math.floor(db.monster_data.get(ooch_pick, 'spd') * (1.05 ** lvl))
-        
+        let hp_iv = random_number(0,10)/20+1
+        let atk_iv = random_number(0,10)/20+1
+        let def_iv = random_number(0,10)/20+1
+        let spd_iv = random_number(0,10)/20+1
 
-        move_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= 5 && x[0] != -1)
+        let stats = get_stats(ooch_pick, lvl, hp_iv, atk_iv, def_iv, spd_iv) //returns [hp, atk, def, spd]
+        let hp = stats[0]
+        let atk = stats[1]
+        let def = stats[2]
+        let spd = stats[3]  
+
+        let move_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= lvl && x[0] != -1)
 
         // Make sure the move_list is 4 moves
         while (move_list.length > 4) {
@@ -210,7 +212,7 @@ module.exports = {
         let dmg = 0;
 
         // Enemy attacks player
-        dmg = battle_calc_damage(10, ooch_enemy.level, ooch_enemy.stats.atk * ooch_enemy.stats.atk_iv, ooch_plr.stats.def * ooch_plr.stats.def_iv);
+        dmg = battle_calc_damage(10, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
         ooch_plr.current_hp -= dmg
         db.profile.set(message.author.id, ooch_plr, `ooch_inventory[${ooch_pos}]`);
         await message.channel.send(`The enemy ${ooch_enemy.name} deals ${dmg} damage to your ${ooch_plr.name}!\nYour ${ooch_plr.name} has ${ooch_plr.current_hp} hp remaining.`);
@@ -240,9 +242,9 @@ module.exports = {
         }
     },
 
-    battle_player: async function(message, choice, ooch_plr, ooch_enemy, ooch_pos) {
+    battle_player: async function(message, choice, ooch_plr, ooch_enemy, ooch_pos, atk_or_item_id) {
         const wait = require('wait');
-        const { battle_calc_damage, battle_enemy } = require('./func.js');
+        const { battle_calc_damage, battle_enemy, type_to_emote } = require('./func.js');
         const Discord = require('discord.js');
         
         let dmg = 0;
@@ -251,36 +253,44 @@ module.exports = {
         switch(choice) {
             
             case 'fight':
+                    let atk_id = atk_or_item_id;
+                    let move_name =     db.move_data.get(`${atk_id}`, 'name');
+                    let move_type =     db.move_data.get(`${atk_id}`, 'type');
+                    let move_damage =   db.move_data.get(`${atk_id}`, 'damage');
+                    let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
+                    let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
+                    let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
 
-                // Player attacks enemy
-                dmg = battle_calc_damage(10, ooch_plr.level, ooch_plr.stats.atk * ooch_plr.stats.atk_iv, ooch_enemy.stats.def * ooch_plr.stats.def_iv);
-                ooch_enemy.current_hp -= dmg
-                db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
-                await message.channel.send(`Your ${ooch_plr.name} deals ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.`)
+                    // Player attacks enemy
+                    dmg = battle_calc_damage(move_damage, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
+                    ooch_enemy.current_hp -= dmg
+                    db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
+                    await message.channel.send(`Your ${ooch_plr.name} uses ${move_name} to deal ${dmg} damage to the enemy ${ooch_enemy.name}!\nThe enemy ${ooch_enemy.name} has ${ooch_enemy.current_hp} hp remaining.`)
 
-                // Victory/Defeat Check
-                if (ooch_enemy.current_hp <= 0) { // Victory
+                    // Victory/Defeat Check
+                    if (ooch_enemy.current_hp <= 0) { // Victory
 
-                    message.channel.send(`**You win!**\nHead back to the Hub to continue playing.`)
-                    db.profile.set(message.author.id, `overworld`, 'player_state')
-                    db.profile.set(message.author.id, {}, 'ooch_enemy')
-                    await wait(20000);
-                    await message.channel.delete();
-                    return false; // Don't prompt any more input
+                        message.channel.send(`**You win!**\nHead back to the Hub to continue playing.`)
+                        db.profile.set(message.author.id, `overworld`, 'player_state')
+                        db.profile.set(message.author.id, {}, 'ooch_enemy')
+                        await wait(20000);
+                        await message.channel.delete();
+                        return false; // Don't prompt any more input
 
-                } else if (ooch_plr.current_hp <= 0) {
+                    } else if (ooch_plr.current_hp <= 0) {
 
-                    message.channel.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
-                    db.profile.set(message.author.id, `overworld`, 'player_state')
-                    db.profile.set(message.author.id, {}, 'ooch_enemy')
-                    db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
-                    await wait(20000);
-                    await message.channel.delete();
-                    return false; // Don't prompt any more input
+                        message.channel.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
+                        db.profile.set(message.author.id, `overworld`, 'player_state')
+                        db.profile.set(message.author.id, {}, 'ooch_enemy')
+                        db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+                        await wait(20000);
+                        await message.channel.delete();
+                        return false; // Don't prompt any more input
 
-                } else {
-                    return true; // Prompt for more input
-                }
+                    } else {
+                        return true; // Prompt for more input
+                    }
+                
             break;
             case 'bag': 
                 // Soon!
@@ -288,7 +298,7 @@ module.exports = {
             case 'switch': 
 
                 let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
-                let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name;
+                let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
 
                 const row = new Discord.MessageActionRow();
                 const row2 = new Discord.MessageActionRow();
@@ -306,10 +316,12 @@ module.exports = {
                     ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
                     ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                     ooch_button_color = 'PRIMARY';
+                    ooch_disable = false;
 
                     if (i == db.profile.get(message.author.id, 'ooch_active_slot')) {
                         ooch_button_color = 'SUCCESS';
                         ooch_prev_name = ooch_name;
+                        ooch_disable = true;
                     }
 
                     (i <= 2 ? row : row2).addComponents(
@@ -317,7 +329,8 @@ module.exports = {
                             .setCustomId(`${i}`)
                             .setLabel(`${ooch_name} (${ooch_hp})`)
                             .setStyle(ooch_button_color)
-                            .setEmoji(ooch_emote),
+                            .setEmoji(ooch_emote)
+                            .setDisabled(ooch_disable),
                     )
                 }
 
@@ -356,8 +369,9 @@ module.exports = {
     },
 
     battle: async function(message, choice) {
-        const { battle_player, battle_enemy } = require('./func.js');
-        
+        const { battle_player, battle_enemy, type_to_emote, capitalize } = require('./func.js');
+        const Discord = require('discord.js');
+
         // Get enemy oochamon data that was previously generated
         let ooch_enemy = db.profile.get(message.author.id, 'ooch_enemy')
         // Get the players oochamon in the first spot of their party
@@ -365,20 +379,59 @@ module.exports = {
         let ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
         let prompt_input = true;
         let turn_order = ['p', 'e'];
+        let move_list = ooch_plr.moveset;
+        let move_id, move_name, move_desc, move_damage, move_accuracy;
 
         await message.channel.send(`**You input:** \`${choice}\`\n`);
 
         // Handle turns
         if (choice == 'fight') {
-            if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
-                turn_order = ['e', 'p']
-            } else { // Player goes first
-                turn_order = ['p', 'e'];
+
+            // Get the player's Attack options
+            const row_atk = new Discord.MessageActionRow();
+            
+            for (let i = 0; i < move_list.length; i++) {
+                
+                move_id = move_list[i];
+                
+                move_name = db.move_data.get(`${move_id}`, 'name')
+                move_type = db.move_data.get(`${move_id}`, 'type')
+                move_desc = db.move_data.get(`${move_id}`, 'description')
+                move_damage = db.move_data.get(`${move_id}`, 'damage')
+                move_accuracy = db.move_data.get(`${move_id}`, 'accuracy')
+
+                console.log(`ID ${move_id} \n NAME ${move_name} \n TYPE ${move_type}`)
+
+                row_atk.addComponents(
+                    new Discord.MessageButton()
+                        .setCustomId(`${i}`)
+                        .setLabel(`${move_name}`)
+                        .setStyle('PRIMARY')
+                        .setEmoji(type_to_emote(move_type))
+                )
             }
+
+            //Select the move to use
+            message.channel.send({ content: `Select a move`, components: [row_atk]})
+
+            const atk_collector = message.channel.createMessageComponentCollector({ max: 1 });   
+
+            await atk_collector.on('collect', async i => {
+
+                await i.update({ content: `Selected Attack`, components: [] })
+                move_id = move_list[i];
+                console.log(move_id)
+                if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
+                    turn_order = ['e', 'p']
+                } else { // Player goes first
+                    turn_order = ['p', 'e'];
+                }
+
+            });
         } else if (choice == 'run') {
             if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
                 message.channel.send(`**------------ Player Turn ------------**`)
-                return battle_player(message, choice, ooch_plr, ooch_enemy, ooch_pos)
+                return battle_player(message, choice, ooch_plr, ooch_enemy, ooch_pos, -1)
             } else {
                 message.channel.send(`**------------ Player Turn ------------**`)
                 message.channel.send(`You failed to run away!`)
@@ -387,11 +440,10 @@ module.exports = {
         } else if (choice == 'switch' || choice == 'bag') {
             turn_order = ['p'];
         }
-
         for (let i = 0; i < turn_order.length; i++) {
             if (turn_order[i] == 'p') { 
                 message.channel.send(`**------------ Player Turn ------------**`)
-                prompt_input = await battle_player(message, choice, ooch_plr, ooch_enemy, ooch_pos) 
+                prompt_input = await battle_player(message, choice, ooch_plr, ooch_enemy, ooch_pos, move_id) 
             } else if (turn_order[i] == 'e') {
                 message.channel.send(`**------------ Enemy Turn ------------**`)
                 prompt_input = await battle_enemy(message, ooch_plr, ooch_enemy, ooch_pos);
@@ -606,5 +658,44 @@ module.exports = {
     exp_to_next_level: function(exp, level) {
         let exp_needed = (level ** 3) - exp;
         return exp_needed;
+    },
+
+    get_stats: function(species_id,level,hp_iv,atk_iv,def_iv,spd_iv){
+        
+        let hp = Math.floor(db.monster_data.get(species_id, 'hp') * (1.05 ** level) * hp_iv + 10) ;
+        let atk = Math.floor(db.monster_data.get(species_id, 'atk') * (1.05 ** level) * atk_iv);
+        let def = Math.floor(db.monster_data.get(species_id, 'def') * (1.05 ** level) * def_iv);
+        let spd = Math.floor(db.monster_data.get(species_id, 'spd') * (1.05 ** level) * spd_iv);
+
+        return [hp, atk, def, spd];
+
+    },
+
+    type_to_emote: function(type_string){
+        let emote_return = '<:icon_void:923049669699969054>';
+        switch(type_string){
+            case 'flame':
+                emote_return = '<:icon_flame:923049669674803231>';
+            break;
+            case 'fungal':
+                emote_return = '<:icon_fungal:923049669746122782>';
+            break;
+            case 'magic':
+                emote_return = '<:icon_magic:923049669716750406>';
+            break;
+            case 'stone':
+                emote_return = '<:icon_stone:923049669733523487>';
+            break;
+            case 'neutral':
+                emote_return = '<:icon_neutral:927695999261089872>';
+            break;
+            case 'ooze':
+                emote_return = '<:icon_ooze:923049669708378172>';
+            break;
+            case 'tech':
+                emote_return = '<:icon_tech:923049669741916190>';
+            break;
+        }
+        return emote_return;
     }
 }
