@@ -68,7 +68,12 @@ module.exports = {
         let def = stats[2]
         let spd = stats[3]  
 
-        let move_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= lvl && x[0] != -1)
+        let learn_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= lvl && x[0] != -1)
+        let move_list =[];
+
+        for(let i = 0; i < learn_list.length; i++){
+            move_list[i] = learn_list[i][1]; //get only the move ID and put it in the move_list
+        }
 
         // Make sure the move_list is 4 moves
         while (move_list.length > 4) {
@@ -76,26 +81,37 @@ module.exports = {
             move_list.splice(rand_move_pos, 1);
         }
 
-        return {
-            id: ooch_pick,
-            name: db.monster_data.get(ooch_pick, 'name'),
-            level: lvl,
-            ability: false,
-            moveset: move_list,
-            stats: {
-                hp: hp,
-                atk: atk,
-                def: def,
-                spd: spd,
-                hp_iv: hp_iv,
-                atk_iv: atk_iv,
-                def_iv: def_iv,
-                spd_iv: spd_iv,
-            },
-            current_hp: hp,
-            evo_stage: stg,
-        }
+        // Pick a random ability
+        let ability_list = db.monster_data.get(ooch_pick, 'abilities');
+        let rand_ability = ability_list[random_number(0, ability_list.length - 1)]
 
+        return {
+            name: 'Enemy',
+            ooch_active_slot: 0,
+            party:[{
+                id: ooch_pick,
+                name: db.monster_data.get(ooch_pick, 'name'),
+                nickname: -1,
+                item: -1,
+                level: lvl,
+                ability: rand_ability,
+                moveset: move_list,
+                stats: {
+                    hp: hp,
+                    atk: atk,
+                    def: def,
+                    spd: spd,
+                    hp_iv: hp_iv,
+                    atk_iv: atk_iv,
+                    def_iv: def_iv,
+                    spd_iv: spd_iv,
+                },
+                status_effects: [],
+                current_hp: hp,
+                evo_stage: stg,
+                alive: true,
+            }]
+        }
     },
 
     create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
@@ -216,12 +232,13 @@ module.exports = {
 
     prompt_battle_input: async function(thread, message) {
 
-        const { type_to_emote, battle_calc_damage, prompt_battle_input } = require('./func.js');
+        const { type_to_emote, enemy_attack, player_attack, end_of_turn, victory_defeat_check, prompt_battle_input, status_effect_check } = require('./func.js');
         const wait = require('wait');
         const Discord = require('discord.js');
 
         // Get enemy oochamon data that was previously generated
-        let ooch_enemy = db.profile.get(message.author.id, 'ooch_enemy')
+        let ooch_enemy_profile = db.profile.get(message.author.id, 'ooch_enemy')
+        let ooch_enemy = ooch_enemy_profile.party[ooch_enemy_profile.ooch_active_slot];
         // Get the players oochamon in the first spot of their party
         let ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${db.profile.get(message.author.id, 'ooch_active_slot')}]`);
         let ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
@@ -300,7 +317,10 @@ module.exports = {
                     await atk_collector.on('collect', async atk => {
 
                         await atk.update({ content: `Selected \`${atk.customId}\``, components: [] });
-                        if (ooch_enemy.stats.spd > ooch_plr.stats.spd) { // Enemy goes first
+                        let enemy_snare = status_effect_check('snared', ooch_enemy.status_effects);
+                        let plr_snare = status_effect_check('snared', ooch_plr.status_effects);
+
+                        if ((ooch_enemy.stats.spd * enemy_snare) > (ooch_plr.stats.spd * plr_snare)) { // Enemy goes first
                             turn_order = ['e', 'p']
                         } else { // Player goes first
                             turn_order = ['p', 'e'];
@@ -319,26 +339,16 @@ module.exports = {
                             }
 
                             // Victory/Defeat Check
-                            if (ooch_enemy.current_hp <= 0) { // Victory
-
-                                thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
-                                db.profile.set(message.author.id, `overworld`, 'player_state')
-                                db.profile.set(message.author.id, {}, 'ooch_enemy')
-                                await wait(20000);
-                                await thread.delete();
-
-                            } else if (ooch_plr.current_hp <= 0) {
-
-                                thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
-                                db.profile.set(message.author.id, `overworld`, 'player_state')
-                                db.profile.set(message.author.id, {}, 'ooch_enemy')
-                                db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
-                                await wait(20000);
-                                await thread.delete();
-                            };
+                            victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
 
                         }
 
+                        //Apply Status Effects and other end of turn stuff
+                        end_of_turn(thread, message, ooch_plr, ooch_enemy);
+                        
+                        //Double check for Victory/Defeat after status effects have happened
+                        victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                        
                         // Prompt for more input
                         prompt_battle_input(thread, message);
 
@@ -399,24 +409,11 @@ module.exports = {
                         // Enemy attacks player
                         enemy_attack(thread, message, ooch_plr, ooch_enemy);
 
+                        //Apply Status Effects and other end of turn stuff
+                        end_of_turn(thread, message, ooch_plr, ooch_enemy);                        
+
                         // Victory/Defeat Check
-                        if (ooch_enemy.current_hp <= 0) { // Victory
-
-                            thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
-                            db.profile.set(message.author.id, `overworld`, 'player_state')
-                            db.profile.set(message.author.id, {}, 'ooch_enemy')
-                            await wait(20000);
-                            await thread.delete();
-
-                        } else if (ooch_plr.current_hp <= 0) {
-
-                            thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
-                            db.profile.set(message.author.id, `overworld`, 'player_state')
-                            db.profile.set(message.author.id, {}, 'ooch_enemy')
-                            db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
-                            await wait(20000);
-                            await thread.delete();
-                        };
+                        victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
 
                         // Prompt for more input
                         prompt_battle_input(thread, message);
@@ -443,24 +440,11 @@ module.exports = {
                         // Enemy attacks player
                         enemy_attack(thread, message, ooch_plr, ooch_enemy);
 
+                        //Apply Status Effects and other end of turn stuff
+                        end_of_turn(thread, message, ooch_plr, ooch_enemy);
+
                         // Victory/Defeat Check
-                        if (ooch_enemy.current_hp <= 0) { // Victory
-
-                            thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
-                            db.profile.set(message.author.id, `overworld`, 'player_state')
-                            db.profile.set(message.author.id, {}, 'ooch_enemy')
-                            await wait(20000);
-                            await thread.delete();
-
-                        } else if (ooch_plr.current_hp <= 0) {
-
-                            thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
-                            db.profile.set(message.author.id, `overworld`, 'player_state')
-                            db.profile.set(message.author.id, {}, 'ooch_enemy')
-                            db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
-                            await wait(20000);
-                            await thread.delete();
-                        };
+                        victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
 
                         // Prompt for more input
                         prompt_battle_input(thread, message);
@@ -714,7 +698,7 @@ module.exports = {
     },
 
     player_attack: async function(thread, message, atk_id,ooch_plr,ooch_enemy){
-        const { type_effectiveness, battle_calc_damage } = require('./func.js');
+        const { type_effectiveness, battle_calc_damage, status_effect_check } = require('./func.js');
         const Discord = require('discord.js');
 
         let move_name =     db.move_data.get(`${atk_id}`, 'name');
@@ -723,40 +707,56 @@ module.exports = {
         let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
         let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
         let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
-        let type_multiplier = type_effectiveness(move_type, ooch_enemy.type);
+        let type_multiplier = type_effectiveness(move_type, ooch_enemy.type); //Returns [multiplier, string] 
         let crit_multiplier = (Math.random() > 0.95 ? 2 : 1)
+        let enemy_status_effects = ooch_enemy.status_effects;
+        let plr_status_effects = ooch_plr.status_effects;
+        let status_blind = (status_effect_check('blinded', plr_status_effects) ? .75 : 1);
+        let status_doubled = (status_effect_check('doubled', enemy_status_effects) ? 2 : 1);
         let string_to_send = `**------------ Player Turn ------------**`;
 
 
-        dmg = battle_calc_damage(move_damage * type_multiplier * crit_multiplier, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
+        dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
         
         db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
 
-        if(move_accuracy/100 > Math.random()){
+        if(move_accuracy/100 * status_blind > Math.random()){
             ooch_enemy.current_hp -= dmg
             string_to_send +=  `\nYour ${ooch_plr.name} uses ${move_name} and deals ${dmg} damage to the enemy ${ooch_enemy.name}! `
+            
+            //If a crit lands
             if(crit_multiplier >= 2){
                 string_to_send += `\nA critical hit!`
             }
-            if(Math.random() > move_chance/100){ //Apply status effect
-                string_to_send += `\nThe enemy ${ooch_enemy.name} was ${move_effect}!`
+
+            //Type effectiveness
+            string_to_send += type_multiplier[1];
+
+            if(Math.random() > move_chance/100 && move_chance > 0){ //Apply status effect
+                string_to_send += `\nThe enemy ${ooch_enemy.name} was ${move_effect.toUpperCase()}!`
             }
-            else if(-Math.random() < move_chance/100){
-                string_to_send += `\nYour ${ooch_plr.name} was ${move_effect}!`
+            else if(-Math.random() < move_chance/100 && move_chance < 0){
+                string_to_send += `\nYour ${ooch_plr.name} was ${move_effect.toUpperCase()}!`
             }
         }
         else{
             string_to_send +=  `\nYour ${ooch_plr.name} used ${move_name} but it missed!`
         }
         
-        string_to_send += `\n*Enemy HP (${ooch_enemy.current_hp}/${ooch_enemy.hp})*`
+        let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+
+        string_to_send += `\n*Enemy HP (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`
 
         await thread.send(string_to_send)
 
     },
 
-    enemy_attack: async function(thread, message, ooch_plr, ooch_enemy){    
-        const { type_effectiveness, battle_calc_damage } = require('./func.js');
+    enemy_attack: async function(thread, message, ooch_plr, ooch_enemy,){    
+        const { type_effectiveness, battle_calc_damage, status_effect_check, random_number } = require('./func.js');
         const Discord = require('discord.js');
 
         let moves = ooch_enemy.moveset;
@@ -768,39 +768,195 @@ module.exports = {
         let move_accuracy = db.move_data.get(`${atk_id}`, 'accuracy');
         let move_effect =   db.move_data.get(`${atk_id}`, 'effect');
         let move_chance =   db.move_data.get(`${atk_id}`, 'chance');
-        let type_multiplier = type_effectiveness(move_type, ooch_plr.type);
+        let type_multiplier = type_effectiveness(move_type, ooch_plr.type); //Returns [multiplier, string] 
         let crit_multiplier = (Math.random() > 0.95 ? 2 : 1)
-        let string_to_send = `**------------ Player Turn ------------**`;
+        let enemy_status_effects = ooch_enemy.status_effects;
+        let plr_status_effects = ooch_plr.status_effects;
+        let status_blind = (status_effect_check('blinded', enemy_status_effects) ? .75 : 1);
+        let status_doubled = (status_effect_check('doubled', plr_status_effects) ? 2 : 1);
+        let string_to_send = `**------------ Enemy Turn ------------**`;
 
 
-        dmg = battle_calc_damage(move_damage * type_multiplier * crit_multiplier, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
+
+        dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
         
         db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
 
-        if(move_accuracy/100 > Math.random()){
+        if(move_accuracy/100 * status_blind > Math.random()){
             ooch_plr.current_hp -= dmg
             string_to_send +=  `\nThe enemy ${ooch_enemy.name} uses ${move_name} and deals ${dmg} damage to your ${ooch_plr.name}! `
+            
+            //If a crit lands
             if(crit_multiplier >= 2){
                 string_to_send += `\nA critical hit!`
             }
-            if(Math.random() > move_chance/100){ //Apply status effect
-                string_to_send += `\nThe enemy ${ooch_plr.name} was ${move_effect}!`
+            //Type effectiveness
+            string_to_send += type_multiplier[1];
+
+            //Apply status effects
+            if(Math.random() > move_chance/100 && move_chance > 0){ //Apply status effect
+                string_to_send += `\nYour ${ooch_plr.name} was ${move_effect.toUpperCase()}!`
             }
-            else if(-Math.random() < move_chance/100){
-                string_to_send += `\nYour ${ooch_enemy.name} was ${move_effect}!`
+            else if(-Math.random() < move_chance/100 && move_chance < 0){
+                string_to_send += `\nThe enemy ${ooch_enemy.name} was ${move_effect.toUpperCase()}!`
             }
         }
         else{
             string_to_send +=  `\nThe enemy ${ooch_enemy.name} used ${move_name} but it missed!`
         }
         
-        string_to_send += `\n*Player HP (${ooch_plr.current_hp}/${ooch_plr.hp})*`
+        let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+
+        string_to_send += `\n*Player HP (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`
 
         await thread.send(string_to_send)
     },
 
-    type_effectiveness(attack_type, target_type){
+    type_effectiveness: function(attack_type, target_type){
         let multiplier = 1;
-        return(multiplier)
-    }
+        let string = '';
+        switch(attack_type){
+            case 'neutral':
+                switch(target_type){
+                    case 'magic': multiplier = .75; break;
+                }
+            break;
+            case 'fungal':
+                switch(target_type){
+                    case 'flame':   multiplier = .75; break;
+                    case 'fungal':  multiplier = .75; break;
+                    case 'stone':   multiplier = 1.5; break;
+                    case 'ooze':    multiplier = 1.5; break;
+                }
+            break;
+            case 'flame':
+                switch(target_type){
+                    case 'ooze':    multiplier = .75; break;
+                    case 'flame':   multiplier = .75; break;
+                    case 'void':    multiplier = 1.5; break;
+                    case 'fungal':  multiplier = 1.5; break;
+                }
+            break;
+            case 'stone':
+                switch(target_type){
+                    case 'ooze':    multiplier = .75; break;
+                    case 'tech':    multiplier = 1.5; break;
+                    case 'flame':   multiplier = 1.5; break;
+                }
+            break;
+            case 'tech':
+                switch(target_type){
+                    case 'magic':   multiplier = .75; break;
+                    case 'fungal':  multiplier = 1.5; break;
+                    case 'ooze':    multiplier = 1.5; break;
+                }
+            break;
+            case 'ooze':
+                switch(target_type){
+                    case 'ooze':    multiplier = .75; break;
+                    case 'flame':   multiplier = 1.5; break;
+                    case 'stone':   multiplier = 1.5; break;
+                }
+            break;
+            case 'magic':
+                switch(target_type){
+                    case 'flame':  multiplier = .75; break;
+                    case 'tech':   multiplier = 1.5; break;
+                }
+            break;
+            case 'void':
+                multiplier = 1.5; break;
+            break;
+        }
+        
+        if(multiplier > 1){
+            string = '\nIt\'s super effective!'
+        }
+        else if(multiplier < 1){
+            string = '\nIt\'s not very effective...'
+        }
+        return([multiplier,string])
+    },
+
+    status_effect_check: function(status, status_array){
+        for(let i = 0; i < status_array.length; i++){
+            if(status_array[i] == status){
+                return true;
+            }
+        }
+        return false;
+    },
+
+    victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr){
+        const Discord = require('discord.js');
+
+         // Victory/Defeat Check
+         if (ooch_enemy.current_hp <= 0) { // Victory
+
+            thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
+            db.profile.set(message.author.id, `overworld`, 'player_state')
+            db.profile.set(message.author.id, {}, 'ooch_enemy')
+            await wait(20000);
+            await thread.delete();
+
+        } else if (ooch_plr.current_hp <= 0) {
+
+            thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
+            db.profile.set(message.author.id, `overworld`, 'player_state')
+            db.profile.set(message.author.id, {}, 'ooch_enemy')
+            db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+            await wait(20000);
+            await thread.delete();
+        };
+    },
+
+    end_of_turn: async function(thread, message, ooch_plr, ooch_enemy){
+        const { status_effect_check } = require('./func.js');
+
+        let plr_burned = status_effect_check('burned', ooch_plr.status_effects);
+        let plr_infected = status_effect_check('infected', ooch_plr.status_effects);
+        
+        let enemy_burned = status_effect_check('burned', ooch_enemy.status_effects);
+        let enemy_infected = status_effect_check('infected', ooch_enemy.status_effects);
+
+        let string_to_send = `**------------ End of Round ------------**`;
+
+        if(plr_burned){
+            ooch_plr.current_hp -= Math.round(ooch_plr.stats.hp/10);
+            string_to_send += `\n${ooch_plr.name} was hurt by its burn.`
+        }
+        if(enemy_burned){
+            ooch_enemy.current_hp -= Math.round(ooch_enemy.stats.hp/10)
+            string_to_send += `\nThe enemy ${ooch_enemy.name} was hurt by its burn.`
+        }
+
+        if(plr_infected){
+            let infect_val = ooch_plr.stats.hp/20;
+            ooch_plr.current_hp -= infect_val;
+            ooch_enemy.current_hp = Math.min(ooch_enemy.current_hp + infect_val, ooch_enemy.stats.hp);
+            string_to_send += `\n${ooch_plr.name} has its HP absorbed by the enemy ${ooch_enemy.name}.`
+        }
+        if(enemy_infected){
+            let infect_val = ooch_enemy.stats.hp/20;
+            ooch_enemy.current_hp -= infect_val;
+            ooch_plr.current_hp = Math.min(ooch_plr.current_hp + infect_val, ooch_plr.stats.hp);
+            string_to_send += `\n${ooch_plr.name} has its HP absorbed by the enemy ${ooch_enemy.name}.`
+        }
+
+
+        let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+
+        string_to_send += (`\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*
+                            \n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`)
+        await thread.send(string_to_send)
+        
+    },
 }

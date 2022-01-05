@@ -57,6 +57,7 @@ module.exports = {
                     def_iv: def_iv,
                     spd_iv: spd_iv,
                 },
+                status_effects: [],
                 current_hp: stats[0],
                 alive: true,
             }, 'ooch_inventory')

@@ -60,7 +60,6 @@ module.exports = {
             db.profile.set(interaction.user.id, { area: 'hub', x: 2, y: 2 }, 'location_data')
             db.profile.set(interaction.user.id, -1, 'display_msg_id')
             
-
             // Setup starter data
             let learn_list = db.monster_data.get(starter, 'move_list');
             let ability_list = db.monster_data.get(starter, 'abilities');
@@ -105,6 +104,7 @@ module.exports = {
                         def_iv: def_iv,
                         spd_iv: spd_iv,
                     },
+                    status_effects: [],
                     current_hp: stats[0],
                     alive: true,
                 }
