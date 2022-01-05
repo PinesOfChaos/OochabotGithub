@@ -488,6 +488,8 @@ module.exports = {
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `heal_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
+                                prism_collector.stop();
+                                heal_collector.stop();
 
                                 // Enemy attacks player
                                 await enemy_attack(thread, message, ooch_plr, ooch_enemy);
@@ -533,6 +535,8 @@ module.exports = {
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `prism_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
+                                prism_collector.stop();
+                                heal_collector.stop();
 
                                 // Enemy attacks player
                                 await enemy_attack(thread, message, ooch_plr, ooch_enemy);
