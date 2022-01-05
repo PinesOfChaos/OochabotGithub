@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
+const { generate_challenge, prompt_battle_input } = require('../func.js')
+const db = require('../db.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,30 +12,37 @@ module.exports = {
                 .setDescription('Whomst?')
                 .setRequired(true)),
     async execute(interaction) {
-        let target = interaction.options.getUser('name');
-        let chal_gen =  generate_challenge(target);
-        db.profile.set(interaction.author.id, 0, 'ooch_active_slot');
+        console.log()
+
+        let player = `${interaction.user.id}`;
+        let player_name = interaction.user.username;
+
+        let chal = interaction.options.getUser('name').id;
+        let chal_name = interaction.options.getUser('name').username;
+
+        let chal_gen =  generate_challenge(chal);
+        db.profile.set(player, 0, 'ooch_active_slot');
 
         const thread = await interaction.channel.threads.create({
-            name: `${message.member.displayName} vs ${target} Clone Battle, join this to battle!`,
+            name: `${player_name} vs ${chal_name}\'s Clone Battle, join this to battle!`,
             autoArchiveDuration: 60,
             reason: '\"PVP\" Battle thread',
         });
 
+        let msg = {author: {id : player}};
+
         if (thread.joinable) await thread.join();
-        await thread.members.add(interaction.author.id);
+        await thread.members.add(player);
         await thread.setLocked(true);
-        await thread.send(`${interaction.member.displayName}, you've challenged ${target}'s clone! Use this thread to battle!!`)
+        await thread.send(`${player_name}, you've challenged ${chal_name}'s clone! Use this thread to battle!!`);
 
-        await db.profile.set(interaction.author.id, 'battle', 'player_state')
-        await db.profile.set(interaction.author.id, chal_gen, 'ooch_enemy')
-        await db.profile.set(interaction.author.id, thread.id, 'battle_thread_id')
+        await db.profile.set(player, 'battle', 'player_state')
+        await db.profile.set(player, chal_gen, 'ooch_enemy')
+        await db.profile.set(player, thread.id, 'battle_thread_id')
 
-        await prompt_battle_input(thread, interaction);
+        await prompt_battle_input(thread, msg);
 
-        
-        interaction.channel.send(`OOCHABOT slaps ${target}`);
-        interaction.reply('Sending slap');
+        interaction.reply('Starting Clone Battle');
         interaction.deleteReply();
     },
 };
