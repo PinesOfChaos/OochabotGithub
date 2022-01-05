@@ -60,6 +60,7 @@ module.exports = {
                 status_effects: [],
                 current_hp: stats[0],
                 alive: true,
+                type: db.monster_data.get(ooch_id, 'type')
             }, 'ooch_inventory')
         
         return interaction.reply(`Added Oochamon ${db.monster_data.get(ooch_id, 'name')} to your party!`)

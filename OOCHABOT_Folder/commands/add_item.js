@@ -20,7 +20,7 @@ module.exports = {
         let item_category = db.item_data.get(id, 'category');
         console.log(db.item_data.get(id));
     
-        db.profile.push(interaction.user.id, { item_id: id, num_held: num_to_add }, `${item_category}`);
+        db.profile.set(interaction.user.id, num_to_add, `${item_category}.${id}`);
 
         return interaction.reply(`Added Item ${db.item_data.get(id, 'name')} to your Inventory!`)
     },
