@@ -358,7 +358,7 @@ module.exports = {
                             }
 
                             // Victory/Defeat Check
-                            let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                            let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, false);
                             if (victory_check == true) return;
 
                         }
@@ -367,7 +367,7 @@ module.exports = {
                         await end_of_turn(thread, message, ooch_plr, ooch_enemy);
                         
                         //Double check for Victory/Defeat after status effects have happened
-                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, true);
                         if (victory_check == true) return;
 
                         // Prompt for more input
@@ -377,7 +377,7 @@ module.exports = {
 
                 break;
                 case 'switch':
-
+                    //#region SWITCH
                     let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
                     let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
     
@@ -441,17 +441,17 @@ module.exports = {
                         await end_of_turn(thread, message, ooch_plr, ooch_enemy);                        
 
                         // Victory/Defeat Check
-                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, true);
                         if (victory_check == true) return;
 
                         // Prompt for more input
                         await prompt_battle_input(thread, message);
     
                     });
-
+                    //#endregion
                 break;
                 case 'bag':
-
+                    //#region BAG
                     let heal_inv = db.profile.get(message.author.id, 'heal_inv')
                     let heal_inv_keys = Object.keys(heal_inv);
                     let prism_inv = db.profile.get(message.author.id, 'prism_inv')
@@ -506,7 +506,7 @@ module.exports = {
                                 await end_of_turn(thread, message, ooch_plr, ooch_enemy);                        
 
                                 // Victory/Defeat Check
-                                let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                                let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, true);
                                 if (victory_check == true) return;
 
                                 // Prompt for more input
@@ -553,7 +553,7 @@ module.exports = {
                                 await end_of_turn(thread, message, ooch_plr, ooch_enemy);                        
 
                                 // Victory/Defeat Check
-                                let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                                let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, true);
                                 if (victory_check == true) return;
 
                                 // Prompt for more input
@@ -562,9 +562,10 @@ module.exports = {
                         } 
     
                     });
-
+                    //#endregion
                 break;
                 case 'run':
+                    //#region RUN
                     if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
                         thread.send(`**------------ Player Turn ------------**` +
                         `\nYou successfully ran away!`)
@@ -584,12 +585,13 @@ module.exports = {
                         await end_of_turn(thread, message, ooch_plr, ooch_enemy);
 
                         // Victory/Defeat Check
-                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr);
+                        let victory_check = await victory_defeat_check(thread, message, ooch_enemy, ooch_plr, true);
                         if (victory_check == true) return;
 
                         // Prompt for more input
                         await prompt_battle_input(thread, message);
                     }
+                    //#endregion
                 break;
             }
         });
@@ -1038,7 +1040,7 @@ module.exports = {
         return false;
     },
 
-    victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr){
+    victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr, is_turn_end){
 
         const { prompt_battle_input } = require('./func.js');
         const Discord = require('discord.js');
@@ -1053,12 +1055,15 @@ module.exports = {
             slot_to_send = -1;
             enemy_profile = db.profile.get(message.author.id, 'ooch_enemy');
             ooch_arr = enemy_profile.party;
+            console.log(`enemy_profile \n${enemy_profile}`);
             for(let i = 0; i < ooch_arr.length; i++){
+                console.log(`OOCH ARR[i] \n${ooch_arr[i]}`);
+                console.log(`OOCH ARR[i] \n${ooch_arr[i].stats}`);
                 if(ooch_arr[i].stats.hp > 0 && slot_to_send == -1){
                     slot_to_send = i;
                 }
             }
-            if(slot_to_send == -1){
+            if(slot_to_send == -1 && is_turn_end){ //if there is no slot to send in
                 thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
                 db.profile.set(message.author.id, `overworld`, 'player_state')
                 db.profile.set(message.author.id, {}, 'ooch_enemy')
@@ -1069,7 +1074,8 @@ module.exports = {
                 thread.send(`${enemy_profile.name} sends out ${ooch_arr[slot_to_send].name}!`)
                 db.profile.set(message.author.id, slot_to_send, `ooch_enemy.ooch_active_slot`)
             }
-        } else if (ooch_plr.current_hp <= 0) { // Defeat
+        }
+        else if (ooch_plr.current_hp <= 0) { // Defeat
             slot_to_send = -1;
             ooch_arr = db.profile.get(message.author.id, 'ooch_inventory');
             for(let i = 0; i < ooch_arr.length; i++){
@@ -1077,7 +1083,7 @@ module.exports = {
                     slot_to_send = i;
                 }
             }
-            if(slot_to_send == -1){
+            if(slot_to_send == -1){ //if there is no slot to send in
                 thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
                 db.profile.set(message.author.id, `overworld`, 'player_state')
                 db.profile.set(message.author.id, {}, 'ooch_enemy')
@@ -1086,8 +1092,8 @@ module.exports = {
                 await thread.delete();
                 return true;
             }
-            else{
-
+            else if(is_turn_end){
+                
                 let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
                 let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
 
@@ -1119,7 +1125,7 @@ module.exports = {
                     )
                 }
 
-                thread.send({ content: `Select the new Oochamon you want to switch in!`, components: (switch_buttons_2_die.components.length != 0) ? [switch_buttons_1_die, switch_buttons_2_die] : [switch_buttons_1_die] })
+                await thread.send({ content: `Select the new Oochamon you want to switch in!`, components: (switch_buttons_2_die.components.length != 0) ? [switch_buttons_1_die, switch_buttons_2_die] : [switch_buttons_1_die] })
 
                 const s_collector_d = thread.createMessageComponentCollector({ max: 1 });
 
@@ -1130,11 +1136,11 @@ module.exports = {
                     await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
                     `\nCome on out **${ooch_pick_name}**!`, components: [] })
                     db.profile.set(message.author.id, parseInt(ooch_sel.customId), 'ooch_active_slot');
-                    ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${db.profile.get(message.author.id, 'ooch_active_slot')}]`);
-                    ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');                    
 
+                    prompt_battle_input(thread, message);
                 });
-            }
+                return true;
+            }  
         };
     },
 
