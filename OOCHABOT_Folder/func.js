@@ -152,6 +152,10 @@ module.exports = {
         db.item_data.set(id, description, 'description');
     },
 
+    create_ability: function(name, description) {
+        db.item_data.set(name, description, 'description');
+    },
+
     move: function(message, direction) {
         /*
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
@@ -398,6 +402,10 @@ module.exports = {
                         if (i == db.profile.get(message.author.id, 'ooch_active_slot')) {
                             ooch_button_color = 'SUCCESS';
                             ooch_prev_name = ooch_name;
+                            ooch_disable = true;
+                        }
+                        else if (ooch_check.current_hp <= 0){
+                            ooch_button_color = 'PRIMARY';
                             ooch_disable = true;
                         }
     
@@ -1031,28 +1039,102 @@ module.exports = {
     },
 
     victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr){
+
+        const { prompt_battle_input } = require('./func.js');
         const Discord = require('discord.js');
         let ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
+        let ooch_arr, slot_to_send, enemy_profile;
+
+        const switch_buttons_1_die = new Discord.MessageActionRow();
+        const switch_buttons_2_die = new Discord.MessageActionRow();
 
          // Victory/Defeat Check
          if (ooch_enemy.current_hp <= 0) { // Victory
+            slot_to_send = -1;
+            enemy_profile = db.profile.get(message.author.id, 'ooch_enemy');
+            ooch_arr = enemy_profile.party;
+            for(let i = 0; i < ooch_arr.length; i++){
+                if(ooch_arr[i].stats.hp > 0 && slot_to_send == -1){
+                    slot_to_send = i;
+                }
+            }
+            if(slot_to_send == -1){
+                thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
+                db.profile.set(message.author.id, `overworld`, 'player_state')
+                db.profile.set(message.author.id, {}, 'ooch_enemy')
+                await wait(20000);
+                await thread.delete();
+                return true;
+            }else{
+                thread.send(`${enemy_profile.name} sends out ${ooch_arr[slot_to_send].name}!`)
+                db.profile.set(message.author.id, slot_to_send, `ooch_enemy.ooch_active_slot`)
+            }
+        } else if (ooch_plr.current_hp <= 0) { // Defeat
+            slot_to_send = -1;
+            ooch_arr = db.profile.get(message.author.id, 'ooch_inventory');
+            for(let i = 0; i < ooch_arr.length; i++){
+                if(ooch_arr[i].stats.hp > 0 && slot_to_send == -1){
+                    slot_to_send = i;
+                }
+            }
+            if(slot_to_send == -1){
+                thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
+                db.profile.set(message.author.id, `overworld`, 'player_state')
+                db.profile.set(message.author.id, {}, 'ooch_enemy')
+                db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+                await wait(20000);
+                await thread.delete();
+                return true;
+            }
+            else{
 
-            thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
-            db.profile.set(message.author.id, `overworld`, 'player_state')
-            db.profile.set(message.author.id, {}, 'ooch_enemy')
-            await wait(20000);
-            await thread.delete();
-            return true;
+                let ooch_inv = db.profile.get(message.author.id, 'ooch_inventory')
+                let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
 
-        } else if (ooch_plr.current_hp <= 0) {
+                for (let i = 0; i < ooch_inv.length; i++) {
+                    ooch_check = ooch_inv[i];
+                    ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                    ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
+                    ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
+                    ooch_button_color = 'PRIMARY';
+                    ooch_disable = false;
 
-            thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
-            db.profile.set(message.author.id, `overworld`, 'player_state')
-            db.profile.set(message.author.id, {}, 'ooch_enemy')
-            db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
-            await wait(20000);
-            await thread.delete();
-            return true;
+                    if (i == db.profile.get(message.author.id, 'ooch_active_slot')) {
+                        ooch_button_color = 'SUCCESS';
+                        ooch_prev_name = ooch_name;
+                        ooch_disable = true;
+                    }
+                    else if (ooch_check.current_hp <= 0){
+                        ooch_button_color = 'PRIMARY';
+                        ooch_disable = true;
+                    }
+
+                    (i <= 2 ? switch_buttons_1_die : switch_buttons_2_die).addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId(`${i}`)
+                            .setLabel(`${ooch_name} (${ooch_hp})`)
+                            .setStyle(ooch_button_color)
+                            .setEmoji(ooch_emote)
+                            .setDisabled(ooch_disable),
+                    )
+                }
+
+                thread.send({ content: `Select the new Oochamon you want to switch in!`, components: (switch_buttons_2_die.components.length != 0) ? [switch_buttons_1_die, switch_buttons_2_die] : [switch_buttons_1_die] })
+
+                const s_collector_d = thread.createMessageComponentCollector({ max: 1 });
+
+                await s_collector_d.on('collect', async ooch_sel => {
+
+                    let ooch_pick = db.profile.get(message.author.id, `ooch_inventory[${parseInt(ooch_sel.customId)}]`)
+                    let ooch_pick_name = ((ooch_pick.nickname != -1) ? ooch_pick.nickname : ooch_pick.name);
+                    await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
+                    `\nCome on out **${ooch_pick_name}**!`, components: [] })
+                    db.profile.set(message.author.id, parseInt(ooch_sel.customId), 'ooch_active_slot');
+                    ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${db.profile.get(message.author.id, 'ooch_active_slot')}]`);
+                    ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');                    
+
+                });
+            }
         };
     },
 
@@ -1091,13 +1173,13 @@ module.exports = {
 
 
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
-        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
         db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
         db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
 
-        string_to_send += (`\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*
-                            \n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`)
+        string_to_send += (`\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`+
+                            `\n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`)
         await thread.send(string_to_send)
         
     },
@@ -1109,7 +1191,9 @@ module.exports = {
         let chal_mons = db.profile.get(challenged_id, 'ooch_inventory');
         let chal_party = [];
         let ooch_slot;
-    
+        
+        ooch_slot = chal_mons[0]
+
         for(let i = 0; i < chal_mons.length; i++){
             ooch_slot = chal_mons[i];
             ooch_slot.evo_stage = 0;
@@ -1123,5 +1207,5 @@ module.exports = {
             party: chal_party
         }
     
-    }
+    },
 }

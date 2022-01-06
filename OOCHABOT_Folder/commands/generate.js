@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
-const { create_monster, create_move, create_item } = require('../func');
+const { create_monster, create_move, create_item, create_ability } = require('../func');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -74,6 +74,45 @@ module.exports = {
 
         //#endregion
 
+
+        //#region Move Data
+
+        //              NAME,           Description
+        create_ability('Miniscule',     'So small that it reduces the chance to be hit by 10%.');
+        create_ability('Icky',          'Boosts the power of OOZE & FUNGAL type attacks by 20%');
+        create_ability('Burdened',      'A large growth reduces SPD by 10% but raises DEF by 15%');
+        create_ability('Broodmother',   'Gains 5% ATK for each Oochamon in the same evolution line in the party.');
+        create_ability('Tough',         'A durable body grants a 10% increase to DEF.');
+        create_ability('Shadow',        'Grants a 25% chance to DISAPPEAR after being attacked.');
+        create_ability('Withering',     'Loss of the body reduces HP by 5% each turn, but raises SPD by 20%');
+        create_ability('Darkbright',    'Attacks that afflict BURN also BLIND and vice-versa.');
+        create_ability('Gentle',        'A kind heart reduces both your ATK and the enemy ATK by 10%');
+        create_ability('Warm',          'Increases the damage of FLAME attacks by 10%.');
+        create_ability('Radiant',       'Dangerous energy causes attacks that BURN also INFECT.');
+        create_ability('Conflicted',    'Multiple minds increase ALL stats by 5%.');
+        create_ability('Burrower',      'Increases the damage of STONE attacks by 10%');
+        create_ability('Reactive',      'When hit by an attack, reflects 5% of the attacker\'s HP as damage.');
+        create_ability('Inertia',       'Increases SPD by 5% each turn.');
+        create_ability('Dense',         'Attacks deal an extra 10% damage but reduces SPD by 10%');
+        create_ability('Moist',         'Reduces FLAME damage by 50%.');
+        create_ability('Alert',         'Increases ATK by 20% when an Oochamon switches in.');
+        create_ability('Fleeting',      'Increases SPD and ATK by 50% but also loses 50% of HP each turn.');
+        create_ability('Efficient',     'Increases ATK by 5% each turn.');
+        create_ability('Boisterous',    'Shatters eardrums when it enters the field dealing 5% of the enemy\'s HP');
+        create_ability('Haunted',       'Applies the DOOMED status to an enemy when it dies.');
+        create_ability('Efficient',     'Increases ATK by 5% each turn.');
+        create_ability('Leech',         'Restores HP equal to 10% of damage done to the enemy.');
+        create_ability('Ensnare',       'Grants a 30% chance to SNARE an enemy when attacking.');
+        create_ability('Uncontrolled',  'Increases ATK by 30% but randomly chooses an attack each turn');
+        create_ability('Apprentice',    'Increases an attack\'s damage by 20% if any other party members also know it.');
+        create_ability('Focused',       'Increases ATK by 10% if unaffected by status effects.');
+        create_ability('Ravenous',      'Whenever defeating an enemy, restore 20% HP.');
+        create_ability('Immense',       'Increases DEF by 20% but also makes opponent\'s moves always hit.');
+        create_ability('Armored',       'Reduces STONE damage by 20%.');
+        create_ability('0000',          'FALSE'); //Increase the global counter for i's stats by 1 upon defeat
+
+        //#endregion
+
         //#region Creature Data
         //ID, Emote, Name, Image, Description, Type, HP, ATK, DEF, SPD, Move List[[Lvl,ID]...], Abilities, Evolution ID, Evolution Level
         // Sporbee
@@ -94,7 +133,7 @@ module.exports = {
         // Roocky
         create_monster('3', '<:roocky:921156272512974868>', 'Roocky', 'https://cdn.discordapp.com/attachments/921949708971294750/921950312300957776/roock.png',
         'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', 'stone', 12, 8, 12, 8, //total 40
-        [ [1,1],[3,3],[8,7],[13,7],[17,11],[27,14],[-1,20] ], [ 'Sturdy', 'Shadow' ], 4, 16)
+        [ [1,1],[3,3],[8,7],[13,7],[17,11],[27,14],[-1,20] ], [ 'Tough', 'Shadow' ], 4, 16)
 
         //Graknight
         create_monster('4', '<:graknight:921158515995848736>', 'Graknight', 'https://cdn.discordapp.com/attachments/921949708971294750/921950330516807731/graknight.png',
@@ -174,7 +213,7 @@ module.exports = {
         //Torchoir
         create_monster('19', '<:torchoir:921480638178136065>', 'Torchoir', 'https://cdn.discordapp.com/attachments/921949708971294750/921950825977364510/tochoir.png',
         'A sentient torch that hums a haunting tune. Its song fills people with dread.', 'flame', 12, 13, 11, 9, //total 45
-        [ [1,1],[3,4],[7,9],[12,24],[17,12],[21,23],[27,30],[-1,26] ], [ 'Boisterous', 'Choir' ], 20, 28)
+        [ [1,1],[3,4],[7,9],[12,24],[17,12],[21,23],[27,30],[-1,26] ], [ 'Boisterous', 'Haunted' ], 20, 28)
 
         //Chantern
         create_monster('20', '<:chantern:921480638543036436>', 'Chantern', 'https://cdn.discordapp.com/attachments/921949708971294750/921950839004880896/chantern.png',
@@ -209,17 +248,17 @@ module.exports = {
         //Blipoint
         create_monster('26', '<:blipoint:921986441280634880>', 'Blipoint', 'https://cdn.discordapp.com/attachments/921949708971294750/921987566956347392/blipoint.png',
         'An eye peeks through a rift in space-time.', 'magic', 10, 7, 6, 7, //total 30
-        [ [1, 'Bash'] ], [ 'Unstable', 'Reactive' ], 27, 20)        
+        [ [1, 'Bash'] ], [ 'Fleeting', 'Reactive' ], 27, 20)        
 
         //Rerune
         create_monster('27', '<:rerune:921986441213526016>', 'Rerune', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
         'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 'magic', 10, 15, 15, 15, //total 55
-        [ [1, 'Bash'] ], [ 'Unstable', 'Reactive' ], 28, 40)   
+        [ [1, 'Bash'] ], [ 'Fleeting', 'Reactive' ], 28, 40)   
 
         //Temporath
         create_monster('28', '<:temporath:921986441192562761>', 'Temporath', 'https://cdn.discordapp.com/attachments/921949708971294750/921987610262536192/temporath.png',
         'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', 'magic', 20, 20, 20, 20, //total 80
-        [ [1, 'Bash'] ], [ 'Blind Rage', 'Withering' ], -1, -1)
+        [ [1, 'Bash'] ], [ 'Uncontrolled', 'Withering' ], -1, -1)
 
         //Nucleorb
         create_monster('29', '<:nucleorb:922285098550849556>', 'Nucleorb', 'https://cdn.discordapp.com/attachments/921949708971294750/922300388202397726/nucleorb.png',

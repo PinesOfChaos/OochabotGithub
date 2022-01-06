@@ -31,10 +31,19 @@ module.exports = {
 
         let msg = {author: {id : player}};
 
+
         if (thread.joinable) await thread.join();
         await thread.members.add(player);
         await thread.setLocked(true);
-        await thread.send(`${player_name}, you've challenged ${chal_name}'s clone! Use this thread to battle!!`);
+
+        let ooch_plr = db.profile.get(player, 'ooch_inventory')[0];
+        let ooch_enemy = chal_gen.party[0];
+
+        await thread.send(`${player_name}, you've challenged ${chal_name}'s clone! Use this thread to battle!!`+
+                        `\n${chal_name} sends out a **LV ${ooch_enemy.level} ${ooch_enemy.name}**!`+
+                        `\nGo, ${ooch_plr.name}!`+
+                        `\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`+
+                        `\n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`);
 
         await db.profile.set(player, 'battle', 'player_state')
         await db.profile.set(player, chal_gen, 'ooch_enemy')
