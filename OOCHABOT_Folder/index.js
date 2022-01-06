@@ -9,7 +9,7 @@ const wait = require('wait');
 // create a new Discord client and give it some variables
 const { Client, Intents } = require('discord.js');
 const db = require('./db.js');
-const { move, prompt_battle_input, generate_battle } = require('./func');
+const { move, prompt_battle_input, generate_battle, capitalize } = require('./func');
 const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
@@ -59,6 +59,26 @@ client.on('ready', async () => {
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 client.on('interactionCreate', async interaction => {
+
+    if (interaction.isAutocomplete()) {
+       if (interaction.commandName == 'oochadex') {
+           let ooch_ids = db.monster_data.array()
+           let ooch_names = ooch_ids.map(v => v.name.toLowerCase());
+
+           function letter_filter(v) {
+                let msg = interaction.options.getString('oochamon').toLowerCase();
+                let search_segment = v.slice(0, msg.length)
+                return msg == search_segment;
+           }
+
+           // Search filters
+           ooch_names = ooch_names.filter(v => v != 'i');
+           ooch_names = ooch_names.filter(letter_filter);
+           ooch_names = ooch_names.slice(0, 25);
+           ooch_names = ooch_names.map(v => v = { name: capitalize(v), value: capitalize(v) });
+           interaction.respond(ooch_names);
+       }
+    }
 
     if (!interaction.isCommand() && !interaction.isContextMenu()) return;
 

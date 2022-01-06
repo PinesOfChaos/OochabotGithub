@@ -11,6 +11,7 @@ module.exports = {
         .addStringOption(option => 
             option.setName('oochamon')
                 .setDescription('Name of the oochamon you want to see a dex entry for.')
+                .setAutocomplete(true)
                 .setRequired(true)),
     async execute(interaction) {
         let ooch = interaction.options.getString('oochamon').toLowerCase();
