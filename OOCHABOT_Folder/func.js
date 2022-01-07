@@ -36,8 +36,6 @@ module.exports = {
             }
         }
 
-        console.log(`Level: ${lvl}`)
-
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
         lvl = clamp((Math.floor(Math.random() * lvl * 1.05)), 1, 100); //Formula for level generation
     
@@ -319,8 +317,6 @@ module.exports = {
                         move_damage = db.move_data.get(`${move_id}`, 'damage')
                         move_accuracy = db.move_data.get(`${move_id}`, 'accuracy')
 
-                        console.log(`ID ${move_id} \n NAME ${move_name} \n TYPE ${move_type}`)
-
                         move_buttons.addComponents(
                             new Discord.MessageButton()
                                 .setCustomId(`${move_id}`)
@@ -395,7 +391,6 @@ module.exports = {
     
                     for (let i = 0; i < ooch_inv.length; i++) {
                         ooch_check = ooch_inv[i];
-                        console.log(ooch_check);
                         ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
                         ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
                         ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
@@ -466,9 +461,14 @@ module.exports = {
 
                     thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
 
-                    const b_collector = thread.createMessageComponentCollector();
+                    const b_collector = thread.createMessageComponentCollector({ componentType: 'BUTTON' });
+                    let prism_collector;
+                    let heal_collector;
 
                     await b_collector.on('collect', async i_sel => {
+
+                        if (prism_collector != undefined) prism_collector.stop();
+                        if (heal_collector != undefined) heal_collector.stop();
 
                         if (i_sel.customId == 'heal_button') {
                             bag_select = new Discord.MessageActionRow();
@@ -493,9 +493,11 @@ module.exports = {
 
                             await i_sel.update({ content: `Select the healing item you'd like to use!`, components: [bag_buttons, bag_select] })
 
-                            const heal_collector = thread.createMessageComponentCollector({ max: 1 });
+                            heal_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
 
-                            await heal_collector.on('collect', async item_sel => { 
+                            await heal_collector.on('collect', async item_sel => {
+                                console.log(`Heal ${db.profile.get(message.author.id, `heal_inv.${item_sel.values[0]}`)}`)
+                                if (db.profile.get(message.author.id, `heal_inv.${item_sel.values[0]}`) == undefined) return;
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `heal_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
@@ -530,8 +532,6 @@ module.exports = {
                                     value: `${id}`,
                                 })
                             }
-
-                            console.log(prism_select_options);
     
                             bag_select.addComponents(
                                 new Discord.MessageSelectMenu()
@@ -542,9 +542,11 @@ module.exports = {
 
                             await i_sel.update({ content: `Select the prism you'd like to use!`, components: [bag_buttons, bag_select] })
 
-                            const prism_collector = thread.createMessageComponentCollector({ max: 1 });
+                            prism_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
 
                             await prism_collector.on('collect', async item_sel => { 
+                                console.log(`Prism ${db.profile.get(message.author.id, `prism_inv.${item_sel.values[0]}`)}`)
+                                if (db.profile.get(message.author.id, `prism_inv.${item_sel.values[0]}`) == undefined) return;
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `prism_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
@@ -907,8 +909,6 @@ module.exports = {
         const { type_effectiveness, battle_calc_damage, status_effect_check, random_number } = require('./func.js');
         const Discord = require('discord.js');
 
-        console.log(ooch_plr)
-
         let moves = ooch_enemy.moveset;
         let atk_id = moves[random_number(0,moves.length-1)];
                         
@@ -969,8 +969,6 @@ module.exports = {
     type_effectiveness: function(attack_type, target_type){
         let multiplier = 1;
         let string = '';
-
-        console.log(attack_type, target_type);
 
         switch(attack_type){
             case 'neutral':
@@ -1033,8 +1031,6 @@ module.exports = {
             string = '\n**It\'s not very effective...**'
         }
 
-        console.log([multiplier,string]);
-
         return([multiplier,string])
     },
 
@@ -1064,9 +1060,7 @@ module.exports = {
             ooch_arr = enemy_profile.party;
 
             for(let i = 0; i < ooch_arr.length; i++){
-                console.log(ooch_arr[i]);
                 if(ooch_arr[i].current_hp > 0 && slot_to_send == -1){
-                    console.log(`i = ${i}`)
                     slot_to_send = i;
                 }
             }
@@ -1192,8 +1186,8 @@ module.exports = {
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
         let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
-        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
-        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_plr}].current_hp`);
 
         string_to_send += (`\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`+
                             `\n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`)
