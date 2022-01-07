@@ -29,7 +29,7 @@ module.exports = {
             reason: '\"PVP\" Battle thread',
         });
 
-        let msg = {author: {id : player}};
+        let msg = {author: {id: player}};
 
 
         if (thread.joinable) await thread.join();

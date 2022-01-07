@@ -295,6 +295,8 @@ module.exports = {
                     .setStyle('PRIMARY')
                     .setEmoji('<:item_prism:921502013634777149>'),
             );
+        let heal_collector;
+        let prism_collector;
 
         thread.send({ content: `**---- Select A Move ----**`, components: [row, row2] })
 
@@ -497,7 +499,7 @@ module.exports = {
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `heal_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
-                                prism_collector.stop();
+                                if (prism_collector != undefined) prism_collector.stop();
                                 heal_collector.stop();
 
                                 // Enemy attacks player
@@ -518,7 +520,7 @@ module.exports = {
 
                             bag_select = new Discord.MessageActionRow();
                             let prism_select_options = [];
-                            for (let i = 0; i < prism_inv.length; i++) {
+                            for (let i = 0; i < prism_inv_keys.length; i++) {
                                 let id = prism_inv_keys[i];
                                 let amount = db.profile.get(message.author.id, `prism_inv.${prism_inv_keys[i]}`)
     
@@ -528,6 +530,8 @@ module.exports = {
                                     value: `${id}`,
                                 })
                             }
+
+                            console.log(prism_select_options);
     
                             bag_select.addComponents(
                                 new Discord.MessageSelectMenu()
@@ -545,7 +549,7 @@ module.exports = {
                                 db.profile.math(message.author.id, '-', 1, `prism_inv.${item_sel.values[0]}`)
                                 b_collector.stop();
                                 prism_collector.stop();
-                                heal_collector.stop();
+                                if (heal_collector != undefined) heal_collector.stop();
 
                                 // Enemy attacks player
                                 await enemy_attack(thread, message, ooch_plr, ooch_enemy);
@@ -1059,15 +1063,8 @@ module.exports = {
             enemy_profile = db.profile.get(message.author.id, 'ooch_enemy');
             ooch_arr = enemy_profile.party;
 
-            console.log(`enemy_profile \n${enemy_profile}`);
-            console.log(Object.keys(enemy_profile));
-
-            console.log(`ooch_arr \n${ooch_arr}`);
-            console.log(Object.keys(ooch_arr));
-            
-
-
             for(let i = 0; i < ooch_arr.length; i++){
+                console.log(ooch_arr[i]);
                 if(ooch_arr[i].current_hp > 0 && slot_to_send == -1){
                     console.log(`i = ${i}`)
                     slot_to_send = i;
