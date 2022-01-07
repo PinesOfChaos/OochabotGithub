@@ -393,6 +393,7 @@ module.exports = {
     
                     for (let i = 0; i < ooch_inv.length; i++) {
                         ooch_check = ooch_inv[i];
+                        console.log(ooch_check);
                         ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
                         ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
                         ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
@@ -405,7 +406,6 @@ module.exports = {
                             ooch_disable = true;
                         }
                         else if (ooch_check.current_hp <= 0){
-                            ooch_button_color = 'PRIMARY';
                             ooch_disable = true;
                         }
     
@@ -430,9 +430,10 @@ module.exports = {
                         let ooch_pick_name = ((ooch_pick.nickname != -1) ? ooch_pick.nickname : ooch_pick.name);
                         await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
                         `\nYou switched your active Oochamon from **${ooch_prev_name}** to **${ooch_pick_name}**.`, components: [] })
-                        db.profile.set(message.author.id, parseInt(ooch_sel.customId), 'ooch_active_slot');
-                        ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${db.profile.get(message.author.id, 'ooch_active_slot')}]`);
-                        ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
+                        
+                        ooch_pos = parseInt(ooch_sel.customId);
+                        ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${ooch_pos}]`);
+                        db.profile.set(message.author.id, ooch_pos, 'ooch_active_slot');
     
                         // Enemy attacks player
                         await enemy_attack(thread, message, ooch_plr, ooch_enemy);
@@ -861,7 +862,7 @@ module.exports = {
 
         dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
         
-        db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot')}].current_hp`);
 
         if(move_accuracy/100 * status_blind > Math.random()){
             ooch_enemy.current_hp -= dmg
@@ -887,10 +888,10 @@ module.exports = {
         }
         
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
-        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
-        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
-        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_plr}].current_hp`);
 
         string_to_send += `\n*Enemy ${ooch_enemy.name}'s HP (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`
 
@@ -901,6 +902,8 @@ module.exports = {
     enemy_attack: async function(thread, message, ooch_plr, ooch_enemy){    
         const { type_effectiveness, battle_calc_damage, status_effect_check, random_number } = require('./func.js');
         const Discord = require('discord.js');
+
+        console.log(ooch_plr)
 
         let moves = ooch_enemy.moveset;
         let atk_id = moves[random_number(0,moves.length-1)];
@@ -923,7 +926,7 @@ module.exports = {
 
         dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
         
-        db.profile.set(message.author.id, ooch_enemy.current_hp, 'ooch_enemy.current_hp');
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot')}].current_hp`);
 
         if(move_accuracy/100 * status_blind > Math.random()){
             ooch_plr.current_hp -= dmg
@@ -949,10 +952,10 @@ module.exports = {
         }
         
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
-        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');;
+        let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
-        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_plr}].current_hp`);
-        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_enemy}].current_hp`);
+        db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_plr}].current_hp`);
 
         string_to_send += `\n*Your ${ooch_plr.name}'s HP (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`
 
@@ -1055,22 +1058,30 @@ module.exports = {
             slot_to_send = -1;
             enemy_profile = db.profile.get(message.author.id, 'ooch_enemy');
             ooch_arr = enemy_profile.party;
+
             console.log(`enemy_profile \n${enemy_profile}`);
+            console.log(Object.keys(enemy_profile));
+
+            console.log(`ooch_arr \n${ooch_arr}`);
+            console.log(Object.keys(ooch_arr));
+            
+
+
             for(let i = 0; i < ooch_arr.length; i++){
-                console.log(`OOCH ARR[i] \n${ooch_arr[i]}`);
-                console.log(`OOCH ARR[i] \n${ooch_arr[i].stats}`);
-                if(ooch_arr[i].stats.hp > 0 && slot_to_send == -1){
+                if(ooch_arr[i].current_hp > 0 && slot_to_send == -1){
+                    console.log(`i = ${i}`)
                     slot_to_send = i;
                 }
             }
-            if(slot_to_send == -1 && is_turn_end){ //if there is no slot to send in
+            if(slot_to_send == -1){ //if there is no slot to send in
                 thread.send(`**You win!**\nHead back to the Hub to continue playing.`)
                 db.profile.set(message.author.id, `overworld`, 'player_state')
                 db.profile.set(message.author.id, {}, 'ooch_enemy')
+                db.profile.set(message.author.id, 0, 'ooch_active_slot')
                 await wait(20000);
                 await thread.delete();
                 return true;
-            }else{
+            }else if (slot_to_send == -1){
                 thread.send(`${enemy_profile.name} sends out ${ooch_arr[slot_to_send].name}!`)
                 db.profile.set(message.author.id, slot_to_send, `ooch_enemy.ooch_active_slot`)
             }
@@ -1079,7 +1090,7 @@ module.exports = {
             slot_to_send = -1;
             ooch_arr = db.profile.get(message.author.id, 'ooch_inventory');
             for(let i = 0; i < ooch_arr.length; i++){
-                if(ooch_arr[i].stats.hp > 0 && slot_to_send == -1){
+                if(ooch_arr[i].current_hp > 0 && slot_to_send == -1){
                     slot_to_send = i;
                 }
             }
@@ -1087,7 +1098,7 @@ module.exports = {
                 thread.send(`**You lose...**\nYou lose 20 pp.\nHead back to the Hub to continue playing.`)
                 db.profile.set(message.author.id, `overworld`, 'player_state')
                 db.profile.set(message.author.id, {}, 'ooch_enemy')
-                db.profile.set(message.author.id, ooch_plr.stats.hp, `ooch_inventory[${ooch_pos}].current_hp`)
+                db.profile.set(message.author.id, 0, 'ooch_active_slot')
                 await wait(20000);
                 await thread.delete();
                 return true;
@@ -1135,7 +1146,10 @@ module.exports = {
                     let ooch_pick_name = ((ooch_pick.nickname != -1) ? ooch_pick.nickname : ooch_pick.name);
                     await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
                     `\nCome on out **${ooch_pick_name}**!`, components: [] })
-                    db.profile.set(message.author.id, parseInt(ooch_sel.customId), 'ooch_active_slot');
+
+                    let ooch_pos = parseInt(ooch_sel.customId);
+                    ooch_plr = db.profile.get(message.author.id, `ooch_inventory[${ooch_pos}]`);
+                    db.profile.set(message.author.id, ooch_pos, 'ooch_active_slot');
 
                     prompt_battle_input(thread, message);
                 });

@@ -27,7 +27,7 @@ module.exports = {
         let atk_iv = random_number(0,10)/20+1;
         let def_iv = random_number(0,10)/20+1;
         let spd_iv = random_number(0,10)/20+1;
-        let level = 5;
+        let level = 50;
 
         //Get the stats accounting for the ID, Level, and IVs
         let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
