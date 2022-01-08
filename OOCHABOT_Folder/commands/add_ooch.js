@@ -38,6 +38,12 @@ module.exports = {
             move_list[i] = learn_list[i][0];
         }
 
+        // Make sure the move_list is 4 moves
+        while (move_list.length > 4) {
+            let rand_move_pos = random_number(0, move_list.length)
+            move_list.splice(rand_move_pos, 1);
+        }
+
         db.profile.push(interaction.user.id,
             { 
                 id: ooch_id,
