@@ -151,7 +151,7 @@ module.exports = {
     },
 
     create_ability: function(name, description) {
-        db.item_data.set(name, description, 'description');
+        db.ability_data.set(name, description, 'description');
     },
 
     move: function(message, direction) {
@@ -237,7 +237,8 @@ module.exports = {
 
     prompt_battle_input: async function(thread, message) {
 
-        const { type_to_emote, enemy_attack, player_attack, end_of_turn, victory_defeat_check, prompt_battle_input, status_effect_check } = require('./func.js');
+        const { type_to_emote, enemy_attack, player_attack, end_of_turn, victory_defeat_check, prompt_battle_input, status_effect_check,
+        item_use } = require('./func.js');
         const wait = require('wait');
         const Discord = require('discord.js');
 
@@ -293,8 +294,6 @@ module.exports = {
                     .setStyle('PRIMARY')
                     .setEmoji('<:item_prism:921502013634777149>'),
             );
-        let heal_collector;
-        let prism_collector;
 
         thread.send({ content: `**---- Select A Move ----**`, components: [row, row2] })
 
@@ -496,10 +495,15 @@ module.exports = {
                             heal_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
 
                             await heal_collector.on('collect', async item_sel => {
-                                console.log(`Heal ${db.profile.get(message.author.id, `heal_inv.${item_sel.values[0]}`)}`)
-                                if (db.profile.get(message.author.id, `heal_inv.${item_sel.values[0]}`) == undefined) return;
-                                item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
-                                db.profile.math(message.author.id, '-', 1, `heal_inv.${item_sel.values[0]}`)
+                                let item_id = item_sel.values[0];
+                                let item_data = db.item_data.get(item_id);
+
+                                if (db.profile.get(message.author.id, `heal_inv.${item_id}`) == undefined) return;
+
+                                item_use(thread, message, ooch_plr, item_id)
+                                item_sel.update({ content: `**------------ Player Turn ------------**\n` +
+                                `${item_data.emote} Used **${item_data.name}** and healed ${item_data.value * 100}% of ${ooch_plr.name}'s HP!\n`, components: []});
+                                db.profile.math(message.author.id, '-', 1, `heal_inv.${item_id}`)
                                 b_collector.stop();
                                 if (prism_collector != undefined) prism_collector.stop();
                                 heal_collector.stop();
@@ -525,14 +529,14 @@ module.exports = {
                             for (let i = 0; i < prism_inv_keys.length; i++) {
                                 let id = prism_inv_keys[i];
                                 let amount = db.profile.get(message.author.id, `prism_inv.${prism_inv_keys[i]}`)
-    
+
                                 prism_select_options.push({ 
                                     label: `${db.item_data.get(id, 'name')} (${amount})`,
                                     description: db.item_data.get(id, 'description'),
                                     value: `${id}`,
                                 })
                             }
-    
+
                             bag_select.addComponents(
                                 new Discord.MessageSelectMenu()
                                     .setCustomId('prism_select')
@@ -545,7 +549,6 @@ module.exports = {
                             prism_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
 
                             await prism_collector.on('collect', async item_sel => { 
-                                console.log(`Prism ${db.profile.get(message.author.id, `prism_inv.${item_sel.values[0]}`)}`)
                                 if (db.profile.get(message.author.id, `prism_inv.${item_sel.values[0]}`) == undefined) return;
                                 item_sel.update({ content: `Used a **${db.item_data.get(item_sel.values[0], 'name')}**!`, components: []});
                                 db.profile.math(message.author.id, '-', 1, `prism_inv.${item_sel.values[0]}`)
@@ -847,9 +850,9 @@ module.exports = {
         return emote_return;
     },
 
-    player_attack: async function(thread, message, atk_id,ooch_plr,ooch_enemy){
+    player_attack: async function(thread, message, atk_id,ooch_plr,ooch_enemy) {
         const { type_effectiveness, battle_calc_damage, status_effect_check } = require('./func.js');
-        const Discord = require('discord.js');
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
         let move_name =     db.move_data.get(`${atk_id}`, 'name');
         let move_type =     db.move_data.get(`${atk_id}`, 'type');
@@ -872,6 +875,7 @@ module.exports = {
 
         if(move_accuracy/100 * status_blind > Math.random()){
             ooch_enemy.current_hp -= dmg
+            ooch_enemy.current_hp = clamp(ooch_enemy.current_hp, 0, ooch_enemy.stats.hp);
             string_to_send +=  `\nYour ${ooch_plr.name} uses ${move_name} and deals **${dmg} damage** to the enemy ${ooch_enemy.name}! `
             
             //If a crit lands
@@ -905,9 +909,9 @@ module.exports = {
 
     },
 
-    enemy_attack: async function(thread, message, ooch_plr, ooch_enemy){    
+    enemy_attack: async function(thread, message, ooch_plr, ooch_enemy) {    
         const { type_effectiveness, battle_calc_damage, status_effect_check, random_number } = require('./func.js');
-        const Discord = require('discord.js');
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
         let moves = ooch_enemy.moveset;
         let atk_id = moves[random_number(0,moves.length-1)];
@@ -926,14 +930,13 @@ module.exports = {
         let status_doubled = (status_effect_check('doubled', plr_status_effects) ? 2 : 1);
         let string_to_send = `**------------ Enemy Turn ------------**`;
 
-
-
         dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_enemy.level, ooch_enemy.stats.atk, ooch_plr.stats.def);
         
         db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot')}].current_hp`);
 
         if(move_accuracy/100 * status_blind > Math.random()){
             ooch_plr.current_hp -= dmg
+            ooch_plr.current_hp = clamp(ooch_plr.current_hp, 0, ooch_plr.stats.hp);
             string_to_send +=  `\nThe enemy ${ooch_enemy.name} uses ${move_name} and deals **${dmg} damage** to your ${ooch_plr.name}! `
             
             //If a crit lands
@@ -1150,7 +1153,7 @@ module.exports = {
     },
 
     end_of_turn: async function(thread, message, ooch_plr, ooch_enemy){
-        const { status_effect_check } = require('./func.js');
+        const { status_effect_check, generate_hp_bar } = require('./func.js');
 
         let plr_burned = status_effect_check('burned', ooch_plr.status_effects);
         let plr_infected = status_effect_check('infected', ooch_plr.status_effects);
@@ -1186,11 +1189,14 @@ module.exports = {
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
         let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
+        // Update the current hp in the database properly
         db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${ooch_pos_enemy}].current_hp`);
         db.profile.set(message.author.id, ooch_plr.current_hp, `ooch_inventory[${ooch_pos_plr}].current_hp`);
 
-        string_to_send += (`\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`+
-                            `\n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`)
+        let plr_hp_string = generate_hp_bar(ooch_plr, 'plr');
+        let en_hp_string = generate_hp_bar(ooch_enemy, 'enemy');
+        string_to_send += `${plr_hp_string}${en_hp_string}`
+        
         await thread.send(string_to_send)
         
     },
@@ -1219,4 +1225,51 @@ module.exports = {
         }
     
     },
+
+    generate_hp_bar: function(ooch, side) {
+        let hp_string = ``;
+        let hp_sec = (ooch.stats.hp / 10);
+        let hp = ooch.current_hp;
+        let sections = (hp / hp_sec > 0 ? Math.ceil(hp / hp_sec) : 0);
+        let piece_type;
+
+        hp_string += `\n${db.monster_data.get(ooch.id, 'emote')} `;
+
+        if (side == 'plr') {
+            piece_type = `<:p_f_hm:923071749761953833>`
+            if (sections <= 5) piece_type = `<:p_m_hm:933108890327973958>`;
+            if (sections <= 2) piece_type = `<:p_l_hm:933106926961696809>`;
+
+            hp_string += `<:p_hs:923071749694849024>`;
+            hp_string += `${piece_type.repeat(sections)}` // Filled slots
+            hp_string += `${`<:p_g_hm:923072500185853973>`.repeat(10 - sections)}` // Empty slots
+            hp_string += `<:p_he:923071749720014848>\n`;
+        } else {
+            piece_type = `<:e_f_hm:933113939917688832>`;
+            if (sections <= 5) piece_type = `<:e_m_hm:933113949648466002>`;
+            if (sections <= 2) piece_type = `<:e_l_hm:933113957156274226>`;
+
+            hp_string += `<:e_hs:933115484860190771>`;
+            hp_string += `${piece_type.repeat(sections)}` // Filled slots
+            hp_string += `${`<:e_g_hm:933113931411648563>`.repeat(10 - sections)}` // Empty slots
+            hp_string += `<:e_he:933115485199945838>\n`;
+        }
+
+        hp_string += `\`HP: ${hp}/${ooch.stats.hp}\`\n`;
+
+        return hp_string;
+    },
+
+    item_use: function(thread, message, ooch, item) {
+        let item_data = db.item_data.get(item);
+        let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
+        if (item_data.type == 'potion') {
+            ooch.current_hp += Math.ceil(ooch.stats.hp * item_data.value);
+            ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
+            db.profile.set(message.author.id, ooch.current_hp, `ooch_inventory[${ooch_pos_plr}].current_hp`);
+        }
+        
+    }
 }
