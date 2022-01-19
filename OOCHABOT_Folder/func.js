@@ -1218,25 +1218,27 @@ module.exports = {
         let string_to_send = `**------------ End of Round ------------**`;
 
         if(plr_burned){
-            ooch_plr.current_hp -= Math.round(ooch_plr.stats.hp/10);
-            string_to_send += `\n${ooch_plr.name} was hurt by its burn.`
+            let burn_val = Math.round(ooch_plr.stats.hp/10);
+            ooch_plr.current_hp -= burn_val;
+            string_to_send += `\n${ooch_plr.name} was hurt by its burn and loses **${burn_val} HP**.`;
         }
         if(enemy_burned){
-            ooch_enemy.current_hp -= Math.round(ooch_enemy.stats.hp/10)
-            string_to_send += `\nThe enemy ${ooch_enemy.name} was hurt by its burn.`
+            let burn_val = Math.round(ooch_enemy.stats.hp/10);
+            ooch_enemy.current_hp -= burn_val;
+            string_to_send += `\nThe enemy ${ooch_enemy.name} was hurt by its burn and loses **${burn_val} HP**.`;
         }
 
         if(plr_infected){
-            let infect_val = ooch_plr.stats.hp/20;
+            let infect_val = Math.round(ooch_plr.stats.hp/20);
             ooch_plr.current_hp -= infect_val;
             ooch_enemy.current_hp = Math.min(ooch_enemy.current_hp + infect_val, ooch_enemy.stats.hp);
-            string_to_send += `\n${ooch_plr.name} has its HP absorbed by the enemy ${ooch_enemy.name}.`
+            string_to_send += `\n${ooch_plr.name} has **${infect_val} HP** absorbed by the enemy ${ooch_enemy.name}.`;
         }
         if(enemy_infected){
-            let infect_val = ooch_enemy.stats.hp/20;
+            let infect_val = Math.round(ooch_enemy.stats.hp/20);
             ooch_enemy.current_hp -= infect_val;
             ooch_plr.current_hp = Math.min(ooch_plr.current_hp + infect_val, ooch_plr.stats.hp);
-            string_to_send += `\n${ooch_plr.name} has its HP absorbed by the enemy ${ooch_enemy.name}.`
+            string_to_send += `\n${ooch_plr.name} has **${infect_val} HP** absorbed by the enemy ${ooch_enemy.name}.`;
         }
 
 
