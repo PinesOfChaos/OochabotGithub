@@ -75,7 +75,7 @@ module.exports = {
         //#endregion
 
 
-        //#region Move Data
+        //#region Ability Data
 
         //              NAME,           Description
         create_ability('Miniscule',     'So small that it reduces the chance to be hit by 10%.');
@@ -228,62 +228,62 @@ module.exports = {
         //Jellime
         create_monster('22', '<:jellime:921979911382654997>', 'Jelime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987464854401044/jellime.png',
         'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', 'ooze', 14, 10, 16, 10, //total 50
-        [ [1, 'Bash'] ], [ 'Ensnare', 'Icky' ], 23, 26)
+        [ [1,1],[3,29],[7,24],[11,23],[18,9],[25,29],[-1,38] ], [ 'Ensnare', 'Icky' ], 23, 26)
 
         //Meduslime
         create_monster('23', '<:meduslime:921979911634313216>', 'Meduslime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987499214127104/meduslime.png',
         'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 'ooze', 16, 25, 19, 15, //total 75
-        [ [1, 'Bash'] ], [ 'Ensnare', 'Icky' ], -1, -1)
+        [ [1,1],[7,29],[14,24],[17,23],[22,9],[30,29],[-1,38] ], [ 'Ensnare', 'Icky' ], -1, -1)
 
         //Tisparc
         create_monster('24', '<:tisparc:921979911604949052>', 'Tisparc', 'https://cdn.discordapp.com/attachments/921949708971294750/921987527676674058/tisparc.png',
         'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', 'magic', 8, 15, 7, 10, //total 45
-        [ [1, 'Bash'] ], [ 'Uncontrolled', 'Apprentice' ], 25, 18)
+        [ [1,1],[5,24],[9,25],[14,26],[21,16],[26,27],[35,17],[-1,12] ], [ 'Uncontrolled', 'Apprentice' ], 25, 18)
 
         //Wizzap
         create_monster('25', '<:wizzap:921979911802068992>', 'Wizzap', 'https://cdn.discordapp.com/attachments/921949708971294750/921987540641280062/wizzap.png',
         'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', 'magic', 13, 23, 12, 12, //total 65
-        [ [1, 'Bash'] ], [ 'Focused', 'Patient' ], -1, -1)
+        [ [1,1],[8,24],[13,25],[22,26],[27,16],[30,27],[44,17],[-1,12] ], [ 'Focused', 'Patient' ], -1, -1)
 
         //Blipoint
         create_monster('26', '<:blipoint:921986441280634880>', 'Blipoint', 'https://cdn.discordapp.com/attachments/921949708971294750/921987566956347392/blipoint.png',
         'An eye peeks through a rift in space-time.', 'magic', 10, 7, 6, 7, //total 30
-        [ [1, 'Bash'] ], [ 'Fleeting', 'Reactive' ], 27, 20)        
+        [ [1,1],[5,30],[15,5],[25,9],[35,31],[-1,19] ], [ 'Fleeting', 'Reactive' ], 27, 20)        
 
         //Rerune
         create_monster('27', '<:rerune:921986441213526016>', 'Rerune', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
         'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 'magic', 10, 15, 15, 15, //total 55
-        [ [1, 'Bash'] ], [ 'Fleeting', 'Reactive' ], 28, 40)   
+        [ [1,1],[10,30],[20,5],[30,9],[40,31],[-1,19] ], [ 'Fleeting', 'Reactive' ], 28, 40)   
 
         //Temporath
         create_monster('28', '<:temporath:921986441192562761>', 'Temporath', 'https://cdn.discordapp.com/attachments/921949708971294750/921987610262536192/temporath.png',
         'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', 'magic', 20, 20, 20, 20, //total 80
-        [ [1, 'Bash'] ], [ 'Uncontrolled', 'Withering' ], -1, -1)
+        [ [1,1],[15,30],[25,5],[35,9],[45,31],[-1,19] ], [ 'Uncontrolled', 'Withering' ], -1, -1)
 
         //Nucleorb
         create_monster('29', '<:nucleorb:922285098550849556>', 'Nucleorb', 'https://cdn.discordapp.com/attachments/921949708971294750/922300388202397726/nucleorb.png',
         'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', 'ooze', 7, 13, 9, 11, //total 40
-        [ [1, 'Bash'] ], [ 'Miniscule', 'Gentle' ], 30, 12)
+        [ [1,1],[5,29],[11,33],[18,34],[24,19],[-1,10] ], [ 'Miniscule', 'Gentle' ], 30, 12)
 
         //Amebite
         create_monster('30', '<:amebite:922285098244669483>', 'Amebite', 'https://cdn.discordapp.com/attachments/921949708971294750/922300401720655923/amebite.png',
         'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', 'ooze', 11, 18, 12, 14, //total 55
-        [ [1, 'Bash'] ], [ 'Tough', 'Ravenous' ], 31, 28)
+        [ [1,1],[7,29],[18,33],[23,34],[35,19],[-1,10] ], [ 'Tough', 'Ravenous' ], 31, 28)
 
         //Amalgrime
         create_monster('31', '<:amalgrime:922285098567602176>', 'Amalgrime', 'https://cdn.discordapp.com/attachments/921949708971294750/922300413590519848/amalgrime.png',
         'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 'ooze', 25, 20, 20, 20, //total 85
-        [ [1, 'Bash'] ], [ 'Immense', 'Gentle' ], -1, -1)
+        [ [1,1],[12,29],[24,33],[29,34],[41,19],[-1,10] ], [ 'Immense', 'Gentle' ], -1, -1)
 
         //Drilline
         create_monster('32', '<:drilline:922298875677642772>', 'Drilline', 'https://cdn.discordapp.com/attachments/921949708971294750/922300426114715658/drilline.png',
         'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', 'tech', 11, 14, 15, 5, //total 45
-        [ [1, 'Bash'] ], [ 'Armored', 'Inertia' ], 33, 21)
+        [ [1,1],[4,3],[7,37],[12,39],[20,36],[29,35],[-1,11] ], [ 'Armored', 'Inertia' ], 33, 21)
 
         //Erwrek
         create_monster('33', '<:erwrek:922298875644100608>', 'Erwrek', 'https://cdn.discordapp.com/attachments/921949708971294750/922300437690982431/erwrek.png',
         'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', 'tech', 15, 19, 25, 16, //total 75
-        [ [1, 'Bash'] ], [ 'Armored', 'Leech' ], -1, -1)
+        [ [1,1],[9,3],[12,37],[17,39],[27,36],[35,35],[-1,11] ], [ 'Armored', 'Leech' ], -1, -1)
 
         //i_
         create_monster('34', '<:i_:922299745987346433>', 'i', 'https://cdn.discordapp.com/attachments/921949708971294750/922300450206801950/i.png',

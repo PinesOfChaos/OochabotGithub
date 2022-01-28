@@ -9,10 +9,15 @@ module.exports = {
         .addIntegerOption(option => 
             option.setName('id')
                 .setDescription('ID of ooch')
+                .setRequired(true))
+        .addIntegerOption(option => 
+            option.setName('lv')
+                .setDescription('Level of ooch')
                 .setRequired(true)),
     async execute(interaction) {
 
         let ooch_id = interaction.options.getInteger('id');
+        let level = interaction.options.getInteger('lv');
 
         // Setup ooch_id data
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
@@ -27,7 +32,7 @@ module.exports = {
         let atk_iv = random_number(0,10)/20+1;
         let def_iv = random_number(0,10)/20+1;
         let spd_iv = random_number(0,10)/20+1;
-        let level = 50;
+        
 
         //Get the stats accounting for the ID, Level, and IVs
         let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
