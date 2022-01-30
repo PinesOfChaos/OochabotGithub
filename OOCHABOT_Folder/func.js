@@ -226,9 +226,9 @@ module.exports = {
                 let other_map_display = db.profile.get(profile_arr[i], 'display_msg_id');
 
                 if (other_map_display != false) {
-                    (message.channel.messages.fetch(db.profile.get(profile_arr[i], 'display_msg_id'))).then(async (msg) => {
-                        await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) });
-                    });
+                    (message.channel.messages.fetch(other_map_display)).then(async (msg) => {
+                        await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) }).catch(() => {});
+                    }).catch(() => {});
                 }
             }
         }
