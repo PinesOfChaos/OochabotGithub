@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const Discord = require('discord.js');
 const { generate_challenge, prompt_battle_input } = require('../func.js')
 const db = require('../db.js');
 
@@ -30,7 +29,6 @@ module.exports = {
         });
 
         let msg = {author: {id: player}};
-
 
         if (thread.joinable) await thread.join();
         await thread.members.add(player);
