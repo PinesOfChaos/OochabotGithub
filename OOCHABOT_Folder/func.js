@@ -1345,5 +1345,14 @@ module.exports = {
             }
         }
         
+    },
+
+    has_ability(ooch_object, ability_name){
+        if(ooch_object.ability == ability_name){
+            return(true);
+        }
+        else{
+            return(false);
+        }
     }
 }
