@@ -99,8 +99,7 @@ module.exports = {
         create_ability('Fleeting',      'Increases SPD and ATK by 50% but also loses 50% of HP each turn.');
         create_ability('Efficient',     'Increases ATK by 5% each turn.');
         create_ability('Boisterous',    'Shatters eardrums when it enters the field dealing 5% of the enemy\'s HP');
-        create_ability('Haunted',       'Applies the DOOMED status to an enemy when it dies.');
-        create_ability('Efficient',     'Increases ATK by 5% each turn.');
+        create_ability('Haunted',       'Applies the DOOMED status to an enemy when the holder of the ability dies.');
         create_ability('Leech',         'Restores HP equal to 10% of damage done to the enemy.');
         create_ability('Ensnare',       'Grants a 30% chance to SNARE an enemy when attacking.');
         create_ability('Uncontrolled',  'Increases ATK by 30% but randomly chooses an attack each turn');
