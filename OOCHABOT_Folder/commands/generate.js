@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
-const { create_monster, create_move, create_item, create_ability } = require('../func');
+const { create_monster, create_move, create_item, create_ability } = require('../func_create');
 
 module.exports = {
     data: new SlashCommandBuilder()

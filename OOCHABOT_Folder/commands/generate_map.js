@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const Discord = require('discord.js');
-const { gen_map } = require('../func');
+const { gen_map } = require('../func_play');
 const db = require('../db.js');
 
 module.exports = {

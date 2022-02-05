@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../db.js');
-const { random_number, get_stats } = require('../func.js');
+const { get_stats } = require('../func_battle.js');
+const _ = require('lodash');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,13 +26,13 @@ module.exports = {
         let move_list = [];
 
         // Pick a random ability
-        let rand_ability = ability_list[random_number(0, ability_list.length - 1)]
+        let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
 
         //Set the IVs & Level
-        let hp_iv = random_number(0,10)/20+1;
-        let atk_iv = random_number(0,10)/20+1;
-        let def_iv = random_number(0,10)/20+1;
-        let spd_iv = random_number(0,10)/20+1;
+        let hp_iv = _.random(0,10)/20+1;
+        let atk_iv = _.random(0,10)/20+1;
+        let def_iv = _.random(0,10)/20+1;
+        let spd_iv = _.random(0,10)/20+1;
         
 
         //Get the stats accounting for the ID, Level, and IVs
@@ -45,7 +46,7 @@ module.exports = {
 
         // Make sure the move_list is 4 moves
         while (move_list.length > 4) {
-            let rand_move_pos = random_number(0, move_list.length)
+            let rand_move_pos = _.random(0, move_list.length)
             move_list.splice(rand_move_pos, 1);
         }
 

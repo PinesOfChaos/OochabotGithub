@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
-const path = require('path')
 const db = require('../db.js')
-const { capitalize } = require('../func.js');
+const _ = require('lodash');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,7 +30,7 @@ module.exports = {
 
         const dexEmbed = new Discord.MessageEmbed()
             .setColor('#808080')
-            .setTitle(`${ooch_obj.name} (Type: ${capitalize(ooch_obj.type)})`)
+            .setTitle(`${ooch_obj.name} (Type: ${_.capitalize(ooch_obj.type)})`)
             .setThumbnail(ooch_obj.image)
             .setDescription(`*${ooch_obj.oochive_entry}*`)
             .addField('Stats', `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**`)

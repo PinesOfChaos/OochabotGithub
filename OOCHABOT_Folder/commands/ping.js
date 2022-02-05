@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
-
+const { modify_stat } = require('../func_battle.js');
+ 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')

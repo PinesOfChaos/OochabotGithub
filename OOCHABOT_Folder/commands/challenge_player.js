@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { generate_challenge, prompt_battle_input } = require('../func.js')
+const { generate_challenge, prompt_battle_input } = require('../func_battle.js')
 const db = require('../db.js');
 
 module.exports = {

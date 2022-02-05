@@ -1,25 +1,13 @@
 const db = require("./db")
 const wait = require('wait');
 const Discord = require('discord.js');
+const _ = require('lodash');
 
 module.exports = {
 
-    random_number: function(min, max) {
-        return Math.round(Math.random() * (max - min) + min);
-    },
-
-    capitalize: function(string) {
-        string = string.split(' ');
-        string = string.map(a => a.charAt(0).toUpperCase() + a.slice(1));
-        string = string.join(' ');
-
-        return string;
-    },
-
     generate_battle: function(plr_ooch, ooch_species) {
-    
-        const { random_number } = require('./func.js'); 
-        const { get_stats } = require('./func.js');
+
+        const { get_stats } = require('./func_battle.js');
 
         // Get the wild oochamon's level
         let ooch_inv_arr = Object.keys(plr_ooch)
@@ -40,14 +28,15 @@ module.exports = {
         lvl = clamp((Math.floor(Math.random() * lvl * 1.05)), 1, 100); //Formula for level generation
     
         // Get the evolution data
-        let ooch_pick = species[random_number(0, species.length - 1)]
+        let ooch_pick = species[_.random(0, species.length - 1)]
         let evo1_id = db.monster_data.get(ooch_pick, 'evo_id')
         let evo1_lvl = db.monster_data.get(ooch_pick, 'evo_lvl')
         let evo2_id = db.monster_data.get(evo1_id, 'evo_id')
         let evo2_lvl = db.monster_data.get(evo2_id, 'evo_lvl')
         let stg = 0;
+
         // Have a chance to make the wild oochamon be the evolved form
-        let evo_chance = random_number(0, 1) + random_number(0, 1)
+        let evo_chance = _.random(0, 1) + _.random(0, 1)
         if (evo_chance == 2 && lvl >= evo2_lvl && evo2_lvl != -1) {
             ooch_pick = evo2_id;
             stg = 2;
@@ -57,10 +46,10 @@ module.exports = {
         }
 
         // Get wild oochamon stats
-        let hp_iv = random_number(0,10)/20+1
-        let atk_iv = random_number(0,10)/20+1
-        let def_iv = random_number(0,10)/20+1
-        let spd_iv = random_number(0,10)/20+1
+        let hp_iv = _.random(0,10)/20+1
+        let atk_iv = _.random(0,10)/20+1
+        let def_iv = _.random(0,10)/20+1
+        let spd_iv = _.random(0,10)/20+1
 
         let stats = get_stats(ooch_pick, lvl, hp_iv, atk_iv, def_iv, spd_iv) //returns [hp, atk, def, spd]
         let hp = stats[0]
@@ -77,13 +66,13 @@ module.exports = {
 
         // Make sure the move_list is 4 moves
         while (move_list.length > 4) {
-            let rand_move_pos = random_number(0, move_list.length)
+            let rand_move_pos = _.random(0, move_list.length)
             move_list.splice(rand_move_pos, 1);
         }
 
         // Pick a random ability
         let ability_list = db.monster_data.get(ooch_pick, 'abilities');
-        let rand_ability = ability_list[random_number(0, ability_list.length - 1)]
+        let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
 
         return {
             name: 'Enemy',
@@ -121,130 +110,10 @@ module.exports = {
         }
     },
 
-    create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
-        db.monster_data.set(id, emote, 'emote')
-        db.monster_data.set(id, image, 'image')
-        db.monster_data.set(id, name, 'name')
-        db.monster_data.set(id, oochive_entry, 'oochive_entry')
-        db.monster_data.set(id, type, 'type')
-        db.monster_data.set(id, hp, 'hp')
-        db.monster_data.set(id, atk, 'atk')
-        db.monster_data.set(id, def, 'def')
-        db.monster_data.set(id, spd, 'spd')
-        db.monster_data.set(id, move_list, 'move_list')
-        db.monster_data.set(id, abilities, 'abilities')
-        db.monster_data.set(id, evo_id, 'evo_id')
-        db.monster_data.set(id, evo_lvl, 'evo_lvl')
-    },
-
-    create_move: function(id, name, type, damage, accuracy, effect, chance, description){
-        db.move_data.set(id, name, 'name')
-        db.move_data.set(id, type, 'type')
-        db.move_data.set(id, damage, 'damage')
-        db.move_data.set(id, accuracy, 'accuracy')
-        db.move_data.set(id, effect, 'effect')
-        db.move_data.set(id, chance, 'chance')
-        db.move_data.set(id, description, 'description')
-    },
-
-    create_item: function(id, name, emote, category, type, value, description) {
-        db.item_data.set(id, name, 'name');
-        db.item_data.set(id, emote, 'emote');
-        db.item_data.set(id, category, 'category');
-        db.item_data.set(id, type, 'type');
-        db.item_data.set(id, value, 'value');
-        db.item_data.set(id, description, 'description');
-    },
-
-    create_ability: function(name, description) {
-        db.ability_data.set(name, description, 'description');
-    },
-
-    move: function(message, direction) {
-        /*
-            db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
-        */
-
-        const { map_emote_string } = require('./func.js');
-
-        let target = message.author.id;
-        let xmove = 0;
-        let ymove = 0;
-        let msg_to_edit = db.profile.get(message.author.id, 'display_msg_id');
-        let profile_arr = db.profile.keyArray();
-        profile_arr = profile_arr.filter(val => val != message.author.id);
-        
-        //Get the player's location
-        let player_location = db.profile.get(target, 'location_data');
-        let biome = player_location.area;
-        let playerx = player_location.x;
-        let playery = player_location.y;
-
-        //Get the map array based on the player's current biome
-        let map_obj = db.maps.get(biome.toLowerCase());
-        let map_arr = map_obj[1]; //this should be the actual map array?
-
-        //set where the player is going to move
-        switch(direction){
-            case('w'):
-                xmove = -1;
-            break;
-            case('s'):
-                xmove = 1;
-            break;
-            case('a'):
-                ymove  = -1;
-            break;
-            case('d'):
-                ymove = 1;
-            break;
-        }
-        
-        //0 path, 1 block, 2 spawn, 3 chest
-
-        if(map_arr[playerx + xmove][playery + ymove] != 1){//if the space the player wants to move to is NOT a blocked space
-            playerx += xmove;
-            playery += ymove;
-        }
-
-        //Update the player's profile with their new x & y positions
-        db.profile.set(target, { area: biome, x: playerx, y: playery }, 'location_data');
-
-        // Update player position
-        db.player_positions.set(biome, { x: playerx, y: playery }, target);
-
-        //Send reply displaying the player's location on the map
-        (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery) });
-        });
-
-        for (let i = 0; i < profile_arr.length; i++) {
-            //Get the player's location
-            let other_player_location = db.profile.get(profile_arr[i], 'location_data');
-            let other_biome = other_player_location.area;
-            if (other_biome == biome) {
-                let other_x = other_player_location.x;
-                let other_y = other_player_location.y;
-
-                //Get the map array based on the player's current biome
-                let other_map_obj = db.maps.get(biome);
-                let other_map_arr = other_map_obj[1]; //this should be the actual map array
-                let other_map_display = db.profile.get(profile_arr[i], 'display_msg_id');
-
-                if (other_map_display != false) {
-                    (message.channel.messages.fetch(other_map_display)).then(async (msg) => {
-                        await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) }).catch(() => {});
-                    }).catch(() => {});
-                }
-            }
-        }
-
-    },
-
     prompt_battle_input: async function(thread, message) {
 
         const { type_to_emote, enemy_attack, player_attack, end_of_turn, victory_defeat_check, prompt_battle_input, status_effect_check,
-        item_use } = require('./func.js');
+        item_use } = require('./func_battle.js');
         const wait = require('wait');
         const Discord = require('discord.js');
 
@@ -648,174 +517,6 @@ module.exports = {
         });
     },
 
-    gen_map: function(map_size, chests, biome) {
-        let map = [];
-        let center = Math.floor(map_size/2);
-        
-        db.player_positions.set(biome, {});
-
-        if(biome == 'hub'){
-            map = [[1,1,1,1,1],[1,0,0,0,1],[1,0,4,0,1],[1,0,0,0,1],[1,1,1,1,1]];
-            return([biome, map, []]);
-        }
-
-        //fill map with blocked spaces
-        for(let i = 0; i < map_size; i++){
-            map[i] = [];
-            for(let j = 0; j < map_size; j++){	
-                map[i][j] = 1;	
-            }
-        }
-
-        //setup some reuseable variables
-        let rand_dir = 0;
-        let rand_len = 0;
-        let xpos = 0;
-        let ypos = 0;
-        let chest_positions = [];
-
-        //generate chests
-        for(let i = 0; i < chests; i++){
-            rand_dir = Math.random()*360;
-            rand_len = Math.random()*map_size/8+map_size/4;
-            xpos = Math.floor(center+(Math.cos(rand_dir)*rand_len))
-            ypos = Math.floor(center+(Math.sin(rand_dir)*rand_len))
-            chest_positions[i] = [xpos,ypos]
-
-        }
-
-        //create paths to chests
-        for(let i = 0; i < chests; i++){
-            xpos = chest_positions[i][0];
-            ypos = chest_positions[i][1];
-
-            while(Math.abs(xpos-center)+Math.abs(ypos-center) > 1){
-                if(xpos > center){
-                    xpos -=1;
-                }
-                else if(xpos < center){
-                    xpos +=1;
-                }
-                else if(ypos > center){
-                    ypos -=1;
-                }
-                else if(ypos < center){
-                    ypos +=1;
-                }
-
-                xpos += Math.round(Math.random()*2)-1;
-                ypos += Math.round(Math.random()*2)-1;
-
-                for(let j = -1; j < 2; j++){
-                    for(let k = -1; k < 2; k++){
-                        map[xpos+j][ypos+k] = 0
-                    }
-                }
-            }
-        }
-
-        //place chests
-        for(let i = 0; i < chests; i++){
-            map[chest_positions[i][0]][chest_positions[i][1]] = 3
-        }
-
-        map[center][center] = 4;
-
-        //Create the list of creatures that can spawn in a given biome
-        //Gives each a base chance and an additional chance value 
-        let spawns = [];
-        switch(biome){
-            case 'obsidian':
-                //ID,Chance
-                spawns[0] = [6,  5+Math.round(Math.random()*10)] //Puppyre
-                spawns[1] = [17,40+Math.round(Math.random()*10)] //Charlite
-                spawns[2] = [19,40+Math.round(Math.random()*10)] //Torchoir
-                spawns[3] = [24,20+Math.round(Math.random()*10)] //Tisparc
-                spawns[4] = [32,15+Math.round(Math.random()*10)] //Drilline
-            break;
-            case 'desert':
-                //ID,Chance
-                spawns[0] = [3,  5+Math.round(Math.random()*10)] //Roocky
-                spawns[1] = [9, 40+Math.round(Math.random()*10)] //Glither
-                spawns[2] = [11,40+Math.round(Math.random()*10)] //Constone
-                spawns[3] = [21,10+Math.round(Math.random()*10)] //Eluslug
-                spawns[4] = [26,10+Math.round(Math.random()*10)] //Blipoint
-            break;
-            case 'fungal':
-                //ID,Chance
-                spawns[0] = [0,  5+Math.round(Math.random()*10)] //Sporbee
-                spawns[1] = [13,30+Math.round(Math.random()*10)] //Widew
-                spawns[2] = [15,30+Math.round(Math.random()*10)] //Moldot
-                spawns[3] = [22,30+Math.round(Math.random()*10)] //Jellime
-                spawns[4] = [29,10+Math.round(Math.random()*10)] //Nucleorb
-            break;
-        }
-
-        return([biome, map, spawns]);
-
-    },
-
-    map_emote_string: function(biome, map_array, x_pos, y_pos) {
-        //biome can be obsidian, desert or fungal, anything else will default to the HUB tileset
-        let tile_emotes = [];
-        
-
-        //===========================
-        //HEY READ THIS DUMMI
-        //0 path, 1 block, 2 player, 3 chest, 4 spawn
-        //===========================
-
-        switch(biome){
-            case('obsidian'):
-                tile_emotes = ['<:tObsd:921225027557412975>', '<:tObsdB:921225027624501268>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
-            break;
-            
-            case('desert'):
-                tile_emotes = ['<:tSand:921220712641986572>', '<:tSandB:921220723110977606>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
-            break;
-
-            case('fungal'):
-                tile_emotes = ['<:tShrm:921230053499617331>', '<:tShrmB:921230053503819777>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
-            break;
-
-            default:
-                tile_emotes = ['<:tHUB:921240940641939507>', '<:tHUBB:921240940641919056>', '<:tile_player:921492132966060042>', '<:tile_chest:921486599223664640>', '<:tHUB:921240940641939507>']
-            break;
-        }
-
-        let emote_map = [];
-        let size = map_array.length;
-        let view_size = 2;
-
-        //finds positions of all players and applies them to the map array
-        let other_players_pos_list = Object.keys(db.player_positions.get(biome));
-        let pos_find = -1;
-
-        for (let i = 0; i < other_players_pos_list.length; i++) {
-            pos_find = db.player_positions.get(biome, other_players_pos_list[i]);
-            map_array[pos_find.x][pos_find.y] = 2;
-        }
-
-        for (let i = -view_size; i < view_size + 1; i++) {
-            emote_map.push([]);
-            for (let j = -view_size; j < view_size + 1; j++) {
-                if (i + x_pos < 0 || j + y_pos < 0 || i + x_pos >= size || j + y_pos >= size) {
-                    tile_value = 1;
-                } else if (i == 0 && j == 0) {
-                    tile_value = 2;
-                } else {
-                    tile_value = map_array[i + x_pos][j + y_pos]
-                }
-
-                emote_map[i + view_size][j + view_size] = tile_emotes[tile_value]
-            }
-            emote_map[i + view_size] = emote_map[i + view_size].join('')
-        }
-        emote_map = emote_map.join('\n')
-
-        return(emote_map);
-    },
-
     battle_choose_species: function(spawn_arr) {
         let sum_val = 0;
         let target_val = 0;
@@ -852,7 +553,7 @@ module.exports = {
         return exp_needed;
     },
 
-    get_stats: function(species_id,level,hp_iv,atk_iv,def_iv,spd_iv){
+    get_stats: function(species_id,level,hp_iv,atk_iv,def_iv,spd_iv) {
         
         let hp = Math.floor(db.monster_data.get(species_id, 'hp') * (1.05 ** level) * hp_iv + 10) ;
         let atk = Math.floor(db.monster_data.get(species_id, 'atk') * (1.05 ** level) * atk_iv);
@@ -863,7 +564,7 @@ module.exports = {
 
     },
 
-    type_to_emote: function(type_string){
+    type_to_emote: function(type_string) {
         let emote_return = '<:icon_void:923049669699969054>';
         switch(type_string){
             case 'flame':
@@ -892,7 +593,7 @@ module.exports = {
     },
 
     player_attack: async function(thread, message, atk_id,ooch_plr,ooch_enemy) {
-        const { type_effectiveness, battle_calc_damage, status_effect_check, generate_hp_bar } = require('./func.js');
+        const { type_effectiveness, battle_calc_damage, status_effect_check } = require('./func_battle.js');
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
         let move_name =     db.move_data.get(`${atk_id}`, 'name');
@@ -907,14 +608,14 @@ module.exports = {
         let plr_status_effects = ooch_plr.status_effects;
         let status_blind = (status_effect_check('blinded', plr_status_effects) ? .75 : 1);
         let status_doubled = (status_effect_check('doubled', enemy_status_effects) ? 2 : 1);
+
         let string_to_send = `**------------ Player Turn ------------**`;
 
-
-        dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_plr.level, ooch_plr.stats.atk, ooch_enemy.stats.def);
+        dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, ooch_plr.level, ooch_plr.stats.atk * ooch_plr.stats.atk_mul, ooch_enemy.stats.def * ooch_enemy.stats.def_mul);
         
         db.profile.set(message.author.id, ooch_enemy.current_hp, `ooch_enemy.party[${db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot')}].current_hp`);
 
-        if(move_accuracy/100 * status_blind > Math.random()){
+        if (move_accuracy/100 * status_blind > Math.random()) {
             ooch_enemy.current_hp -= dmg
             ooch_enemy.current_hp = clamp(ooch_enemy.current_hp, 0, ooch_enemy.stats.hp);
             string_to_send +=  `\nYour ${ooch_plr.name} uses ${move_name} and deals **${dmg} damage** to the enemy ${ooch_enemy.name}! `
@@ -934,7 +635,7 @@ module.exports = {
                 string_to_send += `\nYour ${ooch_plr.name} was ${move_effect.toUpperCase()}!`
             }
         }
-        else{
+        else {
             string_to_send +=  `\nYour ${ooch_plr.name} used ${move_name} but it missed!`
         }
         
@@ -949,11 +650,11 @@ module.exports = {
     },
 
     enemy_attack: async function(thread, message, ooch_plr, ooch_enemy) {    
-        const { type_effectiveness, battle_calc_damage, status_effect_check, random_number, generate_hp_bar } = require('./func.js');
+        const { type_effectiveness, battle_calc_damage, status_effect_check } = require('./func_battle.js');
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
         let moves = ooch_enemy.moveset;
-        let atk_id = moves[random_number(0,moves.length-1)];
+        let atk_id = moves[_.random(0,moves.length-1)];
                         
         let move_name =     db.move_data.get(`${atk_id}`, 'name');
         let move_type =     db.move_data.get(`${atk_id}`, 'type');
@@ -1006,7 +707,7 @@ module.exports = {
         await thread.send(string_to_send)
     },
 
-    type_effectiveness: function(attack_type, target_type){
+    type_effectiveness: function(attack_type, target_type) {
         let multiplier = 1;
         let string = '';
 
@@ -1074,7 +775,7 @@ module.exports = {
         return([multiplier,string])
     },
 
-    status_effect_check: function(status, status_array){
+    status_effect_check: function(status, status_array) {
         for(let i = 0; i < status_array.length; i++){
             if(status_array[i] == status){
                 return true;
@@ -1083,9 +784,9 @@ module.exports = {
         return false;
     },
 
-    victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr, is_turn_end){
+    victory_defeat_check: async function(thread, message, ooch_enemy, ooch_plr, is_turn_end) {
 
-        const { prompt_battle_input } = require('./func.js');
+        const { prompt_battle_input } = require('./func_battle.js');
         const Discord = require('discord.js');
         let ooch_pos = db.profile.get(message.author.id, 'ooch_active_slot');
         let ooch_arr, slot_to_send, enemy_profile;
@@ -1190,7 +891,7 @@ module.exports = {
     },
 
     end_of_turn: async function(thread, message, ooch_plr, ooch_enemy){
-        const { status_effect_check, generate_hp_bar } = require('./func.js');
+        const { status_effect_check, generate_hp_bar, modify_stat } = require('./func_battle.js');
 
         let plr_burned = status_effect_check('burned', ooch_plr.status_effects);
         let plr_infected = status_effect_check('infected', ooch_plr.status_effects);
@@ -1221,6 +922,24 @@ module.exports = {
             }
         }
 
+        for (let v of ooch_plr.stat_timers) { // v is structured [value, stat, timer]
+            if (v[2] <= 0) {
+                modify_stat(ooch_plr, v[1], v[0]);
+            } else {
+                v[2] -= 1;
+            }
+        }
+
+        for (let v of ooch_enemy.stat_timers) { // v is structured [value, stat, timer]
+            if (v[2] <= 0) {
+                modify_stat(ooch_enemy, v[1], v[0]);
+            } else {
+                v[2] -= 1;
+            }
+        }
+
+        db.profile.set(ooch_plr.id, )
+
         let string_to_send = `**------------ End of Round ------------**`;
 
         if(plr_burned){
@@ -1246,7 +965,6 @@ module.exports = {
             ooch_plr.current_hp = Math.min(ooch_plr.current_hp + infect_val, ooch_plr.stats.hp);
             string_to_send += `\n${ooch_plr.name} has **${infect_val} HP** absorbed by the enemy ${ooch_enemy.name}.`;
         }
-
 
         let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
         let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
@@ -1353,12 +1071,20 @@ module.exports = {
         
     },
 
-    has_ability(ooch_object, ability_name){
-        if(ooch_object.ability == ability_name){
-            return(true);
+    /**
+     * Add or subtract a stat to an Oochamon object. NOTE: THIS DOES NOT SET THE MULTIPLIER UNLESS YOU USE THE SET ARGUMENT!
+     * @param ooch The oochamon to change stat mulitipliers on.
+     * @param stat The stat to change (atk, def, spd, acc, or eva)
+     * @param mod_percent The amount to change it by (-1 to 1)
+     * @param {Boolean} [set=false] Set the value instead of add to/subtract from the value.
+     */
+    modify_stat: function(ooch, stat, mod_percent, set = false) {
+        switch(stat) {
+            case 'atk': ooch.stats.atk_mul = (set == true ? mod_percent : ooch_stats.atk_mul + mod_percent); break; // Attack
+            case 'def': ooch.stats.def_mul = (set == true ? mod_percent : ooch_stats.def_mul + mod_percent); break; // Defense
+            case 'spd': ooch.stats.spd_mul = (set == true ? mod_percent : ooch_stats.spd_mul + mod_percent); break; // Speed
+            case 'acc': ooch.stats.acc_mul = (set == true ? mod_percent : ooch_stats.acc_mul + mod_percent); break; // Accuracy
+            case 'eva': ooch.stats.eva_mul = (set == true ? mod_percent : ooch_stats.eva_mul + mod_percent); break; // Evasion
         }
-        else{
-            return(false);
-        }
-    }
+    },
 }

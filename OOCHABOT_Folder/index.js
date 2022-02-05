@@ -5,11 +5,13 @@ const { token, client_id, guild_ids } = require('./config.json');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const wait = require('wait');
+const _ = require('lodash');
 
 // create a new Discord client and give it some variables
 const { Client, Intents } = require('discord.js');
 const db = require('./db.js');
-const { move, prompt_battle_input, generate_battle, capitalize } = require('./func');
+const { prompt_battle_input, generate_battle } = require('./func_battle.js');
+const { move } = require('./func_play.js');
 const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
@@ -75,7 +77,7 @@ client.on('interactionCreate', async interaction => {
            ooch_names = ooch_names.filter(v => v != 'i');
            ooch_names = ooch_names.filter(letter_filter);
            ooch_names = ooch_names.slice(0, 25);
-           ooch_names = ooch_names.map(v => v = { name: capitalize(v), value: capitalize(v) });
+           ooch_names = ooch_names.map(v => v = { name: _.capitalize(v), value: _.capitalize(v) });
            interaction.respond(ooch_names);
        }
     }
