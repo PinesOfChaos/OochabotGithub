@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../db.js');
-const { map_emote_string } = require('../func.js');
+const { map_emote_string } = require('../func_play.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

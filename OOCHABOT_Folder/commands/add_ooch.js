@@ -34,7 +34,6 @@ module.exports = {
         let def_iv = _.random(0,10)/20+1;
         let spd_iv = _.random(0,10)/20+1;
         
-
         //Get the stats accounting for the ID, Level, and IVs
         let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
 
@@ -68,7 +67,6 @@ module.exports = {
                     atk_iv: atk_iv,
                     def_iv: def_iv,
                     spd_iv: spd_iv,
-                    hp_mul: 1,
                     atk_mul: 1,
                     def_mul: 1,
                     spd_mul: 1,
@@ -79,7 +77,6 @@ module.exports = {
                 current_hp: stats[0],
                 current_exp: 0,
                 next_lvl_exp: level ** 3,
-                status_effects: [],
                 current_hp: stats[0],
                 alive: true,
                 type: db.monster_data.get(ooch_id, 'type')

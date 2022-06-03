@@ -103,14 +103,12 @@ module.exports = {
                         atk_iv: atk_iv,
                         def_iv: def_iv,
                         spd_iv: spd_iv,
-                        hp_mul: 1,
                         atk_mul: 1,
                         def_mul: 1,
                         spd_mul: 1,
                         acc_mul: 1, // Accuracy Multiplier, used for accuracy checks
                         eva_mul: 1 // Evasion Multiplier, used for accuracy checks
                     },
-                    stat_timers: [],
                     status_effects: [],
                     current_hp: stats[0],
                     current_exp: 0,
