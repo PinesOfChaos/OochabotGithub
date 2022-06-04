@@ -74,6 +74,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
-OOCHABOT_Folder/config.json
-OOCHABOT_Folder/package-lock.json
-OOCHABOT_Folder/package.json
+ooch_bot/config.json
+ooch_bot/package-lock.json
+ooch_bot/package.json
