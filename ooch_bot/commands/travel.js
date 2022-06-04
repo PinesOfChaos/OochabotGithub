@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
 
     .setName('travel')
-    .setDescription('Generate the map.')
+    .setDescription('Travel between biomes.')
     .addStringOption(option => 
             option.setName('biome')
                 .setDescription('Where will we be going today?')

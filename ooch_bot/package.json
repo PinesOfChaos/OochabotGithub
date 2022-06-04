@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@discordjs/builders": "^0.11.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.25.2",
+    "discord.js": "^13.7.0",
+    "enmap": "^5.8.7",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.7",
+    "wait": "^0.4.2"
+  }
+}

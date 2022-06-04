@@ -35,7 +35,7 @@ module.exports = {
             .setDescription(`*${ooch_obj.oochive_entry}*`)
             .addField('Stats', `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**`)
             .addField('Abilities', ooch_obj.abilities.join(', '))
-            if (ooch_evo_id != -1) dexEmbed.setFooter(`Evolves into ${db.monster_data.get(ooch_evo_id, 'name')} at level ${ooch_evo_lvl}`, db.monster_data.get(ooch_evo_id, 'image'));
+            if (ooch_evo_id != -1) dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_evo_id, 'name')} at level ${ooch_evo_lvl}`, iconURL: db.monster_data.get(ooch_evo_id, 'image') });
         interaction.reply({ embeds: [dexEmbed] });
     },
 };

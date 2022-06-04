@@ -115,7 +115,8 @@ client.on('messageCreate', async message => {
     }
 
     if (message.content == 'start battle') {
-        ooch_gen = generate_battle(db.profile.get(message.author.id, 'ooch_inventory'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
+        ooch_gen = await generate_battle(db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
+        console.log(ooch_gen);
         db.profile.set(message.author.id, 0, 'ooch_active_slot');
         const thread = await message.channel.threads.create({
             name: `${message.member.displayName} Wild Battle, join this to battle!`,
@@ -126,7 +127,7 @@ client.on('messageCreate', async message => {
         if (thread.joinable) await thread.join();
         await thread.members.add(message.author.id);
         await thread.setLocked(true);
-        await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.party[0].level} ${db.monster_data.get(ooch_gen.party[0].id, 'name')}!\n`)
+        await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.ooch_party[0].level} ${db.monster_data.get(ooch_gen.ooch_party[0].id, 'name')}!\n`)
 
         await db.profile.set(message.author.id, 'battle', 'player_state')
         await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')

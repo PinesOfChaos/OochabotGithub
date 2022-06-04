@@ -5,13 +5,12 @@ const db = require('../db.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('challenge')
-        .setDescription('Like PVP but worse.')
+        .setDescription('Like PVP but worse: with a stupid A.I.')
         .addUserOption(option => 
             option.setName('name')
-                .setDescription('Whomst?')
+                .setDescription('Who do you want to battle?')
                 .setRequired(true)),
     async execute(interaction) {
-        console.log()
 
         let player = `${interaction.user.id}`;
         let player_name = interaction.user.username;
@@ -28,13 +27,11 @@ module.exports = {
             reason: '\"PVP\" Battle thread',
         });
 
-        let msg = {author: {id: player}};
-
         if (thread.joinable) await thread.join();
         await thread.members.add(player);
         await thread.setLocked(true);
 
-        let ooch_plr = db.profile.get(player, 'ooch_inventory')[0];
+        let ooch_plr = db.profile.get(player, 'ooch_party')[0];
         let ooch_enemy = chal_gen.party[0];
 
         await thread.send(`${player_name}, you've challenged ${chal_name}'s clone! Use this thread to battle!!`+
@@ -47,7 +44,7 @@ module.exports = {
         await db.profile.set(player, chal_gen, 'ooch_enemy')
         await db.profile.set(player, thread.id, 'battle_thread_id')
 
-        await prompt_battle_input(thread, msg);
+        await prompt_battle_input(thread, {author: {id: player}});
 
         interaction.reply('Starting Clone Battle');
         interaction.deleteReply();

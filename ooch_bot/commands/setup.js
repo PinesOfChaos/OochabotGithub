@@ -116,7 +116,7 @@ module.exports = {
                     alive: true,
                     type: db.monster_data.get(starter, 'type')
                 }
-            ], 'ooch_inventory')
+            ], 'ooch_party')
 
         });
 
