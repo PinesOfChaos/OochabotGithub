@@ -296,11 +296,11 @@ prompt_battle_input: async function(thread, message) {
                         ooch_prev_name = ooch_name;
                         ooch_disable = true;
                     }
-                    else if (ooch_check.current_hp <= 0){
+                    else if (ooch_check.current_hp <= 0) {
                         ooch_disable = true;
                     }
 
-                    (i <= 2 ? switch_buttons_1 : switch_buttons_2).addComponents(
+                    ((i <= 2) ? switch_buttons_1 : switch_buttons_2).addComponents(
                         new Discord.MessageButton()
                             .setCustomId(`${i}`)
                             .setLabel(`${ooch_name} (${ooch_hp})`)
@@ -980,7 +980,7 @@ item_use: function(thread, message, ooch, item) {
  * Add or subtract a stat to an Oochamon object. NOTE: THIS DOES NOT SET THE MULTIPLIER UNLESS YOU USE THE SET ARGUMENT!
  * @param {Object} ooch The oochamon object to change stat mulitipliers on.
  * @param {String} stat The stat to change (atk, def, spd, acc, or eva)
- * @param {Number} mod_percent The amount to change it by (-1 to 1)
+ * @param {number} mod_percent The amount to change it by (-1 to 1)
  * @param {Boolean} [set=false] Set the value instead of add to/subtract from the value.
  */
 modify_stat: function(ooch, stat, mod_percent, set = false) {

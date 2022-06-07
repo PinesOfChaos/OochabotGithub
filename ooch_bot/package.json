@@ -5,6 +5,7 @@
     "discord-api-types": "^0.25.2",
     "discord.js": "^13.7.0",
     "enmap": "^5.8.7",
+    "eslint": "^8.17.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.7",
     "wait": "^0.4.2"
