@@ -15,14 +15,14 @@ module.exports = {
         //#region Item Data
 
         //          ID   Name             Emote                                       Category     Type      Value   Description
-        create_item('0', 'Potion',        '<:item_potion:926592477631221790>',        'heal_inv',  'potion', 0.25,   'Used to quickly heal 25% of an Oochamon\'s HP')
-        create_item('1', 'Hi-Potion',     '<:item_potion_hi:926592477698326538>',     'heal_inv',  'potion', 0.5,    'An advanced potion which heals 50% of an Oochamon\'s HP')
-        create_item('2', 'Max-Potion',    '<:item_potion_magic:926592681407303700>',  'heal_inv',  'potion', 1,      'The ultimate potion which heals 100% of an Oochamon\'s HP')
-        create_item('3', 'Prism',         '<:item_prism:921502013634777149>',         'prism_inv', 'prism',  1,      'A device used to capture Oochamon.')
-        create_item('4', 'Greater Prism', '<:item_prism_greater:926582245333032960>', 'prism_inv', 'prism',  1.5,    'An improved prism with a higher capture rate.')
-        create_item('5', 'Grand Prism',   '<:item_prism_grand:926582245051990019>',   'prism_inv', 'prism',  2,      'A further modified prism with an even higher capture rate.')
-        create_item('6', 'Perfect Prism', '<:item_prism_perfect:926582245060378695>', 'prism_inv', 'prism',  1000,   'A prism with a shattered casing, nothing escapes its pull.')
-        create_item('7', 'Attack Crystal','<:item_attack_crystal:926596503802372186>','other_inv', 'misc',   1,      'Unlocks a hidden move for an Oochamon by releasing stored power.')
+        create_item('0', 'Potion',        '<:item_potion:1023031022566260776>',        'heal_inv',  'potion', 0.25,   'Used to quickly heal 25% of an Oochamon\'s HP')
+        create_item('1', 'Hi-Potion',     '<:item_potion_hi:1023031023598047284>',     'heal_inv',  'potion', 0.5,    'An advanced potion which heals 50% of an Oochamon\'s HP')
+        create_item('2', 'Max-Potion',    '<:item_potion_magic:1023031024726327426>',  'heal_inv',  'potion', 1,      'The ultimate potion which heals 100% of an Oochamon\'s HP')
+        create_item('3', 'Prism',         '<:item_prism:1023031025716179076>',         'prism_inv', 'prism',  1,      'A device used to capture Oochamon.')
+        create_item('4', 'Greater Prism', '<:item_prism_greater:1023031027775578112>', 'prism_inv', 'prism',  1.5,    'An improved prism with a higher capture rate.')
+        create_item('5', 'Grand Prism',   '<:item_prism_grand:1023031026626347028>',   'prism_inv', 'prism',  2,      'A further modified prism with an even higher capture rate.')
+        create_item('6', 'Perfect Prism', '<:item_prism_perfect:1023031028782211173>', 'prism_inv', 'prism',  1000,   'A prism with a shattered casing, nothing escapes its pull.')
+        create_item('7', 'Attack Crystal','<:item_attack_crystal:1023031021517672540>','other_inv', 'misc',   1,      'Unlocks a hidden move for an Oochamon by releasing stored power.')
         
 
         //#endregion

@@ -176,13 +176,13 @@ prompt_battle_input: async function(thread, message) {
                 .setCustomId('heal_button')
                 .setLabel('Healing')
                 .setStyle('PRIMARY')
-                .setEmoji('<:item_potion_magic:926592681407303700>'),
+                .setEmoji('<:item_potion_magic:1023031024726327426>'),
         ).addComponents(
             new Discord.MessageButton()
                 .setCustomId('prism_button')
                 .setLabel('Prism')
                 .setStyle('PRIMARY')
-                .setEmoji('<:item_prism:921502013634777149>'),
+                .setEmoji('<:item_prism:1023031025716179076>'),
         ).addComponents(
             new Discord.MessageButton()
                 .setCustomId('back')
@@ -593,14 +593,14 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
 
 type_to_emote: function(type_string) {
     switch(type_string) {
-        case 'flame': return '<:icon_flame:923049669674803231>';
-        case 'fungal': return '<:icon_fungal:923049669746122782>';
-        case 'magic': return '<:icon_magic:923049669716750406>';
-        case 'stone': return '<:icon_stone:923049669733523487>';
-        case 'neutral': return '<:icon_neutral:927695999261089872>';
-        case 'ooze': return '<:icon_ooze:923049669708378172>';
-        case 'tech': return '<:icon_tech:923049669741916190>';
-        default: return '<:icon_void:923049669699969054>';
+        case 'flame': return '<:icon_flame:1023031001611501648>';
+        case 'fungal': return '<:icon_fungal:1023031003381514280>';
+        case 'magic': return '<:icon_magic:1023031009966575686>';
+        case 'stone': return '<:icon_stone:1023031015830204448>';
+        case 'neutral': return '<:icon_neutral:1023031011703013376>';
+        case 'ooze': return '<:icon_ooze:1023031013355569262>';
+        case 'tech': return '<:icon_tech:1023031017730224139>';
+        default: return '<:icon_void:1023031019466653738>';
     }
 },
 
@@ -838,9 +838,11 @@ end_of_round: async function(thread, message, ooch_plr, ooch_enemy){
 
     let ooch_list = [ooch_plr, ooch_enemy];
     let ooch_status_emotes = [[], []]; // 0 is ooch_plr, 1 is ooch_enemy
+    let string_to_send = `**------------ End of Round ------------**`;
+
     for (let i = 0; i < ooch_list.length; i++) {
         let ooch = ooch_list[i];
-        let opposing_ooch = ooch_list[!i];
+        let opposing_ooch = ooch_list[!i | 0]; // Flip 1 to 0 or 0 to 1 via type casting
 
         // Handle end of turn abilities
         ooch = use_eot_ability(ooch);
@@ -851,11 +853,11 @@ end_of_round: async function(thread, message, ooch_plr, ooch_enemy){
     
         for (let j = 0; j < ooch.status_effects.length; j++) {
             switch(ooch.status_effects[j]) {
-                case 'burned': ooch_status_emotes[i].push(`<:status_burned:933185124416229377>`); break;
-                case 'infected': ooch_status_emotes[i].push(`<:status_infected:933185124395270144>`); break;
-                case 'blinded': ooch_status_emotes[i].push(`<:status_blinded:933185124588212314>`); break;
-                case 'digitized': ooch_status_emotes[i].push(`<:status_digitized:933185124265263154>`); break;
-                case 'snared': ooch_status_emotes[i].push(`<:status_snared:933187622816342026>`); break;
+                case 'burned': ooch_status_emotes[i].push(`<:status_burned:1023031032083128441>`); break;
+                case 'infected': ooch_status_emotes[i].push(`<:status_infected:1023031033744076930>`); break;
+                case 'blinded': ooch_status_emotes[i].push(`<:status_blinded:1023031030837416057>`); break;
+                case 'digitized': ooch_status_emotes[i].push(`<:status_digitized:1023031032934576178>`); break;
+                case 'snared': ooch_status_emotes[i].push(`<:status_snared:1023031034733940798>`); break;
             }
         }
 
@@ -873,7 +875,6 @@ end_of_round: async function(thread, message, ooch_plr, ooch_enemy){
         }
     }
 
-    let string_to_send = `**------------ End of Round ------------**`;
     let ooch_pos_plr = db.profile.get(message.author.id, 'ooch_active_slot');
     let ooch_pos_enemy = db.profile.get(message.author.id, 'ooch_enemy.ooch_active_slot');
 
@@ -922,23 +923,23 @@ generate_hp_bar: function(ooch, side) {
     hp_string += `\n${db.monster_data.get(ooch.id, 'emote')} `;
 
     if (side == 'plr') {
-        piece_type = `<:p_f_hm:923071749761953833>`
-        if (sections <= 5) piece_type = `<:p_m_hm:933108890327973958>`;
-        if (sections <= 2) piece_type = `<:p_l_hm:933106926961696809>`;
+        piece_type = `<:p_f_hm:1023031007714226257>`
+        if (sections <= 5) piece_type = `<:p_m_hm:1023031029889511424>`;
+        if (sections <= 2) piece_type = `<:p_l_hm:1023031006581764106>`;
 
-        hp_string += `<:p_hs:923071749694849024>`;
+        hp_string += `<:p_hs:1023031009106722856>`;
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:p_g_hm:923072500185853973>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:p_he:923071749720014848>\n`;
+        hp_string += `${`<:p_g_hm:1023031005029879818>`.repeat(10 - sections)}` // Empty slots
+        hp_string += `<:p_he:1023031005797437480>\n`;
     } else {
-        piece_type = `<:e_f_hm:933113939917688832>`;
-        if (sections <= 5) piece_type = `<:e_m_hm:933113949648466002>`;
-        if (sections <= 2) piece_type = `<:e_l_hm:933113957156274226>`;
+        piece_type = `<:e_f_hm:1023030997291380746>`;
+        if (sections <= 5) piece_type = `<:e_m_hm:1023031000730714212>`;
+        if (sections <= 2) piece_type = `<:e_l_hm:1023030999489200199>`;
 
-        hp_string += `<:e_hs:933115484860190771>`;
+        hp_string += `<:e_hs:1023030998675496992>`;
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:e_g_hm:933113931411648563>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:e_he:933115485199945838>\n`;
+        hp_string += `${`<:e_g_hm:1023030996192481320>`.repeat(10 - sections)}` // Empty slots
+        hp_string += `<:e_he:1023030997899542580>\n`;
     }
 
     hp_string += `\`HP: ${hp}/${ooch.stats.hp}\`\n**\`Lvl: ${ooch.level}\`**`;
@@ -1067,9 +1068,9 @@ use_eot_ability: function(ooch) {
     const { modify_stat } = require('./func_battle.js');
     switch(ooch.ability) {
         case 'Withering':
-            ooch.current_hp -= round(ooch.stats.hp * 0.05); break;
+            ooch.current_hp -= Math.round(ooch.stats.hp * 0.05); break;
         case 'Fleeting':
-            ooch.current_hp = floor(ooch.current_hp / 2); break;
+            ooch.current_hp = Math.floor(ooch.current_hp / 2); break;
         case 'Efficient':
             ooch = modify_stat(ooch, 'atk', 0.05); break;
         case 'Focused':

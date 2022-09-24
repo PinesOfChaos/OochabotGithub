@@ -144,11 +144,14 @@ client.on('messageCreate', async message => {
         switch (player_state) {
             case 'overworld': 
                 if (message.channel.id == '921969875482738749') {
-                    switch (message.content) {
-                        case 'd': move(message, 'd'); break;
-                        case 's': move(message, 's'); break;
-                        case 'a': move(message, 'a'); break; 
-                        case 'w': move(message, 'w'); break;
+                    let args = message.content.split(' ');
+                    let dist = (args.length == 2) ? parseInt(args[1]) : 1;
+                    if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
+                    switch (args[0]) {
+                        case 'd': move(message, 'd', dist); break;
+                        case 's': move(message, 's', dist); break;
+                        case 'a': move(message, 'a', dist); break; 
+                        case 'w': move(message, 'w', dist); break;
                     }
                     message.delete();
                 }
