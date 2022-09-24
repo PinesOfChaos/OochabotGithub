@@ -13,7 +13,6 @@ module.exports = {
         }
 
         //#region Item Data
-
         //          ID   Name             Emote                                       Category     Type      Value   Description
         create_item('0', 'Potion',        '<:item_potion:1023031022566260776>',        'heal_inv',  'potion', 0.25,   'Used to quickly heal 25% of an Oochamon\'s HP')
         create_item('1', 'Hi-Potion',     '<:item_potion_hi:1023031023598047284>',     'heal_inv',  'potion', 0.5,    'An advanced potion which heals 50% of an Oochamon\'s HP')
@@ -23,12 +22,9 @@ module.exports = {
         create_item('5', 'Grand Prism',   '<:item_prism_grand:1023031026626347028>',   'prism_inv', 'prism',  2,      'A further modified prism with an even higher capture rate.')
         create_item('6', 'Perfect Prism', '<:item_prism_perfect:1023031028782211173>', 'prism_inv', 'prism',  1000,   'A prism with a shattered casing, nothing escapes its pull.')
         create_item('7', 'Attack Crystal','<:item_attack_crystal:1023031021517672540>','other_inv', 'misc',   1,      'Unlocks a hidden move for an Oochamon by releasing stored power.')
-        
-
         //#endregion
 
         //#region Move Data
-
         //          ID, NAME,            TYPE,  DMG,ACCURACY, EFF,EFF_CHANCE,     DESCRIPTION
         create_move('0','Hit',           'neutral',10,100,   -1,0,           'The user hits the target to deal damage.')
         create_move('1','Bash',          'neutral',20,100,   -1,0,           'The target is dealt some blunt damage.')
@@ -71,12 +67,9 @@ module.exports = {
         create_move('38','Laminate',     'tech',30,90,       'snared',100,   'Covers the target in a tough plastic substance to SNARE them.')
         create_move('39','Entomb',       'stone',60,80,      'snared',50,    'Causes stones to fall onto the target, leaving them SNARED if they get trapped.')
         create_move('40','undefined_int','void',100,100,     -1,0,           'TEST MOVE')
-
         //#endregion
-
-
+        
         //#region Ability Data
-
         //              NAME,           Description
         create_ability('Miniscule',     'So small that it reduces the chance to be hit by 10%.');
         create_ability('Icky',          'Boosts the power of OOZE & FUNGAL type attacks by 20%');
@@ -109,7 +102,6 @@ module.exports = {
         create_ability('Immense',       'Increases DEF by 20% but also makes opponent\'s moves always hit.');
         create_ability('Armored',       'Reduces STONE damage by 20%.');
         create_ability('0000',          'FALSE'); //Increase the global counter for i's stats by 1 upon defeat
-
         //#endregion
 
         //#region Creature Data
@@ -288,7 +280,6 @@ module.exports = {
         create_monster('34', '<:i_:922299745987346433>', 'i', 'https://cdn.discordapp.com/attachments/921949708971294750/922300450206801950/i.png',
         'ERROR: entry not found', 'void', 1, 1, 1, 1, //total 30
         [ [1,40] ], [ '0000', '0000' ], -1, -1)
-
         //#endregion
 
         interaction.reply('Generated game data.');

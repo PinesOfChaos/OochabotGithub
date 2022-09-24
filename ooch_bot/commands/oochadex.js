@@ -23,10 +23,8 @@ module.exports = {
         }
         
         if (!Number.isInteger(ooch)) return interaction.reply(`${ooch} is not a valid Oochamon!`)
-
         let ooch_obj = db.monster_data.get(ooch);
-        let ooch_evo_id = ooch_obj.evo_id
-        let ooch_evo_lvl = ooch_obj.evo_lvl
+        let oochadex_data = db.profile.get(interaction.user.id, `oochadex`)
 
         const dexEmbed = new Discord.MessageEmbed()
             .setColor('#808080')
@@ -35,7 +33,18 @@ module.exports = {
             .setDescription(`*${ooch_obj.oochive_entry}*`)
             .addField('Stats', `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**`)
             .addField('Abilities', ooch_obj.abilities.join(', '))
-            if (ooch_evo_id != -1) dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_evo_id, 'name')} at level ${ooch_evo_lvl}`, iconURL: db.monster_data.get(ooch_evo_id, 'image') });
-        interaction.reply({ embeds: [dexEmbed] });
+            if (ooch_obj.evo_id != -1 && oochadex_data[ooch_obj.evo_id].seen != 0) {
+                dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_obj.evo_id, 'name')} at level ${ooch_obj.evo_lvl}`, iconURL: db.monster_data.get(ooch_obj.evo_id, 'image') });
+            } else {
+                dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_obj.evo_lvl}`});
+            }
+
+            if (oochadex_data[ooch].seen != 0) {
+                interaction.reply({ content: `**Seen:** ${oochadex_data[ooch].seen} | **Caught:** ${oochadex_data[ooch].caught}`,
+                embeds: [dexEmbed] });
+            } else {
+                interaction.reply({ content: `**You have not encountered Oochamon #${parseInt(ooch) + 1} yet... Go out into the wild and find it!**`,
+                embeds: [] });
+            }
     },
 };

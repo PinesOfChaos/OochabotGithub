@@ -32,11 +32,8 @@ module.exports = {
             );
 
         // if (db.profile.has(interaction.user.id)) return interaction.editReply('You have already set up the game! Go play it!')
-
         let starter;
-
         await interaction.editReply({content: 'Pick your starter!', components: [row] });
-
         const collector = interaction.channel.createMessageComponentCollector({ max: 1 });
 
         await collector.on('collect', async i => {
@@ -59,6 +56,16 @@ module.exports = {
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'hub', x: 2, y: 2 }, 'location_data')
             db.profile.set(interaction.user.id, -1, 'display_msg_id')
+            db.profile.set(interaction.user.id, [], 'oochadex');
+
+            // Setup Oochadex template
+            for (ooch_id in db.monster_data.keyArray()) {
+                if (ooch_id == starter) {
+                    db.profile.push(interaction.user.id, { id: parseInt(ooch_id), seen: 1, caught: 1 }, 'oochadex') 
+                } else {
+                    db.profile.push(interaction.user.id, { id: parseInt(ooch_id), seen: 0, caught: 0 }, 'oochadex')
+                }
+            }
             
             // Setup starter data
             let learn_list = db.monster_data.get(starter, 'move_list');
@@ -83,7 +90,6 @@ module.exports = {
             for(let i = 0; i < learn_list.length; i++){
                 move_list[i] = learn_list[i][1]; //get only the move ID and put it in the move_list
             }
-            console.log(move_list);
 
             db.profile.set(interaction.user.id, [ 
                 { 
@@ -114,11 +120,11 @@ module.exports = {
                     current_exp: 0,
                     next_lvl_exp: level ** 3,
                     alive: true,
-                    type: db.monster_data.get(starter, 'type')
+                    type: db.monster_data.get(starter, 'type'),
                 }
             ], 'ooch_party')
 
         });
 
     }
- }
+}
