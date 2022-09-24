@@ -23,9 +23,9 @@ module.exports = {
             );
         
         let back_buttons = new Discord.MessageActionRow()
-            .addComponents(
-                new Discord.MessageButton().setCustomId('back').setLabel('⬅️').setStyle('DANGER')
-            )
+            // .addComponents(
+            //     new Discord.MessageButton().setCustomId('back').setLabel('⬅️').setStyle('DANGER')
+            // )
             .addComponents(
                 new Discord.MessageButton().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle('DANGER')
             );
@@ -38,7 +38,7 @@ module.exports = {
 
         let filter = i => i.user.id == interaction.user.id;
         const collector = await dmMsg.createMessageComponentCollector({ filter });
-        const pa_collector = false;
+        let pa_collector, b_collector, dex_collector;
 
         await collector.on('collect', async i => {
             let selected = i.customId;
@@ -46,9 +46,15 @@ module.exports = {
             switch (selected) {
                 case 'back':
                     i.update({ content: '**Menu:**', embeds: [], components: [settings_row_1, settings_row_2] });
+                    if (pa_collector != undefined) pa_collector.stop();
+                    if (b_collector != undefined) b_collector.stop();
+                    if (dex_collector != undefined) dex_collector.stop();
                 break;
                 case 'back_to_menu':
                     i.update({ content: '**Menu:**', embeds: [], components: [settings_row_1, settings_row_2] });
+                    if (pa_collector != undefined) pa_collector.stop();
+                    if (b_collector != undefined) b_collector.stop();
+                    if (dex_collector != undefined) dex_collector.stop();
                 break;
                 case 'party': 
                     let party = new Discord.MessageActionRow();
@@ -72,7 +78,7 @@ module.exports = {
                     
                     i.update({ content: `**Current Oochamon Party**`, components: pa_components })
                     filter = i => i.user.id == interaction.user.id;
-                    const pa_collector = await dmMsg.createMessageComponentCollector({ filter });
+                    pa_collector = await dmMsg.createMessageComponentCollector({ filter });
 
                     await pa_collector.on('collect', async j => {
                         if (isNaN(parseInt(j.customId))) return;
@@ -96,7 +102,60 @@ module.exports = {
                     });
                 break;
                 case 'bag':
-                    // Pass
+                    let heal_inv = db.profile.get(interaction.user.id, 'heal_inv')
+                    let heal_inv_keys = Object.keys(heal_inv);
+                    let prism_inv = db.profile.get(interaction.user.id, 'prism_inv')
+                    let prism_inv_keys = Object.keys(prism_inv);
+                    const bag_buttons = new Discord.MessageActionRow()
+                    .addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId('heal_button')
+                            .setStyle('SUCCESS')
+                            .setEmoji('<:item_potion_magic:1023031024726327426>'),
+                    ).addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId('prism_button')
+                            .setStyle('SECONDARY')
+                            .setEmoji('<:item_prism:1023031025716179076>'),
+                    ).addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId('key_button')
+                            .setStyle('SECONDARY')
+                            .setEmoji('🔑'),
+                    )
+
+                    const bagEmbed = new Discord.MessageEmbed()
+                        .setColor('#808080')
+                        .setTitle('❤️ Healing Items')
+                        .setDescription(`*Add item list here*`)
+                    
+                    if (heal_inv_keys.length == 0) bag_buttons.components[0].disabled = true;
+                    if (prism_inv_keys.length == 0) bag_buttons.components[1].disabled = true;
+                    if (heal_inv_keys.length == 0 && prism_inv_keys.length == 0) {
+                        i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_buttons] })
+                        return;
+                    }
+
+                    i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                    b_collector = dmMsg.createMessageComponentCollector({ componentType: 'BUTTON' });
+
+                    await b_collector.on('collect', async i_sel => {
+                        switch (i_sel.customId) {
+                            case 'heal_button':
+                                bagEmbed.setTitle('❤️ Healing Items');
+                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                            break;
+                            case 'prism_button':
+                                bagEmbed.setTitle('Prisms')
+                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                            break;
+                            case 'key_button':
+                                bagEmbed.setTitle('Key Items')
+                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                            break;
+                        }
+                    });
+
                 break;
                 case 'oochadex':
                     let oochadex_sel_1 = new Discord.MessageActionRow();
@@ -146,22 +205,22 @@ module.exports = {
                         .setDescription(`*${ooch_data.oochive_entry}*`)
                         .addField('Stats', `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**`)
                         .addField('Abilities', ooch_data.abilities.join(', '))
-                        if (ooch_data.evo_id != -1 && oochadex_data[0].seen != 0) {
+                        if (ooch_data.evo_id != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
                             dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
                         } else {
                             dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
                         }
 
-                    if (oochadex_data[0].seen != 0) {
+                    if (oochadex_data[0].caught != 0) {
                         i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
                         embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
                     } else {
-                        i.update({ content: `**You have not encountered Oochamon #1 yet... Go out into the wild and find it!**`,
+                        i.update({ content: `**You have not encountered ${oochadex_data[0].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
                         embeds: [], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
                     }
 
                     filter = i => i.user.id == interaction.user.id;
-                    let dex_collector = await dmMsg.createMessageComponentCollector({  filter, componentType: 'SELECT_MENU' });
+                    dex_collector = await dmMsg.createMessageComponentCollector({  filter, componentType: 'SELECT_MENU' });
 
                     await dex_collector.on('collect', async sel => {
                         ooch_data = db.monster_data.get(parseInt(sel.values[0]));
@@ -178,11 +237,11 @@ module.exports = {
                                 dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
                             }
 
-                        if (oochadex_data[sel.values[0]].seen != 0) {
+                        if (oochadex_data[sel.values[0]].caught != 0) {
                             sel.update({ content: `**Seen:** ${oochadex_data[sel.values[0]].seen} | **Caught:** ${oochadex_data[sel.values[0]].caught}`,
                             embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
                         } else {
-                            sel.update({ content: `**You have not encountered Oochamon #${parseInt(sel.values[0])+1} yet... Go out into the wild and find it!**`,
+                            sel.update({ content: `**You have not encountered ${oochadex_data[sel.values[0]].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
                             embeds: [], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
                         }
                     });

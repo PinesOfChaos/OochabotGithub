@@ -102,6 +102,20 @@ module.exports = {
         create_ability('Immense',       'Increases DEF by 20% but also makes opponent\'s moves always hit.');
         create_ability('Armored',       'Reduces STONE damage by 20%.');
         create_ability('0000',          'FALSE'); //Increase the global counter for i's stats by 1 upon defeat
+        //START OF NEWLY ADDED ABILITIES
+        create_ability('Scorching',     'Attacks that can BURN always BURN.');
+        create_ability('Tangled',       'Causes enemies that hit it to be SNARED.');
+        create_ability('Mundane',       'Cannot be affected by Status Effects.');
+        create_ability('Rogue',         'DOUBLES the damage dealt to full HP enemies.');
+        create_ability('Crystallize',   'Ooze, Flame, and Stone attacks deal 30% more damage.');
+        create_ability('Lacerating',    'The enemy loses 5% of their HP after you attack.');
+        create_ability('Gravity',       'Increase ATK by 1% per number of turns in this battle.');
+        create_ability('Sporespray',    'INFECTS the enemy when defeated.');
+        create_ability('Frostbite',     'Attacks reduce the targets SPD by 5%.');
+        create_ability('Bipolar',       'Use the DEF stat when dealing damage.');
+        create_ability('Hexiply',       'Attacks deal 6% more damage per sixth of HP remaining.');
+        create_ability('Nullify',       "Negate the effects of enemy abilities.");
+        create_ability('Duplicant',     "Copy the opponent's ability.");
         //#endregion
 
         //#region Creature Data
@@ -280,6 +294,112 @@ module.exports = {
         create_monster('34', '<:i_:922299745987346433>', 'i', 'https://cdn.discordapp.com/attachments/921949708971294750/922300450206801950/i.png',
         'ERROR: entry not found', 'void', 1, 1, 1, 1, //total 30
         [ [1,40] ], [ '0000', '0000' ], -1, -1)
+
+        //NEW ONES, MAKE GOOD YES
+        //Cromet - ADD SPRITES
+        create_monster('35', '<:cromet:926625964677558272>', 'Cromet', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
+        'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', 'stone', 12, 13, 10, 15, //total 50
+        [ [1,1] ], [ 'Inertia', 'Scorching' ], 36, 27);
+
+        //Lobstar - ADD SPRITES
+        create_monster('36', '<:lobstar:926625964576890881>', 'Lobstar', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
+        'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 'stone', 10, 35, 20, 10, //total 75
+        [ [1,1] ], [ 'Immense', 'Scorching' ], -1, -1) 
+
+        //Spoolette
+        create_monster('37', '<:spoolette:1023046362801123338>', 'Spoolette', 'https://cdn.discordapp.com/attachments/921949708971294750/982082464824590406/spoolette.png',
+        'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', 'magic', 10, 15, 15, 10, //total 50
+        [ [1,1] ], [ 'Tangled', 'Mundane' ], 38, 18);
+
+        //Thimbite
+        create_monster('38', '<:thimbite:1023046363769999451>', 'Thimbite', 'https://cdn.discordapp.com/attachments/921949708971294750/982082465067839498/thimbite.png',
+        'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 'magic', 20, 20, 20, 10, //total 70
+        [ [1,1] ], [ 'Tangled', 'Ensnare' ], -1, -1);
+
+        //Digityke
+        create_monster('39', '<:digityke:1023046359898656908>', 'Digityke', 'https://cdn.discordapp.com/attachments/921949708971294750/982082465340461066/digityke.png',
+        'An old-model of machine companion, its feeble body prevents it from being of much use.', 'tech', 10, 7, 8, 5, //total 30
+        [ [1,1] ], [ 'Gentle' ], 40, 21);
+
+        //Codet
+        create_monster('40', '<:codet:1023046357746995300>', 'Codet', 'https://cdn.discordapp.com/attachments/921949708971294750/982082465579556874/codet.png',
+        'An attempt to modernize the DGTY-k gone wrong. Despite being decomissioned these haunting machines continue to run.', 'tech', 30, 10, 10, 10, //total 60
+        [ [1,1] ], [ 'Rogue' ], -1, -1);
+
+        //Heatri
+        create_monster('41', '<:heatri:1023046360754307142>', 'Heatri', 'https://cdn.discordapp.com/attachments/921949708971294750/982082465860583424/heatri.png',
+        'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.', 'flame', 25, 10, 10, 20, //total 65
+        [ [1,1] ], [ 'Crystallize' ], 42, 33);
+
+        //Moistri
+        create_monster('42', '<:moistri:1023046361702219887>', 'Heatri', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466082848798/moistri.png',
+        'Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.', 'ooze', 25, 20, 10, 10, //total 65
+        [ [1,1] ], [ 'Crystallize' ], 43, 33);
+
+        //Crystri
+        create_monster('43', '<:crystri:1023046358933975140>', 'Crystri', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'While its crystals appear rigid they maintain some sort of fluidity.', 'stone', 25, 10, 20, 10, //total 65
+        [ [1,1] ], [ 'Crystallize' ], 41, 33);
+
+        //Solidifyr
+        create_monster('44', '<:crystri:1023046358933975140>', 'Solidifyr', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', 'flame', 17, 13, 11, 9, //total 50
+        [ [1,1] ], [ 'Warm', 'Scorching' ], 45, 38);
+
+        //Obstaggard
+        create_monster('45', '<:crystri:1023046358933975140>', 'Obstaggard', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 'stone', 19, 23, 17, 11, //total 70
+        [ [1,1] ], [ 'Withering', 'Lacerating' ], -1, -1);
+
+        //Droplunk
+        create_monster('46', '<:crystri:1023046358933975140>', 'Droplunk', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Oops, don\'t let this one drop on your head!', 'stone', 7, 10, 8, 15, //total 40
+        [ [1,1] ], [ 'Inertia', 'Gravity' ], 45, 38);
+
+        //Brikurse
+        create_monster('47', '<:crystri:1023046358933975140>', 'Brikurse', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Square meatball!', 'magic', 14, 28, 8, 25, //total 75
+        [ [1,1] ], [ 'Inertia', 'Gravity' ], -1, -1);
+
+        //Polyplute
+        create_monster('48', '<:crystri:1023046358933975140>', 'Polyplute', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Blooms of Polyplute create beatiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', 'fungal', 12, 13, 12, 8, //total 45
+        [ [1,1] ], [ 'Sporespray', 'Leech' ], 49, 29);
+
+        //Reefest
+        create_monster('49', '<:crystri:1023046358933975140>', 'Reefest', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', 'fungal', 35, 15, 15, 5, //total 70
+        [ [1,1] ], [ 'Sporespray', 'Ensnare' ], -1, -1);
+
+        //Frigook
+        create_monster('50', '<:crystri:1023046358933975140>', 'Frigook', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', 'ooze', 15, 5, 15, 5, //total 40
+        [ [1,1] ], [ 'Moist', 'Frostbite' ], 51, 23);
+
+        //Boreyuc
+        create_monster('51', '<:crystri:1023046358933975140>', 'Boreyuc', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 'ooze', 15, 7, 30, 3, //total 65
+        [ [1,1] ], [ 'Bipolar', 'Frostbite' ], -1, -1);
+
+        //Vrumbox
+        create_monster('52', '<:crystri:1023046358933975140>', 'Vrumbox', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Monowheeled automata built for carrying various pieces of equipment.', 'tech', 10, 10, 10, 15, //total 45
+        [ [1,1] ], [ 'Inertia', 'Armored' ], 53, 18);
+
+        //Folduo
+        create_monster('53', '<:crystri:1023046358933975140>', 'Folduo', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.', 'tech', 15, 12, 13, 20, //total 60
+        [ [1,1] ], [ 'Inertia', 'Armored' ], 54, 32);
+
+        //Hexyclone
+        create_monster('54', '<:crystri:1023046358933975140>', 'Hexyclone', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.', 'tech', 20, 13, 17, 25, //total 75
+        [ [1,1] ], [ 'Hexiply', 'Efficient' ], -1, -1);
+
+        //Oochabit
+
+        //Oochabound
+
         //#endregion
 
         interaction.reply('Generated game data.');

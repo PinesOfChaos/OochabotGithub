@@ -21,7 +21,7 @@ module.exports = {
                 ooch = i; break;
             }
         }
-        
+
         if (!Number.isInteger(ooch)) return interaction.reply(`${ooch} is not a valid Oochamon!`)
         let ooch_obj = db.monster_data.get(ooch);
         let oochadex_data = db.profile.get(interaction.user.id, `oochadex`)
@@ -39,11 +39,11 @@ module.exports = {
                 dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_obj.evo_lvl}`});
             }
 
-            if (oochadex_data[ooch].seen != 0) {
+            if (oochadex_data[ooch].caught != 0) {
                 interaction.reply({ content: `**Seen:** ${oochadex_data[ooch].seen} | **Caught:** ${oochadex_data[ooch].caught}`,
                 embeds: [dexEmbed] });
             } else {
-                interaction.reply({ content: `**You have not encountered Oochamon #${parseInt(ooch) + 1} yet... Go out into the wild and find it!**`,
+                interaction.reply({ content: `**You have not caught ${oochadex_data[ooch].seen != 0 ? `a ${ooch_obj.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
                 embeds: [] });
             }
     },

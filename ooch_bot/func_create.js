@@ -3,6 +3,7 @@ const db = require("./db")
 module.exports = {
 
     create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
+        db.monster_data.set(id, parseInt(id), 'id')
         db.monster_data.set(id, emote, 'emote')
         db.monster_data.set(id, image, 'image')
         db.monster_data.set(id, name, 'name')

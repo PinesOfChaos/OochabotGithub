@@ -64,21 +64,26 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isAutocomplete()) {
        if (interaction.commandName == 'oochadex') {
-           let ooch_ids = db.monster_data.array()
-           let ooch_names = ooch_ids.map(v => v.name.toLowerCase());
-
-           function letter_filter(v) {
+            let ooch_ids = db.monster_data.array();
+            let ooch_names = ooch_ids.map(v => {
+                if (db.profile.get(interaction.user.id, `oochadex`)[v.id].seen != 0) {
+                    return `#${v.id + 1}: ${_.capitalize(v.name)}`
+                } else return `???`
+            });
+            
+            function letter_filter(v) {
                 let msg = interaction.options.getString('oochamon').toLowerCase();
-                let search_segment = v.slice(0, msg.length)
+                let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
                 return msg == search_segment;
-           }
+            }
 
-           // Search filters
-           ooch_names = ooch_names.filter(v => v != 'i');
-           ooch_names = ooch_names.filter(letter_filter);
-           ooch_names = ooch_names.slice(0, 25);
-           ooch_names = ooch_names.map(v => v = { name: _.capitalize(v), value: _.capitalize(v) });
-           interaction.respond(ooch_names);
+            // Search filters
+            ooch_names = ooch_names.filter(v => !v.includes('I'));
+            ooch_names = ooch_names.filter(v => !v.includes('???'));
+            ooch_names = ooch_names.filter(letter_filter);
+            ooch_names = ooch_names.slice(0, 25);
+            ooch_names = ooch_names.map(v => v = { name: v, value: v.split(' ')[1].toLowerCase() });
+            interaction.respond(ooch_names);
        }
     }
 
@@ -116,7 +121,6 @@ client.on('messageCreate', async message => {
 
     if (message.content == 'start battle') {
         ooch_gen = await generate_battle(db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
-        console.log(ooch_gen);
         db.profile.set(message.author.id, 0, 'ooch_active_slot');
         const thread = await message.channel.threads.create({
             name: `${message.member.displayName} Wild Battle, join this to battle!`,
@@ -132,6 +136,11 @@ client.on('messageCreate', async message => {
         await db.profile.set(message.author.id, 'battle', 'player_state')
         await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
         await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
+
+        // Update Oochadex seen info
+        for (let i = 0; i < ooch_gen.ooch_party.length; i++) {
+            db.profile.math(message.author.id, '+', 1, `oochadex[${ooch_gen.ooch_party[i].id}].seen`);
+        }
 
         await prompt_battle_input(thread, message);
 

@@ -115,6 +115,8 @@ generate_battle: function(ooch_inv, ooch_species) {
             current_hp: hp,
             evo_stage: stage,
             alive: true,
+            current_exp: 0,
+            next_lvl_exp: lvl ** 3,
             type: db.monster_data.get(ooch_pick, 'type')
         }]
     }
@@ -462,23 +464,28 @@ prompt_battle_input: async function(thread, message) {
                         await prism_collector.on('collect', async item_sel => { 
                             let item_id = item_sel.values[0];
                             let item_data = db.item_data.get(item_id);
-
                             if (db.profile.get(message.author.id, `prism_inv.${item_id}`) == undefined) return;
 
-                            let prism_result = item_use(thread, message, ooch_enemy, item_id)
                             item_sel.update({ content: `**------------ Player Turn ------------**\n` +
                             `${item_data.emote} Used a **${item_data.name}** on the Enemy ${ooch_enemy.name}\n`, components: []});
                             db.profile.math(message.author.id, '-', 1, `prism_inv.${item_id}`)
+                            let prism_result = item_use(thread, message, ooch_enemy, item_id)
                             b_collector.stop();
                             prism_collector.stop();
                             if (heal_collector != undefined) heal_collector.stop();
 
-                            if (prism_result == true) {
-                                thread.send(`**You successfully caught the wild ${ooch_enemy.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
-                                `Normal gameplay will resume in about 20 seconds.`);
+                            // If we caught the Oochamon successfully
+                            if (prism_result == true) { 
+                                if (db.profile.get(message.author.id, 'ooch_party').length < 6) {
+                                    db.profile.push(message.author.id, ooch_enemy, `ooch_party`);
+                                } else {
+                                    db.profile.push(message.author.id, ooch_enemy, `ooch_pc`)
+                                }
+
                                 db.profile.set(message.author.id, `overworld`, 'player_state')
                                 db.profile.set(message.author.id, {}, 'ooch_enemy')
                                 db.profile.set(message.author.id, 0, 'ooch_active_slot')
+                                db.profile.math(message.author.id, '+', 1, `oochadex[${ooch_enemy.id}].caught`)
                                 await wait(20000);
                                 await thread.delete();
                                 return;
@@ -962,13 +969,9 @@ item_use: function(thread, message, ooch, item) {
         let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus;
 
         if (Math.random() < prism_chance) {
-            if (db.profile.get(message.author.id, 'ooch_party').length < 6) {
-                db.profile.push(message.author.id, ooch, `ooch_party`);
-                return true;
-            } else {
-                db.profile.push(message.author.id, ooch, `ooch_pc`);
-                return true;
-            }
+            thread.send(`**You successfully caught the wild ${ooch.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
+            `Normal gameplay will resume in about 20 seconds.`);
+            return true;
         } else {
             thread.send(`Unfortunately, your prism catch attempt failed...`)
             return false;

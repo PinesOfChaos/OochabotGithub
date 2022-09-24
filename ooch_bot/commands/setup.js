@@ -60,10 +60,13 @@ module.exports = {
 
             // Setup Oochadex template
             for (ooch_id in db.monster_data.keyArray()) {
+                ooch_id = parseInt(ooch_id);
                 if (ooch_id == starter) {
-                    db.profile.push(interaction.user.id, { id: parseInt(ooch_id), seen: 1, caught: 1 }, 'oochadex') 
+                    db.profile.push(interaction.user.id, { id: ooch_id, seen: 1, caught: 1 }, 'oochadex') 
+                } else if ([0, 3, 6].filter(v => v != starter).includes(ooch_id)) {
+                    db.profile.push(interaction.user.id, { id: ooch_id, seen: 1, caught: 0 }, 'oochadex')
                 } else {
-                    db.profile.push(interaction.user.id, { id: parseInt(ooch_id), seen: 0, caught: 0 }, 'oochadex')
+                    db.profile.push(interaction.user.id, { id: ooch_id, seen: 0, caught: 0 }, 'oochadex')
                 }
             }
             
