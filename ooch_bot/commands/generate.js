@@ -297,12 +297,12 @@ module.exports = {
 
         //NEW ONES, MAKE GOOD YES
         //Cromet - ADD SPRITES
-        create_monster('35', '<:cromet:926625964677558272>', 'Cromet', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
+        create_monster('35', '<:cromet:926625964677558272>', 'Cromet', 'https://cdn.discordapp.com/attachments/921949708971294750/1023407933968613396/cromet.png',
         'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', 'stone', 12, 13, 10, 15, //total 50
         [ [1,1] ], [ 'Inertia', 'Scorching' ], 36, 27);
 
         //Lobstar - ADD SPRITES
-        create_monster('36', '<:lobstar:926625964576890881>', 'Lobstar', 'https://cdn.discordapp.com/attachments/921949708971294750/921987598103248927/rerune.png',
+        create_monster('36', '<:lobstar:926625964576890881>', 'Lobstar', 'https://cdn.discordapp.com/attachments/921949708971294750/1023407934367080569/lobstar.png',
         'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 'stone', 10, 35, 20, 10, //total 75
         [ [1,1] ], [ 'Immense', 'Scorching' ], -1, -1) 
 
@@ -342,64 +342,69 @@ module.exports = {
         [ [1,1] ], [ 'Crystallize' ], 41, 33);
 
         //Solidifyr
-        create_monster('44', '<:crystri:1023046358933975140>', 'Solidifyr', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('44', '<:solidifyr:1023046888213192784>', 'Solidifyr', 'https://cdn.discordapp.com/attachments/921949708971294750/982082656760111124/solidifyr.png',
         'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', 'flame', 17, 13, 11, 9, //total 50
         [ [1,1] ], [ 'Warm', 'Scorching' ], 45, 38);
 
         //Obstaggard
-        create_monster('45', '<:crystri:1023046358933975140>', 'Obstaggard', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('45', '<:obstaggard:1023046882630570035>', 'Obstaggard', 'https://cdn.discordapp.com/attachments/921949708971294750/982082656974037022/obstaggard.png',
         'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 'stone', 19, 23, 17, 11, //total 70
         [ [1,1] ], [ 'Withering', 'Lacerating' ], -1, -1);
 
         //Droplunk
-        create_monster('46', '<:crystri:1023046358933975140>', 'Droplunk', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('46', '<:droplunk:1023046877874237542>', 'Droplunk', 'https://cdn.discordapp.com/attachments/921949708971294750/982082657187954748/droplunk.png',
         'Oops, don\'t let this one drop on your head!', 'stone', 7, 10, 8, 15, //total 40
         [ [1,1] ], [ 'Inertia', 'Gravity' ], 45, 38);
 
-        //Brikurse
-        create_monster('47', '<:crystri:1023046358933975140>', 'Brikurse', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        //Brykurse
+        create_monster('47', '<:brykurse:1023046877173792768>', 'Brykurse', 'https://cdn.discordapp.com/attachments/921949708971294750/982082657393463357/brykurse.png',
         'Square meatball!', 'magic', 14, 28, 8, 25, //total 75
         [ [1,1] ], [ 'Inertia', 'Gravity' ], -1, -1);
 
         //Polyplute
-        create_monster('48', '<:crystri:1023046358933975140>', 'Polyplute', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('48', '<:polyplute:1023046886069911643>', 'Polyplute', 'https://cdn.discordapp.com/attachments/921949708971294750/982082657645109269/polyplute.png',
         'Blooms of Polyplute create beatiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', 'fungal', 12, 13, 12, 8, //total 45
         [ [1,1] ], [ 'Sporespray', 'Leech' ], 49, 29);
 
         //Reefest
-        create_monster('49', '<:crystri:1023046358933975140>', 'Reefest', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('49', '<:reefest:1023046887177199616>', 'Reefest', 'https://cdn.discordapp.com/attachments/921949708971294750/982082657871593514/reefest.png',
         'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', 'fungal', 35, 15, 15, 5, //total 70
         [ [1,1] ], [ 'Sporespray', 'Ensnare' ], -1, -1);
 
         //Frigook
-        create_monster('50', '<:crystri:1023046358933975140>', 'Frigook', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('50', '<:frigook:1023046879900078132>', 'Frigook', 'https://cdn.discordapp.com/attachments/921949708971294750/982082802457640980/frigook.png',
         'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', 'ooze', 15, 5, 15, 5, //total 40
         [ [1,1] ], [ 'Moist', 'Frostbite' ], 51, 23);
 
         //Boreyuc
-        create_monster('51', '<:crystri:1023046358933975140>', 'Boreyuc', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('51', '<:boreyuc:1023046866738360351>', 'Boreyuc', 'https://cdn.discordapp.com/attachments/921949708971294750/982082802671554712/boreyuc.png',
         'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 'ooze', 15, 7, 30, 3, //total 65
         [ [1,1] ], [ 'Bipolar', 'Frostbite' ], -1, -1);
 
         //Vrumbox
-        create_monster('52', '<:crystri:1023046358933975140>', 'Vrumbox', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('52', '<:vrumbox:1023046889236615269>', 'Vrumbox', 'https://cdn.discordapp.com/attachments/921949708971294750/982082803095187466/vrumbox.png',
         'Monowheeled automata built for carrying various pieces of equipment.', 'tech', 10, 10, 10, 15, //total 45
         [ [1,1] ], [ 'Inertia', 'Armored' ], 53, 18);
 
         //Folduo
-        create_monster('53', '<:crystri:1023046358933975140>', 'Folduo', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('53', '<:folduo:1023046879216402472>', 'Folduo', 'https://cdn.discordapp.com/attachments/921949708971294750/982082803426557962/folduo.png',
         'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.', 'tech', 15, 12, 13, 20, //total 60
         [ [1,1] ], [ 'Inertia', 'Armored' ], 54, 32);
 
         //Hexyclone
-        create_monster('54', '<:crystri:1023046358933975140>', 'Hexyclone', 'https://cdn.discordapp.com/attachments/921949708971294750/982082466317738034/crystri.png',
+        create_monster('54', '<:hexyclone:1023046881221300255>', 'Hexyclone', 'https://cdn.discordapp.com/attachments/921949708971294750/982082803694981160/hexyclone.png',
         'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.', 'tech', 20, 13, 17, 25, //total 75
         [ [1,1] ], [ 'Hexiply', 'Efficient' ], -1, -1);
 
         //Oochabit
+        create_monster('52', '<:oochabit:1023046884148912199>', 'Oochabit', 'https://cdn.discordapp.com/attachments/921949708971294750/982082803950821376/oochabit.png',
+        'These little guys\'ll consume space-time and do it with a smile on their faces.', 'void', 10, 9, 5, 6, //total 30
+        [ [1,1] ], [ 'Nullify' ], 53, 18);
 
         //Oochabound
-
+        create_monster('52', '<:oochabound:1023046884769677313>', 'Oochabound', 'https://cdn.discordapp.com/attachments/921949708971294750/982082804252815410/oochabot.png',
+        'No thank you, I\'d really rather not write a description for this one.', 'void', 25, 23, 17, 20, //total 85
+        [ [1,1] ], [ 'Duplicant' ], 53, 18);
         //#endregion
 
         interaction.reply('Generated game data.');
