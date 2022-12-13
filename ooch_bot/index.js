@@ -167,7 +167,11 @@ client.on('messageCreate', async message => {
             break;
         }
     }
-})
+});
+
+client.on('guildCreate', async guild => {
+    
+});
 
 
 

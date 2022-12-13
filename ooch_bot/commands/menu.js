@@ -30,6 +30,16 @@ module.exports = {
                 new Discord.MessageButton().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle('DANGER')
             );
 
+        // Setup buttons for party menu so I only have to make it once
+        let party_extra_buttons = new Discord.MessageActionRow()
+            .addComponents(
+                new Discord.MessageButton().setCustomId('primary').setLabel('Set To Primary').setStyle('SUCCESS'),
+            ).addComponents(
+                new Discord.MessageButton().setCustomId('nickname').setLabel('Change Nickname').setStyle('PRIMARY'),
+            ).addComponents(
+                new Discord.MessageButton().setCustomId('moves').setLabel('Change Moves').setStyle('PRIMARY'),
+            );
+
         let dmMsg;
         await interaction.reply({ content: 'Sent you a DM, go there to use the menu!', ephemeral: true });
         await interaction.user.send({ content: '**Menu:**', components: [settings_row_1, settings_row_2] }).then(msg => {
@@ -38,7 +48,9 @@ module.exports = {
 
         let filter = i => i.user.id == interaction.user.id;
         const collector = await dmMsg.createMessageComponentCollector({ filter });
-        let pa_collector, b_collector, dex_collector;
+        let pa_collector, btn_collector, dex_collector; // Collectors for each sub menu's buttons
+        let pa_extra_filter = (i => { return (i.user.id == interaction.user.id && ['primary', 'nickname', 'moves'].includes(i.customId)) })
+        let pa_extra_collector, nick_msg_collector, moves_collector; // Extra sub menu collectors
 
         await collector.on('collect', async i => {
             let selected = i.customId;
@@ -47,14 +59,16 @@ module.exports = {
                 case 'back':
                     i.update({ content: '**Menu:**', embeds: [], components: [settings_row_1, settings_row_2] });
                     if (pa_collector != undefined) pa_collector.stop();
-                    if (b_collector != undefined) b_collector.stop();
+                    if (btn_collector != undefined) btn_collector.stop();
                     if (dex_collector != undefined) dex_collector.stop();
+                    if (pa_extra_collector != undefined) pa_extra_collector.stop();
                 break;
                 case 'back_to_menu':
                     i.update({ content: '**Menu:**', embeds: [], components: [settings_row_1, settings_row_2] });
                     if (pa_collector != undefined) pa_collector.stop();
-                    if (b_collector != undefined) b_collector.stop();
+                    if (btn_collector != undefined) btn_collector.stop();
                     if (dex_collector != undefined) dex_collector.stop();
+                    if (pa_extra_collector != undefined) pa_extra_collector.stop();
                 break;
                 case 'party': 
                     let party = new Discord.MessageActionRow();
@@ -63,6 +77,10 @@ module.exports = {
                     let ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
                     let pa_components = [party];
                     for (let i = 0; i < ooch_party.length; i++) {
+                        // If i is 0 or 1, add components to party
+                        // If i is 2 or 3, add components to party_2
+                        // If i is 4 or 5, add components to party_3
+                        // This is to make a 2x3 table of buttons, lol
                         ((i <= 1) ? party : ((i >= 4) ? party_3 : party_2)).addComponents(
                             new Discord.MessageButton()
                             .setCustomId(i.toString())
@@ -77,14 +95,17 @@ module.exports = {
                     pa_components.push(back_buttons);
                     
                     i.update({ content: `**Current Oochamon Party**`, components: pa_components })
-                    filter = i => i.user.id == interaction.user.id;
                     pa_collector = await dmMsg.createMessageComponentCollector({ filter });
 
                     await pa_collector.on('collect', async j => {
                         if (isNaN(parseInt(j.customId))) return;
-                        let selected_ooch = ooch_party[parseInt(j.customId)]
+                        j.customId = parseInt(j.customId);
+                        let selected_ooch = ooch_party[j.customId]
                         let oochadex_info = db.monster_data.get(selected_ooch.id);
                         let moveset_str = '';
+
+                        // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
+                        party_extra_buttons.components[0].setDisabled(j.customId == 0 ? true : false);
 
                         let dexEmbed = new Discord.MessageEmbed()
                         .setColor('#808080')
@@ -98,14 +119,43 @@ module.exports = {
                         dexEmbed.addField('Moveset', moveset_str, true)
                         dexEmbed.addField('Stats', `HP: **${selected_ooch.stats.hp}**\nATK: **${selected_ooch.stats.atk}**\nDEF: **${selected_ooch.stats.def}**\nSPD: **${selected_ooch.stats.spd}**`, true)
                         
-                        j.update({ content: null, embeds: [dexEmbed], components: [back_buttons] });
+                        j.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, back_buttons] });
+                        pa_extra_collector = await dmMsg.createMessageComponentCollector({ pa_extra_filter });
+
+                        pa_extra_collector.on('collect', async k => {
+                            let sel = k.customId;
+                            switch (sel) {
+                                case 'primary':
+                                    // j.customId is the oochamon's current position in the party
+                                    // Swap the position of the selected ooch and the ooch in position 0.
+                                    [ooch_party[0], ooch_party[j.customId]] = [ooch_party[j.customId], ooch_party[0]];
+                                    db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
+                                    party_extra_buttons.components[0].setDisabled(true);
+                                    k.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, back_buttons] });
+                                    i.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
+                                break;
+                                case 'nickname':
+                                    k.update({ content: `Enter a nickname for your ${selected_ooch.name}!`, components: [], embeds: [] });
+                                    nick_msg_collector = await dmMsg.channel.createMessageCollector({ max: 1 });
+                                    await nick_msg_collector.on('collect', async msg => {
+                                        db.profile.set(interaction.user.id, msg.content, `ooch_party[${j.customId}].nickname`);
+                                        dmMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, back_buttons] });
+                                        msg.delete();
+                                    });
+                                break;
+                                case 'moves':
+                                break;
+                            }
+                        })
+
                     });
                 break;
                 case 'bag':
                     let heal_inv = db.profile.get(interaction.user.id, 'heal_inv')
-                    let heal_inv_keys = Object.keys(heal_inv);
                     let prism_inv = db.profile.get(interaction.user.id, 'prism_inv')
-                    let prism_inv_keys = Object.keys(prism_inv);
+                    let key_inv = db.profile.get(interaction.user.id, 'other_inv')
+                    let display_inv = heal_inv;
+                    let item_list_str = '';
                     const bag_buttons = new Discord.MessageActionRow()
                     .addComponents(
                         new Discord.MessageButton()
@@ -124,36 +174,63 @@ module.exports = {
                             .setEmoji('🔑'),
                     )
 
+                    // Setup default item list for the default value, healing
+                    for (const [item_id, quantity] of Object.entries(display_inv)) {
+                        let item_obj = db.item_data.get(item_id);
+                        item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
+                    }
+
                     const bagEmbed = new Discord.MessageEmbed()
                         .setColor('#808080')
                         .setTitle('❤️ Healing Items')
-                        .setDescription(`*Add item list here*`)
+                        .setDescription(item_list_str)
                     
-                    if (heal_inv_keys.length == 0) bag_buttons.components[0].disabled = true;
-                    if (prism_inv_keys.length == 0) bag_buttons.components[1].disabled = true;
-                    if (heal_inv_keys.length == 0 && prism_inv_keys.length == 0) {
+                    if (Object.keys(heal_inv).length == 0) bag_buttons.components[0].disabled = true;
+                    if (Object.keys(prism_inv).length == 0) bag_buttons.components[1].disabled = true;
+                    if (Object.keys(key_inv).length == 0) bag_buttons.components[2].disabled = true;
+                    if (Object.keys(heal_inv).length == 0 && Object.keys(prism_inv).length == 0 && Object.keys(key_inv).length == 0) {
                         i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_buttons] })
                         return;
                     }
 
                     i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
-                    b_collector = dmMsg.createMessageComponentCollector({ componentType: 'BUTTON' });
+                    let bag_filter = (i => { return (i.user.id == interaction.user.id && ['heal_button', 'prism_button', 'key_button'].includes(i.customId)) })
 
-                    await b_collector.on('collect', async i_sel => {
+                    btn_collector = dmMsg.createMessageComponentCollector({ componentType: 'BUTTON', filter: bag_filter });
+
+                    await btn_collector.on('collect', async i_sel => {
+                        item_list_str = '';
                         switch (i_sel.customId) {
                             case 'heal_button':
                                 bagEmbed.setTitle('❤️ Healing Items');
-                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                                bag_buttons.components[0].setStyle('SUCCESS')
+                                bag_buttons.components[1].setStyle('SECONDARY')
+                                bag_buttons.components[2].setStyle('SECONDARY')
+                                display_inv = heal_inv;
                             break;
                             case 'prism_button':
-                                bagEmbed.setTitle('Prisms')
-                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                                bagEmbed.setTitle('<:item_prism:1023031025716179076> Prisms')
+                                bag_buttons.components[0].setStyle('SECONDARY')
+                                bag_buttons.components[1].setStyle('SUCCESS')
+                                bag_buttons.components[2].setStyle('SECONDARY')
+                                display_inv = prism_inv;
                             break;
                             case 'key_button':
-                                bagEmbed.setTitle('Key Items')
-                                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                                bagEmbed.setTitle('🔑 Key Items')
+                                bag_buttons.components[0].setStyle('SECONDARY')
+                                bag_buttons.components[1].setStyle('SECONDARY')
+                                bag_buttons.components[2].setStyle('SUCCESS')
+                                display_inv = key_inv;
                             break;
                         }
+
+                        for (const [item_id, quantity] of Object.entries(display_inv)) {
+                            let item_obj = db.item_data.get(item_id);
+                            item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
+                        }
+
+                        bagEmbed.setDescription(item_list_str);
+                        i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
                     });
 
                 break;
