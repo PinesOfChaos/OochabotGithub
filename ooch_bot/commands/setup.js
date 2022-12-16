@@ -98,7 +98,7 @@ module.exports = {
                 { 
                     id: starter,
                     name: db.monster_data.get(starter, 'name'), 
-                    nickname: -1,
+                    nickname: db.monster_data.get(starter, 'name'),
                     item: -1,
                     ability: rand_ability,
                     level: level,

@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
 const db = require('../db.js')
 const _ = require('lodash');
+const { type_emotes } = require('../func_battle.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -28,7 +29,7 @@ module.exports = {
 
         const dexEmbed = new Discord.MessageEmbed()
             .setColor('#808080')
-            .setTitle(`${ooch_obj.name} (Type: ${_.capitalize(ooch_obj.type)})`)
+            .setTitle(`${ooch_obj.name} ${type_emotes[ooch_obj.type.toUpperCase()]}`)
             .setThumbnail(ooch_obj.image)
             .setDescription(`*${ooch_obj.oochive_entry}*`)
             .addField('Stats', `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**`)

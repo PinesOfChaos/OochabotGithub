@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const Discord = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
+const { type_emotes } = require('../func_battle.js');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -77,14 +78,14 @@ module.exports = {
                     let ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
                     let pa_components = [party];
                     for (let i = 0; i < ooch_party.length; i++) {
-                        // If i is 0 or 1, add components to party
+                        // If i is 0 or 1, add components to party`
                         // If i is 2 or 3, add components to party_2
                         // If i is 4 or 5, add components to party_3
                         // This is to make a 2x3 table of buttons, lol
                         ((i <= 1) ? party : ((i >= 4) ? party_3 : party_2)).addComponents(
                             new Discord.MessageButton()
                             .setCustomId(i.toString())
-                            .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].name} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})`)
+                            .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})`)
                             .setStyle((ooch_party[i].alive) ? ((i == 0) ? 'SUCCESS' : 'SECONDARY') : 'DANGER')
                             .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
                         )
@@ -103,15 +104,17 @@ module.exports = {
                         let selected_ooch = ooch_party[j.customId]
                         let oochadex_info = db.monster_data.get(selected_ooch.id);
                         let moveset_str = '';
+                        let ooch_title = `${selected_ooch.nickname}`
+                        selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${type_emotes[selected_ooch.type.toUpperCase()]}` : ooch_title += ` ${type_emotes[selected_ooch.type.toUpperCase()]}`;
 
                         // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
                         party_extra_buttons.components[0].setDisabled(j.customId == 0 ? true : false);
 
                         let dexEmbed = new Discord.MessageEmbed()
                         .setColor('#808080')
-                        .setTitle(`${selected_ooch.name} (Type: ${_.capitalize(oochadex_info.type)})`)
+                        .setTitle(ooch_title)
                         .setThumbnail(oochadex_info.image)
-                        .setDescription(`Ability: **${selected_ooch.ability}**`);
+                        .setDescription(`Ability: **${selected_ooch.ability}**\nType: ${_.capitalize(selected_ooch.type)}`);
                         for (let move_id of selected_ooch.moveset) {
                             let move = db.move_data.get(move_id)
                             moveset_str += `**${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
@@ -135,12 +138,19 @@ module.exports = {
                                     i.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
                                 break;
                                 case 'nickname':
-                                    k.update({ content: `Enter a nickname for your ${selected_ooch.name}!`, components: [], embeds: [] });
-                                    nick_msg_collector = await dmMsg.channel.createMessageCollector({ max: 1 });
-                                    await nick_msg_collector.on('collect', async msg => {
-                                        db.profile.set(interaction.user.id, msg.content, `ooch_party[${j.customId}].nickname`);
+                                    k.update({ content: `Enter a nickname for your ${selected_ooch.name}! (Type reset to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
+                                    nick_msg_collector = dmMsg.channel.createMessageCollector({ max: 1 });
+                                    nick_msg_collector.on('collect', async msg => {
+                                        let new_nick = (msg.content.toLowerCase() != 'reset' ? msg.content : selected_ooch.name);
+                                        selected_ooch.nickname = new_nick;
+
+                                        // Generate a new ooch title to place into our embed
+                                        ooch_title = `${selected_ooch.nickname}`
+                                        selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${type_emotes[selected_ooch.type.toUpperCase()]}` : ooch_title += ` ${type_emotes[selected_ooch.type.toUpperCase()]}`;
+                                        dexEmbed.setTitle(ooch_title);
+
+                                        db.profile.set(interaction.user.id, new_nick, `ooch_party[${j.customId}].nickname`);
                                         dmMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, back_buttons] });
-                                        msg.delete();
                                     });
                                 break;
                                 case 'moves':

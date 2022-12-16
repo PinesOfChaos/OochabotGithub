@@ -16,7 +16,7 @@ const myIntents = new Intents();
 myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, 
-                            Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+                            Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.DIRECT_MESSAGES], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 client.commands = new Discord.Collection();
 const registerCommands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -105,10 +105,6 @@ client.on('interactionCreate', async interaction => {
 //
 client.on('messageCreate', async message => {
 
-    if (message.guild.id == '688947207893942314') {
-        return;
-    }
-
     if (message.author.id == '397879158962782219') {
         if (message.type == 'THREAD_CREATED') {
             console.log('type')
@@ -168,12 +164,6 @@ client.on('messageCreate', async message => {
         }
     }
 });
-
-client.on('guildCreate', async guild => {
-    
-});
-
-
 
 //Log Bot in to the Discord
 client.login(token);

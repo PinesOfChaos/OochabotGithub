@@ -5,6 +5,25 @@ const _ = require('lodash');
 
 module.exports = {
 
+type_emotes: {
+    FLAME: '<:icon_flame:1023031001611501648>',
+    FLAME_LABEL: '<:icon_flame_txt:1023031002408439939>',
+    FUNGAL: '<:icon_fungal:1023031003381514280>',
+    FUNGAL_LABEL: '<:icon_fungal_txt:1023031004220362802>',
+    MAGIC: '<:icon_magic:1023031009966575686>',
+    MAGIC_LABEL: '<:icon_magic_txt:1023031010818015292>',
+    NEUTRAL: '<:icon_neutral:1023031011703013376>',
+    NEUTRAL_LABEL: '<:icon_neutral_txt:1023031012495732746>',
+    OOZE: '<:icon_ooze:1023031013355569262>',
+    OOZE_LABEL: '<:icon_ooze_txt:1023031014735491082>',
+    STONE: '<:icon_stone:1023031015830204448>',
+    STONE_LABEL: '<:icon_stone_txt:1023031016845217832>',
+    TECH: '<:icon_tech:1023031017730224139>',
+    TECH_LABEL: '<:icon_tech_txt:1023031018896240640>',
+    VOID: '<:icon_void:1023031019466653738>',
+    VOID_LABEL: '<:icon_void_txt:1023031020804645005>'
+},
+
 generate_battle: function(ooch_inv, ooch_species) {
 
     const { get_stats, ability_stat_change } = require('./func_battle.js');
@@ -91,7 +110,7 @@ generate_battle: function(ooch_inv, ooch_species) {
         ooch_party:[{
             id: ooch_pick,
             name: db.monster_data.get(ooch_pick, 'name'),
-            nickname: -1,
+            nickname: db.monster_data.get(ooch_pick, 'name'),
             item: -1,
             level: lvl,
             ability: rand_ability,
