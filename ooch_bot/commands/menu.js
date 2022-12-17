@@ -13,14 +13,14 @@ module.exports = {
             .addComponents(
                 new Discord.MessageButton().setCustomId('party').setLabel('Oochamon').setStyle('SUCCESS'),
             ) .addComponents(
-                new Discord.MessageButton().setCustomId('bag').setLabel('Bag').setStyle('DANGER').setEmoji('🎒'),
+                new Discord.MessageButton().setCustomId('bag').setLabel('Oochabag').setStyle('DANGER').setEmoji('🎒'),
             );
 
         let settings_row_2 = new Discord.MessageActionRow()
             .addComponents(
                 new Discord.MessageButton().setCustomId('oochadex').setLabel('Oochadex').setStyle('PRIMARY'),
             ) .addComponents(
-                new Discord.MessageButton().setCustomId('settings').setLabel('Settings').setStyle('SECONDARY').setEmoji('⚙️'),
+                new Discord.MessageButton().setCustomId('box').setLabel('Oochabox').setStyle('SECONDARY').setEmoji('📦').setDisabled(true),
             );
         
         let back_buttons = new Discord.MessageActionRow()
@@ -38,7 +38,7 @@ module.exports = {
             ).addComponents(
                 new Discord.MessageButton().setCustomId('nickname').setLabel('Change Nickname').setStyle('PRIMARY'),
             ).addComponents(
-                new Discord.MessageButton().setCustomId('moves').setLabel('Change Moves').setStyle('PRIMARY'),
+                new Discord.MessageButton().setCustomId('moves').setLabel('Change Moves').setStyle('PRIMARY').setDisabled(true),
             );
 
         let dmMsg;
@@ -154,6 +154,8 @@ module.exports = {
                                     });
                                 break;
                                 case 'moves':
+                                    k.update({ content: null })
+                                    j.followUp({ content: `The move switching menu has not been setup yet.`, ephemeral: true });
                                 break;
                             }
                         })
@@ -247,22 +249,31 @@ module.exports = {
                 case 'oochadex':
                     let oochadex_sel_1 = new Discord.MessageActionRow();
                     let oochadex_sel_2 = new Discord.MessageActionRow();
+                    let oochadex_sel_3 = new Discord.MessageActionRow();
                     let oochadex_sel_options_1 = [];
                     let oochadex_sel_options_2 = [];
+                    let oochadex_sel_options_3 = [];
                     let ooch_data = db.monster_data.get(0);
                     let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
 
                     for (let i = 0; i < db.monster_data.keyArray().length; i++) {
                         ooch_data = db.monster_data.get(i);
                         oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
+                        console.log(oochadex_check);
                         if (i < 25) {
                             oochadex_sel_options_1.push({
                                 label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                                 description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                                 value: `${i}`,
                             })
-                        } else {
+                        } else if (i >= 25 && i < 50) {
                             oochadex_sel_options_2.push({
+                                label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                                description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                                value: `${i}`,
+                            })
+                        } else {
+                            oochadex_sel_options_3.push({
                                 label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                                 description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                                 value: `${i}`,
@@ -280,8 +291,15 @@ module.exports = {
                     oochadex_sel_2.addComponents(
                         new Discord.MessageSelectMenu()
                             .setCustomId('oochadex_sel_2')
-                            .setPlaceholder(`Oochadex #26-#${db.monster_data.keyArray().length}`)
+                            .setPlaceholder(`Oochadex #26-#50`)
                             .addOptions(oochadex_sel_options_2),
+                    );
+
+                    oochadex_sel_3.addComponents(
+                        new Discord.MessageSelectMenu()
+                            .setCustomId('oochadex_sel_3')
+                            .setPlaceholder(`Oochadex #51-#${db.monster_data.keyArray().length}`)
+                            .addOptions(oochadex_sel_options_3),
                     );
 
                     ooch_data = db.monster_data.get(0);
@@ -300,10 +318,10 @@ module.exports = {
 
                     if (oochadex_data[0].caught != 0) {
                         i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                        embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
+                        embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                     } else {
                         i.update({ content: `**You have not encountered ${oochadex_data[0].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                        embeds: [], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
+                        embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                     }
 
                     filter = i => i.user.id == interaction.user.id;
@@ -326,15 +344,17 @@ module.exports = {
 
                         if (oochadex_data[sel.values[0]].caught != 0) {
                             sel.update({ content: `**Seen:** ${oochadex_data[sel.values[0]].seen} | **Caught:** ${oochadex_data[sel.values[0]].caught}`,
-                            embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
+                            embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                         } else {
                             sel.update({ content: `**You have not encountered ${oochadex_data[sel.values[0]].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                            embeds: [], components: [oochadex_sel_1, oochadex_sel_2, back_buttons] });
+                            embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                         }
                     });
 
                 break;
                 case 'settings':
+                    await i.update({ content: '**Menu:**', components: [settings_row_1, settings_row_2] });
+                    await i.followUp({ content: 'The box menu is not yet implemented.', ephemeral: true });
                 break;
             }
         });
