@@ -1,8 +1,8 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Discord = require('discord.js');
 const db = require('../db.js')
 const _ = require('lodash');
-const { type_emotes } = require('../func_battle.js');
+const { TypeEmote } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,13 +27,13 @@ module.exports = {
         let ooch_obj = db.monster_data.get(ooch);
         let oochadex_data = db.profile.get(interaction.user.id, `oochadex`)
 
-        const dexEmbed = new Discord.MessageEmbed()
+        const dexEmbed = new EmbedBuilder()
             .setColor('#808080')
-            .setTitle(`${ooch_obj.name} ${type_emotes[ooch_obj.type.toUpperCase()]}`)
+            .setTitle(`${ooch_obj.name} ${TypeEmote[_.capitalize(ooch_obj.type)]}`)
             .setThumbnail(ooch_obj.image)
             .setDescription(`*${ooch_obj.oochive_entry}*`)
-            .addField('Stats', `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**`)
-            .addField('Abilities', ooch_obj.abilities.join(', '))
+            .addFields([{ name: 'Stats', value: `HP: **${ooch_obj.hp}**\nATK: **${ooch_obj.atk}**\nDEF: **${ooch_obj.def}**\nSPD: **${ooch_obj.spd}**` }])
+            .addFields([{ name: 'Abilities', value: ooch_obj.abilities.join(', ') }])
             if (ooch_obj.evo_id != -1 && oochadex_data[ooch_obj.evo_id].seen != 0) {
                 dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_obj.evo_id, 'name')} at level ${ooch_obj.evo_lvl}`, iconURL: db.monster_data.get(ooch_obj.evo_id, 'image') });
             } else {

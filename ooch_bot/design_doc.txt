@@ -80,8 +80,26 @@ Wild Creature Generator:
 			-if it does evolve, re-get the base values
 	}
 	- HP, ATK, DEF, SPD = floor(base values*(1.05^level))
-	
+
+STATES:
+	- NotPlaying
+		- When the player isn't playing the game.
+	- Intro
+		- When the player is in the intro/tutorial of the game.
+	- Playspace
+		- When the player is using wasd to move around in a playspace.
+	- Dialogue
+		- When the player is viewing dialogue from an NPC.
+	- Shop
+		- When the player is in a shop of any kind.
+	- Menu
+		- When the player is in a menu.
+	- Combat
+		- When the player is in combat.
+	- Cutscene (unused)
+		- When the player is watching a cutscene.
 			
-			
-			
+SETTINGS:
+	- Quality/Performance Toggle (turns on or off animated emotes, by default this is Quality)
+	- Battle Message Cleanup Toggle (cleans up the messages made from a battle after it's finished, by default this is off)
 	

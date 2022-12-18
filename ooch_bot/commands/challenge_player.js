@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 const { generate_challenge, prompt_battle_input } = require('../func_battle.js')
 const db = require('../db.js');
+const { PlayerState } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,7 +13,9 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
 
-        let player = `${interaction.user.id}`;
+        return interaction.reply('This command is not currently usable and needs to be updated.');
+
+        let player = interaction.user.id;
         let player_name = interaction.user.username;
 
         let chal = interaction.options.getUser('name').id;
@@ -23,7 +26,7 @@ module.exports = {
 
         const thread = await interaction.channel.threads.create({
             name: `${player_name} vs ${chal_name}\'s Clone Battle, join this to battle!`,
-            autoArchiveDuration: 60,
+            autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
             reason: '\"PVP\" Battle thread',
         });
 
@@ -40,11 +43,11 @@ module.exports = {
                         `\n*Your ${ooch_plr.name} HP: (${ooch_plr.current_hp}/${ooch_plr.stats.hp})*`+
                         `\n*Enemy ${ooch_enemy.name} HP: (${ooch_enemy.current_hp}/${ooch_enemy.stats.hp})*`);
 
-        await db.profile.set(player, 'battle', 'player_state')
+        await db.profile.set(player, PlayerState.Combat, 'player_state')
         await db.profile.set(player, chal_gen, 'ooch_enemy')
         await db.profile.set(player, thread.id, 'battle_thread_id')
 
-        await prompt_battle_input(thread, {author: {id: player}});
+        await prompt_battle_input(thread, player);
 
         interaction.reply('Starting Clone Battle');
         interaction.deleteReply();

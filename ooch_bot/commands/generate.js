@@ -1,6 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder } = require('discord.js');
 const Discord = require('discord.js');
-const { create_monster, create_move, create_item, create_ability } = require('../func_create');
+const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
 
@@ -13,6 +13,19 @@ module.exports = {
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
             return interaction.reply('This command isn\'t for you!')
         }
+
+        //#region Tile Data
+        //          ID  Use         Emote                           Emote_Simple (Optional)
+        create_tile(0,  'chest',    '<:tChst:1023032222728601680>'  );
+        create_tile(1,  'floor',    '<:tObs:1023032225337450507>'   );
+        create_tile(2,  'wall',     '<:tObsb:1023032226075643928>'  );
+        create_tile(3,  'trainer',  '<:tPlr:1023032227174563942>'   );
+        create_tile(4,  'floor',    '<:tHUB:1023032223521308682>'   );
+        create_tile(5,  'wall',     '<:tHUBb:1023032224616042588>'  );
+        create_tile(6,  'floor',    '<:tSand:1023032227761750087>'  );
+        create_tile(7,  'wall',     '<:tSandb:1023032228994875402>' );
+        create_tile(8,  'floor',    '<:tShrm:1023032229863112734>'  );
+        create_tile(9,  'wall',     '<:tShrmB:1023032230639046726>' );
 
         //#region Item Data
         //          ID   Name             Emote                                       Category     Type      Value   Description
@@ -414,6 +427,7 @@ module.exports = {
         let moves_output_str = "";
         let items_output_str = "";
         let abilities_output_str = "";
+        let tiles_output_str = "";
 
         for (let obj of db.monster_data.array()) {
             ooch_output_str += `${obj.id}|${obj.emote}|${obj.image}|${obj.name}|${obj.oochive_entry}|${obj.type}|${obj.hp}|${obj.atk}|${obj.def}|${obj.spd}|` + 
@@ -432,10 +446,15 @@ module.exports = {
             abilities_output_str += `${obj.id}|${obj.name}|${obj.description}\n`;
         }
 
+        for (let obj of db.tile_data.array()) {
+            tiles_output_str += `${obj.id}|${obj.use}|${obj.emote}|${obj.emote_simple}\n`;
+        }
+
         fs.writeFile('./gms2_data/ooch_data.txt', ooch_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./gms2_data/moves_data.txt', moves_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./gms2_data/items_data.txt', items_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./gms2_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./gms2_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
 
         interaction.reply('Generated game data.');
     },

@@ -1,8 +1,9 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const Discord = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
 const { get_stats } = require('../func_battle.js');
+const { PlayerState, GraphicsMode } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,24 +11,24 @@ module.exports = {
         .setDescription('Choose your starter'),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
-        const row = new Discord.MessageActionRow()
+        const row = new ActionRowBuilder()
             .addComponents(
-                new Discord.MessageButton()
+                new ButtonBuilder()
                     .setCustomId('s')
                     .setLabel('Sporbee')
-                    .setStyle('SECONDARY')
+                    .setStyle(ButtonStyle.Secondary)
                     .setEmoji('<:sporbee:921141752029646938>'),
             ) .addComponents(
-                new Discord.MessageButton()
+                new ButtonBuilder()
                     .setCustomId('r')
                     .setLabel('Roocky')
-                    .setStyle('SECONDARY')
+                    .setStyle(ButtonStyle.Secondary)
                     .setEmoji('<:roocky:921156272512974868>'),
             ) .addComponents(
-                new Discord.MessageButton()
+                new ButtonBuilder()
                     .setCustomId('p')
                     .setLabel('Puppyre')
-                    .setStyle('SECONDARY')
+                    .setStyle(ButtonStyle.Secondary)
                     .setEmoji('<:puppyre:921176686102454282>'),
             );
 
@@ -51,12 +52,21 @@ module.exports = {
             db.profile.set(interaction.user.id, {}, 'prism_inv')
             db.profile.set(interaction.user.id, {}, 'heal_inv')
             db.profile.set(interaction.user.id, 0, 'oochabux')
-            db.profile.set(interaction.user.id, 'overworld', 'player_state') // States are not_playing, overworld, battle, shop, menu, party_menu
-            db.profile.set(interaction.user.id, -1, 'battle_thread_id')
+            db.profile.set(interaction.user.id, PlayerState.Intro, 'player_state')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'hub', x: 2, y: 2 }, 'location_data')
-            db.profile.set(interaction.user.id, -1, 'display_msg_id')
+            db.profile.set(interaction.user.id, -1, 'display_msg_id');
+            db.profile.set(interaction.user.id, -1, 'play_thread_id');
+            db.profile.set(interaction.user.id, 0, 'battle_msg_counter');
+            db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
+            db.profile.set(interaction.user.id, {
+                finished_intro: true,
+            }, 'flags');
+            db.profile.set(interaction.user.id, {
+                graphics: GraphicsMode.Quality,
+                battle_cleanup: false
+            }, 'settings');
 
             // Setup Oochadex template
             for (ooch_id in db.monster_data.keyArray()) {

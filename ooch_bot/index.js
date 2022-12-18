@@ -1,23 +1,22 @@
 // require the discord.js module
 const fs = require('fs');
-const Discord = require('discord.js');
 const { token, client_id, guild_ids } = require('./config.json');
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, InteractionType } = require('discord-api-types/v9');
 const wait = require('wait');
 const _ = require('lodash');
 
 // create a new Discord client and give it some variables
-const { Client, Intents } = require('discord.js');
+const { Client, Partials, GatewayIntentBits, Collection, ThreadAutoArchiveDuration } = require('discord.js');
 const db = require('./db.js');
 const { prompt_battle_input, generate_battle } = require('./func_battle.js');
 const { move } = require('./func_play.js');
-const myIntents = new Intents();
-myIntents.add('GUILD_PRESENCES', 'GUILD_MEMBERS', 'GUILD_PRESENCES');
+const { PlayerState } = require('./types.js');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, 
-                            Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.DIRECT_MESSAGES], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
-client.commands = new Discord.Collection();
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
+    partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
+client.commands = new Collection();
 const registerCommands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -87,7 +86,7 @@ client.on('interactionCreate', async interaction => {
        }
     }
 
-    if (!interaction.isCommand() && !interaction.isContextMenu()) return;
+    if (interaction.type !== InteractionType.ApplicationCommand) return;
 
     const command = client.commands.get(interaction.commandName);
 
@@ -113,52 +112,51 @@ client.on('messageCreate', async message => {
         } else {
             return;
         }
-    }
-
-    if (message.content == 'start battle') {
-        ooch_gen = await generate_battle(db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
-        db.profile.set(message.author.id, 0, 'ooch_active_slot');
-        const thread = await message.channel.threads.create({
-            name: `${message.member.displayName} Wild Battle, join this to battle!`,
-            autoArchiveDuration: 60,
-            reason: 'Battle thread',
-        });
-
-        if (thread.joinable) await thread.join();
-        await thread.members.add(message.author.id);
-        await thread.setLocked(true);
-        await thread.send(`${message.member.displayName}, please use this thread to battle!\nYou encounter a wild level ${ooch_gen.ooch_party[0].level} ${db.monster_data.get(ooch_gen.ooch_party[0].id, 'name')}!\n`)
-
-        await db.profile.set(message.author.id, 'battle', 'player_state')
-        await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
-        await db.profile.set(message.author.id, thread.id, 'battle_thread_id')
-
-        // Update Oochadex seen info
-        for (let i = 0; i < ooch_gen.ooch_party.length; i++) {
-            db.profile.math(message.author.id, '+', 1, `oochadex[${ooch_gen.ooch_party[i].id}].seen`);
-        }
-
-        await prompt_battle_input(thread, message);
-
-        message.delete();
-    }
+    }    
 
     // Funi game logic for controlling the game
     if (db.profile.has(message.author.id)) {
-        player_state = db.profile.get(message.author.id, 'player_state')
+        player_state = db.profile.get(message.author.id, 'player_state');
         switch (player_state) {
-            case 'overworld': 
-                if (message.channel.id == '921969875482738749') {
-                    let args = message.content.split(' ');
-                    let dist = (args.length == 2) ? parseInt(args[1]) : 1;
-                    if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
-                    switch (args[0]) {
-                        case 'd': move(message, 'd', dist); break;
-                        case 's': move(message, 's', dist); break;
-                        case 'a': move(message, 'a', dist); break; 
-                        case 'w': move(message, 'w', dist); break;
+            case PlayerState.Playspace: 
+                if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
+                    if (message.content == 'start battle') {
+                        // Do battle stuff
+                        ooch_gen = await generate_battle(db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
+                        db.profile.set(message.author.id, 0, 'ooch_active_slot');
+
+                        // Delete playspace to enter battle
+                        let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
+                        await playspace_msg.delete();
+
+                        await message.channel.send(`You encounter a wild **level ${ooch_gen.ooch_party[0].level} ${db.monster_data.get(ooch_gen.ooch_party[0].id, 'name')}!**`);
+                        await message.channel.send(`${db.monster_data.get(ooch_gen.ooch_party[0].id, 'emote')}`);
+                
+                        await db.profile.set(message.author.id, PlayerState.Combat, 'player_state')
+                        await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
+                        await db.profile.set(message.author.id, 2, 'battle_msg_counter');
+                        await db.profile.set(message.author.id, 1, 'battle_turn_counter');
+
+                        // Update Oochadex seen info
+                        for (let i = 0; i < ooch_gen.ooch_party.length; i++) {
+                            db.profile.math(message.author.id, '+', 1, `oochadex[${ooch_gen.ooch_party[i].id}].seen`);
+                        }
+                
+                        await prompt_battle_input(message.channel, message.author.id);
+                        message.delete();
+                    } else {
+                        // Do movement stuff
+                        let args = message.content.split(' ');
+                        let dist = (args.length == 2) ? parseInt(args[1]) : 1;
+                        if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
+                        switch (args[0]) {
+                            case 'd': move(message, 'd', dist); break;
+                            case 's': move(message, 's', dist); break;
+                            case 'a': move(message, 'a', dist); break; 
+                            case 'w': move(message, 'w', dist); break;
+                        }
+                        if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
                     }
-                    message.delete();
                 }
             break;
         }

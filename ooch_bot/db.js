@@ -8,5 +8,6 @@ module.exports = {
   move_data: new Enmap({ name: "move_data"}),
   player_positions: new Enmap({ name: "player_positions"}),
   item_data: new Enmap({ name: "item_data" }),
-  ability_data: new Enmap({ name: "ability_data" })
+  ability_data: new Enmap({ name: "ability_data" }),
+  tile_data: new Enmap({ name: "tile_data" })
 };

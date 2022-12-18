@@ -1,6 +1,14 @@
 const db = require("./db")
 
 module.exports = {
+    create_tile: function(id, use, emote, emote_simple = -1){
+        if(emote_simple == -1) emote_simple = emote; //Replace simple emote with default value if there is no simple variant
+        let key_id = id.toString();
+        db.tile_data.set(key_id, id, 'id');
+        db.tile_data.set(key_id, use, 'use');
+        db.tile_data.set(key_id, emote, 'emote');
+        db.tile_data.set(key_id, emote_simple, 'emote_simple');
+    },
 
     create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
         let key_id = id.toString();

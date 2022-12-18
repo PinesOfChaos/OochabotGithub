@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
 const { get_stats } = require('../func_battle.js');
 const _ = require('lodash');

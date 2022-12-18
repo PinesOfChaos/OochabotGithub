@@ -1,6 +1,4 @@
 const db = require("./db")
-const wait = require('wait');
-const Discord = require('discord.js');
 
 module.exports = {
 
@@ -146,6 +144,27 @@ module.exports = {
         emote_map = emote_map.join('\n')
 
         return(emote_map);
+    },
+
+    /**
+     * Setup a new playspace window, returns the initial playspace string.
+     * @param {Number} user_id The user id of the user having a playspace setup.
+     */
+    setup_playspace_str: function(user_id) {
+        const { map_emote_string } = require('./func_play.js');
+        let player_location = db.profile.get(user_id, 'location_data');
+        let biome = player_location.area;
+        let playerx = player_location.x;
+        let playery = player_location.y;
+
+        //Get the map array based on the player's current biome
+        let map_obj = db.maps.get(biome.toLowerCase());
+        let map_arr = map_obj[1]; //this should be the actual map array
+
+        // Set player position data into the global multiplayer player position db
+        db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
+
+        return map_emote_string(biome.toLowerCase(), map_arr, playerx, playery);
     }
 
 }

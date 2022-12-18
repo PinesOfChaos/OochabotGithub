@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
 const { map_emote_string } = require('../func_play.js');
 
@@ -11,7 +11,12 @@ module.exports = {
             option.setName('biome')
                 .setDescription('Where will we be going today?')
                 .setRequired(true)
-                .addChoices([['Desert','desert'],['Obsidian','obsidian'],['Fungal','fungal'],['Hub','hub']])),
+                .addChoices(
+                    { name: 'Hub', value: 'hub' },
+                    { name: 'Desert', value: 'desert' },
+                    { name: 'Fungal', value: 'fungal' },
+                    { name: 'Obsidian', value: 'obsidian' },
+                )),
     async execute(interaction) {
         let biome_to = interaction.options.getString('biome');
         let target = interaction.user.id;

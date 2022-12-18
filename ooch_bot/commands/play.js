@@ -1,32 +1,43 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType } = require('discord.js');
 const db = require('../db.js');
-const { map_emote_string } = require('../func_play.js');
+const { map_emote_string, setup_playspace_str } = require('../func_play.js');
+const { PlayerState } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
         .setDescription('Begin playing Oochamon!'),
     async execute(interaction) {
-
         let target = interaction.user.id;
-        
-        //Get the player's location
-        let player_location = db.profile.get(target, 'location_data');
-        let biome = player_location.area;
-        let playerx = player_location.x;
-        let playery = player_location.y;
+        if (!db.profile.has(target)) {
+            return interaction.reply({ content: 'Please run `/setup` before you play the game!', ephemeral: true });
+        } 
 
-        //Get the map array based on the player's current biome
-        let map_obj = db.maps.get(biome.toLowerCase());
-        let map_arr = map_obj[1]; //this should be the actual map array
+        if (db.profile.get(target, 'state') == PlayerState.NotPlaying) {
+            return interaction.reply({ content: 'You can\'t run `/play` when you have an active game session going!', ephemeral: true });
+        }
 
-        // Set player position data into the global multiplayer player position db
-        db.player_positions.set(biome, { x: playerx, y: playery }, target);
+        // Setup the play thread
+        const thread = await interaction.channel.threads.create({
+            name: `${interaction.member.displayName}'s Oochamon Play Thread`,
+            autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+            type: ChannelType.PrivateThread,
+            reason: 'Play thread',
+        });
+
+        if (thread.joinable) await thread.join();
+        await thread.members.add(interaction.user.id);
+        await thread.setLocked(true);
+        await thread.setInvitable(false);
+
+        db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
+        db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+        let playspace_str = setup_playspace_str(interaction.user.id);
 
         //Send reply displaying the player's location on the map
-        interaction.reply({ content: `Made your playspace! Play with \`wasd\` to move around the world!`, ephemeral: true })
-        interaction.channel.send(`${interaction.member.displayName}'s Playspace`)
-        interaction.channel.send({ content: `${map_emote_string(biome.toLowerCase(), map_arr, playerx, playery)}` }).then(msg => {
+        interaction.reply({ content: `Made your playspace! Use the thread created for you to play!`, ephemeral: true });
+        thread.send(`This is your play thread! All game related messages and playing will happen in this thread.\nRun \`/quit\` when you are done playing!`);
+        thread.send({ content: playspace_str }).then(msg => {
             db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
     },
