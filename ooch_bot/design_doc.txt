@@ -99,7 +99,74 @@ STATES:
 	- Cutscene (unused)
 		- When the player is watching a cutscene.
 			
-SETTINGS:
+PREFERENCES:
 	- Quality/Performance Toggle (turns on or off animated emotes, by default this is Quality)
 	- Battle Message Cleanup Toggle (cleans up the messages made from a battle after it's finished, by default this is off)
+	- Zoom Options: 5x5, 7x7, 9x9 (changes the amount of emotes displayed in the play window, 7x7 and 9x9 have small emotes)
+
+GIMMICK (CORRUPTED FORMS):
+	- Oochamon imbued with a special power from the planet gain the ability to twist into a corrupted version of themselves.
+	- In gameplay terms, this gives every(?) final stage evolution oochamon the ability to swap between a "pure" and "corrupted" form of the oochamon.
+		- There are 2 types of Corrupted Forms:
+			- Crystal: Gives the Oochamon a second typing as well as major stat changes and an ability change, that can change how the oochamon is played
+			- Void: Gives the Oochamon a second Void typing with slightly lowered stat changes and access to Void moves, that makes them offensively very strong.
+		- Each of these Corrupted Forms has a downside to having too many of them:
+			- Crystal Oochamon have a base chance to disobey your orders, that increases the more of them you have in your party.
+			- Void Oochamon have a bit lowered stats, and their stats decrease a little bit more the more of them you have in your party.
+			- Both Crystal and Void Corrupted Oochamon do add to each others "void total", but less.
+		
+	- [Abyssal Droplet] [Prismatic Key] [Extractor]
+	- Corrupted Oochamon will be unlocked after a certain story event.
+	- You must use a specific item to unlock an Oochamon's corrupted form, except for your starter, who will have it's corrupted form from the start. 
+	- You will never encounter corrupted forms in the main story, besides the thief side story and anything relating to Oochabot.
+	- Every Oochamon starts in it's pure form when caught, except for Oochabot, who by default is in his corrupted form.
+
+STORY:
+	- Intro:
+		- 
+	- Setting:
+		- An alien planet filled with mysterious Oochamon and various kinds of wildlife.
+		- The hub area is a dropship base camp type of area with tents and things setup. 
 	
+	- Lore:
+		- Prisms are fragments of the planets core that have been separated from its control
+			- 
+
+	- Characters:
+		- Rivals:
+			- [Theif] steals one of the starter mons the player didn't take 
+				- [Theif] will slowly be corrupted by Void-type Ooochamon
+			- [Co-worker] recieves the other starter mon. They really want to prove themselves to the higher ups. They'll slowly
+			learn about the hive-mind connection to the Oochamon, but a few steps behind in terms of knowledge about it
+		- Enemies:
+			- [Hive Mind] Intelligent network of crystals
+				- [Lost] people who have been corrupted by the hivemind
+			- [Oochabot] Incredibly incoherent, lots of screaming in Voltaic
+				- Does actually speak, and after catching the Oochabot you gain a translator to be able to understand it, but it's still kind of a doofus and some
+				of it's chatting is just actually screaming for no reason.
+				- Example dialogue: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAGH AAAAAAA!!!! AAAAAAAAAAAAAAAAA (insert voltaic emotes around that)
+			- [Company Team Leads]
+				- [Archeology Lead] uses Stone mons, studying the ruins just below the surface, Australian?
+					- Signature Oochamon: Amephyst
+				- [Engineering Lead] uses Tech type oochamon, angry conductor personality, visually like demolition guy from Atlantis movie
+					- Signature Oochamon: Hexcyclone
+				- [Finance Lead] uses Magic mons, has become obsessed with them and thinks they can tell the future 
+					- Signature Oochamon: Spoolette
+		- Other:
+			- [Research Team Leader] acts as the "professor" of the game, is a kind hearted soul that just wants to learn more
+			about the mysterious planet, just loves knowledge but isn't quite there mentally. Is technically one of the Lead fights partway through
+			the story, after you learn about the planet's core. 
+		
+
+Timeline:
+	- Intro
+	- Arrival at the base
+	- Meet [Research Team Leader] and choose your mons
+		- Request: Retrieve [Research Team Leader's] notes
+		- Request: Inspect fallen-comet, encounter with oochamon Cromet
+	- [Finance Lead] doesn't beleive you're going to do a good enough job and are bound to fail, challenging you to a battle
+	- You've proven to be capable of handling yourself
+		- Request: Travel to Fungal Undergrowth and reactivate elevator
+			- Ambushed by [Theif] partway through your journet
+			- Return to surface on elevator
+	- 
