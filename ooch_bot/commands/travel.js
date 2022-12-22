@@ -28,15 +28,11 @@ module.exports = {
         let biome_from =  player_location.area;
 
         //remove the player's info from the old biome and add it to the new one
-
         db.player_positions.set(biome_to, { x: center, y: center }, target);
-       
         db.player_positions.delete(biome_from, target);
-
         db.profile.set(target, { area: biome_to, x: center, y: center }, 'location_data')
 
         let msg_to_edit = db.profile.get(target, 'display_msg_id');
-
         (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
             msg.edit({ content: map_emote_string(biome_to, map_arr, center, center) });
         });

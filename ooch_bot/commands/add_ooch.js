@@ -7,9 +7,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('add_ooch')
         .setDescription('Add an oochamon to your party!')
-        .addIntegerOption(option => 
+        .addStringOption(option => 
             option.setName('id')
                 .setDescription('ID of ooch')
+                .setAutocomplete(true)
                 .setRequired(true))
         .addIntegerOption(option => 
             option.setName('lv')
@@ -17,7 +18,8 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
 
-        let ooch_id = interaction.options.getInteger('id');
+        let ooch_id = interaction.options.getString('id');
+        ooch_id = parseInt(ooch_id);
         let level = interaction.options.getInteger('lv');
 
         // Setup ooch_id data

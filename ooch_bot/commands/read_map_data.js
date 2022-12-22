@@ -18,7 +18,8 @@ module.exports = {
             if (!file) return console.log('No attached file found');
     
             try {
-                let map_name = file.split('/').slice(-1).replace('.txt', '');
+                let map_name = file.split('/');
+                map_name = map_name[map_name.length-1].replace('.txt', '');
                 // fetch the file from the external URL
                 const response = await fetch(file);
     
@@ -37,29 +38,33 @@ module.exports = {
                     let data_header = 'err';
                     let tile_data = [];
                     let npc_data = [];
-                    let npc_team_data, ooch_data;
+                    let npc_team_data, ooch_data, spawn_ooch_data;
                     let spawn_data = [];
                     let savepoint_data = [];
-                    let line_data;
-                    for (let line in map_data) {
+                    let transition_data = [];
+                    for (let line of map_data) {
+                        line = line.replace(/\r\n/g, '').replace(/[\r\n]/g, '');
                         if (line[0] == '#') {
-                            data_header = line;
+                            data_header = `${line.replace('#', '')}`;
                         } else {
+                            let line_data = line.split('|');
+                            let output;
                             switch (data_header) {
                                 case 'tiles':
-                                    tile_data.push(line.split('|'));
+                                    line_data.pop();
+                                    line_data = line_data.map(v => parseInt(v));
+                                    tile_data.push(line_data);
                                 break;
                                 case 'npcs':
-                                    line_data = line.split('|')
-                                    let output = {
+                                    output = {
                                         name: line_data[0],
-                                        x: line_data[1],
-                                        y: line_data[2],
+                                        x: parseInt(line_data[1]),
+                                        y: parseInt(line_data[2]),
                                         beaten: line_data[3],
-                                        sprite_id: line_data[4],
-                                        coin: line_data[5],
-                                        item_id: line_data[6],
-                                        item_count: line_data[7],
+                                        sprite_id: parseInt(line_data[4]),
+                                        coin: parseInt(line_data[5]),
+                                        item_id: parseInt(line_data[6]),
+                                        item_count: parseInt(line_data[7]),
                                         flag_required: line_data[8],
                                         flag_given: line_data[9],
                                         remove_on_finish: line_data[10],
@@ -70,28 +75,99 @@ module.exports = {
                                     };
 
                                     for (let i = 14; i < line_data.length; i++) {
+                                        if (line_data[i] == '') continue;
                                         npc_team_data = line_data[i].split('`');
                                         ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
+                                        console.log(ooch_data);
                                         output.team.push({
                                             id: parseInt(npc_team_data[0]),
                                             name: ooch_data.name,
                                             nickname: npc_team_data[1],
+                                            current_hp: ooch_data.hp,
+                                            type: ooch_data.type,
+                                            item: -1,
+                                            alive: true,
+                                            ability: parseInt(npc_team_data[2]),
+                                            level: parseInt(npc_team_data[3]),
+                                            moveset: [
+                                                npc_team_data[4],
+                                                npc_team_data[5],
+                                                npc_team_data[6],
+                                                npc_team_data[7],
+                                            ],
+                                            status_effects: [],
+                                            stats: {
+                                                acc_mul: 1,
+                                                eva_mul: 1,
+                                                hp: ooch_data.hp,
+                                                hp_iv: npc_team_data[8],
+                                                atk: ooch_data.atk,
+                                                atk_iv: npc_team_data[9],
+                                                atk_mul: 1,
+                                                def: ooch_data.def,
+                                                def_iv: npc_team_data[10],
+                                                def_mul: 1,
+                                                spd: ooch_data.spd,
+                                                spd_iv: npc_team_data[11],
+                                                spd_mul: 1,
+                                            }
                                         });
                                     }
-
                                     npc_data.push(output);
                                 break;
                                 case 'spawns':
+                                    output = {
+                                        x: parseInt(line_data[0]),
+                                        y: parseInt(line_data[1]),
+                                        width: parseInt(line_data[2]),
+                                        height: parseInt(line_data[3]),
+                                        spawn_slots: [],
+                                    }
+
+                                    for (let i = 4; i < line_data.length; i++) {
+                                        if (line_data[i] == '') continue;
+                                        spawn_ooch_data = line_data[i].split('`')
+                                        output.spawn_slots.push({
+                                            ooch_id: parseInt(spawn_ooch_data[0]),
+                                            min_level: parseInt(spawn_ooch_data[1]),
+                                            max_level: parseInt(spawn_ooch_data[2])
+                                        })
+                                    }
+                                    spawn_data.push(output);
                                 break;
                                 case 'savepoints':
+                                    output = {
+                                        x: parseInt(line_data[0]),
+                                        y: parseInt(line_data[1]),
+                                        is_default: Boolean(line_data[2])
+                                    }
+                                    savepoint_data.push(output);
+                                break;
+                                case 'transitions':
+                                    output = {
+                                        x: parseInt(line_data[0]),
+                                        y: parseInt(line_data[1]),
+                                        connect_map: parseInt(line_data[2]),
+                                        connect_x: parseInt(line_data[3]),
+                                        connect_y: parseInt(line_data[4]),
+                                    }
+                                    transition_data.push(output);
                                 break;
                             }
                         }
                     }
-
+                    
+                    db.maps.set(map_name, {
+                        tiles: tile_data,
+                        npcs: npc_data,
+                        spawns: spawn_data,
+                        savepoints: savepoint_data,
+                        transitions: transition_data
+                    });
                     interaction.editReply(`File has been read and data has been parsed. The map has been created.`);
                     msg.delete();
                 } else {
+                    interaction.editReply(`You didn't enter a file, please enter a file!`);
                     msg.delete();
                 }
             } catch (error) {

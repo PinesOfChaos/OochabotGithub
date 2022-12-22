@@ -105,7 +105,7 @@ PREFERENCES:
 	- Zoom Options: 5x5, 7x7, 9x9 (changes the amount of emotes displayed in the play window, 7x7 and 9x9 have small emotes)
 
 GIMMICK (CORRUPTED FORMS):
-	- Oochamon imbued with a special power from the planet gain the ability to twist into a corrupted version of themselves.
+	- Oochamon imbued with a special power from the planet (or Oochabot) gain the ability to twist into a corrupted version of themselves.
 	- In gameplay terms, this gives every(?) final stage evolution oochamon the ability to swap between a "pure" and "corrupted" form of the oochamon.
 		- There are 2 types of Corrupted Forms:
 			- Crystal: Gives the Oochamon a second typing as well as major stat changes and an ability change, that can change how the oochamon is played
@@ -115,21 +115,66 @@ GIMMICK (CORRUPTED FORMS):
 			- Void Oochamon have a bit lowered stats, and their stats decrease a little bit more the more of them you have in your party.
 			- Both Crystal and Void Corrupted Oochamon do add to each others "void total", but less.
 		
-	- [Abyssal Droplet] [Prismatic Key] [Extractor]
-	- Corrupted Oochamon will be unlocked after a certain story event.
-	- You must use a specific item to unlock an Oochamon's corrupted form, except for your starter, who will have it's corrupted form from the start. 
-	- You will never encounter corrupted forms in the main story, besides the thief side story and anything relating to Oochabot.
-	- Every Oochamon starts in it's pure form when caught, except for Oochabot, who by default is in his corrupted form.
+	- To turn an Oochamon into it's corrupted form or purify it into it's pure form, you must use one of these 3 items:
+		- [Abyssal Droplet]
+			- Item used to turn an Oochamon into it's Void Corrupted Form.
+		- [Prismatic Key]
+			- Item used to turn an Oochamon into it's Crystal Corrupted Form.
+		- [Extractor]
+			- Item used to turn an Oochamon into it's Pure Form.
+
+	- Some Oochamon will have a crystal corrupted form, while some will have a void corrupted form.
+	- [Thief] will be heavily involved with Void corruption, while the main story will deal with Crystal corruption.
+	
 
 STORY:
 	- Intro:
-		- 
-	- Setting:
-		- An alien planet filled with mysterious Oochamon and various kinds of wildlife.
+		- The game begins with a cutscene of you on a ship, traveling to the planet Priatera as part of an elite squad sent to
+		get things done.
+		- [The Company] hopes to have you smooth things out on the planet and help speed up research, as they wish to make the planet
+		habitable and learn more about the creatures on it they've dubbed "Oochamon".
+			- You select your character sprite here and any other intro details, and are filled in on what the planet
+			is like and the status of things there.
+
+		- You are a new recruit brought onto the mission after exceptional results in training, and along the way you meet [Co-worker],
+		who is a veteran of the team that is in danger of being dropped from the team due to lacking results.
+		- You also meet [Leader], the leader of the team and the most experienced of everyone. He appears bored and wanting to get this over with,
+		and isn't in much of a talking mood.
+
+		- After being introduced to the squad, you begin to approach the planet and strap in to prepare for landing. The landing goes relatively smoothly,
+		and you get out with the rest of the team and [Co-worker] to admire the hub area.
+			- You are taught here how to move around and handle controlling the character in the hub world.
+		 
+		- You finally walk around the base, which acts as the hub world to the game. You are quickly introduced to [Research Team Leader], the leader of the research
+		team and the most knowledgeable person here about the planet and the Oochamon species.
+		- After a short discussion and debrief, you are given the choice of 1 of 3 Oochamon to use to defend yourself in the planet. [Research Team Leader] explains
+		that these Oochamom have been captured using a technology known as the Prism, which the research team had created using fragments from the planet.
+			- You then choose your starter here. Sporbee, Roocky, or Puppyre. [Co-worker] picks the one that has a type advantage over than yours.
+
+		- [Research Team Leader] then hands you and [Co-worker] a personal Oochadex, named after the Oochamon to help log data about them. They explain that the more
+		Oochamon you manage to control and capture, the more the research team can figure out about Oochamon and learn about them, so they encourage you to catch
+		many Oochamon.
+			- This will teach you how to use the Menu, as it will prompt you to use the menu to view the Oochadex. This unlocks the menu for use at any point.
+
+		- Right after you and [Co-worker] get your Oochamon, you hear a commotion outside, and see that a 2 wild Oochamon (to be picked out) attacking some of the
+		the locals. You and [Co-worker] team up to fend off the Oochamon.
+			- This is the battle tutorial. We'll use ephemeral messages that act as dialogue from [Leader] explaining how to battle and other general tips.
+
+		- After you fend off the Oochamon and get a feel for Oochamon battles, you go back to the Research Lab, but on the way you see a hooded figure running off,
+		seemingly in a hurry with something in their hands. It's hard to tell what they have, so you don't think much of it and go back to the lab.
+		- [Research Team Leader] in a panic mentions that someone ran off with the third Prism, and asks if you have seen them. You bring up the hooded figure, but
+		when you go back to see where they went, they're gone. [Co-worker] ensures that things will be ok, and that they will find the third prism and capture whoever
+		took the prism.
+
+		- With that, you are given a starting objective to investigate a nearby fallen comet that fell recently and seems to be hopping with Oochamon activity. This
+		ends the intro, bringing you into the proper start of the game.
+
+  	- Setting:
+		- An alien planet named a Priatera filled with mysterious Oochamon and various kinds of wildlife.
 		- The hub area is a dropship base camp type of area with tents and things setup. 
 	
 	- Lore:
-		- Prisms are fragments of the planets core that have been separated from its control
+		- Prisms are fragments of the planets core that have been separated from its control.
 			- 
 
 	- Characters:
@@ -139,7 +184,7 @@ STORY:
 			- [Co-worker] recieves the other starter mon. They really want to prove themselves to the higher ups. They'll slowly
 			learn about the hive-mind connection to the Oochamon, but a few steps behind in terms of knowledge about it
 		- Enemies:
-			- [Hive Mind] Intelligent network of crystals
+			- [Hive Mind] Intelligent network of crystals that resides in the Priatera's Core and controls all the Oochamon on the planet.
 				- [Lost] people who have been corrupted by the hivemind
 			- [Oochabot] Incredibly incoherent, lots of screaming in Voltaic
 				- Does actually speak, and after catching the Oochabot you gain a translator to be able to understand it, but it's still kind of a doofus and some
@@ -153,6 +198,7 @@ STORY:
 				- [Finance Lead] uses Magic mons, has become obsessed with them and thinks they can tell the future 
 					- Signature Oochamon: Spoolette
 		- Other:
+			- [Leader] is the leader of the squadron you are part of.
 			- [Research Team Leader] acts as the "professor" of the game, is a kind hearted soul that just wants to learn more
 			about the mysterious planet, just loves knowledge but isn't quite there mentally. Is technically one of the Lead fights partway through
 			the story, after you learn about the planet's core. 
@@ -166,7 +212,8 @@ Timeline:
 		- Request: Inspect fallen-comet, encounter with oochamon Cromet
 	- [Finance Lead] doesn't beleive you're going to do a good enough job and are bound to fail, challenging you to a battle
 	- You've proven to be capable of handling yourself
-		- Request: Travel to Fungal Undergrowth and reactivate elevator
-			- Ambushed by [Theif] partway through your journet
-			- Return to surface on elevator
+		- Request: Travel to Fungal Undergrowth and sync with teleporter
+			- Ambushed by [Theif] partway through your journey through the cave
+	- Introduced to a Mycologist apprentice at the outpost who informs you that their team has been gone for quite some time
+	- Exploring deeper you encounter 2-3 researchers that are running from something deeper in who battle you in their confusion
 	- 
