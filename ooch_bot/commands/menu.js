@@ -11,14 +11,14 @@ module.exports = {
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
 
-        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Playspace 
-        && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
-            return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
-        } 
+        // if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Playspace 
+        // && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
+        //     return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
+        // }
 
-        // Delete the current playspace
-        let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
-        await playspace_msg.delete();
+        // // Delete the current playspace
+        // let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
+        // await playspace_msg.delete();
 
         let settings_row_1 = new ActionRowBuilder()
             .addComponents(

@@ -55,7 +55,7 @@ module.exports = {
             { 
                 id: ooch_id,
                 name: db.monster_data.get(ooch_id, 'name'), 
-                nickname: -1,
+                nickname: db.monster_data.get(ooch_id, 'name'),
                 item: -1,
                 ability: rand_ability,
                 level: level,
