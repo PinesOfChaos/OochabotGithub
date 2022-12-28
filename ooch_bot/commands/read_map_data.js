@@ -42,6 +42,7 @@ module.exports = {
                     let spawn_data = [];
                     let savepoint_data = [];
                     let transition_data = [];
+                    let event_data = [];
                     for (let line of map_data) {
                         line = line.replace(/\r\n/g, '').replace(/[\r\n]/g, '');
                         if (line[0] == '#') {
@@ -153,6 +154,18 @@ module.exports = {
                                     }
                                     transition_data.push(output);
                                 break;
+                                case 'events':
+                                    output = {
+                                        x: parseInt(line_data[0]),
+                                        y: parseInt(line_data[1]),
+                                        width:  parseInt(line_data[2]),
+                                        height: parseInt(line_data[3]),
+                                        event_name: line_data[4],
+                                        flag_required: line_data[5],
+                                        flag_given: line_data[6],
+                                    }
+                                    event_data.push(output);
+                                break;
                             }
                         }
                     }
@@ -162,7 +175,8 @@ module.exports = {
                         npcs: npc_data,
                         spawns: spawn_data,
                         savepoints: savepoint_data,
-                        transitions: transition_data
+                        transitions: transition_data,
+                        events: event_data
                     });
                     interaction.editReply(`File has been read and data has been parsed. The map has been created.`);
                     msg.delete();

@@ -101,7 +101,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.options.getString('id') != '') ooch_names = ooch_names.filter(id_filter);
                 ooch_names = ooch_names.slice(0, 25);
-                ooch_names = ooch_names.map(v => v = { name: v, value: v.split(' ')[1].toLowerCase() });
+                ooch_names = ooch_names.map(v => v = { name: v, value: v.split(':')[0] });
                 interaction.respond(ooch_names);
             break;
             case 'add_item':

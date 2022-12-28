@@ -19,6 +19,7 @@ module.exports = {
     async execute(interaction) {
 
         let ooch_id = interaction.options.getString('id');
+        console.log(ooch_id);
         ooch_id = parseInt(ooch_id);
         let level = interaction.options.getInteger('lv');
 

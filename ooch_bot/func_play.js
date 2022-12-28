@@ -18,14 +18,15 @@ module.exports = {
         
         //Get the player's location
         let player_location = db.profile.get(target, 'location_data');
-        let biome = player_location.area;
+        let map_name = player_location.area;
         let playerx = player_location.x;
         let playery = player_location.y;
 
-        //Get the map array based on the player's current biome
-        let map_obj = db.maps.get(biome.toLowerCase());
-        let map_arr = map_obj[1]; //this should be the actual map array?
-
+        //Get the map array based on the player's current map
+        let map_obj = db.maps.get(map_name.toLowerCase());
+        let map_tiles = map_obj.tile_data; //this should be the actual map array?
+        let map_events = map_obj.event_data;
+        let map_spawns = map_obj.spawn_data;
         //set where the player is going to move
         switch(direction){
             case('w'):
@@ -43,11 +44,43 @@ module.exports = {
         }
         
         //0 path, 1 block, 2 spawn, 3 chest
+        let stop_moving = false;
         for(let i = 0; i < dist; i++){
-            if(map_arr[playerx + xmove][playery + ymove] != 1){//if the space the player wants to move to is NOT a blocked space
-                playerx += xmove;
-                playery += ymove;
-            } else break;
+            var tile = db.tiles.get(map_tiles[playerx + xmove][playery + ymove]);
+            switch(tile.use){
+                case 'floor':
+                    playerx += xmove;
+                    playery += ymove;
+                break;
+                case 'wall':
+                    stop_moving = true;
+                break;
+                case 'npc':
+                    stop_moving = true;
+                break;
+                case 'grass':
+                    playerx += xmove;
+                    playery += ymove;
+                    if(Math.random() < .25){
+                        stop_moving = true;
+                        let spawn_zone, x1,y1,x2,y2;
+                        for(let j = 0; j < map_spawns.length; j++){
+                            spawn_zone = map_spawns[j];
+                            x1 = (spawn_zone.x) <= playerx;
+                            y1 = (spawn_zone.y) <= playery;
+                            x2 = (x1 + spawn_zone.width) < playerx;
+                            y2 = (y1 + spawn_zone.height) < playery;
+                            if(x1 && y1 && x2 && y2){
+                                let slot_index = Math.floor(Math.random() * spawn_zone.spawn_slots.length());
+                                let slot = spawn_zone.spawn_slots[slot_index];
+                                //use slot .ooch_id, .min_level, .max_level to setup the encounter
+                            }
+;                        }
+                    }
+                break;
+            }
+            //if the player has run into anything that would cause them to stop moving, make them stop
+            if(stop_moving){ break; }
         }
 
         //Update the player's profile with their new x & y positions
@@ -61,87 +94,26 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery) });
         });
 
-        //#region Multiplayer Code
-        // for (let i = 0; i < profile_arr.length; i++) {
-        //     //Get the player's location
-        //     let other_player_location = db.profile.get(profile_arr[i], 'location_data');
-        //     let other_biome = other_player_location.area;
-        //     if (other_biome == biome) {
-        //         let other_x = other_player_location.x;
-        //         let other_y = other_player_location.y;
-
-        //         //Get the map array based on the player's current biome
-        //         let other_map_obj = db.maps.get(biome);
-        //         let other_map_arr = other_map_obj[1]; //this should be the actual map array
-        //         let other_map_display = db.profile.get(profile_arr[i], 'display_msg_id');
-
-        //         if (other_map_display != false) {
-        //             (message.channel.messages.fetch(other_map_display)).then(async (msg) => {
-        //                 await msg.edit({ content: map_emote_string(other_biome, other_map_arr, other_x, other_y) }).catch(() => {});
-        //             }).catch(() => {});
-        //         }
-        //     }
-        // }
-        //#endregion
-
     },
 
-    map_emote_string: function(biome, map_array, x_pos, y_pos) {
-        //biome can be obsidian, desert or fungal, anything else will default to the HUB tileset
-        let tile_emotes = [];
-        
-        //===========================
-        //HEY READ THIS DUMMI
-        //0 path, 1 block, 2 player, 3 chest, 4 spawn
-        //===========================
+    map_emote_string: function(map_name, map_array, x_pos, y_pos) {
 
-        switch(biome){
-            case('obsidian'):
-                tile_emotes = ['<:tObsd:1023032225337450507>', '<:tObsdB:1023032226075643928>', '<:tPlr:1023032227174563942>', '<:tChst:1023032222728601680>', '<:tHUB:1023032223521308682>']
-            break;
-            
-            case('desert'):
-                tile_emotes = ['<:tSand:1023032227761750087>', '<:tSandB:1023032228994875402>', '<:tPlr:1023032227174563942>', '<:tChst:1023032222728601680>', '<:tHUB:1023032223521308682>']
-            break;
-
-            case('fungal'):
-                tile_emotes = ['<:tShrm:1023032229863112734>', '<:tShrmB:1023032230639046726>', '<:tPlr:1023032227174563942>', '<:tChst:1023032222728601680>', '<:tHUB:1023032223521308682>']
-            break;
-
-            default:
-                tile_emotes = ['<:tHUB:1023032224616042588>', '<:tHUBb:921240940641919056>', '<:tPlr:1023032227174563942>', '<:tChst:1023032222728601680>', '<:tHUB:1023032223521308682>']
-            break;
-        }
-
-        let emote_map = [];
-        let size = map_array.length;
         let view_size = 2;
-
-        //finds positions of all players and applies them to the map array
-        let other_players_pos_list = Object.keys(db.player_positions.get(biome));
-        let pos_find = -1;
-
-        for (let i = 0; i < other_players_pos_list.length; i++) {
-            pos_find = db.player_positions.get(biome, other_players_pos_list[i]);
-            map_array[pos_find.x][pos_find.y] = 2;
-        }
-
+        
+        let xx, yy, tile;
+        let emote_map = "";
+        let map_data = db.maps.get(map_name);
+        let map_tiles = map_data.tiles;
         for (let i = -view_size; i < view_size + 1; i++) {
-            emote_map.push([]);
             for (let j = -view_size; j < view_size + 1; j++) {
-                if (i + x_pos < 0 || j + y_pos < 0 || i + x_pos >= size || j + y_pos >= size) {
-                    tile_value = 1;
-                } else if (i == 0 && j == 0) {
-                    tile_value = 2;
-                } else {
-                    tile_value = map_array[i + x_pos][j + y_pos]
-                }
-
-                emote_map[i + view_size][j + view_size] = tile_emotes[tile_value]
+                //add emote based on tile data to position
+                xx = i + x_pos;
+                yy = j + y_pos;
+                tile = db.tile_data.get(map_tiles[xx][yy]);
+                emote_map += tile.emote;
             }
-            emote_map[i + view_size] = emote_map[i + view_size].join('')
+            emote_map += "\n";
         }
-        emote_map = emote_map.join('\n')
 
         return(emote_map);
     },
