@@ -16,16 +16,34 @@ module.exports = {
 
         //#region Tile Data
         //          ID  Use         Emote                           Emote_Simple (Optional)
-        create_tile(0,  'chest',    '<:tChst:1023032222728601680>'  );
-        create_tile(1,  'floor',    '<:tObs:1023032225337450507>'   );
-        create_tile(2,  'wall',     '<:tObsb:1023032226075643928>'  );
-        create_tile(3,  'trainer',  '<:tPlr:1023032227174563942>'   );
-        create_tile(4,  'floor',    '<:tHUB:1023032223521308682>'   );
-        create_tile(5,  'wall',     '<:tHUBb:1023032224616042588>'  );
-        create_tile(6,  'floor',    '<:tSand:1023032227761750087>'  );
-        create_tile(7,  'wall',     '<:tSandb:1023032228994875402>' );
-        create_tile(8,  'floor',    '<:tShrm:1023032229863112734>'  );
-        create_tile(9,  'wall',     '<:tShrmB:1023032230639046726>' );
+        create_tile(0,  'floor',    '<:t000:1057163944889946173>'  );
+        create_tile(1,  'floor',    '<:t001:1057163945900773436>'  );
+        create_tile(2,  'npc',      '<:t002:1057163565385138187>'  );
+        create_tile(3,  'floor',    '<:t003:1057163947553341492>'  );
+        create_tile(4,  'floor',    '<:t004:1057163948585132102>'  );
+        create_tile(5,  'floor',    '<:t005:1057163949319127140>'  );
+        create_tile(6,  'floor',    '<:t006:1057163950262857780>'  );
+        create_tile(7,  'floor',    '<:t100:1057164009335439491>'  );
+        create_tile(8,  'wall',     '<:t101:1057164010774069268>'  );
+        create_tile(9,  'grass',    '<:t102:1057164012288221234>'  );
+        create_tile(10,  'floor',   '<:t200:1057164043426738186>'  );
+        create_tile(11,  'wall',    '<:t201:1057164044395626537>'  );
+        create_tile(12,  'grass',   '<:t202:1057164045242859571>'  );
+        create_tile(13,  'floor',   '<:t300:1057164046320807946>'  );
+        create_tile(14,  'wall',    '<:t301:1057164047910436944>'  );
+        create_tile(15,  'grass',   '<:t302:1057164048866758776>'  );
+        create_tile(16,  'wall',    '<:t203:1057499365574459493>'  );
+        create_tile(17,  'wall',    '<:t204:1057499366815977593>'  );
+        create_tile(18,  'wall',    '<:t205:1057499367889698866>'  );
+        create_tile(19,  'wall',    '<:t206:1057499368997015572>'  );
+        create_tile(20,  'wall',    '<:t207:1057499369684861019>'  );
+        create_tile(21,  'wall',    '<:t208:1057499694848282654>'  );
+        create_tile(22,  'npc',     '<:t050:1057164003710877756>'  );
+        create_tile(23,  'npc',     '<:t051:1057164004478439524>'  );
+        create_tile(24,  'npc',     '<:t052:1057164005388599406>'  );
+        create_tile(25,  'npc',     '<:t053:1057164007406063696>'  );
+        create_tile(26,  'npc',     '<:t054:1057164008324612096>'  );
+
 
         //#region Item Data
         //          ID   Name             Emote                                       Category     Type      Value   Description
