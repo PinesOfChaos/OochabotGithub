@@ -108,36 +108,51 @@ module.exports = {
 
             //NPCs
             for(let obj of map_npcs){
-                
-                //ADD LINE TO CHECK IF THE PLAYER HAS THE REQUIRED FLAG FOR THIS NPC
+
+                //Check if player collides with this NPC's position
                 if(obj.x == playerx && obj.y == playery){
-                    let npc_flag = '{}{obj.name}{obj.x}{obj.y}'
-                    let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
-                    if(obj.beaten || player_has_beaten){ 
-                        if(remove_on_finish){
-                            //ignore as this one has been beaten and should not exist after being triggered
-                        }
-                        else{
-                            stop_moving = true;
-                            player_x -= xmove;
-                            player_y -= ymove;
-                            for(let text of obj.player_won_dialogue){
-                                console.log(text);
+
+                    //Check if this NPC requires a flag to spawn, and if it does check if the player has it
+                    if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
+
+                        let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`; //Flag generated for this npc at this position
+                        let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
+
+                        if(obj.beaten || player_has_beaten){ //NPC has been beaten either by default or by the player
+
+                            if(!obj.remove_on_finish){ //NPC should continue to persist after being beaten
+                                stop_moving = true;
+                                playerx -= xmove;
+                                playery -= ymove;
+
+                                //Dialogue Stuff goes here
+                                for(let text of obj.player_won_dialogue){
+                                    console.log(text);
+                                }
                             }
                         }
-                    }
-                    else{
-                        stop_moving = true;
-                        player_x -= xmove;
-                        player_y -= ymove;
-                        for(let text of obj.pre_combat_dialogue){
-                            console.log(text);
-                        }
-                        if(obj.team.length > 0){
-                            //start a battle with this npc's team
-                        }
-                        else{
-                            //give rewards and add to the list of beaten trainers
+                        else{ //NPC has not been beaten in any way
+                            stop_moving = true;
+                            playerx -= xmove;
+                            playery -= ymove;
+
+                            //Dialogue Stuff goes here
+                            for(let text of obj.pre_combat_dialogue){
+                                console.log(text);
+                            }
+                            if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
+                                //Start battle using this NPC's team
+
+                            }
+                            else{ //NPC has dialogue/rewards to be given before going to their default state
+                                //Give Rewards
+
+                                //Add to list of beaten npcs, also add any flag this npc should give to the player
+                                player_flags.push(npc_flag);
+                                if(obj.flag_given != ''){
+                                    player_flags.push(obj.flag_given); 
+                                }
+                            }
                         }
                     }
                 }
