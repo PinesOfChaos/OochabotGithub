@@ -7,7 +7,7 @@ const { setup_playspace_str } = require("./func_play");
 
 module.exports = {
 
-generate_battle: function(ooch_inv, ooch_species) {
+generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {
 
     const { get_stats, ability_stat_change } = require('./func_battle.js');
 
@@ -33,7 +33,7 @@ generate_battle: function(ooch_inv, ooch_species) {
     }
 
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    lvl = clamp((Math.floor(Math.random() * lvl * 1.05)), 1, 100); //Formula for level generation
+    lvl = ooch_level == 0 ? clamp((Math.floor(Math.random() * lvl * 1.05)), 1, 100) : ooch_level; //Formula for level generation
 
     // Get the evolution data
     let ooch_pick = species[_.random(0, species.length - 1)]

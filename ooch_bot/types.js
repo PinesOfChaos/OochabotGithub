@@ -33,5 +33,12 @@ module.exports = {
     GraphicsMode: {
         Quality: 0,
         Performance: 1
+    },
+
+    Flags: {
+        FinishedIntro: 'intro|',
+        NPC: 'npc|',
+        Event: 'ev|',
+
     }
 }

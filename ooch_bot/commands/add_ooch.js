@@ -19,7 +19,6 @@ module.exports = {
     async execute(interaction) {
 
         let ooch_id = interaction.options.getString('id');
-        console.log(ooch_id);
         ooch_id = parseInt(ooch_id);
         let level = interaction.options.getInteger('lv');
 
@@ -50,6 +49,12 @@ module.exports = {
         while (move_list.length > 4) {
             let rand_move_pos = _.random(0, move_list.length)
             move_list.splice(rand_move_pos, 1);
+        }
+        let dest;
+        if (db.profile.get(interaction.user.id, 'ooch_party').length == 4) {
+            dest = 'ooch_pc';
+        } else {
+            dest = 'ooch_party';
         }
 
         db.profile.push(interaction.user.id,
@@ -83,9 +88,9 @@ module.exports = {
                 current_hp: stats[0],
                 alive: true,
                 type: db.monster_data.get(ooch_id, 'type')
-            }, 'ooch_party')
+            }, dest)
         
-        return interaction.reply(`Added Oochamon ${db.monster_data.get(ooch_id, 'name')} to your party!`)
+        return interaction.reply(`Added Oochamon ${db.monster_data.get(ooch_id, 'name')} to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
     },
 };
 

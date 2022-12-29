@@ -1,4 +1,5 @@
 const db = require("./db")
+const { Flags } = require('../types.js');
 
 module.exports = {
 
@@ -16,17 +17,25 @@ module.exports = {
         let profile_arr = db.profile.keyArray();
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
+        
         //Get the player's location
         let player_location = db.profile.get(target, 'location_data');
         let map_name = player_location.area;
         let playerx = player_location.x;
         let playery = player_location.y;
+        let player_flags = db.profile.get(target,'flags');
 
         //Get the map array based on the player's current map
         let map_obj = db.maps.get(map_name.toLowerCase());
-        let map_tiles = map_obj.tile_data; //this should be the actual map array?
-        let map_events = map_obj.event_data;
-        let map_spawns = map_obj.spawn_data;
+        let map_tiles =         map_obj.tiles; 
+        let map_npcs =          map_obj.npcs;
+        let map_spawns =        map_obj.spawns;
+        let map_savepoints =    map_obj.savepoints;
+        let map_transitions =   map_obj.transitions;
+        let map_events =        map_obj.events;
+        //let map_shops =        map_obj.shops; //to be added later
+        
+        
         //set where the player is going to move
         switch(direction){
             case('w'):
@@ -46,16 +55,10 @@ module.exports = {
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
-            var tile = db.tiles.get(map_tiles[playerx + xmove][playery + ymove]);
+            let tile_id = map_tiles[playerx + xmove][playery + ymove]
+            var tile = db.tile_data.get(tile_id.toString()); 
             switch(tile.use){
-                case 'floor':
-                    playerx += xmove;
-                    playery += ymove;
-                break;
                 case 'wall':
-                    stop_moving = true;
-                break;
-                case 'npc':
                     stop_moving = true;
                 break;
                 case 'grass':
@@ -78,7 +81,78 @@ module.exports = {
 ;                        }
                     }
                 break;
+                default:
+                    playerx += xmove;
+                    playery += ymove;
+                break;
             }
+
+            //Save Points
+            for(let obj of map_savepoints){
+                if(obj.x == playerx && obj.y == playery){
+                    //set player respawn position
+                }
+            }
+
+            //Events
+            let x1,y1,x2,y2;
+            for(let obj of map_events){
+                x1 = (obj.x) <= playerx;
+                y1 = (obj.y) <= playery;
+                x2 = (x1 + obj.width) < playerx;
+                y2 = (y1 + obj.height) < playery;
+                if(x1 && y1 && x2 && y2){
+                    //trigger this event if the player hasn't triggered it already
+                }
+            }
+
+            //NPCs
+            for(let obj of map_npcs){
+                
+                //ADD LINE TO CHECK IF THE PLAYER HAS THE REQUIRED FLAG FOR THIS NPC
+                if(obj.x == playerx && obj.y == playery){
+                    let npc_flag = '{}{obj.name}{obj.x}{obj.y}'
+                    let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
+                    if(obj.beaten || player_has_beaten){ 
+                        if(remove_on_finish){
+                            //ignore as this one has been beaten and should not exist after being triggered
+                        }
+                        else{
+                            stop_moving = true;
+                            player_x -= xmove;
+                            player_y -= ymove;
+                            for(let text of obj.player_won_dialogue){
+                                console.log(text);
+                            }
+                        }
+                    }
+                    else{
+                        stop_moving = true;
+                        player_x -= xmove;
+                        player_y -= ymove;
+                        for(let text of obj.pre_combat_dialogue){
+                            console.log(text);
+                        }
+                        if(obj.team.length > 0){
+                            //start a battle with this npc's team
+                        }
+                        else{
+                            //give rewards and add to the list of beaten trainers
+                        }
+                    }
+                }
+            }
+
+            //Transitions
+            for(let obj of map_transitions){
+                if(obj.x == playerx && obj.y == playery){
+                    stop_moving = true;
+                    playerx = obj.connect_x;
+                    playery = obj.connect_y;
+                    biome = obj.connect_map;
+                }
+            }
+
             //if the player has run into anything that would cause them to stop moving, make them stop
             if(stop_moving){ break; }
         }

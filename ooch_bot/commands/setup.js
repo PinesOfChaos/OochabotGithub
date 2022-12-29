@@ -60,9 +60,7 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'battle_msg_counter');
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
-            db.profile.set(interaction.user.id, {
-                finished_intro: true,
-            }, 'flags');
+            db.profile.set(interaction.user.id, [], 'flags');
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,
                 battle_cleanup: true

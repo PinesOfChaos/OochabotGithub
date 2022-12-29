@@ -71,7 +71,7 @@ module.exports = {
         const collector = await menuMsg.createMessageComponentCollector({ filter });
         let pa_collector, btn_collector, dex_collector, box_collector, pref_collector; // Collectors for each sub menu's buttons
         let pa_extra_filter = (i => { return (i.user.id == interaction.user.id && ['primary', 'nickname', 'moves'].includes(i.customId)) })
-        let pa_extra_collector, nick_msg_collector, moves_collector, box_sel_collector; // Extra sub menu collectors
+        let pa_extra_collector, nick_msg_collector, moves_collector, box_sel_collector, box_confirm_collector; // Extra sub menu collectors
         let userProfile = db.profile.get(interaction.user.id);
 
         // Builds the action rows and places emotes in for the Oochabox, based on the database.
@@ -87,36 +87,51 @@ module.exports = {
             let party_slot = false;
             let oochabox_data = db.profile.get(interaction.user.id, 'ooch_pc');
             let party_data = db.profile.get(interaction.user.id, 'ooch_party');
-            let data_check = oochabox_data;
 
-            for (let i = 0; i < 20; i++) {
-                if (_.inRange(i, 0, 4)) box_idx = 0; 
-                if (_.inRange(i, 5, 9)) box_idx = 1; 
-                if (_.inRange(i, 10, 14)) box_idx = 2; 
-                if (_.inRange(i, 15, 19)) box_idx = 3; 
-                // If we are on index 4, 9, 14, or 19, then we need to setup a "party" slot. This checks that.
-                party_slot = (((i+1) % 5) == 0);
-                // If we are in a party slot, use data from the party, not from the oochabox.
-                (party_slot) ? data_check = party_data[box_idx] : data_check = oochabox_data[i];
+            for (let i = 0; i < 16; i++) {
+                if (_.inRange(i, 0, 3)) box_idx = 0; 
+                if (_.inRange(i, 4, 7)) box_idx = 1; 
+                if (_.inRange(i, 8, 11)) box_idx = 2; 
+                if (_.inRange(i, 12, 15)) box_idx = 3; 
 
-                if (data_check == undefined) {
+                if (oochabox_data[i] == undefined) {
                     box_row[box_idx].addComponents(
                         new ButtonBuilder()
-                            .setCustomId(party_slot ? `box_emp_${box_idx}_party` : `box_emp_${i}`)
+                            .setCustomId(`box_emp_${i}`)
                             .setLabel(' ')
-                            .setStyle(party_slot ? ButtonStyle.Success : ButtonStyle.Secondary)
+                            .setStyle(ButtonStyle.Secondary)
                             .setDisabled(true)
                         )              
                 } else {
-                    let ooch_data = db.monster_data.get(data_check.id);
+                    let ooch_data = db.monster_data.get(oochabox_data[i].id);
                     box_row[box_idx].addComponents(
                         new ButtonBuilder()
-                            .setCustomId(party_slot ? `box_ooch_${data_check.id}_${box_idx}_party` : `box_ooch_${data_check.id}_${i}`)
+                            .setCustomId(`box_ooch_${oochabox_data[i].id}_${i}`)
                             .setEmoji(ooch_data.emote)
-                            .setStyle(party_slot ? ButtonStyle.Success : ButtonStyle.Secondary)
+                            .setStyle(ButtonStyle.Secondary)
                     )
                 }          
-            }  
+            }
+            
+            for (let i = 0; i < 4; i++) {
+                if (party_data[i] == undefined) {
+                    box_row[i].addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`box_emp_${i}_party`)
+                            .setLabel(' ')
+                            .setStyle(ButtonStyle.Success)
+                            .setDisabled(true)
+                        )              
+                } else {
+                    let ooch_data = db.monster_data.get(party_data[i].id);
+                    box_row[i].addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`box_ooch_${party_data[i].id}_${i}_party`)
+                            .setEmoji(ooch_data.emote)
+                            .setStyle(ButtonStyle.Success)
+                    )
+                }
+            }
             return box_row;
         }
 
@@ -169,7 +184,7 @@ module.exports = {
                     if (ooch_party.length >= 5) pa_components.push(party_3);
                     pa_components.push(back_buttons);
                     
-                    i.update({ content: `**Oochamon Party:**\n(🟩 is the Primary Oochamon, 🟥 is fainted Oochamon)`, components: pa_components })
+                    i.update({ content: `**Oochamon Party:**`, components: pa_components })
                     pa_collector = await menuMsg.createMessageComponentCollector({ filter });
 
                     await pa_collector.on('collect', async j => {
@@ -409,7 +424,7 @@ module.exports = {
                         i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
                         embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                     } else {
-                        i.update({ content: `**You have not encountered ${oochadex_data[0].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
+                        i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
                         embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_buttons] });
                     }
 
@@ -555,7 +570,7 @@ module.exports = {
                                         box_row = buildBoxData();
                                         // Kick back to PC screen
                                         k.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                                        j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your box and removed from your party.`, ephemeral: true });
+                                        // j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your box and removed from your party.`, ephemeral: true });
                                         box_sel_collector.stop();
                                     break;
                                     case 'add_party':
@@ -568,7 +583,7 @@ module.exports = {
                                         box_row = buildBoxData();
                                         // Kick back to PC screen
                                         k.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                                        j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
+                                        //j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
                                         box_sel_collector.stop();
                                     break;
                                     case 'release':
@@ -579,7 +594,6 @@ module.exports = {
                                         box_row = buildBoxData();
                                         // Kick back to PC screen
                                         k.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                                        j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been released. I hope you said your goodbyes! :(`, ephemeral: true });
                                         box_sel_collector.stop();
                                     break;
                                 }
