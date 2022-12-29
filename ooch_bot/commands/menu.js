@@ -4,6 +4,7 @@ const db = require('../db.js');
 const _ = require('lodash');
 const { map_emote_string, setup_playspace_str } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
+const { initial } = require('lodash');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,6 +21,7 @@ module.exports = {
         // let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
         // await playspace_msg.delete();
 
+        // Setup action rows for the main menu and some submenus
         let settings_row_1 = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1023031025716179076>'),
@@ -36,7 +38,7 @@ module.exports = {
 
         let settings_row_3 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('settings').setLabel('Preferences').setStyle(ButtonStyle.Secondary).setEmoji('⚙️').setDisabled(true),
+                new ButtonBuilder().setCustomId('preferences').setLabel('Preferences').setStyle(ButtonStyle.Secondary).setEmoji('⚙️'),
             ).addComponents(
                 new ButtonBuilder().setCustomId('quit').setLabel('Return').setStyle(ButtonStyle.Danger).setEmoji('🔙'),
             );
@@ -67,14 +69,14 @@ module.exports = {
 
         let filter = i => i.user.id == interaction.user.id;
         const collector = await menuMsg.createMessageComponentCollector({ filter });
-        let pa_collector, btn_collector, dex_collector, box_collector; // Collectors for each sub menu's buttons
+        let pa_collector, btn_collector, dex_collector, box_collector, pref_collector; // Collectors for each sub menu's buttons
         let pa_extra_filter = (i => { return (i.user.id == interaction.user.id && ['primary', 'nickname', 'moves'].includes(i.customId)) })
         let pa_extra_collector, nick_msg_collector, moves_collector, box_sel_collector; // Extra sub menu collectors
         let userProfile = db.profile.get(interaction.user.id);
 
-        // Builds the action rows and places emotes in for the box, based on the database.
+        // Builds the action rows and places emotes in for the Oochabox, based on the database.
         // Updates with new database info every time the function is run
-        // Needs to be updated in some cases, so easier to put it in a function!
+        // Needs to be updated in a lot of cases, so easier to put it in a function!
         function buildBoxData() {
             box_row = [];
             box_row[0] = new ActionRowBuilder();
@@ -100,7 +102,7 @@ module.exports = {
                 if (data_check == undefined) {
                     box_row[box_idx].addComponents(
                         new ButtonBuilder()
-                            .setCustomId(party_slot ? `box_p_emp_${box_idx}` : `box_emp_${i}`)
+                            .setCustomId(party_slot ? `box_emp_${box_idx}_party` : `box_emp_${i}`)
                             .setLabel(' ')
                             .setStyle(party_slot ? ButtonStyle.Success : ButtonStyle.Secondary)
                             .setDisabled(true)
@@ -109,7 +111,7 @@ module.exports = {
                     let ooch_data = db.monster_data.get(data_check.id);
                     box_row[box_idx].addComponents(
                         new ButtonBuilder()
-                            .setCustomId(party_slot ? `box_p_ooch_${data_check.id}_${box_idx}` : `box_ooch_${data_check.id}_${i}`)
+                            .setCustomId(party_slot ? `box_ooch_${data_check.id}_${box_idx}_party` : `box_ooch_${data_check.id}_${i}`)
                             .setEmoji(ooch_data.emote)
                             .setStyle(party_slot ? ButtonStyle.Success : ButtonStyle.Secondary)
                     )
@@ -118,6 +120,7 @@ module.exports = {
             return box_row;
         }
 
+        // Menu operation is handled in this collector
         await collector.on('collect', async i => {
             let selected = i.customId;
             
@@ -127,7 +130,9 @@ module.exports = {
                     if (pa_collector != undefined) pa_collector.stop();
                     if (btn_collector != undefined) btn_collector.stop();
                     if (dex_collector != undefined) dex_collector.stop();
+                    if (box_collector != undefined) box_collector.stop();
                     if (box_sel_collector != undefined) box_sel_collector.stop();
+                    if (pref_collector != undefined) pref_collector.stop();
                     if (pa_extra_collector != undefined) pa_extra_collector.stop();
                 break;
                 case 'back_to_menu':
@@ -137,6 +142,7 @@ module.exports = {
                     if (dex_collector != undefined) dex_collector.stop();
                     if (box_collector != undefined) box_collector.stop();
                     if (box_sel_collector != undefined) box_sel_collector.stop();
+                    if (pref_collector != undefined) pref_collector.stop();
                     if (pa_extra_collector != undefined) pa_extra_collector.stop();
                 break;
                 case 'party': 
@@ -163,7 +169,7 @@ module.exports = {
                     if (ooch_party.length >= 5) pa_components.push(party_3);
                     pa_components.push(back_buttons);
                     
-                    i.update({ content: `**Current Oochamon Party**`, components: pa_components })
+                    i.update({ content: `**Oochamon Party:**\n(🟩 is the Primary Oochamon, 🟥 is fainted Oochamon)`, components: pa_components })
                     pa_collector = await menuMsg.createMessageComponentCollector({ filter });
 
                     await pa_collector.on('collect', async j => {
@@ -196,7 +202,7 @@ module.exports = {
                         pa_extra_collector.on('collect', async k => {
                             let sel = k.customId;
                             switch (sel) {
-                                case ButtonStyle.Primary:
+                                case 'primary':
                                     // j.customId is the oochamon's current position in the party
                                     // Swap the position of the selected ooch and the ooch in position 0.
                                     [ooch_party[0], ooch_party[j.customId]] = [ooch_party[j.customId], ooch_party[0]];
@@ -289,7 +295,7 @@ module.exports = {
                         .setTitle(display_title)
                         .setDescription(item_list_str.length != 0 ? item_list_str : `You have no healing items in your bag.`);
 
-                    i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
+                    i.update({ content: `**Oochabag:**`, embeds: [bagEmbed], components: [bag_buttons, back_buttons] });
                     let bag_filter = (i => { return (i.user.id == interaction.user.id && ['heal_button', 'prism_button', 'key_button'].includes(i.customId)) })
 
                     btn_collector = menuMsg.createMessageComponentCollector({ componentType: ComponentType.Button, filter: bag_filter });
@@ -436,17 +442,17 @@ module.exports = {
 
                 break;
                 case 'box':
-                    let box_row = buildBoxData();
+                    userProfile = db.profile.get(interaction.user.id);
                     let page_row = new ActionRowBuilder();
                     
                     page_row.addComponents(
                         new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
                     ).addComponents(
-                        new ButtonBuilder().setCustomId('left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
+                        new ButtonBuilder().setCustomId('left').setEmoji('⬅️').setStyle(ButtonStyle.Primary).setDisabled(true)
                     ).addComponents(
-                        new ButtonBuilder().setCustomId('right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
+                        new ButtonBuilder().setCustomId('right').setEmoji('➡️').setStyle(ButtonStyle.Primary).setDisabled(true)
                     ).addComponents(
-                        new ButtonBuilder().setCustomId('num_label').setLabel('Box 1').setStyle(ButtonStyle.Primary)
+                        new ButtonBuilder().setCustomId('num_label').setLabel('1').setStyle(ButtonStyle.Primary)
                     ).addComponents(
                         new ButtonBuilder().setCustomId('party_label').setLabel('Party').setStyle(ButtonStyle.Success)
                     )
@@ -458,7 +464,7 @@ module.exports = {
                             .setStyle(ButtonStyle.Danger)
                     ).addComponents(
                         new ButtonBuilder()
-                            .setCustomId('add')
+                            .setCustomId('add_party')
                             .setLabel('Add To Party')
                             .setStyle(ButtonStyle.Success)
                     ).addComponents(
@@ -468,23 +474,52 @@ module.exports = {
                             .setStyle(ButtonStyle.Danger)
                     )
 
-                    i.update({ content: `**Oochabox**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
+                    let box_party_row = new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('back_to_box')
+                            .setLabel('Back')
+                            .setStyle(ButtonStyle.Danger)
+                    ).addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('add_box')
+                            .setLabel('Add To Box')
+                            .setStyle(ButtonStyle.Secondary)
+                    )
+
+                    let box_row = buildBoxData();
+                    i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
                     box_collector = menuMsg.createMessageComponentCollector();
 
                     await box_collector.on('collect', async j => { 
+                        userProfile = db.profile.get(interaction.user.id);
                         let sel = j.customId;
-                        if (sel.includes('emp') || sel == 'num_label') j.update({ content: `**Oochabox**` });
-                        if (sel.includes('ooch')) {
+                        if (sel.includes('emp') || sel.includes('label')) j.update({ content: `**Oochabox**` });
+                        if (sel == 'left' || sel == 'right') {
+                            j.update({ content: `**Oochabox**` });
+                            // TODO: Add multiple boxes
+                        } else if (sel.includes('ooch')) {
                             let slot_data = sel.split('_');
                             let ooch_id = slot_data[2];
                             let slot_num = slot_data[3];
+                            let party_slot = false;
+                            if (sel.includes('_party')) party_slot = true;
                             let ooch_gen_data = db.monster_data.get(ooch_id); // General Oochamon Data
-                            let ooch_user_data = db.profile.get(interaction.user.id, `ooch_pc[${slot_num}]`); // Personal Oochamon Data in Oochabox
+                            let ooch_user_data;
+
+                            if (party_slot == false) {
+                                ooch_user_data = userProfile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
+                            } else {
+                                ooch_user_data = userProfile.ooch_party[slot_num]; // Personal Oochamon Data in Party
+                            }
+
                             let ooch_title = `${ooch_user_data.nickname}`
                             ooch_user_data.nickname != ooch_user_data.name ? ooch_title += ` (${ooch_user_data.name}) ${TypeEmote[_.capitalize(ooch_user_data.type)]}` 
                             : ooch_title += ` ${TypeEmote[_.capitalize(ooch_user_data.type)]}`;
                             let moveset_str = ``;
-                            let pcArr;
+                            // Disable the "add to box" button if we only have one party member.
+                            box_party_row.components[1].setDisabled((userProfile.ooch_party.length == 1))
+                            // Disable the "add to party" button if we have 4 party members.
+                            box_sel_row.components[1].setDisabled((userProfile.ooch_party.length == 4))
 
                             let dexEmbed = new EmbedBuilder()
                             .setColor('#808080')
@@ -498,11 +533,12 @@ module.exports = {
                             dexEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
                             dexEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch_user_data.stats.hp}**\nATK: **${ooch_user_data.stats.atk}**\nDEF: **${ooch_user_data.stats.def}**\nSPD: **${ooch_user_data.stats.spd}**`, inline: true }]);
                             
-                            j.update({ content: null, embeds: [dexEmbed], components: [box_sel_row] });
+                            j.update({ content: null, embeds: [dexEmbed], components: [party_slot == false ? box_sel_row : box_party_row] });
 
                             let box_sel_collector = menuMsg.createMessageComponentCollector();
                             
                             box_sel_collector.on('collect', async k => {
+                                userProfile = db.profile.get(interaction.user.id);
                                 let box_sel = k.customId;
                                 switch (box_sel) {
                                     case 'back_to_box':
@@ -510,20 +546,24 @@ module.exports = {
                                         k.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
                                         box_sel_collector.stop();
                                     break;
-                                    case 'add':
-                                        // Check our max party length and kick back if we hit it.
-                                        if (userProfile.ooch_party.length == 4) {
-                                            k.update({ content: null, embeds: [dexEmbed], components: [box_sel_row] });
-                                            j.followUp({ content: `Your team is full. Please put away an Oochamon before adding one to your team.`, ephemeral: true });
-                                            break;
-                                        }
-
+                                    case 'add_box':
+                                        // Put the specified oochamon into the box.
+                                        db.profile.push(interaction.user.id, ooch_user_data, `ooch_pc`);
+                                        userProfile.ooch_party.splice(slot_num, 1)
+                                        db.profile.set(interaction.user.id, userProfile.ooch_party, 'ooch_party');
+                                        // Build new PC button rows
+                                        box_row = buildBoxData();
+                                        // Kick back to PC screen
+                                        k.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
+                                        j.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your box and removed from your party.`, ephemeral: true });
+                                        box_sel_collector.stop();
+                                    break;
+                                    case 'add_party':
                                         // Put the specified oochamon into our team
                                         db.profile.push(interaction.user.id, ooch_user_data, `ooch_party`);
                                         // Take oochamon out of PC
-                                        pcArr = userProfile.ooch_pc;
-                                        pcArr.splice(slot_num, 1);
-                                        db.profile.set(interaction.user.id, pcArr, 'ooch_pc');
+                                        userProfile.ooch_pc.splice(slot_num, 1);
+                                        db.profile.set(interaction.user.id, userProfile.ooch_pc, 'ooch_pc');
                                         // Build new PC button rows
                                         box_row = buildBoxData();
                                         // Kick back to PC screen
@@ -533,9 +573,8 @@ module.exports = {
                                     break;
                                     case 'release':
                                         // Take oochamon out of PC
-                                        pcArr = userProfile.ooch_pc;
-                                        pcArr.splice(slot_num, 1);
-                                        db.profile.set(interaction.user.id, pcArr, 'ooch_pc');
+                                        userProfile.ooch_pc.splice(slot_num, 1);
+                                        db.profile.set(interaction.user.id, userProfile.ooch_pc, 'ooch_pc');
                                         // Build new PC button rows
                                         box_row = buildBoxData();
                                         // Kick back to PC screen
@@ -549,9 +588,54 @@ module.exports = {
 
                     });
                 break;
-                case 'settings':
-                    await i.update({ content: '**Menu:**', components: [settings_row_1, settings_row_2, settings_row_3] });
-                    await i.followUp({ content: 'The settings menu is not yet implemented.', ephemeral: true });
+                case 'preferences':
+                    userProfile = db.profile.get(interaction.user.id);
+                    let prefData = userProfile.settings;
+                    let prefDesc = [`Graphics Mode: **\`${prefData.graphics == 0 ? 'Quality' : 'Performance' }\`**`,
+                    `Battle Text Cleanup: **\`${prefData.battle_cleanup}\`**`];
+
+                    let prefSelMenu = new ActionRowBuilder()
+                        .addComponents(
+                            new StringSelectMenuBuilder()
+                                .setCustomId('pref')
+                                .setPlaceholder('Change a preference with this menu!')
+                                .addOptions(
+                                    {
+                                        label: 'Graphics Mode',
+                                        description: 'Change the graphics mode of the game.',
+                                        value: 'graphics',
+                                    },
+                                    {
+                                        label: 'Battle Text Cleanup',
+                                        description: 'Set whether text should be cleaned up after a battle or not.',
+                                        value: 'battle_cleanup',
+                                    },
+                                ),
+                        );
+
+                    let prefEmbed = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle('⚙️ Preferences ⚙️')
+                    .setDescription(prefDesc.join('\n'))
+                    await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [prefSelMenu, back_buttons] });
+
+                    pref_collector = menuMsg.createMessageComponentCollector({ componentType: ComponentType.StringSelect }) 
+                    pref_collector.on('collect', async j => {
+                        let sel = j.values[0];
+                        switch (sel) {
+                            case 'graphics':
+                                await db.profile.set(interaction.user.id, userProfile.settings.graphics == 1 ? 0 : 1, 'settings.graphics');
+                                prefDesc[0] = await `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
+                            break;
+                            case 'battle_cleanup':
+                                await db.profile.set(interaction.user.id, !(userProfile.settings.battle_cleanup), 'settings.battle_cleanup');
+                                prefDesc[1] = await `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`
+                            break;
+                        }
+                        userProfile = db.profile.get(interaction.user.id);
+                        await prefEmbed.setDescription(prefDesc.join('\n'));
+                        await j.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [prefSelMenu, back_buttons] });
+                    })
                 break;
                 case 'quit':
                     let playspace_str = setup_playspace_str(interaction.user.id);

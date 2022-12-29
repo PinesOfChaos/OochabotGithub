@@ -65,7 +65,7 @@ module.exports = {
             }, 'flags');
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,
-                battle_cleanup: false
+                battle_cleanup: true
             }, 'settings');
 
             // Setup Oochadex template
