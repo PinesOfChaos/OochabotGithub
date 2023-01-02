@@ -55,12 +55,14 @@ module.exports = {
             db.profile.set(interaction.user.id, PlayerState.Intro, 'player_state')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'testmap', x: 8, y: 16 }, 'location_data')
+            db.profile.set(interaction.user.id, { area: 'testmap', x: 8, y: 16 }, 'savepoint_data');
             db.profile.set(interaction.user.id, -1, 'display_msg_id');
             db.profile.set(interaction.user.id, -1, 'play_thread_id');
             db.profile.set(interaction.user.id, 0, 'battle_msg_counter');
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
+            
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,
                 battle_cleanup: true

@@ -100,6 +100,26 @@ module.exports = {
         create_move(38,'Laminate',     'tech',30,90,       'snared',100,   'Covers the target in a tough plastic substance to SNARE them.')
         create_move(39,'Entomb',       'stone',60,80,      'snared',50,    'Causes stones to fall onto the target, leaving them SNARED if they get trapped.')
         create_move(40,'undefined_int','void',100,100,     -1,0,           'TEST MOVE')
+        ////NEW MOVES
+        create_move(41,'Strike',        'neutral',20,100,  'critical',30,   'A targeted strike that is likely to land a Critical Hit.')
+        create_move(42,'Barrage',       'tech',100,80,     'recoil',30,     'Devastating blasts damage the target, the user is hit with Recoil.')
+        create_move(43,'Eruption',      'flame',70,100,    'recoil',20,     'Blazing heat erupts from the user, damaging itself and the opponent.')
+        create_move(44,'Self Destruct', 'tech',250,100,    'recoil',100,    'The user self destructs to inflict massive damage.')
+        create_move(45,'Leech',         'fungal',20,100,   'vampire',10,    'The user damages the opponent, slightly Healing itself in the process.')
+        create_move(46,'Drain Life',    'magic',50,50,     'vampire',50,    'A horribly innacurate move with the potential to greatly heal the user.')
+        create_move(47,'Restruct',      'stone',0,100,     'heal',25,       'Stones are reorganized in the user\'s body to restore some HP.')
+        create_move(48,'Flurry',        'tech',75,90,      'critical',50,   'A flurry of steel blades shred the target, with a high chance to land a Critical Hit.')
+        create_move(49,'Crash Landing', 'stone',90,90,     'recoil',20,     'The user falls down from the sky inflicting high damage, but injuring itself.')
+        create_move(50,'Solar Blast',   'flame',85,100,    'blinded',50,    'Lob a brilliant ball of flame, potentially BLINDING the target.')
+        create_move(51,'Tangled Threds','neutral',70,100,  'snared',30,     'Threads are shot at the target dealing damage with a chance to SNARE them.')
+        create_move(52,'Fated Threds',  'magic',80,100,    'snared',50,     'Magical threads fly through the air in an attempt to SNARE the target.')
+        create_move(53,'Sync Strike',   'neutral',70,100,  'typematch',100, 'Launch a ball of energy synchronized with the user\'s type')
+        create_move(54,'Threefold',     'neutral',90,90,   'critical',30,   'The target is struck repeatedly, leaving it open to Critical Hits.')
+        create_move(55,'Glass Blades',  'stone',80,70,     'critical',50,   'Brittle blades are used to strike at the opponent\'s weak spots.')
+        create_move(56,'Gravitate',     'magic',60,30,     -1,0,            'The user manipulates gravity to fling itself at the target.')
+        create_move(57,'Tenderize',     'neutral',120,70,  'recoil',30,     'The user slams its body into the opponent, but is hit with recoil.')
+
+
         //#endregion
         
         //#region Ability Data
@@ -171,7 +191,7 @@ module.exports = {
         // Roocky
         create_monster(3, '<:roocky:921156272512974868>', 'Roocky', 'https://cdn.discordapp.com/attachments/921949708971294750/921950312300957776/roock.png',
         'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', 'stone', 12, 8, 12, 8, //total 40
-        [ [1,1],[3,3],[8,7],[13,7],[17,11],[27,14],[-1,20] ], [ 'Tough', 'Shadow' ], 4, 16)
+        [ [1,1],[3,3],[8,7],[17,11],[27,14],[-1,20] ], [ 'Tough', 'Shadow' ], 4, 16)
 
         //Graknight
         create_monster(4, '<:graknight:921158515995848736>', 'Graknight', 'https://cdn.discordapp.com/attachments/921949708971294750/921950330516807731/graknight.png',

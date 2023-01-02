@@ -1,5 +1,8 @@
 const db = require("./db")
-const { Flags } = require('../types.js');
+const { Flags } = require('./types.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { default: wait } = require("wait");
+const _ = require('lodash');
 
 module.exports = {
 
@@ -15,6 +18,13 @@ module.exports = {
         let ymove = 0;
         let msg_to_edit = db.profile.get(message.author.id, 'display_msg_id');
         let profile_arr = db.profile.keyArray();
+        let confirm_buttons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('yes').setLabel('Yes').setStyle(ButtonStyle.Success),
+            ).addComponents(
+                new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
+            );
+        let confirm_collector;
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
         
@@ -26,7 +36,7 @@ module.exports = {
         let player_flags = db.profile.get(target,'flags');
 
         //Get the map array based on the player's current map
-        let map_obj = db.maps.get(map_name.toLowerCase());
+        let map_obj =   db.maps.get(map_name.toLowerCase());
         let map_tiles =         map_obj.tiles; 
         let map_npcs =          map_obj.npcs;
         let map_spawns =        map_obj.spawns;
@@ -74,9 +84,30 @@ module.exports = {
                             x2 = (x1 + spawn_zone.width) < playerx;
                             y2 = (y1 + spawn_zone.height) < playery;
                             if(x1 && y1 && x2 && y2){
-                                let slot_index = Math.floor(Math.random() * spawn_zone.spawn_slots.length());
+                                let slot_index = _.random(0, spawn_zone.spawn_slots.length() - 1);
                                 let slot = spawn_zone.spawn_slots[slot_index];
+                                let mon_level = _.random(slot.min_level, slot.max_level);
+                                let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
+                                let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
                                 //use slot .ooch_id, .min_level, .max_level to setup the encounter
+                                message.channel.send({ content: `Start battle with wild ${mon_emote} ${mon_name} (LV ${mon_level})?`, components: [confirm_buttons]}).then(async msg =>{
+                                    confirm_collector = msg.createMessageComponentCollector({max: 1});
+                                    confirm_collector.on('collect', async sel => {
+                                        if(sel.customId == 'yes'){
+                                            //start battle
+                                            await msg.delete();
+                                        }
+                                        else{
+                                            if(Math.random() > .5){ //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
+                                                await msg.delete();
+                                                //start battle
+                                            }
+                                            else{
+                                                await msg.delete();
+                                            }
+                                        }
+                                    })
+                                })
                             }
 ;                        }
                     }
@@ -90,7 +121,20 @@ module.exports = {
             //Save Points
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
-                    //set player respawn position
+                    //prompt the player 
+                    message.channel.send({ content: 'Do you want to set your respawn point here?', components: [confirm_buttons] }).then(async msg => {
+                        confirm_collector = msg.createMessageComponentCollector({ max: 1 });
+                        confirm_collector.on('collect', async sel => {
+                            if (sel.customId == 'yes') {
+                                db.profile.set(target, { area: 'map_name', x: obj.x, y: obj.y }, 'savepoint_data');
+                                await sel.update({ content: 'Checkpoint set.', components: [] });
+                                await wait(5000);
+                                await msg.delete();
+                            } else {
+                                msg.delete();
+                            }
+                        });
+                    });
                 }
             }
 
@@ -173,37 +217,70 @@ module.exports = {
         }
 
         //Update the player's profile with their new x & y positions
-        db.profile.set(target, { area: biome, x: playerx, y: playery }, 'location_data');
+        db.profile.set(target, { area: map_name, x: playerx, y: playery }, 'location_data');
 
         // Update player position
-        db.player_positions.set(biome, { x: playerx, y: playery }, target);
+        db.player_positions.set(map_name, { x: playerx, y: playery }, target);
 
         //Send reply displaying the player's location on the map
         (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome, map_arr, playerx, playery) });
+            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery) });
         });
 
     },
 
-    map_emote_string: function(map_name, map_array, x_pos, y_pos) {
+    map_emote_string: function(map_name, map_tiles, x_pos, y_pos) {
 
         let view_size = 2;
         
         let xx, yy, tile;
         let emote_map = "";
-        let map_data = db.maps.get(map_name);
-        let map_tiles = map_data.tiles;
+        let map_obj = db.maps.get(map_name);
+        let emote_map_array = []
+
+        //Plain map tiles
         for (let i = -view_size; i < view_size + 1; i++) {
+            emote_map_array[i + view_size] = [];
             for (let j = -view_size; j < view_size + 1; j++) {
                 //add emote based on tile data to position
                 xx = i + x_pos;
                 yy = j + y_pos;
-                tile = db.tile_data.get(map_tiles[xx][yy]);
-                emote_map += tile.emote;
+                tile = db.tile_data.get(map_tiles[xx][yy].toString());
+                emote_map_array[i + view_size][j + view_size] = tile.emote;
+            }
+        }
+
+        //NPC tiles
+        let map_npcs = map_obj.npcs;
+        for(let obj of map_npcs){
+            xx = obj.x - x_pos + view_size;
+            yy = obj.y - y_pos + view_size;
+            if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
+                tile = db.tile_data.get(obj.sprite_id.toString());
+                emote_map_array[xx][yy] = tile.emote;
+            }
+        }
+
+        //Savepoint tiles
+        let map_savepoints = map_obj.savepoints;
+        for(let obj of map_savepoints){
+            xx = obj.x - x_pos + view_size;
+            yy = obj.y - y_pos + view_size;
+            if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
+                emote_map_array[xx][yy] = '<:t001:1057163945900773436>'; //this is the savepoint tile
+            }
+        }
+
+        //Put player sprite in center
+        emote_map_array[view_size][view_size] = '<:t050:1057164003710877756>'; //this is the default player skin, change later i guess
+
+        //Generate the combined string
+        for(let i = 0; i < emote_map_array.length; i++){
+            for(let j = 0; j < emote_map_array[i].length; j++){
+                emote_map += emote_map_array[i][j];
             }
             emote_map += "\n";
         }
-
         return(emote_map);
     },
 
