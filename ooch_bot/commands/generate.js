@@ -43,6 +43,11 @@ module.exports = {
         create_tile(24,  'npc',     '<:t052:1057164005388599406>'  );
         create_tile(25,  'npc',     '<:t053:1057164007406063696>'  );
         create_tile(26,  'npc',     '<:t054:1057164008324612096>'  );
+        create_tile(27,  'npc',     '<:t209:1059665037473624104>'  );
+        create_tile(28,  'wall',    '<:t210:1059665038950006855>'  );
+        create_tile(29,  'wall',    '<:t211:1059665040002793543>'  );
+        create_tile(30,  'wall',    '<:t212:1059665041269469304>'  );
+        create_tile(31,  'wall',    '<:t213:1059665036173385748>'  );
 
 
         //#region Item Data
