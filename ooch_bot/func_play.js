@@ -1,7 +1,7 @@
 const db = require("./db")
 const { Flags } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { default: wait } = require("wait");
+const wait = require('wait');
 const _ = require('lodash');
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
         let map_name = player_location.area;
         let playerx = player_location.x;
         let playery = player_location.y;
-        let player_flags = db.profile.get(target,'flags');
+        let player_flags = db.profile.get(target, 'flags');
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
@@ -48,16 +48,16 @@ module.exports = {
         
         //set where the player is going to move
         switch(direction){
-            case('w'):
+            case('a'):
                 xmove = -1;
             break;
-            case('s'):
+            case('d'):
                 xmove = 1;
             break;
-            case('a'):
+            case('w'):
                 ymove  = -1;
             break;
-            case('d'):
+            case('s'):
                 ymove = 1;
             break;
         }
@@ -74,17 +74,21 @@ module.exports = {
                 case 'grass':
                     playerx += xmove;
                     playery += ymove;
+                    console.log('Grass Tile')
                     if(Math.random() < .25){
+                        console.log('Mon Enountered!')
                         stop_moving = true;
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
+                            
                             spawn_zone = map_spawns[j];
                             x1 = (spawn_zone.x) <= playerx;
                             y1 = (spawn_zone.y) <= playery;
-                            x2 = (x1 + spawn_zone.width) < playerx;
-                            y2 = (y1 + spawn_zone.height) < playery;
+                            x2 = (spawn_zone.x + spawn_zone.width) > playerx;
+                            y2 = (spawn_zone.y + spawn_zone.height) > playery;
+
                             if(x1 && y1 && x2 && y2){
-                                let slot_index = _.random(0, spawn_zone.spawn_slots.length() - 1);
+                                let slot_index = _.random(0, spawn_zone.spawn_slots.length - 1);
                                 let slot = spawn_zone.spawn_slots[slot_index];
                                 let mon_level = _.random(slot.min_level, slot.max_level);
                                 let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
@@ -143,8 +147,8 @@ module.exports = {
             for(let obj of map_events){
                 x1 = (obj.x) <= playerx;
                 y1 = (obj.y) <= playery;
-                x2 = (x1 + obj.width) < playerx;
-                y2 = (y1 + obj.height) < playery;
+                x2 = (x1 + obj.width) > playerx;
+                y2 = (y1 + obj.height) > playery;
                 if(x1 && y1 && x2 && y2){
                     //trigger this event if the player hasn't triggered it already
                 }
@@ -152,23 +156,18 @@ module.exports = {
 
             //NPCs
             for(let obj of map_npcs){
-
                 //Check if player collides with this NPC's position
                 if(obj.x == playerx && obj.y == playery){
-
                     //Check if this NPC requires a flag to spawn, and if it does check if the player has it
                     if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
-
                         let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`; //Flag generated for this npc at this position
                         let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
 
                         if(obj.beaten || player_has_beaten){ //NPC has been beaten either by default or by the player
-
                             if(!obj.remove_on_finish){ //NPC should continue to persist after being beaten
                                 stop_moving = true;
                                 playerx -= xmove;
                                 playery -= ymove;
-
                                 //Dialogue Stuff goes here
                                 for(let text of obj.player_won_dialogue){
                                     console.log(text);
@@ -176,6 +175,7 @@ module.exports = {
                             }
                         }
                         else{ //NPC has not been beaten in any way
+                            console.log('NPC Not Beaten.')
                             stop_moving = true;
                             playerx -= xmove;
                             playery -= ymove;
@@ -185,6 +185,7 @@ module.exports = {
                                 console.log(text);
                             }
                             if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
+                                console.log('NPC Start Battle.')
                                 //Start battle using this NPC's team
 
                             }
@@ -224,14 +225,14 @@ module.exports = {
 
         //Send reply displaying the player's location on the map
         (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery) });
+            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, target) });
         });
 
     },
 
-    map_emote_string: function(map_name, map_tiles, x_pos, y_pos) {
+    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, target_player) {
 
-        let view_size = 2;
+        let view_size = 3;
         
         let xx, yy, tile;
         let emote_map = "";
@@ -245,19 +246,36 @@ module.exports = {
                 //add emote based on tile data to position
                 xx = i + x_pos;
                 yy = j + y_pos;
-                tile = db.tile_data.get(map_tiles[xx][yy].toString());
+                if(xx >= 0 && yy >= 0 && xx < map_tiles.length && yy < map_tiles[0].length){
+                    tile = db.tile_data.get(map_tiles[xx][yy].toString());
+                }
+                else {
+                    tile = db.tile_data.get('0')//This is the default tile
+                }
                 emote_map_array[i + view_size][j + view_size] = tile.emote;
             }
         }
 
         //NPC tiles
+        let player_flags = db.profile.get(target_player, 'flags');
         let map_npcs = map_obj.npcs;
+        
         for(let obj of map_npcs){
+            let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
             xx = obj.x - x_pos + view_size;
             yy = obj.y - y_pos + view_size;
             if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
-                tile = db.tile_data.get(obj.sprite_id.toString());
-                emote_map_array[xx][yy] = tile.emote;
+                if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
+                    let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
+
+                    if(obj.beaten || player_has_beaten){ //NPC has been beaten either by default or by the player
+                        if(!obj.remove_on_finish){ //NPC should continue to persist after being beaten
+
+                            tile = db.tile_data.get(obj.sprite_id.toString());
+                            emote_map_array[xx][yy] = tile.emote;
+                        }
+                    }
+                }
             }
         }
 
@@ -273,6 +291,19 @@ module.exports = {
 
         //Put player sprite in center
         emote_map_array[view_size][view_size] = '<:t050:1057164003710877756>'; //this is the default player skin, change later i guess
+        
+        //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
+        let transpose = [];
+        let w = emote_map_array.length;
+        let h = emote_map_array[0].length;
+        for(let i = 0; i < w; i++){
+            transpose[i] = []
+            for(let j = 0; j < h; j++){
+                transpose[i][j] = emote_map_array[j][i];
+            }
+        }
+        emote_map_array = transpose;
+        
 
         //Generate the combined string
         for(let i = 0; i < emote_map_array.length; i++){
@@ -297,7 +328,7 @@ module.exports = {
 
         //Get the map array based on the player's current biome
         let map_obj = db.maps.get(biome.toLowerCase());
-        let map_arr = map_obj[1]; //this should be the actual map array
+        let map_arr = map_obj.tiles; //this should be the actual map array
 
         // Set player position data into the global multiplayer player position db
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);

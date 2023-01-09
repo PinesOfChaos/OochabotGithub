@@ -296,7 +296,7 @@ module.exports = {
         //Meduslime
         create_monster(23, '<:meduslime:921979911634313216>', 'Meduslime', 'https://cdn.discordapp.com/attachments/921949708971294750/921987499214127104/meduslime.png',
         'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 'ooze', 16, 25, 19, 15, //total 75
-        [ [1,1],[7,29],[14,24],[17,23],[22,9],[30,29],[-1,38] ], [ 'Ensnare', 'Icky' ], -1, -1)
+        [ [1,1],[7,29],[14,24],[17,23],[22,9],[-1,38] ], [ 'Ensnare', 'Icky' ], -1, -1)
 
         //Tisparc
         create_monster(24, '<:tisparc:921979911604949052>', 'Tisparc', 'https://cdn.discordapp.com/attachments/921949708971294750/921987527676674058/tisparc.png',

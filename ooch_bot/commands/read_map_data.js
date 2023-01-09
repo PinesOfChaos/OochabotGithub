@@ -61,14 +61,14 @@ module.exports = {
                                         name: line_data[0],
                                         x: parseInt(line_data[1]),
                                         y: parseInt(line_data[2]),
-                                        beaten: line_data[3],
+                                        beaten: Boolean(parseInt(line_data[3])),
                                         sprite_id: parseInt(line_data[4]),
                                         coin: parseInt(line_data[5]),
                                         item_id: parseInt(line_data[6]),
                                         item_count: parseInt(line_data[7]),
                                         flag_required: line_data[8],
                                         flag_given: line_data[9],
-                                        remove_on_finish: line_data[10],
+                                        remove_on_finish: Boolean(parseInt(line_data[10])),
                                         pre_combat_dialogue: line_data[11],
                                         player_lost_dialogue: line_data[12],
                                         player_won_dialogue: line_data[13],
@@ -140,7 +140,7 @@ module.exports = {
                                     output = {
                                         x: parseInt(line_data[0]),
                                         y: parseInt(line_data[1]),
-                                        is_default: Boolean(line_data[2])
+                                        is_default: Boolean(parseInt(line_data[2]))
                                     }
                                     savepoint_data.push(output);
                                 break;
@@ -169,7 +169,8 @@ module.exports = {
                             }
                         }
                     }
-                    
+
+                    //Set the map's data
                     db.maps.set(map_name, {
                         tiles: tile_data,
                         npcs: npc_data,
