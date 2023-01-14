@@ -39,6 +39,14 @@ module.exports = {
         FinishedIntro: 'intro|',
         NPC: 'npc|',
         Event: 'ev|',
+    },
 
+    EventMode:{
+        Text:   0,
+        Image:  1,
+        Video:  2,
+        BattleTrainer: 3,
+        BattleWild: 4,
+        Flags: 5
     }
 }

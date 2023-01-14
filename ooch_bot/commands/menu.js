@@ -4,7 +4,7 @@ const db = require('../db.js');
 const _ = require('lodash');
 const { map_emote_string, setup_playspace_str } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
-const { type_to_emote } = require('../func_battle.js');
+const { type_to_emote, type_to_string } = require('../func_battle.js');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,14 +12,14 @@ module.exports = {
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
 
-        // if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Playspace 
-        // && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
-        //     return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
-        // }
+        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Playspace 
+        && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
+            return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
+        }
 
-        // // Delete the current playspace
-        // let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
-        // await playspace_msg.delete();
+        // Delete the current playspace
+        let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
+        await playspace_msg.delete();
 
         //#region Setup action rows for the main menu and some submenus
         // Main Menu
@@ -34,7 +34,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Primary).setEmoji('📱'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('box').setLabel('Oochabox').setStyle(ButtonStyle.Secondary).setEmoji('📦'),
+                new ButtonBuilder().setCustomId('oochabox').setLabel('Oochabox').setStyle(ButtonStyle.Secondary).setEmoji('📦'),
             );
 
         let settings_row_3 = new ActionRowBuilder()
@@ -65,7 +65,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
             ).addComponents(
-                new ButtonBuilder().setCustomId('left').setEmoji('⬅️').setStyle(ButtonStyle.Primary).setDisabled(true)
+                new ButtonBuilder().setCustomId('left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
             ).addComponents(
                 new ButtonBuilder().setCustomId('right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
             ).addComponents(
@@ -78,7 +78,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
             ).addComponents(
-                new ButtonBuilder().setCustomId('add_party').setLabel('Add To Party').setStyle(ButtonStyle.Success)
+                new ButtonBuilder().setCustomId('add_ooch').setLabel('Add To Party').setStyle(ButtonStyle.Success)
             ).addComponents(
                 new ButtonBuilder().setCustomId('release').setLabel('Release').setStyle(ButtonStyle.Danger)
             )
@@ -148,7 +148,7 @@ module.exports = {
 
         let filter = i => i.user.id == interaction.user.id;
         const collector = await menuMsg.createMessageComponentCollector({ filter });
-        let userProfile = db.profile.get(interaction.user.id);
+        let user_profile = db.profile.get(interaction.user.id);
 
         // Builds the action rows and places emotes in for the Oochabox, based on the database.
         // Updates with new database info every time the function is run
@@ -273,10 +273,11 @@ module.exports = {
 
         // Initialize all variables used across multiple sub menus here
         let selected;
-        let ooch_party, pa_components, party_idx, move_sel_idx, box_row, selected_ooch,
+        let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch,
         move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed,
         heal_inv, prism_inv, key_inv, display_inv, oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder(), oochadex_data;
+        oochadex_sel_3 = new ActionRowBuilder(), oochadex_data, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
+        pref_data, pref_desc
 
         // Menu operation is handled in this collector
         await collector.on('collect', async i => {
@@ -530,11 +531,11 @@ module.exports = {
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
-                let oochadex_sel_options_1 = [];
-                let oochadex_sel_options_2 = [];
-                let oochadex_sel_options_3 = [];
-                let ooch_data = db.monster_data.get(0);
-                let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
+                oochadex_sel_options_1 = [];
+                oochadex_sel_options_2 = [];
+                oochadex_sel_options_3 = [];
+                ooch_data = db.monster_data.get(0);
+                oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
 
                 for (let i = 0; i < db.monster_data.keyArray().length; i++) {
                     ooch_data = db.monster_data.get(i);
@@ -629,182 +630,169 @@ module.exports = {
                 }
             }
             //#endregion
+            
+            //#region Oochabox / Oochabox Menu
+            // Oochabox Button
+            else if (selected == 'oochabox') {  
+                user_profile = db.profile.get(interaction.user.id);
+                pages = 9; // Number of pages, starts at 0
+                page_num = 0;
+                box_row = buildBoxData(page_num);
+                i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+            }
+            // Label buttons
+            else if (selected.includes('emp') || selected.includes('label')) {
+                i.update({ content: `**Oochabox**` });
+            }
+            // Page buttons
+            else if (selected == 'left' || selected == 'right') {
+                selected == 'left' ? page_num -= 1 : page_num += 1;
+                page_num = (page_num + pages) % pages; // Handle max page overflow
+                
+                box_row = buildBoxData(page_num);
+                box_buttons.components[3].setLabel(`${page_num + 1}`);
+                i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+            } 
+            // Oochamon in Box View
+            else if (selected.includes('box_ooch')) {
+                user_profile = db.profile.get(interaction.user.id);
+                let slot_data = selected.split('_');
+                let ooch_id = slot_data[2];
+                slot_num = slot_data[3];
+                let party_slot = false;
+                if (selected.includes('_party')) party_slot = true;
+                let ooch_gen_data = db.monster_data.get(ooch_id); // General Oochamon Data
+
+                if (party_slot == false) {
+                    ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
+                } else {
+                    ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
+                }
+
+                let ooch_title = `${ooch_user_data.nickname}`
+                ooch_user_data.nickname != ooch_user_data.name ? ooch_title += ` (${ooch_user_data.name}) ${TypeEmote[_.capitalize(ooch_user_data.type)]}` 
+                : ooch_title += ` ${TypeEmote[_.capitalize(ooch_user_data.type)]}`;
+                let moveset_str = ``;
+                // Disable the "add to box" button if we only have one party member.
+                box_party_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 1))
+                // Disable the "add to party" button if we have 4 party members.
+                box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
+
+                dexEmbed = new EmbedBuilder()
+                .setColor('#808080')
+                .setTitle(ooch_title)
+                .setThumbnail(ooch_gen_data.image)
+                .setDescription(`Ability: **${ooch_user_data.ability}**\nType: **${_.capitalize(ooch_user_data.type)}**`);
+                for (let move_id of ooch_user_data.moveset) {
+                    let move = db.move_data.get(move_id)
+                    moveset_str += `**${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
+                }
+                dexEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
+                dexEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch_user_data.stats.hp}**\nATK: **${ooch_user_data.stats.atk}**\nDEF: **${ooch_user_data.stats.def}**\nSPD: **${ooch_user_data.stats.spd}**`, inline: true }]);
+                
+                i.update({ content: null, embeds: [dexEmbed], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
+            }
+            // Add Oochamon to Box
+            else if (selected == 'add_box') {
+                user_profile = db.profile.get(interaction.user.id);
+                // Put the specified oochamon into the box.
+                db.profile.push(interaction.user.id, ooch_user_data, `ooch_pc`);
+                user_profile.ooch_party.splice(slot_num, 1)
+                db.profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
+                // Build new PC button rows
+                box_row = buildBoxData(page_num);
+                // Kick back to PC screen
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+            } 
+            // Add Oochamon to team
+            else if (selected == 'add_ooch') {
+                user_profile = db.profile.get(interaction.user.id);
+                // Put the specified oochamon into our team
+                db.profile.push(interaction.user.id, ooch_user_data, `ooch_party`);
+                // Take oochamon out of PC
+                user_profile.ooch_pc.splice(slot_num, 1);
+                db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
+                // Build new PC button rows
+                box_row = buildBoxData(page_num);
+                // Kick back to PC screen
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                //i.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
+            
+            }
+            // Release an Oochamon
+            else if (selected == 'release') {
+                user_profile = db.profile.get(interaction.user.id);
+                await i.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [confirm_buttons] });
+            }
+            // Confirm to release an Oochamon
+            else if (selected == 'yes') {
+                user_profile = db.profile.get(interaction.user.id);
+                user_profile.ooch_pc.splice(slot_num, 1);
+                db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
+                // Build new PC button rows
+                box_row = buildBoxData(page_num);
+                // Kick back to PC screen
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+            }
+            // Confirm to not release an Oochamon
+            else if (selected == 'no') {
+                user_profile = db.profile.get(interaction.user.id);
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+            }
+            //#endregion
+
+            //#region Preferences Menu
+            // Preferences Button
+            else if (selected == 'preferences') {
+                user_profile = db.profile.get(interaction.user.id);
+                pref_data = user_profile.settings;
+                pref_desc = [`Graphics Mode: **\`${pref_data.graphics == 0 ? 'Quality' : 'Performance' }\`**`,
+                `Battle Text Cleanup: **\`${pref_data.battle_cleanup}\`**`];
+
+                prefEmbed = new EmbedBuilder()
+                .setColor('#808080')
+                .setTitle('⚙️ Preferences ⚙️')
+                .setDescription(pref_desc.join('\n'))
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Graphics Switcher
+            else if (selected == 'graphics') {
+                await db.profile.set(interaction.user.id, user_profile.settings.graphics == 1 ? 0 : 1, 'settings.graphics');
+                pref_desc[0] = await `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
+                user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Battle Cleanup Option
+            else if (selected == 'battle_cleanup') {
+                await db.profile.set(interaction.user.id, !(user_profile.settings.battle_cleanup), 'settings.battle_cleanup');
+                pref_desc[1] = await `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`;
+                user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            //#endregion
+
+            //#region Quit Button (back to playspace)
+            // Quit Button
+            else if (selected == 'quit') {
+                let playspace_str = setup_playspace_str(interaction.user.id);
+
+                if (pa_collector != undefined) pa_collector.stop();
+                if (btn_collector != undefined) btn_collector.stop();
+                if (dex_collector != undefined) dex_collector.stop();
+                if (pa_extra_collector != undefined) pa_extra_collector.stop();
+                collector.stop();
+
+                await interaction.channel.send({ content: playspace_str }).then(msg => {
+                    db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
+                });
+
+                await db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+                await i.update({ content: null });
+                await i.deleteReply();
+            }
+            //#endregion
         });
-                // case 'box':
-                //     userProfile = db.profile.get(interaction.user.id);
-
-                //     let pages = Math.floor(db.profile.get(interaction.user.id, 'ooch_pc').length / 16);
-                //     if (pages != 0) page_row.components[2].setDisabled(false);
-                //     let page_num = 0;
-                //     let box_row = buildBoxData(page_num);
-                //     i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //     box_collector = menuMsg.createMessageComponentCollector({ componentType: ComponentType.Button });
-
-                //     await box_collector.on('collect', async i => { 
-                //         userProfile = db.profile.get(interaction.user.id);
-                //         let sel = i.customId;
-                //         if (sel.includes('emp') || sel.includes('label')) i.update({ content: `**Oochabox**` });
-                //         if (sel == 'left' || sel == 'right') {
-                //             if (page_num != 0) page_row.components[1].setDisabled(false);
-                //             if (page_num != pages) page_row.components[2].setDisabled(false); 
-                //             if (sel == 'left') {
-                //                 page_num -= 1;
-                //                 page_num = _.clamp(page_num, 0, 9);
-                //                 if (page_num == 0) page_row.components[1].setDisabled(true);
-                //             } else {
-                //                 page_num += 1;
-                //                 page_num = _.clamp(page_num, 0, 9);
-                //                 if (page_num == pages) page_row.components[2].setDisabled(true);
-                //             }
-                            
-                //             box_row = buildBoxData(page_num);
-                //             page_row.components[3].setLabel(`${page_num + 1}`);
-                //             i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //         } else if (sel.includes('ooch')) {
-                //             let slot_data = sel.split('_');
-                //             let ooch_id = slot_data[2];
-                //             let slot_num = slot_data[3];
-                //             let party_slot = false;
-                //             if (sel.includes('_party')) party_slot = true;
-                //             let ooch_gen_data = db.monster_data.get(ooch_id); // General Oochamon Data
-                //             let ooch_user_data;
-
-                //             if (party_slot == false) {
-                //                 ooch_user_data = userProfile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
-                //             } else {
-                //                 ooch_user_data = userProfile.ooch_party[slot_num]; // Personal Oochamon Data in Party
-                //             }
-
-                //             let ooch_title = `${ooch_user_data.nickname}`
-                //             ooch_user_data.nickname != ooch_user_data.name ? ooch_title += ` (${ooch_user_data.name}) ${TypeEmote[_.capitalize(ooch_user_data.type)]}` 
-                //             : ooch_title += ` ${TypeEmote[_.capitalize(ooch_user_data.type)]}`;
-                //             let moveset_str = ``;
-                //             // Disable the "add to box" button if we only have one party member.
-                //             box_party_row.components[1].setDisabled((userProfile.ooch_party.length == 1))
-                //             // Disable the "add to party" button if we have 4 party members.
-                //             box_sel_row.components[1].setDisabled((userProfile.ooch_party.length == 4))
-
-                //             let dexEmbed = new EmbedBuilder()
-                //             .setColor('#808080')
-                //             .setTitle(ooch_title)
-                //             .setThumbnail(ooch_gen_data.image)
-                //             .setDescription(`Ability: **${ooch_user_data.ability}**\nType: **${_.capitalize(ooch_user_data.type)}**`);
-                //             for (let move_id of ooch_user_data.moveset) {
-                //                 let move = db.move_data.get(move_id)
-                //                 moveset_str += `**${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
-                //             }
-                //             dexEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-                //             dexEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch_user_data.stats.hp}**\nATK: **${ooch_user_data.stats.atk}**\nDEF: **${ooch_user_data.stats.def}**\nSPD: **${ooch_user_data.stats.spd}**`, inline: true }]);
-                            
-                //             i.update({ content: null, embeds: [dexEmbed], components: [party_slot == false ? box_sel_row : box_party_row] });
-
-                //             let box_sel_collector = menuMsg.createMessageComponentCollector();
-                            
-                //             box_sel_collector.on('collect', async i => {
-                //                 userProfile = db.profile.get(interaction.user.id);
-                //                 let box_sel = i.customId;
-                //                 switch (box_sel) {
-                //                     case 'back_to_box':
-                //                         box_sel_collector.stop();
-                //                     break;
-                //                     case 'add_box':
-                //                         // Put the specified oochamon into the box.
-                //                         db.profile.push(interaction.user.id, ooch_user_data, `ooch_pc`);
-                //                         userProfile.ooch_party.splice(slot_num, 1)
-                //                         db.profile.set(interaction.user.id, userProfile.ooch_party, 'ooch_party');
-                //                         // Build new PC button rows
-                //                         box_row = buildBoxData(page_num);
-                //                         // Kick back to PC screen
-                //                         i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //                         // i.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your box and removed from your party.`, ephemeral: true });
-                //                         box_sel_collector.stop();
-                //                     break;
-                //                     case 'add_party':
-                //                         // Put the specified oochamon into our team
-                //                         db.profile.push(interaction.user.id, ooch_user_data, `ooch_party`);
-                //                         // Take oochamon out of PC
-                //                         userProfile.ooch_pc.splice(slot_num, 1);
-                //                         db.profile.set(interaction.user.id, userProfile.ooch_pc, 'ooch_pc');
-                //                         // Build new PC button rows
-                //                         box_row = buildBoxData(page_num);
-                //                         // Kick back to PC screen
-                //                         i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //                         //i.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
-                //                         box_sel_collector.stop();
-                //                     break;
-                //                     case 'release':
-                //                         // Take oochamon out of PC
-                //                         await i.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [confirm_buttons] });
-                //                         box_confirm_collector = menuMsg.createMessageComponentCollector({ max: 1 });
-
-                //                         box_confirm_collector.on('collect', async i => {
-                //                             if (i.customId == 'yes') {
-                //                                 userProfile.ooch_pc.splice(slot_num, 1);
-                //                                 db.profile.set(interaction.user.id, userProfile.ooch_pc, 'ooch_pc');
-                //                                 // Build new PC button rows
-                //                                 box_row = buildBoxData(page_num);
-                //                                 // Kick back to PC screen
-                //                                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //                                 box_sel_collector.stop();
-                //                             } else {
-                //                                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], page_row] });
-                //                                 box_sel_collector.stop();
-                //                             }
-                //                         })
-                                        
-                //                     break;
-                //                 }
-                //             });
-                //         }
-
-                //     });
-                // break;
-                // case 'preferences':
-                //     userProfile = db.profile.get(interaction.user.id);
-                //     let prefData = userProfile.settings;
-                //     let prefDesc = [`Graphics Mode: **\`${prefData.graphics == 0 ? 'Quality' : 'Performance' }\`**`,
-                //     `Battle Text Cleanup: **\`${prefData.battle_cleanup}\`**`];
-
-                //     let prefEmbed = new EmbedBuilder()
-                //     .setColor('#808080')
-                //     .setTitle('⚙️ Preferences ⚙️')
-                //     .setDescription(prefDesc.join('\n'))
-                //     await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [prefSelMenu, back_button] });
-
-                //     pref_collector = menuMsg.createMessageComponentCollector({ componentType: ComponentType.StringSelect }) 
-                //     pref_collector.on('collect', async i => {
-                //         let sel = i.values[0];
-                //         switch (sel) {
-                //             case 'graphics':
-                //                 await db.profile.set(interaction.user.id, userProfile.settings.graphics == 1 ? 0 : 1, 'settings.graphics');
-                //                 prefDesc[0] = await `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
-                //             break;
-                //             case 'battle_cleanup':
-                //                 await db.profile.set(interaction.user.id, !(userProfile.settings.battle_cleanup), 'settings.battle_cleanup');
-                //                 prefDesc[1] = await `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`
-                //             break;
-                //         }
-                //         userProfile = db.profile.get(interaction.user.id);
-                //         await prefEmbed.setDescription(prefDesc.join('\n'));
-                //         await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [prefSelMenu, back_button] });
-                //     })
-                // break;
-                // case 'quit':
-                //     let playspace_str = setup_playspace_str(interaction.user.id);
-
-                //     if (pa_collector != undefined) pa_collector.stop();
-                //     if (btn_collector != undefined) btn_collector.stop();
-                //     if (dex_collector != undefined) dex_collector.stop();
-                //     if (pa_extra_collector != undefined) pa_extra_collector.stop();
-                //     collector.stop();
-
-                //     await interaction.channel.send({ content: playspace_str }).then(msg => {
-                //         db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
-                //     });
-
-                //     await db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
-                //     await i.update({ content: null });
-                //     await i.deleteReply();
-                // break;
     },
 };

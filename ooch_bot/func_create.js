@@ -57,5 +57,4 @@ module.exports = {
         db.ability_data.set(key_id, name, 'name');
         db.ability_data.set(key_id, description, 'description');
     }
-
 }

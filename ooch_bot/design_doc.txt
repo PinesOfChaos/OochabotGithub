@@ -170,7 +170,7 @@ STORY:
 		ends the intro, bringing you into the proper start of the game.
 
   	- Setting:
-		- An alien planet named a Priatera filled with mysterious Oochamon and various kinds of wildlife.
+		- An alien planet named Priatera filled with mysterious Oochamon and various kinds of wildlife.
 		- The hub area is a dropship base camp type of area with tents and things setup. 
 	
 	- Lore:
@@ -217,3 +217,16 @@ Timeline:
 	- Introduced to a Mycologist apprentice at the outpost who informs you that their team has been gone for quite some time
 	- Exploring deeper you encounter 2-3 researchers that are running from something deeper in who battle you in their confusion
 	- 
+
+
+//Intro
+```
+///////////////////////
+Begin Wake-Up Protocol
+
+///////////////////////
+Wake up, [${player}], its time to begin your productive new life on [Priatera]! We will be landing shortly!
+
+//////////////////////
+
+```

@@ -62,6 +62,9 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
+
+            db.profile.set(interaction.user.id, '', 'event_id');
+            db.profile.set(interaction.user.id, 0, 'event_value');
             
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,

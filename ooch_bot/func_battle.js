@@ -568,6 +568,9 @@ battle_choose_species: function(spawn_arr) {
 
 battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defender) {
     let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) * move_damage * ooch_attacker.stats.atk * ooch_attacker.stats.atk_mul / ooch_defender.stats.def * ooch_defender.stats.def_mul) / 50 + 2);
+    
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+    
     switch (move_type) {
         case 'Ooze': 
             if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1); break;
@@ -580,6 +583,8 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
             if (ooch_attacker.ability == 'Burrower') Math.round(damage *= 1.1);
             if (ooch_defender.ability == 'Armored') Math.round(damage *= 0.80); break;
     }
+
+    damage = _.clamp(damage, 1, ooch_defender.current_hp)
     return damage;
 },
 
@@ -600,16 +605,33 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
 },
 
 type_to_emote: function(type_string) {
-    switch(type_string) {
-        case 'flame': return '<:icon_flame:1023031001611501648>';
-        case 'fungal': return '<:icon_fungal:1023031003381514280>';
-        case 'magic': return '<:icon_magic:1023031009966575686>';
-        case 'stone': return '<:icon_stone:1023031015830204448>';
-        case 'neutral': return '<:icon_neutral:1023031011703013376>';
-        case 'ooze': return '<:icon_ooze:1023031013355569262>';
-        case 'tech': return '<:icon_tech:1023031017730224139>';
-        default: return '<:icon_void:1023031019466653738>';
+    let return_string = '';
+
+    if (!Array.isArray(type_string)) {
+        type_string = [type_string];
     }
+
+    for (let type in type_string) {
+        switch(type) {
+            case 'flame':   return_string +=  '<:icon_flame:1023031001611501648>';   break;
+            case 'fungal':  return_string +=  '<:icon_fungal:1023031003381514280>';  break;
+            case 'magic':   return_string +=  '<:icon_magic:1023031009966575686>';   break;
+            case 'stone':   return_string +=  '<:icon_stone:1023031015830204448>';   break;
+            case 'neutral': return_string +=  '<:icon_neutral:1023031011703013376>'; break;
+            case 'ooze':    return_string +=  '<:icon_ooze:1023031013355569262>';    break;
+            case 'tech':    return_string +=  '<:icon_tech:1023031017730224139>';    break;
+            case 'void':    return_string +=  '<:icon_void:1023031019466653738>';    break;
+        }
+    }
+
+    return return_string;
+},
+
+type_to_string: function(type, do_capitalize = true) {
+    if (!Array.isArray(type)) type = [type];
+    if (do_capitalize) type = type.map(v => _.capitalize(v));
+    type = type.join('/');
+    return type;
 },
 
 attack: async function(thread, user_id, atk_id, attacker, defender, string_to_send) {
@@ -623,15 +645,22 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
     let move_effect =   db.move_data.get(atk_id, 'effect');
     let move_chance =   db.move_data.get(atk_id, 'chance');
     let type_multiplier = type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-    let crit_multiplier = (Math.random() > 0.95 ? 2 : 1)
+    let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_chance/10 : 0)) ? 2 : 1);
     let status_blind = (attacker.status_effects.includes('blinded') ? .75 : 1);
     let status_doubled = (defender.status_effects.includes('doubled') ? 2 : 1);
+    let recoil_damage = Math.round((move_effect == 'recoil' ? 0 : move_chance/100) * attacker.stats.hp);
+    let vampire_heal = (move_effect == 'vampire' ? 0 : move_chance/100);
 
     dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, move_type, attacker, defender);
+    vampire_heal = Math.round(vampire_heal * dmg); //used later
 
     if ((move_accuracy/100 * status_blind > Math.random()) || (defender.ability == 'Immense')) {
         defender.current_hp -= dmg
         defender.current_hp = clamp(defender.current_hp, 0, defender.stats.hp);
+
+        attacker.hp += _.clamp(vampire_heal + attacker.hp, 0, attacker.stats.hp);
+        attacker.current_hp -= recoil_damage;
+        
 
         // Check for on hit abilities
         switch (attacker.ability) {
@@ -645,6 +674,18 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
         if(crit_multiplier >= 2){
             string_to_send += `\n**A critical hit!**`
         }
+
+        //If a attack has vampire
+         if(vampire_heal > 0){
+            string_to_send += `\n**${attacker.name} restored some HP!**`
+        }
+
+        //If attack has recoil
+        if(recoil_damage > 0){
+            string_to_send += `\n**${attacker.name} lost HP due to recoil!**`
+        }
+
+       
 
         //Type effectiveness
         string_to_send += type_multiplier[1];
@@ -672,65 +713,71 @@ type_effectiveness: function(attack_type, target_type) {
     let multiplier = 1;
     let string = '';
 
-    switch(attack_type){
-        case 'neutral':
-            switch(target_type){
-                case 'magic': multiplier = .75; break;
-            }
-        break;
-        case 'fungal':
-            switch(target_type){
-                case 'flame':   multiplier = .75; break;
-                case 'fungal':  multiplier = .75; break;
-                case 'stone':   multiplier = 1.5; break;
-                case 'ooze':    multiplier = 1.5; break;
-            }
-        break;
-        case 'flame':
-            switch(target_type){
-                case 'ooze':    multiplier = .75; break;
-                case 'flame':   multiplier = .75; break;
-                case 'void':    multiplier = 1.5; break;
-                case 'fungal':  multiplier = 1.5; break;
-            }
-        break;
-        case 'stone':
-            switch(target_type){
-                case 'ooze':    multiplier = .75; break;
-                case 'tech':    multiplier = 1.5; break;
-                case 'flame':   multiplier = 1.5; break;
-            }
-        break;
-        case 'tech':
-            switch(target_type){
-                case 'magic':   multiplier = .75; break;
-                case 'fungal':  multiplier = 1.5; break;
-                case 'ooze':    multiplier = 1.5; break;
-            }
-        break;
-        case 'ooze':
-            switch(target_type){
-                case 'ooze':    multiplier = .75; break;
-                case 'flame':   multiplier = 1.5; break;
-                case 'stone':   multiplier = 1.5; break;
-            }
-        break;
-        case 'magic':
-            switch(target_type){
-                case 'flame':  multiplier = .75; break;
-                case 'tech':   multiplier = 1.5; break;
-            }
-        break;
-        case 'void':
-            multiplier = 1.5;
-        break;
+    for(let type_defender in target_type){
+        switch(attack_type){
+            case 'neutral':
+                switch(type_defender){
+                    case 'magic': multiplier *= .5; break;
+                }
+            break;
+            case 'fungal':
+                switch(type_defender){
+                    case 'flame':   multiplier *= .5; break;
+                    case 'fungal':  multiplier *= .5; break;
+                    case 'stone':   multiplier *= 2; break;
+                    case 'ooze':    multiplier *= 2; break;
+                }
+            break;
+            case 'flame':
+                switch(type_defender){
+                    case 'ooze':    multiplier *= .5; break;
+                    case 'flame':   multiplier *= .5; break;
+                    case 'void':    multiplier *= 2; break;
+                    case 'fungal':  multiplier *= 2; break;
+                }
+            break;
+            case 'stone':
+                switch(type_defender){
+                    case 'ooze':    multiplier *= .5; break;
+                    case 'tech':    multiplier *= 2; break;
+                    case 'flame':   multiplier *= 2; break;
+                }
+            break;
+            case 'tech':
+                switch(type_defender){
+                    case 'magic':   multiplier *= .5; break;
+                    case 'fungal':  multiplier *= 2; break;
+                    case 'ooze':    multiplier *= 2; break;
+                }
+            break;
+            case 'ooze':
+                switch(type_defender){
+                    case 'ooze':    multiplier *= .5; break;
+                    case 'flame':   multiplier *= 2; break;
+                    case 'stone':   multiplier *= 2; break;
+                }
+            break;
+            case 'magic':
+                switch(type_defender){
+                    case 'flame':  multiplier *= .5; break;
+                    case 'tech':   multiplier *= 2; break;
+                }
+            break;
+            case 'void':
+                multiplier *= 1.5;
+            break;
+        }
     }
     
-    if(multiplier > 1){
-        string = '\n**It\'s super effective!**'
-    }
-    else if(multiplier < 1){
-        string = '\n**It\'s not very effective...**'
+    multiplier = min(8,max(.125,multiplier))
+
+    switch(multiplier){
+        case(0.125):    string = '\n**It\'s barely effective...**';     break;
+        case(0.25):     string = '\n**It\'s very ineffective...**';     break;
+        case(0.5):      string = '\n**It\'s not very effective...**';   break;
+        case(2):        string = '\n**It\'s super effective!**';        break;
+        case(4):        string = '\n**It\'s incredibly effective!**';   break;
+        case(8):        string = '\n**It\'s devastatingly effective!**';   break;
     }
 
     return([multiplier,string])
@@ -739,8 +786,7 @@ type_effectiveness: function(attack_type, target_type) {
 victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_turn_end) {
 
     const { prompt_battle_input, finish_battle } = require('./func_battle.js');
-    const Discord = require('discord.js');
-    let ooch_arr, slot_to_send, enemy_profile;
+    let ooch_arr, slot_to_send, enemy_profile, oochabux;
 
     const switch_buttons_1_die = new ActionRowBuilder();
     const switch_buttons_2_die = new ActionRowBuilder();
@@ -750,6 +796,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
         slot_to_send = -1;
         enemy_profile = db.profile.get(user_id, 'ooch_enemy');
         ooch_arr = enemy_profile.ooch_party;
+        oochabux = _.random(5, 40)
 
         for (let i = 0; i < ooch_arr.length; i++) {
             if (ooch_arr[i].current_hp > 0 && slot_to_send == -1) {
@@ -758,8 +805,9 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
-            thread.send(`**You win!**\nYour playspace will re-appear momentarily.`);
+            thread.send(`**You win!**\nYou gain ${oochabux} Oochabux!\nYour playspace will re-appear momentarily.`);
             db.profile.inc(user_id, 'battle_msg_counter');
+            db.profile.inc(user_id, oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
             await finish_battle(thread, user_id);
             return true;
@@ -771,6 +819,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
     } else if (ooch_plr.current_hp <= 0) { // Defeat
         slot_to_send = -1;
         ooch_arr = db.profile.get(user_id, 'ooch_party');
+        oochabux = _.random(5, 10)
 
         for (let i = 0; i < ooch_arr.length; i++) {
             if (ooch_arr[i].current_hp > 0 && slot_to_send == -1) {
@@ -779,8 +828,9 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
-            thread.send(`**You lose...**\nYou lose 20 Oochabux.\nYour playspace will re-appear momentarily.`);
+            thread.send(`**You lose...**\nYou lose ${oochabux} Oochabux.\nYour playspace will re-appear momentarily.`);
             db.profile.inc(user_id, 'battle_msg_counter');
+            db.profile.dec(user_id, oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
             await finish_battle(thread, user_id);
             return true;
@@ -1104,5 +1154,17 @@ finish_battle: async function(thread, user_id) {
     await thread.send({ content: playspace_str }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
     });
+},
+
+/**
+ * Handle leveling up an Oochamon, including
+ * giving it new moves.
+ * @param {Object} thread The thread object the game is being played in
+ * @param {String} user_id The user id of the user playing
+ * @param {Object} ooch The oochamon that is leveling up
+ * @returns A modified Oochamon object that has had its stats changed and moves added.
+ */
+level_up: async function(thread, user_id, ooch) {
+    // TODO: Add this in
 }
 }
