@@ -1,6 +1,13 @@
 const db = require("./db")
 
 module.exports = {
+    /**
+     * Creates a tile data object and adds it to the database.
+     * @param {Number} id The ID of the tile
+     * @param {String} use The use of the tile
+     * @param {String} emote The emote of the tile
+     * @param {String} emote_simple The non-animated emote of the tile (for performance mode)
+     */
     create_tile: function(id, use, emote, emote_simple = -1){
         if(emote_simple == -1) emote_simple = emote; //Replace simple emote with default value if there is no simple variant
         let key_id = id.toString();
@@ -10,6 +17,23 @@ module.exports = {
         db.tile_data.set(key_id, emote_simple, 'emote_simple');
     },
 
+    /**
+     * Creates an Oochamon and adds it to the database.
+     * @param {Number} id The ID of the Oochamon
+     * @param {String} emote The emote of the Oochamon
+     * @param {String} name The name of the Oochamon
+     * @param {String} image The image link
+     * @param {String} oochive_entry The Oochive Entry
+     * @param {String} type The type of the Oochamon
+     * @param {Number} hp The base HP stat
+     * @param {Number} atk Base ATK stat
+     * @param {Number} def Base DEF stat
+     * @param {Number} spd Base SPD stat
+     * @param {Array} move_list Move list for the Oochamon
+     * @param {Array} abilities Ability list for the Oochamon
+     * @param {Number} evo_id ID of the Oochamon's evolution
+     * @param {Number} evo_lvl What level the Oochamon evolves at
+     */
     create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, evo_id, evo_lvl) { 
         let key_id = id.toString();
         db.monster_data.set(key_id, id, 'id')
@@ -28,6 +52,17 @@ module.exports = {
         db.monster_data.set(key_id, evo_lvl, 'evo_lvl')
     },
 
+    /**
+     * Creates a move data object and adds it to the database.
+     * @param {Number} id The ID of the move
+     * @param {String} name The name of the move
+     * @param {String} type The type of the move
+     * @param {Number} damage How much damage the move does
+     * @param {Number} accuracy The moves accuracy
+     * @param {String} effect The effect of the move
+     * @param {Number} chance The % chance for the move to hit
+     * @param {String} description The moves description
+     */
     create_move: function(id, name, type, damage, accuracy, effect, chance, description){
         let key_id = id.toString();
         db.move_data.set(key_id, id, 'id')
@@ -40,6 +75,16 @@ module.exports = {
         db.move_data.set(key_id, description, 'description')
     },
 
+    /**
+     * Creates an item and puts it into the database.
+     * @param {Number} id The ID of the item
+     * @param {String} name The name of the item
+     * @param {String} emote The emote of the item (in Discord)
+     * @param {String} category The inventory category this item goes into (heal_inv, prism_inv, other_inv)
+     * @param {String} type The type of the item (potion, prism, misc)
+     * @param {Number} value The amount of whatever the items effect is (like amount of HP healed, or chance to catch with prism)
+     * @param {String} description A description of the item
+     */
     create_item: function(id, name, emote, category, type, value, description) {
         let key_id = id.toString();
         db.item_data.set(key_id, id, 'id');
@@ -51,6 +96,12 @@ module.exports = {
         db.item_data.set(key_id, description, 'description');
     },
 
+    /**
+     * Create an ability data object and add it to the database.
+     * @param {Number} id The ID of the ability
+     * @param {String} name The name of the ability
+     * @param {String} description The description of the ability
+     */
     create_ability: function(id, name, description) {
         let key_id = id.toString();
         db.ability_data.set(key_id, id, 'id');

@@ -7,18 +7,23 @@ const { setup_playspace_str } = require("./func_play");
 
 module.exports = {
 
-generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {
+/**
+ * Generate an Oochamon battle opponent for wild encounters.
+ * @param {Array} ooch_inv The array of Oochamon in the party
+ * @param {String} ooch_species I have no idea what this is
+ * @param {Number} ooch_level The level of your primary oochamon?, defaults to 0
+ * @returns The enemy Oochamon data in an object.
+ */
+generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {i
 
     const { get_stats, ability_stat_change } = require('./func_battle.js');
 
-    // Get the wild oochamon's level
-    let ooch_inv_arr = Object.keys(ooch_inv)
     let lvl = 0;
     let species = ooch_species
 
     // Setup stuff for the main players team
-    for (let i = 0; i < ooch_inv_arr.length; i++) {
-        let ooch_data = ooch_inv[ooch_inv_arr[i]];
+    for (let i = 0; i < ooch_inv.length; i++) {
+        let ooch_data = ooch_inv[i];
         ooch_data = ability_stat_change(ooch_data, ooch_inv);
 
         // Get the highest level of players oochamon team
@@ -29,7 +34,7 @@ generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {
             lvl = ooch_data.level;
         }
 
-        ooch_inv[ooch_inv_arr[i]] = ooch_data;
+        ooch_inv[i] = ooch_data;
     }
 
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -129,6 +134,11 @@ generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {
     return ooch_enemy
 },
 
+/**
+ * Handles all battle input and logic. The main battle function.
+ * @param {Object} thread The thread that Oochamon is being played in.
+ * @param {String} user_id The user id of the user playing Oochamon.
+ */
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
@@ -545,30 +555,17 @@ prompt_battle_input: async function(thread, user_id) {
     });
 },
 
-battle_choose_species: function(spawn_arr) {
-    let sum_val = 0;
-    let target_val = 0;
-    let i = 0;
-
-    for(i = 0; i < spawn_arr.length; i++) {
-        sum_val += spawn_arr[i][1];
-    }
-
-    sum_val *= Math.random();
-
-    for(i = 0; i < spawn_arr.length; i++) {
-        target_val += spawn_arr[i][1];
-        if(target_val >= sum_val){
-            break;
-        }
-    }
-
-    return(spawn_arr[i][0]);
-},
-
+/**
+ * An algorithm that handles calculating the raw amount of damage a move will do.
+ * Takes abilities into account as well here. Mainly used in the attack function.
+ * @param {Number} move_damage How much damage the move is doing
+ * @param {String} move_type The type of the move
+ * @param {Object} ooch_attacker The data of the Oochamon attacking
+ * @param {Object} ooch_defender The data of the Oochamon defending
+ * @returns The amount of damage the move will do.
+ */
 battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defender) {
     let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) * move_damage * ooch_attacker.stats.atk * ooch_attacker.stats.atk_mul / ooch_defender.stats.def * ooch_defender.stats.def_mul) / 50 + 2);
-    
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     switch (move_type) {
@@ -588,14 +585,35 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
     return damage;
 },
 
+/**
+ * Calculates the amount of EXP earned when defeating an Oochamon of a certain level and evolution stage.
+ * @param {Number} enemy_level The level of the opposing Oochamon
+ * @param {Number} enemy_evo_stage The evolution stage of the opposing Oochamon
+ * @returns A number of the amount of EXP earned
+ */
 battle_calc_exp: function(enemy_level, enemy_evo_stage) {
     return Math.round((1.015 ** enemy_level) * (2 ** enemy_evo_stage) * 5 * enemy_level);
 },
 
-exp_to_next_level: function(exp, level) {
-    return (level ** 3) - exp;
+/**
+ * Calculates the amount of EXP needed for the next level up for an Oochamon.
+ * @param {Number} level The level of the Oochamon
+ * @returns The amount of EXP needed for the next level
+ */
+exp_to_next_level: function(level) {
+    return (level ** 3);
 },
 
+/**
+ * Gives a set of stats for an Oochamon, adjusted by level and specific IVs.
+ * @param {String} species_id The ID of the Oochamon
+ * @param {Number} level The level of the Oochamon
+ * @param {Number} hp_iv The HP IV of the Oochamon 
+ * @param {Number} atk_iv The Attack IV of the Oochamon
+ * @param {Number} def_iv The Defense IV of the Oochamon
+ * @param {Number} spd_iv The Speed IV of the Oochamon
+ * @returns An array for each stat, adjusted by level and IVs.
+ */
 get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
     let hp = Math.floor(db.monster_data.get(species_id, 'hp') * (1.05 ** level) * hp_iv + 10) ;
     let atk = Math.floor(db.monster_data.get(species_id, 'atk') * (1.05 ** level) * atk_iv);
@@ -604,6 +622,11 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
     return [hp, atk, def, spd];
 },
 
+/**
+ * Converts a type string to an emote for that type.
+ * @param {String} type_string The type to convert an emote
+ * @returns The emote string to post on Discord.
+ */
 type_to_emote: function(type_string) {
     let return_string = '';
 
@@ -627,6 +650,12 @@ type_to_emote: function(type_string) {
     return return_string;
 },
 
+/**
+ * Converts an Oochamon type array to a string.
+ * @param {Array} type The Oochamon's types in an array
+ * @param {Boolean} do_capitalize If the type should be capitalized
+ * @returns The type array, now in the form of a string separated by "/"
+ */
 type_to_string: function(type, do_capitalize = true) {
     if (!Array.isArray(type)) type = [type];
     if (do_capitalize) type = type.map(v => _.capitalize(v));
@@ -634,6 +663,17 @@ type_to_string: function(type, do_capitalize = true) {
     return type;
 },
 
+/**
+ * A helper function that handles doing an attack and using a move on
+ * another Oochamon in an Oochamon battle.
+ * @param {Object} thread The thread Oochamon is being played in.
+ * @param {String} user_id The user id of the user playing Oochamon.
+ * @param {String} atk_id The ID of the attack being used
+ * @param {Object} attacker The Oochamon data of the attacker
+ * @param {Object} defender The Oochamon data of the defender
+ * @param {String} string_to_send The string to send to the battle message
+ * @returns An array of the attacker and defender Oochamon data, after the attacks.
+ */
 attack: async function(thread, user_id, atk_id, attacker, defender, string_to_send) {
     const { type_effectiveness, battle_calc_damage } = require('./func_battle.js');
 
@@ -709,6 +749,13 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
 
 },
 
+/**
+ * A helper function for type effectiveness, takes 2 types and figures out the
+ * attack multiplier for the attacking type based on the defending type.
+ * @param {String} attack_type The type that is attacking
+ * @param {String} target_type The type that is defending
+ * @returns An array with structured like [attack_multiplier, attack_string]
+ */
 type_effectiveness: function(attack_type, target_type) {
     let multiplier = 1;
     let string = '';
@@ -783,6 +830,15 @@ type_effectiveness: function(attack_type, target_type) {
     return([multiplier,string])
 },
 
+/**
+ * Check if we've won the battle or lost the battle.
+ * @param {Object} thread The thread Oochamon is being played in.
+ * @param {String} user_id The user id of the user playing Oochamon.
+ * @param {Object} ooch_enemy The Oochamon object for the enemy
+ * @param {Object} ooch_plr The Oochamon object for the player
+ * @param {Boolean} is_turn_end If it's the end of a turn
+ * @returns 
+ */
 victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_turn_end) {
 
     const { prompt_battle_input, finish_battle } = require('./func_battle.js');
@@ -888,7 +944,15 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
     };
 },
 
-end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy){
+/**
+ * Helper function to handle the end of an Oochamon battle round.
+ * (A round ends after each Oochamon has done a move.)
+ * @param {Object} thread The thread Oochamon is being played in.
+ * @param {String} user_id The user id of the user playing Oochamon
+ * @param {Object} ooch_plr The object of the "player" Oochamon
+ * @param {Object} ooch_enemy The object of the "enemy" Oochamon
+ */
+end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     const { generate_hp_bar, use_eot_ability } = require('./func_battle.js');
 
     let ooch_list = [ooch_plr, ooch_enemy];
@@ -948,30 +1012,13 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy){
     
 },
 
-generate_challenge: function(challenged_id) {
-    // Get the wild oochamon's level
-    let chal_name = db.profile.get(challenged_id, 'name');
-    let chal_mons = db.profile.get(challenged_id, 'ooch_party');
-    let chal_party = [];
-    let ooch_slot;
-    
-    ooch_slot = chal_mons[0]
-
-    for (let i = 0; i < chal_mons.length; i++) {
-        ooch_slot = chal_mons[i];
-        ooch_slot.evo_stage = 0;
-        ooch_slot.current_hp = ooch_slot.stats.hp;
-        chal_party.push(ooch_slot);
-    }
-
-    return {
-        name: chal_name,
-        ooch_active_slot: 0,
-        ooch_party: chal_party
-    }
-},
-
-generate_hp_bar: function(ooch, side) {
+/**
+ * Generate a custom emote HP bar for use in Oochamon battles.
+ * @param {Object} ooch The oochamon data.
+ * @param {String} style The style of the HP bar (plr/enemy)
+ * @returns The generated HP emote string for the Oochamon.
+ */
+generate_hp_bar: function(ooch, style) {
     let hp_string = ``;
     let hp_sec = (ooch.stats.hp / 10);
     let hp = ooch.current_hp;
@@ -980,7 +1027,7 @@ generate_hp_bar: function(ooch, side) {
 
     hp_string += `\n${db.monster_data.get(ooch.id, 'emote')} `;
 
-    if (side == 'plr') {
+    if (style == 'plr') {
         piece_type = `<:p_f_hm:1023031007714226257>`
         if (sections <= 5) piece_type = `<:p_m_hm:1023031029889511424>`;
         if (sections <= 2) piece_type = `<:p_l_hm:1023031006581764106>`;
@@ -1005,7 +1052,16 @@ generate_hp_bar: function(ooch, side) {
     return hp_string;
 },
 
-item_use: function(thread, user_id, ooch, item) {
+/**
+ * A helper function to handle using an item such as a healing or prism item
+ * in an Oochamon battle.
+ * @param {Object} thread The thread Oochamon is being played in
+ * @param {String} user_id The user id of the user playing Oochamon
+ * @param {Object} ooch The oochamon data object
+ * @param {String} item_id The item id that is to be used
+ * @returns A true or false for prisms if they caught or didn't catch, otherwise nothing.
+ */
+item_use: function(thread, user_id, ooch, item_id) {
     let item_data = db.item_data.get(item);
     let ooch_pos_plr = db.profile.get(user_id, 'ooch_active_slot');
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -1039,6 +1095,7 @@ item_use: function(thread, user_id, ooch, item) {
  * @param {String} stat The stat to change (atk, def, spd, acc, or eva)
  * @param {number} mod_percent The amount to change it by (-1 to 1)
  * @param {Boolean} [set=false] Set the value instead of add to/subtract from the value.
+ * @returns The Oochamon object with stats changed.
  */
 modify_stat: function(ooch, stat, mod_percent, set = false) {
     switch(stat) {
@@ -1072,6 +1129,7 @@ modify_stat: function(ooch, stat, mod_percent, set = false) {
  * Read the generate.js to see what each ability does.
  * @param {Object} ooch The oochamon object to have affected by it's ability
  * @param {Array} ooch_inv The oochamon party array for the user
+ * @returns The Oochamon object with changed stats..
  */
 ability_stat_change: function(ooch, ooch_inv) {
     const { modify_stat } = require('./func_battle.js');
@@ -1119,6 +1177,7 @@ ability_stat_change: function(ooch, ooch_inv) {
  * Have the ooch object use its end of turn ability.
  * Read the generate.js to see what each ability does.
  * @param {Object} ooch The oochamon object to have affected by it's ability
+ * @returns The Oochamon object that has been affected by an ability.
  */
 use_eot_ability: function(ooch) {
     const { modify_stat } = require('./func_battle.js');
@@ -1137,6 +1196,11 @@ use_eot_ability: function(ooch) {
     return ooch;
 },
 
+/**
+ * Handle finishing an Oochamon battle and setting back up the playspace.
+ * @param {Object} thread The thread Oochamon is being played in.
+ * @param {String} user_id The user id of the user playing Oochamon.
+ */
 finish_battle: async function(thread, user_id) {
     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     db.profile.set(user_id, {}, 'ooch_enemy');
@@ -1165,6 +1229,10 @@ finish_battle: async function(thread, user_id) {
  * @returns A modified Oochamon object that has had its stats changed and moves added.
  */
 level_up: async function(thread, user_id, ooch) {
-    // TODO: Add this in
+    const { exp_to_next_level } = require('./func_battle');
+    let new_exp = exp_to_next_level(ooch.level);
+    ooch.next_lvl_exp = new_exp;
+    ooch.level += 1;
+    return ooch;
 }
 }

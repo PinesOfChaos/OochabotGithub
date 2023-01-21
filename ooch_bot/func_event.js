@@ -1,5 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder } = require('discord.js');
-const Discord = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
 const { map_emote_string, setup_playspace_str } = require('../func_play');
@@ -9,10 +8,17 @@ const { type_to_emote, type_to_string } = require('../func_battle.js');
 module.exports = {
     /**
      * Runs an event based on an event array
+     * @param {String} thread The thread currently being played in
+     * @param {String} user_id The ID of the user
      * @param {Array} event_array The event array.
      */
-    event_run: function(event_array){
+    event_create_npc: function(thread, user_id, npc_object, ){
+        let event_string = event_from_dialogue();
 
+        event_embed = new EmbedBuilder()
+            .setColor('#808080')
+            .setTitle("Dialogue")
+            .setDescription();
     },
 
 
