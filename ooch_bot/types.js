@@ -48,5 +48,11 @@ module.exports = {
         BattleTrainer: 3,
         BattleWild: 4,
         Flags: 5
+    },
+
+    DialogueType:{
+        PreCombat: 0,
+        NPCWin: 1,
+        NPCLose: 2
     }
 }

@@ -3,6 +3,7 @@ const { Flags } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
+const { event_process, event_from_dialogue } = require('./func_event')
 
 module.exports = {
 
@@ -168,10 +169,9 @@ module.exports = {
                                 stop_moving = true;
                                 playerx -= xmove;
                                 playery -= ymove;
+
                                 //Dialogue Stuff goes here
-                                for(let text of obj.player_won_dialogue){
-                                    console.log(text);
-                                }
+                                event_process(message, event_from_dialogue(obj.name, obj.player_won_dialogue));
                             }
                         }
                         else{ //NPC has not been beaten in any way
@@ -181,9 +181,8 @@ module.exports = {
                             playery -= ymove;
 
                             //Dialogue Stuff goes here
-                            for(let text of obj.pre_combat_dialogue){
-                                console.log(text);
-                            }
+                            event_process(message, event_from_dialogue(obj.name, obj.pre_combat_dialogue));
+
                             if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
                                 console.log('NPC Start Battle.')
                                 //Start battle using this NPC's team
@@ -233,7 +232,6 @@ module.exports = {
     map_emote_string: function(map_name, map_tiles, x_pos, y_pos, target_player) {
 
         let view_size = 3;
-        
         let xx, yy, tile;
         let emote_map = "";
         let map_obj = db.maps.get(map_name);
@@ -333,7 +331,7 @@ module.exports = {
         // Set player position data into the global multiplayer player position db
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
-        return map_emote_string(biome.toLowerCase(), map_arr, playerx, playery);
+        return map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id);
     }
 
 }

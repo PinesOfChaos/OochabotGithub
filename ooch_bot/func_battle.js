@@ -841,7 +841,7 @@ type_effectiveness: function(attack_type, target_type) {
  */
 victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_turn_end) {
 
-    const { prompt_battle_input, finish_battle } = require('./func_battle.js');
+    const { prompt_battle_input, finish_battle, battle_calc_exp } = require('./func_battle.js');
     let ooch_arr, slot_to_send, enemy_profile, oochabux;
 
     const switch_buttons_1_die = new ActionRowBuilder();
@@ -852,7 +852,9 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
         slot_to_send = -1;
         enemy_profile = db.profile.get(user_id, 'ooch_enemy');
         ooch_arr = enemy_profile.ooch_party;
-        oochabux = _.random(5, 40)
+
+        // Distribute XP
+        let exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
 
         for (let i = 0; i < ooch_arr.length; i++) {
             if (ooch_arr[i].current_hp > 0 && slot_to_send == -1) {
@@ -862,6 +864,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
 
         if (slot_to_send == -1) { //if there is no slot to send in
             thread.send(`**You win!**\nYou gain ${oochabux} Oochabux!\nYour playspace will re-appear momentarily.`);
+            oochabux = _.random(5, 40)
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.inc(user_id, oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');

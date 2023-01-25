@@ -69,9 +69,9 @@ module.exports = {
                                         flag_required: line_data[8],
                                         flag_given: line_data[9],
                                         remove_on_finish: Boolean(parseInt(line_data[10])),
-                                        pre_combat_dialogue: line_data[11],
-                                        player_lost_dialogue: line_data[12],
-                                        player_won_dialogue: line_data[13],
+                                        pre_combat_dialogue: line_data[11].split('`'),
+                                        player_lost_dialogue: line_data[12].split('`'),
+                                        player_won_dialogue: line_data[13].split('`'),
                                         team: [],
                                     };
 

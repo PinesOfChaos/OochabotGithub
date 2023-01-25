@@ -190,6 +190,12 @@ client.on('messageCreate', async message => {
                     }
                 }
             break;
+            default: 
+                if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
+                    let args = message.content.split(' ');
+                    if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
+                }
+            break;
         }
     }
 });
