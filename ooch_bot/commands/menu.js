@@ -777,11 +777,6 @@ module.exports = {
             // Quit Button
             else if (selected == 'quit') {
                 let playspace_str = setup_playspace_str(interaction.user.id);
-
-                if (pa_collector != undefined) pa_collector.stop();
-                if (btn_collector != undefined) btn_collector.stop();
-                if (dex_collector != undefined) dex_collector.stop();
-                if (pa_extra_collector != undefined) pa_extra_collector.stop();
                 collector.stop();
 
                 await interaction.channel.send({ content: playspace_str }).then(msg => {
