@@ -1,6 +1,6 @@
 const db = require("./db")
 const wait = require('wait');
-const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const _ = require('lodash');
 const { TypeEmote, PlayerState } = require("./types.js");
 const { setup_playspace_str } = require("./func_play");
@@ -9,14 +9,16 @@ module.exports = {
 
 /**
  * Generate an Oochamon battle opponent for wild encounters.
+ * @param {Object} thread The thread oochamon is being played in
+ * @param {String} user_id The user ID of the player who is playing Oochamon
  * @param {Array} ooch_inv The array of Oochamon in the party
- * @param {String} ooch_species I have no idea what this is
+ * @param {String} ooch_species The oochamon to pick from to generate a battle for
  * @param {Number} ooch_level The level of your primary oochamon?, defaults to 0
  * @returns The enemy Oochamon data in an object.
  */
-generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {i
+generate_battle: async function(thread, user_id, ooch_inv, ooch_species, ooch_level = 0) {
 
-    const { get_stats, ability_stat_change } = require('./func_battle.js');
+    const { prompt_battle_input, get_stats, ability_stat_change } = require('./func_battle.js');
 
     let lvl = 0;
     let species = ooch_species
@@ -131,6 +133,37 @@ generate_battle: function(ooch_inv, ooch_species, ooch_level = 0) {i
     // Setup enemy ability stat changes
     ooch_enemy.ooch_party[0] = ability_stat_change(ooch_enemy.ooch_party[0], ooch_enemy.ooch_party);
 
+    // SETUP BATTLE CLIENT SIDE
+    db.profile.set(user_id, 0, 'ooch_active_slot');
+
+    // Delete playspace to enter battle
+    let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
+    await playspace_msg.delete();
+
+    await thread.send(`You encounter a wild **level ${ooch_enemy.ooch_party[0].level} ${db.monster_data.get(ooch_enemy.ooch_party[0].id, 'name')}!**`);
+    await thread.send(`${db.monster_data.get(ooch_enemy.ooch_party[0].id, 'emote')}`);
+
+    await db.profile.set(user_id, PlayerState.Combat, 'player_state')
+    await db.profile.set(user_id, ooch_enemy, 'ooch_enemy')
+    await db.profile.set(user_id, 2, 'battle_msg_counter');
+    await db.profile.set(user_id, 1, 'battle_turn_counter');
+
+    // Update Oochadex seen info
+    for (let i = 0; i < ooch_enemy.ooch_party.length; i++) {
+        db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.ooch_party[i].id}].seen`);
+    }
+    await db.profile.set(user_id, PlayerState.Combat, 'player_state')
+    await db.profile.set(user_id, ooch_enemy, 'ooch_enemy')
+    await db.profile.set(user_id, 2, 'battle_msg_counter');
+    await db.profile.set(user_id, 1, 'battle_turn_counter');
+
+    // Update Oochadex seen info
+    for (let i = 0; i < ooch_enemy.ooch_party.length; i++) {
+        db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.ooch_party[i].id}].seen`);
+    }
+
+    await prompt_battle_input(thread, user_id);
+h
     return ooch_enemy
 },
 
@@ -143,7 +176,6 @@ prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
     item_use, finish_battle } = require('./func_battle.js');
-    const wait = require('wait');
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
@@ -382,7 +414,7 @@ prompt_battle_input: async function(thread, user_id) {
                 thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
                 db.profile.inc(user_id, 'battle_msg_counter');
 
-                const b_collector = thread.createMessageComponentCollector({ componentType: 'BUTTON' });
+                const b_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
                 let prism_collector;
                 let heal_collector;
 
@@ -409,6 +441,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
                                 description: db.item_data.get(id, 'description'),
                                 value: `${id}`,
+                                emoji: db.item_data.get(id, 'emote'),
                             })
                         }
 
@@ -419,9 +452,9 @@ prompt_battle_input: async function(thread, user_id) {
                                 .addOptions(heal_select_options),
                         );
 
-                        await i_sel.update({ content: `Select the healing item you'd like to use!`, components: [bag_buttons, bag_select] })
+                        await i_sel.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bag_buttons] })
 
-                        heal_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
+                        heal_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
 
                         await heal_collector.on('collect', async item_sel => {
                             let item_id = item_sel.values[0];
@@ -464,6 +497,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
                                 description: db.item_data.get(id, 'description'),
                                 value: `${id}`,
+                                emoji: db.item_data.get(id, 'emote'),
                             })
                         }
 
@@ -474,7 +508,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 .addOptions(prism_select_options),
                         );
 
-                        await i_sel.update({ content: `Select the prism you'd like to use!`, components: [bag_buttons, bag_select] })
+                        await i_sel.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bag_buttons] })
 
                         prism_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
 
@@ -634,7 +668,7 @@ type_to_emote: function(type_string) {
         type_string = [type_string];
     }
 
-    for (let type in type_string) {
+    for (let type of type_string) {
         switch(type) {
             case 'flame':   return_string +=  '<:icon_flame:1023031001611501648>';   break;
             case 'fungal':  return_string +=  '<:icon_fungal:1023031003381514280>';  break;
@@ -816,7 +850,7 @@ type_effectiveness: function(attack_type, target_type) {
         }
     }
     
-    multiplier = min(8,max(.125,multiplier))
+   // multiplier = min(8,max(.125,multiplier))
 
     switch(multiplier){
         case(0.125):    string = '\n**It\'s barely effective...**';     break;
@@ -866,7 +900,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
             thread.send(`**You win!**\nYou gain ${oochabux} Oochabux!\nYour playspace will re-appear momentarily.`);
             oochabux = _.random(5, 40)
             db.profile.inc(user_id, 'battle_msg_counter');
-            db.profile.inc(user_id, oochabux, 'oochabux');
+            db.profile.math(user_id, oochabux, '+', 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
             await finish_battle(thread, user_id);
             return true;
@@ -1065,7 +1099,7 @@ generate_hp_bar: function(ooch, style) {
  * @returns A true or false for prisms if they caught or didn't catch, otherwise nothing.
  */
 item_use: function(thread, user_id, ooch, item_id) {
-    let item_data = db.item_data.get(item);
+    let item_data = db.item_data.get(item_id);
     let ooch_pos_plr = db.profile.get(user_id, 'ooch_active_slot');
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 

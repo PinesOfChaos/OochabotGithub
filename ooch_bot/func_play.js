@@ -3,7 +3,7 @@ const { Flags } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
-const { event_process, event_from_dialogue } = require('./func_event')
+const { event_process, event_from_dialogue } = require('./func_event');
 
 module.exports = {
 
@@ -13,11 +13,13 @@ module.exports = {
         */
 
         const { map_emote_string } = require('./func_play.js');
+        const { generate_battle } = require("./func_battle");
 
-        let target = message.author.id;
+        let user_id = message.author.id;
         let xmove = 0;
         let ymove = 0;
-        let msg_to_edit = db.profile.get(message.author.id, 'display_msg_id');
+        let profile_data = db.profile.get(user_id);
+        let msg_to_edit = profile_data.display_msg_id;
         let profile_arr = db.profile.keyArray();
         let confirm_buttons = new ActionRowBuilder()
             .addComponents(
@@ -30,11 +32,11 @@ module.exports = {
         
         
         //Get the player's location
-        let player_location = db.profile.get(target, 'location_data');
+        let player_location = profile_data.location_data;
         let map_name = player_location.area;
         let playerx = player_location.x;
         let playery = player_location.y;
-        let player_flags = db.profile.get(target, 'flags');
+        let player_flags = profile_data.flags;
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
@@ -98,16 +100,16 @@ module.exports = {
                                 message.channel.send({ content: `Start battle with wild ${mon_emote} ${mon_name} (LV ${mon_level})?`, components: [confirm_buttons]}).then(async msg =>{
                                     confirm_collector = msg.createMessageComponentCollector({max: 1});
                                     confirm_collector.on('collect', async sel => {
-                                        if(sel.customId == 'yes'){
-                                            //start battle
+                                        if (sel.customId == 'yes') {
+                                            generate_battle(message.channel, user_id, profile_data.ooch_party, [slot.ooch_id], mon_level);
                                             await msg.delete();
                                         }
-                                        else{
-                                            if(Math.random() > .5){ //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
+                                        else {
+                                            if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
+                                                generate_battle(message.channel, user_id, profile_data.ooch_party, [slot.ooch_id], mon_level);
                                                 await msg.delete();
-                                                //start battle
                                             }
-                                            else{
+                                            else {
                                                 await msg.delete();
                                             }
                                         }
@@ -131,7 +133,7 @@ module.exports = {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
                             if (sel.customId == 'yes') {
-                                db.profile.set(target, { area: 'map_name', x: obj.x, y: obj.y }, 'savepoint_data');
+                                db.profile.set(user_id, { area: 'map_name', x: obj.x, y: obj.y }, 'savepoint_data');
                                 await sel.update({ content: 'Checkpoint set.', components: [] });
                                 await wait(5000);
                                 await msg.delete();
@@ -217,14 +219,14 @@ module.exports = {
         }
 
         //Update the player's profile with their new x & y positions
-        db.profile.set(target, { area: map_name, x: playerx, y: playery }, 'location_data');
+        db.profile.set(user_id, { area: map_name, x: playerx, y: playery }, 'location_data');
 
         // Update player position
-        db.player_positions.set(map_name, { x: playerx, y: playery }, target);
+        db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
         //Send reply displaying the player's location on the map
         (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, target) });
+            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) });
         });
 
     },

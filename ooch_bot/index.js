@@ -153,27 +153,7 @@ client.on('messageCreate', async message => {
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     if (message.content == 'start battle') {
                         // Do battle stuff
-                        ooch_gen = await generate_battle(db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
-                        db.profile.set(message.author.id, 0, 'ooch_active_slot');
-
-                        // Delete playspace to enter battle
-                        let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
-                        await playspace_msg.delete();
-
-                        await message.channel.send(`You encounter a wild **level ${ooch_gen.ooch_party[0].level} ${db.monster_data.get(ooch_gen.ooch_party[0].id, 'name')}!**`);
-                        await message.channel.send(`${db.monster_data.get(ooch_gen.ooch_party[0].id, 'emote')}`);
-                
-                        await db.profile.set(message.author.id, PlayerState.Combat, 'player_state')
-                        await db.profile.set(message.author.id, ooch_gen, 'ooch_enemy')
-                        await db.profile.set(message.author.id, 2, 'battle_msg_counter');
-                        await db.profile.set(message.author.id, 1, 'battle_turn_counter');
-
-                        // Update Oochadex seen info
-                        for (let i = 0; i < ooch_gen.ooch_party.length; i++) {
-                            db.profile.math(message.author.id, '+', 1, `oochadex[${ooch_gen.ooch_party[i].id}].seen`);
-                        }
-                
-                        await prompt_battle_input(message.channel, message.author.id);
+                        await generate_battle(message.channel, message.author.id, db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
                         message.delete();
                     } else {
                         // Do movement stuff

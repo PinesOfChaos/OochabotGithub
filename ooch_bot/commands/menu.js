@@ -545,18 +545,21 @@ module.exports = {
                             label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                             description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                             value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
                         })
                     } else if (i >= 25 && i < 50) {
                         oochadex_sel_options_2.push({
                             label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                             description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                             value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
                         })
                     } else {
                         oochadex_sel_options_3.push({
                             label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                             description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                             value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
                         })
                     }
                 }
