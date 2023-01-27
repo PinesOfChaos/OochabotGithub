@@ -9,56 +9,13 @@ module.exports = {
 
 /**
  * Generate an Oochamon battle opponent for wild encounters.
- * @param {Object} thread The thread oochamon is being played in
- * @param {String} user_id The user ID of the player who is playing Oochamon
- * @param {Array} ooch_inv The array of Oochamon in the party
- * @param {String} ooch_species The oochamon to pick from to generate a battle for
- * @param {Number} ooch_level The level of your primary oochamon?, defaults to 0
+ * @param {String} ooch_id The ID of the Oochamon we are generating a battle for
+ * @param {Number} ooch_level The level of the Oochamon we're battling
  * @returns The enemy Oochamon data in an object.
  */
-generate_battle: async function(thread, user_id, ooch_inv, ooch_species, ooch_level = 0) {
+generate_wild_battle: function(ooch_id, ooch_level) {
 
-    const { prompt_battle_input, get_stats, ability_stat_change } = require('./func_battle.js');
-
-    let lvl = 0;
-    let species = ooch_species
-
-    // Setup stuff for the main players team
-    for (let i = 0; i < ooch_inv.length; i++) {
-        let ooch_data = ooch_inv[i];
-        ooch_data = ability_stat_change(ooch_data, ooch_inv);
-
-        // Get the highest level of players oochamon team
-        if (i == 0) { 
-            lvl = ooch_data.level;
-            continue;
-        } else if (ooch_data > lvl) {
-            lvl = ooch_data.level;
-        }
-
-        ooch_inv[i] = ooch_data;
-    }
-
-    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    lvl = ooch_level == 0 ? clamp((Math.floor(Math.random() * lvl * 1.05)), 1, 100) : ooch_level; //Formula for level generation
-
-    // Get the evolution data
-    let ooch_pick = species[_.random(0, species.length - 1)]
-    let evo1_id = db.monster_data.get(ooch_pick, 'evo_id')
-    let evo1_lvl = db.monster_data.get(ooch_pick, 'evo_lvl')
-    let evo2_id = db.monster_data.get(evo1_id, 'evo_id')
-    let evo2_lvl = db.monster_data.get(evo2_id, 'evo_lvl')
-    let stage = 0;
-
-    // Have a chance to make the wild oochamon be the evolved form
-    let evo_chance = _.random(0, 1) + _.random(0, 1)
-    if (evo_chance == 2 && lvl >= evo2_lvl && evo2_lvl != -1) {
-        ooch_pick = evo2_id;
-        stage = 2;
-    } else if (evo_chance == 1 && lvl >= evo1_lvl && evo1_lvl != -1) {
-        ooch_pick = evo1_id;
-        stage = 1;
-    }
+    const { get_stats, ability_stat_change } = require('./func_battle.js');
 
     // Get wild oochamon stats
     let hp_iv = _.random(0,10)/20+1
@@ -71,16 +28,16 @@ generate_battle: async function(thread, user_id, ooch_inv, ooch_species, ooch_le
     let acc_mul = 1;
     let eva_mul = 1;
 
-    let stats = get_stats(ooch_pick, lvl, hp_iv, atk_iv, def_iv, spd_iv) //returns [hp, atk, def, spd]
+    let stats = get_stats(ooch_id, ooch_level, hp_iv, atk_iv, def_iv, spd_iv) //returns [hp, atk, def, spd]
     let hp = stats[0]
     let atk = stats[1]
     let def = stats[2]
     let spd = stats[3]  
 
-    let learn_list = db.monster_data.get(ooch_pick, 'move_list').filter(x => x[0] <= lvl && x[0] != -1)
-    let move_list =[];
+    let learn_list = db.monster_data.get(ooch_id, 'move_list').filter(x => x[0] <= ooch_level && x[0] != -1)
+    let move_list = [];
 
-    for(let i = 0; i < learn_list.length; i++){
+    for (let i = 0; i < learn_list.length; i++) {
         move_list[i] = learn_list[i][1]; //get only the move ID and put it in the move_list
     }
 
@@ -91,18 +48,18 @@ generate_battle: async function(thread, user_id, ooch_inv, ooch_species, ooch_le
     }
 
     // Pick a random ability
-    let ability_list = db.monster_data.get(ooch_pick, 'abilities');
+    let ability_list = db.monster_data.get(ooch_id, 'abilities');
     let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
 
     let ooch_enemy = {
-        name: 'Enemy',
+        name: 'Wild Oochamon',
         ooch_active_slot: 0,
         ooch_party:[{
-            id: ooch_pick,
-            name: db.monster_data.get(ooch_pick, 'name'),
-            nickname: db.monster_data.get(ooch_pick, 'name'),
+            id: ooch_id,
+            name: db.monster_data.get(ooch_id, 'name'),
+            nickname: db.monster_data.get(ooch_id, 'name'),
             item: -1,
-            level: lvl,
+            level: ooch_level,
             ability: rand_ability,
             moveset: move_list,
             stats: {
@@ -122,49 +79,62 @@ generate_battle: async function(thread, user_id, ooch_inv, ooch_species, ooch_le
             },
             status_effects: [],
             current_hp: hp,
-            evo_stage: stage,
+            evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
             alive: true,
             current_exp: 0,
-            next_lvl_exp: lvl ** 3,
-            type: db.monster_data.get(ooch_pick, 'type')
+            next_lvl_exp: ooch_level ** 3,
+            type: db.monster_data.get(ooch_id, 'type')
         }]
     }
 
     // Setup enemy ability stat changes
     ooch_enemy.ooch_party[0] = ability_stat_change(ooch_enemy.ooch_party[0], ooch_enemy.ooch_party);
 
-    // SETUP BATTLE CLIENT SIDE
+    console.log(ooch_enemy);
+
+    return ooch_enemy
+},
+
+/**
+ * Sets up an Oochamon battle and begins prompting for input.
+ * @param {Object} thread The thread Oochamon is being played in
+ * @param {String} user_id The user ID of the user playing Oochamon
+ * @param {Object} trainer_obj The enemy trainer object
+ */
+setup_battle: async function(thread, user_id, trainer_obj) {
+
+    const { ability_stat_change, prompt_battle_input } = require('./func_battle.js');
+
+    let ooch_party = db.profile.get(user_id, 'ooch_party');
+
+    // Setup stuff for the main players team
+    for (let i = 0; i < ooch_party.length; i++) {
+        let ooch_data = ooch_party[i];
+        ooch_data = ability_stat_change(ooch_data, ooch_party);
+        ooch_party[i] = ooch_data;
+    }
+
+    db.profile.set(user_id, ooch_party, 'ooch_party');
     db.profile.set(user_id, 0, 'ooch_active_slot');
 
     // Delete playspace to enter battle
     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
     await playspace_msg.delete();
 
-    await thread.send(`You encounter a wild **level ${ooch_enemy.ooch_party[0].level} ${db.monster_data.get(ooch_enemy.ooch_party[0].id, 'name')}!**`);
-    await thread.send(`${db.monster_data.get(ooch_enemy.ooch_party[0].id, 'emote')}`);
+    await thread.send(`You encounter a wild **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    await thread.send(`${db.monster_data.get(trainer_obj.ooch_party[0].id, 'emote')}`);
 
     await db.profile.set(user_id, PlayerState.Combat, 'player_state')
-    await db.profile.set(user_id, ooch_enemy, 'ooch_enemy')
+    await db.profile.set(user_id, trainer_obj, 'ooch_enemy')
     await db.profile.set(user_id, 2, 'battle_msg_counter');
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
     // Update Oochadex seen info
-    for (let i = 0; i < ooch_enemy.ooch_party.length; i++) {
-        db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.ooch_party[i].id}].seen`);
-    }
-    await db.profile.set(user_id, PlayerState.Combat, 'player_state')
-    await db.profile.set(user_id, ooch_enemy, 'ooch_enemy')
-    await db.profile.set(user_id, 2, 'battle_msg_counter');
-    await db.profile.set(user_id, 1, 'battle_turn_counter');
-
-    // Update Oochadex seen info
-    for (let i = 0; i < ooch_enemy.ooch_party.length; i++) {
-        db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.ooch_party[i].id}].seen`);
+    for (let i = 0; i < trainer_obj.ooch_party.length; i++) {
+        db.profile.math(user_id, '+', 1, `oochadex[${trainer_obj.ooch_party[i].id}].seen`);
     }
 
     await prompt_battle_input(thread, user_id);
-h
-    return ooch_enemy
 },
 
 /**

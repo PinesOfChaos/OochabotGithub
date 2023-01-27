@@ -87,6 +87,7 @@ module.exports = {
                 next_lvl_exp: level ** 3,
                 current_hp: stats[0],
                 alive: true,
+                evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
                 type: db.monster_data.get(ooch_id, 'type')
             }, dest)
         

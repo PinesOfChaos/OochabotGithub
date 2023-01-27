@@ -13,7 +13,7 @@ module.exports = {
         */
 
         const { map_emote_string } = require('./func_play.js');
-        const { generate_battle } = require("./func_battle");
+        const { generate_wild_battle, setup_battle } = require("./func_battle");
 
         let user_id = message.author.id;
         let xmove = 0;
@@ -100,16 +100,18 @@ module.exports = {
                                 message.channel.send({ content: `Start battle with wild ${mon_emote} ${mon_name} (LV ${mon_level})?`, components: [confirm_buttons]}).then(async msg =>{
                                     confirm_collector = msg.createMessageComponentCollector({max: 1});
                                     confirm_collector.on('collect', async sel => {
+                                        let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
+                                        console.log(generated_ooch);
                                         if (sel.customId == 'yes') {
-                                            generate_battle(message.channel, user_id, profile_data.ooch_party, [slot.ooch_id], mon_level);
+                                            await setup_battle(message.channel, message.author.id, generated_ooch);
                                             await msg.delete();
                                         }
                                         else {
                                             if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
-                                                generate_battle(message.channel, user_id, profile_data.ooch_party, [slot.ooch_id], mon_level);
+                                                await setup_battle(message.channel, message.author.id, generated_ooch);
                                                 await msg.delete();
                                             }
-                                            else {
+                                            else { // If we fail the 50/50, ignore the input
                                                 await msg.delete();
                                             }
                                         }

@@ -136,6 +136,7 @@ module.exports = {
                     current_exp: 0,
                     next_lvl_exp: level ** 3,
                     alive: true,
+                    evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
                     type: db.monster_data.get(starter, 'type'),
                 }
             ], 'ooch_party')
