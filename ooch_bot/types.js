@@ -47,7 +47,7 @@ module.exports = {
         Video:  2,
         BattleTrainer: 3,
         BattleWild: 4,
-        Flags: 5
+        Flags: 5,
     },
 
     DialogueType:{

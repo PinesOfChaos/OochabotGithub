@@ -90,9 +90,82 @@ generate_wild_battle: function(ooch_id, ooch_level) {
     // Setup enemy ability stat changes
     ooch_enemy.ooch_party[0] = ability_stat_change(ooch_enemy.ooch_party[0], ooch_enemy.ooch_party);
 
-    console.log(ooch_enemy);
-
     return ooch_enemy
+},
+
+/**
+ * Takes a trainer object and converts it for battle
+ * @param {Object} trainer_obj The base trainer object to convert
+ */
+generate_trainer_battle(trainer_obj){
+
+    const { get_stats, ability_stat_change } = require('./func_battle.js');
+    
+    let party_base = trainer_obj.team;
+    let party_generated = [];
+    
+    //Loop through the party_base and convert to the required format for battles
+    for(let i  = 0; i < party_base.length; i++){
+        let ooch_base = party_base[i];
+        let ooch_id = db.monster_data.get(ooch_base.id, '')
+
+        //Pre calculate the stats including IVs
+        let stats = get_stats(ooch_id, ooch_base.ooch_level, ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv) //returns [hp, atk, def, spd]
+        let hp = stats[0]
+        let atk = stats[1]
+        let def = stats[2]
+        let spd = stats[3]  
+
+        let ooch_generated = {
+            id: ooch_base.id,
+            name: ooch_base.name,
+            nickname: ooch_base.nickname,
+            current_hp: hp,
+            type : db.monster_data.get(ooch_base.id, 'type'),
+            item: -1,
+            alive : true,
+            ability: ooch_base.ability,
+            level: ooch_base.level,
+            
+            moveset: ooch_base.moveset,
+            stats: {
+                hp: hp,
+                atk: atk,
+                def: def,
+                spd: spd,
+                hp_iv: ooch_base.hp_iv,
+                atk_iv: ooch_base.atk_iv,
+                def_iv: ooch_base.def_iv,
+                spd_iv: ooch_base.spd_iv,
+                atk_mul: 1,
+                def_mul: 1,
+                spd_mul: 1,
+                acc_mul: 1, // Accuracy Multiplier, used for accuracy checks
+                eva_mul: 1 // Evasion Multiplier, used for accuracy checks
+            },
+            status_effects: [],
+            
+            evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
+            alive: true,
+            current_exp: 0,
+            next_lvl_exp: ooch_base.level ** 3,
+        }
+
+        party_generated.push(ooch_generated); 
+    }
+    
+    // Create the object to actually be returned
+    let trainer_return = {
+        name: trainer_obj.name,
+        ooch_active_slot: 0,
+        ooch_party: party_generated,
+    }
+
+    // Setup enemy ability stat changes
+    trainer_return.ooch_party[0] = ability_stat_change(trainer_return.ooch_party[0], trainer_return.ooch_party);
+
+    return trainer_return;
+
 },
 
 /**
@@ -100,28 +173,35 @@ generate_wild_battle: function(ooch_id, ooch_level) {
  * @param {Object} thread The thread Oochamon is being played in
  * @param {String} user_id The user ID of the user playing Oochamon
  * @param {Object} trainer_obj The enemy trainer object
+ * @param {Boolean} is_npc_battle If the battle is a trainer battle or not, defaults to false
  */
-setup_battle: async function(thread, user_id, trainer_obj) {
+setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false) {
 
     const { ability_stat_change, prompt_battle_input } = require('./func_battle.js');
 
     let ooch_party = db.profile.get(user_id, 'ooch_party');
 
     // Setup stuff for the main players team
+    let initial_slot = -1;
     for (let i = 0; i < ooch_party.length; i++) {
         let ooch_data = ooch_party[i];
         ooch_data = ability_stat_change(ooch_data, ooch_party);
         ooch_party[i] = ooch_data;
+        if(ooch_data.current_hp > 0 && initial_slot < 0){ initial_slot = i;}
     }
 
     db.profile.set(user_id, ooch_party, 'ooch_party');
-    db.profile.set(user_id, 0, 'ooch_active_slot');
+    db.profile.set(user_id, initial_slot, 'ooch_active_slot'); //if this is still somehow -1 the player shouldn't be able to fight right now anyway
 
     // Delete playspace to enter battle
     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
     await playspace_msg.delete();
 
-    await thread.send(`You encounter a wild **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    if (is_npc_battle) {
+        await thread.send(`${trainer_obj.name} wants to battle!\nThey send out a **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    } else {
+        await thread.send(`You encounter a wild **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    }
     await thread.send(`${db.monster_data.get(trainer_obj.ooch_party[0].id, 'emote')}`);
 
     await db.profile.set(user_id, PlayerState.Combat, 'player_state')
@@ -820,7 +900,7 @@ type_effectiveness: function(attack_type, target_type) {
         }
     }
     
-   // multiplier = min(8,max(.125,multiplier))
+    multiplier = Math.min(8, Math.max(.125,multiplier))
 
     switch(multiplier){
         case(0.125):    string = '\n**It\'s barely effective...**';     break;
@@ -835,7 +915,7 @@ type_effectiveness: function(attack_type, target_type) {
 },
 
 /**
- * Check if we've won the battle or lost the battle.
+ * Check if we've beaten an enemy Oochamon or lost an Oochamon
  * @param {Object} thread The thread Oochamon is being played in.
  * @param {String} user_id The user id of the user playing Oochamon.
  * @param {Object} ooch_enemy The Oochamon object for the enemy
@@ -845,52 +925,72 @@ type_effectiveness: function(attack_type, target_type) {
  */
 victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_turn_end) {
 
-    const { prompt_battle_input, finish_battle, battle_calc_exp } = require('./func_battle.js');
-    let ooch_arr, slot_to_send, enemy_profile, oochabux;
+    const { finish_battle, battle_calc_exp, level_up } = require('./func_battle.js');
+    let ooch_enemy_party, ooch_party, slot_to_send, user_profile, enemy_profile, oochabux, exp_earned;
 
     const switch_buttons_1_die = new ActionRowBuilder();
     const switch_buttons_2_die = new ActionRowBuilder();
 
     // Victory/Defeat Check
-    if (ooch_enemy.current_hp <= 0) { // Victory
+    if (ooch_enemy.current_hp <= 0) { // Beat the enemy Oochamon
         slot_to_send = -1;
+        user_profile = db.profile.get(user_id);
         enemy_profile = db.profile.get(user_id, 'ooch_enemy');
-        ooch_arr = enemy_profile.ooch_party;
+        ooch_enemy_party = enemy_profile.ooch_party;
+        ooch_party = user_profile.ooch_party;
 
-        // Distribute XP
-        let exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
+        // Distribute XP for a defeated Oochamon
+        // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
+        exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
+        thread.send({ content: `Your ${ooch_plr} earned ${Math.round(exp_earned * 1.25)}!\nThe rest of your team earned ${exp_earned} as well.` })
+        db.profile.inc(user_id, 'battle_msg_counter');
 
-        for (let i = 0; i < ooch_arr.length; i++) {
-            if (ooch_arr[i].current_hp > 0 && slot_to_send == -1) {
+        for (let i = 0; i < ooch_party.length; i++) {
+            if (i = user_profile.ooch_active_slot) { db.profile.math(user_id, '+', Math.round(exp_earned * 1.25), `ooch_party[${i}]`); }
+            else { db.profile.math(user_id, '+', exp_earned, `ooch_party[${i}]`); }
+            
+            // Check for level ups
+            let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
+            if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                ooch_data = level_up(thread, user_id, ooch_data);
+                db.profile.set(user_id, ooch_data, `ooch_party[${i}]`)
+            }
+        }
+
+        // Pick the next available ooch enemy party slot for the enemy to send in
+        for (let i = 0; i < ooch_enemy_party.length; i++) {
+            if (ooch_enemy_party[i].current_hp > 0 && slot_to_send == -1) {
                 slot_to_send = i;
             }
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
-            thread.send(`**You win!**\nYou gain ${oochabux} Oochabux!\nYour playspace will re-appear momentarily.`);
             oochabux = _.random(5, 40)
+            thread.send(`**You win!**\nYou gain ${oochabux} Oochabux!\nYour playspace will re-appear momentarily.`);
             db.profile.inc(user_id, 'battle_msg_counter');
-            db.profile.math(user_id, oochabux, '+', 'oochabux');
+            db.profile.math(user_id, '+', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
             await finish_battle(thread, user_id);
             return true;
-        } else if (slot_to_send == -1) {
-            thread.send(`${enemy_profile.name} sends out ${ooch_arr[slot_to_send].name}!`);
+        } else {
+            thread.send(`${enemy_profile.name} sends out ${ooch_enemy_party[slot_to_send].name}!`);
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.set(user_id, slot_to_send, `ooch_enemy.ooch_active_slot`);
+            return false;
         }
-    } else if (ooch_plr.current_hp <= 0) { // Defeat
+    } else if (ooch_plr.current_hp <= 0) { // Lost one of our own Oochamon
         slot_to_send = -1;
-        ooch_arr = db.profile.get(user_id, 'ooch_party');
-        oochabux = _.random(5, 10)
+        ooch_party = db.profile.get(user_id, 'ooch_party');
 
-        for (let i = 0; i < ooch_arr.length; i++) {
-            if (ooch_arr[i].current_hp > 0 && slot_to_send == -1) {
+        // Figure out if we have an Oochamon to send in at this point
+        for (let i = 0; i < ooch_party.length; i++) {
+            if (ooch_party[i].current_hp > 0 && slot_to_send == -1) {
                 slot_to_send = i;
             }
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
+            oochabux = _.random(5, 10)
             thread.send(`**You lose...**\nYou lose ${oochabux} Oochabux.\nYour playspace will re-appear momentarily.`);
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.dec(user_id, oochabux, 'oochabux');
@@ -898,13 +998,11 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
             await finish_battle(thread, user_id);
             return true;
         } else if (is_turn_end) {
-            let ooch_inv = db.profile.get(user_id, 'ooch_party');
-            let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
+            let ooch_check, ooch_emote, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
 
-            for (let i = 0; i < ooch_inv.length; i++) {
-                ooch_check = ooch_inv[i];
+            for (let i = 0; i < ooch_party.length; i++) {
+                ooch_check = ooch_party[i];
                 ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
                 ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                 ooch_button_color = ButtonStyle.Primary;
                 ooch_disable = false;
@@ -921,7 +1019,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
                 ((i <= 2) ? switch_buttons_1_die : switch_buttons_2_die).addComponents(
                     new ButtonBuilder()
                         .setCustomId(`${i}`)
-                        .setLabel(`${ooch_name} (${ooch_hp})`)
+                        .setLabel(`${ooch_check.nickname} (${ooch_hp})`)
                         .setStyle(ooch_button_color)
                         .setEmoji(ooch_emote)
                         .setDisabled(ooch_disable),
@@ -935,18 +1033,15 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr, is_t
 
             await s_collector_d.on('collect', async ooch_sel => {
                 let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-                let ooch_pick_name = ((ooch_pick.nickname != -1) ? ooch_pick.nickname : ooch_pick.name);
                 await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
-                `\nCome on out **${ooch_pick_name}**!`, components: [] })
+                `\nCome on out **${ooch_pick.nickname}**!`, components: [] })
 
                 let ooch_pos = parseInt(ooch_sel.customId);
                 ooch_plr = db.profile.get(user_id, `ooch_party[${ooch_pos}]`);
                 db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
 
-                prompt_battle_input(thread, user_id);
+                return false;
             });
-
-            return true;
         }  
     };
 },
@@ -1237,9 +1332,19 @@ finish_battle: async function(thread, user_id) {
  */
 level_up: async function(thread, user_id, ooch) {
     const { exp_to_next_level } = require('./func_battle');
-    let new_exp = exp_to_next_level(ooch.level);
-    ooch.next_lvl_exp = new_exp;
-    ooch.level += 1;
+    let level_counter = 0;
+    if (ooch.level != 50) {
+        while (ooch.current_exp >= ooch.next_lvl_exp) {
+            let new_exp = exp_to_next_level(ooch.level);
+            ooch.next_lvl_exp = new_exp;
+            ooch.level += 1;
+            level_counter += 1;
+        }
+
+        thread.send({ content: `${ooch.nickname} leveled up ${level_counter} times!`});
+        db.profile.inc(user_id, 'battle_msg_counter')
+    }
     return ooch;
 }
+
 }

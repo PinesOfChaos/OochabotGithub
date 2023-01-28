@@ -3,11 +3,11 @@ const { Flags } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
-const { event_process, event_from_dialogue } = require('./func_event');
+const { event_process, event_from_npc } = require('./func_event');
 
 module.exports = {
 
-    move: function(message, direction, dist = 1) {
+    move: async function(message, direction, dist = 1) {
         /*
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
         */
@@ -175,7 +175,7 @@ module.exports = {
                                 playery -= ymove;
 
                                 //Dialogue Stuff goes here
-                                event_process(message, event_from_dialogue(obj.name, obj.player_won_dialogue));
+                                event_process(message, event_from_npc(obj, true));
                             }
                         }
                         else{ //NPC has not been beaten in any way
@@ -185,12 +185,11 @@ module.exports = {
                             playery -= ymove;
 
                             //Dialogue Stuff goes here
-                            event_process(message, event_from_dialogue(obj.name, obj.pre_combat_dialogue));
+                            event_process(message, event_from_npc(obj, false));
 
                             if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
                                 console.log('NPC Start Battle.')
-                                //Start battle using this NPC's team
-
+                                // await setup_battle(message.channel, message.author.id, npc_team, true);
                             }
                             else{ //NPC has dialogue/rewards to be given before going to their default state
                                 //Give Rewards
@@ -237,7 +236,7 @@ module.exports = {
 
         let view_size = 3;
         let xx, yy, tile;
-        let emote_map = "";
+        let emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`; //set
         let map_obj = db.maps.get(map_name);
         let emote_map_array = []
 
