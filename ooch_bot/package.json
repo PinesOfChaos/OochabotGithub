@@ -2,7 +2,7 @@
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
     "discord-api-types": "^0.25.2",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.9.0",
     "enmap": "^5.8.7",
     "eslint": "^8.17.0",
     "lodash": "^4.17.21",

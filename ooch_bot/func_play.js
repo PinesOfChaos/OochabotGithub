@@ -101,7 +101,6 @@ module.exports = {
                                     confirm_collector = msg.createMessageComponentCollector({max: 1});
                                     confirm_collector.on('collect', async sel => {
                                         let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
-                                        console.log(generated_ooch);
                                         if (sel.customId == 'yes') {
                                             await setup_battle(message.channel, message.author.id, generated_ooch);
                                             await msg.delete();

@@ -27,7 +27,6 @@ module.exports = {
 
         if (thread.joinable) await thread.join();
         await thread.members.add(interaction.user.id);
-        await thread.setLocked(true);
         await thread.setInvitable(false);
 
         db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
