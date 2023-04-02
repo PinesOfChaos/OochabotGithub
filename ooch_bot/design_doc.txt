@@ -102,7 +102,7 @@ STATES:
 PREFERENCES:
 	- Quality/Performance Toggle (turns on or off animated emotes, by default this is Quality)
 	- Battle Message Cleanup Toggle (cleans up the messages made from a battle after it's finished, by default this is off)
-	- Zoom Options: 5x5, 7x7, 9x9 (changes the amount of emotes displayed in the play window, 7x7 and 9x9 have small emotes)
+	- Zoom Options: 5x5, 7x7 (changes the amount of emotes displayed in the play window, 7x7 has small emotes)
 
 GIMMICK (CORRUPTED FORMS):
 	- Oochamon imbued with a special power from the planet (or Oochabot) gain the ability to twist into a corrupted version of themselves.

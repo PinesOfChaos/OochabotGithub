@@ -30,6 +30,8 @@ module.exports = {
         let confirm_collector;
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
+        // Set a limit to dist (3) so you can't go over that
+        dist = _.clamp(dist, 0, 3);
         
         //Get the player's location
         let player_location = profile_data.location_data;
