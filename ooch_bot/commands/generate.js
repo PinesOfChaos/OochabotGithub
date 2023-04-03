@@ -354,12 +354,12 @@ module.exports = {
         [ [1,40] ], [ '0000', '0000' ], -1, -1, -1, 0)
 
         //NEW ONES, MAKE GOOD YES
-        //Cromet - ADD SPRITES
+        //Cromet
         create_monster(35, '<:cromet:926625964677558272>', 'Cromet', 'https://cdn.discordapp.com/attachments/921949708971294750/1023407933968613396/cromet.png',
         'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', ['stone'], 12, 13, 10, 15, //total 50
         [ [1,1] ], [ 'Inertia', 'Scorching' ], -1, 36, 27, 0);
 
-        //Lobstar - ADD SPRITES
+        //Lobstar
         create_monster(36, '<:lobstar:926625964576890881>', 'Lobstar', 'https://cdn.discordapp.com/attachments/921949708971294750/1023407934367080569/lobstar.png',
         'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', ['stone'], 10, 35, 20, 10, //total 75
         [ [1,1] ], [ 'Immense', 'Scorching' ], 35, -1, -1, 1) 

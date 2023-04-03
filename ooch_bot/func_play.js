@@ -48,6 +48,7 @@ module.exports = {
         let map_savepoints =    map_obj.savepoints;
         let map_transitions =   map_obj.transitions;
         let map_events =        map_obj.events;
+        let map_shops =         map_obj.shops;
         //let map_shops =        map_obj.shops; //to be added later
         
         
@@ -203,6 +204,18 @@ module.exports = {
                             }
                         }
                     }
+                }
+            }
+
+            //Shops
+            for(let obj of map_shops){
+                //Check if player collides with this NPC's position
+                if(obj.x == playerx && obj.y == playery){
+                    stop_moving = true;
+                    playerx -= xmove;
+                    playery -= ymove;
+
+                    //start shop stuff here
                 }
             }
 
