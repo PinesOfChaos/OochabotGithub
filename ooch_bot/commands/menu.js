@@ -160,7 +160,6 @@ module.exports = {
             box_row[2] = new ActionRowBuilder();
             box_row[3] = new ActionRowBuilder();
             let box_idx = 0;
-            let party_slot = false;
             let oochabox_data = db.profile.get(interaction.user.id, 'ooch_pc');
             let party_data = db.profile.get(interaction.user.id, 'ooch_party');
             let offset = (16 * page_num)
@@ -175,7 +174,7 @@ module.exports = {
                     box_row[box_idx].addComponents(
                         new ButtonBuilder()
                             .setCustomId(`box_emp_${i}`)
-                            .setLabel(' ')
+                            .setLabel('‎')
                             .setStyle(ButtonStyle.Secondary)
                             .setDisabled(true)
                         )              
@@ -195,7 +194,7 @@ module.exports = {
                     box_row[i].addComponents(
                         new ButtonBuilder()
                             .setCustomId(`box_emp_${i}_party`)
-                            .setLabel(' ')
+                            .setLabel('‎')
                             .setStyle(ButtonStyle.Success)
                             .setDisabled(true)
                         )              
@@ -363,6 +362,7 @@ module.exports = {
                 interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
             }
             // Set a nickname button
+            // TODO: Set a filter to only allow for nicknames of a certain length (to avoid massively long nicknames)
             else if (selected == 'nickname') {
                 i.update({ content: `Enter a nickname for your ${selected_ooch.name}! (Type reset to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
                 nick_msg_collector = menuMsg.channel.createMessageCollector({ max: 1 });

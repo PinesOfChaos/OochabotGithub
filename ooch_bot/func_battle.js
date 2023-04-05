@@ -197,6 +197,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
     await playspace_msg.delete();
 
+    // Start battle text for the enemy
     if (is_npc_battle) {
         await thread.send(`${trainer_obj.name} wants to battle!\nThey send out a **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
     } else {
@@ -204,9 +205,13 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     }
     await thread.send(`${db.monster_data.get(trainer_obj.ooch_party[0].id, 'emote')}`);
 
+    // Start battle text for the player
+    await thread.send(`You send out your **level ${ooch_party[initial_slot].level} ${ooch_party[initial_slot].nickname}!**`)
+    await thread.send(db.monster_data.get(ooch_party[initial_slot].id, 'emote'));
+
     await db.profile.set(user_id, PlayerState.Combat, 'player_state')
     await db.profile.set(user_id, trainer_obj, 'ooch_enemy')
-    await db.profile.set(user_id, 2, 'battle_msg_counter');
+    await db.profile.set(user_id, 4, 'battle_msg_counter');
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
     // Update Oochadex seen info
@@ -1321,6 +1326,8 @@ use_eot_ability: function(ooch) {
  * @param {String} user_id The user id of the user playing Oochamon.
  */
 finish_battle: async function(thread, user_id) {
+    const { event_process } = require('./func_event');
+
     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     db.profile.set(user_id, {}, 'ooch_enemy');
     await wait(5000);
@@ -1337,6 +1344,15 @@ finish_battle: async function(thread, user_id) {
     await thread.send({ content: playspace_str }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
     });
+
+    let npc_event_data = db.profile.get(user_id, 'npc_event_data');
+    let npc_event_pos = parseInt(db.profile.get(user_id, 'npc_event_pos'));
+    if (npc_event_data.length != 0) {
+        // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
+        event_process(user_id, thread, npc_event_data, npc_event_pos);
+        db.profile.set(user_id, [], 'npc_event_data');
+        db.profile.set(user_id, 0, 'npc_event_pos');
+    }
 },
 
 /**

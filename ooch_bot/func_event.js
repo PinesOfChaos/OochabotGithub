@@ -6,11 +6,12 @@ const { PlayerState, TypeEmote, EventMode, DialogueType, Flags } = require('./ty
 module.exports = {
     /**
      * Runs an event based on event array
-     * @param {String} message The thread currently being played in
+     * @param {String} user_id The ID of the user who called the event.
+     * @param {String} channel The main channel that Oochamon is being played in.
      * @param {Array} event_array The event array.
      * @param {Number} start_pos The position to start in the event array (defaults to 0)
      */
-    event_process: async function(message, event_array, start_pos = 0) {
+    event_process: async function(user_id, channel, event_array, start_pos = 0) {
 
         const { setup_battle } = require('./func_battle.js');
 
@@ -20,7 +21,7 @@ module.exports = {
             );
 
         // Switch state to dialogue
-        db.profile.set(message.author.id, PlayerState.Dialogue, 'player_state');
+        db.profile.set(user_id, PlayerState.Dialogue, 'player_state');
 
         let current_place = start_pos;
         let event_mode = event_array[current_place][0];
@@ -41,6 +42,7 @@ module.exports = {
         while (event_mode == EventMode.Flags) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
+            console.log('Running Event', current_place);
             switch (event_mode) {
                 //Basic Text Event
                 case EventMode.Text: 
@@ -51,27 +53,27 @@ module.exports = {
                 break;
                 case EventMode.BattleTrainer:
                     // Hold the data related to our current NPC event in our profile, so we can access it post battle.
-                    db.profile.set(message.author.id, event_array, 'npc_event_data');
-                    db.profile.set(message.author.id, current_place, 'npc_event_pos');
+                    db.profile.set(user_id, event_array, 'npc_event_data');
+                    db.profile.set(user_id, current_place, 'npc_event_pos');
                     // Setup the battle
-                    await setup_battle(message.channel, message.author.id, obj_content, true);
+                    await setup_battle(channel, user_id, obj_content, true);
                 break;
 
                 //No Visual representation, just gives appropriate flags in the player if they don't already have them
                 case EventMode.Flags: 
-                    let flags = db.profile.get(message.author.id, 'flags');
+                    let flags = db.profile.get(user_id, 'flags');
                     if(!flags.includes(obj_content)){
                         flags.push(obj_content);
                     }
-                    db.profile.set(message.author.id, flags, 'flags');
+                    db.profile.set(user_id, flags, 'flags');
                 break;
             }
             current_place++;
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await message.channel.send({ embeds: [event_embed], components: [next_buttons] })
-        let filter = i => i.user.id == message.author.id;
+        let msg = await channel.send({ embeds: [event_embed], components: [next_buttons] })
+        let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
         await confirm_collector.on('collect', async sel => {
@@ -82,7 +84,7 @@ module.exports = {
             if (current_place >= event_array.length) {
                 await confirm_collector.stop();
                 await msg.delete();
-                db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
+                db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                 return;
             }
 
@@ -110,13 +112,13 @@ module.exports = {
                     case EventMode.BattleTrainer:
                         wait_for_input = true;
                         // Hold the data related to our current NPC event in our profile, so we can access it post battle.
-                        db.profile.set(message.author.id, event_array, 'npc_event_data');
-                        db.profile.set(message.author.id, current_place, 'npc_event_pos');
+                        db.profile.set(user_id, event_array, 'npc_event_data');
+                        db.profile.set(user_id, current_place + 1, 'npc_event_pos'); // Store the position as the event AFTER this one, so we can start there when we restart the event process
                         // Delete the embed message to prep for battle, and kill the collector as well.
                         await msg.delete();
                         confirm_collector.stop();
                         // Setup the battle
-                        await setup_battle(message.channel, message.author.id, obj_content, true);
+                        await setup_battle(channel, user_id, obj_content, true);
                     break;
 
                     //No Visual representation, just sets appropriate flags in the player
@@ -157,18 +159,18 @@ module.exports = {
         }
 
         //Set any post-default dialogue flags
-        if(npc_obj.flag_given != -1){
+        if(npc_obj.flag_given != false){
             return_array.push([EventMode.Flags, npc_obj.flag_given]);
         }
 
         //Set any post-combat_flags
-            return_array.push([EventMode.Flags, npc_flag]);
+        return_array.push([EventMode.Flags, npc_flag]);
 
         //Post-combat text
-        for(let i = 0; i < npc_obj.player_won_dialogue.length; i++){
+        for(let i = 0; i < npc_obj.post_combat_dialogue.length; i++){
             return_array.push([EventMode.Text , {
                 title: npc_obj.name,
-                description: npc_obj.player_won_dialogue[i]
+                description: npc_obj.post_combat_dialogue[i]
             }])
         }
 

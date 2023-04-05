@@ -178,7 +178,7 @@ module.exports = {
                                 playery -= ymove;
 
                                 //Dialogue Stuff goes here
-                                event_process(message, event_from_npc(obj, true));
+                                event_process(message.author.id, message.channel, event_from_npc(obj, true));
                             }
                         }
                         else{ //NPC has not been beaten in any way
@@ -188,7 +188,7 @@ module.exports = {
                             playery -= ymove;
 
                             //Dialogue Stuff goes here
-                            event_process(message, event_from_npc(obj, false));
+                            event_process(message.author.id, message.channel, event_from_npc(obj, false));
 
                             if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
                                 console.log('NPC Start Battle.')

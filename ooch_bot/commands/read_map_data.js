@@ -67,16 +67,15 @@ module.exports = {
                                         coin: parseInt(line_data[5]),
                                         item_id: parseInt(line_data[6]),
                                         item_count: parseInt(line_data[7]),
-                                        flag_required: line_data[8],
-                                        flag_given: line_data[9],
+                                        flag_required: (line_data[8] == '' ? false : line_data[8]),
+                                        flag_given: (line_data[9] == '' ? false : line_data[9]),
                                         remove_on_finish: Boolean(parseInt(line_data[10])),
                                         pre_combat_dialogue: line_data[11].split('`'),
-                                        player_lost_dialogue: line_data[12].split('`'),
-                                        player_won_dialogue: line_data[13].split('`'),
+                                        post_combat_dialogue: line_data[12].split('`'),
                                         team: [],
                                     };
 
-                                    for (let i = 14; i < line_data.length; i++) {
+                                    for (let i = 13; i < line_data.length; i++) {
                                         if (line_data[i] == '') continue;
                                         npc_team_data = line_data[i].split('`');
                                         ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
