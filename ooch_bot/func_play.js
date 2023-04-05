@@ -30,8 +30,8 @@ module.exports = {
         let confirm_collector;
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
-        // Set a limit to dist (3) so you can't go over that
-        dist = _.clamp(dist, 0, 3);
+        // Max limit of 4 tiles that you can move at once
+        dist = _.clamp(dist, 0, 4);
         
         //Get the player's location
         let player_location = profile_data.location_data;
@@ -49,6 +49,7 @@ module.exports = {
         let map_transitions =   map_obj.transitions;
         let map_events =        map_obj.events;
         let map_shops =         map_obj.shops;
+        map_shops = [] // Temporary because the test map doesn't have shops yet
         //let map_shops =        map_obj.shops; //to be added later
         
         

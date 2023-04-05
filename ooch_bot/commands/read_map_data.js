@@ -92,25 +92,25 @@ module.exports = {
                                             ability: parseInt(npc_team_data[2]),
                                             level: parseInt(npc_team_data[3]),
                                             moveset: [
-                                                npc_team_data[4],
-                                                npc_team_data[5],
-                                                npc_team_data[6],
-                                                npc_team_data[7],
+                                                parseInt(npc_team_data[4]),
+                                                parseInt(npc_team_data[5]),
+                                                parseInt(npc_team_data[6]),
+                                                parseInt(npc_team_data[7]),
                                             ],
                                             status_effects: [],
                                             stats: {
                                                 acc_mul: 1,
                                                 eva_mul: 1,
                                                 hp: ooch_data.hp,
-                                                hp_iv: npc_team_data[8],
+                                                hp_iv: parseInt(npc_team_data[8]),
                                                 atk: ooch_data.atk,
-                                                atk_iv: npc_team_data[9],
+                                                atk_iv: parseInt(npc_team_data[9]),
                                                 atk_mul: 1,
                                                 def: ooch_data.def,
-                                                def_iv: npc_team_data[10],
+                                                def_iv: parseInt(npc_team_data[10]),
                                                 def_mul: 1,
                                                 spd: ooch_data.spd,
-                                                spd_iv: npc_team_data[11],
+                                                spd_iv: parseInt(npc_team_data[11]),
                                                 spd_mul: 1,
                                             }
                                         });
@@ -149,7 +149,7 @@ module.exports = {
                                     output = {
                                         x: parseInt(line_data[0]),
                                         y: parseInt(line_data[1]),
-                                        type : parseInt(line_data[2])
+                                        type: parseInt(line_data[2])
                                     }
                                     shop_data.push(output);
                                 break;

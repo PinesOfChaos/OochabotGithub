@@ -12,7 +12,7 @@ module.exports = {
      */
     event_process: async function(message, event_array, start_pos = 0) {
 
-        const { generate_trainer_battle, setup_battle } = require('./func_battle.js');
+        const { setup_battle } = require('./func_battle.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -50,8 +50,11 @@ module.exports = {
                         .setDescription(obj_content.description);
                 break;
                 case EventMode.BattleTrainer:
-                    let npc_team = generate_trainer_battle(obj_content);
-                    await setup_battle(message.channel, message.author.id, npc_team, true);
+                    // Hold the data related to our current NPC event in our profile, so we can access it post battle.
+                    db.profile.set(message.author.id, event_array, 'npc_event_data');
+                    db.profile.set(message.author.id, current_place, 'npc_event_pos');
+                    // Setup the battle
+                    await setup_battle(message.channel, message.author.id, obj_content, true);
                 break;
 
                 //No Visual representation, just gives appropriate flags in the player if they don't already have them
@@ -71,19 +74,23 @@ module.exports = {
         let filter = i => i.user.id == message.author.id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
-        console.log(event_array);
-
         await confirm_collector.on('collect', async sel => {
             let wait_for_input = false;
-            event_mode = event_array[current_place][0];
-            obj_content = event_array[current_place][1];
+            current_place++;
 
+            // Check if we are at the end of the event array, and if we are, cut back to the normal player state.
             if (current_place >= event_array.length) {
                 await confirm_collector.stop();
                 await msg.delete();
                 db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
                 return;
             }
+
+            console.log('Running Event', current_place);
+
+            event_mode = event_array[current_place][0];
+            obj_content = event_array[current_place][1];
+
             while (!wait_for_input) {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
@@ -96,11 +103,20 @@ module.exports = {
                         event_embed
                             .setTitle(obj_content.title)
                             .setDescription(obj_content.description);
+
+                        sel.update({ embeds: [event_embed], components: [next_buttons] })
                     break;
 
                     case EventMode.BattleTrainer:
-                        let npc_team = generate_trainer_battle(obj_content);
-                        await setup_battle(message.channel, message.author.id, npc_team, true);
+                        wait_for_input = true;
+                        // Hold the data related to our current NPC event in our profile, so we can access it post battle.
+                        db.profile.set(message.author.id, event_array, 'npc_event_data');
+                        db.profile.set(message.author.id, current_place, 'npc_event_pos');
+                        // Delete the embed message to prep for battle, and kill the collector as well.
+                        await msg.delete();
+                        confirm_collector.stop();
+                        // Setup the battle
+                        await setup_battle(message.channel, message.author.id, obj_content, true);
                     break;
 
                     //No Visual representation, just sets appropriate flags in the player
@@ -109,11 +125,7 @@ module.exports = {
                         // TODO: Set flags
                     break;
                 }
-                current_place++;
-                console.log(current_place);
             }
-
-            sel.update({ embeds: [event_embed], components: [next_buttons] })
         });
     },
 

@@ -63,8 +63,10 @@ module.exports = {
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
 
-            db.profile.set(interaction.user.id, -1, 'event_obj');
-            db.profile.set(interaction.user.id, 0, 'event_value');
+            // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
+            // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
+            db.profile.set(interaction.user.id, [], 'npc_event_data'); 
+            db.profile.set(interaction.user.id, 0, 'npc_event_pos');
             
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,
