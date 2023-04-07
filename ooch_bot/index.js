@@ -137,7 +137,6 @@ client.on('messageCreate', async message => {
 
     if (message.author.id == '397879158962782219') {
         if (message.type == 'THREAD_CREATED') {
-            console.log('type')
             await wait(10000)
             return message.delete();
         } else {

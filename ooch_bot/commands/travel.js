@@ -12,17 +12,15 @@ module.exports = {
                 .setDescription('Where will we be going today?')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Hub', value: 'hub' },
-                    { name: 'Desert', value: 'desert' },
-                    { name: 'Fungal', value: 'fungal' },
-                    { name: 'Obsidian', value: 'obsidian' },
+                    { name: 'Testmap 1', value: 'testmap' },
+                    { name: 'Testmap 2', value: 'testmap2' },
                 )),
     async execute(interaction) {
         let biome_to = interaction.options.getString('biome');
         let target = interaction.user.id;
 
         let map_obj = db.maps.get(biome_to);
-        let map_arr = map_obj[1];
+        let map_arr = map_obj.tiles;
         let center = Math.floor((map_arr.length)/2);
         let player_location = db.profile.get(target, 'location_data');
         let biome_from =  player_location.area;
@@ -34,7 +32,7 @@ module.exports = {
 
         let msg_to_edit = db.profile.get(target, 'display_msg_id');
         (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome_to, map_arr, center, center) });
+            msg.edit({ content: map_emote_string(biome_to, map_arr, center, center, target) });
         });
 
         interaction.reply({ content: `Successfully traveled to ${biome_to}!`, ephemeral: true });

@@ -81,7 +81,6 @@ module.exports = {
                 case 'grass':
                     playerx += xmove;
                     playery += ymove;
-                    console.log('Grass Tile')
                     if(Math.random() < .25){
                         console.log('Mon Enountered!')
                         stop_moving = true;
@@ -168,41 +167,13 @@ module.exports = {
                 if(obj.x == playerx && obj.y == playery){
                     //Check if this NPC requires a flag to spawn, and if it does check if the player has it
                     if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
-                        let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`; //Flag generated for this npc at this position
-                        let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
-
-                        if(obj.beaten || player_has_beaten){ //NPC has been beaten either by default or by the player
-                            if(!obj.remove_on_finish){ //NPC should continue to persist after being beaten
-                                stop_moving = true;
-                                playerx -= xmove;
-                                playery -= ymove;
-
-                                //Dialogue Stuff goes here
-                                event_process(message.author.id, message.channel, event_from_npc(obj, true));
-                            }
-                        }
-                        else{ //NPC has not been beaten in any way
-                            console.log('NPC Not Beaten.')
+                        if (!obj.remove_on_finish) { //NPC should continue to persist after being beaten
                             stop_moving = true;
                             playerx -= xmove;
                             playery -= ymove;
 
                             //Dialogue Stuff goes here
-                            event_process(message.author.id, message.channel, event_from_npc(obj, false));
-
-                            if(obj.team.length > 0){ //Start a battle if the npc has mons to battle with
-                                console.log('NPC Start Battle.')
-                                // await setup_battle(message.channel, message.author.id, npc_team, true);
-                            }
-                            else{ //NPC has dialogue/rewards to be given before going to their default state
-                                //Give Rewards
-
-                                //Add to list of beaten npcs, also add any flag this npc should give to the player
-                                player_flags.push(npc_flag);
-                                if(obj.flag_given != ''){
-                                    player_flags.push(obj.flag_given); 
-                                }
-                            }
+                            event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
                         }
                     }
                 }
@@ -276,20 +247,20 @@ module.exports = {
         let player_flags = db.profile.get(target_player, 'flags');
         let map_npcs = map_obj.npcs;
         
-        for(let obj of map_npcs){
+        for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
             xx = obj.x - x_pos + view_size;
             yy = obj.y - y_pos + view_size;
-            if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
-                if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
-                    let player_has_beaten = player_flags.includes(npc_flag); //check if the player has defeated this npc
+            if ((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)) {
+                if (obj.flag_required == '' || player_flags.includes(obj.flag_required)) {
+                    let plr_interacted = player_flags.includes(npc_flag); //check if the player has defeated this npc
+                    let plain_tile = emote_map_array[xx][yy];
+                    tile = db.tile_data.get(obj.sprite_id.toString());
+                    emote_map_array[xx][yy] = tile.emote;
 
-                    if(obj.beaten || player_has_beaten){ //NPC has been beaten either by default or by the player
-                        if(!obj.remove_on_finish){ //NPC should continue to persist after being beaten
-
-                            tile = db.tile_data.get(obj.sprite_id.toString());
-                            emote_map_array[xx][yy] = tile.emote;
-                        }
+                    //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
+                    if (plr_interacted && obj.remove_on_finish) { 
+                        emote_map_array[xx][yy] = plain_tile;
                     }
                 }
             }

@@ -38,7 +38,7 @@ module.exports = {
                     let data_header = 'err';
                     let tile_data = [];
                     let npc_data = [];
-                    let npc_team_data, ooch_data, spawn_ooch_data;
+                    let npc_team_data, ooch_data, moveset, spawn_ooch_data;
                     let spawn_data = [];
                     let savepoint_data = [];
                     let transition_data = [];
@@ -79,6 +79,14 @@ module.exports = {
                                         if (line_data[i] == '') continue;
                                         npc_team_data = line_data[i].split('`');
                                         ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
+                                        moveset = [
+                                            parseInt(npc_team_data[4]),
+                                            parseInt(npc_team_data[5]),
+                                            parseInt(npc_team_data[6]),
+                                            parseInt(npc_team_data[7]),
+                                        ];
+                                        moveset = moveset.filter(id => id != -1);
+
                                         output.team.push({
                                             id: parseInt(npc_team_data[0]),
                                             name: ooch_data.name,
@@ -89,12 +97,7 @@ module.exports = {
                                             alive: true,
                                             ability: parseInt(npc_team_data[2]),
                                             level: parseInt(npc_team_data[3]),
-                                            moveset: [
-                                                parseInt(npc_team_data[4]),
-                                                parseInt(npc_team_data[5]),
-                                                parseInt(npc_team_data[6]),
-                                                parseInt(npc_team_data[7]),
-                                            ],
+                                            moveset: moveset,
                                             status_effects: [],
                                             stats: {
                                                 acc_mul: 1,
