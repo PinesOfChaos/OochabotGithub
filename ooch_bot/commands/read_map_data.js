@@ -70,8 +70,8 @@ module.exports = {
                                         flag_required: (line_data[8] == '' ? false : line_data[8]),
                                         flag_given: (line_data[9] == '' ? false : line_data[9]),
                                         remove_on_finish: Boolean(parseInt(line_data[10])),
-                                        pre_combat_dialogue: line_data[11].split('`'),
-                                        post_combat_dialogue: line_data[12].split('`'),
+                                        pre_combat_dialogue: line_data[11].split('`').filter(v => v != ''),
+                                        post_combat_dialogue: line_data[12].split('`').filter(v => v != ''),
                                         team: [],
                                     };
 
@@ -79,7 +79,6 @@ module.exports = {
                                         if (line_data[i] == '') continue;
                                         npc_team_data = line_data[i].split('`');
                                         ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
-                                        console.log(ooch_data);
                                         output.team.push({
                                             id: parseInt(npc_team_data[0]),
                                             name: ooch_data.name,
@@ -169,8 +168,8 @@ module.exports = {
                                         width:  parseInt(line_data[2]),
                                         height: parseInt(line_data[3]),
                                         event_name: line_data[4],
-                                        flag_required: line_data[5],
-                                        flag_given: line_data[6],
+                                        flag_required: (line_data[5] == '' ? false : line_data[5]),
+                                        flag_given: (line_data[6] == '' ? false : line_data[6]),
                                     }
                                     event_data.push(output);
                                 break;
