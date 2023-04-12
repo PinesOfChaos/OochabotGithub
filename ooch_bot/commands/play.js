@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType } = require('discord.js');
 const db = require('../db.js');
-const { map_emote_string, setup_playspace_str } = require('../func_play.js');
+const { setup_playspace_str } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
 
 module.exports = {

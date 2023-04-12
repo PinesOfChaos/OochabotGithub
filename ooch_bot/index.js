@@ -7,9 +7,8 @@ const wait = require('wait');
 const _ = require('lodash');
 
 // create a new Discord client and give it some variables
-const { Client, Partials, GatewayIntentBits, Collection, ThreadAutoArchiveDuration } = require('discord.js');
+const { Client, Partials, GatewayIntentBits, Collection } = require('discord.js');
 const db = require('./db.js');
-const { prompt_battle_input, generate_battle } = require('./func_battle.js');
 const { move } = require('./func_play.js');
 const { PlayerState } = require('./types.js');
 
@@ -150,23 +149,17 @@ client.on('messageCreate', async message => {
         switch (player_state) {
             case PlayerState.Playspace: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
-                    if (message.content == 'start battle') {
-                        // Do battle stuff
-                        await generate_battle(message.channel, message.author.id, db.profile.get(message.author.id, 'ooch_party'), [0, 3, 6]) // Sporbee, Roocky, Puppyre
-                        message.delete();
-                    } else {
-                        // Do movement stuff
-                        let args = message.content.split(' ');
-                        let dist = (args.length == 2) ? parseInt(args[1]) : 1;
-                        if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
-                        switch (args[0]) {
-                            case 'd': move(message, 'd', dist); break;
-                            case 's': move(message, 's', dist); break;
-                            case 'a': move(message, 'a', dist); break; 
-                            case 'w': move(message, 'w', dist); break;
-                        }
-                        if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
+                    // Do movement stuff
+                    let args = message.content.split(' ');
+                    let dist = (args.length == 2) ? parseInt(args[1]) : 1;
+                    if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
+                    switch (args[0]) {
+                        case 'd': move(message, 'd', dist); break;
+                        case 's': move(message, 's', dist); break;
+                        case 'a': move(message, 'a', dist); break; 
+                        case 'w': move(message, 'w', dist); break;
                     }
+                    if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
                 }
             break;
             default: 

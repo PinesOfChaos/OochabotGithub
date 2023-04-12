@@ -1,7 +1,7 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 const db = require('./db.js');
 const _ = require('lodash');
-const { PlayerState, TypeEmote, EventMode, DialogueType, Flags } = require('./types.js');
+const { PlayerState, EventMode, Flags } = require('./types.js');
 
 module.exports = {
     /**
@@ -14,8 +14,7 @@ module.exports = {
     event_process: async function(user_id, channel, event_array, start_pos = 0) {
 
         const { setup_battle } = require('./func_battle.js');
-
-        console.log(event_array);
+        const { give_item } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -30,18 +29,15 @@ module.exports = {
         let obj_content = event_array[current_place][1];
         let placeholder_title = 'Error';
         let placeholder_desc = 'Error';
-        if (event_mode == EventMode.Text) {
-            if (obj_content.description == '') obj_content.description = ' ';
-            placeholder_title = obj_content.title;
-            placeholder_desc = obj_content.description;
-        }
+        let info_data;
+        let quit_init_loop = false;
 
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
             .setTitle(placeholder_title)
             .setDescription(placeholder_desc)
 
-        while (event_mode == EventMode.Flags || event_mode == EventMode.BattleTrainer) {
+        while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
             switch (event_mode) {
@@ -51,6 +47,25 @@ module.exports = {
                     event_embed
                         .setTitle(obj_content.title)
                         .setDescription(obj_content.description);
+
+                    info_data = '';
+                    if (obj_content.money != 0) {
+                        info_data += `${obj_content.money} oochabux!\n`;
+                        db.profile.math(user_id, '+', obj_content.money, 'oochabux');
+                    } 
+
+                    if (obj_content.item != false) {
+                        let item = db.item_data.get(obj_content.item.item_id);
+                        info_data += `${obj_content.item.item_count} ${item.name} ${item.emote}!`;
+                        give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
+                    } 
+
+                    if (info_data.length != 0) {
+                        event_embed.addFields({name: 'You Received:', value: info_data })
+                    }
+
+                    quit_init_loop = true;
+
                 break;
                 case EventMode.BattleTrainer:
                     // Hold the data related to our current NPC event in our profile, so we can access it post battle.
@@ -74,7 +89,8 @@ module.exports = {
                     }
                 break;
             }
-            current_place++;
+
+            if (quit_init_loop == false) current_place++;
         }
 
         //Send Embed and Await user input before proceeding
@@ -110,7 +126,24 @@ module.exports = {
                             .setTitle(obj_content.title)
                             .setDescription(obj_content.description);
 
+                        info_data = '';
+                        if (obj_content.money != 0) {
+                            info_data += `${obj_content.money} oochabux!\n`;
+                            db.profile.math(user_id, '+', obj_content.money, 'oochabux');
+                        } 
+    
+                        if (obj_content.item != false) {
+                            let item = db.item_data.get(obj_content.item.item_id);
+                            info_data += `${obj_content.item.item_count} ${item.name} ${item.emote}!`;
+                            give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
+                        } 
+    
+                        if (info_data.length != 0) {
+                            event_embed.addFields({name: 'You Received:', value: info_data })
+                        }
+
                         sel.update({ embeds: [event_embed], components: [next_buttons] })
+                
                     break;
 
                     case EventMode.BattleTrainer:
@@ -165,7 +198,9 @@ module.exports = {
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
                 return_array.push([EventMode.Text, {
                     title: npc_obj.name,
-                    description: npc_obj.pre_combat_dialogue[i]
+                    description: npc_obj.pre_combat_dialogue[i],
+                    money: 0,
+                    item: false,
                 }])
             }
 
@@ -175,11 +210,14 @@ module.exports = {
         } else if (npc_obj.battle_npc == false && !user_flags.includes(npc_flag)) {
             // If this NPC isn't a battle NPC and the user doesn't yet have their flag (meaning they haven't interacted with them yet)
             // we should throw their pre interaction dialogue into the event_array. Otherwise, we don't include it.
+            // Also put their designated items and money at the end of their dialogue.
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
                 return_array.push([EventMode.Text, {
                     title: npc_obj.name,
-                    description: npc_obj.pre_combat_dialogue[i]
-                }])
+                    description: npc_obj.pre_combat_dialogue[i],
+                    money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
+                    item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
+                }]);
             }
         }
 
@@ -197,10 +235,23 @@ module.exports = {
         // If we are a battle NPC, include post combat dialogue as it is necessary for the flow.
         if ((npc_obj.battle_npc == true) || (npc_obj.battle_npc == false && user_flags.includes(npc_flag))) {
             for (let i = 0; i < npc_obj.post_combat_dialogue.length; i++) {
-                return_array.push([EventMode.Text, {
-                    title: npc_obj.name,
-                    description: npc_obj.post_combat_dialogue[i]
-                }])
+                // If we are on the last dialogue, and the user has not interacted with this NPC, and the NPC is a battle NPC,
+                // put their designated items at the end of their dialogue.
+                if (i+1 == npc_obj.post_combat_dialogue.length && !user_flags.includes(npc_flag) && npc_obj.battle_npc == true) {
+                    return_array.push([EventMode.Text, {
+                        title: npc_obj.name,
+                        description: npc_obj.post_combat_dialogue[i],
+                        money: npc_obj.coin,
+                        item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
+                    }])
+                } else {
+                    return_array.push([EventMode.Text, {
+                        title: npc_obj.name,
+                        description: npc_obj.post_combat_dialogue[i],
+                        money: 0,
+                        item: false,
+                    }])
+                }
             }
         }
 

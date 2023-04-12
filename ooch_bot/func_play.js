@@ -109,13 +109,13 @@ module.exports = {
                                             await msg.delete();
                                         }
                                         else {
-                                            if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
+                                            /*if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
                                                 await setup_battle(message.channel, message.author.id, generated_ooch);
                                                 await msg.delete();
                                             }
-                                            else { // If we fail the 50/50, ignore the input
+                                            else { // If we fail the 50/50, ignore the input*/
                                                 await msg.delete();
-                                            }
+                                            //}
                                         }
                                     })
                                 })
@@ -164,10 +164,11 @@ module.exports = {
             //NPCs
             for(let obj of map_npcs){
                 //Check if player collides with this NPC's position
+                let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
                 if(obj.x == playerx && obj.y == playery){
                     //Check if this NPC requires a flag to spawn, and if it does check if the player has it
-                    if(obj.flag_required == '' || player_flags.includes(obj.flag_required)){
-                        if (!obj.remove_on_finish) { //NPC should continue to persist after being beaten
+                    if(obj.flag_required == false || player_flags.includes(obj.flag_required)){
+                        if (!obj.remove_on_finish || !player_flags.includes(npc_flag)) { //NPC should continue to persist after being beaten
                             stop_moving = true;
                             playerx -= xmove;
                             playery -= ymove;
@@ -321,6 +322,17 @@ module.exports = {
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
         return map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id);
+    },
+
+    /**
+     * Gives a specific amount of an item to a user.
+     * @param {String} user_id The user ID of the user who is receiving this item
+     * @param {Number} item_id The ID of the item being given
+     * @param {Number} item_count The amount of the item to give.
+     */
+    give_item: function(user_id, item_id, item_count) {
+        let item = db.item_data.get(item_id);
+        db.profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
     }
 
 }

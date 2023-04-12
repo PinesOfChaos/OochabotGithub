@@ -41,7 +41,7 @@ module.exports = {
         Event: 'ev|',
     },
 
-    EventMode:{
+    EventMode: {
         Text:   0,
         Image:  1,
         Video:  2,
@@ -50,9 +50,15 @@ module.exports = {
         Flags: 5,
     },
 
-    DialogueType:{
+    DialogueType: {
         PreCombat: 0,
         NPCWin: 1,
         NPCLose: 2
+    },
+
+    TrainerType: {
+        Wild: 0,
+        NPCTrainer: 1,
+        OnlineUser: 2
     }
 }
