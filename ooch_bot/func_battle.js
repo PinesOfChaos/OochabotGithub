@@ -81,6 +81,7 @@ generate_wild_battle: function(ooch_id, ooch_level) {
             status_effects: [],
             current_hp: hp,
             evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
+            emote: db.monster_data.get(ooch_id, 'emote'),
             alive: true,
             current_exp: 0,
             next_lvl_exp: ooch_level ** 3,
@@ -147,6 +148,7 @@ generate_trainer_battle(trainer_obj){
             status_effects: [],
             
             evo_stage: db.monster_data.get(ooch_base.id, 'evo_stage'),
+            emote: db.monster_data.get(ooch_base.id, 'emote'),
             alive: true,
             current_exp: 0,
             next_lvl_exp: ooch_base.level ** 3,
@@ -336,8 +338,7 @@ prompt_battle_input: async function(thread, user_id) {
 
         await s_collector_d.on('collect', async ooch_sel => {
             let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-            await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
-            `\nCome on out **${ooch_pick.nickname}**!`, components: [] })
+            await ooch_sel.update({ content: `\nYou sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`, components: [] })
 
             let ooch_pos = parseInt(ooch_sel.customId);
             ooch_plr = db.profile.get(user_id, `ooch_party[${ooch_pos}]`);
@@ -365,7 +366,6 @@ prompt_battle_input: async function(thread, user_id) {
                     
                     move_name = db.move_data.get(`${move_id}`, 'name')
                     move_type = db.move_data.get(`${move_id}`, 'type')
-                    move_damage = db.move_data.get(`${move_id}`, 'damage')
                     move_accuracy = db.move_data.get(`${move_id}`, 'accuracy')
 
                     move_buttons.addComponents(
@@ -437,7 +437,7 @@ prompt_battle_input: async function(thread, user_id) {
             case 'switch':
                 //#region SWITCH
                 let ooch_inv = db.profile.get(user_id, 'ooch_party')
-                let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev_name, ooch_disable;
+                let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
 
                 // Check if we have only 1 oochamon.
                 if (ooch_inv.length == 1) {
@@ -453,14 +453,14 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let i = 0; i < ooch_inv.length; i++) {
                     ooch_check = ooch_inv[i];
                     ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                    ooch_name = ((ooch_check.nickname != -1) ? ooch_check.nickname : ooch_check.name);
+                    ooch_name = ooch_check.nickname;
                     ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                     ooch_button_color = ButtonStyle.Primary;
                     ooch_disable = false;
 
                     if (i == db.profile.get(user_id, 'ooch_active_slot')) {
                         ooch_button_color = ButtonStyle.Success;
-                        ooch_prev_name = ooch_name;
+                        ooch_prev = ooch_check;
                         ooch_disable = true;
                     }
                     else if (ooch_check.current_hp <= 0) {
@@ -486,9 +486,12 @@ prompt_battle_input: async function(thread, user_id) {
                 await s_collector.on('collect', async ooch_sel => {
 
                     let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-                    let ooch_pick_name = ((ooch_pick.nickname != -1) ? ooch_pick.nickname : ooch_pick.name);
-                    await ooch_sel.update({ content: `**------------ Player Turn ------------**` + 
-                    `\nYou switched your active Oochamon from **${ooch_prev_name}** to **${ooch_pick_name}**.`, components: [] })
+                    displayEmbed = new EmbedBuilder()
+                    displayEmbed.setColor('#0095ff')
+                    displayEmbed.setTitle('↩️ Switch ↩️')
+                    displayEmbed.setDescription(`You switched your active Oochamon from ${db.monster_data.get(ooch_prev.id, 'emote')} **${ooch_prev.nickname}** to ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}**.`)
+
+                    await ooch_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: [] })
                     
                     ooch_pos = parseInt(ooch_sel.customId);
                     ooch_plr = db.profile.get(user_id, `ooch_party[${ooch_pos}]`);

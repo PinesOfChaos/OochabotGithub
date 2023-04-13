@@ -225,7 +225,8 @@ module.exports = {
         let xx, yy, tile;
         let emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`; //set
         let map_obj = db.maps.get(map_name);
-        let emote_map_array = []
+        let emote_map_array = [];
+        let player_sprite = db.profile.get(target_player, 'player_sprite');
 
         //Plain map tiles
         for (let i = -view_size; i < view_size + 1; i++) {
@@ -278,7 +279,7 @@ module.exports = {
         }
 
         //Put player sprite in center
-        emote_map_array[view_size][view_size] = '<:t050:1095915042165235812>'; //this is the default player skin, change later i guess
+        emote_map_array[view_size][view_size] = player_sprite;
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
         let transpose = [];

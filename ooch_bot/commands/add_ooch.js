@@ -88,7 +88,8 @@ module.exports = {
                 current_hp: stats[0],
                 alive: true,
                 evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
-                type: db.monster_data.get(ooch_id, 'type')
+                type: db.monster_data.get(ooch_id, 'type'),
+                emote: db.monster_data.get(ooch_id, 'emote')
             }, dest)
         
         return interaction.reply(`Added Oochamon ${db.monster_data.get(ooch_id, 'name')} to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)

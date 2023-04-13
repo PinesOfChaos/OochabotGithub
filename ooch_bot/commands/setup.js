@@ -46,6 +46,7 @@ module.exports = {
 
             // Setup user data
             db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
+            db.profile.set(interaction.user.id, '<:t050:1095915042165235812>', 'player_sprite');
             db.profile.set(interaction.user.id, [], 'ooch_pc')
             db.profile.set(interaction.user.id, 0, 'ooch_active_slot')
             db.profile.set(interaction.user.id, {}, 'other_inv')
@@ -62,6 +63,7 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
+            
 
             // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
             // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
@@ -140,6 +142,7 @@ module.exports = {
                     alive: true,
                     evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
                     type: db.monster_data.get(starter, 'type'),
+                    type: db.monster_data.get(starter, 'emote'),
                 }
             ], 'ooch_party')
 
