@@ -485,6 +485,7 @@ module.exports = {
                 bag_buttons.components[1].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[2].setStyle(ButtonStyle.Secondary)
                 display_inv = heal_inv;
+                let item_list_str = '';
 
                 for (const [item_id, quantity] of Object.entries(display_inv)) {
                     let item_obj = db.item_data.get(item_id);
@@ -492,7 +493,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             } 
             // Prism Button
             else if (selected == 'prism_button') {
@@ -501,6 +502,7 @@ module.exports = {
                 bag_buttons.components[1].setStyle(ButtonStyle.Success)
                 bag_buttons.components[2].setStyle(ButtonStyle.Secondary)
                 display_inv = prism_inv;
+                let item_list_str = '';
 
                 for (const [item_id, quantity] of Object.entries(display_inv)) {
                     let item_obj = db.item_data.get(item_id);
@@ -508,7 +510,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             }
             // Key Button
             else if (selected == 'key_button') {
@@ -517,6 +519,7 @@ module.exports = {
                 bag_buttons.components[1].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[2].setStyle(ButtonStyle.Success)
                 display_inv = key_inv;
+                let item_list_str;
 
                 for (const [item_id, quantity] of Object.entries(display_inv)) {
                     let item_obj = db.item_data.get(item_id);
@@ -524,7 +527,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i_sel.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             }
             //#endregion
         

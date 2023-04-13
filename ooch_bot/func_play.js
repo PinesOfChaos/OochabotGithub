@@ -81,7 +81,7 @@ module.exports = {
                 case 'grass':
                     playerx += xmove;
                     playery += ymove;
-                    if(Math.random() < .25){
+                    if (0 < .25) {//if(Math.random() < .25){
                         console.log('Mon Enountered!')
                         stop_moving = true;
                         let spawn_zone, x1,y1,x2,y2;
