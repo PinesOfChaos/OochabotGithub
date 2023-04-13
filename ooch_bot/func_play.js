@@ -105,8 +105,8 @@ module.exports = {
                                     confirm_collector.on('collect', async sel => {
                                         let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
                                         if (sel.customId == 'yes') {
-                                            await setup_battle(message.channel, message.author.id, generated_ooch);
                                             await msg.delete();
+                                            await setup_battle(message.channel, message.author.id, generated_ooch);
                                         }
                                         else {
                                             /*if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
@@ -278,7 +278,7 @@ module.exports = {
         }
 
         //Put player sprite in center
-        emote_map_array[view_size][view_size] = '<:t050:1057164003710877756>'; //this is the default player skin, change later i guess
+        emote_map_array[view_size][view_size] = '<:t050:1095915042165235812>'; //this is the default player skin, change later i guess
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
         let transpose = [];

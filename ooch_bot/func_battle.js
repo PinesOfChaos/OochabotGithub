@@ -1,6 +1,6 @@
 const db = require("./db")
 const wait = require('wait');
-const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
 const { PlayerState, TrainerType } = require("./types.js");
 const { setup_playspace_str } = require("./func_play");
@@ -242,7 +242,8 @@ prompt_battle_input: async function(thread, user_id) {
     let ooch_plr = db.profile.get(user_id, `ooch_party[${db.profile.get(user_id, 'ooch_active_slot')}]`);
     let ooch_pos = db.profile.get(user_id, 'ooch_active_slot');
     let move_list = ooch_plr.moveset;
-    let move_id, move_name, move_damage, move_accuracy, turn_order; // Battle variables
+    let move_id, move_name, turn_order; // Battle variables
+    let displayEmbed = new EmbedBuilder();
 
     const row = new ActionRowBuilder()
         .addComponents(
@@ -347,15 +348,13 @@ prompt_battle_input: async function(thread, user_id) {
         
     } else { // If our currently sent out Oochamon is alive, do input as normal.
 
-    thread.send({ content: `**---- Select An Action ----**`, components: [row, row2] })
+    let sel_msg = await thread.send({ content: `**---- Select An Action ----**`, components: [row, row2] });
     db.profile.inc(user_id, 'battle_msg_counter');
 
     const collector = thread.createMessageComponentCollector({ max: 1 });
 
     await collector.on('collect', async sel => {
-
-        sel.update({ content: `Selected \`${sel.customId}\``, components: [] });
-
+        await sel_msg.delete();
         switch (sel.customId) {
             case 'fight':
 
@@ -379,12 +378,12 @@ prompt_battle_input: async function(thread, user_id) {
                 }
 
                 //Select the move to use
-                thread.send({ content: `Select a move to use!`, components: [move_buttons]});
+                let atk_msg = await thread.send({ content: `Select a move to use!`, components: [move_buttons]});
                 db.profile.inc(user_id, 'battle_msg_counter');
                 const atk_collector = thread.createMessageComponentCollector({ max: 1 });   
 
                 await atk_collector.on('collect', async atk => {
-                    await atk.update({ content: `Selected \`${db.move_data.get(atk.customId, 'name')}\``, components: [] });
+                    await atk_msg.delete();
                     let enemy_snare = ooch_enemy.status_effects.includes('snared');
                     let plr_snare = ooch_plr.status_effects.includes('snared');
 
@@ -826,10 +825,10 @@ type_to_string: function(type, do_capitalize = true) {
  * @param {String} atk_id The ID of the attack being used
  * @param {Object} attacker The Oochamon data of the attacker
  * @param {Object} defender The Oochamon data of the defender
- * @param {String} string_to_send The string to send to the battle message
+ * @param {String} header The header string
  * @returns An array of the attacker and defender Oochamon data, after the attacks.
  */
-attack: async function(thread, user_id, atk_id, attacker, defender, string_to_send) {
+attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     const { type_effectiveness, battle_calc_damage } = require('./func_battle.js');
 
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -838,13 +837,17 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
     let move_damage =   db.move_data.get(atk_id, 'damage');
     let move_accuracy = db.move_data.get(atk_id, 'accuracy');
     let move_effect =   db.move_data.get(atk_id, 'effect');
-    let move_chance =   db.move_data.get(atk_id, 'chance');
+    let move_effect_chance =   db.move_data.get(atk_id, 'effect_chance');
     let type_multiplier = type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-    let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_chance/10 : 0)) ? 2 : 1);
+    let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_effect_chance/100 : 0)) ? 2 : 1);
     let status_blind = (attacker.status_effects.includes('blinded') ? .75 : 1);
     let status_doubled = (defender.status_effects.includes('doubled') ? 2 : 1);
-    let recoil_damage = Math.round((move_effect == 'recoil' ? 0 : move_chance/100) * attacker.stats.hp);
-    let vampire_heal = (move_effect == 'vampire' ? 0 : move_chance/100);
+    let recoil_damage = Math.round((move_effect == 'recoil' ? move_effect_chance/100 : 0) * attacker.stats.hp);
+    let vampire_heal = (move_effect == 'vampire' ? move_effect_chance/100 : 0);
+    let attacker_emote = db.monster_data.get(attacker.id, 'emote');
+    let defender_emote = db.monster_data.get(defender.id, 'emote');
+    let defender_field_text = ``;
+    let string_to_send = ``;
 
     dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, move_type, attacker, defender);
     vampire_heal = Math.round(vampire_heal * dmg); //used later
@@ -855,7 +858,6 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
 
         attacker.current_hp += _.clamp(vampire_heal * attacker.current_hp, 0, attacker.stats.hp);
         attacker.current_hp -= recoil_damage;
-        
 
         // Check for on hit abilities
         switch (attacker.ability) {
@@ -863,7 +865,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
                 attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); break;
         }
 
-        string_to_send +=  `\n${attacker.name} uses ${move_name} and deals **${dmg} damage** to the opposing ${defender.name}!`
+        string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
         
         //If a crit lands
         if(crit_multiplier >= 2){
@@ -872,33 +874,41 @@ attack: async function(thread, user_id, atk_id, attacker, defender, string_to_se
 
         //If a attack has vampire
          if(vampire_heal > 0){
-            string_to_send += `\n**${attacker.name} restored some HP!**`
+            string_to_send += `\n--- ❤️ Restored **${vampire_heal}** HP!`
         }
 
         //If attack has recoil
         if(recoil_damage > 0){
-            string_to_send += `\n**${attacker.name} lost HP due to recoil!**`
+            string_to_send += `\n--- 💥 Lost **${recoil_damage}** HP from recoil!`
         }
-
-       
 
         //Type effectiveness
         string_to_send += type_multiplier[1];
 
-        if(Math.random() < move_chance/100 && move_chance > 0){ //Apply status effect
-            string_to_send += `\nThe opposing ${defender.name} was **${move_effect.toUpperCase()}!**`
+        if(Math.random() < move_effect_chance/100 && move_effect_chance > 0){ //Apply status effect
+            defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** was **${move_effect.toUpperCase()}!**`
             defender.status_effects.push(move_effect);
         }
-        else if(-Math.random() > move_chance/100 && move_chance < 0){
-            string_to_send += `\n${attacker.name} was **${move_effect.toUpperCase()}!**`
+        else if(-Math.random() > move_effect_chance/100 && move_effect_chance < 0){
+            string_to_send += `\n--- Got **${move_effect.toUpperCase()}!**`
             attacker.status_effects.push(move_effect);
         }
     }
     else {
-        string_to_send +=  `\n${attacker.name} used ${move_name} but it missed!`
+        string_to_send += `\n${attacker_emote} **${attacker.nickname}** tried to use ${move_name} but it missed!`
     }
 
-    await thread.send(string_to_send)
+    // Check if opposing Oochamon is dead
+    if (defender.current_hp <= 0) {
+        defender_field_text += `\n🪦 ${defender_emote} **${defender.nickname}** fainted!`
+    }
+
+    let displayEmbed = new EmbedBuilder()
+    .setColor('#ff6f00')
+    .setTitle('⚔️ Attack ⚔️')
+    .setDescription(`${string_to_send}\n${defender_field_text}`)
+
+    await thread.send({ content: header, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'battle_msg_counter');
     return [attacker, defender];
 
@@ -995,8 +1005,9 @@ type_effectiveness: function(attack_type, target_type) {
  */
 victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
-    const { finish_battle } = require('./func_battle.js');
+    const { finish_battle, battle_calc_exp, level_up } = require('./func_battle.js');
     let ooch_enemy_party, ooch_party, slot_to_send, oochabux;
+    let user_profile = db.profile.get(user_id);
 
     // Victory/Defeat Check
     if (ooch_enemy.current_hp <= 0) { // Beat the enemy Oochamon
@@ -1010,14 +1021,38 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
-            oochabux = _.random(5, 40)
-            thread.send(`**You win!**\nYour playspace will re-appear momentarily.`);
-            db.profile.inc(user_id, 'battle_msg_counter');
-
-            if (db.profile.get(user_id, 'ooch_enemy.trainer_type' == TrainerType.Wild)) {
+            let string_to_send = ``;
+            let displayEmbed = new EmbedBuilder();
+            if (db.profile.get(user_id, 'ooch_enemy.trainer_type') == TrainerType.Wild) {
                 oochabux = _.random(5, 40);
-                thread.send(`You gained **${oochabux} oochabux!`);
-                db.profile.inc(user_id, 'battle_msg_counter');
+                string_to_send += `\n💵 You gained **${oochabux}** oochabux!`;
+            }
+
+            let ooch_party = user_profile.ooch_party;
+            // Distribute XP for a defeated Oochamon
+            // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
+            exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
+            string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**\nThe rest of your team earned **${exp_earned}** exp.`;
+            displayEmbed.setColor('#eeff00')
+            displayEmbed.setTitle('Rewards')
+            displayEmbed.setDescription(string_to_send);
+
+            await thread.send({ content: `**------------ You win! ------------**`, embeds: [displayEmbed] });
+            db.profile.inc(user_id, 'battle_msg_counter');
+    
+            for (let i = 0; i < ooch_party.length; i++) {
+                if (i == user_profile.ooch_active_slot) { 
+                    db.profile.math(user_id, '+', Math.round(exp_earned * 1.25), `ooch_party[${i}].current_exp`);
+                } else { 
+                    db.profile.math(user_id, '+', exp_earned, `ooch_party[${i}].current_exp`); 
+                }
+                
+                // Check for level ups
+                let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
+                if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                    ooch_data = await level_up(thread, user_id, ooch_data);
+                    await db.profile.set(user_id, ooch_data, `ooch_party[${i}]`)
+                }
             }
 
             db.profile.math(user_id, '+', oochabux, 'oochabux');
@@ -1038,7 +1073,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
         if (slot_to_send == -1) { //if there is no slot to send in
             oochabux = _.random(5, 10)
-            thread.send(`**You lose...**\nYou lose ${oochabux} Oochabux.\nYour playspace will re-appear momentarily.`);
+            thread.send(`**------------ You lose... ------------**\nYou lose **${oochabux}** Oochabux.`);
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.dec(user_id, oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
@@ -1401,7 +1436,7 @@ level_up: async function(thread, user_id, ooch) {
             level_counter += 1;
         }
 
-        thread.send({ content: `**${ooch.nickname}** leveled up **${level_counter}** times!`});
+        thread.send({ content: `⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** times!`});
         db.profile.inc(user_id, 'battle_msg_counter')
     }
     return ooch;
