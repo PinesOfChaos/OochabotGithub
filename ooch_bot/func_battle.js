@@ -4,6 +4,7 @@ const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, C
 const _ = require('lodash');
 const { PlayerState, TrainerType } = require("./types.js");
 const { setup_playspace_str } = require("./func_play");
+const { ooch_info_embed } = require("./func_other");
 
 module.exports = {
 
@@ -521,6 +522,7 @@ prompt_battle_input: async function(thread, user_id) {
                 let prism_inv = db.profile.get(user_id, 'prism_inv')
                 let prism_inv_keys = Object.keys(prism_inv);
                 let bag_select = new ActionRowBuilder();
+                displayEmbed = new EmbedBuilder();
                 
                 if (heal_inv_keys.length == 0) bag_buttons.components[0].disabled = true;
                 if (prism_inv_keys.length == 0) bag_buttons.components[1].disabled = true;
@@ -585,8 +587,11 @@ prompt_battle_input: async function(thread, user_id) {
                             if (db.profile.get(user_id, `heal_inv.${item_id}`) == undefined) return;
 
                             item_use(thread, user_id, ooch_plr, item_id)
-                            item_sel.update({ content: `**------------ Player Turn ------------**\n` +
-                            `${item_data.emote} Used **${item_data.name}** and healed ${item_data.value * 100}% of ${ooch_plr.name}'s HP!\n`, components: []});
+                            displayEmbed.setColor('#02ff2c');
+                            displayEmbed.setTitle(`❤️ Healing ❤️`)
+                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed ${item_data.value * 100}% of ${ooch_plr.name}'s HP!`)
+                            item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+                            
                             db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
                             b_collector.stop();
                             if (prism_collector != undefined) prism_collector.stop();
@@ -632,15 +637,18 @@ prompt_battle_input: async function(thread, user_id) {
 
                         await i_sel.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bag_buttons] })
 
-                        prism_collector = thread.createMessageComponentCollector({ componentType: 'SELECT_MENU', max: 1 });
+                        prism_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
 
                         await prism_collector.on('collect', async item_sel => { 
                             let item_id = item_sel.values[0];
                             let item_data = db.item_data.get(item_id);
                             if (db.profile.get(user_id, `prism_inv.${item_id}`) == undefined) return;
 
-                            item_sel.update({ content: `**------------ Player Turn ------------**\n` +
-                            `${item_data.emote} Used a **${item_data.name}** on the Enemy ${ooch_enemy.name}\n`, components: []});
+                            displayEmbed.setColor('#f2d751');
+                            displayEmbed.setTitle(`<:item_prism:1023031025716179076> Prism <:item_prism:1023031025716179076>`)
+                            displayEmbed.setDescription(`${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.name}**`)
+                            item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+                            
                             db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`)
                             let prism_result = item_use(thread, user_id, ooch_enemy, item_id)
                             b_collector.stop();
@@ -649,12 +657,18 @@ prompt_battle_input: async function(thread, user_id) {
 
                             // If we caught the Oochamon successfully
                             if (prism_result == true) { 
-                                if (db.profile.get(user_id, 'ooch_party').length < 6) {
+                                // Have it check here if you want to send the Oochamon to your party or not
+                                if (db.profile.get(user_id, 'ooch_party').length < 4) {
                                     db.profile.push(user_id, ooch_enemy, `ooch_party`);
                                 } else {
                                     db.profile.push(user_id, ooch_enemy, `ooch_pc`)
                                 }
                                 db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.id}].caught`)
+                                let infoEmbed = ooch_info_embed(ooch_enemy)
+                                infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
+
+                                thread.send({ embeds: [infoEmbed] })
+                                db.profile.inc(user_id, 'battle_msg_counter');
                                 await finish_battle(thread, user_id);
                                 return;
                             }
@@ -1260,7 +1274,7 @@ item_use: function(thread, user_id, ooch, item_id) {
 
         if (Math.random() < prism_chance) {
             thread.send(`**You successfully caught the wild ${ooch.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
-            `Your playspace should appear momentarily.`);
+            `Your playspace will appear momentarily.`);
             db.profile.inc(user_id, 'battle_msg_counter');
             return true;
         } else {
@@ -1389,10 +1403,10 @@ finish_battle: async function(thread, user_id) {
 
     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     db.profile.set(user_id, {}, 'ooch_enemy');
-    await wait(5000);
+    await wait(10000);
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
-    if (msgs_to_delete <= 100) {
+    if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
         thread.bulkDelete(msgs_to_delete)
     }
 

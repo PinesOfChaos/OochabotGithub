@@ -2,9 +2,10 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Stri
 const Discord = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
-const { map_emote_string, setup_playspace_str } = require('../func_play');
+const { setup_playspace_str } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
-const { type_to_emote, type_to_string } = require('../func_battle.js');
+const { type_to_emote } = require('../func_battle.js');
+const { ooch_info_embed } = require('../func_other.js');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -321,26 +322,9 @@ module.exports = {
                 selected = parseInt(selected.replace('par_ooch_id_', ''));
                 party_idx = parseInt(selected);
                 selected_ooch = ooch_party[party_idx]
-                let oochadex_info = db.monster_data.get(selected_ooch.id);
-                let moveset_str = '';
-                let ooch_title = `${selected_ooch.nickname}`
-                if (selected_ooch.nickname != selected_ooch.name) ooch_title += ` (${selected_ooch.name})`;
-                ooch_title += ` [Lv. ${selected_ooch.level}] ${TypeEmote[_.capitalize(selected_ooch.type)]}`
 
                 // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
                 party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
-
-                dexEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle(ooch_title)
-                .setThumbnail(oochadex_info.image)
-                .setDescription(`Ability: **${selected_ooch.ability}**\nType: **${_.capitalize(selected_ooch.type)}**`);
-                for (let move_id of selected_ooch.moveset) {
-                    let move = db.move_data.get(move_id)
-                    moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
-                }
-                dexEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-                dexEmbed.addFields([{ name: 'Stats', value: `HP: **${selected_ooch.stats.hp}**\nATK: **${selected_ooch.stats.atk}**\nDEF: **${selected_ooch.stats.def}**\nSPD: **${selected_ooch.stats.spd}**`, inline: true }]);
                 
                 // Check if we can enable the move switcher, if we have more options outside of the main 4 moves
                 let available_moves = 0;
@@ -349,6 +333,8 @@ module.exports = {
                     if (move[0] <= selected_ooch.level && move[0] != -1) available_moves += 1;
                 }
                 if (available_moves >= 5) party_extra_buttons.components[2].setDisabled(false);
+
+                dexEmbed = ooch_info_embed(selected_ooch);
 
                 i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_back_button] });
             }
@@ -663,39 +649,23 @@ module.exports = {
             else if (selected.includes('box_ooch')) {
                 user_profile = db.profile.get(interaction.user.id);
                 let slot_data = selected.split('_');
-                let ooch_id = slot_data[2];
                 slot_num = slot_data[3];
                 let party_slot = false;
                 if (selected.includes('_party')) party_slot = true;
-                let ooch_gen_data = db.monster_data.get(ooch_id); // General Oochamon Data
 
                 if (party_slot == false) {
                     ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
                 } else {
                     ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
                 }
-
-                let ooch_title = `${ooch_user_data.nickname}`
-                ooch_user_data.nickname != ooch_user_data.name ? ooch_title += ` (${ooch_user_data.name}) ${TypeEmote[_.capitalize(ooch_user_data.type)]}` 
-                : ooch_title += ` ${TypeEmote[_.capitalize(ooch_user_data.type)]}`;
-                let moveset_str = ``;
+        
                 // Disable the "add to box" button if we only have one party member.
                 box_party_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 1))
                 // Disable the "add to party" button if we have 4 party members.
                 box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
 
-                dexEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle(ooch_title)
-                .setThumbnail(ooch_gen_data.image)
-                .setDescription(`Ability: **${ooch_user_data.ability}**\nType: **${_.capitalize(ooch_user_data.type)}**`);
-                for (let move_id of ooch_user_data.moveset) {
-                    let move = db.move_data.get(move_id)
-                    moveset_str += `**${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
-                }
-                dexEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-                dexEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch_user_data.stats.hp}**\nATK: **${ooch_user_data.stats.atk}**\nDEF: **${ooch_user_data.stats.def}**\nSPD: **${ooch_user_data.stats.spd}**`, inline: true }]);
-                
+                dexEmbed = ooch_info_embed(ooch_user_data);
+
                 i.update({ content: null, embeds: [dexEmbed], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
             }
             // Add Oochamon to Box
