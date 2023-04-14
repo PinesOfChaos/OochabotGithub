@@ -60,6 +60,17 @@ module.exports = {
         create_tile(41, 'wall',     '<:t010:1095915432331984927>'  );
         create_tile(42, 'wall',     '<:t011:1095915433216983070>'  );
         create_tile(43, 'wall',     '<:t012:1095915434114551888>'  );
+        create_tile(44, 'floor',    '<:t218:1096230878750974115>'  );
+        create_tile(45, 'floor',    '<:t219:1096230880701337651>'  );
+        create_tile(46, 'wall',     '<:t220:1096230881682800730>'  );
+        create_tile(47, 'wall',     '<:t221:1096230882697818112>'  );
+        create_tile(48, 'floor',    '<:t222:1096230883536683028>'  );
+        create_tile(49, 'wall',     '<:t103:1096230516635742420>'  );
+        create_tile(50, 'floor',    '<:t104:1096230514500841575>'  );
+        create_tile(51, 'wall',     '<:t214:1096230625524060251>'  );
+        create_tile(52, 'wall',     '<:t215:1096230626107064413>'  );
+        create_tile(53, 'floor',    '<:t216:1096230627386343474>'  );
+        create_tile(54, 'wall',     '<:t217:1096230624005726238>'  );
         //#endregion
 
         //#region Item Data
