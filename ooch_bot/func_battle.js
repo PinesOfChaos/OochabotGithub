@@ -1264,12 +1264,12 @@ item_use: function(thread, user_id, ooch, item_id) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
     if (item_data.type == 'potion') {
-        ooch.current_hp += Math.ceil(ooch.stats.hp * item_data.value);
+        ooch.current_hp += Math.ceil(ooch.stats.hp * item_data.potency);
         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
         db.profile.set(user_id, ooch, `ooch_party[${ooch_pos_plr}]`);
     } else if (item_data.type == 'prism') {
         let status_bonus = 1;
-        let prism_multiplier = item_data.value;
+        let prism_multiplier = item_data.potency;
         let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus;
 
         if (Math.random() < prism_chance) {

@@ -63,6 +63,7 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
+            db.profile.set(interaction.user.id, [0, 4], 'global_shop_items'),
             
 
             // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
@@ -142,7 +143,7 @@ module.exports = {
                     alive: true,
                     evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
                     type: db.monster_data.get(starter, 'type'),
-                    type: db.monster_data.get(starter, 'emote'),
+                    emote: db.monster_data.get(starter, 'emote'),
                 }
             ], 'ooch_party')
 

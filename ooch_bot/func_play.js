@@ -1,6 +1,6 @@
 const db = require("./db")
-const { Flags } = require('./types.js');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Flags, PlayerState } = require('./types.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
@@ -12,7 +12,7 @@ module.exports = {
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
         */
 
-        const { map_emote_string } = require('./func_play.js');
+        const { map_emote_string, setup_playspace_str } = require('./func_play.js');
         const { generate_wild_battle, setup_battle } = require("./func_battle");
 
         let user_id = message.author.id;
@@ -28,6 +28,13 @@ module.exports = {
                 new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
             );
         let confirm_collector;
+
+        let back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
+            );
+        let shop_collector;
+            
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
         // Max limit of 4 tiles that you can move at once
@@ -49,8 +56,7 @@ module.exports = {
         let map_transitions =   map_obj.transitions;
         let map_events =        map_obj.events;
         let map_shops =         map_obj.shops;
-        map_shops = [] // Temporary because the test map doesn't have shops yet
-        //let map_shops =        map_obj.shops; //to be added later
+        if (map_shops == undefined || map_shops == null) map_shops = [];
         
         
         //set where the player is going to move
@@ -73,7 +79,7 @@ module.exports = {
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
-            var tile = db.tile_data.get(tile_id.toString()); 
+            var tile = db.tile_data.get(tile_id.toString());
             switch(tile.use){
                 case 'wall':
                     stop_moving = true;
@@ -133,7 +139,7 @@ module.exports = {
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
-                    message.channel.send({ content: 'Do you want to set your respawn point here?', components: [confirm_buttons] }).then(async msg => {
+                    message.channel.send({ content: obj.greeting, components: [confirm_buttons] }).then(async msg => {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
                             if (sel.customId == 'yes') {
@@ -182,13 +188,99 @@ module.exports = {
 
             //Shops
             for(let obj of map_shops){
-                //Check if player collides with this NPC's position
+                //Check if player collides with this shop's position
                 if(obj.x == playerx && obj.y == playery){
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
+                    db.profile.set(message.author.id, PlayerState.Shop, 'player_state');
+                    let shopSelectOptions = [];
+                    if (obj.type == 'default') {
+                        shopSelectOptions = db.profile.get(message.author.id, 'global_shop_items');
+                    }
+                    shopSelectOptions.push(obj.inventory);
+                    shopSelectOptions = shopSelectOptions.flat(1);
+                    shopSelectOptions = shopSelectOptions.map(id => {
+                        return { 
+                            label: `${db.item_data.get(id, 'name')} ($${db.item_data.get(id, 'price')})`,
+                            description: db.item_data.get(id, 'description'),
+                            value: `${id}`,
+                            emoji: db.item_data.get(id, 'emote'),
+                        }
+                    });
+                    
+                    // Setup shop select menu
+                    let shopSelectMenu = new ActionRowBuilder()
+                    .addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId('shop_items')
+                            .setPlaceholder('Select an item to buy!')
+                            .addOptions(shopSelectOptions),
+                    );
 
                     //start shop stuff here
+                    let oochabux = db.profile.get(message.author.id, 'oochabux');
+                    let image_msg = await message.channel.send({ content: obj.image });
+                    let msg = await message.channel.send({ content: `${obj.greeting}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button] });
+                    
+                    // Delete the current playspace
+                    let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
+                    await playspace_msg.delete();
+
+                    shop_collector = await msg.createMessageComponentCollector({ time: 600000 });
+                    shop_collector.on('collect', async sel => {
+                        if (sel.customId == 'back') {
+                            db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
+                            let playspace_str = setup_playspace_str(message.author.id);
+                            let play_msg = await message.channel.send(playspace_str);
+                            db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
+                            db.profile.set(message.author.id, oochabux, 'oochabux')
+                            msg.delete();
+                            image_msg.delete();
+                            shop_collector.stop();
+                            return;
+                        }
+                        
+                        let item_id = sel.values[0];
+                        let item = db.item_data.get(item_id);
+                        if (item.price <= oochabux) {
+                            oochabux -= item.price;
+                            let new_inv_qty = 0;
+                            switch (item.type) {
+                                case 'potion': 
+                                    db.profile.ensure(message.author.id, 0, `heal_inv.${item_id}`)
+                                    db.profile.math(message.author.id, '+', 1, `heal_inv.${item_id}`);
+                                    new_inv_qty = db.profile.get(message.author.id, `heal_inv.${item_id}`);
+                                break;
+                                case 'prism': 
+                                    db.profile.ensure(message.author.id, 0, `prism_inv.${item_id}`)
+                                    db.profile.math(message.author.id, '+', 1, `prism_inv.${item_id}`);
+                                    new_inv_qty = db.profile.get(message.author.id, `prism_inv.${item_id}`);
+                                break;
+                            }
+                            
+                            sel.reply({ content: `Successfully purchased ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.`, ephemeral: true });
+                            msg.edit({ content: `${obj.greeting}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                        } else {
+                            sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.`, ephemeral: true });
+                            msg.edit({ components: [shopSelectMenu, back_button] });
+                        }
+                    });
+
+                    shop_collector.on('end', async () => {
+                        if (db.profile.get(message.author.id, 'player_state') != PlayerState.Playspace) {
+                            db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
+                            let playspace_str = setup_playspace_str(message.author.id);
+                            let play_msg = await message.channel.send(playspace_str);
+                            db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
+                            db.profile.set(message.author.id, oochabux, 'oochabux')
+                            msg.delete();
+                            image_msg.delete();
+                            shop_collector.stop();
+                        }
+                    });
+
+                    return;
                 }
             }
 
@@ -213,9 +305,9 @@ module.exports = {
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
         //Send reply displaying the player's location on the map
-        (message.channel.messages.fetch(msg_to_edit)).then((msg) => {
+        message.channel.messages.fetch(msg_to_edit).then((msg) => {
             msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) });
-        });
+        })
 
     },
 

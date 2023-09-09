@@ -86,17 +86,19 @@ module.exports = {
      * @param {String} emote The emote of the item (in Discord)
      * @param {String} category The inventory category this item goes into (heal_inv, prism_inv, other_inv)
      * @param {String} type The type of the item (potion, prism, misc)
-     * @param {Number} value The amount of whatever the items effect is (like amount of HP healed, or chance to catch with prism)
+     * @param {String} price The price of the item
+     * @param {Number} potency The amountss of whatever the items effect is (like amount of HP healed, or chance to catch with prism)
      * @param {String} description A description of the item
      */
-    create_item: function(id, name, emote, category, type, value, description) {
+    create_item: function(id, name, emote, category, type, price, potency, description) {
         let key_id = id.toString();
         db.item_data.set(key_id, id, 'id');
         db.item_data.set(key_id, name, 'name');
         db.item_data.set(key_id, emote, 'emote');
         db.item_data.set(key_id, category, 'category');
         db.item_data.set(key_id, type, 'type');
-        db.item_data.set(key_id, value, 'value');
+        db.item_data.set(key_id, price, 'price');
+        db.item_data.set(key_id, potency, 'potency');
         db.item_data.set(key_id, description, 'description');
     },
 

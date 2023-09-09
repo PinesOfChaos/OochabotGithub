@@ -150,7 +150,7 @@ module.exports = {
                                     output = {
                                         x: parseInt(line_data[0]),
                                         y: parseInt(line_data[1]),
-                                        type: parseInt(line_data[2])
+                                        type: line_data[2],
                                     }
                                     shop_data.push(output);
                                 break;
