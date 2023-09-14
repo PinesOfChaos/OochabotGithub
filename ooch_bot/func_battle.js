@@ -5,6 +5,7 @@ const _ = require('lodash');
 const { PlayerState, TrainerType } = require("./types.js");
 const { setup_playspace_str } = require("./func_play");
 const { ooch_info_embed } = require("./func_other");
+const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 
 module.exports = {
 
@@ -182,7 +183,7 @@ generate_trainer_battle(trainer_obj){
  */
 setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false) {
 
-    const { ability_stat_change, prompt_battle_input } = require('./func_battle.js');
+    const { ability_stat_change, prompt_battle_input, generate_battle_image } = require('./func_battle.js');
 
     let ooch_party = db.profile.get(user_id, 'ooch_party');
 
@@ -202,21 +203,29 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
     await playspace_msg.delete();
 
-    // Start battle text for the enemy
-    if (is_npc_battle) {
-        await thread.send(`${trainer_obj.name} wants to battle!\nThey send out a **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
-    } else {
-        await thread.send(`You encounter a wild **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
-    }
-    await thread.send(`${db.monster_data.get(trainer_obj.ooch_party[0].id, 'emote')}`);
+    // Generate intro to battle image
+    let battle_image = await generate_battle_image(db.profile.get(user_id), trainer_obj, is_npc_battle);
+    await thread.send({ 
+        content: is_npc_battle ? `# ${trainer_obj.name} wants to battle!`
+                : `# You encounter a wild **${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`,
+        files: [battle_image]
+    });
 
-    // Start battle text for the player
-    await thread.send(`You send out your **level ${ooch_party[initial_slot].level} ${ooch_party[initial_slot].nickname}!**`)
-    await thread.send(db.monster_data.get(ooch_party[initial_slot].id, 'emote'));
+    // Start battle text for the enemy
+    // if (is_npc_battle) {
+    //     await thread.send(`**${trainer_obj.name}** wants to battle!\n${npc_prism_visual.join('')}\n\nThey send out a **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    // } else {
+    //     await thread.send(`You encounter a wild **level ${trainer_obj.ooch_party[0].level} ${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`);
+    // }
+    // await thread.send(`${db.monster_data.get(trainer_obj.ooch_party[0].id, 'emote')}`);
+
+    // // Start battle text for the player
+    // await thread.send(`You send out your **level ${ooch_party[initial_slot].level} ${ooch_party[initial_slot].nickname}!**`)
+    // await thread.send(db.monster_data.get(ooch_party[initial_slot].id, 'emote'));
 
     await db.profile.set(user_id, PlayerState.Combat, 'player_state')
     await db.profile.set(user_id, trainer_obj, 'ooch_enemy')
-    await db.profile.set(user_id, 4, 'battle_msg_counter');
+    await db.profile.set(user_id, 1, 'battle_msg_counter');
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
     // Update Oochadex seen info
@@ -253,25 +262,30 @@ prompt_battle_input: async function(thread, user_id) {
             new ButtonBuilder()
                 .setCustomId('fight')
                 .setLabel('Fight')
+                .setEmoji('⚔️')
                 .setStyle(ButtonStyle.Primary),
         ) .addComponents(
             new ButtonBuilder()
                 .setCustomId('switch')
                 .setLabel('Switch')
-                .setStyle(ButtonStyle.Primary),
+                .setEmoji('<:item_prism:1023031025716179076>')
+                .setStyle(ButtonStyle.Success),
         );
 
     const row2 = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
                 .setCustomId('bag')
-                .setLabel('Bag')
-                .setStyle(ButtonStyle.Primary),
+                .setLabel('Item')
+                .setEmoji('🎒')
+                .setStyle(ButtonStyle.Danger),
         ) .addComponents(
             new ButtonBuilder()
                 .setCustomId('run')
                 .setLabel('Run')
-                .setStyle(ButtonStyle.Primary),
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji('🏃‍♂️')
+                .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
         );
     
     const move_buttons = new ActionRowBuilder();
@@ -350,8 +364,7 @@ prompt_battle_input: async function(thread, user_id) {
         
     } else { // If our currently sent out Oochamon is alive, do input as normal.
 
-    let sel_msg = await thread.send({ content: `**---- Select An Action ----**`, components: [row, row2] });
-    db.profile.inc(user_id, 'battle_msg_counter');
+    let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2] });
 
     const collector = thread.createMessageComponentCollector({ max: 1 });
 
@@ -918,6 +931,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     // Check if opposing Oochamon is dead
     if (defender.current_hp <= 0) {
         defender_field_text += `\n🪦 ${defender_emote} **${defender.nickname}** fainted!`
+        defender.alive = false;
     }
 
     let displayEmbed = new EmbedBuilder()
@@ -1043,6 +1057,8 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             if (db.profile.get(user_id, 'ooch_enemy.trainer_type') == TrainerType.Wild) {
                 oochabux = _.random(5, 40);
                 string_to_send += `\n💵 You gained **${oochabux}** oochabux!`;
+            } else {
+                oochabux = 0; // TODO: Replace with oochabux reward for trainers, when we add that
             }
 
             let ooch_party = user_profile.ooch_party;
@@ -1113,7 +1129,9 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
 
     let ooch_list = [ooch_plr, ooch_enemy].filter(o => o.current_hp > 0);
     let ooch_status_emotes = [[], []]; // 0 is ooch_plr, 1 is ooch_enemy
-    let string_to_send = `**------------ End of Round ------------**`;
+    //let string_to_send = `**------------ End of Round ------------**`;
+    let string_to_send = ``;
+    let enemy_send_string_to_send = ``;
     let user_profile = db.profile.get(user_id);
     let enemy_profile = db.profile.get(user_id, 'ooch_enemy');
 
@@ -1163,9 +1181,6 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     string_to_send += `${plr_hp_string} ${ooch_status_emotes[0].join(' ')}\n${en_hp_string} ${ooch_status_emotes[1].join(' ')}`
 
     db.profile.inc(user_id, 'battle_turn_counter');
-    
-    await thread.send(string_to_send)
-    db.profile.inc(user_id, 'battle_msg_counter');
 
     // Handle deaths and level ups
     if (ooch_enemy.current_hp <= 0) {
@@ -1176,8 +1191,9 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         // Distribute XP for a defeated Oochamon
         // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
         exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
-        thread.send({ content: `Your ${ooch_plr.nickname} earned ${Math.round(exp_earned * 1.25)} exp!\nThe rest of your team earned ${exp_earned} exp as well.` })
-        db.profile.inc(user_id, 'battle_msg_counter');
+        string_to_send += `\n\n${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**\nThe rest of your team earned **${exp_earned} exp** as well.`
+        //thread.send({ content: `${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**\nThe rest of your team earned **${exp_earned} exp** as well.` })
+        //db.profile.inc(user_id, 'battle_msg_counter');
 
         for (let i = 0; i < ooch_party.length; i++) {
             if (i == user_profile.ooch_active_slot) { 
@@ -1201,13 +1217,21 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             }
         }
 
-        if (slot_to_send != -1) { //if there is no slot to send in
-            thread.send(`${enemy_profile.name} sends out **${ooch_enemy_party[slot_to_send].name}!**`);
-            db.profile.inc(user_id, 'battle_msg_counter');
+        if (slot_to_send != -1) { //if there is a slot to send in
+            enemy_send_string_to_send += `**${enemy_profile.name}** sends out ${ooch_enemy_party[slot_to_send].emote} **${ooch_enemy_party[slot_to_send].name}!**`;
+            enemy_send_string_to_send += `\n${ooch_enemy_party.map(v => v = v.alive == true ? `<:item_prism:1023031025716179076>` : `❌`).join('')}`;
             db.profile.set(user_id, slot_to_send, `ooch_enemy.ooch_active_slot`);
         };
     }
-    
+
+    let displayEmbed = new EmbedBuilder()
+    .setColor('#00ff80')
+    .setDescription(`${string_to_send}`);
+    await thread.send({ content: `**------------ End of Round ------------**`, embeds: [displayEmbed] });
+    db.profile.inc(user_id, 'battle_msg_counter');
+    await thread.send({ content: enemy_send_string_to_send });
+    db.profile.inc(user_id, 'battle_msg_counter');
+
 },
 
 /**
@@ -1407,7 +1431,7 @@ finish_battle: async function(thread, user_id) {
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
-        thread.bulkDelete(msgs_to_delete)
+        await thread.bulkDelete(msgs_to_delete)
     }
 
     // Setup playspace
@@ -1457,6 +1481,80 @@ level_up: async function(thread, user_id, ooch) {
         db.profile.inc(user_id, 'battle_msg_counter')
     }
     return ooch;
+},
+
+/**
+ * Generate a beginning of battle image based on data passed in
+ * @param {Object} plr The player object
+ * @param {Object} enemy The enemy object
+ * @param {Boolean} is_npc_battle If this is an NPC battle, or a wild battle.
+ * @returns A png attachment to be sent into a chat.
+ */
+generate_battle_image: async function(plr, enemy, is_npc_battle) {
+
+    // Define helper function that is only used here
+    function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
+        ctx.save();  // save the current canvas state
+        ctx.setTransform(
+            horizontal ? -1 : 1, 0, // set the direction of x axis
+            0, vertical ? -1 : 1,   // set the direction of y axis
+            x + (horizontal ? image.width : 0), // set the x origin
+            y + (vertical ? image.height : 0)   // set the y origin
+        );
+        ctx.drawImage(image,0,0);
+        ctx.restore(); // restore the state as it was when this function was called
+    }
+
+    let canvas = new Canvas(480, 270);
+    FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
+    let ctx = canvas.getContext("2d");
+    const background = await loadImage('./battle_art/battle_background_temp.png');
+    
+    // This uses the canvas dimensions to stretch the image onto the entire canvas
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    const plrSprite = await loadImage('./Art/tiles/t054.png')
+    const oochPlr = await loadImage(`./resized_art/${plr.ooch_party[plr.ooch_active_slot].name}.png`);
+    const enemySprite = await loadImage('./Art/tiles/t057.png')
+    const oochEnemy = await loadImage(`./resized_art/${enemy.ooch_party[enemy.ooch_active_slot].name}.png`);
+    const prismIcon = await loadImage('./Art/item_prism.png');
+    
+    // Player
+    ctx.font = `italic bold 20px main_med`;
+    ctx.fillText(`Player`, 30, 120);
+
+    // Player Prisms
+    for (let i = 0; i < plr.ooch_party.length; i++) {
+        ctx.drawImage(prismIcon, 30 + (30 * i), 125);
+    }
+
+    // Player Oochamon and Player Sprite
+    flipDrawImage(ctx, plrSprite, 25, 210, true); // horizontal mirror
+    flipDrawImage(ctx, oochPlr, 58, 170, true); // horizontal mirror
+    ctx.font = `10px main_med`;
+    ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 65, 245)
+
+    // Enemy
+    ctx.font = `italic bold 20px main_med`;
+    ctx.textAlign = 'right';
+    ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 165);
+
+    if (is_npc_battle) {
+        // Enemy Prisms
+        for (let i = 0; i < enemy.ooch_party.length; i++) {
+            ctx.drawImage(prismIcon, 330 + (30 * i), 110);
+        }
+
+        // Enemy Sprite
+        ctx.drawImage(enemySprite, 420, 75);
+    }
+    // Enemy Oochamon
+    ctx.drawImage(oochEnemy, 350, 27);
+    ctx.font = `10px main_med`;
+    ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 100)
+    ctx.textAlign = 'left';
+
+    let pngData = await canvas.png;
+    return pngData;
 }
 
 }

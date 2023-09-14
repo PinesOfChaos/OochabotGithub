@@ -71,6 +71,7 @@ module.exports = {
                     // Hold the data related to our current NPC event in our profile, so we can access it post battle.
                     db.profile.set(user_id, event_array, 'npc_event_data');
                     db.profile.set(user_id, current_place+1, 'npc_event_pos');
+                    console.log('test');
                     // Setup the battle
                     await setup_battle(channel, user_id, obj_content, true);
                     return;
@@ -191,9 +192,10 @@ module.exports = {
         let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.x}${npc_obj.y}`; //Flag generated for this npc at this position
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
+        let battle_npc = npc_obj.team.length != 0;
         
         // If we don't have the NPCs flag, it means they haven't been beaten yet.
-        if (!user_flags.includes(npc_flag) && npc_obj.battle_npc == true) {
+        if (!user_flags.includes(npc_flag) && battle_npc == true) {
             //Pre-combat dialogue
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
                 return_array.push([EventMode.Text, {
@@ -207,7 +209,7 @@ module.exports = {
             //Setup a battle
             return_array.push([EventMode.BattleTrainer, generate_trainer_battle(npc_obj)])
 
-        } else if (npc_obj.battle_npc == false && !user_flags.includes(npc_flag)) {
+        } else if (battle_npc == false && !user_flags.includes(npc_flag)) {
             // If this NPC isn't a battle NPC and the user doesn't yet have their flag (meaning they haven't interacted with them yet)
             // we should throw their pre interaction dialogue into the event_array. Otherwise, we don't include it.
             // Also put their designated items and money at the end of their dialogue.
@@ -233,11 +235,11 @@ module.exports = {
         // If we are not a battle NPC and the user DOES have this NPCs flag, we should include
         // the post interaction dialogue. Otherwise, don't include it.
         // If we are a battle NPC, include post combat dialogue as it is necessary for the flow.
-        if ((npc_obj.battle_npc == true) || (npc_obj.battle_npc == false && user_flags.includes(npc_flag))) {
+        if ((battle_npc == true) || (battle_npc == false && user_flags.includes(npc_flag))) {
             for (let i = 0; i < npc_obj.post_combat_dialogue.length; i++) {
                 // If we are on the last dialogue, and the user has not interacted with this NPC, and the NPC is a battle NPC,
                 // put their designated items at the end of their dialogue.
-                if (i+1 == npc_obj.post_combat_dialogue.length && !user_flags.includes(npc_flag) && npc_obj.battle_npc == true) {
+                if (i+1 == npc_obj.post_combat_dialogue.length && !user_flags.includes(npc_flag) && battle_npc == true) {
                     return_array.push([EventMode.Text, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
