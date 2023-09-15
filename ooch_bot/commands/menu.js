@@ -348,10 +348,20 @@ module.exports = {
                 interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
             }
             // Set a nickname button
-            // TODO: Set a filter to only allow for nicknames of a certain length (to avoid massively long nicknames)
             else if (selected == 'nickname') {
-                i.update({ content: `Enter a nickname for your ${selected_ooch.name}! (Type reset to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
-                nick_msg_collector = menuMsg.channel.createMessageCollector({ max: 1 });
+                let nick_filter = m => {
+                    if (m.author.id != interaction.user.id) return false;
+                    if (m.content.length <= 16) {
+                        return true;
+                    } else {
+                        i.followUp({ content: `Nicknames must be 16 characters or less.`, ephemeral: true });
+                        m.delete();
+                        return false;
+                    }
+                }
+                
+                i.update({ content: `Enter a nickname for your ${selected_ooch.name}! (16 characters max, Type \`reset\` to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
+                nick_msg_collector = menuMsg.channel.createMessageCollector({ filter: nick_filter, max: 1 });
                 nick_msg_collector.on('collect', async msg => {
                     let new_nick = (msg.content.toLowerCase() != 'reset' ? msg.content : selected_ooch.name);
                     selected_ooch.nickname = new_nick;

@@ -14,6 +14,18 @@ function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = 
     ctx.restore(); // restore the state as it was when this function was called
 }
 
+const fillTextScaled = (text, font, fontSize, cutoff, canvas, fontMod = '') => {
+	const context = canvas.getContext('2d');
+	do {
+		// Assign the font to the context and decrement it so it can be measured again
+		context.font = `${fontMod} ${fontSize -= 1}px ${font}`;
+		// Compare pixel width of the text to the canvas minus the approximate avatar size
+	} while (context.measureText(text).width > cutoff);
+
+	// Return the result to use in the actual canvas
+	return context.font;
+};
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('test_battle_image')
@@ -44,7 +56,8 @@ module.exports = {
 
         ctx.font = `italic bold 20px main_med`;
         // Player
-        ctx.fillText('Jeffdev', 30, 120);
+        fillTextScaled('PinesOfChaos', 'main_med', 20, 150, canvas, 'italic bold');
+        ctx.fillText('PinesOfChaos', 30, 120);
 
         // Player Prisms
         ctx.drawImage(prismIcon, 30, 125);

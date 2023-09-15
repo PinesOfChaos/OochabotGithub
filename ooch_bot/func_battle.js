@@ -204,7 +204,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     await playspace_msg.delete();
 
     // Generate intro to battle image
-    let battle_image = await generate_battle_image(db.profile.get(user_id), trainer_obj, is_npc_battle);
+    let battle_image = await generate_battle_image(thread, user_id, db.profile.get(user_id), trainer_obj, is_npc_battle);
     await thread.send({ 
         content: is_npc_battle ? `# ${trainer_obj.name} wants to battle!`
                 : `# You encounter a wild **${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`,
@@ -303,7 +303,8 @@ prompt_battle_input: async function(thread, user_id) {
                 .setCustomId('prism_button')
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_prism:1023031025716179076>'),
+                .setEmoji('<:item_prism:1023031025716179076>')
+                .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('back')
@@ -542,7 +543,6 @@ prompt_battle_input: async function(thread, user_id) {
                 if (heal_inv_keys.length == 0 && prism_inv_keys.length == 0) {
                     thread.send(`You don't have any items, so you can't use any!` +
                     `\nSelect a different action!`)
-                    db.profile.inc(user_id, 'battle_msg_counter');
 
                     await prompt_battle_input(thread, user_id);
                     return;
@@ -657,19 +657,25 @@ prompt_battle_input: async function(thread, user_id) {
                             let item_data = db.item_data.get(item_id);
                             if (db.profile.get(user_id, `prism_inv.${item_id}`) == undefined) return;
 
-                            displayEmbed.setColor('#f2d751');
-                            displayEmbed.setTitle(`<:item_prism:1023031025716179076> Prism <:item_prism:1023031025716179076>`)
-                            displayEmbed.setDescription(`${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.name}**`)
-                            item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+                            let string_to_send = `${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.name}**`;
                             
                             db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`)
                             let prism_result = item_use(thread, user_id, ooch_enemy, item_id)
                             b_collector.stop();
                             prism_collector.stop();
                             if (heal_collector != undefined) heal_collector.stop();
+                            
+                            // Setup embed
+                            displayEmbed.setColor('#f2d751');
+                            displayEmbed.setTitle(`<:item_prism:1023031025716179076> Prism Throw <:item_prism:1023031025716179076>`)
 
                             // If we caught the Oochamon successfully
                             if (prism_result == true) { 
+                                string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
+                                `Your playspace will appear momentarily.`;
+                                displayEmbed.setDescription(string_to_send)
+                                await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+
                                 // Have it check here if you want to send the Oochamon to your party or not
                                 if (db.profile.get(user_id, 'ooch_party').length < 4) {
                                     db.profile.push(user_id, ooch_enemy, `ooch_party`);
@@ -680,10 +686,14 @@ prompt_battle_input: async function(thread, user_id) {
                                 let infoEmbed = ooch_info_embed(ooch_enemy)
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
 
-                                thread.send({ embeds: [infoEmbed] })
-                                db.profile.inc(user_id, 'battle_msg_counter');
+                                item_sel.followUp({ embeds: [infoEmbed], ephemeral: true })
                                 await finish_battle(thread, user_id);
+
                                 return;
+                            } else {
+                                string_to_send += `\n\nUnfortunately, your prism catch attempt failed...`;
+                                displayEmbed.setDescription(string_to_send);
+                                await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             }
 
                             // Enemy attacks player
@@ -1229,8 +1239,10 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     .setDescription(`${string_to_send}`);
     await thread.send({ content: `**------------ End of Round ------------**`, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'battle_msg_counter');
-    await thread.send({ content: enemy_send_string_to_send });
-    db.profile.inc(user_id, 'battle_msg_counter');
+    if (enemy_send_string_to_send != '') {
+        await thread.send({ content: enemy_send_string_to_send });
+        db.profile.inc(user_id, 'battle_msg_counter');
+    }
 
 },
 
@@ -1297,13 +1309,8 @@ item_use: function(thread, user_id, ooch, item_id) {
         let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus;
 
         if (Math.random() < prism_chance) {
-            thread.send(`**You successfully caught the wild ${ooch.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
-            `Your playspace will appear momentarily.`);
-            db.profile.inc(user_id, 'battle_msg_counter');
             return true;
         } else {
-            thread.send(`Unfortunately, your prism catch attempt failed...`);
-            db.profile.inc(user_id, 'battle_msg_counter');
             return false;
         }
     }
@@ -1485,14 +1492,16 @@ level_up: async function(thread, user_id, ooch) {
 
 /**
  * Generate a beginning of battle image based on data passed in
+ * @param {Object} thread The thread this instance of Oochamon is being played in
+ * @param {String} user_id The user ID of the user playing Oochamon
  * @param {Object} plr The player object
  * @param {Object} enemy The enemy object
  * @param {Boolean} is_npc_battle If this is an NPC battle, or a wild battle.
  * @returns A png attachment to be sent into a chat.
  */
-generate_battle_image: async function(plr, enemy, is_npc_battle) {
+generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle) {
 
-    // Define helper function that is only used here
+    // Define helper functions that are only used here
     function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
         ctx.save();  // save the current canvas state
         ctx.setTransform(
@@ -1504,6 +1513,18 @@ generate_battle_image: async function(plr, enemy, is_npc_battle) {
         ctx.drawImage(image,0,0);
         ctx.restore(); // restore the state as it was when this function was called
     }
+
+    const fillTextScaled = (text, font, fontSize, cutoff, canvas, fontMod = '') => {
+        const context = canvas.getContext('2d');
+        do {
+            // Assign the font to the context and decrement it so it can be measured again
+            context.font = `${fontMod} ${fontSize -= 1}px ${font}`;
+            // Compare pixel width of the text to the canvas minus the approximate avatar size
+        } while (context.measureText(text).width > cutoff);
+    
+        // Return the result to use in the actual canvas
+        return context.font;
+    };
 
     let canvas = new Canvas(480, 270);
     FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
@@ -1517,10 +1538,13 @@ generate_battle_image: async function(plr, enemy, is_npc_battle) {
     const enemySprite = await loadImage('./Art/tiles/t057.png')
     const oochEnemy = await loadImage(`./resized_art/${enemy.ooch_party[enemy.ooch_active_slot].name}.png`);
     const prismIcon = await loadImage('./Art/item_prism.png');
+    let playerMemberObj = thread.guild.members.cache.get(user_id);
+    const playerName = playerMemberObj.displayName;
     
     // Player
     ctx.font = `italic bold 20px main_med`;
-    ctx.fillText(`Player`, 30, 120);
+    fillTextScaled(playerName, 'main_med', 20, 150, canvas, 'italic bold');
+    ctx.fillText(playerName, 30, 120);
 
     // Player Prisms
     for (let i = 0; i < plr.ooch_party.length; i++) {
