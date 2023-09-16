@@ -16,61 +16,65 @@ module.exports = {
 
         //#region Tile Data
         //          ID  Use         Emote                           Emote_Simple (Optional)
-        create_tile(0,  'floor',    '<:t000:1057163944889946173>'  );
-        create_tile(1,  'floor',    '<:t001:1057163945900773436>'  );
-        create_tile(2,  'npc',      '<:t002:1095915495020044308>'  );
-        create_tile(3,  'floor',    '<:t003:1057163947553341492>'  );
-        create_tile(4,  'floor',    '<:t004:1057163948585132102>'  );
-        create_tile(5,  'floor',    '<:t005:1057163949319127140>'  );
-        create_tile(6,  'floor',    '<:t006:1057163950262857780>'  );
-        create_tile(7,  'floor',    '<:t100:1057164009335439491>'  );
-        create_tile(8,  'wall',     '<:t101:1057164010774069268>'  );
-        create_tile(9,  'grass',    '<:t102:1057164012288221234>'  );
-        create_tile(10,  'floor',   '<:t200:1057164043426738186>'  );
-        create_tile(11,  'wall',    '<:t201:1057164044395626537>'  );
-        create_tile(12,  'grass',   '<:t202:1057164045242859571>'  );
-        create_tile(13,  'floor',   '<:t300:1057164046320807946>'  );
-        create_tile(14,  'wall',    '<:t301:1057164047910436944>'  );
-        create_tile(15,  'grass',   '<:t302:1057164048866758776>'  );
-        create_tile(16,  'wall',    '<:t203:1057499365574459493>'  );
-        create_tile(17,  'wall',    '<:t204:1057499366815977593>'  );
-        create_tile(18,  'wall',    '<:t205:1057499367889698866>'  );
-        create_tile(19,  'wall',    '<:t206:1057499368997015572>'  );
-        create_tile(20,  'wall',    '<:t207:1057499369684861019>'  );
-        create_tile(21,  'shop',    '<:t208:1057499694848282654>'  );
-        create_tile(22,  'npc',     '<:t050:1095915042165235812>'  );
-        create_tile(23,  'npc',     '<:t051:1095915201070637138>'  );
-        create_tile(24,  'npc',     '<:t052:1095915028097552494>'  );
-        create_tile(25,  'npc',     '<:t053:1095915029745909862>'  );
-        create_tile(26,  'npc',     '<:t054:1095915030899347476>'  );
-        create_tile(27,  'npc',     '<:t209:1059665037473624104>'  ); //This is the crater
-        create_tile(28,  'wall',    '<:t210:1059665038950006855>'  );
-        create_tile(29,  'wall',    '<:t211:1059665040002793543>'  );
-        create_tile(30,  'wall',    '<:t212:1059665041269469304>'  );
-        create_tile(31,  'wall',    '<:t213:1059665036173385748>'  );
-        create_tile(32,  'npc',     '<:t055:1095915031734005831>'  );
-        create_tile(33,  'npc',     '<:t056:1095915032648355921>'  );
-        create_tile(34,  'npc',     '<:t057:1095915033948586076>'  );
-        create_tile(35,  'npc',     '<:t058:1095915034783260722>'  );
-        create_tile(36,  'npc',     '<:t059:1095915035622129735>'  );
-        create_tile(37,  'npc',     '<:t060:1095915320830611476>'  );
-        create_tile(38,  'npc',     '<:t061:1095915322218909696>'  );
-        create_tile(39, 'wall',     '<:t007:1095915429802811423>'  );
-        create_tile(40, 'wall',     '<:t009:1095915431379877928>'  );
-        create_tile(41, 'wall',     '<:t010:1095915432331984927>'  );
-        create_tile(42, 'wall',     '<:t011:1095915433216983070>'  );
-        create_tile(43, 'wall',     '<:t012:1095915434114551888>'  );
-        create_tile(44, 'floor',    '<:t218:1096230878750974115>'  );
-        create_tile(45, 'floor',    '<:t219:1096230880701337651>'  );
-        create_tile(46, 'wall',     '<:t220:1096230881682800730>'  );
-        create_tile(47, 'wall',     '<:t221:1096230882697818112>'  );
-        create_tile(48, 'floor',    '<:t222:1096230883536683028>'  );
-        create_tile(49, 'wall',     '<:t103:1096230516635742420>'  );
-        create_tile(50, 'floor',    '<:t104:1096230514500841575>'  );
-        create_tile(51, 'wall',     '<:t214:1096230625524060251>'  );
-        create_tile(52, 'wall',     '<:t215:1096230626107064413>'  );
-        create_tile(53, 'floor',    '<:t216:1096230627386343474>'  );
-        create_tile(54, 'wall',     '<:t217:1096230624005726238>'  );
+        create_tile(0,  'floor',    '<:t000:1057163944889946173>'  ); //Black 
+        create_tile(1,  'floor',    '<:t001:1057163945900773436>'  ); //Teleporter 
+        create_tile(2,  'npc',      '<:t002:1095915495020044308>'  ); //Chest
+        create_tile(3,  'floor',    '<:t003:1057163947553341492>'  ); //Arrow Left
+        create_tile(4,  'floor',    '<:t004:1057163948585132102>'  ); //Arrow Up
+        create_tile(5,  'floor',    '<:t005:1057163949319127140>'  ); //Arrow Right
+        create_tile(6,  'floor',    '<:t006:1057163950262857780>'  ); //Arrow Down
+        create_tile(7,  'floor',    '<:t100:1057164009335439491>'  ); //Fungal Floor
+        create_tile(8,  'wall',     '<:t101:1057164010774069268>'  ); //Fungal Wall
+        create_tile(9,  'grass',    '<:t102:1057164012288221234>'  ); //Fungal Grass
+        create_tile(10,  'floor',   '<:t200:1057164043426738186>'  ); //Sandy Floor
+        create_tile(11,  'wall',    '<:t201:1057164044395626537>'  ); //Sandy Wall
+        create_tile(12,  'grass',   '<:t202:1057164045242859571>'  ); //Sandy Grass
+        create_tile(13,  'floor',   '<:t300:1057164046320807946>'  ); //Obsidian Floor
+        create_tile(14,  'wall',    '<:t301:1057164047910436944>'  ); //Obsidian Wall
+        create_tile(15,  'grass',   '<:t302:1057164048866758776>'  ); //Obsidian Grass
+        create_tile(16,  'wall',    '<:t203:1057499365574459493>'  ); //HUB Wall Top
+        create_tile(17,  'wall',    '<:t204:1057499366815977593>'  ); //HUB Wall Middle
+        create_tile(18,  'wall',    '<:t205:1057499367889698866>'  ); //Hub Wall Bottom
+        create_tile(19,  'wall',    '<:t206:1057499368997015572>'  ); //Hub Gate Top
+        create_tile(20,  'wall',    '<:t207:1057499369684861019>'  ); //Hub Gate Bottom
+        create_tile(21,  'shop',    '<:t208:1152709558129668096>'  ); //Hub Tent
+        create_tile(22,  'npc',     '<:t050:1095915042165235812>'  ); //Character Player
+        create_tile(23,  'npc',     '<:t051:1095915201070637138>'  ); //Character Obsidian
+        create_tile(24,  'npc',     '<:t052:1095915028097552494>'  ); //Character Desert Rags
+        create_tile(25,  'npc',     '<:t053:1095915029745909862>'  ); //Character Neon Blue
+        create_tile(26,  'npc',     '<:t054:1095915030899347476>'  ); //Character Fungal
+        create_tile(27,  'npc',     '<:t209:1059665037473624104>'  ); //Crater
+        create_tile(28,  'wall',    '<:t210:1059665038950006855>'  ); //Hub Dropship Upper Left
+        create_tile(29,  'wall',    '<:t211:1059665040002793543>'  ); //Hub Dropship Upper Right
+        create_tile(30,  'wall',    '<:t212:1059665041269469304>'  ); //Hub Dropship Lower Left
+        create_tile(31,  'wall',    '<:t213:1059665036173385748>'  ); //Hub Dropship Lower Right
+        create_tile(32,  'npc',     '<:t055:1095915031734005831>'  ); //Scientist
+        create_tile(33,  'npc',     '<:t056:1095915032648355921>'  ); //Elderly Researcher
+        create_tile(34,  'npc',     '<:t057:1095915033948586076>'  ); //Rival
+        create_tile(35,  'npc',     '<:t058:1095915034783260722>'  ); //Desert Raider
+        create_tile(36,  'npc',     '<:t059:1095915035622129735>'  ); //Department Head
+        create_tile(37,  'npc',     '<:t060:1095915320830611476>'  ); //Hollowed Scientist
+        create_tile(38,  'npc',     '<:t061:1095915322218909696>'  ); //Shop Clerk
+        create_tile(39, 'wall',     '<:t007:1095915429802811423>'  ); //Shop Mini
+        create_tile(40, 'wall',     '<:t009:1095915431379877928>'  ); //Shop Upper Left
+        create_tile(41, 'wall',     '<:t010:1095915432331984927>'  ); //Shop Upper Right
+        create_tile(42, 'wall',     '<:t011:1095915433216983070>'  ); //Shop Lower Left
+        create_tile(43, 'wall',     '<:t012:1095915434114551888>'  ); //Shop Lower Right
+        create_tile(44, 'floor',    '<:t218:1096230878750974115>'  ); //Cave Floor
+        create_tile(45, 'floor',    '<:t219:1096230880701337651>'  ); //Cave Floor Entrance
+        create_tile(46, 'wall',     '<:t220:1096230881682800730>'  ); //Cave Wall
+        create_tile(47, 'wall',     '<:t221:1096230882697818112>'  ); //Lava
+        create_tile(48, 'floor',    '<:t222:1096230883536683028>'  ); //Cave Exit
+        create_tile(49, 'wall',     '<:t103:1096230516635742420>'  ); //Fungal Wall
+        create_tile(50, 'floor',    '<:t104:1096230514500841575>'  ); //Fungal Exit
+        create_tile(51, 'wall',     '<:t214:1096230625524060251>'  ); //Desert Wall Lower
+        create_tile(52, 'wall',     '<:t215:1096230626107064413>'  ); //Desert Wall Upper
+        create_tile(53, 'floor',    '<:t216:1096230627386343474>'  ); //Desert Exit
+        create_tile(54, 'wall',     '<:t217:1096230624005726238>'  ); //Hub Barrel
+        create_tile(55, 'floor',    '<:t105:1152708847920758794>'  ); //Fungal Floor Entrance
+        create_tile(56, 'wall',     '<:t223:1152708885954691292>'  ); //Cave Stalagtite
+        create_tile(57, 'board',    '<:t224:1152708922306727997>'  ); //Job Board
+        
         //#endregion
 
         //#region Item Data
@@ -158,7 +162,7 @@ module.exports = {
         create_ability(2,  'Burdened',      'A large growth reduces SPD by 10% but raises DEF by 15%'); // Added
         create_ability(3,  'Broodmother',   'Gains 5% ATK for each Oochamon in the same evolution line in the party.'); // Added
         create_ability(4,  'Tough',         'A durable body grants a 10% increase to DEF.'); // Added
-        create_ability(5,  'Shadow',        'Grants a 25% chance to DISAPPEAR after being attacked.'); // ❌
+        create_ability(5,  'Shadow',        'Grants a 25% chance to VANISH after being attacked.'); // ❌
         create_ability(6,  'Withering',     'Loss of the body reduces HP by 5% each turn, but raises SPD by 20%'); // Added
         create_ability(7,  'Darkbright',    'Attacks that afflict BURN also BLIND and vice-versa.'); // Added
         create_ability(8,  'Gentle',        'A kind heart reduces both your ATK and the enemy ATK by 10%'); // Added
@@ -486,6 +490,16 @@ module.exports = {
         create_monster(56, '<:oochabound:1023046884769677313>', 'Oochabound', 'https://cdn.discordapp.com/attachments/921949708971294750/982082804252815410/oochabot.png',
         'No thank you, I\'d really rather not write a description for this one.', ['void'], 25, 23, 17, 20, //total 85
         [ [1,1] ], [ 'Duplicant' ], 55, -1, -1, 1);
+
+        //Mons to be added later
+        /*
+
+
+
+
+        */
+
+
         //#endregion
 
         // Generate text file for GMS2 map editor project

@@ -81,6 +81,10 @@ module.exports = {
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
             var tile = db.tile_data.get(tile_id.toString());
             switch(tile.use){
+
+                case 'board':
+                    stop_moving = true;
+                break;
                 case 'wall':
                     stop_moving = true;
                 break;
