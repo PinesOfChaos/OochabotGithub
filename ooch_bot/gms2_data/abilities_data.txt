@@ -3,7 +3,7 @@
 2|Burdened|A large growth reduces SPD by 10% but raises DEF by 15%
 3|Broodmother|Gains 5% ATK for each Oochamon in the same evolution line in the party.
 4|Tough|A durable body grants a 10% increase to DEF.
-5|Shadow|Grants a 25% chance to DISAPPEAR after being attacked.
+5|Shadow|Grants a 25% chance to VANISH after being attacked.
 6|Withering|Loss of the body reduces HP by 5% each turn, but raises SPD by 20%
 7|Darkbright|Attacks that afflict BURN also BLIND and vice-versa.
 8|Gentle|A kind heart reduces both your ATK and the enemy ATK by 10%
