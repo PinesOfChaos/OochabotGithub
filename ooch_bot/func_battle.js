@@ -759,7 +759,10 @@ prompt_battle_input: async function(thread, user_id) {
  * @returns The amount of damage the move will do.
  */
 battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defender) {
-    let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) * move_damage * ooch_attacker.stats.atk * ooch_attacker.stats.atk_mul / ooch_defender.stats.def * ooch_defender.stats.def_mul) / 50 + 2);
+    let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) // Level Adjustment
+    * move_damage // Damage
+    * ooch_attacker.stats.atk * ooch_attacker.stats.atk_mul / ooch_defender.stats.def * ooch_defender.stats.def_mul) 
+    / 50 + 2);
 
     switch (move_type) {
         case 'Ooze': 
@@ -884,6 +887,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let status_doubled = (defender.status_effects.includes('doubled') ? 2 : 1);
     let recoil_damage = Math.round((move_effect == 'recoil' ? move_effect_chance/100 : 0) * attacker.stats.hp);
     let vampire_heal = (move_effect == 'vampire' ? move_effect_chance/100 : 0);
+    let reflect_dmg = 0;
     let attacker_emote = db.monster_data.get(attacker.id, 'emote');
     let defender_emote = db.monster_data.get(defender.id, 'emote');
     let defender_field_text = ``;
@@ -902,7 +906,15 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         // Check for on hit abilities
         switch (attacker.ability) {
             case 'Leech':
-                attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); break;
+                attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); 
+            break;
+        }
+        
+        switch (defender.ability) {
+            case 'Reactive':
+                attacker.current_hp = _.clamp(attacker.current_hp - Math.round(dmg * 0.05), 0, attacker.stats.hp)
+                reflect_dmg = Math.round(dmg * 0.05);
+            break;
         }
 
         string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
@@ -914,7 +926,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
         //If a attack has vampire
          if(vampire_heal > 0){
-            string_to_send += `\n--- ❤️ Restored **${vampire_heal}** HP!`
+            string_to_send += `\n--- ❤️ Restored **${vampire_heal}** HP from **Vampire**!`
         }
 
         //If attack has recoil
@@ -922,14 +934,49 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             string_to_send += `\n--- 💥 Lost **${recoil_damage}** HP from recoil!`
         }
 
+        // If attack has reflect damage
+        if (reflect_dmg > 0) {
+            string_to_send += `\n--- 🪞 Took **${reflect_dmg}** HP from ${defender_emote} **${defender.nickname}**'s ability **Reactive**!`
+        }
+
         //Type effectiveness
-        string_to_send += type_multiplier[1];
+        string_to_send += type_multiplier[1];t
+
+        // Change move_effect_chance based on abilities
+        switch (attacker.ability) {
+            case 'Scorching':
+                if (move_effect == 'burned') move_effect_chance = 100;
+            break;
+        }
+
+        switch (defender.ability) {
+            case 'Mundane':
+                move_effect_chance = 0;
+            break;
+        }
 
         if(Math.random() < move_effect_chance/100 && move_effect_chance > 0){ //Apply status effect
+            let status_adds = [move_effect];
+            // Setup list of status effects to add
+            switch (defender.ability) {
+                case 'Darkbright':
+                    switch (move_effect) {
+                        case 'burned': status_adds.push('blinded');
+                        case 'blinded': status_adds.push('burned');
+                    }
+                break;
+                case 'Radiant':
+                    switch (move_effect) {
+                        case 'infected': status_adds.push('burned');
+                        case 'burned': status_adds.push('infected');
+                    }
+                break;
+            }
+
             defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** was **${move_effect.toUpperCase()}!**`
-            defender.status_effects.push(move_effect);
-        }
-        else if(-Math.random() > move_effect_chance/100 && move_effect_chance < 0){
+            defender.status_effects.push(status_adds);
+            defender.status_effects = defender.status_effects.flat(1);
+        } else if(-Math.random() > move_effect_chance/100 && move_effect_chance < 0){
             string_to_send += `\n--- Got **${move_effect.toUpperCase()}!**`
             attacker.status_effects.push(move_effect);
         }
@@ -942,6 +989,22 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     if (defender.current_hp <= 0) {
         defender_field_text += `\n🪦 ${defender_emote} **${defender.nickname}** fainted!`
         defender.alive = false;
+        
+        // Opposing oochamon death ability triggers
+        switch (defender.ability) {
+            case 'Haunted':
+                attacker.status_effects.push('doomed');
+                defender_field_text += `\n${attacker_emote} **${attacker.nickname}** was **DOOMED** from ${defender_emote} **${defender.nickname}**'s ability **Haunted**!`;
+            break;
+            case 'Ravenous':
+                attacker.current_hp += _.clamp(attacker.current_hp + attacker.stats.hp * 0.2, 0, attacker.stats.hp);
+                defender_field_text += `\n${attacker_emote} **${attacker.nickname}** healed 20% HP back from its ability **Ravenous**!`;
+            break;
+            case 'Sporespray':
+                attacker.status_effects.push('infected');
+                defender_field_text += `\n${attacker_emote} **${attacker.nickname}** was **INFECTED** from ${defender_emote} **${defender.nickname}**'s ability **Sporespray**!`;
+            break;
+        }
     }
 
     let displayEmbed = new EmbedBuilder()
@@ -1389,6 +1452,8 @@ ability_stat_change: function(ooch, ooch_inv) {
             ooch = modify_stat(ooch, 'atk', 0.3); break;
         case 'Immense':
             ooch = modify_stat(ooch, 'def', 0.3); break;
+        case 'Inertia':
+            ooch = modify_stat(ooch, 'spd', 0.05); break;
         case 'Broodmother':
             ooch = modify_stat(ooch, 'atk', -0.05); // Because it will include itself in the below for loop
             for (let ooch_i of ooch_inv) {
