@@ -35,4 +35,14 @@ module.exports = {
 
         return infoEmbed;
     },
+    
+    /**
+     * Returns true or false based on a percent chance out of 100.
+     * @param {Number} num Percent chance to return true.
+     */
+    check_chance: function(num) {
+        return Math.random() <= num / 100;
+    }
+
+
 }

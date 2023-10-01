@@ -60,5 +60,14 @@ module.exports = {
         Wild: 0,
         NPCTrainer: 1,
         OnlineUser: 2
+    },
+
+    Stats: {
+        HP: 'hp',
+        Attack: 'atk',
+        Defense: 'def',
+        Speed: 'spd',
+        Accuracy: 'acc',
+        Evasion: 'eva',
     }
 }

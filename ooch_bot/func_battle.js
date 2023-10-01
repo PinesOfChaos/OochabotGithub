@@ -2,9 +2,9 @@ const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, TrainerType } = require("./types.js");
+const { PlayerState, TrainerType, Stats } = require("./types.js");
 const { setup_playspace_str } = require("./func_play");
-const { ooch_info_embed } = require("./func_other");
+const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 
 module.exports = {
@@ -244,13 +244,14 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-    item_use, finish_battle } = require('./func_battle.js');
+    item_use, finish_battle, ability_stat_change } = require('./func_battle.js');
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
     let ooch_plr_profile = db.profile.get(user_id, 'ooch_party');
     let ooch_enemy = ooch_enemy_profile.ooch_party[ooch_enemy_profile.ooch_active_slot];
     // Get the players oochamon in the first spot of their party
+    let active_slot = db.profile.get(user_id, 'ooch_active_slot');
     let ooch_plr = db.profile.get(user_id, `ooch_party[${db.profile.get(user_id, 'ooch_active_slot')}]`);
     let ooch_pos = db.profile.get(user_id, 'ooch_active_slot');
     let move_list = ooch_plr.moveset;
@@ -353,12 +354,34 @@ prompt_battle_input: async function(thread, user_id) {
         const s_collector_d = thread.createMessageComponentCollector({ max: 1 });
 
         await s_collector_d.on('collect', async ooch_sel => {
+            
+            let string_to_send = `You sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`;
+            // Check for on switch in abilities
+            switch (ooch_enemy.ability) {
+                case 'Alert':
+                    ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 0.1);
+                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its attack by 10% from the new Oochamon switch!`;
+                break;
+            }
+
+            // Reset stat multipliers for oochamon being swapped
+            ooch_plr.atk_mul = 1;
+            ooch_plr.def_mul = 1;
+            ooch_plr.spd_mul = 1;
+            ooch_plr.acc_mul = 1;
+            ooch_plr.eva_mul = 1;
+            db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
+
             let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-            await ooch_sel.update({ content: `\nYou sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`, components: [] })
+            await ooch_sel.update({ content: string_to_send, components: [] })
 
             let ooch_pos = parseInt(ooch_sel.customId);
             ooch_plr = db.profile.get(user_id, `ooch_party[${ooch_pos}]`);
             db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
+            active_slot = ooch_pos;
+
+            // Update on switch in stats
+            ooch_plr = ability_stat_change(ooch_plr, ooch_plr_profile.ooch_party);
 
             await prompt_battle_input(thread, user_id);
         });
@@ -500,14 +523,24 @@ prompt_battle_input: async function(thread, user_id) {
 
                 await s_collector.on('collect', async ooch_sel => {
 
+                    let string_to_send = `You switched your active Oochamon from ${db.monster_data.get(ooch_prev.id, 'emote')} **${ooch_prev.nickname}** to ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}**.`;
                     let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
                     displayEmbed = new EmbedBuilder()
                     displayEmbed.setColor('#0095ff')
                     displayEmbed.setTitle('↩️ Switch ↩️')
-                    displayEmbed.setDescription(`You switched your active Oochamon from ${db.monster_data.get(ooch_prev.id, 'emote')} **${ooch_prev.nickname}** to ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}**.`)
+
+                    // Check for on switch in abilities
+                    switch (ooch_enemy.ability) {
+                        case 'Alert':
+                            ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 0.1);
+                            string_to_send += `${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its attack by 10% from the new Oochamon switch!`;
+                        break;
+                    }
+
+                    displayEmbed.setDescription(string_to_send)
 
                     await ooch_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: [] })
-                    
+
                     ooch_pos = parseInt(ooch_sel.customId);
                     ooch_plr = db.profile.get(user_id, `ooch_party[${ooch_pos}]`);
                     db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
@@ -761,20 +794,24 @@ prompt_battle_input: async function(thread, user_id) {
 battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defender) {
     let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) // Level Adjustment
     * move_damage // Damage
+    * ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 // Hexiply ability
     * ooch_attacker.stats.atk * ooch_attacker.stats.atk_mul / ooch_defender.stats.def * ooch_defender.stats.def_mul) 
     / 50 + 2);
 
     switch (move_type) {
         case 'Ooze': 
-            if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1); break;
+            if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1);
+            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
         case 'Fungal':
             if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1); break;
         case 'Flame':
             if (ooch_attacker.ability == 'Warm') Math.round(damage *= 1.1);
-            if (ooch_defender.ability == 'Moist') Math.round(damage *= 0.5); break;
+            if (ooch_defender.ability == 'Moist') Math.round(damage *= 0.5);
+            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
         case 'Stone':
             if (ooch_attacker.ability == 'Burrower') Math.round(damage *= 1.1);
-            if (ooch_defender.ability == 'Armored') Math.round(damage *= 0.80); break;
+            if (ooch_defender.ability == 'Armored') Math.round(damage *= 0.80);
+            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
     }
 
     damage = _.clamp(damage, 1, ooch_defender.current_hp)
@@ -873,7 +910,6 @@ type_to_string: function(type, do_capitalize = true) {
  */
 attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     const { type_effectiveness, battle_calc_damage } = require('./func_battle.js');
-
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     let move_name =     db.move_data.get(atk_id, 'name');
     let move_type =     db.move_data.get(atk_id, 'type');
@@ -892,8 +928,12 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let defender_emote = db.monster_data.get(defender.id, 'emote');
     let defender_field_text = ``;
     let string_to_send = ``;
+    let ability_dmg_multiplier = 1;
+    if (attacker.ability == 'Rogue' && defender.current_hp === defender.hp) {
+        ability_dmg_multiplier = 2;
+    }
 
-    dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled, move_type, attacker, defender);
+    dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled * ability_dmg_multiplier, move_type, attacker, defender);
     vampire_heal = Math.round(vampire_heal * dmg); //used later
 
     if ((move_accuracy/100 * status_blind > Math.random()) || (defender.ability == 'Immense')) {
@@ -908,6 +948,16 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             case 'Leech':
                 attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); 
             break;
+            case 'Ensnare':
+                if (check_chance(30)) {
+                    defender.status_effects.push('snared');
+                    defender_field_text += `\nThe oppsing ${defender_emote} **${defender.nickname}** was **SNARED** on hit!`
+                }
+            break;
+            case 'Lacerating':
+                defender.current_hp = _.clamp(defender.current_hp + Math.round(dmg * 0.05), 0, defender.stats.hp);
+                defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** lost 5% of their HP due to the ability **Lacerating**!`
+            break;
         }
         
         switch (defender.ability) {
@@ -915,6 +965,14 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 attacker.current_hp = _.clamp(attacker.current_hp - Math.round(dmg * 0.05), 0, attacker.stats.hp)
                 reflect_dmg = Math.round(dmg * 0.05);
             break;
+            case 'Shadow':
+                if (check_chance(25)) {
+                    defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** **VANISHED** after being hit!`
+                    defender.status_effects.push('vanished');
+                }
+            break;
+            case 'Tangled':
+                defender.field_text += `\nThe attacking ${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`
         }
 
         string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
@@ -940,7 +998,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         }
 
         //Type effectiveness
-        string_to_send += type_multiplier[1];t
+        string_to_send += type_multiplier[1];
 
         // Change move_effect_chance based on abilities
         switch (attacker.ability) {
@@ -1198,7 +1256,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
  * @param {Object} ooch_enemy The object of the "enemy" Oochamon
  */
 end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
-    const { generate_hp_bar, use_eot_ability, battle_calc_exp, level_up } = require('./func_battle.js');
+    const { generate_hp_bar, use_eot_ability, battle_calc_exp, level_up, ability_stat_change } = require('./func_battle.js');
 
     let ooch_list = [ooch_plr, ooch_enemy].filter(o => o.current_hp > 0);
     let ooch_status_emotes = [[], []]; // 0 is ooch_plr, 1 is ooch_enemy
@@ -1293,6 +1351,27 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         if (slot_to_send != -1) { //if there is a slot to send in
             enemy_send_string_to_send += `**${enemy_profile.name}** sends out ${ooch_enemy_party[slot_to_send].emote} **${ooch_enemy_party[slot_to_send].name}!**`;
             enemy_send_string_to_send += `\n${ooch_enemy_party.map(v => v = v.alive == true ? `<:item_prism:1023031025716179076>` : `❌`).join('')}`;
+
+            // Check for on switch in abilities
+            switch (ooch_plr.ability) {
+                case 'Alert':
+                    ooch_plr = modify_stat(ooch_plr, Stats.Attack, 0.1);
+                    string_to_send += `${ooch_plr.emote} **${ooch_plr.nickname}**'s ability **Alert** raised its attack by 10% from the new Oochamon switch!`;
+                break;
+            }
+
+            // Reset modified stats
+            ooch_enemy.atk_mul = 1;
+            ooch_enemy.def_mul = 1;
+            ooch_enemy.spd_mul = 1;
+            ooch_enemy.acc_mul = 1;
+            ooch_enemy.eva_mul = 1;
+            db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${enemy_profile.ooch_active_slot}]`);
+
+            // Switch in stats
+            ooch_enemy = ooch_enemy_party[slot_to_send];
+            ooch_enemy = ability_stat_change(ooch_enemy, ooch_enemy_party);
+            db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${slot_to_send}]`);
             db.profile.set(user_id, slot_to_send, `ooch_enemy.ooch_active_slot`);
         };
     }
@@ -1426,41 +1505,49 @@ ability_stat_change: function(ooch, ooch_inv) {
     const { modify_stat } = require('./func_battle.js');
     switch (ooch.ability) {
         case 'Miniscule': 
-            ooch = modify_stat(ooch, 'eva', -0.2); break;
+            ooch = modify_stat(ooch, Stats.Evasion, -0.2); break;
         case 'Burdened': 
-            ooch = modify_stat(ooch, 'spd', -0.1);
-            ooch = modify_stat(ooch, 'def', 0.15); break;
+            ooch = modify_stat(ooch, Stats.Speed, -0.1);
+            ooch = modify_stat(ooch, Stats.Defense, 0.15); break;
         case 'Tough':
-            ooch = modify_stat(ooch, 'def', 0.1); break;
+            ooch = modify_stat(ooch, Stats.Defense, 0.1); break;
         case 'Gentle':
-            ooch = modify_stat(ooch, 'atk', 0.1); break;
+            ooch = modify_stat(ooch, Stats.Attack, 0.1); break;
         case 'Conflicted':
-            ooch = modify_stat(ooch, 'atk', 0.05);
-            ooch = modify_stat(ooch, 'def', 0.05);
-            ooch = modify_stat(ooch, 'spd', 0.05);
-            ooch = modify_stat(ooch, 'acc', 0.05);
-            ooch = modify_stat(ooch, 'eva', 0.05); break;
+            ooch = modify_stat(ooch, Stats.Attack, 0.05);
+            ooch = modify_stat(ooch, Stats.Defense, 0.05);
+            ooch = modify_stat(ooch, Stats.Speed, 0.05);
+            ooch = modify_stat(ooch, Stats.Accuracy, 0.05);
+            ooch = modify_stat(ooch, Stats.Evasion, 0.05); break;
         case 'Dense':
-            ooch = modify_stat(ooch, 'atk', 0.1);
-            ooch = modify_stat(ooch, 'spd', -0.1); break;
+            ooch = modify_stat(ooch, Stats.Attack, 0.1);
+            ooch = modify_stat(ooch, Stats.Speed, -0.1); break;
         case 'Withering':
-            ooch = modify_stat(ooch, 'spd', 0.2); break;
+            ooch = modify_stat(ooch, Stats.Speed, 0.2); break;
         case 'Fleeting':
-            ooch = modify_stat(ooch, 'spd', 0.5);
-            ooch = modify_stat(ooch, 'atk', 0.5); break;
+            ooch = modify_stat(ooch, Stats.Speed, 0.5);
+            ooch = modify_stat(ooch, Stats.Attack, 0.5); break;
         case 'Uncontrolled':
-            ooch = modify_stat(ooch, 'atk', 0.3); break;
+            ooch = modify_stat(ooch, Stats.Attack, 0.3); break;
         case 'Immense':
-            ooch = modify_stat(ooch, 'def', 0.3); break;
+            ooch = modify_stat(ooch, Stats.Defense, 0.3); break;
         case 'Inertia':
-            ooch = modify_stat(ooch, 'spd', 0.05); break;
+            ooch = modify_stat(ooch, Stats.Speed, 0.05); break;
         case 'Broodmother':
-            ooch = modify_stat(ooch, 'atk', -0.05); // Because it will include itself in the below for loop
+            ooch = modify_stat(ooch, Stats.Attack, -0.05); // Because it will include itself in the below for loop
             for (let ooch_i of ooch_inv) {
-                if (ooch_i.name == 'Sporbee' || ooch_i.name == 'Stingrowth' || ooch_i.name == 'Queenect') {
-                    ooch = modify_stat(ooch, 'atk', 0.05);
+                if (ooch_i.type == ooch.type) {
+                    ooch = modify_stat(ooch, Stats.Attack, 0.05);
                 }
             } break;
+        case 'Apprentice':
+            for (let ooch_i of ooch_inv) {
+                if (ooch_i.moveset.some(item => ooch.moveset.includes(item)) && ooch_i.id != ooch.id) {
+                    ooch = modify_stat(ooch, Stats.Attack, 0.15);
+                    break;
+                }
+            }
+        break;
     }
 
     return ooch;
@@ -1504,6 +1591,17 @@ finish_battle: async function(thread, user_id) {
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
         await thread.bulkDelete(msgs_to_delete)
+    }
+
+    // Reset Oochamon stat multipliers
+    for (let i = 0; i < db.profile.get(user_id, 'ooch_party'); i++) {
+        let ooch = db.profile.get(user_id, `ooch_party[${i}]`);
+        ooch.atk_mul = 1;
+        ooch.def_mul = 1;
+        ooch.spd_mul = 1;
+        ooch.acc_mul = 1;
+        ooch.eva_mul = 1;
+        db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
 
     // Setup playspace
