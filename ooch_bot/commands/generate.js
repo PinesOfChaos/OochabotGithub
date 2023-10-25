@@ -154,7 +154,8 @@ module.exports = {
 
         //#endregion
         
-        // All abilities need to be thoroughly tested still
+        // All abilities need to be thoroughly tested still, keep track
+        // ✅ means tested
         //#region Ability Data
         //             ID,  NAME,           Description
         create_ability(0,  'Miniscule',     'So small that it reduces the chance to be hit by 10%.'); // Added
@@ -177,7 +178,7 @@ module.exports = {
         create_ability(17, 'Alert',         'Increases ATK by 10% when an Oochamon switches in.'); // Added
         create_ability(18, 'Fleeting',      'Increases SPD and ATK by 50% but also loses 50% of HP each turn.'); // Added
         create_ability(19, 'Efficient',     'Increases ATK by 5% each turn.'); // Added
-        create_ability(20, 'Boisterous',    'Shatters eardrums when it enters the field dealing 5% of the enemy\'s HP'); // ❌
+        create_ability(20, 'Boisterous',    'Shatters eardrums when it enters the field dealing 5% of the enemy\'s HP'); // Added, ✅
         create_ability(21, 'Haunted',       'Applies the DOOMED status to an enemy when the holder of the ability dies.'); // Added
         create_ability(22, 'Leech',         'Restores HP equal to 10% of damage done to the enemy.'); // Added
         create_ability(23, 'Ensnare',       'Grants a 30% chance to SNARE an enemy when attacking.'); // Added
@@ -193,14 +194,15 @@ module.exports = {
         create_ability(33, 'Rogue',         'DOUBLES the damage dealt to full HP enemies.'); // Added
         create_ability(34, 'Crystallize',   'Ooze, Flame, and Stone attacks deal 30% more damage.'); // Added
         create_ability(35, 'Lacerating',    'The enemy loses 5% of their HP after you attack.'); // Added
-        create_ability(36, 'Gravity',       'Attacks deal 1% damage per number of turns in this battle.'); // ❌
-        create_ability(37, 'Sporespray',    'INFECTS the enemy when defeated.'); // ❌
-        create_ability(38, 'Frostbite',     'Attacks reduce the targets SPD by 5%.'); // ❌
-        create_ability(39, 'Bipolar',       'Use the DEF stat when dealing damage.'); // ❌
+        create_ability(36, 'Gravity',       'Attacks deal 1% damage per number of turns in this battle.'); // Added
+        create_ability(37, 'Sporespray',    'INFECTS the enemy when defeated.'); // Added
+        create_ability(38, 'Frostbite',     'Attacks reduce the targets SPD by 5%.'); // Added
+        create_ability(39, 'Bipolar',       'Use the DEF stat when dealing damage.'); // Added
         create_ability(40, 'Hexiply',       'Attacks deal 6% more damage per sixth of HP remaining.'); // Added
-        create_ability(41, 'Nullify',       "Negate the effects of enemy abilities."); // ❌
-        create_ability(42, 'Duplicant',     "Copy the opponent's ability."); // ❌
-        create_ability(43, '0000',          'FALSE'); // ❌ //Increase the global counter for i's stats by 1 upon defeat
+        create_ability(41, 'Nullify',       "Change an opponents ability to Null while out on the field."); // Added
+        create_ability(42, 'Duplicant',     "Copy the opponent's ability."); // Added
+        create_ability(43, 'Null',          'Does nothing.') // Added
+        create_ability(44, '0000',          'FALSE'); //Increase the global counter for i's stats by 1 upon defeat ❌
         //#endregion
 
         //#region Creature Data

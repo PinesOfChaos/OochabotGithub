@@ -64,6 +64,7 @@ module.exports = {
                 nickname: db.monster_data.get(ooch_id, 'name'),
                 item: -1,
                 ability: rand_ability,
+                og_ability: rand_ability,
                 level: level,
                 moveset: move_list,
                 stats: {
