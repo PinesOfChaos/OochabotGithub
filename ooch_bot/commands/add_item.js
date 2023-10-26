@@ -6,7 +6,7 @@ module.exports = {
         .setName('add_item')
         .setDescription('Add an item to your inventory!')
         .addStringOption(option => 
-            option.setName('id')
+            option.setName('item')
                 .setDescription('ID of item')
                 .setAutocomplete(true)
                 .setRequired(true))
@@ -16,7 +16,8 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
 
-        let id = interaction.options.getString('id');
+        let id = interaction.options.getString('item');
+        if (isNaN(id)) return interaction.reply('You must input an item ID here.');
         id = parseInt(id);
         let num_to_add = interaction.options.getInteger('number_to_add');
         let item_category = db.item_data.get(id, 'category');

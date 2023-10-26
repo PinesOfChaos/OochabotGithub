@@ -8,19 +8,21 @@ module.exports = {
         .setName('add_ooch')
         .setDescription('Add an oochamon to your party!')
         .addStringOption(option => 
-            option.setName('id')
+            option.setName('oochamon')
                 .setDescription('ID of ooch')
                 .setAutocomplete(true)
                 .setRequired(true))
         .addIntegerOption(option => 
             option.setName('lv')
                 .setDescription('Level of ooch')
-                .setRequired(true)),
+                .setRequired(false)),
     async execute(interaction) {
 
-        let ooch_id = interaction.options.getString('id');
+        let ooch_id = interaction.options.getString('oochamon');
+        if (isNaN(ooch_id)) return interaction.reply('You must input an oochamon ID here.');
         ooch_id = parseInt(ooch_id);
         let level = interaction.options.getInteger('lv');
+        if (level == null) level = 5;
 
         // Setup ooch_id data
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
@@ -93,7 +95,7 @@ module.exports = {
                 emote: db.monster_data.get(ooch_id, 'emote')
             }, dest)
         
-        return interaction.reply(`Added Oochamon ${db.monster_data.get(ooch_id, 'name')} to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
+        return interaction.reply(`Added **${ooch_id}**: ${db.monster_data.get(ooch_id, 'emote')} **${db.monster_data.get(ooch_id, 'name')}** (level ${level}) to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
     },
 };
 

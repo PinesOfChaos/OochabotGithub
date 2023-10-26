@@ -71,8 +71,17 @@ client.on('interactionCreate', async interaction => {
             return msg == search_segment;
         }
 
+        function item_filter(v) {
+            let msg = interaction.options.getString('item').toLowerCase();
+            let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
+            return msg == search_segment;
+        }
+
         function id_filter(id) {
-            let msg_id = interaction.options.getString('id');
+            let msg_id = interaction.options.getString('oochamon');
+            if (msg_id == null || msg_id == undefined) {
+                msg_id = interaction.options.getString('item');
+            }
             let search_segment = id.split(':')[0];
             return search_segment == msg_id;
         }
@@ -81,7 +90,7 @@ client.on('interactionCreate', async interaction => {
             case 'oochadex':
                 ooch_names = ooch_ids.map(v => {
                     if (db.profile.get(interaction.user.id, `oochadex`)[v.id].seen != 0) {
-                        return `#${v.id + 1}: ${_.capitalize(v.name)}`
+                        return `#${v.id + 1}: ${_.startCase(v.name)}`
                     } else return `???`
                 });
                 
@@ -95,20 +104,32 @@ client.on('interactionCreate', async interaction => {
             break;
             case 'add_ooch':
                 ooch_names = ooch_ids.map(v => {
-                    return `${v.id}: ${_.capitalize(v.name)}`
+                    return `${v.id}: ${_.startCase(v.name)}`
                 })
 
-                if (interaction.options.getString('id') != '') ooch_names = ooch_names.filter(id_filter);
+                if (interaction.options.getString('oochamon') != '') {
+                    if (!isNaN(interaction.options.getString('oochamon'))) {
+                        ooch_names = ooch_names.filter(id_filter);
+                    } else {
+                        ooch_names = ooch_names.filter(ooch_filter);
+                    }
+                } 
                 ooch_names = ooch_names.slice(0, 25);
                 ooch_names = ooch_names.map(v => v = { name: v, value: v.split(':')[0] });
                 interaction.respond(ooch_names);
             break;
             case 'add_item':
                 item_names = item_ids.map(v => {
-                    return `${v.id}: ${_.capitalize(v.name)}`
+                    return `${v.id}: ${_.startCase(v.name)}`
                 })
 
-                if (interaction.options.getString('id') != '') item_names = item_names.filter(id_filter);
+                if (interaction.options.getString('item') != '') {
+                    if (!isNaN(interaction.options.getString('item'))) {
+                        item_names = item_names.filter(id_filter);
+                    } else {
+                        item_names = item_names.filter(item_filter);
+                    }
+                } 
                 item_names = item_names.slice(0, 25);
                 item_names = item_names.map(v => v = { name: v, value: v.split(':')[0] });
                 interaction.respond(item_names);

@@ -13,7 +13,13 @@ module.exports = {
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
 
-        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Playspace 
+        console.log(interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id'));
+
+        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.NotPlaying) {
+            return interaction.reply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
+        }
+
+        if (db.profile.get(interaction.user.id, 'player_state') != PlayerState.NotPlaying 
         && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
         }

@@ -1,7 +1,7 @@
 0|Miniscule|So small that it reduces the chance to be hit by 10%.
 1|Icky|Boosts the power of OOZE & FUNGAL type attacks by 20%
 2|Burdened|A large growth reduces SPD by 10% but raises DEF by 15%
-3|Broodmother|Gains 5% ATK for each Oochamon in the same evolution line in the party.
+3|Broodmother|Gains 5% ATK for each Oochamon with the same type in the party.
 4|Tough|A durable body grants a 10% increase to DEF.
 5|Shadow|Grants a 25% chance to VANISH after being attacked.
 6|Withering|Loss of the body reduces HP by 5% each turn, but raises SPD by 20%
@@ -15,7 +15,7 @@
 14|Inertia|Increases SPD by 5% each turn.
 15|Dense|Attacks deal an extra 10% damage but reduces SPD by 10%
 16|Moist|Reduces FLAME damage by 50%.
-17|Alert|Increases ATK by 20% when an Oochamon switches in.
+17|Alert|Increases ATK by 10% when an Oochamon switches in.
 18|Fleeting|Increases SPD and ATK by 50% but also loses 50% of HP each turn.
 19|Efficient|Increases ATK by 5% each turn.
 20|Boisterous|Shatters eardrums when it enters the field dealing 5% of the enemy's HP
@@ -23,7 +23,7 @@
 22|Leech|Restores HP equal to 10% of damage done to the enemy.
 23|Ensnare|Grants a 30% chance to SNARE an enemy when attacking.
 24|Uncontrolled|Increases ATK by 30% but randomly chooses an attack each turn
-25|Apprentice|Increases an attack's damage by 20% if any other party members also know it.
+25|Apprentice|Increases ATK by 15% if any other party members share a move with it.
 26|Focused|Increases ATK by 10% if unaffected by status effects.
 27|Ravenous|Whenever defeating an enemy, restore 20% HP.
 28|Immense|Increases DEF by 20% but also makes opponent's moves always hit.
@@ -34,11 +34,12 @@
 33|Rogue|DOUBLES the damage dealt to full HP enemies.
 34|Crystallize|Ooze, Flame, and Stone attacks deal 30% more damage.
 35|Lacerating|The enemy loses 5% of their HP after you attack.
-36|Gravity|Increase ATK by 1% per number of turns in this battle.
+36|Gravity|Attacks deal 1% damage per number of turns in this battle.
 37|Sporespray|INFECTS the enemy when defeated.
 38|Frostbite|Attacks reduce the targets SPD by 5%.
 39|Bipolar|Use the DEF stat when dealing damage.
 40|Hexiply|Attacks deal 6% more damage per sixth of HP remaining.
-41|Nullify|Negate the effects of enemy abilities.
+41|Nullify|Change an opponents ability to Null while out on the field.
 42|Duplicant|Copy the opponent's ability.
-43|0000|FALSE
+43|Null|Does nothing.
+44|0000|FALSE

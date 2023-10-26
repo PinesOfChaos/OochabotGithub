@@ -246,16 +246,17 @@ prompt_battle_input: async function(thread, user_id) {
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
-    let ooch_plr_profile = db.profile.get(user_id, 'ooch_party');
+    let ooch_plr_profile = db.profile.get(user_id);
     let ooch_enemy = ooch_enemy_profile.ooch_party[ooch_enemy_profile.ooch_active_slot];
     // Get the players oochamon in the first spot of their party
-    let active_slot = db.profile.get(user_id, 'ooch_active_slot');
-    let ooch_plr = db.profile.get(user_id, `ooch_party[${db.profile.get(user_id, 'ooch_active_slot')}]`);
-    let ooch_pos = db.profile.get(user_id, 'ooch_active_slot');
+    let active_slot = ooch_plr_profile.ooch_active_slot;
+    let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
+    let ooch_pos = active_slot;
     let move_list = ooch_plr.moveset;
     let move_id, move_name, turn_order; // Battle variables
     let displayEmbed = new EmbedBuilder();
 
+    //#region Setup buttons and select menus
     const row = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
@@ -286,6 +287,15 @@ prompt_battle_input: async function(thread, user_id) {
                 .setEmoji('🏃‍♂️')
                 .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
         );
+
+    const row3 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('info')
+                    .setLabel('View Battle Info')
+                    .setEmoji('📒')
+                    .setStyle(ButtonStyle.Secondary),
+            )
     
     const move_buttons = new ActionRowBuilder();
     const switch_buttons_1 = new ActionRowBuilder();
@@ -310,6 +320,15 @@ prompt_battle_input: async function(thread, user_id) {
                 .setLabel('Back')
                 .setStyle(ButtonStyle.Danger),
         )
+
+    const back_button = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId('back')
+                .setLabel('Back')
+                .setStyle(ButtonStyle.Danger),
+        )
+    //#endregion
         
     // If our current oochamon sent out is dead, we need to get input to switch our oochamon.
     if (ooch_plr.current_hp <= 0) {
@@ -403,7 +422,7 @@ prompt_battle_input: async function(thread, user_id) {
         
     } else { // If our currently sent out Oochamon is alive, do input as normal.
 
-    let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2] });
+    let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2, row3] });
 
     const collector = thread.createMessageComponentCollector({ max: 1 });
 
@@ -488,7 +507,6 @@ prompt_battle_input: async function(thread, user_id) {
 
             break;
             case 'switch':
-                //#region SWITCH
                 let ooch_inv = db.profile.get(user_id, 'ooch_party')
                 let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
 
@@ -543,6 +561,15 @@ prompt_battle_input: async function(thread, user_id) {
                     displayEmbed.setColor('#0095ff')
                     displayEmbed.setTitle('↩️ Switch ↩️')
 
+                    // Reset stat multipliers for oochamon being swapped
+                    ooch_prev.stats.atk_mul = 1;
+                    ooch_prev.stats.def_mul = 1;
+                    ooch_prev.stats.spd_mul = 1;
+                    ooch_prev.stats.acc_mul = 1;
+                    ooch_prev.stats.eva_mul = 1;
+                    ooch_prev.ability = ooch_prev.og_ability;
+                    db.profile.set(user_id, ooch_prev, `ooch_party[${active_slot}]`);
+
                     // Check for on switch in abilities, player switching in, enemy ability activated
                     switch (ooch_enemy.ability) {
                         case 'Alert':
@@ -574,6 +601,10 @@ prompt_battle_input: async function(thread, user_id) {
                     ooch_pos = parseInt(ooch_sel.customId);
                     ooch_plr = ooch_pick;
                     db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
+                    // Update on switch in stats
+                    ooch_plr = ability_stat_change(ooch_plr, ooch_plr_profile.ooch_party);
+
+                    db.profile.set(user_id, ooch_plr, `ooch_party[${ooch_pos}]`);
 
                     // Enemy attacks player
                     let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
@@ -590,7 +621,6 @@ prompt_battle_input: async function(thread, user_id) {
                     await prompt_battle_input(thread, user_id);
 
                 });
-                //#endregion
             break;
             case 'bag':
                 //#region BAG
@@ -779,7 +809,6 @@ prompt_battle_input: async function(thread, user_id) {
                 //#endregion
             break;
             case 'run':
-                //#region RUN
                 if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
                     thread.send(`**------------ Player Turn ------------**` +
                     `\nYou successfully ran away!\nYour playspace will appear momentarily.`);
@@ -805,7 +834,53 @@ prompt_battle_input: async function(thread, user_id) {
                     // Prompt for more input
                     await prompt_battle_input(thread, user_id);
                 }
-                //#endregion
+            break;
+            case 'info':
+                let plrOochPrisms = '';
+                for (let ooch of ooch_plr_profile.ooch_party) {
+                    plrOochPrisms += ooch.alive ? '<:item_prism:1023031025716179076>' : `❌`;
+                }
+
+                let enemyOochPrisms = '';
+                for (let ooch of ooch_enemy_profile.ooch_party) {
+                    enemyOochPrisms += ooch.alive ? '<:item_prism:1023031025716179076>' : `❌`;
+                }
+
+                let oochInfoFields = [];
+                // Setup field info for the embed about both oochamon
+                for (let ooch of [ooch_plr, ooch_enemy]) {
+                    oochInfoFields.push({ 
+                        // If the oochInfoFields array length is 0, we are on the player oochamon, if not, we are on the enemy oochamon
+                        name: `${oochInfoFields.length == 0 ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`, 
+                        value: `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
+                        `**Ability:** ${ooch.ability}\n` + 
+                        `**Status Effects:** ${ooch.status_effects.length != 0 ? `${ooch.status_effects.join(', ')}` : `None`}\n\n` +
+                        `**Multipliers:**\n` +
+                        `Atk: ${ooch.stats.atk_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.atk_mul*100-100)}%\n` +
+                        `Def: ${ooch.stats.def_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.def_mul*100-100)}%\n` +
+                        `Spd: ${ooch.stats.spd_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.spd_mul*100-100)}%\n` +
+                        `Eva: ${ooch.stats.eva_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.eva_mul*100-100)}%\n` +
+                        `Acc: ${ooch.stats.acc_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.acc_mul*100-100)}%\n`,
+                        inline: true,
+                    });
+                }
+
+                let battleInfoEmbed = new EmbedBuilder()
+                    .setTitle('Battle Information 📒')
+                    .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
+                    .addFields(oochInfoFields)
+                let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
+
+                const info_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
+                await info_collector.on('collect', async i_sel => {
+                    switch (i_sel.customId) {
+                        case 'back':
+                            info_collector.stop();
+                            await info_msg.delete();
+                            await prompt_battle_input(thread, user_id);
+                        break;
+                    }
+                });
             break;
         }
     });
@@ -1574,7 +1649,6 @@ ability_stat_change: function(ooch, ooch_inv) {
             ooch = modify_stat(ooch, Stats.Speed, -0.1);
             ooch = modify_stat(ooch, Stats.Defense, 0.15); break;
         case 'Tough':
-            console.log('tough increase');
             ooch = modify_stat(ooch, Stats.Defense, 0.1); break;
         case 'Gentle':
             ooch = modify_stat(ooch, Stats.Attack, 0.1); break;
