@@ -158,22 +158,22 @@ module.exports = {
         // ✅ means tested
         //#region Ability Data
         //             ID,  NAME,           Description
-        create_ability(0,  'Miniscule',     'So small that it reduces the chance to be hit by 10%.'); // Added
+        create_ability(0,  'Miniscule',     'So small that it reduces the chance to be hit by 10%.'); // Added ✅
         create_ability(1,  'Icky',          'Boosts the power of OOZE & FUNGAL type attacks by 20%'); // Added
         create_ability(2,  'Burdened',      'A large growth reduces SPD by 10% but raises DEF by 15%'); // Added ✅
         create_ability(3,  'Broodmother',   'Gains 5% ATK for each Oochamon with the same type in the party.'); // Added
         create_ability(4,  'Tough',         'A durable body grants a 10% increase to DEF.'); // Added ✅
         create_ability(5,  'Shadow',        'Grants a 25% chance to VANISH after being attacked.'); // Added
-        create_ability(6,  'Withering',     'Loss of the body reduces HP by 5% each turn, but raises SPD by 20%'); // Added
+        create_ability(6,  'Withering',     'Loss of the body reduces HP by 5% each turn, but raises SPD by 20%'); // Added 
         create_ability(7,  'Darkbright',    'Attacks that afflict BURN also BLIND and vice-versa.'); // Added
-        create_ability(8,  'Gentle',        'A kind heart reduces both your ATK and the enemy ATK by 10%'); // Added 
+        create_ability(8,  'Gentle',        'A kind heart reduces both your ATK and the enemy ATK by 10%'); // Added ✅
         create_ability(9,  'Warm',          'Increases the damage of FLAME attacks by 10%.'); // Added
         create_ability(10, 'Radiant',       'Dangerous energy causes attacks that BURN also INFECT.'); // Added
-        create_ability(11, 'Conflicted',    'Multiple minds increase ALL stats by 5%.'); // Added
-        create_ability(12, 'Burrower',      'Increases the damage of STONE attacks by 10%'); // Added
+        create_ability(11, 'Conflicted',    'Multiple minds increase ALL stats by 5%.'); // Added ✅
+        create_ability(12, 'Burrower',      'Increases the damage of STONE attacks by 10%'); // Added 
         create_ability(13, 'Reactive',      'When hit by an attack, reflects 5% of the attacker\'s HP as damage.'); // Added
         create_ability(14, 'Inertia',       'Increases SPD by 5% each turn.'); // Added
-        create_ability(15, 'Dense',         'Attacks deal an extra 10% damage but reduces SPD by 10%'); // Added
+        create_ability(15, 'Dense',         'Attacks deal an extra 10% damage but reduces SPD by 10%'); // Added ✅
         create_ability(16, 'Moist',         'Reduces FLAME damage by 50%.'); // Added
         create_ability(17, 'Alert',         'Increases ATK by 10% when an Oochamon switches in.'); // Added
         create_ability(18, 'Fleeting',      'Increases SPD and ATK by 50% but also loses 50% of HP each turn.'); // Added
