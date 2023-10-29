@@ -385,13 +385,14 @@ prompt_battle_input: async function(thread, user_id) {
             let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
             let string_to_send = `You sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`;
 
-            // Reset stat multipliers for oochamon being swapped
+            // Reset stat multipliers for dead Oochamon
             ooch_plr.stats.atk_mul = 1;
             ooch_plr.stats.def_mul = 1;
             ooch_plr.stats.spd_mul = 1;
             ooch_plr.stats.acc_mul = 1;
             ooch_plr.stats.eva_mul = 1;
             ooch_plr.ability = ooch_plr.og_ability;
+            ooch_plr.status_effects = [];
             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
 
             // Check for on switch in abilities, player switching in, enemy ability activated
@@ -830,7 +831,9 @@ prompt_battle_input: async function(thread, user_id) {
                 //#endregion
             break;
             case 'run':
-                if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
+                // TODO: CHANGE THIS TO NOT BE GUARANTEED, IS ONLY GUARANTEED FOR TESTING
+                //if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
+                if (100 == 100) {
                     thread.send(`**------------ Player Turn ------------**` +
                     `\nYou successfully ran away!\nYour playspace will appear momentarily.`);
                     db.profile.inc(user_id, 'battle_msg_counter');
@@ -934,21 +937,22 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
     / 50 + 2);
 
     switch (move_type) {
-        case 'Ooze': 
-            if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1);
-            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
-        case 'Fungal':
-            if (ooch_attacker.ability == 'Icky') Math.round(damage *= 1.1); break;
-        case 'Flame':
-            if (ooch_attacker.ability == 'Warm') Math.round(damage *= 1.1);
-            if (ooch_defender.ability == 'Moist') Math.round(damage *= 0.5);
-            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
-        case 'Stone':
-            if (ooch_attacker.ability == 'Burrower') Math.round(damage *= 1.1);
-            if (ooch_defender.ability == 'Armored') Math.round(damage *= 0.80);
-            if (ooch_attacker.ability == 'Crystallize') Math.round(damage *= 1.3); break;
+        case 'ooze': 
+            if (ooch_attacker.ability == 'Icky') damage *= 1.2
+            if (ooch_attacker.ability == 'Crystallize') damage *= 1.3; break;
+        case 'fungal':
+            if (ooch_attacker.ability == 'Icky') damage *= 1.2; break;
+        case 'flame':
+            if (ooch_attacker.ability == 'Warm') damage *= 1.1;
+            if (ooch_defender.ability == 'Moist') damage *= 0.5;
+            if (ooch_attacker.ability == 'Crystallize') damage *= 1.3; break;
+        case 'stone':
+            if (ooch_attacker.ability == 'Burrower') damage *= 1.1;
+            if (ooch_defender.ability == 'Armored') damage *= 0.8;
+            if (ooch_attacker.ability == 'Crystallize') damage *= 1.3; break;
     }
 
+    damage = Math.round(damage);
     damage = _.clamp(damage, 1, ooch_defender.current_hp)
     return damage;
 },
@@ -1102,39 +1106,40 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         
         switch (defender.ability) {
             case 'Reactive':
-                attacker.current_hp = _.clamp(attacker.current_hp - Math.round(dmg * 0.05), 0, attacker.stats.hp)
-                reflect_dmg = Math.round(dmg * 0.05);
+                attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.05), 0, attacker.stats.hp)
+                reflect_dmg = Math.round(attacker.stats.hp * 0.05);
             break;
             case 'Shadow':
                 if (check_chance(25)) {
-                    defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** **VANISHED** after being hit!`
+                    defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** **VANISHED** after being hit due to the opposing Oochamon's ability **Shadow**!`;
                     defender.status_effects.push('vanished');
                 }
             break;
             case 'Tangled':
-                defender.field_text += `\nThe attacking ${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`
+                attacker.status_effects.push('snared');
+                defender.field_text += `\nThe attacking ${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`;
         }
 
         string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
         
         //If a crit lands
-        if(crit_multiplier >= 2){
-            string_to_send += `\n**A critical hit!**`
+        if (crit_multiplier >= 2) {
+            string_to_send += `\n**💢 A critical hit!**`
         }
 
         //If a attack has vampire
-         if(vampire_heal > 0){
+        if (vampire_heal > 0) {
             string_to_send += `\n--- ❤️ Restored **${vampire_heal}** HP from **Vampire**!`
         }
 
         //If attack has recoil
-        if(recoil_damage > 0){
+        if (recoil_damage > 0) {
             string_to_send += `\n--- 💥 Lost **${recoil_damage}** HP from recoil!`
         }
 
         // If attack has reflect damage
         if (reflect_dmg > 0) {
-            string_to_send += `\n--- 🪞 Took **${reflect_dmg}** HP from ${defender_emote} **${defender.nickname}**'s ability **Reactive**!`
+            string_to_send += `\n--- 🪞 Took **${reflect_dmg}** reflect damage from ${defender_emote} **${defender.nickname}**'s ability **Reactive**!`
         }
 
         //Type effectiveness
@@ -1153,7 +1158,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             break;
         }
 
-        if(Math.random() < move_effect_chance/100 && move_effect_chance > 0){ //Apply status effect
+        if (Math.random() < move_effect_chance/100 && move_effect_chance > 0) { //Apply status effect
             let status_adds = [move_effect];
             // Setup list of status effects to add
             switch (defender.ability) {
@@ -1210,7 +1215,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
     let displayEmbed = new EmbedBuilder()
     .setColor('#ff6f00')
-    .setTitle('⚔️ Attack ⚔️')
+    .setTitle(`⚔️ ${attacker_emote} ${attacker.nickname} Attack ⚔️`)
     .setDescription(`${string_to_send}\n${defender_field_text}`)
 
     await thread.send({ content: header, embeds: [displayEmbed] });
@@ -1412,8 +1417,10 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         let ooch = ooch_list[i];
         let opposing_ooch = ooch_list[!i | 0]; // Flip 1 to 0 or 0 to 1 via type casting
 
-        // Handle end of turn abilities
-        ooch = use_eot_ability(ooch);
+        // Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
+        eot_result = use_eot_ability(ooch);
+        ooch = eot_result[0];
+        string_to_send += eot_result[1];
 
         // Handle status effects
         let ooch_burned = ooch.status_effects.includes('burned');
@@ -1447,7 +1454,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
 
     let plr_hp_string = generate_hp_bar(ooch_plr, 'plr');
     let en_hp_string = generate_hp_bar(ooch_enemy, 'enemy');
-    string_to_send += `${plr_hp_string} ${ooch_status_emotes[0].join(' ')}\n${en_hp_string} ${ooch_status_emotes[1].join(' ')}`
+    string_to_send += `\n${plr_hp_string} ${ooch_status_emotes[0].join(' ')}\n${en_hp_string} ${ooch_status_emotes[1].join(' ')}`
 
     db.profile.inc(user_id, 'battle_turn_counter');
 
@@ -1517,13 +1524,14 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
                 break;
             }
 
-            // Reset modified stats
+            // Reset modified stats for dead oochamon
             ooch_enemy.stats.atk_mul = 1;
             ooch_enemy.stats.def_mul = 1;
             ooch_enemy.stats.spd_mul = 1;
             ooch_enemy.stats.acc_mul = 1;
             ooch_enemy.stats.eva_mul = 1;
             ooch_enemy.ability = ooch_enemy.og_ability;
+            ooch_enemy.status_effects = [];
             db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${enemy_profile.ooch_active_slot}]`);
 
             // Switch in stats
@@ -1695,9 +1703,8 @@ ability_stat_change: function(ooch, ooch_inv) {
         case 'Immense':
             ooch = modify_stat(ooch, Stats.Defense, 0.3); break;
         case 'Broodmother':
-            ooch = modify_stat(ooch, Stats.Attack, -0.05); // Because it will include itself in the below for loop
             for (let ooch_i of ooch_inv) {
-                if (ooch_i.type == ooch.type) {
+                if (ooch_i.type[0] === ooch.type[0] && ooch_i.id != ooch.id) {
                     ooch = modify_stat(ooch, Stats.Attack, 0.05);
                 }
             } break;
@@ -1722,21 +1729,30 @@ ability_stat_change: function(ooch, ooch_inv) {
  */
 use_eot_ability: function(ooch) {
     const { modify_stat } = require('./func_battle.js');
+    let ability_text = ``;
     switch(ooch.ability) {
         case 'Withering':
-            ooch.current_hp -= Math.round(ooch.stats.hp * 0.05); break;
+            ooch.current_hp -= Math.round(ooch.stats.hp * 0.05); 
+            ability_text = `\n${ooch.emote} **${ooch.name}** lost 5% of its HP due to its ability **Withering**!`;
+            break;
         case 'Fleeting':
-            ooch.current_hp = Math.floor(ooch.current_hp / 2); break;
+            ooch.current_hp = Math.floor(ooch.current_hp / 2);
+            ability_text = `\n${ooch.emote} **${ooch.name}** had its HP halved due to its ability **Fleeting**!`;
+            break;
         case 'Efficient':
-            ooch = modify_stat(ooch, 'atk', 0.05); break;
+            ooch = modify_stat(ooch, Stats.Attack, 0.05);
+            ability_text = `\n${ooch.emote} **${ooch.name}** increased its attack increased by 5% due to its ability **Efficient**!`;
+            break;
         case 'Inertia':
-            ooch = modify_stat(ooch, 'spd', 0.05); break;
+            ooch = modify_stat(ooch, Stats.Speed, 0.05); 
+            ability_text = `\n${ooch.emote} **${ooch.name}** increased its speed by 5% due to its ability **Inertia**!`;
+            break;
         case 'Focused':
-            if (ooch.status_effects.length == 0) ooch = modify_stat(ooch, 'atk', 0.075); 
+            if (ooch.status_effects.length == 0) ooch = modify_stat(ooch, Stats.Attack, 0.1); 
         break;
     }
 
-    return ooch;
+    return [ooch, ability_text];
 },
 
 /**
@@ -1756,7 +1772,7 @@ finish_battle: async function(thread, user_id) {
         await thread.bulkDelete(msgs_to_delete)
     }
 
-    // Reset Oochamon stat multipliers
+    // Reset Oochamon stat multipliers and ability and status effects
     for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
         let ooch = db.profile.get(user_id, `ooch_party[${i}]`);
         ooch.stats.atk_mul = 1;
@@ -1765,6 +1781,7 @@ finish_battle: async function(thread, user_id) {
         ooch.stats.acc_mul = 1;
         ooch.stats.eva_mul = 1;
         ooch.ability = ooch.og_ability;
+        ooch.status_effects = [];
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
 
@@ -1882,7 +1899,8 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     flipDrawImage(ctx, plrSprite, 25, 210, true); // horizontal mirror
     flipDrawImage(ctx, oochPlr, 58, 170, true); // horizontal mirror
     ctx.font = `10px main_med`;
-    ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 65, 245)
+    ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 65, 245);
+    ctx.fillText(`HP: ${plr.ooch_party[plr.ooch_active_slot].current_hp} / ${plr.ooch_party[plr.ooch_active_slot].stats.hp}`, 65, 255);
 
     // Enemy
     ctx.font = `italic bold 20px main_med`;

@@ -30,7 +30,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('test_battle_image')
         .setDescription('Test battle image'),
-	async execute(interaction, client) {
+	async execute(interaction) {
         await interaction.deferReply();
         let canvas = new Canvas(480, 270);
 
@@ -70,6 +70,7 @@ module.exports = {
         flipDrawImage(ctx, oochPlr, 58, 170, true); // horizontal mirror
         ctx.font = `10px main_med`;
         ctx.fillText('Lv. 50 Chantern', 65, 245)
+        ctx.fillText(`HP: 80/100`, 65, 255);
 
         ctx.font = `italic bold 20px main_med`;
         // Enemy
