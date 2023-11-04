@@ -1,7 +1,7 @@
 // For functions that don't fit into the other categories
 const db = require("./db")
 const { EmbedBuilder } = require('discord.js');
-const { TypeEmote } = require('./types');
+const { TypeEmote } = require('./types.js');
 const _ = require('lodash');
 
 module.exports = {

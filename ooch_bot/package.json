@@ -13,5 +13,8 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
   }
 }

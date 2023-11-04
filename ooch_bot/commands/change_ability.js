@@ -15,7 +15,7 @@ module.exports = {
     async execute(interaction) {
         
         let ability = interaction.options.getString('ability');
-        ability = _.startCase(ability);
+        ability = parseInt(ability);
         let party = db.profile.get(interaction.user.id, 'ooch_party');
         let active_slot = parseInt(db.profile.get(interaction.user.id, 'ooch_active_slot'));
         party[active_slot].ability = ability;

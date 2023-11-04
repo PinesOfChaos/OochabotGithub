@@ -13,7 +13,7 @@
 12|Torch|flame|70|90|-1|0|The user hits the target to deal damage
 13|Blight|fungal|60|90|blinded|50|If the infection takes hold, the target is BLINDED.
 14|Lava Lance|stone|65|95|burned|50|Red-hot stone is launched to BURN the target.
-15|Tumorize|fire|50|95|infected|50|The user creates radiation in order to INFECT the target.
+15|Tumorize|flame|50|95|infected|50|The user creates radiation in order to INFECT the target.
 16|Glimmer|stone|20|90|blinded|100|Refracts light in an attempt to BLIND the target.
 17|Gem Bash|stone|110|80|-1|0|Crystallized stones are swung wildly to inflict damage.
 18|Caustic Orb|ooze|60|100|burned|75|A ball of caustic goo is launched with a high chance of BURNING.
@@ -43,14 +43,14 @@
 42|Barrage|tech|100|80|recoil|30|Devastating blasts damage the target, the user is hit with Recoil.
 43|Eruption|flame|70|100|recoil|20|Blazing heat erupts from the user, damaging itself and the opponent.
 44|Self Destruct|tech|250|100|recoil|100|The user self destructs to inflict massive damage.
-45|Leech|fungal|20|100|vampire|10|The user damages the opponent, slightly Healing itself in the process.
+45|Siphon|fungal|20|100|vampire|10|The user damages the opponent, slightly Healing itself in the process.
 46|Drain Life|magic|50|50|vampire|50|A horribly innacurate move with the potential to greatly heal the user.
 47|Restruct|stone|0|100|heal|25|Stones are reorganized in the user's body to restore some HP.
 48|Flurry|tech|75|90|critical|50|A flurry of steel blades shred the target, with a high chance to land a Critical Hit.
 49|Crash Landing|stone|90|90|recoil|20|The user falls down from the sky inflicting high damage, but injuring itself.
 50|Solar Blast|flame|85|100|blinded|50|Lob a brilliant ball of flame, potentially BLINDING the target.
-51|Tangled Threds|neutral|70|100|snared|30|Threads are shot at the target dealing damage with a chance to SNARE them.
-52|Fated Threds|magic|80|100|snared|50|Magical threads fly through the air in an attempt to SNARE the target.
+51|Tangled Threads|neutral|70|100|snared|30|Threads are shot at the target dealing damage with a chance to SNARE them.
+52|Fated Threads|magic|80|100|snared|50|Magical threads fly through the air in an attempt to SNARE the target.
 53|Sync Strike|neutral|70|100|typematch|100|Launch a ball of energy synchronized with the user's type
 54|Threefold|neutral|90|90|critical|30|The target is struck repeatedly, leaving it open to Critical Hits.
 55|Glass Blades|stone|80|70|critical|50|Brittle blades are used to strike at the opponent's weak spots.

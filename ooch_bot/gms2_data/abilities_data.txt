@@ -42,4 +42,13 @@
 41|Nullify|Change an opponents ability to Null while out on the field.
 42|Duplicant|Copy the opponent's ability.
 43|Null|Does nothing.
-44|0000|FALSE
+44|invalid_entry|FALSE
+45|Immobile|Always goes second.
+46|Strings Attached|Chance of applying a random status when attacking.
+47|Corrosive|Attacks deal more damage to enemies with high DEF.
+48|Abyssal|Changes type to Magic every other turn.
+49|Height Advantage|Increases chance to Crit by 10%.
+50|Hearty|Increases damage done by 15% while above 50% HP.
+51|Radioactive|Changes type to Flame every other turn.
+52|Energized|Increases ATK and SPD by 10% on kill.
+53|Patient|Increases DEF by 5% each turn.

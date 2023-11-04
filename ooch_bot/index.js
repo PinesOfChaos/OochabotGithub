@@ -159,7 +159,7 @@ client.on('interactionCreate', async interaction => {
                     }
                 } 
                 ability_names = ability_names.slice(0, 25);
-                ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[1] });
+                ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[0] });
                 interaction.respond(ability_names);
             break;
         }
