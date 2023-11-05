@@ -3,6 +3,7 @@ extends Control
 @onready var fd_save = $FileDialogSave
 @onready var fd_load = $FileDialogLoad
 @onready var fd_path = $FileDialogSetFilePaths
+@onready var tileset = TileSet.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,6 +13,13 @@ func _ready():
 	fd_load.current_dir = Global.WorkingDir
 	fd_path.current_dir = Global.DataPath
 	
+	
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+#Load  default filepaths and values
 func load_preferences():
 	var config = ConfigFile.new()
 	var err = config.load("user://oochabot_config.cfg")
@@ -23,6 +31,7 @@ func load_preferences():
 		print(Global.DataPath)
 		print(Global.WorkingDir)
 		
+#Save default filepaths and values
 func save_preferences():
 	var config = ConfigFile.new()
 	config.set_value("Preferences", "DataPath", Global.DataPath)
@@ -31,18 +40,15 @@ func save_preferences():
 	config.save("user://oochabot_config.cfg")
 	print(Global.DataPath)
 	print(Global.WorkingDir)
-	
-# Called when the node enters the scene tree for the first time.
+
+#Used to download sprite_textures
 func download_texture(url : String, file_name : String):
 	var http = HTTPRequest.new()
 	add_child(http)
 	http.set_download_file(file_name)
 	http.request(url)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
+#Set the working directory for saving/loading
 func set_working_dir(path):
 	Global.WorkingDir = path
 	fd_save.current_dir = Global.WorkingDir
@@ -178,6 +184,11 @@ func refresh_data():
 		for i in abi_list.size():
 			abi_arr.push_back(int(abi_list[i]))
 		
+		var index = lnsplit[0]
+		var emote = lnsplit[1].split(":")[2]
+		emote = emote.replace(">","")
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","oochamon/" + index + ".png")
+		
 		Global.DataOochamon.push_back({
 			ooch_index = int(lnsplit[0]),
 			ooch_emote = lnsplit[1],
@@ -193,6 +204,7 @@ func refresh_data():
 			ooch_ability = abi_arr,
 			ooch_evo_to = int(lnsplit[12]),
 			ooch_evo_lv = int(lnsplit[13]),
+			ooch_sprite = "oochamon/" + index + ".png"
 		})
 		ln = f_oochamon.get_line()
 	#print(Global.DataTiles)
@@ -202,6 +214,12 @@ func refresh_data():
 	ln = f_tiles.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
+		
+		var index = lnsplit[0]
+		var emote = lnsplit[2].split(":")[2]
+		emote = emote.replace(">","")
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + index + ".png")
+		
 		Global.DataTiles.push_back({
 			tile_index = int(lnsplit[0]),
 			tile_use = lnsplit[1],

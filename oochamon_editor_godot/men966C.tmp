@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://d4dhr42a1mqo6"]
+[gd_scene load_steps=3 format=3 uid="uid://d4dhr42a1mqo6"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
+
+[sub_resource type="GDScript" id="GDScript_uxim7"]
+script/source = "extends Node
+
+"
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -11,6 +16,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ift6h")
 
+[node name="GridSpritesTiles" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 152.0
+offset_bottom = 42.0
+script = SubResource("GDScript_uxim7")
+
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save Map File"
 initial_position = 2
@@ -19,7 +32,7 @@ access = 2
 filters = PackedStringArray(".txt")
 
 [node name="FileDialogLoad" type="FileDialog" parent="."]
-title = "Open a File"
+title = "Open Map File"
 initial_position = 2
 size = Vector2i(500, 400)
 ok_button_text = "Open"
