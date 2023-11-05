@@ -93,6 +93,37 @@ placeholder_text = "Map Height"
 expand_to_text_length = true
 caret_blink = true
 
+[node name="GridOoch" type="GridContainer" parent="."]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.108
+anchor_top = 0.213
+anchor_right = 0.533
+anchor_bottom = 0.625
+offset_left = -0.416
+offset_top = -0.0240021
+offset_right = -0.0160522
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+
+[node name="GridTiles" type="GridContainer" parent="."]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.484
+anchor_top = 0.208
+anchor_right = 0.74
+anchor_bottom = 0.637
+offset_left = 0.431946
+offset_top = 0.216003
+offset_right = 0.52002
+offset_bottom = 0.223999
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
 [connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected"]

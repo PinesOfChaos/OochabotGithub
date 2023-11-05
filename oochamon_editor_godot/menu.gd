@@ -4,6 +4,9 @@ extends Control
 @onready var fd_load = $FileDialogLoad
 @onready var fd_path = $FileDialogSetFilePaths
 @onready var tileset = TileSet.new()
+@onready var grid_ooch = $GridOoch
+@onready var grid_tiles = $GridTiles
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,8 +15,65 @@ func _ready():
 	fd_save.current_dir = Global.WorkingDir
 	fd_load.current_dir = Global.WorkingDir
 	fd_path.current_dir = Global.DataPath
+	if Global.DataPath != "":
+		refresh_data()
+
+
+	#Data variables
+	var path
+	var dir
+	var file_num
+	var file_name
+	var box_child
 	
+
+	#Load Oochamon Data
+	var ooch_id;
 	
+	path = "res://oochamon/"
+	dir = DirAccess.open(path)
+	dir.list_dir_begin()
+	
+	file_num;
+	file_name = dir.get_next()
+	while file_name != "":
+		if !file_name.begins_with("."):
+			file_num = int(file_name.split(".")[0])
+			for i in Global.DataOochamon.size():
+				ooch_id = Global.DataOochamon[i].ooch_index
+				if ooch_id == file_num:
+					print(ooch_id)
+					Global.DataOochamon[i].ooch_sprite = load(path + file_name)
+					box_child = TextureButton.new()
+					box_child.set_texture_normal(Global.DataOochamon[i].ooch_sprite)
+					grid_ooch.add_child(box_child)
+		
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	
+	#Load Oochamon Data
+	var tile_id;
+	
+	path = "res://tiles/"
+	dir = DirAccess.open(path)
+	dir.list_dir_begin()
+	
+	file_num;
+	file_name = dir.get_next()
+	while file_name != "":
+		if !file_name.begins_with("."):
+			file_num = int(file_name.split(".")[0])
+			for i in Global.DataTiles.size():
+				tile_id = Global.DataTiles[i].tile_index
+				if typeof(tile_id) == TYPE_INT and tile_id == file_num:
+					Global.DataTiles[i].tile_sprite = load(path + file_name)
+					box_child = TextureButton.new()
+					print(Global.DataTiles[i].tile_sprite)
+					box_child.set_texture_normal(Global.DataTiles[i].tile_sprite)
+					grid_tiles.add_child(box_child)
+					
+		file_name = dir.get_next()
+	dir.list_dir_end()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -187,7 +247,7 @@ func refresh_data():
 		var index = lnsplit[0]
 		var emote = lnsplit[1].split(":")[2]
 		emote = emote.replace(">","")
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","oochamon/" + index + ".png")
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","oochamon/" + ("00" + index).right(3) + ".png")
 		
 		Global.DataOochamon.push_back({
 			ooch_index = int(lnsplit[0]),
@@ -204,7 +264,7 @@ func refresh_data():
 			ooch_ability = abi_arr,
 			ooch_evo_to = int(lnsplit[12]),
 			ooch_evo_lv = int(lnsplit[13]),
-			ooch_sprite = "oochamon/" + index + ".png"
+			ooch_sprite = -1
 		})
 		ln = f_oochamon.get_line()
 	#print(Global.DataTiles)
@@ -218,13 +278,14 @@ func refresh_data():
 		var index = lnsplit[0]
 		var emote = lnsplit[2].split(":")[2]
 		emote = emote.replace(">","")
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + index + ".png")
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + ("00" + index).right(3) + ".png")
 		
 		Global.DataTiles.push_back({
 			tile_index = int(lnsplit[0]),
 			tile_use = lnsplit[1],
 			tile_emote = lnsplit[2],
 			tile_emote_detailed = lnsplit[2],
+			tile_sprite = -1
 		})
 		ln = f_tiles.get_line()
 	#print(Global.DataTiles)
