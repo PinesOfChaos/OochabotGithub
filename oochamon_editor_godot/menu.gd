@@ -159,8 +159,24 @@ func refresh_data():
 	ln = f_oochamon.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
-		var moves_string = lnsplit[10]
-		var abi_string = lnsplit[11]
+		var moves_list = lnsplit[10].split(",")
+		var len = moves_list.size()
+		var moves_arr = []
+		var mv_lv
+		var mv_id
+		for i in moves_list.size()/2:
+			mv_lv = int(moves_list[(i * 2)])
+			mv_id = int(moves_list[(i * 2) + 1])
+			moves_arr.push_back({
+				move_level = mv_lv,
+				move_index = mv_id
+			})
+			
+		var abi_list = lnsplit[11].split(",")
+		var abi_arr = []
+		
+		for i in abi_list.size():
+			abi_arr.push_back(int(abi_list[i]))
 		
 		Global.DataOochamon.push_back({
 			ooch_index = int(lnsplit[0]),
@@ -173,10 +189,24 @@ func refresh_data():
 			ooch_atk = int(lnsplit[7]),
 			ooch_def = int(lnsplit[8]),
 			ooch_spd = int(lnsplit[9]),
-			ooch_moves = moves_string,
-			ooch_ability = abi_string,
+			ooch_moves = moves_arr,
+			ooch_ability = abi_arr,
 			ooch_evo_to = int(lnsplit[12]),
 			ooch_evo_lv = int(lnsplit[13]),
 		})
 		ln = f_oochamon.get_line()
-	print(Global.DataOochamon)
+	#print(Global.DataTiles)
+	
+	#Tiles
+	var f_tiles = FileAccess.open(Global.DataPath + "/tiles_data.txt", FileAccess.READ)
+	ln = f_tiles.get_line()
+	while ln != "":
+		lnsplit = ln.split("|")
+		Global.DataTiles.push_back({
+			tile_index = int(lnsplit[0]),
+			tile_use = lnsplit[1],
+			tile_emote = lnsplit[2],
+			tile_emote_detailed = lnsplit[2],
+		})
+		ln = f_tiles.get_line()
+	#print(Global.DataTiles)
