@@ -222,7 +222,6 @@ const Item = {
     AttackCrystal: 7,
 }
 
-
 module.exports = { 
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, TrainerType, 

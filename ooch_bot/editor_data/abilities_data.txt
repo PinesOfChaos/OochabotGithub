@@ -13,7 +13,7 @@
 12|Burrower|Increases the damage of STONE attacks by 10%
 13|Reactive|When hit by an attack, reflects 5% of the attacker's HP as damage.
 14|Inertia|Increases SPD by 5% each turn.
-15|Dense|Attacks deal an extra 10% damage but reduces SPD by 10%
+15|Dense|Increases ATK by 10% but reduces SPD by 10%
 16|Moist|Reduces FLAME damage by 50%.
 17|Alert|Increases ATK by 10% when an Oochamon switches in.
 18|Fleeting|Increases SPD and ATK by 50% but also loses 50% of HP each turn.
@@ -24,7 +24,7 @@
 23|Ensnare|Grants a 30% chance to SNARE an enemy when attacking.
 24|Uncontrolled|Increases ATK by 30% but randomly chooses an attack each turn
 25|Apprentice|Increases ATK by 15% if any other party members share a move with it.
-26|Focused|Increases ATK by 10% if unaffected by status effects.
+26|Focused|Increases damage by 10% if unaffected by status effects.
 27|Ravenous|Whenever defeating an enemy, restore 20% HP.
 28|Immense|Increases DEF by 20% but also makes opponent's moves always hit.
 29|Armored|Reduces STONE damage by 20%.
@@ -34,7 +34,7 @@
 33|Rogue|DOUBLES the damage dealt to full HP enemies.
 34|Crystallize|Ooze, Flame, and Stone attacks deal 30% more damage.
 35|Lacerating|The enemy loses 5% of their HP after you attack.
-36|Gravity|Attacks deal 1% damage per number of turns in this battle.
+36|Gravity|Attacks deal 1% more damage per number of turns in this battle.
 37|Sporespray|INFECTS the enemy when defeated.
 38|Frostbite|Attacks reduce the targets SPD by 5%.
 39|Bipolar|Use the DEF stat when dealing damage.
@@ -44,7 +44,7 @@
 43|Null|Does nothing.
 44|invalid_entry|FALSE
 45|Immobile|Always goes second.
-46|Strings Attached|Chance of applying a random status when attacking.
+46|Strings Attached|20% chance to apply a random status effect when attacking.
 47|Corrosive|Attacks deal more damage to enemies with high DEF.
 48|Abyssal|Changes type to Magic every other turn.
 49|Height Advantage|Increases chance to Crit by 10%.
@@ -52,3 +52,4 @@
 51|Radioactive|Changes type to Flame every other turn.
 52|Energized|Increases ATK and SPD by 10% on kill.
 53|Patient|Increases DEF by 5% each turn.
+54|Easy Go|Heals the rest of your party by 10% when defeated.

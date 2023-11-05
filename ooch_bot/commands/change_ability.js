@@ -22,6 +22,6 @@ module.exports = {
         party[active_slot].og_ability = ability;
         db.profile.set(interaction.user.id, party, 'ooch_party');
 
-        interaction.reply({ content: `Changed ability to ${ability}!`, ephemeral: false });
+        interaction.reply({ content: `Changed ability to ${db.ability_data.get(ability, 'name')}!`, ephemeral: false });
     },
 };

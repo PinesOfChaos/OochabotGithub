@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const Discord = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
@@ -178,7 +177,7 @@ module.exports = {
         create_ability(12, 'Burrower',          'Increases the damage of STONE attacks by 10%'); // ✅
         create_ability(13, 'Reactive',          'When hit by an attack, reflects 5% of the attacker\'s HP as damage.'); // ✅
         create_ability(14, 'Inertia',           'Increases SPD by 5% each turn.'); // ✅
-        create_ability(15, 'Dense',             'Attacks deal an extra 10% damage but reduces SPD by 10%'); // ✅
+        create_ability(15, 'Dense',             'Increases ATK by 10% but reduces SPD by 10%'); // ✅
         create_ability(16, 'Moist',             'Reduces FLAME damage by 50%.'); // ✅
         create_ability(17, 'Alert',             'Increases ATK by 10% when an Oochamon switches in.'); // 🟦
         create_ability(18, 'Fleeting',          'Increases SPD and ATK by 50% but also loses 50% of HP each turn.'); // ✅
@@ -187,9 +186,9 @@ module.exports = {
         create_ability(21, 'Haunted',           'Applies the DOOMED status to an enemy when the holder of the ability dies.'); // 🟦
         create_ability(22, 'Leech',             'Restores HP equal to 10% of damage done to the enemy.'); // 🟦
         create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.'); // 🟦
-        create_ability(24, 'Uncontrolled',      'Increases ATK by 30% but randomly chooses an attack each turn'); // ❌ (atk increase added, random attack not added)
+        create_ability(24, 'Uncontrolled',      'Increases ATK by 30% but randomly chooses an attack each turn'); // ✅
         create_ability(25, 'Apprentice',        'Increases ATK by 15% if any other party members share a move with it.'); // ✅
-        create_ability(26, 'Focused',           'Increases ATK by 10% if unaffected by status effects.'); // ❌ (broken in testing, increases attack by 10% every turn if no status effects)
+        create_ability(26, 'Focused',           'Increases damage by 10% if unaffected by status effects.'); // ✅
         create_ability(27, 'Ravenous',          'Whenever defeating an enemy, restore 20% HP.'); // 🟦
         create_ability(28, 'Immense',           'Increases DEF by 20% but also makes opponent\'s moves always hit.'); // 🟦
         create_ability(29, 'Armored',           'Reduces STONE damage by 20%.'); // ✅
@@ -199,26 +198,25 @@ module.exports = {
         create_ability(33, 'Rogue',             'DOUBLES the damage dealt to full HP enemies.'); // 🟦
         create_ability(34, 'Crystallize',       'Ooze, Flame, and Stone attacks deal 30% more damage.'); // ✅
         create_ability(35, 'Lacerating',        'The enemy loses 5% of their HP after you attack.'); // 🟦
-        create_ability(36, 'Gravity',           'Attacks deal 1% damage per number of turns in this battle.'); // ✅
+        create_ability(36, 'Gravity',           'Attacks deal 1% more damage per number of turns in this battle.'); // ✅
         create_ability(37, 'Sporespray',        'INFECTS the enemy when defeated.'); // 🟦
         create_ability(38, 'Frostbite',         'Attacks reduce the targets SPD by 5%.'); // 🟦
         create_ability(39, 'Bipolar',           'Use the DEF stat when dealing damage.'); // ✅
-        create_ability(40, 'Hexiply',           'Attacks deal 6% more damage per sixth of HP remaining.'); // 🟦
-        create_ability(41, 'Nullify',           'Change an opponents ability to Null while out on the field.'); // 🟦
-        create_ability(42, 'Duplicant',         'Copy the opponent\'s ability.'); // 🟦
+        create_ability(40, 'Hexiply',           'Attacks deal 6% more damage per sixth of HP remaining.'); // ✅
+        create_ability(41, 'Nullify',           'Change an opponents ability to Null while out on the field.'); // ✅
+        create_ability(42, 'Duplicant',         'Copy the opponent\'s ability.'); // ✅
         create_ability(43, 'Null',              'Does nothing.') // ✅
-        create_ability(44, 'invalid_entry',     'FALSE'); //Increase the global counter for i's stats by 1 upon defeat ❌
-
-        create_ability(45, 'Immobile',          'Always goes second.') // ❌
-        create_ability(46, 'Strings Attached',  'Chance of applying a random status when attacking.') // ❌
-        create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.') // ❌
+        create_ability(44, 'invalid_entry',     'FALSE'); //Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player ❌
+        create_ability(45, 'Immobile',          'Always goes second.') // ✅
+        create_ability(46, 'Strings Attached',  '20% chance to apply a random status effect when attacking.') // Statuses: Burn, Infect, Blind, Snare ✅
+        create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.') // ✅
         create_ability(48, 'Abyssal',           'Changes type to Magic every other turn.') // ❌
-        create_ability(49, 'Height Advantage',  'Increases chance to Crit by 10%.') // ❌
-        create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.') // ❌
+        create_ability(49, 'Height Advantage',  'Increases chance to Crit by 10%.') // ✅
+        create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.') // ✅
         create_ability(51, 'Radioactive',       'Changes type to Flame every other turn.') // ❌
-        create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.') // ❌
-        create_ability(53, 'Patient',           'Increases DEF by 5% each turn.') // ❌
-        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.')
+        create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.') // 🟦
+        create_ability(53, 'Patient',           'Increases DEF by 5% each turn.') // ✅
+        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.') // 🟦
         
 
         //#endregion
@@ -730,11 +728,11 @@ module.exports = {
             tiles_output_str += `${obj.id}|${obj.use}|${obj.emote}|${obj.emote_simple}\n`;
         }
 
-        fs.writeFile('./gms2_data/ooch_data.txt', ooch_output_str, (err) => { if (err) throw err; });
-        fs.writeFile('./gms2_data/moves_data.txt', moves_output_str, (err) => { if (err) throw err; });
-        fs.writeFile('./gms2_data/items_data.txt', items_output_str, (err) => { if (err) throw err; });
-        fs.writeFile('./gms2_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
-        fs.writeFile('./gms2_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/ooch_data.txt', ooch_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/moves_data.txt', moves_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/items_data.txt', items_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
 
         interaction.reply('Generated game data.');
     },

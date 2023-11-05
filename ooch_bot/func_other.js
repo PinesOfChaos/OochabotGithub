@@ -38,10 +38,10 @@ module.exports = {
     
     /**
      * Returns true or false based on a percent chance out of 100.
-     * @param {Number} num Percent chance to return true.
+     * @param {Number} percent Percent chance to return true.
      */
-    check_chance: function(num) {
-        return Math.random() <= num / 100;
+    check_chance: function(percent) {
+        return Math.random() <= percent / 100;
     }
 
 
