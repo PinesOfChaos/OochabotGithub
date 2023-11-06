@@ -1,0 +1,110 @@
+[gd_scene load_steps=2 format=3 uid="uid://ho8u6ajxeik8"]
+
+[ext_resource type="Script" path="res://slot_party.gd" id="1_1kapc"]
+
+[node name="Slot" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_1kapc")
+
+[node name="row_enable" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="slot_enable" type="CheckButton" parent="row_enable"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+focus_mode = 0
+text = "Enable Slot"
+
+[node name="row_general" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="slot_species" type="OptionButton" parent="row_general"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+tooltip_text = "Species"
+focus_mode = 0
+
+[node name="slot_level" type="SpinBox" parent="row_general"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 50.0
+value = 1.0
+prefix = "LV:"
+custom_arrow_step = 1.0
+
+[node name="slot_ability" type="OptionButton" parent="row_general"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+tooltip_text = "Ability"
+focus_mode = 0
+
+[node name="row_ivs" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="slot_hp" type="SpinBox" parent="row_ivs"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+max_value = 10.0
+prefix = "HP:"
+custom_arrow_step = 1.0
+
+[node name="slot_atk" type="SpinBox" parent="row_ivs"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+max_value = 10.0
+prefix = "ATK:"
+custom_arrow_step = 1.0
+
+[node name="slot_def" type="SpinBox" parent="row_ivs"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+max_value = 10.0
+prefix = "DEF:"
+custom_arrow_step = 1.0
+
+[node name="slot_spd" type="SpinBox" parent="row_ivs"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+max_value = 10.0
+prefix = "SPD:"
+custom_arrow_step = 1.0
+
+[node name="row_moves" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="move1" type="OptionButton" parent="row_moves"]
+layout_mode = 2
+tooltip_text = "Select a Move"
+
+[node name="move2" type="OptionButton" parent="row_moves"]
+layout_mode = 2
+tooltip_text = "Select a Move"
+
+[node name="move3" type="OptionButton" parent="row_moves"]
+layout_mode = 2
+tooltip_text = "Select a Move"
+
+[node name="move4" type="OptionButton" parent="row_moves"]
+layout_mode = 2
+tooltip_text = "Select a Move"
+
+[node name="summary" type="RichTextLabel" parent="."]
+visible = false
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 2
+text = "summary"
+tab_size = 20
+
+[connection signal="toggled" from="row_enable/slot_enable" to="." method="_on_slot_enable_toggled"]
+[connection signal="item_selected" from="row_general/slot_species" to="." method="_on_slot_species_item_selected"]
+[connection signal="value_changed" from="row_general/slot_level" to="." method="_on_slot_level_value_changed"]
+[connection signal="item_selected" from="row_general/slot_ability" to="." method="_on_slot_ability_item_selected"]
+[connection signal="value_changed" from="row_ivs/slot_hp" to="." method="_on_slot_hp_value_changed"]
+[connection signal="value_changed" from="row_ivs/slot_atk" to="." method="_on_slot_atk_value_changed"]
+[connection signal="value_changed" from="row_ivs/slot_def" to="." method="_on_slot_def_value_changed"]
+[connection signal="value_changed" from="row_ivs/slot_spd" to="." method="_on_slot_spd_value_changed"]

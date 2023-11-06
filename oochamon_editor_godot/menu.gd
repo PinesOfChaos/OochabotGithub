@@ -6,11 +6,23 @@ extends Control
 @onready var tileset = TileSet.new()
 @onready var grid_ooch = $GridOoch
 @onready var grid_tiles = $GridTiles
+@onready var val_button = preload("res://ValueButton.gd")
+@onready var v_box_menu = $VBoxMenu
+@onready var tooltips_paint = $TooltipsPaint
 
+var map_name = "testmap"
+var map_width = 128
+var map_height = 128
+var map_tiles = [[]]
+var mouse_x_prev = 0
+var mouse_y_prev = 0
+var cam_x = 0
+var cam_y = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_preferences()
+	map_reset()
 	
 	fd_save.current_dir = Global.WorkingDir
 	fd_load.current_dir = Global.WorkingDir
@@ -25,8 +37,9 @@ func _ready():
 	var file_num
 	var file_name
 	var box_child
+	var image
+	var err
 	
-
 	#Load Oochamon Data
 	var ooch_id;
 	
@@ -42,12 +55,19 @@ func _ready():
 			for i in Global.DataOochamon.size():
 				ooch_id = Global.DataOochamon[i].ooch_index
 				if ooch_id == file_num:
-					print(ooch_id)
-					Global.DataOochamon[i].ooch_sprite = load(path + file_name)
-					box_child = TextureButton.new()
-					box_child.set_texture_normal(Global.DataOochamon[i].ooch_sprite)
-					grid_ooch.add_child(box_child)
-		
+					image = Image.new()
+					err = image.load(path + file_name)
+					if !err:
+						Global.DataOochamon[i].ooch_sprite = load(path + file_name)	
+						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite
+
+						
+						box_child = val_button.new()
+						box_child.value = i
+						box_child.set_texture_normal(Global.DataOochamon[i].ooch_sprite)
+						box_child.tooltip_text = "[" + ("00" + str(ooch_id)).right(3) + "] " + Global.DataOochamon[i].ooch_name
+						grid_ooch.add_child(box_child)
+					
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	
@@ -65,19 +85,126 @@ func _ready():
 			file_num = int(file_name.split(".")[0])
 			for i in Global.DataTiles.size():
 				tile_id = Global.DataTiles[i].tile_index
-				if typeof(tile_id) == TYPE_INT and tile_id == file_num:
-					Global.DataTiles[i].tile_sprite = load(path + file_name)
-					box_child = TextureButton.new()
-					print(Global.DataTiles[i].tile_sprite)
-					box_child.set_texture_normal(Global.DataTiles[i].tile_sprite)
-					grid_tiles.add_child(box_child)
+				if tile_id == file_num:
+					image = Image.new()
+					err = image.load(path + file_name)
+					if !err:
+						Global.DataTiles[i].tile_sprite = load(path + file_name)
+						
+						
+						Global.DataTiles[i].tile_texture = ImageTexture.new()
+						Global.DataTiles[i].tile_texture.create_from_image(Global.DataTiles[i].tile_sprite)
+						box_child = val_button.new()
+						box_child.value = i
+						box_child.set_texture_normal(Global.DataTiles[i].tile_sprite)
+						box_child.tooltip_text = Global.DataTiles[i].tile_emote
+						grid_tiles.add_child(box_child)
 					
 		file_name = dir.get_next()
 	dir.list_dir_end()
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	step()	
+	step_end()		
+				
+func _draw():
+	if grid_tiles.get_child_count() == 0:
+		return
+	for i in map_width:
+		for j in map_height:
+			draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((i * 32) - cam_x, (j * 32) - cam_y))
+
+func step_begin():
 	pass
+
+func step():
+	match Global.CurrentMapMode:
+		Global.MapMode.MAP_NONE:
+			v_box_menu.visible = true
+		Global.MapMode.MAP_NPC_EDIT:
+			v_box_menu.visible = false
+		Global.MapMode.MAP_PAINT_BRUSH_SELECT:
+			v_box_menu.visible = false
+			if Global.TileSelected != -1:
+				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT_WAIT
+			elif Input.is_action_just_pressed("ui_cancel"):
+				Global.CurrentMapMode = Global.MapMode.MAP_NONE
+				grid_tiles.visible = false
+		Global.MapMode.MAP_PAINT_BRUSH_SELECT_WAIT:
+			if !Input.is_action_pressed("mouse_left"):
+				Global.CurrentMapMode = Global.MapMode.MAP_PAINT
+		Global.MapMode.MAP_PAINT:
+			tooltips_paint.visible = true
+			var xx = floor(get_local_mouse_position().x/Global.TileSize)
+			var yy = floor(get_local_mouse_position().y/Global.TileSize)
+			if Input.is_action_pressed("mouse_left"):
+				if Input.is_action_pressed("vk_control"):
+					var from = map_tiles[xx][yy]
+					var list = [[xx, yy]]
+					var cx
+					var cy
+					while list.size() > 0:
+						#Left Side
+						cx = list[0][0] - 1
+						cy = list[0][1]
+						if cx >= 0 and map_tiles[cx][cy] == from and map_tiles[cx][cy] != Global.TileSelected:
+							map_tiles[cx][cy] = Global.TileSelected
+							list.push_back([cx, cy])
+						
+						#Right Side
+						cx = list[0][0] + 1
+						cy = list[0][1]
+						if cx < map_width and map_tiles[cx][cy] == from and map_tiles[cx][cy] != Global.TileSelected:
+							map_tiles[cx][cy] = Global.TileSelected
+							list.push_back([cx, cy])
+						
+						#Top Side
+						cx = list[0][0]
+						cy = list[0][1] - 1
+						if cy >= 0 and map_tiles[cx][cy] == from and map_tiles[cx][cy] != Global.TileSelected:
+							map_tiles[cx][cy] = Global.TileSelected
+							list.push_back([cx, cy])
+						
+						#Right Side
+						cx = list[0][0]
+						cy = list[0][1] + 1
+						if cy < map_height and map_tiles[cx][cy] == from and map_tiles[cx][cy] != Global.TileSelected:
+							map_tiles[cx][cy] = Global.TileSelected
+							list.push_back([cx, cy])
+						
+						list.remove_at(0)
+				else:
+					map_tiles[xx][yy] = Global.TileSelected
+				queue_redraw()
+			elif Input.is_action_pressed("mouse_right"):
+				map_tiles[xx][yy] = 0
+				queue_redraw()
+			elif Input.is_action_pressed("mouse_middle"):
+				if Input.is_action_pressed("vk_control"):
+					cam_x -= get_local_mouse_position().x - mouse_x_prev
+					cam_y -= get_local_mouse_position().y - mouse_y_prev
+					queue_redraw()
+				else:
+					Global.TileSelected = map_tiles[xx][yy]
+			elif Input.is_action_just_pressed("ui_cancel"):
+				Global.TileSelected = -1
+				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
+				grid_tiles.visible = true
+				tooltips_paint.visible = false
+
+func step_end():
+	mouse_x_prev = get_local_mouse_position().x
+	mouse_y_prev = get_local_mouse_position().y
+	
+func map_reset():
+	map_tiles.clear()
+	var subarr = []
+	subarr.resize(map_height)
+	subarr.fill(0)
+	map_tiles.resize(map_width)
+	for i in map_height:
+		map_tiles[i] = subarr.duplicate()
+		
 
 #Load  default filepaths and values
 func load_preferences():
@@ -88,8 +215,6 @@ func load_preferences():
 	else:
 		Global.DataPath = config.get_value("Preferences", "DataPath", "/")
 		Global.WorkingDir = config.get_value("Preferences", "WorkingDir", "/")
-		print(Global.DataPath)
-		print(Global.WorkingDir)
 		
 #Save default filepaths and values
 func save_preferences():
@@ -98,8 +223,6 @@ func save_preferences():
 	config.set_value("Preferences", "WorkingDir", Global.WorkingDir)
 	
 	config.save("user://oochabot_config.cfg")
-	print(Global.DataPath)
-	print(Global.WorkingDir)
 
 #Used to download sprite_textures
 func download_texture(url : String, file_name : String):
@@ -172,8 +295,14 @@ func refresh_data():
 	var ln
 	var lnsplit
 	
+	
+	
+	
 	#Abilities
 	var f_abilities = FileAccess.open(Global.DataPath + "/abilities_data.txt", FileAccess.READ)
+	if FileAccess.get_open_error():
+		return
+	
 	ln = f_abilities.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -253,8 +382,8 @@ func refresh_data():
 			ooch_index = int(lnsplit[0]),
 			ooch_emote = lnsplit[1],
 			ooch_link_image = lnsplit[2],
-			ooch_name = int(lnsplit[3]),
-			ooch_desc = int(lnsplit[4]),
+			ooch_name = lnsplit[3],
+			ooch_desc = lnsplit[4],
 			ooch_element = lnsplit[5],
 			ooch_hp = int(lnsplit[6]),
 			ooch_atk = int(lnsplit[7]),
@@ -264,7 +393,8 @@ func refresh_data():
 			ooch_ability = abi_arr,
 			ooch_evo_to = int(lnsplit[12]),
 			ooch_evo_lv = int(lnsplit[13]),
-			ooch_sprite = -1
+			ooch_sprite = -1,
+			ooch_texture = -1
 		})
 		ln = f_oochamon.get_line()
 	#print(Global.DataTiles)
@@ -285,7 +415,12 @@ func refresh_data():
 			tile_use = lnsplit[1],
 			tile_emote = lnsplit[2],
 			tile_emote_detailed = lnsplit[2],
-			tile_sprite = -1
+			tile_sprite = -1,
+			tile_texture = -1
 		})
 		ln = f_tiles.get_line()
-	#print(Global.DataTiles)
+	
+func _on_button_map_brush_pressed():
+	Global.TileSelected = -1
+	Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
+	grid_tiles.visible = true

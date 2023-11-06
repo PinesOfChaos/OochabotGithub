@@ -1,0 +1,119 @@
+[gd_scene load_steps=4 format=3 uid="uid://367y78a4vefe"]
+
+[ext_resource type="Script" path="res://npc.gd" id="1_k6ast"]
+[ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_61jdu"]
+[ext_resource type="Texture2D" uid="uid://du5ekl5m7wmhi" path="res://tiles/022.png" id="2_w2p6y"]
+
+[node name="npc" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_k6ast")
+
+[node name="npc_object" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 189.0
+offset_right = 584.0
+offset_bottom = 229.0
+focus_mode = 0
+texture_normal = ExtResource("2_w2p6y")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Basic Info" type="VBoxContainer" parent="TabContainer"]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+
+[node name="general_info" type="HBoxContainer" parent="TabContainer/Basic Info"]
+layout_mode = 2
+
+[node name="npc_sprite" type="Button" parent="TabContainer/Basic Info/general_info"]
+layout_mode = 2
+focus_mode = 0
+text = "Sprite"
+
+[node name="npc_sprite_combat" type="LineEdit" parent="TabContainer/Basic Info/general_info"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 1
+placeholder_text = "Combat Sprite"
+
+[node name="npc_name" type="LineEdit" parent="TabContainer/Basic Info/general_info"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 1
+placeholder_text = "NPC Name"
+
+[node name="flag_required" type="LineEdit" parent="TabContainer/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Required"
+
+[node name="flag_given" type="LineEdit" parent="TabContainer/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Given"
+
+[node name="flag_kill" type="LineEdit" parent="TabContainer/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Kill"
+
+[node name="remove_on_finish" type="HBoxContainer" parent="TabContainer/Basic Info"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Basic Info/remove_on_finish"]
+layout_mode = 2
+text = "Remove On Finish ?"
+
+[node name="check_remove_finish" type="CheckButton" parent="TabContainer/Basic Info/remove_on_finish"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="items" type="HBoxContainer" parent="TabContainer/Basic Info"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="TabContainer/Basic Info/items"]
+layout_mode = 2
+focus_mode = 0
+text = "Item: None"
+
+[node name="item_count" type="SpinBox" parent="TabContainer/Basic Info/items"]
+layout_mode = 2
+prefix = "x"
+
+[node name="coin" type="HBoxContainer" parent="TabContainer/Basic Info"]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="TabContainer/Basic Info/coin"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+prefix = "Coin: x"
+
+[node name="Slot 1" parent="TabContainer" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+
+[node name="Slot 2" parent="TabContainer" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+
+[node name="Slot 3" parent="TabContainer" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+
+[node name="Slot 4" parent="TabContainer" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2

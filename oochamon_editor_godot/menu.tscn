@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://d4dhr42a1mqo6"]
+[gd_scene load_steps=5 format=3 uid="uid://d4dhr42a1mqo6"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
+[ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
+[ext_resource type="Script" path="res://GridTiles.gd" id="3_idg2d"]
+[ext_resource type="PackedScene" uid="uid://367y78a4vefe" path="res://npc.tscn" id="4_s3hgg"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -93,36 +96,85 @@ placeholder_text = "Map Height"
 expand_to_text_length = true
 caret_blink = true
 
-[node name="GridOoch" type="GridContainer" parent="."]
+[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+text = "Paint"
+
+[node name="ButtonNewNPC" type="Button" parent="VBoxMenu"]
 layout_direction = 2
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.108
-anchor_top = 0.213
-anchor_right = 0.533
-anchor_bottom = 0.625
-offset_left = -0.416
-offset_top = -0.0240021
-offset_right = -0.0160522
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New NPC"
+
+[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Spawn Area"
+
+[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Save Point"
+
+[node name="ButtonNewShop" type="Button" parent="VBoxMenu"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Shop"
+
+[node name="ButtonNewTransition" type="Button" parent="VBoxMenu"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Transition"
+
+[node name="ButtonNewEvent" type="Button" parent="VBoxMenu"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Event Trigger"
+
+[node name="GridOoch" type="GridContainer" parent="."]
+visible = false
+layout_direction = 2
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
 columns = 16
+script = ExtResource("2_c15v4")
 
 [node name="GridTiles" type="GridContainer" parent="."]
+visible = false
 layout_direction = 2
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.484
-anchor_top = 0.208
-anchor_right = 0.74
-anchor_bottom = 0.637
-offset_left = 0.431946
-offset_top = 0.216003
-offset_right = 0.52002
-offset_bottom = 0.223999
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
 columns = 16
+script = ExtResource("3_idg2d")
+
+[node name="TooltipsPaint" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 917.0
+offset_right = 1152.0
+offset_bottom = 121.0
+text = "LMB					- Paint
+LMB + Ctrl			- Fill
+RMB					- Erase
+MMB					- Select Tile
+Escape				- Return"
+
+[node name="npc" parent="." instance=ExtResource("4_s3hgg")]
 
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
@@ -132,3 +184,4 @@ columns = 16
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonRefreshData" to="." method="_on_button_refresh_data_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
