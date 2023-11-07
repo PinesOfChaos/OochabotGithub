@@ -16,6 +16,22 @@ layout_mode = 2
 focus_mode = 0
 text = "Enable Slot"
 
+[node name="row_element" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="element_lable" type="Label" parent="row_element"]
+custom_minimum_size = Vector2(63, 0)
+layout_mode = 2
+text = "Element: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="element_texture" type="TextureRect" parent="row_element"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+expand_mode = 1
+
 [node name="row_general" type="HBoxContainer" parent="."]
 visible = false
 layout_mode = 2
@@ -40,6 +56,43 @@ custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 tooltip_text = "Ability"
 focus_mode = 0
+
+[node name="VSeparator" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="row_moves" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="move1" type="OptionButton" parent="row_moves"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Select a Move"
+expand_icon = true
+
+[node name="move2" type="OptionButton" parent="row_moves"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Select a Move"
+expand_icon = true
+
+[node name="move3" type="OptionButton" parent="row_moves"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Select a Move"
+expand_icon = true
+
+[node name="move4" type="OptionButton" parent="row_moves"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+tooltip_text = "Select a Move"
+expand_icon = true
+fit_to_longest_item = false
+
+[node name="VSeparator2" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="row_ivs" type="HBoxContainer" parent="."]
 visible = false
@@ -73,26 +126,6 @@ max_value = 10.0
 prefix = "SPD:"
 custom_arrow_step = 1.0
 
-[node name="row_moves" type="VBoxContainer" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="move1" type="OptionButton" parent="row_moves"]
-layout_mode = 2
-tooltip_text = "Select a Move"
-
-[node name="move2" type="OptionButton" parent="row_moves"]
-layout_mode = 2
-tooltip_text = "Select a Move"
-
-[node name="move3" type="OptionButton" parent="row_moves"]
-layout_mode = 2
-tooltip_text = "Select a Move"
-
-[node name="move4" type="OptionButton" parent="row_moves"]
-layout_mode = 2
-tooltip_text = "Select a Move"
-
 [node name="summary" type="RichTextLabel" parent="."]
 visible = false
 custom_minimum_size = Vector2(400, 200)
@@ -104,6 +137,10 @@ tab_size = 20
 [connection signal="item_selected" from="row_general/slot_species" to="." method="_on_slot_species_item_selected"]
 [connection signal="value_changed" from="row_general/slot_level" to="." method="_on_slot_level_value_changed"]
 [connection signal="item_selected" from="row_general/slot_ability" to="." method="_on_slot_ability_item_selected"]
+[connection signal="item_selected" from="row_moves/move1" to="." method="_on_move_1_item_selected"]
+[connection signal="item_selected" from="row_moves/move2" to="." method="_on_move_2_item_selected"]
+[connection signal="item_selected" from="row_moves/move3" to="." method="_on_move_3_item_selected"]
+[connection signal="item_selected" from="row_moves/move4" to="." method="_on_move_4_item_selected"]
 [connection signal="value_changed" from="row_ivs/slot_hp" to="." method="_on_slot_hp_value_changed"]
 [connection signal="value_changed" from="row_ivs/slot_atk" to="." method="_on_slot_atk_value_changed"]
 [connection signal="value_changed" from="row_ivs/slot_def" to="." method="_on_slot_def_value_changed"]

@@ -9,6 +9,8 @@ extends Control
 @onready var val_button = preload("res://ValueButton.gd")
 @onready var v_box_menu = $VBoxMenu
 @onready var tooltips_paint = $TooltipsPaint
+@onready var menu_children = $MenuChildren
+@onready var menu_npcs = $MenuChildren/npcs
 
 var map_name = "testmap"
 var map_width = 128
@@ -112,17 +114,34 @@ func _draw():
 		return
 	for i in map_width:
 		for j in map_height:
-			draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((i * 32) - cam_x, (j * 32) - cam_y))
+			draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((i * 32) - Global.CamX, (j * 32) - Global.CamY))
 
 func step_begin():
 	pass
 
 func step():
+	if Input.is_action_pressed("mouse_middle"):
+			Global.CamX -= get_local_mouse_position().x - mouse_x_prev
+			Global.CamY -= get_local_mouse_position().y - mouse_y_prev
+			
+			var cx
+			var cy
+			for child in menu_npcs.get_children():
+				cx = child.npc_x * Global.TileSize - Global.CamX
+				cy = child.npc_y * Global.TileSize - Global.CamY
+				child.o_npc_object.set_position(Vector2(cx, cy))
+			
+			queue_redraw()
+	
 	match Global.CurrentMapMode:
 		Global.MapMode.MAP_NONE:
 			v_box_menu.visible = true
-		Global.MapMode.MAP_NPC_EDIT:
-			v_box_menu.visible = false
+		Global.MapMode.MAP_OBJ_EDIT:
+			if Input.is_action_just_pressed("ui_cancel"):
+				Global.CurrentMapMode = Global.MapMode.MAP_NONE
+				Global.ObjSelected = -1
+			else:
+				v_box_menu.visible = false
 		Global.MapMode.MAP_PAINT_BRUSH_SELECT:
 			v_box_menu.visible = false
 			if Global.TileSelected != -1:
@@ -135,8 +154,8 @@ func step():
 				Global.CurrentMapMode = Global.MapMode.MAP_PAINT
 		Global.MapMode.MAP_PAINT:
 			tooltips_paint.visible = true
-			var xx = floor(get_local_mouse_position().x/Global.TileSize)
-			var yy = floor(get_local_mouse_position().y/Global.TileSize)
+			var xx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
+			var yy = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
 			if Input.is_action_pressed("mouse_left"):
 				if Input.is_action_pressed("vk_control"):
 					var from = map_tiles[xx][yy]
@@ -177,15 +196,11 @@ func step():
 					map_tiles[xx][yy] = Global.TileSelected
 				queue_redraw()
 			elif Input.is_action_pressed("mouse_right"):
-				map_tiles[xx][yy] = 0
-				queue_redraw()
-			elif Input.is_action_pressed("mouse_middle"):
 				if Input.is_action_pressed("vk_control"):
-					cam_x -= get_local_mouse_position().x - mouse_x_prev
-					cam_y -= get_local_mouse_position().y - mouse_y_prev
-					queue_redraw()
-				else:
 					Global.TileSelected = map_tiles[xx][yy]
+				else:
+					map_tiles[xx][yy] = 0
+				queue_redraw()		
 			elif Input.is_action_just_pressed("ui_cancel"):
 				Global.TileSelected = -1
 				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
@@ -294,9 +309,6 @@ func refresh_data():
 	Global.DataTiles = []
 	var ln
 	var lnsplit
-	
-	
-	
 	
 	#Abilities
 	var f_abilities = FileAccess.open(Global.DataPath + "/abilities_data.txt", FileAccess.READ)
@@ -424,3 +436,11 @@ func _on_button_map_brush_pressed():
 	Global.TileSelected = -1
 	Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
 	grid_tiles.visible = true
+
+func _on_button_new_npc_button_down():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://npc.tscn")
+	var instance = scene.instantiate()
+	menu_npcs.add_child(instance)
+	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
+	instance.dragging = true

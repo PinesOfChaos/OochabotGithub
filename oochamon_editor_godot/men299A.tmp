@@ -170,7 +170,7 @@ offset_bottom = 121.0
 text = "LMB					- Paint
 LMB + Ctrl			- Fill
 RMB					- Erase
-RMB + Ctrl			- Select Tile
+MMB					- Select Tile
 Escape				- Return"
 
 [node name="MenuChildren" type="Control" parent="."]
