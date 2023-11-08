@@ -4,7 +4,7 @@ const db = require('../db.js');
 const _ = require('lodash');
 const { setup_playspace_str } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
-const { type_to_emote } = require('../func_battle.js');
+const { type_to_emote, item_use } = require('../func_battle.js');
 const { ooch_info_embed } = require('../func_other.js');
  
 module.exports = {
@@ -12,8 +12,6 @@ module.exports = {
         .setName('menu')
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
-
-        console.log(interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id'));
 
         if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.NotPlaying) {
             return interaction.reply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
@@ -108,11 +106,16 @@ module.exports = {
         // Party Menu Extra Buttons
         let party_extra_buttons = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('primary').setLabel('Set To Primary').setStyle(ButtonStyle.Success),
+                new ButtonBuilder().setCustomId('primary').setLabel('Set As Primary').setStyle(ButtonStyle.Success).setEmoji('👑'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('nickname').setLabel('Change Nickname').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1023031024726327426>').setDisabled(true),
+            )
+                
+        let party_extra_buttons_2 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('nickname').setLabel('Edit Nickname').setStyle(ButtonStyle.Primary).setEmoji('📝'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('moves').setLabel('Change Moves').setStyle(ButtonStyle.Primary).setDisabled(true),
+                new ButtonBuilder().setCustomId('moves').setLabel('Edit Moves').setStyle(ButtonStyle.Primary).setDisabled(true).setEmoji('💢'),
             );
 
         let bag_buttons = new ActionRowBuilder()
@@ -278,19 +281,29 @@ module.exports = {
         }
 
         // Initialize all variables used across multiple sub menus here
-        let selected;
+        let selected, collectorId;
         let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch,
         move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed,
         heal_inv, prism_inv, key_inv, display_inv, oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
         oochadex_sel_3 = new ActionRowBuilder(), oochadex_data, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
-        pref_data, pref_desc
+        pref_data, pref_desc;
+
+        // Enable party healing button if we have healing items
+        let healItems = Object.entries(user_profile.heal_inv);
+        if (healItems.length != 0) {
+            for (let item of healItems) {
+                if (user_profile.heal_inv[item] != 0) party_extra_buttons.components[1].setDisabled(false); 
+            }
+        }  
 
         // Menu operation is handled in this collector
         await collector.on('collect', async i => {
             // Initialize used variables
             if (i.componentType == ComponentType.Button) {
                 selected = i.customId;
+                collectorId = i.customId;
             } else {
+                collectorId = i.customId;
                 selected = i.values[0];
             }
 
@@ -307,7 +320,7 @@ module.exports = {
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Back to Box Select
             else if (selected == 'back_to_box') {
@@ -330,7 +343,9 @@ module.exports = {
                 selected_ooch = ooch_party[party_idx]
 
                 // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
+                // Also reset the heal button to be enabled or disabled based on current HP values
                 party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
+                party_extra_buttons.components[1].setDisabled(selected_ooch.current_hp == selected_ooch.stats.hp ? true : false)
                 
                 // Check if we can enable the move switcher, if we have more options outside of the main 4 moves
                 let available_moves = 0;
@@ -342,7 +357,7 @@ module.exports = {
 
                 dexEmbed = ooch_info_embed(selected_ooch);
 
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Set to Primary Button
             else if (selected == 'primary') {
@@ -350,8 +365,49 @@ module.exports = {
                 [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
                 db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
                 party_extra_buttons.components[0].setDisabled(true);
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
                 interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
+            }
+            // Heal Oochamon button
+            else if (selected == 'party_heal') {
+                heal_inv = db.profile.get(interaction.user.id, 'heal_inv');
+                let heal_inv_keys = Object.keys(heal_inv);
+                displayEmbed = new EmbedBuilder();
+
+                bag_select = new ActionRowBuilder();
+                let heal_select_options = [];
+                for (let i = 0; i < heal_inv_keys.length; i++) {
+                    let id = heal_inv_keys[i];
+                    let amount = db.profile.get(interaction.user.id, `heal_inv.${heal_inv_keys[i]}`)
+
+                    if (amount != 0) {
+                        heal_select_options.push({ 
+                            label: `${db.item_data.get(id, 'name')} (${amount})`,
+                            description: db.item_data.get(id, 'description'),
+                            value: `${id}`,
+                            emoji: db.item_data.get(id, 'emote'),
+                        });
+                    }
+                }
+
+                bag_select.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('party_heal_select')
+                    .setPlaceholder('Select an item in your inventory to heal with!')
+                    .addOptions(heal_select_options),
+                );
+
+                await i.update({ content: `**Select the healing item you'd like to use on this Oochamon!**`, components: [bag_select, moves_back_button] });
+            } else if (collectorId == 'party_heal_select') {
+                let item_data = db.item_data.get(selected);
+                selected_ooch = item_use(selected_ooch, selected);
+                let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
+                interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**`, ephemeral: true });
+                db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
+                
+                if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
+                let dexEmbed = ooch_info_embed(selected_ooch);
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Set a nickname button
             else if (selected == 'nickname') {
@@ -378,7 +434,7 @@ module.exports = {
                     dexEmbed.setTitle(ooch_title);
 
                     db.profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
-                    menuMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_back_button] });
+                    menuMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
                     msg.delete();
                 });
             }
