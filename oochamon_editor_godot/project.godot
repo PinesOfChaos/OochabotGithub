@@ -13,6 +13,7 @@ config_version=5
 config/name="oochamon_level_editor"
 run/main_scene="res://menu.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
+run/max_fps=165
 config/icon="res://icon.svg"
 
 [autoload]
