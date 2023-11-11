@@ -1,6 +1,6 @@
 extends Control
 
-
+@onready var bounding_box = $"."
 @onready var box_button = $box_button
 @onready var anchor_top_left = $anchorTopLeft
 @onready var anchor_top_right = $anchorTopRight
@@ -26,7 +26,7 @@ func _process(delta):
 	if !refreshed:
 		refreshed = true
 		reset_box(get_position().x, get_position().y, get_position().x, get_position().y)
-	if dragging_scale:
+	if dragging_scale and typeof(Global.ObjSelected) == typeof(get_instance_id()) and Global.ObjSelected == get_parent().get_instance_id():
 		var mpos = get_local_mouse_position()
 		mpos.x = floor((mpos.x + Global.CamX)/Global.TileSize) * Global.TileSize
 		mpos.y = floor((mpos.y + Global.CamY)/Global.TileSize) * Global.TileSize
@@ -35,25 +35,36 @@ func _process(delta):
 			dragging_scale = false
 
 func _on_anchor_top_left_button_down():
+	Global.ObjSelected = get_parent().get_instance_id()
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	
 	origin_x = (pos_x + (scale_x)) * Global.TileSize
 	origin_y = (pos_y + (scale_y)) * Global.TileSize
 	dragging_scale = true
 
 func _on_anchor_top_right_button_down():
+	Global.ObjSelected = get_parent().get_instance_id()
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	
 	origin_x = (pos_x) * Global.TileSize
 	origin_y = (pos_y + (scale_y)) * Global.TileSize
 	dragging_scale = true
 
 func _on_anchor_bot_left_button_down():
+	Global.ObjSelected = get_parent().get_instance_id()
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	
 	origin_x = (pos_x + (scale_x)) * Global.TileSize
 	origin_y = (pos_y) * Global.TileSize
 	dragging_scale = true
 
 func _on_anchor_bot_right_button_down():
+	Global.ObjSelected = get_parent().get_instance_id()
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	
 	origin_x = (pos_x) * Global.TileSize
 	origin_y = (pos_y) * Global.TileSize
 	dragging_scale = true
-
 	
 func reset_box(xstart, ystart, xend, yend):
 	pos_x = floor(min(xstart, xend)/Global.TileSize)

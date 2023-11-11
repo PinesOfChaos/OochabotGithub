@@ -71,6 +71,7 @@ scale = Vector2(-0.25, -0.25)
 texture_normal = ExtResource("3_nd7js")
 stretch_mode = 0
 
+[connection signal="pressed" from="box_button" to="." method="_on_box_button_pressed"]
 [connection signal="button_down" from="anchorTopLeft" to="." method="_on_anchor_top_left_button_down"]
 [connection signal="button_down" from="anchorTopRight" to="." method="_on_anchor_top_right_button_down"]
 [connection signal="button_down" from="anchorBotLeft" to="." method="_on_anchor_bot_left_button_down"]

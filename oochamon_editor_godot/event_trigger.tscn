@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://byvta0q6emb8q"]
+
+[ext_resource type="Script" path="res://event_trigger.gd" id="1_p477o"]
+[ext_resource type="PackedScene" uid="uid://03iueniy68e0" path="res://bounding_box.tscn" id="2_ni0ob"]
+
+[node name="event_trigger" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_p477o")
+
+[node name="bounding_box" parent="." instance=ExtResource("2_ni0ob")]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 1
+
+[node name="event_vbox" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="event_name" type="LineEdit" parent="event_vbox"]
+layout_mode = 2
+placeholder_text = "Event Name"
+
+[node name="event_required" type="LineEdit" parent="event_vbox"]
+layout_mode = 2
+placeholder_text = "Event Required"
+
+[node name="event_kill" type="LineEdit" parent="event_vbox"]
+layout_mode = 2
+placeholder_text = "Event Kill"
+
+[connection signal="text_submitted" from="event_vbox/event_name" to="." method="_on_event_name_text_submitted"]
+[connection signal="text_submitted" from="event_vbox/event_required" to="." method="_on_event_required_text_submitted"]
+[connection signal="text_submitted" from="event_vbox/event_kill" to="." method="_on_event_kill_text_submitted"]

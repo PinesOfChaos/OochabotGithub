@@ -34,8 +34,9 @@ var CamX = 0
 var CamY = 0
 
 func get_camera_center():
-	var xx =  (DisplayServer.window_get_size().x / 2) - Global.CamX 
-	var yy =  (DisplayServer.window_get_size().y / 2) - Global.CamY
+	var view_size = get_viewport().size
+	var xx =  floor((Global.CamX/2 + view_size.x/4)/Global.TileSize) * Global.TileSize
+	var yy =  floor((Global.CamY/2 + view_size.y/4)/Global.TileSize) * Global.TileSize
 	return(Vector2(xx,yy))
 
 func element_info(element):

@@ -138,7 +138,22 @@ func step():
 				cy = child.npc_y * Global.TileSize - Global.CamY
 				child.o_npc_object.set_position(Vector2(cx, cy))
 				
+			for child in menu_transitions.get_children():
+				cx = child.transition_x * Global.TileSize - Global.CamX
+				cy = child.transition_y * Global.TileSize - Global.CamY
+				child.o_transition_object.set_position(Vector2(cx, cy))
+				
 			for child in menu_spawnzones.get_children():
+				var bbox = child.bounding_box
+				var x1 =bbox.pos_x * Global.TileSize
+				var y1 = bbox.pos_y * Global.TileSize
+				bbox.reset_box(
+					x1, 
+					y1, 
+					x1 + bbox.scale_x * Global.TileSize,
+					y1 + bbox.scale_y * Global.TileSize
+				)
+			for child in menu_events.get_children():
 				var bbox = child.bounding_box
 				var x1 =bbox.pos_x * Global.TileSize
 				var y1 = bbox.pos_y * Global.TileSize
@@ -462,13 +477,31 @@ func _on_button_new_npc_button_down():
 	menu_npcs.add_child(instance)
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
-
+	
+func _on_button_new_transition_button_down():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://transition.tscn")
+	var instance = scene.instantiate()
+	menu_transitions.add_child(instance)
+	Global.ObjSelected = menu_transitions.get_child(menu_transitions.get_child_count() - 1).get_instance_id()
+	instance.dragging = true
+	
 func _on_button_new_spawn_region_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
 	var scene = load("res://spawn_zone.tscn")
 	var instance = scene.instantiate()
 	menu_spawnzones.add_child(instance)
 	Global.ObjSelected = menu_spawnzones.get_child(menu_spawnzones.get_child_count() - 1).get_instance_id()
+	var x1 = Global.get_camera_center().x
+	var y1 = Global.get_camera_center().y
+	instance.bounding_box.set_position(Vector2(x1, y1))
+	
+func _on_button_new_event_pressed():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://event_trigger.tscn")
+	var instance = scene.instantiate()
+	menu_events.add_child(instance)
+	Global.ObjSelected = menu_events.get_child(menu_events.get_child_count() - 1).get_instance_id()
 	var x1 = Global.get_camera_center().x
 	var y1 = Global.get_camera_center().y
 	instance.bounding_box.set_position(Vector2(x1, y1))
@@ -490,3 +523,6 @@ func _on_button_visible_shop_toggled(button_pressed):
 
 func _on_button_visible_npc_toggled(button_pressed):
 	menu_npcs.visible = button_pressed
+
+
+
