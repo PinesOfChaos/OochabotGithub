@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Stri
 const Discord = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
-const { setup_playspace_str } = require('../func_play');
+const { setup_playspace_str, create_ooch } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
 const { ooch_info_embed } = require('../func_other.js');
@@ -13,15 +13,16 @@ module.exports = {
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
 
-        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.NotPlaying) {
+        let playerState = db.profile.get(interaction.user.id, 'player_state');
+        if (playerState == PlayerState.NotPlaying) {
             return interaction.reply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
-        }
-
-        if (db.profile.get(interaction.user.id, 'player_state') != PlayerState.NotPlaying 
-        && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
+        } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
+        } else if (playerState == PlayerState.Menu) {
+            return interaction.reply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`});
         }
 
+        db.profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
         // Delete the current playspace
         let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
         await playspace_msg.delete();
@@ -94,7 +95,6 @@ module.exports = {
             ).addComponents(
                 new ButtonBuilder().setCustomId('add_box').setLabel('Add To Box').setStyle(ButtonStyle.Secondary)
             )
-
             
         let confirm_buttons = new ActionRowBuilder()
         .addComponents(
@@ -109,6 +109,8 @@ module.exports = {
                 new ButtonBuilder().setCustomId('primary').setLabel('Set As Primary').setStyle(ButtonStyle.Success).setEmoji('👑'),
             ).addComponents(
                 new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1023031024726327426>').setDisabled(true),
+            ).addComponents(
+                new ButtonBuilder().setCustomId('evolve').setLabel('Evolve').setStyle(ButtonStyle.Success).setDisabled(true).setEmoji('⬆️')
             )
                 
         let party_extra_buttons_2 = new ActionRowBuilder()
@@ -250,7 +252,6 @@ module.exports = {
                         .setCustomId(`move_${i}`)
                         .setLabel(move_id != -1 ? `${move_name}` : `No Move`)
                         .setStyle(move_id != -1 ? ButtonStyle.Primary : ButtonStyle.Secondary)
-                        .setDisabled(Boolean(move_id == -1))
                         .setEmoji(move_id != -1 ? type_to_emote(move_type) : '❌')
                 )
             }
@@ -353,7 +354,15 @@ module.exports = {
                     // move[0] is the level the move is learned
                     if (move[0] <= selected_ooch.level && move[0] != -1) available_moves += 1;
                 }
-                if (available_moves >= 5) party_extra_buttons.components[2].setDisabled(false);
+                if (available_moves >= 5) party_extra_buttons_2.components[1].setDisabled(false);
+
+                // Check if we can evolve
+                let evoLvl = db.monster_data.get(selected_ooch.id, 'evo_id');
+                if (selected_ooch.level >= evoLvl && evoLvl != -1) {
+                    party_extra_buttons.components[2].setDisabled(false);
+                } else {
+                    party_extra_buttons.components[2].setDisabled(true);
+                }
 
                 dexEmbed = ooch_info_embed(selected_ooch);
 
@@ -398,7 +407,9 @@ module.exports = {
                 );
 
                 await i.update({ content: `**Select the healing item you'd like to use on this Oochamon!**`, components: [bag_select, moves_back_button] });
-            } else if (collectorId == 'party_heal_select') {
+            } 
+            // Oochamon Heal Select Menu
+            else if (collectorId == 'party_heal_select') {
                 let item_data = db.item_data.get(selected);
                 selected_ooch = item_use(selected_ooch, selected);
                 let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
@@ -409,6 +420,28 @@ module.exports = {
                 let dexEmbed = ooch_info_embed(selected_ooch);
                 i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
+            // Evolve button
+            else if (selected == 'evolve') {
+                let oochData = db.monster_data.get(selected_ooch.id);
+                // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
+                let nickname = selected_ooch.nickname == selected_ooch.name ? false : selected_ooch.nickname;
+
+                let newEvoOoch = create_ooch(oochData.evo_id, selected_ooch.level, selected_ooch.moveset, nickname, selected_ooch.current_exp, false, 
+                                          selected_ooch.stats.hp_iv, selected_ooch.stats.atk_iv, selected_ooch.stats.def_iv, selected_ooch.stats.spd_iv);
+                let dexEmbed = ooch_info_embed(newEvoOoch);
+                oochData = db.monster_data.get(newEvoOoch.id);
+
+                if (oochData.evo_id == -1 || oochData.evo_lvl == -1 || newEvoOoch.level < oochData.evo_lvl) {
+                    party_extra_buttons.components[2].setDisabled(true);
+                }
+
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉`, ephemeral: true });
+
+                // Finalize putting the ooch into the database and in our menu
+                selected_ooch = newEvoOoch;
+                db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
+            }   
             // Set a nickname button
             else if (selected == 'nickname') {
                 let nick_filter = m => {
@@ -471,7 +504,12 @@ module.exports = {
                             .addOptions(move_list_select_options),
                     );
 
-                    i.update({ content: `**${type_to_emote(db.move_data.get(move_sel_id, 'type'))} ${db.move_data.get(move_sel_id, 'name')}**`, components: [move_list_select] });
+                    let displayContent = `Select a move to use!`;
+                    if (move_sel_id) {
+                        displayContent = `Selected Move: ${type_to_emote(db.move_data.get(move_sel_id, 'type'))} **${db.move_data.get(move_sel_id, 'name')}**`;
+                    }
+
+                    i.update({ content: displayContent, components: [move_list_select] });
                 } else { // if a select menu move is selected
                     selected = parseInt(selected.replace('move_sel_', ''));
                     db.profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].moveset[${move_sel_idx}]`);

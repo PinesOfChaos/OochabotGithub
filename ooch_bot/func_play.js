@@ -430,6 +430,90 @@ module.exports = {
     give_item: function(user_id, item_id, item_count) {
         let item = db.item_data.get(item_id);
         db.profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
+    },
+
+    /**
+     * Create an Oochamon object
+     * @param {Number | String} ooch_id The ID of the Oochamon
+     * @param {Number} level The level of the Oochamon (default: 5)
+     * @param {Array} move_list The list of moves to give the oochamon (default: random)
+     * @param {String} nickname The nickname for the Oochamon (default: normal ooch name)
+     * @param {Number} cur_exp The amount of starting XP to give it (default: 0)
+     * @param {String} ability The ability of the oochamon (default: random)
+     * @param {Number} hp_iv Hp IV (default, random calculation)
+     * @param {Number} atk_iv Attack IV (default: random calculation)
+     * @param {Number} def_iv Defense IV (default: random calculation)
+     * @param {Number} spd_iv Speed IV (default: random calculation)
+     * @param {Number} held_item ID of the Item for the Oochamon to hold (default: no item) [UNUSED]
+     * @returns The oochamon object
+     */
+    create_ooch: function(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = _.random(0,10)/20+1, atk_iv = _.random(0,10)/20+1,
+                            def_iv = _.random(0,10)/20+1, spd_iv = _.random(0,10)/20+1, held_item = -1) {
+
+        const { get_stats } = require('./func_battle');
+                            
+        // Setup ooch_id data
+        let learn_list = db.monster_data.get(ooch_id, 'move_list');
+        let ability_list = db.monster_data.get(ooch_id, 'abilities');
+        if (nickname == false) nickname = db.monster_data.get(ooch_id, 'name');
+
+        // Pick a random ability (unless we specify, then force one)
+        let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
+        if (ability != false) {
+            rand_ability = ability;
+        }
+        
+        //Get the stats accounting for the ID, Level, and IVs
+        let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
+
+        //Find what moves the starter should initially know
+        if (move_list.length == 0) {
+            learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
+            for(let i = 0; i < learn_list.length; i++){
+                move_list[i] = learn_list[i][0];
+            }
+
+            // Make sure the move_list is 4 moves
+            while (move_list.length > 4) {
+                let rand_move_pos = _.random(0, move_list.length)
+                move_list.splice(rand_move_pos, 1);
+            }
+        }
+
+        return { 
+            id: ooch_id,
+            name: db.monster_data.get(ooch_id, 'name'), 
+            nickname: nickname,
+            item: held_item,
+            ability: rand_ability,
+            og_ability: rand_ability,
+            level: level,
+            moveset: move_list,
+            stats: {
+                hp: stats[0],
+                atk: stats[1],
+                def: stats[2],
+                spd: stats[3],
+                hp_iv: hp_iv,
+                atk_iv: atk_iv,
+                def_iv: def_iv,
+                spd_iv: spd_iv,
+                atk_mul: 1,
+                def_mul: 1,
+                spd_mul: 1,
+                acc_mul: 1, // Accuracy Multiplier, used for accuracy checks
+                eva_mul: 1 // Evasion Multiplier, used for accuracy checks
+            },
+            status_effects: [],
+            current_hp: stats[0],
+            current_exp: cur_exp,
+            next_lvl_exp: level ** 3,
+            current_hp: stats[0],
+            alive: true,
+            evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
+            type: db.monster_data.get(ooch_id, 'type'),
+            emote: db.monster_data.get(ooch_id, 'emote')
+        }
     }
 
 }

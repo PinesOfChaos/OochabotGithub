@@ -3,7 +3,8 @@ const Discord = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
 const { get_stats } = require('../func_battle.js');
-const { PlayerState, GraphicsMode } = require('../types.js');
+const { PlayerState, GraphicsMode, Item } = require('../types.js');
+const { create_ooch } = require('../func_play.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -63,9 +64,8 @@ module.exports = {
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
-            db.profile.set(interaction.user.id, [0, 4], 'global_shop_items'),
+            db.profile.set(interaction.user.id, [Item.Potion, Item.Prism], 'global_shop_items'),
             
-
             // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
             // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
             db.profile.set(interaction.user.id, [], 'npc_event_data'); 
@@ -87,66 +87,9 @@ module.exports = {
                     db.profile.push(interaction.user.id, { id: ooch_id, seen: 0, caught: 0 }, 'oochadex')
                 }
             }
-            
-            // Setup starter data
-            let learn_list = db.monster_data.get(starter, 'move_list');
-            let ability_list = db.monster_data.get(starter, 'abilities');
-            let move_list = [];
 
-            // Pick a random ability
-            let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
-
-            //Set the IVs & Level
-            let hp_iv = _.random(0,10)/20+1;
-            let atk_iv = _.random(0,10)/20+1;
-            let def_iv = _.random(0,10)/20+1;
-            let spd_iv = _.random(0,10)/20+1;
-            let level = 5;
-
-            //Get the stats accounting for the ID, Level, and IVs
-            let stats = get_stats(starter, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
-
-            //Find what moves the starter should initially know
-            learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
-            for(let i = 0; i < learn_list.length; i++){
-                move_list[i] = learn_list[i][1]; //get only the move ID and put it in the move_list
-            }
-
-            db.profile.set(interaction.user.id, [ 
-                { 
-                    id: starter,
-                    name: db.monster_data.get(starter, 'name'), 
-                    nickname: db.monster_data.get(starter, 'name'),
-                    item: -1,
-                    ability: rand_ability,
-                    og_ability: rand_ability,
-                    level: level,
-                    moveset: move_list,
-                    stats: {
-                        hp: stats[0],
-                        atk: stats[1],
-                        def: stats[2],
-                        spd: stats[3],
-                        hp_iv: hp_iv,
-                        atk_iv: atk_iv,
-                        def_iv: def_iv,
-                        spd_iv: spd_iv,
-                        atk_mul: 1,
-                        def_mul: 1,
-                        spd_mul: 1,
-                        acc_mul: 1, // Accuracy Multiplier, used for accuracy checks
-                        eva_mul: 1 // Evasion Multiplier, used for accuracy checks
-                    },
-                    status_effects: [],
-                    current_hp: stats[0],
-                    current_exp: 0,
-                    next_lvl_exp: level ** 3,
-                    alive: true,
-                    evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
-                    type: db.monster_data.get(starter, 'type'),
-                    emote: db.monster_data.get(starter, 'emote'),
-                }
-            ], 'ooch_party')
+            let ooch = create_ooch(ooch_id);
+            db.profile.set(interaction.user.id, [ooch], 'ooch_party');
 
         });
 
