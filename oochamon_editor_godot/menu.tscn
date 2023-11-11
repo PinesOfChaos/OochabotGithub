@@ -274,6 +274,7 @@ offset_bottom = 40.0
 [connection signal="button_down" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_button_down"]
 [connection signal="pressed" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxSavePoint/ButtonVisibleSavePoint" to="." method="_on_button_visible_save_point_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxSavePoint/ButtonNewSavePoint" to="." method="_on_button_new_save_point_button_down"]
 [connection signal="toggled" from="VBoxMenu/HBoxShop/ButtonVisibleShop" to="." method="_on_button_visible_shop_toggled"]
 [connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled"]
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]

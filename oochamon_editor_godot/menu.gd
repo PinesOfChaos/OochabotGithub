@@ -143,6 +143,11 @@ func step():
 				cy = child.transition_y * Global.TileSize - Global.CamY
 				child.o_transition_object.set_position(Vector2(cx, cy))
 				
+			for child in menu_save_points.get_children():
+				cx = child.savepoint_x * Global.TileSize - Global.CamX
+				cy = child.savepoint_y * Global.TileSize - Global.CamY
+				child.o_savepoint_object.set_position(Vector2(cx, cy))
+				
 			for child in menu_spawnzones.get_children():
 				var bbox = child.bounding_box
 				var x1 =bbox.pos_x * Global.TileSize
@@ -486,6 +491,14 @@ func _on_button_new_transition_button_down():
 	Global.ObjSelected = menu_transitions.get_child(menu_transitions.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
 	
+func _on_button_new_save_point_button_down():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://savepoint.tscn")
+	var instance = scene.instantiate()
+	menu_save_points.add_child(instance)
+	Global.ObjSelected = menu_save_points.get_child(menu_save_points.get_child_count() - 1).get_instance_id()
+	instance.dragging = true
+	
 func _on_button_new_spawn_region_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
 	var scene = load("res://spawn_zone.tscn")
@@ -523,6 +536,3 @@ func _on_button_visible_shop_toggled(button_pressed):
 
 func _on_button_visible_npc_toggled(button_pressed):
 	menu_npcs.visible = button_pressed
-
-
-
