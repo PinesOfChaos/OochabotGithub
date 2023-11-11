@@ -33,6 +33,11 @@ var CurrentMapMode = MapMode.MAP_NONE
 var CamX = 0
 var CamY = 0
 
+func get_camera_center():
+	var xx =  (DisplayServer.window_get_size().x / 2) - Global.CamX 
+	var yy =  (DisplayServer.window_get_size().y / 2) - Global.CamY
+	return(Vector2(xx,yy))
+
 func element_info(element):
 	var texture
 	var string

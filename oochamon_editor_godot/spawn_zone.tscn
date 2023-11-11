@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsps6xgoth3u4"]
+
+[ext_resource type="PackedScene" uid="uid://03iueniy68e0" path="res://bounding_box.tscn" id="1_ep63b"]
+[ext_resource type="Script" path="res://spawn_zone.gd" id="1_xcail"]
+
+[node name="spawn_zone" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xcail")
+
+[node name="bounding_box" parent="." instance=ExtResource("1_ep63b")]
+modulate = Color(1, 0, 0, 1)
+layout_mode = 1
+
+[node name="spawn_slots" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="button_add_slot" type="Button" parent="spawn_slots"]
+layout_mode = 2
+text = "+ Add Slot"
+
+[connection signal="pressed" from="spawn_slots/button_add_slot" to="." method="_on_button_add_slot_pressed"]

@@ -9,7 +9,13 @@ extends Control
 @onready var val_button = preload("res://ValueButton.gd")
 @onready var v_box_menu = $VBoxMenu
 @onready var tooltips_paint = $TooltipsPaint
+
 @onready var menu_children = $MenuChildren
+@onready var menu_events = $MenuChildren/events
+@onready var menu_spawnzones = $MenuChildren/spawn_zones
+@onready var menu_transitions = $MenuChildren/transitions
+@onready var menu_save_points = $MenuChildren/save_points
+@onready var menu_shops = $MenuChildren/shops
 @onready var menu_npcs = $MenuChildren/npcs
 
 var map_name = "testmap"
@@ -108,6 +114,7 @@ func _ready():
 func _process(delta):
 	step()	
 	step_end()		
+	
 				
 func _draw():
 	if grid_tiles.get_child_count() == 0:
@@ -130,6 +137,17 @@ func step():
 				cx = child.npc_x * Global.TileSize - Global.CamX
 				cy = child.npc_y * Global.TileSize - Global.CamY
 				child.o_npc_object.set_position(Vector2(cx, cy))
+				
+			for child in menu_spawnzones.get_children():
+				var bbox = child.bounding_box
+				var x1 =bbox.pos_x * Global.TileSize
+				var y1 = bbox.pos_y * Global.TileSize
+				bbox.reset_box(
+					x1, 
+					y1, 
+					x1 + bbox.scale_x * Global.TileSize,
+					y1 + bbox.scale_y * Global.TileSize
+				)
 			
 			queue_redraw()
 	
@@ -444,3 +462,31 @@ func _on_button_new_npc_button_down():
 	menu_npcs.add_child(instance)
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
+
+func _on_button_new_spawn_region_pressed():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://spawn_zone.tscn")
+	var instance = scene.instantiate()
+	menu_spawnzones.add_child(instance)
+	Global.ObjSelected = menu_spawnzones.get_child(menu_spawnzones.get_child_count() - 1).get_instance_id()
+	var x1 = Global.get_camera_center().x
+	var y1 = Global.get_camera_center().y
+	instance.bounding_box.set_position(Vector2(x1, y1))
+	
+func _on_button_visible_event_toggled(button_pressed):
+	menu_events.visible = button_pressed
+
+func _on_button_visible_spawnzone_toggled(button_pressed):
+	menu_spawnzones.visible = button_pressed
+
+func _on_button_visible_transition_toggled(button_pressed):
+	menu_transitions.visible = button_pressed
+
+func _on_button_visible_save_point_toggled(button_pressed):
+	menu_save_points.visible = button_pressed
+
+func _on_button_visible_shop_toggled(button_pressed):
+	menu_shops.visible = button_pressed
+
+func _on_button_visible_npc_toggled(button_pressed):
+	menu_npcs.visible = button_pressed

@@ -1,0 +1,77 @@
+[gd_scene load_steps=4 format=3 uid="uid://03iueniy68e0"]
+
+[ext_resource type="Script" path="res://bounding_box.gd" id="1_84a8u"]
+[ext_resource type="Texture2D" uid="uid://bsnaj41sa17n7" path="res://editor_assets/box_highlight1.png" id="2_yvvhb"]
+[ext_resource type="Texture2D" uid="uid://wcrqipflbhyu" path="res://editor_assets/box_highlight2.png" id="3_nd7js"]
+
+[node name="bounding_box" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_84a8u")
+
+[node name="box_button" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+stretch_mode = 0
+
+[node name="drawn_rect" type="NinePatchRect" parent="box_button"]
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+texture = ExtResource("2_yvvhb")
+region_rect = Rect2(0, 0, 32, 32)
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="anchorTopLeft" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+scale = Vector2(0.25, 0.25)
+texture_normal = ExtResource("3_nd7js")
+stretch_mode = 0
+
+[node name="anchorTopRight" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 0
+offset_left = 32.0
+offset_right = 64.0
+offset_bottom = 32.0
+scale = Vector2(-0.25, 0.25)
+texture_normal = ExtResource("3_nd7js")
+stretch_mode = 0
+
+[node name="anchorBotLeft" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 0
+offset_top = 32.0
+offset_right = 32.0
+offset_bottom = 64.0
+scale = Vector2(0.25, -0.25)
+texture_normal = ExtResource("3_nd7js")
+stretch_mode = 0
+
+[node name="anchorBotRight" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 64.0
+offset_bottom = 64.0
+scale = Vector2(-0.25, -0.25)
+texture_normal = ExtResource("3_nd7js")
+stretch_mode = 0
+
+[connection signal="button_down" from="anchorTopLeft" to="." method="_on_anchor_top_left_button_down"]
+[connection signal="button_down" from="anchorTopRight" to="." method="_on_anchor_top_right_button_down"]
+[connection signal="button_down" from="anchorBotLeft" to="." method="_on_anchor_bot_left_button_down"]
+[connection signal="button_down" from="anchorBotRight" to="." method="_on_anchor_bot_right_button_down"]

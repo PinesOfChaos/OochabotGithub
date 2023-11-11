@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhjjft4sprw8b"]
+
+[ext_resource type="Script" path="res://slot_spawn.gd" id="1_e2f1k"]
+
+[node name="slot_spawn" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e2f1k")
+
+[node name="slot_info" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="button_delete" type="Button" parent="slot_info"]
+layout_mode = 2
+text = " X "
+
+[node name="button_slot_species" type="OptionButton" parent="slot_info"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="slot_info"]
+layout_mode = 2
+
+[node name="lable_lv" type="Label" parent="slot_info"]
+layout_mode = 2
+text = "Level:"
+
+[node name="lv_min" type="SpinBox" parent="slot_info"]
+layout_mode = 2
+min_value = 1.0
+max_value = 50.0
+value = 1.0
+rounded = true
+
+[node name="lable_hyphen" type="Label" parent="slot_info"]
+layout_mode = 2
+text = "-"
+
+[node name="lv_max" type="SpinBox" parent="slot_info"]
+layout_mode = 2
+min_value = 1.0
+max_value = 50.0
+value = 1.0
+rounded = true
+
+[connection signal="pressed" from="slot_info/button_delete" to="." method="_on_button_delete_pressed"]
+[connection signal="item_selected" from="slot_info/button_slot_species" to="." method="_on_button_slot_species_item_selected"]
+[connection signal="value_changed" from="slot_info/lv_min" to="." method="_on_lv_min_value_changed"]
+[connection signal="value_changed" from="slot_info/lv_max" to="." method="_on_lv_max_value_changed"]

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://npc.gd" id="1_k6ast"]
 [ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_61jdu"]
-[ext_resource type="Texture2D" uid="uid://du5ekl5m7wmhi" path="res://tiles/022.png" id="2_w2p6y"]
+[ext_resource type="Texture2D" uid="uid://w8k87qgmu3e3" path="res://tiles/002.png" id="2_vfm8h"]
 
 [node name="npc" type="Control"]
 layout_mode = 3
@@ -18,7 +18,7 @@ offset_top = 189.0
 offset_right = 584.0
 offset_bottom = 229.0
 focus_mode = 0
-texture_normal = ExtResource("2_w2p6y")
+texture_normal = ExtResource("2_vfm8h")
 
 [node name="npc_tab_container" type="TabContainer" parent="."]
 custom_minimum_size = Vector2(400, 500)

@@ -39,6 +39,7 @@ access = 2
 filters = PackedStringArray(".txt")
 
 [node name="VBoxMenu" type="VBoxContainer" parent="."]
+z_index = 1
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -99,41 +100,89 @@ caret_blink = true
 layout_mode = 2
 text = "Paint"
 
-[node name="ButtonNewNPC" type="Button" parent="VBoxMenu"]
+[node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleEvent" type="CheckBox" parent="VBoxMenu/HBoxEvent"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewEvent" type="Button" parent="VBoxMenu/HBoxEvent"]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
-text = "New NPC"
+text = "New Event Trigger"
 
-[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu"]
+[node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleSpawnzone" type="CheckBox" parent="VBoxMenu/HBoxSpawnzone"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu/HBoxSpawnzone"]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 text = "New Spawn Area"
 
-[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu"]
-layout_direction = 2
+[node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "New Save Point"
 
-[node name="ButtonNewShop" type="Button" parent="VBoxMenu"]
-layout_direction = 2
+[node name="ButtonVisibleTransition" type="CheckBox" parent="VBoxMenu/HBoxTransition"]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "New Shop"
+tooltip_text = "Toggle Visible"
+button_pressed = true
 
-[node name="ButtonNewTransition" type="Button" parent="VBoxMenu"]
+[node name="ButtonNewTransition" type="Button" parent="VBoxMenu/HBoxTransition"]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 text = "New Transition"
 
-[node name="ButtonNewEvent" type="Button" parent="VBoxMenu"]
+[node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleSavePoint" type="CheckBox" parent="VBoxMenu/HBoxSavePoint"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu/HBoxSavePoint"]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
-text = "New Event Trigger"
+text = "New Save Point"
+
+[node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleShop" type="CheckBox" parent="VBoxMenu/HBoxShop"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewShop" type="Button" parent="VBoxMenu/HBoxShop"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Shop"
+
+[node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleNPC" type="CheckBox" parent="VBoxMenu/HBoxNPC"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewNPC" type="Button" parent="VBoxMenu/HBoxNPC"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New NPC"
 
 [node name="GridOoch" type="GridContainer" parent="."]
 visible = false
@@ -183,6 +232,31 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="shops" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="events" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="transitions" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="save_points" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="spawn_zones" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
 [connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected"]
@@ -192,5 +266,12 @@ offset_bottom = 40.0
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonRefreshData" to="." method="_on_button_refresh_data_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
-[connection signal="button_down" from="VBoxMenu/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
-[connection signal="pressed" from="VBoxMenu/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]
+[connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxSpawnzone/ButtonNewSpawnRegion" to="." method="_on_button_new_spawn_region_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxTransition/ButtonVisibleTransition" to="." method="_on_button_visible_transition_toggled"]
+[connection signal="toggled" from="VBoxMenu/HBoxSavePoint/ButtonVisibleSavePoint" to="." method="_on_button_visible_save_point_toggled"]
+[connection signal="toggled" from="VBoxMenu/HBoxShop/ButtonVisibleShop" to="." method="_on_button_visible_shop_toggled"]
+[connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
+[connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
