@@ -37,14 +37,14 @@ func _process(delta):
 		transition_vbox_container.visible = false
 
 
-func _on_transition_map_to_text_submitted(new_text):
+func _on_transition_map_to_text_changed(new_text):
 	transition_map_to = new_text
-
-func _on_transition_x_text_submitted(new_text):
+	
+func _on_transition_x_text_changed(new_text):
 	transition_xto = new_text
 
-func _on_transition_y_text_submitted(new_text):
-	transition_xto = new_text
+func _on_transition_y_text_changed(new_text):
+	transition_yto = new_text
 
 func _on_transition_object_button_down():
 	if typeof(Global.ObjSelected) == typeof(get_instance_id()) and Global.ObjSelected == get_instance_id():
@@ -52,3 +52,8 @@ func _on_transition_object_button_down():
 	else:
 		Global.ObjSelected = get_instance_id()
 		Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+
+
+
+
+

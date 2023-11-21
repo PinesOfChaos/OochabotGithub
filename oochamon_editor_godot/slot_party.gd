@@ -12,6 +12,7 @@ var slot_move1 = 0
 var slot_move2 = 0
 var slot_move3 = 0
 var slot_move4 = 0
+var slot_nickname = ""
 var refreshed = false
 
 

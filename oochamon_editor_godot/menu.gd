@@ -22,6 +22,7 @@ var map_name = "testmap"
 var map_width = 128
 var map_height = 128
 var map_tiles = [[]]
+var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
 var cam_x = 0
@@ -137,6 +138,11 @@ func step():
 				cx = child.npc_x * Global.TileSize - Global.CamX
 				cy = child.npc_y * Global.TileSize - Global.CamY
 				child.o_npc_object.set_position(Vector2(cx, cy))
+			
+			for child in menu_shops.get_children():
+				cx = child.shop_x * Global.TileSize - Global.CamX
+				cy = child.shop_y * Global.TileSize - Global.CamY
+				child.o_shop_object.set_position(Vector2(cx, cy))
 				
 			for child in menu_transitions.get_children():
 				cx = child.transition_x * Global.TileSize - Global.CamX
@@ -176,6 +182,10 @@ func step():
 			v_box_menu.visible = true
 		Global.MapMode.MAP_OBJ_EDIT:
 			if Input.is_action_just_pressed("ui_cancel"):
+				Global.CurrentMapMode = Global.MapMode.MAP_NONE
+				Global.ObjSelected = -1
+			elif Input.is_action_just_pressed("ui_text_delete"):
+				instance_from_id(Global.ObjSelected).queue_free()
 				Global.CurrentMapMode = Global.MapMode.MAP_NONE
 				Global.ObjSelected = -1
 			else:
@@ -292,10 +302,142 @@ func set_working_dir(path):
 
 # Save map data
 func _on_file_dialog_save_file_selected(path):
-	var save_file = FileAccess.open(path, FileAccess.WRITE)
-	if FileAccess.file_exists(path):
+	var save_file = FileAccess.open(path + ".txt", FileAccess.WRITE)
+	
+	if FileAccess.file_exists(path + ".txt"):
 		set_working_dir(path)
 		save_preferences()
+		
+		#Save the .TXT file to be loaded into Oochabot
+		var save_str = ""
+		var temp_str = ""
+		
+		#General Map Info
+		save_str += "#map_info" + "\n"
+		save_str += map_name + "\n"
+		save_str += map_battleback + "\n"
+		
+		#Map Tiles
+		save_str += "#tiles" + "\n"
+		for i in map_width:
+			for j in map_height:
+				save_str += str(map_tiles[i][j]) + "|"
+			save_str += "\n"
+		
+		#NPCs
+		save_str += "#npcs" + "\n"
+		for npc in menu_npcs.get_children():
+			temp_str = ""
+			temp_str += npc.npc_name + "|"
+			temp_str += str(npc.npc_x) + "|"
+			temp_str += str(npc.npc_y) + "|"
+			
+			temp_str += str(false) + "|" #NPC Beaten, this is no-longer used
+			temp_str += str(npc.npc_sprite) + "|"
+			temp_str += npc.npc_sprite_combat + "|"
+			
+			temp_str += str(npc.npc_coin) + "|"
+			temp_str += str(npc.npc_item_id) + "|"
+			temp_str += str(npc.npc_item_number) + "|"
+			
+			temp_str += npc.npc_flag_required + "|"
+			temp_str += npc.npc_flag_given + "|"
+			temp_str += npc.npc_flag_kill + "|"
+			temp_str += str(npc.npc_remove_on_finish) + "|"
+			
+			temp_str += npc.npc_dialog_pre + "|"
+			temp_str += npc.npc_dialog_post + "|"
+			
+			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
+			for slot in slots:
+				if slot.slot_enabled:
+					temp_str += str(slot.slot_species) + "`"
+					temp_str += slot.slot_nickname + "`"
+					temp_str += str(slot.slot_ability) + "`"
+					temp_str += str(slot.slot_level) + "`"
+					
+					temp_str += str(slot.slot_move1) + "`"
+					temp_str += str(slot.slot_move2) + "`"
+					temp_str += str(slot.slot_move3) + "`"
+					temp_str += str(slot.slot_move4) + "`"
+					
+					temp_str += str(slot.slot_hp) + "`"
+					temp_str += str(slot.slot_atk) + "`"
+					temp_str += str(slot.slot_def) + "`"
+					temp_str += str(slot.slot_spd) + "`"
+				temp_str += "|"
+			save_str += temp_str + "\n"
+			
+		
+		#Spawn Zones
+		save_str += "#npcs" + "\n"
+		var bbox
+		for spawn in menu_spawnzones.get_children():	
+			bbox = spawn.bounding_box
+			save_str += str(bbox.pos_x) + "|"
+			save_str += str(bbox.pos_y) + "|"
+			save_str += str(bbox.scale_x) + "|"
+			save_str += str(bbox.scale_y) + "|"
+			for slot in spawn.spawn_slots.get_children():
+				if slot.species != -1:
+					save_str += str(slot.species) + "`"
+					save_str += str(slot.lv_min) + "`"
+					save_str += str(slot.lv_max) + "`"
+					save_str += "|"
+			save_str += "\n"
+					
+		#Save Points
+		save_str += "#savepoints" + "\n"
+		for savepoint in menu_save_points.get_children():
+			save_str += str(savepoint.savepoint_initial) + "|"
+			save_str += str(savepoint.savepoint_x) + "|"
+			save_str += str(savepoint.savepoint_y) + "|"
+			save_str += "\n"
+			
+		#Shops
+		save_str += "#shops" + "\n"
+		for shop in menu_shops.get_children():
+			save_str += str(shop.shop_x) + "|"
+			save_str += str(shop.shop_y) + "|"
+			save_str += str(shop.shop_type) + "|"
+			save_str += "|" #Custom Shop inventory, not currently used
+			save_str += shop.shop_image + "|"
+			save_str += shop.shop_greeting + "|"
+			save_str += "\n"
+			
+		#Events
+		save_str += "#events" + "\n"
+		for ev in menu_events.get_children():
+			bbox = ev.bounding_box
+			save_str += str(bbox.pos_x) + "|"
+			save_str += str(bbox.pos_y) + "|"
+			save_str += str(bbox.scale_x) + "|"
+			save_str += str(bbox.scale_y) + "|"
+			save_str += ev.event_name + "|"
+			save_str += ev.event_required + "|"
+			save_str += ev.event_kill + "|"
+			save_str += "\n"
+			
+		#Transitions
+		save_str += "#transitions"
+		for transition in menu_transitions.get_children():
+			save_str += str(transition.transition_x) + "|"
+			save_str += str(transition.transition_y) + "|"
+			save_str += transition.transition_map_to + "|"
+			save_str += str(transition.transition_xto) + "|"
+			save_str += str(transition.transition_yto) + "|"
+			save_str += "\n"
+		
+		#Put the save string into the save file
+		save_file.store_string(save_str)
+
+		#Save the .TSCN file to be reloaded into Godot
+		fd_save.visible = false
+		var packed_scene = PackedScene.new()
+		var packed_path = path + ".tscn"
+		packed_scene.pack(get_tree().get_current_scene())
+		ResourceSaver.save(packed_scene, packed_path)
+		
 		print("FILE SAVED")
 	else:
 		print("FILE SAVE FAILED")
@@ -306,6 +448,9 @@ func _on_file_dialog_load_file_selected(path):
 	if FileAccess.file_exists(path):
 		set_working_dir(path)
 		save_preferences()
+		
+		get_tree().change_scene_to_file(path)
+		
 		print("FILE LOADED")
 	else:
 		print("FILE LOAD FAILED")
@@ -498,6 +643,14 @@ func _on_button_new_save_point_button_down():
 	menu_save_points.add_child(instance)
 	Global.ObjSelected = menu_save_points.get_child(menu_save_points.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
+
+func _on_button_new_shop_button_down():
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://shop.tscn")
+	var instance = scene.instantiate()
+	menu_shops.add_child(instance)
+	Global.ObjSelected = menu_shops.get_child(menu_shops.get_child_count() - 1).get_instance_id()
+	instance.dragging = true
 	
 func _on_button_new_spawn_region_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -536,3 +689,6 @@ func _on_button_visible_shop_toggled(button_pressed):
 
 func _on_button_visible_npc_toggled(button_pressed):
 	menu_npcs.visible = button_pressed
+
+
+

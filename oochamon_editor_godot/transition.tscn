@@ -43,6 +43,9 @@ placeholder_text = "Y To"
 
 [connection signal="button_down" from="transition_object" to="." method="_on_transition_object_button_down"]
 [connection signal="pressed" from="transition_object" to="." method="_on_transition_object_pressed"]
+[connection signal="text_changed" from="transition_vbox_container/transition_map_to" to="." method="_on_transition_map_to_text_changed"]
 [connection signal="text_submitted" from="transition_vbox_container/transition_map_to" to="." method="_on_transition_map_to_text_submitted"]
+[connection signal="text_changed" from="transition_vbox_container/HBoxContainer/transition_x" to="." method="_on_transition_x_text_changed"]
 [connection signal="text_submitted" from="transition_vbox_container/HBoxContainer/transition_x" to="." method="_on_transition_x_text_submitted"]
+[connection signal="text_changed" from="transition_vbox_container/HBoxContainer/transition_y" to="." method="_on_transition_y_text_changed"]
 [connection signal="text_submitted" from="transition_vbox_container/HBoxContainer/transition_y" to="." method="_on_transition_y_text_submitted"]

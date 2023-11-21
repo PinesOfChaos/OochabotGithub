@@ -21,11 +21,11 @@ func _process(delta):
 	else:
 		event_vbox.visible = false
 
-func _on_event_name_text_submitted(new_text):
+func _on_event_name_text_changed(new_text):
 	event_name = new_text
 
-func _on_event_required_text_submitted(new_text):
+func _on_event_required_text_changed(new_text):
 	event_required = new_text
 
-func _on_event_kill_text_submitted(new_text):
+func _on_event_kill_text_changed(new_text):
 	event_kill = new_text

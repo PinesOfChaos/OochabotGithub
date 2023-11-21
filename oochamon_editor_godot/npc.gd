@@ -13,6 +13,10 @@ extends Control
 @onready var o_text_post_combat = $"npc_tab_container/Basic Info/text_post_combat"
 @onready var o_item_select = $"npc_tab_container/Basic Info/items/item_select"
 @onready var button_back = $button_back
+@onready var slot_1 = $"npc_tab_container/Slot 1"
+@onready var slot_2 = $"npc_tab_container/Slot 2"
+@onready var slot_3 = $"npc_tab_container/Slot 3"
+@onready var slot_4 = $"npc_tab_container/Slot 4"
 
 var npc_x = 0
 var npc_y = 0
@@ -28,6 +32,7 @@ var npc_item_number = 0
 var npc_coin = 0
 var npc_dialog_pre = ""
 var npc_dialog_post = ""
+var npc_slots = [slot_1, slot_2, slot_3, slot_4]
 var refreshed = false
 var dragging = false
 
@@ -75,13 +80,13 @@ func _process(delta):
 	
 
 
-func _on_flag_required_text_submitted(new_text):
+func _on_flag_required_text_changed(new_text):
 	npc_flag_required = new_text
 
-func _on_flag_given_text_submitted(new_text):
+func _on_flag_given_text_changed(new_text):
 	npc_flag_given = new_text
 
-func _on_flag_kill_text_submitted(new_text):
+func _on_flag_kill_text_changed(new_text):
 	npc_flag_kill = new_text
 
 func _on_check_remove_finish_toggled(button_pressed):

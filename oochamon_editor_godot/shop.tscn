@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxp1wcvcmswg7"]
+
+[ext_resource type="Texture2D" uid="uid://bsnaj41sa17n7" path="res://editor_assets/box_highlight1.png" id="1_av7li"]
+[ext_resource type="Script" path="res://shop.gd" id="1_xfuwg"]
+
+[node name="shop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xfuwg")
+
+[node name="shop_object" type="TextureButton" parent="."]
+modulate = Color(0, 1, 1, 1)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture_normal = ExtResource("1_av7li")
+
+[node name="shop_vbox" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="shop_greeting" type="LineEdit" parent="shop_vbox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Welcome to my store. Buy whatever you need below!"
+placeholder_text = "Shop Greeting"
+expand_to_text_length = true
+
+[node name="shop_type" type="OptionButton" parent="shop_vbox"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "default"
+popup/item_0/id = 0
+popup/item_1/text = "special"
+popup/item_1/id = 1
+
+[connection signal="button_down" from="shop_object" to="." method="_on_shop_object_button_down"]
+[connection signal="text_changed" from="shop_vbox/shop_greeting" to="." method="_on_shop_greeting_text_changed"]
+[connection signal="item_selected" from="shop_vbox/shop_type" to="." method="_on_shop_type_item_selected"]

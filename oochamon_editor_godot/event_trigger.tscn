@@ -34,6 +34,9 @@ placeholder_text = "Event Required"
 layout_mode = 2
 placeholder_text = "Event Kill"
 
+[connection signal="text_changed" from="event_vbox/event_name" to="." method="_on_event_name_text_changed"]
 [connection signal="text_submitted" from="event_vbox/event_name" to="." method="_on_event_name_text_submitted"]
+[connection signal="text_changed" from="event_vbox/event_required" to="." method="_on_event_required_text_changed"]
 [connection signal="text_submitted" from="event_vbox/event_required" to="." method="_on_event_required_text_submitted"]
+[connection signal="text_changed" from="event_vbox/event_kill" to="." method="_on_event_kill_text_changed"]
 [connection signal="text_submitted" from="event_vbox/event_kill" to="." method="_on_event_kill_text_submitted"]
