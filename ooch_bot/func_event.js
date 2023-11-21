@@ -243,7 +243,7 @@ module.exports = {
                     return_array.push([EventMode.Text, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
-                        money: npc_obj.coin,
+                        money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                     }])
                 } else {

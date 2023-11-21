@@ -54,7 +54,7 @@ module.exports = {
             db.profile.set(interaction.user.id, {}, 'prism_inv')
             db.profile.set(interaction.user.id, {}, 'heal_inv')
             db.profile.set(interaction.user.id, 0, 'oochabux')
-            db.profile.set(interaction.user.id, PlayerState.Intro, 'player_state')
+            db.profile.set(interaction.user.id, PlayerState.NotPlaying, 'player_state')
             db.profile.set(interaction.user.id, {}, 'ooch_enemy')
             db.profile.set(interaction.user.id, { area: 'testmap', x: 8, y: 16 }, 'location_data')
             db.profile.set(interaction.user.id, { area: 'testmap', x: 8, y: 16 }, 'savepoint_data');
@@ -71,9 +71,11 @@ module.exports = {
             db.profile.set(interaction.user.id, [], 'npc_event_data'); 
             db.profile.set(interaction.user.id, 0, 'npc_event_pos');
             
+            // Settings
             db.profile.set(interaction.user.id, {
                 graphics: GraphicsMode.Quality,
-                battle_cleanup: true
+                battle_cleanup: true,
+                zoom: 7
             }, 'settings');
 
             // Setup Oochadex template

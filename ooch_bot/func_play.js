@@ -315,14 +315,17 @@ module.exports = {
 
     },
 
-    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, target_player) {
+    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id) {
 
-        let view_size = 3;
+        // Window size can either be 5x5 or 7x7
+        let window_size = db.profile.get(user_id, 'settings.zoom');
+        let view_size = Math.floor(window_size / 2);
         let xx, yy, tile;
-        let emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`; //set
+        let emote_map = ``;
+        if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
         let map_obj = db.maps.get(map_name);
         let emote_map_array = [];
-        let player_sprite = db.profile.get(target_player, 'player_sprite');
+        let player_sprite = db.profile.get(user_id, 'player_sprite');
 
         //Plain map tiles
         for (let i = -view_size; i < view_size + 1; i++) {
@@ -342,7 +345,7 @@ module.exports = {
         }
 
         //NPC tiles
-        let player_flags = db.profile.get(target_player, 'flags');
+        let player_flags = db.profile.get(user_id, 'flags');
         let map_npcs = map_obj.npcs;
         
         for (let obj of map_npcs) {
@@ -512,6 +515,8 @@ module.exports = {
             alive: true,
             evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
             type: db.monster_data.get(ooch_id, 'type'),
+            og_type: db.monster_data.get(ooch_id, 'type'),
+            doom_timer: 3, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote')
         }
     }

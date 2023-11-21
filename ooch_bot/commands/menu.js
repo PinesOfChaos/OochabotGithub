@@ -147,6 +147,11 @@ module.exports = {
                             description: 'Set whether text should be cleaned up after a battle or not.',
                             value: 'battle_cleanup',
                         },
+                        {
+                            label: 'Zoom Level',
+                            description: 'Set the window size of the game window (5x5 or 7x7)',
+                            value: 'zoom_level',
+                        },
                     ),
             );
 
@@ -286,7 +291,7 @@ module.exports = {
         let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch,
         move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed,
         heal_inv, prism_inv, key_inv, display_inv, oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder(), oochadex_data, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
+        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder(), oochadex_data, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
         pref_data, pref_desc;
 
         // Enable party healing button if we have healing items
@@ -630,9 +635,10 @@ module.exports = {
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
-                oochadex_sel_options_1 = [];
-                oochadex_sel_options_2 = [];
-                oochadex_sel_options_3 = [];
+                let oochadex_sel_options_1 = [];
+                let oochadex_sel_options_2 = [];
+                let oochadex_sel_options_3 = [];
+                let oochadex_sel_options_4 = [];
                 ooch_data = db.monster_data.get(0);
                 oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
 
@@ -653,8 +659,15 @@ module.exports = {
                             value: `dex_${i}`,
                             emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
                         })
-                    } else {
+                    } else if (i >= 50 && i < 75) {
                         oochadex_sel_options_3.push({
+                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                            value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                        })
+                    } else {
+                        oochadex_sel_options_4.push({
                             label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                             description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
                             value: `dex_${i}`,
@@ -680,18 +693,26 @@ module.exports = {
                 oochadex_sel_3.addComponents(
                     new StringSelectMenuBuilder()
                         .setCustomId('oochadex_sel_3')
-                        .setPlaceholder(`Oochadex #51-#${db.monster_data.keyArray().length}`)
+                        .setPlaceholder(`Oochadex #51-#75`)
                         .addOptions(oochadex_sel_options_3),
                 );
 
+                oochadex_sel_4.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('oochadex_sel_4')
+                        .setPlaceholder(`Oochadex #76-#${db.monster_data.keyArray().length}`)
+                        .addOptions(oochadex_sel_options_4),
+                );
+
                 ooch_data = db.monster_data.get(0);
+                let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
                     .setThumbnail(ooch_data.image)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
-                    .addFields([{ name: 'Abilities', value: ooch_data.abilities.join(', ') }]);
+                    .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
                     if (ooch_data.evo_id != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
                         dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
                     } else {
@@ -700,23 +721,24 @@ module.exports = {
 
                 if (oochadex_data[0].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
                 } else {
                     i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
                 }
             }
             // Oochadex Select Menus
             else if (selected.includes('dex_')) {
                 selected = parseInt(selected.replace('dex_', ''));
                 ooch_data = db.monster_data.get(selected);
+                let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
                     .setThumbnail(ooch_data.image)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
-                    .addFields([{ name: 'Abilities', value: ooch_data.abilities.join(', ') }]);
+                    .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
                     if (ooch_data.evo_id != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
                         dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
                     } else {
@@ -725,10 +747,10 @@ module.exports = {
 
                 if (oochadex_data[selected].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[selected].seen} | **Caught:** ${oochadex_data[selected].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
                 } else {
                     i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
                 }
             }
             //#endregion
@@ -833,7 +855,8 @@ module.exports = {
                 user_profile = db.profile.get(interaction.user.id);
                 pref_data = user_profile.settings;
                 pref_desc = [`Graphics Mode: **\`${pref_data.graphics == 0 ? 'Quality' : 'Performance' }\`**`,
-                `Battle Text Cleanup: **\`${pref_data.battle_cleanup}\`**`];
+                `Battle Text Cleanup: **\`${pref_data.battle_cleanup}\`**`,
+                `Zoom Level: **\`${pref_data.zoom}x${pref_data.zoom}\`**`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -844,7 +867,7 @@ module.exports = {
             // Graphics Switcher
             else if (selected == 'graphics') {
                 await db.profile.set(interaction.user.id, user_profile.settings.graphics == 1 ? 0 : 1, 'settings.graphics');
-                pref_desc[0] = await `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
+                pref_desc[0] = `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
@@ -852,15 +875,27 @@ module.exports = {
             // Battle Cleanup Option
             else if (selected == 'battle_cleanup') {
                 await db.profile.set(interaction.user.id, !(user_profile.settings.battle_cleanup), 'settings.battle_cleanup');
-                pref_desc[1] = await `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`;
+                pref_desc[1] = `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`;
                 user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Zoom Level Option
+            else if (selected == 'zoom_level') {
+                if (user_profile.settings.zoom == 5) {
+                    await db.profile.set(interaction.user.id, 7, 'settings.zoom');
+                } else {
+                    await db.profile.set(interaction.user.id, 5, 'settings.zoom');
+                }
+
+                user_profile = await db.profile.get(interaction.user.id);
+                pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom}x${user_profile.settings.zoom}\`**`;
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }
             //#endregion
 
             //#region Quit Button (back to playspace)
-            // Quit Button
             else if (selected == 'quit') {
                 let playspace_str = setup_playspace_str(interaction.user.id);
                 collector.stop();

@@ -2,7 +2,7 @@ const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, TrainerType, Stats, Ability, OochType } = require("./types");
+const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote } = require("./types");
 const { Status } = require('./types.js');
 const { setup_playspace_str, create_ooch } = require("./func_play");
 const { ooch_info_embed, check_chance } = require("./func_other");
@@ -304,6 +304,7 @@ prompt_battle_input: async function(thread, user_id) {
             ooch_plr.stats.acc_mul = 1;
             ooch_plr.stats.eva_mul = 1;
             ooch_plr.ability = ooch_plr.og_ability;
+            ooch_plr.type = ooch_plr.og_type;
             ooch_plr.status_effects = [];
             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
 
@@ -501,6 +502,7 @@ prompt_battle_input: async function(thread, user_id) {
                     ooch_prev.stats.acc_mul = 1;
                     ooch_prev.stats.eva_mul = 1;
                     ooch_prev.ability = ooch_prev.og_ability;
+                    ooch_prev.type = ooch_prev.og_type;
                     db.profile.set(user_id, ooch_prev, `ooch_party[${active_slot}]`);
 
                     // Check for on switch in abilities, player switching in, enemy ability activated
@@ -632,7 +634,7 @@ prompt_battle_input: async function(thread, user_id) {
                             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
                             displayEmbed.setColor('#02ff2c');
                             displayEmbed.setTitle(`❤️ Healing ❤️`)
-                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed ${item_data.value * 100}% of ${ooch_plr.name}'s HP!`)
+                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed **${Math.ceil(ooch_plr.stats.hp * item_data.potency)}** HP!`)
                             item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             
                             db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
@@ -787,6 +789,7 @@ prompt_battle_input: async function(thread, user_id) {
                 // Setup field info for the embed about both oochamon
                 for (let ooch of [ooch_plr, ooch_enemy]) {
                     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
+                    `**Type:** ${type_to_emote(ooch.type[0])} ${type_to_emote(ooch.type[0], true)}\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
                     `**Status Effects:** ${ooch.status_effects.length != 0 ? `${ooch.status_effects.join(', ')}` : `None`}\n\n` +
                     `**Multipliers:**\n` +
@@ -900,6 +903,7 @@ battle_calc_exp: function(enemy_level, enemy_evo_stage) {
  * @returns The amount of EXP needed for the next level
  */
 exp_to_next_level: function(level) {
+    if (level >= 50) return (level ** 3) + 1_000_000_000_000;
     return (level ** 3);
 },
 
@@ -925,9 +929,10 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
 /**
  * Converts a type string to an emote for that type.
  * @param {String} type_string The type to convert an emote
- * @returns The emote string to post on Discord.
+ * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
+ * @returns The emote string
  */
-type_to_emote: function(type_string) {
+type_to_emote: function(type_string, text_emote = false) {
     let return_string = '';
 
     if (!Array.isArray(type_string)) {
@@ -936,14 +941,14 @@ type_to_emote: function(type_string) {
 
     for (let type of type_string) {
         switch(type) {
-            case OochType.Flame:   return_string +=  '<:icon_flame:1023031001611501648>';   break;
-            case OochType.Fungal:  return_string +=  '<:icon_fungal:1023031003381514280>';  break;
-            case OochType.Magic:   return_string +=  '<:icon_magic:1023031009966575686>';   break;
-            case OochType.Stone:   return_string +=  '<:icon_stone:1023031015830204448>';   break;
-            case OochType.Neutral: return_string +=  '<:icon_neutral:1023031011703013376>'; break;
-            case OochType.Ooze:    return_string +=  '<:icon_ooze:1023031013355569262>';    break;
-            case OochType.Tech:    return_string +=  '<:icon_tech:1023031017730224139>';    break;
-            case OochType.Void:    return_string +=  '<:icon_void:1023031019466653738>';    break;
+            case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1023031002408439939>'   : '<:icon_flame:1023031001611501648>';   break;
+            case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1023031004220362802>'  : '<:icon_fungal:1023031003381514280>';  break;
+            case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1023031010818015292>'   : '<:icon_magic:1023031009966575686>';   break;
+            case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1023031016845217832>'   : '<:icon_stone:1023031015830204448>';   break;
+            case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1023031012495732746>' : '<:icon_neutral:1023031011703013376>'; break;
+            case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1023031014735491082>'    : '<:icon_ooze:1023031013355569262>';    break;
+            case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1023031018896240640>'    : '<:icon_tech:1023031017730224139>';    break;
+            case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1023031020804645005>'    : '<:icon_void:1023031019466653738>';    break;
         }
     }
 
@@ -1301,9 +1306,11 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
             exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
             let exp_earned_main = Math.round(exp_earned * 1.25);
-            string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
-                                ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**` + 
-                                `\nThe rest of your team earned **${exp_earned}** exp.`;
+            if (ooch_plr.level != 50) {
+                string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
+                                    ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
+            }
+            string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
 
             for (let i = 0; i < ooch_party.length; i++) {
                 if (i == user_profile.ooch_active_slot) { 
@@ -1386,6 +1393,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         // Handle status effects
         let ooch_burned = ooch.status_effects.includes(Status.Burn);
         let ooch_infected = ooch.status_effects.includes(Status.Infect);
+        let ooch_digitized = ooch.status_effects.includes(Status.Digitize);
     
         for (let j = 0; j < ooch.status_effects.length; j++) {
             switch(ooch.status_effects[j]) {
@@ -1403,14 +1411,19 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         if (ooch_burned) {
             let burn_val = Math.round(ooch.stats.hp/10);
             ooch.current_hp -= burn_val;
-            string_to_send += `\n${ooch.name} was hurt by its burn and loses **${burn_val} HP**.`;
+            string_to_send += `\n${ooch.emote} **${ooch.name}** was hurt by its burn and loses **${burn_val} HP**.`;
         }
     
         if (ooch_infected) {
             let infect_val = Math.round(ooch.stats.hp/20)
             ooch.current_hp -= infect_val;
             opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-            string_to_send += `\n${ooch.name} has **${infect_val} HP** absorbed by ${opposing_ooch.name}.`;
+            string_to_send += `\n${ooch.emote} **${ooch.name}** has **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.name}**.`;
+        }
+
+        if (ooch_digitized && ooch.type[0] != OochType.Tech) {
+            ooch.type = [OochType.Tech];
+            string_to_send += `\n${ooch.emote} **${ooch.name}** was digitized and had its type changed to **Tech**!.`;
         }
     }
 
@@ -1505,12 +1518,14 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             ooch_enemy.stats.acc_mul = 1;
             ooch_enemy.stats.eva_mul = 1;
             ooch_enemy.ability = ooch_enemy.og_ability;
+            ooch_enemy.type = ooch_enemy.og_type;
             ooch_enemy.status_effects = [];
             db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${enemy_profile.ooch_active_slot}]`);
 
             // Switch in stats
             ooch_enemy = ooch_enemy_party[slot_to_send];
             ooch_enemy = ability_stat_change(ooch_enemy, ooch_enemy_party);
+            enemy_profile.ooch_active_slot = slot_to_send;
             db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${slot_to_send}]`);
             db.profile.set(user_id, slot_to_send, `ooch_enemy.ooch_active_slot`);
         };
@@ -1645,6 +1660,12 @@ modify_stat: function(ooch, stat, mod_percent, set = false) {
  */
 ability_stat_change: function(ooch, ooch_inv) {
     const { modify_stat } = require('./func_battle.js');
+
+    // Check for digitized status effect
+    if (ooch.status_effects.includes(Status.Digitize)) {
+        ooch.type = [OochType.Tech];
+    }
+
     switch (ooch.ability) {
         case Ability.Miniscule: 
             ooch = modify_stat(ooch, Stats.Evasion, 0.1); break;
@@ -1699,7 +1720,7 @@ ability_stat_change: function(ooch, ooch_inv) {
  * @returns The Oochamon object that has been affected by an ability.
  */
 use_eot_ability: function(ooch) {
-    const { modify_stat } = require('./func_battle.js');
+    const { modify_stat, type_to_emote } = require('./func_battle.js');
     let ability_text = ``;
     switch(ooch.ability) {
         case Ability.Withering:
@@ -1723,6 +1744,30 @@ use_eot_ability: function(ooch) {
             ability_text = `\n${ooch.emote} **${ooch.name}** increased its defense by 5% due to its ability **Patient**!`;
         break;
     }
+
+    if (!ooch.status_effects.includes(Status.Digitize)) {
+        switch (ooch.ability) {
+            case Ability.Spectral:
+                if (ooch.type[0] == ooch.og_type[0]) {
+                    ooch.type = [OochType.Magic];
+                    ability_text = `\n${ooch.emote} **${ooch.name}** changed its type to ${type_to_emote(OochType.Magic)} **Magic** through its ability **Spectral**!`
+                } else {
+                    ooch.type = ooch.og_type;
+                    ability_text = `\n${ooch.emote} **${ooch.name}** changed its type back to ${type_to_emote(ooch.type[0])} **${_.startCase(ooch.type[0])}**.`
+                }
+            break;
+            case Ability.Radioactive:
+                if (ooch.type[0] == ooch.og_type[0]) {
+                    ooch.type = [OochType.Flame];
+                    ability_text = `\n${ooch.emote} **${ooch.name}** changed its type to ${type_to_emote(OochType.Flame)} **Flame** through its ability **Radioactive**!`
+                } else {
+                    ooch.type = ooch.og_type;
+                    ability_text = `\n${ooch.emote} **${ooch.name}** changed its type back to ${type_to_emote(ooch.type[0])} **${_.startCase(ooch.type[0])}**.`
+                }
+            break;
+        }
+    }
+    
 
     return [ooch, ability_text];
 },
@@ -1753,6 +1798,7 @@ finish_battle: async function(thread, user_id) {
         ooch.stats.acc_mul = 1;
         ooch.stats.eva_mul = 1;
         ooch.ability = ooch.og_ability;
+        ooch.type = ooch.og_type;
         ooch.status_effects = [];
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
@@ -1788,7 +1834,7 @@ level_up: async function(ooch) {
     let evoData = false;
     let output = ``;
     if (ooch.level != 50) {
-        while (ooch.current_exp >= ooch.next_lvl_exp) {
+        while (ooch.current_exp >= ooch.next_lvl_exp && ooch.level < 50) {
             let new_exp = exp_to_next_level(ooch.level);
             let new_stats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
             ooch.stats.hp = new_stats[0]
@@ -1813,7 +1859,7 @@ level_up: async function(ooch) {
             evoData = db.monster_data.get(db.monster_data.get(ooch.id, 'evo_id'));
         }
 
-        output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''}!` +
+        output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
         `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**` : ``}` +
         `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\nYou can teach these moves to your Oochamon in the party menu!` : `` }`;
     }

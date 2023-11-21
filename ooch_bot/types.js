@@ -202,7 +202,7 @@ const Ability = {
     Immobile: 45,
     StringsAttached: 46,
     Corrosive: 47,
-    Abyssal: 48,
+    Spectral: 48,
     HeightAdvantage: 49,
     Hearty: 50,
     Radioactive: 51,

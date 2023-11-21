@@ -23,7 +23,7 @@ module.exports = {
             .setColor('#808080')
             .setTitle(ooch_title)
             .setThumbnail(ooch_gen_data.image)
-            .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${ooch.ability}**\nType: **${_.capitalize(ooch.type)}**`);
+            .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${db.ability_data.get(ooch.ability, 'name')}**\nType: **${_.capitalize(ooch.type)}**`);
 
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)

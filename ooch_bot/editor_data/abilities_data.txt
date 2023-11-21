@@ -46,7 +46,7 @@
 45|Immobile|Always goes second.
 46|Strings Attached|20% chance to apply a random status effect when attacking.
 47|Corrosive|Attacks deal more damage to enemies with high DEF.
-48|Abyssal|Changes type to Magic every other turn.
+48|Spectral|Changes type to Magic every other turn.
 49|Height Advantage|Increases chance to Crit by 10%.
 50|Hearty|Increases damage done by 15% while above 50% HP.
 51|Radioactive|Changes type to Flame every other turn.
