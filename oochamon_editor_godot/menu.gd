@@ -410,10 +410,14 @@ func _on_file_dialog_save_file_selected(path):
 		#Shops
 		save_str += "#shops" + "\n"
 		for shop in menu_shops.get_children():
+			var shop_specials = ""
+			for child in shop.o_shop_special_items:
+				shop_specials += str(child.item_id) + "`" + str(child.item_price) + "`"
+			
 			save_str += str(shop.shop_x) + "|"
 			save_str += str(shop.shop_y) + "|"
 			save_str += str(shop.shop_type) + "|"
-			save_str += "|" #Custom Shop inventory, not currently used
+			save_str += shop_specials + "|"
 			save_str += shop.shop_image + "|"
 			save_str += shop.shop_greeting + "|"
 			save_str += "\n"
