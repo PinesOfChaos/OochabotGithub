@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqcv8gwyak7r0"]
+
+[ext_resource type="Script" path="res://slot_item.gd" id="1_tiuqs"]
+
+[node name="slot_item" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tiuqs")
+
+[node name="item_remove" type="Button" parent="."]
+layout_mode = 2
+tooltip_text = "Remove Slot"
+text = " - "
+
+[node name="item_id" type="OptionButton" parent="."]
+layout_mode = 2
+tooltip_text = "Item"
+
+[node name="item_price" type="SpinBox" parent="."]
+layout_mode = 2
+tooltip_text = "Item Price"
+prefix = "$"
+
+[connection signal="pressed" from="item_remove" to="." method="_on_item_remove_pressed"]
+[connection signal="item_selected" from="item_id" to="." method="_on_item_id_item_selected"]
+[connection signal="value_changed" from="item_price" to="." method="_on_item_price_value_changed"]

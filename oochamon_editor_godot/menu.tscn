@@ -76,27 +76,33 @@ placeholder_text = "Map Name"
 expand_to_text_length = true
 caret_blink = true
 
-[node name="LineEditMapW" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+[node name="SpinBoxMapW" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
 layout_mode = 2
 tooltip_text = "Map Width"
 focus_mode = 1
-text = "32"
-placeholder_text = "Map Width"
-expand_to_text_length = true
-caret_blink = true
+min_value = 1.0
+max_value = 200.0
+value = 64.0
+prefix = "W"
 
-[node name="LineEditMapH" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+[node name="SpinBoxMapH" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
 layout_mode = 2
 tooltip_text = "Map Height"
 focus_mode = 1
-text = "32"
-placeholder_text = "Map Height"
-expand_to_text_length = true
-caret_blink = true
+min_value = 1.0
+max_value = 200.0
+value = 64.0
+prefix = "H"
 
 [node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxMapInfo"]
 layout_mode = 2
 text = "Paint"
+
+[node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+value = 10.0
+ticks_on_borders = true
 
 [node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
@@ -263,7 +269,11 @@ offset_bottom = 40.0
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonRefreshData" to="." method="_on_button_refresh_data_pressed"]
+[connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed"]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapW" to="." method="_on_spin_box_map_w_value_changed"]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapH" to="." method="_on_spin_box_map_h_value_changed"]
 [connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
 [connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]
 [connection signal="pressed" from="VBoxMenu/HBoxEvent/ButtonNewEvent" to="." method="_on_button_new_event_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled"]

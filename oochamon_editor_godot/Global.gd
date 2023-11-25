@@ -33,6 +33,8 @@ var CurrentMapMode = MapMode.MAP_NONE
 var CamX = 0
 var CamY = 0
 
+
+
 func get_camera_center():
 	var view_size = get_viewport().size
 	var xx =  floor((Global.CamX/2 + view_size.x/4)/Global.TileSize) * Global.TileSize

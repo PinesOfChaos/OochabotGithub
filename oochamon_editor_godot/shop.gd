@@ -4,6 +4,8 @@ extends Control
 @onready var o_shop_greeting = $VBoxContainer/shop_greeting
 @onready var o_shop_type = $VBoxContainer/shop_type
 @onready var shop_vbox = $shop_vbox
+@onready var shop_add_item = $shop_vbox/shop_add_item
+@onready var o_shop_special_items = $shop_vbox/shop_special_items
 
 var shop_x = 0
 var shop_y = 0
@@ -50,3 +52,9 @@ func _on_shop_object_button_down():
 	else:
 		Global.ObjSelected = get_instance_id()
 		Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+
+
+func _on_shop_add_item_pressed():
+	var scene = load("res://slot_item.tscn")
+	var instance = scene.instantiate()
+	o_shop_special_items.add_child(instance)

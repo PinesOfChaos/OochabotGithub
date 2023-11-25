@@ -40,6 +40,14 @@ popup/item_0/id = 0
 popup/item_1/text = "special"
 popup/item_1/id = 1
 
+[node name="shop_add_item" type="Button" parent="shop_vbox"]
+layout_mode = 2
+text = "+ Add Item"
+
+[node name="shop_special_items" type="VBoxContainer" parent="shop_vbox"]
+layout_mode = 2
+
 [connection signal="button_down" from="shop_object" to="." method="_on_shop_object_button_down"]
 [connection signal="text_changed" from="shop_vbox/shop_greeting" to="." method="_on_shop_greeting_text_changed"]
 [connection signal="item_selected" from="shop_vbox/shop_type" to="." method="_on_shop_type_item_selected"]
+[connection signal="pressed" from="shop_vbox/shop_add_item" to="." method="_on_shop_add_item_pressed"]

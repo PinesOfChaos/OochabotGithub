@@ -9,6 +9,8 @@ extends Control
 @onready var val_button = preload("res://ValueButton.gd")
 @onready var v_box_menu = $VBoxMenu
 @onready var tooltips_paint = $TooltipsPaint
+@onready var h_slider_grid_alpha = $VBoxMenu/HBoxMapInfo/HSliderGridAlpha
+
 
 @onready var menu_children = $MenuChildren
 @onready var menu_events = $MenuChildren/events
@@ -19,14 +21,16 @@ extends Control
 @onready var menu_npcs = $MenuChildren/npcs
 
 var map_name = "testmap"
-var map_width = 128
-var map_height = 128
+var map_width = 64
+var map_height = 64
 var map_tiles = [[]]
 var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
 var cam_x = 0
 var cam_y = 0
+var highlightbox_tex = null
+var grid_alpha = .1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -38,7 +42,9 @@ func _ready():
 	fd_path.current_dir = Global.DataPath
 	if Global.DataPath != "":
 		refresh_data()
-
+	
+	var box_img = Image.load_from_file("res://editor_assets/box_highlight1.png")
+	highlightbox_tex = ImageTexture.create_from_image(box_img)
 
 	#Data variables
 	var path
@@ -120,62 +126,69 @@ func _process(delta):
 func _draw():
 	if grid_tiles.get_child_count() == 0:
 		return
+	var tx_box = load("res://editor_assets/box_highlight1.png")
+	var x1 = 0
+	var y1 = 0
 	for i in map_width:
 		for j in map_height:
-			draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((i * 32) - Global.CamX, (j * 32) - Global.CamY))
-
+			x1 = i * Global.TileSize
+			y1 = j * Global.TileSize
+			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 2000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 1200:
+				draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((x1) - Global.CamX, (y1) - Global.CamY))
+				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
+				
 func step_begin():
 	pass
 
 func step():
 	if Input.is_action_pressed("mouse_middle"):
-			Global.CamX -= get_local_mouse_position().x - mouse_x_prev
-			Global.CamY -= get_local_mouse_position().y - mouse_y_prev
+		Global.CamX -= get_local_mouse_position().x - mouse_x_prev
+		Global.CamY -= get_local_mouse_position().y - mouse_y_prev
+		
+		var cx
+		var cy
+		for child in menu_npcs.get_children():
+			cx = child.npc_x * Global.TileSize - Global.CamX
+			cy = child.npc_y * Global.TileSize - Global.CamY
+			child.o_npc_object.set_position(Vector2(cx, cy))
+		
+		for child in menu_shops.get_children():
+			cx = child.shop_x * Global.TileSize - Global.CamX
+			cy = child.shop_y * Global.TileSize - Global.CamY
+			child.o_shop_object.set_position(Vector2(cx, cy))
 			
-			var cx
-			var cy
-			for child in menu_npcs.get_children():
-				cx = child.npc_x * Global.TileSize - Global.CamX
-				cy = child.npc_y * Global.TileSize - Global.CamY
-				child.o_npc_object.set_position(Vector2(cx, cy))
+		for child in menu_transitions.get_children():
+			cx = child.transition_x * Global.TileSize - Global.CamX
+			cy = child.transition_y * Global.TileSize - Global.CamY
+			child.o_transition_object.set_position(Vector2(cx, cy))
 			
-			for child in menu_shops.get_children():
-				cx = child.shop_x * Global.TileSize - Global.CamX
-				cy = child.shop_y * Global.TileSize - Global.CamY
-				child.o_shop_object.set_position(Vector2(cx, cy))
-				
-			for child in menu_transitions.get_children():
-				cx = child.transition_x * Global.TileSize - Global.CamX
-				cy = child.transition_y * Global.TileSize - Global.CamY
-				child.o_transition_object.set_position(Vector2(cx, cy))
-				
-			for child in menu_save_points.get_children():
-				cx = child.savepoint_x * Global.TileSize - Global.CamX
-				cy = child.savepoint_y * Global.TileSize - Global.CamY
-				child.o_savepoint_object.set_position(Vector2(cx, cy))
-				
-			for child in menu_spawnzones.get_children():
-				var bbox = child.bounding_box
-				var x1 =bbox.pos_x * Global.TileSize
-				var y1 = bbox.pos_y * Global.TileSize
-				bbox.reset_box(
-					x1, 
-					y1, 
-					x1 + bbox.scale_x * Global.TileSize,
-					y1 + bbox.scale_y * Global.TileSize
-				)
-			for child in menu_events.get_children():
-				var bbox = child.bounding_box
-				var x1 =bbox.pos_x * Global.TileSize
-				var y1 = bbox.pos_y * Global.TileSize
-				bbox.reset_box(
-					x1, 
-					y1, 
-					x1 + bbox.scale_x * Global.TileSize,
-					y1 + bbox.scale_y * Global.TileSize
-				)
+		for child in menu_save_points.get_children():
+			cx = child.savepoint_x * Global.TileSize - Global.CamX
+			cy = child.savepoint_y * Global.TileSize - Global.CamY
+			child.o_savepoint_object.set_position(Vector2(cx, cy))
 			
-			queue_redraw()
+		for child in menu_spawnzones.get_children():
+			var bbox = child.bounding_box
+			var x1 =bbox.pos_x * Global.TileSize
+			var y1 = bbox.pos_y * Global.TileSize
+			bbox.reset_box(
+				x1, 
+				y1, 
+				x1 + bbox.scale_x * Global.TileSize,
+				y1 + bbox.scale_y * Global.TileSize
+			)
+		for child in menu_events.get_children():
+			var bbox = child.bounding_box
+			var x1 =bbox.pos_x * Global.TileSize
+			var y1 = bbox.pos_y * Global.TileSize
+			bbox.reset_box(
+				x1, 
+				y1, 
+				x1 + bbox.scale_x * Global.TileSize,
+				y1 + bbox.scale_y * Global.TileSize
+			)
+		
+		queue_redraw()
 	
 	match Global.CurrentMapMode:
 		Global.MapMode.MAP_NONE:
@@ -241,7 +254,8 @@ func step():
 						
 						list.remove_at(0)
 				else:
-					map_tiles[xx][yy] = Global.TileSelected
+					if(xx < map_width and yy < map_height):
+						map_tiles[xx][yy] = Global.TileSelected
 				queue_redraw()
 			elif Input.is_action_pressed("mouse_right"):
 				if Input.is_action_pressed("vk_control"):
@@ -260,13 +274,12 @@ func step_end():
 	mouse_y_prev = get_local_mouse_position().y
 	
 func map_reset():
-	map_tiles.clear()
-	var subarr = []
-	subarr.resize(map_height)
-	subarr.fill(0)
-	map_tiles.resize(map_width)
-	for i in map_height:
-		map_tiles[i] = subarr.duplicate()
+	map_tiles = []
+	for i in map_width:
+		map_tiles.push_back([])
+		for j in map_height:
+			map_tiles[i].push_back([])
+			map_tiles[i][j] = 0
 		
 
 #Load  default filepaths and values
@@ -479,7 +492,22 @@ func _on_button_set_filepaths_pressed():
 	
 # Clear the map
 func _on_button_new_pressed():
-	pass # Replace with function body.
+	map_width = 64
+	map_height = 64
+	map_reset()
+	for child in menu_npcs.get_children():
+		child.queue_free()
+	for child in menu_shops.get_children():
+		child.queue_free()
+	for child in menu_events.get_children():
+		child.queue_free()
+	for child in menu_transitions.get_children():
+		child.queue_free()
+	for child in menu_save_points.get_children():
+		child.queue_free()
+	for child in menu_spawnzones.get_children():
+		child.queue_free()
+	queue_redraw()
 
 func _on_button_refresh_data_pressed():
 	refresh_data()
@@ -690,5 +718,36 @@ func _on_button_visible_shop_toggled(button_pressed):
 func _on_button_visible_npc_toggled(button_pressed):
 	menu_npcs.visible = button_pressed
 
+func _on_h_slider_grid_alpha_value_changed(value):
+	grid_alpha = value/100
+	queue_redraw()
 
+func _on_spin_box_map_w_value_changed(value):
+	var prev_w = map_width
+	var prev_h = map_height
+	map_width = value
+	resize_map(prev_w, prev_h)
+	
+func _on_spin_box_map_h_value_changed(value):
+	var prev_w = map_width
+	var prev_h = map_height
+	map_height = value
+	resize_map(prev_w, prev_h)
 
+func resize_map(prev_w, prev_h):
+	var new_map_tiles = []
+	for i in map_width:
+		new_map_tiles.push_back([])
+		for j in map_height:
+			new_map_tiles[i].push_back([])
+			if i >= prev_w or j >= prev_h:
+				new_map_tiles[i][j] = 0
+			else:
+				new_map_tiles[i][j] = map_tiles[i][j]
+				
+	map_tiles = new_map_tiles
+	
+	queue_redraw()
+	
+func _on_line_edit_map_name_text_changed(new_text):
+	map_name = new_text
