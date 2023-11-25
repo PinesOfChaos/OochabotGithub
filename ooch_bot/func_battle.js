@@ -153,7 +153,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-    item_use, finish_battle, ability_stat_change, modify_stat } = require('./func_battle.js');
+    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote } = require('./func_battle.js');
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
@@ -250,7 +250,7 @@ prompt_battle_input: async function(thread, user_id) {
         if (ooch_plr.ability === Ability.EasyGo) {
             for (let i = 0; i < ooch_party.length; i++) {
                 let plr = ooch_party[i];
-                if (plr.id != ooch_plr.id) {
+                if (plr.id != ooch_plr.id && plr.current_hp != 0) {
                     plr.current_hp = _.clamp(Math.round(plr.current_hp + (plr.stats.hp / 10)), 0, plr.stats.hp)
                     ooch_party[i] = plr;
                 }
@@ -306,6 +306,7 @@ prompt_battle_input: async function(thread, user_id) {
             ooch_plr.ability = ooch_plr.og_ability;
             ooch_plr.type = ooch_plr.og_type;
             ooch_plr.status_effects = [];
+            ooch_plr.doom_timer = 3;
             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
 
             // Check for on switch in abilities, player switching in, enemy ability activated
@@ -503,6 +504,7 @@ prompt_battle_input: async function(thread, user_id) {
                     ooch_prev.stats.eva_mul = 1;
                     ooch_prev.ability = ooch_prev.og_ability;
                     ooch_prev.type = ooch_prev.og_type;
+                    ooch_prev.doom_timer = 3;
                     db.profile.set(user_id, ooch_prev, `ooch_party[${active_slot}]`);
 
                     // Check for on switch in abilities, player switching in, enemy ability activated
@@ -788,10 +790,11 @@ prompt_battle_input: async function(thread, user_id) {
                 let oochInfoFields = [];
                 // Setup field info for the embed about both oochamon
                 for (let ooch of [ooch_plr, ooch_enemy]) {
+                    let oochStatusEffects = ooch.status_effects.map(v => get_status_emote(v));
                     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
                     `**Type:** ${type_to_emote(ooch.type[0])} ${type_to_emote(ooch.type[0], true)}\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
-                    `**Status Effects:** ${ooch.status_effects.length != 0 ? `${ooch.status_effects.join(', ')}` : `None`}\n\n` +
+                    `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
                     `**Multipliers:**\n` +
                     `Atk: ${ooch.stats.atk_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.atk_mul*100-100)}%\n` +
                     `Def: ${ooch.stats.def_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.def_mul*100-100)}%\n` +
@@ -1001,7 +1004,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let defender_field_text = ``;
     let string_to_send = ``;
     let ability_dmg_multiplier = 1;
-    if (attacker.ability == Ability.Rogue && defender.current_hp === defender.hp) {
+    if (attacker.ability == Ability.Rogue && defender.current_hp === defender.stats.hp) {
         ability_dmg_multiplier = 2;
     }
 
@@ -1025,11 +1028,12 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         switch (attacker.ability) {
             case Ability.Leech:
                 attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); 
+                defender_field_text += `\n${attacker_emote} **${attacker.nickname}** gained **${Math.round(dmg * 0.1)} HP** from its ability **Leech**!`
             break;
             case Ability.Ensnare:
                 if (check_chance(30)) {
                     defender = add_status_effect(defender, Status.Snare);
-                    defender_field_text += `\nThe oppsing ${defender_emote} **${defender.nickname}** was **SNARED** on hit from the ability **Ensnare**!`;
+                    defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** was **SNARED** on hit from the ability **Ensnare**!`;
                 }
             break;
             case Ability.Lacerating:
@@ -1062,7 +1066,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             break;
             case Ability.Tangled:
                 attacker = add_status_effect(attacker, Status.Snare);
-                defender.field_text += `\nThe attacking ${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`;
+                defender.field_text += `${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`;
         }
 
         string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_type_emote}** **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
@@ -1150,7 +1154,11 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 defender_field_text += `\n${attacker_emote} **${attacker.nickname}** was energized from the kill and gained a 10% boost in attack and speed from its ability **Energized**!`;
             break;
             case Ability.InvalidEntry:
-                // TODO: Add this ability
+                // 34 is the ID of i_
+                db.monster_data.set('34', 1, 'atk');
+                db.monster_data.set('34', 1, 'def');
+                db.monster_data.set('34', 1, 'spd');
+                db.monster_data.set('34', 1, 'hp');
             break;
         }
 
@@ -1161,7 +1169,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 defender_field_text += `\n${attacker_emote} **${attacker.nickname}** was **DOOMED** from ${defender_emote} **${defender.nickname}**'s ability **Haunted**!`;
             break;
             case Ability.Ravenous:
-                attacker.current_hp += _.clamp(attacker.current_hp + attacker.stats.hp * 0.2, 0, attacker.stats.hp);
+                attacker.current_hp += _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
                 defender_field_text += `\n${attacker_emote} **${attacker.nickname}** healed 20% HP back from its ability **Ravenous**!`;
             break;
             case Ability.Sporespray:
@@ -1169,7 +1177,14 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 defender_field_text += `\n${attacker_emote} **${attacker.nickname}** was **INFECTED** from ${defender_emote} **${defender.nickname}**'s ability **Sporespray**!`;
             break;
             case Ability.InvalidEntry:
-                // TODO: Add this ability
+                // 34 is the ID of i_
+                db.monster_data.inc('34', 'atk');
+                db.monster_data.inc('34', 'def');
+                db.monster_data.inc('34', 'spd');
+                db.monster_data.inc('34', 'hp');
+            break;
+            case Ability.EasyGo:
+                defender_field_text += `\n💖 Healed the rest of ${defender_emote} **${defender.nickname}**'s team by **10%** due to its ability **Easy Go**!`
             break;
         }
     }
@@ -1353,9 +1368,10 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
         if (slot_to_send == -1) { //if there is no slot to send in
             oochabux = _.random(5, 10)
-            thread.send(`**------------ You lose... ------------**\nYou lose **${oochabux}** Oochabux.`);
+            oochabux = _.clamp(user_profile.oochabux - oochabux, 0, 100000000);
+            thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
             db.profile.inc(user_id, 'battle_msg_counter');
-            db.profile.dec(user_id, oochabux, 'oochabux');
+            db.profile.math(user_id, '-', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
             await finish_battle(thread, user_id);
             return true;
@@ -1394,6 +1410,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         let ooch_burned = ooch.status_effects.includes(Status.Burn);
         let ooch_infected = ooch.status_effects.includes(Status.Infect);
         let ooch_digitized = ooch.status_effects.includes(Status.Digitize);
+        let ooch_doomed = ooch.status_effects.includes(Status.Doom);
     
         for (let j = 0; j < ooch.status_effects.length; j++) {
             switch(ooch.status_effects[j]) {
@@ -1424,6 +1441,16 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         if (ooch_digitized && ooch.type[0] != OochType.Tech) {
             ooch.type = [OochType.Tech];
             string_to_send += `\n${ooch.emote} **${ooch.name}** was digitized and had its type changed to **Tech**!.`;
+        }
+
+        if (ooch_doomed) {
+            ooch.doom_timer -= 1;
+            if (ooch.doom_timer == 0) {
+                ooch.current_hp = 0;
+                string_to_send += `\n${ooch.emote} **${ooch.name}**'s **DOOM** timer hit 0! It dies unceremoniously.`
+            } else {
+                string_to_send += `\n${ooch.emote} **${ooch.name}**'s **DOOM** timer went down by 1 due to its status effect.\n**${ooch.doom_timer} turns left!**.`
+            }
         }
     }
 
@@ -1520,6 +1547,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             ooch_enemy.ability = ooch_enemy.og_ability;
             ooch_enemy.type = ooch_enemy.og_type;
             ooch_enemy.status_effects = [];
+            ooch_enemy.doom_timer = 3;
             db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${enemy_profile.ooch_active_slot}]`);
 
             // Switch in stats
@@ -1799,6 +1827,7 @@ finish_battle: async function(thread, user_id) {
         ooch.stats.eva_mul = 1;
         ooch.ability = ooch.og_ability;
         ooch.type = ooch.og_type;
+        ooch.doom_timer = 3;
         ooch.status_effects = [];
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
@@ -1909,10 +1938,10 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    const plrSprite = await loadImage('./Art/tiles/t054.png')
-    const oochPlr = await loadImage(`./resized_art/${plr.ooch_party[plr.ooch_active_slot].name}.png`);
-    const enemySprite = await loadImage('./Art/tiles/t057.png')
-    const oochEnemy = await loadImage(`./resized_art/${enemy.ooch_party[enemy.ooch_active_slot].name}.png`);
+    const plrSprite = await loadImage('./Art/Tiles/t054.png')
+    const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
+    const enemySprite = await loadImage('./Art/Tiles/t057.png')
+    const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
     const prismIcon = await loadImage('./Art/item_prism.png');
     let playerMemberObj = thread.guild.members.cache.get(user_id);
     const playerName = playerMemberObj.displayName;
@@ -1970,6 +1999,24 @@ add_status_effect: function(ooch, status) {
     }
     ooch.status_effects.push(status);
     return ooch;
+},
+
+/**
+ * Get a status effect emote from a string.
+ * @param {String} status The status effect to get an emote for
+ * @returns The status effect emote string.
+ */
+get_status_emote: function(status) {
+    switch(status) {
+        case Status.Burn:      return Status.BurnEmote;
+        case Status.Infect:    return Status.InfectEmote;
+        case Status.Blind:     return Status.BlindEmote;
+        case Status.Digitize:  return Status.DigitizeEmote;
+        case Status.Snare:     return Status.SnareEmote;
+        case Status.Vanish:    return Status.VanishEmote;
+        case Status.Doom:      return Status.DoomEmote;
+        case Status.Double:    return Status.DoubleEmote;
+    }
 }
 
 }

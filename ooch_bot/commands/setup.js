@@ -39,7 +39,7 @@ module.exports = {
         const collector = interaction.channel.createMessageComponentCollector({ max: 1 });
 
         await collector.on('collect', async i => {
-            switch(i.customId) {
+            switch (i.customId) {
                 case 's': await i.update({ content: 'Sporbee has been chosen!', components: [] }); starter = 0; break;
                 case 'r': await i.update({ content: 'Roocky has been chosen!', components: [] }); starter = 3; break;
                 case 'p': await i.update({ content: 'Puppyre has been chosen!', components: [] }); starter = 6; break;

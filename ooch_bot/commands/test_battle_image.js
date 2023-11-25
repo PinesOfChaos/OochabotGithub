@@ -31,6 +31,8 @@ module.exports = {
         .setName('test_battle_image')
         .setDescription('Test battle image'),
 	async execute(interaction) {
+        if (interaction.user.id != 145342159724347393 && interaction.user.id != 122568101995872256) return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+
         await interaction.deferReply();
         let canvas = new Canvas(480, 270);
 
@@ -48,10 +50,10 @@ module.exports = {
         
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        const plrSprite = await loadImage('./Art/tiles/t054.png')
-        const oochPlr = await loadImage('./resized_art/chantern.png');
-        const enemySprite = await loadImage('./Art/tiles/t057.png')
-        const oochEnemy = await loadImage('./resized_art/chantern.png');
+        const plrSprite = await loadImage('./Art/Tiles/t054.png')
+        const oochPlr = await loadImage(`./Art/ResizedArt/chantern.png`);
+        const enemySprite = await loadImage('./Art/Tiles/t057.png')
+        const oochEnemy = await loadImage(`./Art/ResizedArt/chantern.png`);
         const prismIcon = await loadImage('./Art/item_prism.png');
 
         ctx.font = `italic bold 20px main_med`;

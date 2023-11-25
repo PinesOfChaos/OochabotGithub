@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
-        if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') return interaction.reply('This command is not for you.')
+        if (interaction.user.id != 145342159724347393 && interaction.user.id != 122568101995872256) return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         interaction.editReply('Please post the .txt file from the Oochamon Map Editor:tm:')
 
         file_collector = interaction.channel.createMessageCollector({ max: 1, time: 120000 });

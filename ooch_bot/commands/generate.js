@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction) {
 
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
-            return interaction.reply('This command isn\'t for you!')
+            return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         }
 
         //#region Tile Data
@@ -202,18 +202,18 @@ module.exports = {
         create_ability(40, 'Hexiply',           'Attacks deal 6% more damage per sixth of HP remaining.'); 
         create_ability(41, 'Nullify',           'Change an opponents ability to Null while out on the field.'); 
         create_ability(42, 'Duplicant',         'Copy the opponent\'s ability.'); 
-        create_ability(43, 'Null',              'Does nothing.') 
+        create_ability(43, 'Null',              'Does nothing.');
         create_ability(44, 'invalid_entry',     'FALSE'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
-        create_ability(45, 'Immobile',          'Always goes second.') 
-        create_ability(46, 'Strings Attached',  '20% chance to apply a random status effect when attacking.') // Statuses: Burn, Infect, Blind, Snare
-        create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.') 
-        create_ability(48, 'Spectral',          'Changes type to Magic every other turn.') 
-        create_ability(49, 'Height Advantage',  'Increases chance to Crit by 10%.') 
-        create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.') 
-        create_ability(51, 'Radioactive',       'Changes type to Flame every other turn.') 
-        create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.') 
-        create_ability(53, 'Patient',           'Increases DEF by 5% each turn.') 
-        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.') 
+        create_ability(45, 'Immobile',          'Always goes second.');
+        create_ability(46, 'Strings Attached',  '20% chance to apply a random status effect when attacking.'); // Statuses: Burn, Infect, Blind, Snare
+        create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.');
+        create_ability(48, 'Spectral',          'Changes type to Magic every other turn.');
+        create_ability(49, 'Height Advantage',  'Increases chance to Crit by 10%.');
+        create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.'); 
+        create_ability(51, 'Radioactive',       'Changes type to Flame every other turn.');
+        create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.');
+        create_ability(53, 'Patient',           'Increases DEF by 5% each turn.');
+        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.'); 
         
 
         //#endregion

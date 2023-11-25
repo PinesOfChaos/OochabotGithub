@@ -16,6 +16,7 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
 
+        if (interaction.user.id != 145342159724347393 && interaction.user.id != 122568101995872256) return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         let id = interaction.options.getString('item');
         if (isNaN(id)) return interaction.reply('You must input an item ID here.');
         id = parseInt(id);

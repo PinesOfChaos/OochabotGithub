@@ -72,13 +72,21 @@ const Stats = {
 
 const Status = {
     Burn: 'burned',
+    BurnEmote: '<:status_burned:1023031032083128441>',
     Infect: 'infected',
+    InfectEmote: '<:status_infected:1023031033744076930>',
     Blind: 'blinded',
+    BlindEmote: '<:status_blinded:1023031030837416057>',
     Digitize: 'digitized',
+    DigitizeEmote: '<:status_digitized:1023031032934576178>',
     Snare: 'snared',
+    SnareEmote: '<:status_snared:1023031034733940798>',
     Vanish: 'vanished',
+    VanishEmote: '<:status_vanish:1023053679328231424>',
     Doom: 'doomed',
-    Double: 'doubled'
+    DoomEmote: '<:status_doomed:1023053678179012648>',
+    Double: 'doubled',
+    DoubleEmote: '<:status_doubled:1170203311199240302>',
 }
 
 const OochType = {
