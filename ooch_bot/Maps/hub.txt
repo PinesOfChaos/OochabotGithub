@@ -1,0 +1,41 @@
+#map_info
+hub
+
+#tiles
+10|11|10|10|12|12|10|12|12|12|12|12|10|10|10|10|10|10|10|11|
+11|11|11|10|10|10|12|12|12|12|12|12|12|12|10|10|10|11|11|11|
+11|16|16|16|16|16|16|16|16|16|16|16|16|16|16|16|16|17|18|11|
+10|16|17|18|11|10|10|10|10|10|10|10|10|10|11|11|16|17|18|11|
+12|16|17|40|42|10|10|10|10|21|10|10|21|10|10|11|16|17|18|10|
+12|16|17|41|43|10|10|10|10|10|10|10|10|10|10|10|16|17|18|10|
+10|16|17|18|10|10|10|10|10|10|10|10|10|10|10|10|16|17|18|10|
+10|19|20|4|10|10|10|10|10|10|10|10|10|10|10|10|16|17|18|10|
+10|19|20|4|10|10|10|10|10|10|10|10|10|10|10|10|16|17|18|12|
+10|16|17|18|57|10|10|10|10|10|10|10|10|21|10|10|16|17|18|12|
+10|16|17|18|10|10|10|10|10|10|10|10|10|10|10|10|16|17|18|12|
+10|16|17|18|54|10|10|10|10|10|10|10|10|21|10|10|16|17|18|12|
+10|16|17|18|10|28|30|10|10|10|10|10|10|10|10|10|16|17|18|10|
+10|16|17|18|10|29|31|10|10|10|10|21|10|10|10|10|16|17|18|10|
+12|16|17|18|10|10|10|10|10|10|10|10|10|10|10|10|16|17|18|10|
+12|16|17|18|11|11|10|10|10|10|10|10|10|10|10|11|16|17|18|10|
+12|16|17|18|11|11|11|10|10|10|10|10|11|10|11|11|16|17|18|10|
+10|16|16|16|16|16|16|16|16|16|16|16|16|16|16|16|16|17|18|12|
+12|12|12|12|10|11|11|11|11|11|10|10|10|10|11|11|10|10|12|12|
+12|12|12|10|10|10|11|11|10|10|10|10|10|11|11|11|10|12|12|12|
+#npcs
+|11|6|false|32||0|-1|0||||false|Just getting here? I'd go talk to Mirabell.
+She should be just south of here by the tents.|Huh, this ship's landing gear has seen better days...|||||
+|11|11|false|33||100|3|8||Mirabell01||false|Welcome, {player}, to our humble Hub area.
+You'll want to take these to get started.|Oh hi there, {player}, how are things going for you?|||||
+|7|4|false|25||0|-1|0|||Mirabell01|false|Oh, new guy, huh? Yeah you're not gettin' by.	|Look, I said you're not gettin' by. Go talk to Mirabell.|||||
+|8|4|false|25||0|-1|0|||Mirabell01|false|Hey there, sorry, we can't let you by yet. |Really sorry, but we still can't let you through.|||||
+|6|4|false|25||0|-1|0|Mirabell01|||false|Fine, you can go now.|Ugh, you again? Just stay out of trouble.|||||
+|5|7|false|25||0|-1|0|Mirabell01|||false|Hi again, you should be all set to explore now.|Oh hey, {player}, staying out of trouble?|||||
+|12|4|false|0||0|0|2||||true|*The chest creaks open slowly...*||||||
+#npcs
+#savepoints
+true|9|9|
+#shops
+4|4|default|||Welcome to my store. Buy whatever you need below!|
+#events
+#transitions

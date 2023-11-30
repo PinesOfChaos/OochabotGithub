@@ -411,7 +411,7 @@ func _on_file_dialog_save_file_selected(path):
 		save_str += "#shops" + "\n"
 		for shop in menu_shops.get_children():
 			var shop_specials = ""
-			for child in shop.o_shop_special_items:
+			for child in shop.o_shop_special_items.get_children():
 				shop_specials += str(child.item_id) + "`" + str(child.item_price) + "`"
 			
 			save_str += str(shop.shop_x) + "|"
