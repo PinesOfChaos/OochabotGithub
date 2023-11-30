@@ -11,7 +11,7 @@ extends Control
 @onready var tooltips_paint = $TooltipsPaint
 @onready var h_slider_grid_alpha = $VBoxMenu/HBoxMapInfo/HSliderGridAlpha
 
-
+@onready var o_menu = $"."
 @onready var menu_children = $MenuChildren
 @onready var menu_events = $MenuChildren/events
 @onready var menu_spawnzones = $MenuChildren/spawn_zones
@@ -21,14 +21,14 @@ extends Control
 @onready var menu_npcs = $MenuChildren/npcs
 
 var map_name = "testmap"
-var map_width = 64
-var map_height = 64
-var map_tiles = [[]]
+@export var map_width = 64
+@export var map_height = 64
+@export var map_tiles = [[]]
 var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
-var cam_x = 0
-var cam_y = 0
+@export var cam_x = 0
+@export var cam_y = 0
 var highlightbox_tex = null
 var grid_alpha = .1
 
@@ -121,8 +121,7 @@ func _ready():
 func _process(delta):
 	step()	
 	step_end()		
-	
-				
+			
 func _draw():
 	if grid_tiles.get_child_count() == 0:
 		return
@@ -136,7 +135,11 @@ func _draw():
 			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 2000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 1200:
 				draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((x1) - Global.CamX, (y1) - Global.CamY))
 				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
-				
+
+func refresh_all_children():
+	for child in o_menu.get_children(true):
+		child.owner = o_menu
+
 func step_begin():
 	pass
 
@@ -345,7 +348,7 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += str(npc.npc_x) + "|"
 			temp_str += str(npc.npc_y) + "|"
 			
-			temp_str += str(false) + "|" #NPC Beaten, this is no-longer used
+			temp_str += str(0) + "|" #NPC Beaten, this is no-longer used
 			temp_str += str(npc.npc_sprite) + "|"
 			temp_str += npc.npc_sprite_combat + "|"
 			
@@ -356,10 +359,10 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += npc.npc_flag_required + "|"
 			temp_str += npc.npc_flag_given + "|"
 			temp_str += npc.npc_flag_kill + "|"
-			temp_str += str(npc.npc_remove_on_finish) + "|"
+			temp_str += str(1 if npc.npc_remove_on_finish else 0) + "|"
 			
-			temp_str += npc.npc_dialog_pre + "|"
-			temp_str += npc.npc_dialog_post + "|"
+			temp_str += npc.npc_dialog_pre.replace("\n", "`") + "|"
+			temp_str += npc.npc_dialog_post.replace("\n", "`") + "|"
 			
 			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
 			for slot in slots:
@@ -383,7 +386,7 @@ func _on_file_dialog_save_file_selected(path):
 			
 		
 		#Spawn Zones
-		save_str += "#npcs" + "\n"
+		save_str += "#spawn_zones" + "\n"
 		var bbox
 		for spawn in menu_spawnzones.get_children():	
 			bbox = spawn.bounding_box
@@ -402,7 +405,7 @@ func _on_file_dialog_save_file_selected(path):
 		#Save Points
 		save_str += "#savepoints" + "\n"
 		for savepoint in menu_save_points.get_children():
-			save_str += str(savepoint.savepoint_initial) + "|"
+			save_str += str(1 if savepoint.savepoint_initial else 0) + "|"
 			save_str += str(savepoint.savepoint_x) + "|"
 			save_str += str(savepoint.savepoint_y) + "|"
 			save_str += "\n"
@@ -455,6 +458,9 @@ func _on_file_dialog_save_file_selected(path):
 		packed_scene.pack(get_tree().get_current_scene())
 		ResourceSaver.save(packed_scene, packed_path)
 		
+		var result = ResourceSaver.save(o_menu, path + ".tres")
+		assert(result == OK)
+		
 		print("FILE SAVED")
 	else:
 		print("FILE SAVE FAILED")
@@ -466,6 +472,7 @@ func _on_file_dialog_load_file_selected(path):
 		set_working_dir(path)
 		save_preferences()
 		
+		print(path)
 		get_tree().change_scene_to_file(path)
 		
 		print("FILE LOADED")
@@ -658,7 +665,8 @@ func _on_button_new_npc_button_down():
 	var instance = scene.instantiate()
 	menu_npcs.add_child(instance)
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
-	instance.dragging = true
+	instance.owner = o_menu
+	refresh_all_children()
 	
 func _on_button_new_transition_button_down():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -667,6 +675,7 @@ func _on_button_new_transition_button_down():
 	menu_transitions.add_child(instance)
 	Global.ObjSelected = menu_transitions.get_child(menu_transitions.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
+	refresh_all_children()
 	
 func _on_button_new_save_point_button_down():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -675,6 +684,7 @@ func _on_button_new_save_point_button_down():
 	menu_save_points.add_child(instance)
 	Global.ObjSelected = menu_save_points.get_child(menu_save_points.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
+	refresh_all_children()
 
 func _on_button_new_shop_button_down():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -683,6 +693,7 @@ func _on_button_new_shop_button_down():
 	menu_shops.add_child(instance)
 	Global.ObjSelected = menu_shops.get_child(menu_shops.get_child_count() - 1).get_instance_id()
 	instance.dragging = true
+	refresh_all_children()
 	
 func _on_button_new_spawn_region_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -693,6 +704,7 @@ func _on_button_new_spawn_region_pressed():
 	var x1 = Global.get_camera_center().x
 	var y1 = Global.get_camera_center().y
 	instance.bounding_box.set_position(Vector2(x1, y1))
+	refresh_all_children()
 	
 func _on_button_new_event_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
@@ -703,6 +715,7 @@ func _on_button_new_event_pressed():
 	var x1 = Global.get_camera_center().x
 	var y1 = Global.get_camera_center().y
 	instance.bounding_box.set_position(Vector2(x1, y1))
+	refresh_all_children()
 	
 func _on_button_visible_event_toggled(button_pressed):
 	menu_events.visible = button_pressed

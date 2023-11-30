@@ -12,6 +12,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ift6h")
+map_width = null
+map_height = null
+map_tiles = null
+cam_x = null
+cam_y = null
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save Map File"

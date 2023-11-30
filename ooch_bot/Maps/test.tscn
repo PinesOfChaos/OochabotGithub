@@ -1,0 +1,727 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://menu.gd" id="1_oljrk"]
+[ext_resource type="Script" path="res://GridOoch.gd" id="2_p06ut"]
+[ext_resource type="Script" path="res://GridTiles.gd" id="3_o1rfb"]
+[ext_resource type="PackedScene" path="res://npc.tscn" id="4_8dfnd"]
+[ext_resource type="Script" path="res://npc.gd" id="5_iq3gd"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_oljrk")
+map_width = 64
+map_height = 64
+map_tiles = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+cam_x = 0
+cam_y = 0
+
+[node name="FileDialogSave" type="FileDialog" parent="."]
+title = "Save Map File"
+initial_position = 2
+size = Vector2i(500, 400)
+access = 2
+
+[node name="FileDialogLoad" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 2
+size = Vector2i(500, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
+[node name="FileDialogSetFilePaths" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 2
+size = Vector2i(500, 400)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+filters = PackedStringArray(".txt")
+
+[node name="VBoxMenu" type="VBoxContainer" parent="."]
+z_index = 1
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxFile" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonNew" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "New Level"
+
+[node name="ButtonLoad" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Load Level"
+
+[node name="ButtonSave" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Save Level"
+
+[node name="ButtonSetFilepaths" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Set Data Filepaths"
+
+[node name="ButtonRefreshData" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Refresh Data"
+
+[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+focus_mode = 1
+text = "Map Default Name"
+placeholder_text = "Map Name"
+expand_to_text_length = true
+caret_blink = true
+
+[node name="SpinBoxMapW" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+tooltip_text = "Map Width"
+focus_mode = 1
+min_value = 1.0
+max_value = 200.0
+value = 64.0
+prefix = "W"
+
+[node name="SpinBoxMapH" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+tooltip_text = "Map Height"
+focus_mode = 1
+min_value = 1.0
+max_value = 200.0
+value = 64.0
+prefix = "H"
+
+[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+text = "Paint"
+
+[node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+value = 10.0
+ticks_on_borders = true
+
+[node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleEvent" type="CheckBox" parent="VBoxMenu/HBoxEvent"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewEvent" type="Button" parent="VBoxMenu/HBoxEvent"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Event Trigger"
+
+[node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleSpawnzone" type="CheckBox" parent="VBoxMenu/HBoxSpawnzone"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu/HBoxSpawnzone"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Spawn Area"
+
+[node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleTransition" type="CheckBox" parent="VBoxMenu/HBoxTransition"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewTransition" type="Button" parent="VBoxMenu/HBoxTransition"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Transition"
+
+[node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleSavePoint" type="CheckBox" parent="VBoxMenu/HBoxSavePoint"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu/HBoxSavePoint"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Save Point"
+
+[node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleShop" type="CheckBox" parent="VBoxMenu/HBoxShop"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewShop" type="Button" parent="VBoxMenu/HBoxShop"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New Shop"
+
+[node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleNPC" type="CheckBox" parent="VBoxMenu/HBoxNPC"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewNPC" type="Button" parent="VBoxMenu/HBoxNPC"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+text = "New NPC"
+
+[node name="GridOoch" type="GridContainer" parent="."]
+visible = false
+layout_direction = 2
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+script = ExtResource("2_p06ut")
+
+[node name="GridTiles" type="GridContainer" parent="."]
+visible = false
+layout_direction = 2
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+script = ExtResource("3_o1rfb")
+
+[node name="TooltipsPaint" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 917.0
+offset_right = 1152.0
+offset_bottom = 121.0
+text = "LMB					- Paint
+LMB + Ctrl			- Fill
+RMB					- Erase
+RMB + Ctrl			- Select Tile
+Escape				- Return"
+
+[node name="MenuChildren" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="npcs" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="npc" type="Control" parent="MenuChildren/npcs" instance=ExtResource("4_8dfnd")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_iq3gd")
+npc_x = 19.0
+npc_y = 9.0
+npc_sprite = 25
+npc_sprite_combat = ""
+npc_name = ""
+npc_flag_required = ""
+npc_flag_given = ""
+npc_flag_kill = ""
+npc_remove_on_finish = false
+npc_item_id = -1
+npc_item_number = 0
+npc_coin = 0
+npc_dialog_pre = ""
+npc_dialog_post = ""
+npc_slots = [null, null, null, null]
+
+[node name="shops" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="events" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="transitions" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="save_points" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="spawn_zones" type="Control" parent="MenuChildren"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="@HTTPRequest@290" type="HTTPRequest" parent="."]
+download_file = "oochamon/000.png"
+
+[node name="@HTTPRequest@292" type="HTTPRequest" parent="."]
+download_file = "oochamon/001.png"
+
+[node name="@HTTPRequest@294" type="HTTPRequest" parent="."]
+download_file = "oochamon/002.png"
+
+[node name="@HTTPRequest@296" type="HTTPRequest" parent="."]
+download_file = "oochamon/003.png"
+
+[node name="@HTTPRequest@298" type="HTTPRequest" parent="."]
+download_file = "oochamon/004.png"
+
+[node name="@HTTPRequest@300" type="HTTPRequest" parent="."]
+download_file = "oochamon/005.png"
+
+[node name="@HTTPRequest@302" type="HTTPRequest" parent="."]
+download_file = "oochamon/006.png"
+
+[node name="@HTTPRequest@304" type="HTTPRequest" parent="."]
+download_file = "oochamon/007.png"
+
+[node name="@HTTPRequest@306" type="HTTPRequest" parent="."]
+download_file = "oochamon/008.png"
+
+[node name="@HTTPRequest@308" type="HTTPRequest" parent="."]
+download_file = "oochamon/009.png"
+
+[node name="@HTTPRequest@310" type="HTTPRequest" parent="."]
+download_file = "oochamon/010.png"
+
+[node name="@HTTPRequest@312" type="HTTPRequest" parent="."]
+download_file = "oochamon/011.png"
+
+[node name="@HTTPRequest@314" type="HTTPRequest" parent="."]
+download_file = "oochamon/012.png"
+
+[node name="@HTTPRequest@316" type="HTTPRequest" parent="."]
+download_file = "oochamon/013.png"
+
+[node name="@HTTPRequest@318" type="HTTPRequest" parent="."]
+download_file = "oochamon/014.png"
+
+[node name="@HTTPRequest@320" type="HTTPRequest" parent="."]
+download_file = "oochamon/015.png"
+
+[node name="@HTTPRequest@322" type="HTTPRequest" parent="."]
+download_file = "oochamon/016.png"
+
+[node name="@HTTPRequest@324" type="HTTPRequest" parent="."]
+download_file = "oochamon/017.png"
+
+[node name="@HTTPRequest@326" type="HTTPRequest" parent="."]
+download_file = "oochamon/018.png"
+
+[node name="@HTTPRequest@328" type="HTTPRequest" parent="."]
+download_file = "oochamon/019.png"
+
+[node name="@HTTPRequest@330" type="HTTPRequest" parent="."]
+download_file = "oochamon/020.png"
+
+[node name="@HTTPRequest@332" type="HTTPRequest" parent="."]
+download_file = "oochamon/021.png"
+
+[node name="@HTTPRequest@334" type="HTTPRequest" parent="."]
+download_file = "oochamon/022.png"
+
+[node name="@HTTPRequest@336" type="HTTPRequest" parent="."]
+download_file = "oochamon/023.png"
+
+[node name="@HTTPRequest@338" type="HTTPRequest" parent="."]
+download_file = "oochamon/024.png"
+
+[node name="@HTTPRequest@340" type="HTTPRequest" parent="."]
+download_file = "oochamon/025.png"
+
+[node name="@HTTPRequest@342" type="HTTPRequest" parent="."]
+download_file = "oochamon/026.png"
+
+[node name="@HTTPRequest@344" type="HTTPRequest" parent="."]
+download_file = "oochamon/027.png"
+
+[node name="@HTTPRequest@346" type="HTTPRequest" parent="."]
+download_file = "oochamon/028.png"
+
+[node name="@HTTPRequest@348" type="HTTPRequest" parent="."]
+download_file = "oochamon/029.png"
+
+[node name="@HTTPRequest@350" type="HTTPRequest" parent="."]
+download_file = "oochamon/030.png"
+
+[node name="@HTTPRequest@352" type="HTTPRequest" parent="."]
+download_file = "oochamon/031.png"
+
+[node name="@HTTPRequest@354" type="HTTPRequest" parent="."]
+download_file = "oochamon/032.png"
+
+[node name="@HTTPRequest@356" type="HTTPRequest" parent="."]
+download_file = "oochamon/033.png"
+
+[node name="@HTTPRequest@358" type="HTTPRequest" parent="."]
+download_file = "oochamon/034.png"
+
+[node name="@HTTPRequest@360" type="HTTPRequest" parent="."]
+download_file = "oochamon/035.png"
+
+[node name="@HTTPRequest@362" type="HTTPRequest" parent="."]
+download_file = "oochamon/036.png"
+
+[node name="@HTTPRequest@364" type="HTTPRequest" parent="."]
+download_file = "oochamon/037.png"
+
+[node name="@HTTPRequest@366" type="HTTPRequest" parent="."]
+download_file = "oochamon/038.png"
+
+[node name="@HTTPRequest@368" type="HTTPRequest" parent="."]
+download_file = "oochamon/039.png"
+
+[node name="@HTTPRequest@370" type="HTTPRequest" parent="."]
+download_file = "oochamon/040.png"
+
+[node name="@HTTPRequest@372" type="HTTPRequest" parent="."]
+download_file = "oochamon/041.png"
+
+[node name="@HTTPRequest@374" type="HTTPRequest" parent="."]
+download_file = "oochamon/042.png"
+
+[node name="@HTTPRequest@376" type="HTTPRequest" parent="."]
+download_file = "oochamon/043.png"
+
+[node name="@HTTPRequest@378" type="HTTPRequest" parent="."]
+download_file = "oochamon/044.png"
+
+[node name="@HTTPRequest@380" type="HTTPRequest" parent="."]
+download_file = "oochamon/045.png"
+
+[node name="@HTTPRequest@382" type="HTTPRequest" parent="."]
+download_file = "oochamon/046.png"
+
+[node name="@HTTPRequest@384" type="HTTPRequest" parent="."]
+download_file = "oochamon/047.png"
+
+[node name="@HTTPRequest@386" type="HTTPRequest" parent="."]
+download_file = "oochamon/048.png"
+
+[node name="@HTTPRequest@388" type="HTTPRequest" parent="."]
+download_file = "oochamon/049.png"
+
+[node name="@HTTPRequest@390" type="HTTPRequest" parent="."]
+download_file = "oochamon/050.png"
+
+[node name="@HTTPRequest@392" type="HTTPRequest" parent="."]
+download_file = "oochamon/051.png"
+
+[node name="@HTTPRequest@394" type="HTTPRequest" parent="."]
+download_file = "oochamon/052.png"
+
+[node name="@HTTPRequest@396" type="HTTPRequest" parent="."]
+download_file = "oochamon/053.png"
+
+[node name="@HTTPRequest@398" type="HTTPRequest" parent="."]
+download_file = "oochamon/054.png"
+
+[node name="@HTTPRequest@400" type="HTTPRequest" parent="."]
+download_file = "oochamon/055.png"
+
+[node name="@HTTPRequest@402" type="HTTPRequest" parent="."]
+download_file = "oochamon/056.png"
+
+[node name="@HTTPRequest@404" type="HTTPRequest" parent="."]
+download_file = "oochamon/057.png"
+
+[node name="@HTTPRequest@406" type="HTTPRequest" parent="."]
+download_file = "oochamon/058.png"
+
+[node name="@HTTPRequest@408" type="HTTPRequest" parent="."]
+download_file = "oochamon/059.png"
+
+[node name="@HTTPRequest@410" type="HTTPRequest" parent="."]
+download_file = "oochamon/060.png"
+
+[node name="@HTTPRequest@412" type="HTTPRequest" parent="."]
+download_file = "oochamon/061.png"
+
+[node name="@HTTPRequest@414" type="HTTPRequest" parent="."]
+download_file = "oochamon/062.png"
+
+[node name="@HTTPRequest@416" type="HTTPRequest" parent="."]
+download_file = "oochamon/063.png"
+
+[node name="@HTTPRequest@418" type="HTTPRequest" parent="."]
+download_file = "oochamon/064.png"
+
+[node name="@HTTPRequest@420" type="HTTPRequest" parent="."]
+download_file = "oochamon/065.png"
+
+[node name="@HTTPRequest@422" type="HTTPRequest" parent="."]
+download_file = "oochamon/066.png"
+
+[node name="@HTTPRequest@424" type="HTTPRequest" parent="."]
+download_file = "oochamon/067.png"
+
+[node name="@HTTPRequest@426" type="HTTPRequest" parent="."]
+download_file = "oochamon/068.png"
+
+[node name="@HTTPRequest@428" type="HTTPRequest" parent="."]
+download_file = "oochamon/069.png"
+
+[node name="@HTTPRequest@430" type="HTTPRequest" parent="."]
+download_file = "oochamon/070.png"
+
+[node name="@HTTPRequest@432" type="HTTPRequest" parent="."]
+download_file = "oochamon/071.png"
+
+[node name="@HTTPRequest@434" type="HTTPRequest" parent="."]
+download_file = "oochamon/072.png"
+
+[node name="@HTTPRequest@436" type="HTTPRequest" parent="."]
+download_file = "oochamon/073.png"
+
+[node name="@HTTPRequest@438" type="HTTPRequest" parent="."]
+download_file = "oochamon/074.png"
+
+[node name="@HTTPRequest@440" type="HTTPRequest" parent="."]
+download_file = "oochamon/075.png"
+
+[node name="@HTTPRequest@442" type="HTTPRequest" parent="."]
+download_file = "oochamon/076.png"
+
+[node name="@HTTPRequest@444" type="HTTPRequest" parent="."]
+download_file = "oochamon/077.png"
+
+[node name="@HTTPRequest@446" type="HTTPRequest" parent="."]
+download_file = "tiles/000.png"
+
+[node name="@HTTPRequest@448" type="HTTPRequest" parent="."]
+download_file = "tiles/001.png"
+
+[node name="@HTTPRequest@450" type="HTTPRequest" parent="."]
+download_file = "tiles/002.png"
+
+[node name="@HTTPRequest@452" type="HTTPRequest" parent="."]
+download_file = "tiles/003.png"
+
+[node name="@HTTPRequest@454" type="HTTPRequest" parent="."]
+download_file = "tiles/004.png"
+
+[node name="@HTTPRequest@456" type="HTTPRequest" parent="."]
+download_file = "tiles/005.png"
+
+[node name="@HTTPRequest@458" type="HTTPRequest" parent="."]
+download_file = "tiles/006.png"
+
+[node name="@HTTPRequest@460" type="HTTPRequest" parent="."]
+download_file = "tiles/007.png"
+
+[node name="@HTTPRequest@462" type="HTTPRequest" parent="."]
+download_file = "tiles/008.png"
+
+[node name="@HTTPRequest@464" type="HTTPRequest" parent="."]
+download_file = "tiles/009.png"
+
+[node name="@HTTPRequest@466" type="HTTPRequest" parent="."]
+download_file = "tiles/010.png"
+
+[node name="@HTTPRequest@468" type="HTTPRequest" parent="."]
+download_file = "tiles/011.png"
+
+[node name="@HTTPRequest@470" type="HTTPRequest" parent="."]
+download_file = "tiles/012.png"
+
+[node name="@HTTPRequest@472" type="HTTPRequest" parent="."]
+download_file = "tiles/013.png"
+
+[node name="@HTTPRequest@474" type="HTTPRequest" parent="."]
+download_file = "tiles/014.png"
+
+[node name="@HTTPRequest@476" type="HTTPRequest" parent="."]
+download_file = "tiles/015.png"
+
+[node name="@HTTPRequest@478" type="HTTPRequest" parent="."]
+download_file = "tiles/016.png"
+
+[node name="@HTTPRequest@480" type="HTTPRequest" parent="."]
+download_file = "tiles/017.png"
+
+[node name="@HTTPRequest@482" type="HTTPRequest" parent="."]
+download_file = "tiles/018.png"
+
+[node name="@HTTPRequest@484" type="HTTPRequest" parent="."]
+download_file = "tiles/019.png"
+
+[node name="@HTTPRequest@486" type="HTTPRequest" parent="."]
+download_file = "tiles/020.png"
+
+[node name="@HTTPRequest@488" type="HTTPRequest" parent="."]
+download_file = "tiles/021.png"
+
+[node name="@HTTPRequest@490" type="HTTPRequest" parent="."]
+download_file = "tiles/022.png"
+
+[node name="@HTTPRequest@492" type="HTTPRequest" parent="."]
+download_file = "tiles/023.png"
+
+[node name="@HTTPRequest@494" type="HTTPRequest" parent="."]
+download_file = "tiles/024.png"
+
+[node name="@HTTPRequest@496" type="HTTPRequest" parent="."]
+download_file = "tiles/025.png"
+
+[node name="@HTTPRequest@498" type="HTTPRequest" parent="."]
+download_file = "tiles/026.png"
+
+[node name="@HTTPRequest@500" type="HTTPRequest" parent="."]
+download_file = "tiles/027.png"
+
+[node name="@HTTPRequest@502" type="HTTPRequest" parent="."]
+download_file = "tiles/028.png"
+
+[node name="@HTTPRequest@504" type="HTTPRequest" parent="."]
+download_file = "tiles/029.png"
+
+[node name="@HTTPRequest@506" type="HTTPRequest" parent="."]
+download_file = "tiles/030.png"
+
+[node name="@HTTPRequest@508" type="HTTPRequest" parent="."]
+download_file = "tiles/031.png"
+
+[node name="@HTTPRequest@510" type="HTTPRequest" parent="."]
+download_file = "tiles/032.png"
+
+[node name="@HTTPRequest@512" type="HTTPRequest" parent="."]
+download_file = "tiles/033.png"
+
+[node name="@HTTPRequest@514" type="HTTPRequest" parent="."]
+download_file = "tiles/034.png"
+
+[node name="@HTTPRequest@516" type="HTTPRequest" parent="."]
+download_file = "tiles/035.png"
+
+[node name="@HTTPRequest@518" type="HTTPRequest" parent="."]
+download_file = "tiles/036.png"
+
+[node name="@HTTPRequest@520" type="HTTPRequest" parent="."]
+download_file = "tiles/037.png"
+
+[node name="@HTTPRequest@522" type="HTTPRequest" parent="."]
+download_file = "tiles/038.png"
+
+[node name="@HTTPRequest@524" type="HTTPRequest" parent="."]
+download_file = "tiles/039.png"
+
+[node name="@HTTPRequest@526" type="HTTPRequest" parent="."]
+download_file = "tiles/040.png"
+
+[node name="@HTTPRequest@528" type="HTTPRequest" parent="."]
+download_file = "tiles/041.png"
+
+[node name="@HTTPRequest@530" type="HTTPRequest" parent="."]
+download_file = "tiles/042.png"
+
+[node name="@HTTPRequest@532" type="HTTPRequest" parent="."]
+download_file = "tiles/043.png"
+
+[node name="@HTTPRequest@534" type="HTTPRequest" parent="."]
+download_file = "tiles/044.png"
+
+[node name="@HTTPRequest@536" type="HTTPRequest" parent="."]
+download_file = "tiles/045.png"
+
+[node name="@HTTPRequest@538" type="HTTPRequest" parent="."]
+download_file = "tiles/046.png"
+
+[node name="@HTTPRequest@540" type="HTTPRequest" parent="."]
+download_file = "tiles/047.png"
+
+[node name="@HTTPRequest@542" type="HTTPRequest" parent="."]
+download_file = "tiles/048.png"
+
+[node name="@HTTPRequest@544" type="HTTPRequest" parent="."]
+download_file = "tiles/049.png"
+
+[node name="@HTTPRequest@546" type="HTTPRequest" parent="."]
+download_file = "tiles/050.png"
+
+[node name="@HTTPRequest@548" type="HTTPRequest" parent="."]
+download_file = "tiles/051.png"
+
+[node name="@HTTPRequest@550" type="HTTPRequest" parent="."]
+download_file = "tiles/052.png"
+
+[node name="@HTTPRequest@552" type="HTTPRequest" parent="."]
+download_file = "tiles/053.png"
+
+[node name="@HTTPRequest@554" type="HTTPRequest" parent="."]
+download_file = "tiles/054.png"
+
+[node name="@HTTPRequest@556" type="HTTPRequest" parent="."]
+download_file = "tiles/055.png"
+
+[node name="@HTTPRequest@558" type="HTTPRequest" parent="."]
+download_file = "tiles/056.png"
+
+[node name="@HTTPRequest@560" type="HTTPRequest" parent="."]
+download_file = "tiles/057.png"
+
+[connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected" flags=18]
+[connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected" flags=18]
+[connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonLoad" to="." method="_on_button_load_pressed" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonRefreshData" to="." method="_on_button_refresh_data_pressed" flags=18]
+[connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed" flags=18]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapW" to="." method="_on_spin_box_map_w_value_changed" flags=18]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapH" to="." method="_on_spin_box_map_h_value_changed" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed" flags=18]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxEvent/ButtonNewEvent" to="." method="_on_button_new_event_pressed" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxSpawnzone/ButtonNewSpawnRegion" to="." method="_on_button_new_spawn_region_pressed" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxTransition/ButtonVisibleTransition" to="." method="_on_button_visible_transition_toggled" flags=18]
+[connection signal="button_down" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_button_down" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_pressed" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxSavePoint/ButtonVisibleSavePoint" to="." method="_on_button_visible_save_point_toggled" flags=18]
+[connection signal="button_down" from="VBoxMenu/HBoxSavePoint/ButtonNewSavePoint" to="." method="_on_button_new_save_point_button_down" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxShop/ButtonVisibleShop" to="." method="_on_button_visible_shop_toggled" flags=18]
+[connection signal="button_down" from="VBoxMenu/HBoxShop/ButtonNewShop" to="." method="_on_button_new_shop_button_down" flags=18]
+[connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled" flags=18]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down" flags=18]
+[connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed" flags=18]

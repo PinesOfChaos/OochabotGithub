@@ -5,8 +5,8 @@ extends HBoxContainer
 @onready var o_item_id = $item_id
 @onready var o_item_price = $item_price
 
-var item_id = 0
-var item_price = 100
+@export var item_id = 0
+@export var item_price = 100
 var refreshed = false
 
 # Called when the node enters the scene tree for the first time.

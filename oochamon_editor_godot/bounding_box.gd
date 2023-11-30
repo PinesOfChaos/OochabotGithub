@@ -10,10 +10,10 @@ extends Control
 
 var origin_x = 0
 var origin_y = 0
-var pos_x = 0
-var pos_y = 0
-var scale_x = 1
-var scale_y = 1
+@export var pos_x = 0
+@export var pos_y = 0
+@export var scale_x = 1
+@export var scale_y = 1
 var dragging_scale = false
 var refreshed = false
 

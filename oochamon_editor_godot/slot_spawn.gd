@@ -2,9 +2,9 @@ extends Control
 
 @onready var button_slot_species = $slot_info/button_slot_species
 
-var species = 0
-var lv_min = 1
-var lv_max = 1
+@export var species = 0
+@export var lv_min = 1
+@export var lv_max = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -6,11 +6,11 @@ extends Control
 @onready var o_transition_yto = $VBoxContainer/HBoxContainer/transition_y
 @onready var transition_vbox_container = $transition_vbox_container
 
-var transition_map_to = ""
-var transition_xto = 0
-var transition_yto = 0
-var transition_x = 0
-var transition_y = 0
+@export var transition_map_to = ""
+@export var transition_xto = 0
+@export var transition_yto = 0
+@export var transition_x = 0
+@export var transition_y = 0
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.

@@ -7,11 +7,11 @@ extends Control
 @onready var shop_add_item = $shop_vbox/shop_add_item
 @onready var o_shop_special_items = $shop_vbox/shop_special_items
 
-var shop_x = 0
-var shop_y = 0
-var shop_image = ""
-var shop_greeting = "Welcome to my store. Buy whatever you need below!"
-var shop_type = "default"
+@export var shop_x = 0
+@export var shop_y = 0
+@export var shop_image = ""
+@export var shop_greeting = "Welcome to my store. Buy whatever you need below!"
+@export var shop_type = "default"
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.

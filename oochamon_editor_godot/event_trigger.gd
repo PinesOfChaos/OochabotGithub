@@ -6,9 +6,9 @@ extends Control
 @onready var o_event_kill = $VBoxContainer/event_kill
 @onready var event_vbox = $event_vbox
 
-var event_name = ""
-var event_required = ""
-var event_kill = ""
+@export var event_name = ""
+@export var event_required = ""
+@export var event_kill = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

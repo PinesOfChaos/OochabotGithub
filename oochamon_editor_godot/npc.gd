@@ -18,21 +18,21 @@ extends Control
 @onready var slot_3 = $"npc_tab_container/Slot 3"
 @onready var slot_4 = $"npc_tab_container/Slot 4"
 
-var npc_x = 0
-var npc_y = 0
-var npc_sprite = 0
-var npc_sprite_combat = ""
-var npc_name = ""
-var npc_flag_required = ""
-var npc_flag_given = ""
-var npc_flag_kill = ""
-var npc_remove_on_finish = false
-var npc_item_id = -1
-var npc_item_number = 0
-var npc_coin = 0
-var npc_dialog_pre = ""
-var npc_dialog_post = ""
-var npc_slots = [slot_1, slot_2, slot_3, slot_4]
+@export var npc_x = 0
+@export var npc_y = 0
+@export var npc_sprite = 0
+@export var npc_sprite_combat = ""
+@export var npc_name = ""
+@export var npc_flag_required = ""
+@export var npc_flag_given = ""
+@export var npc_flag_kill = ""
+@export var npc_remove_on_finish = false
+@export var npc_item_id = -1
+@export var npc_item_number = 0
+@export var npc_coin = 0
+@export var npc_dialog_pre = ""
+@export var npc_dialog_post = ""
+@export var npc_slots = [slot_1, slot_2, slot_3, slot_4]
 var refreshed = false
 var dragging = false
 

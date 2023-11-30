@@ -2,10 +2,10 @@ extends Control
 
 @onready var o_savepoint_object = $savepoint_object
 @onready var o_savepoint_initial = $savepoint_initial
-var savepoint_initial = false
+@export var savepoint_initial = false
 var dragging = false
-var savepoint_x = 0;
-var savepoint_y = 0;
+@export var savepoint_x = 0;
+@export var savepoint_y = 0;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
