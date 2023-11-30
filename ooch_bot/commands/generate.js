@@ -58,7 +58,7 @@ module.exports = {
         create_tile(39, 'wall',     '<:t007:1095915429802811423>'  ); //Shop Mini
         create_tile(40, 'wall',     '<:t009:1095915431379877928>'  ); //Shop Upper Left
         create_tile(41, 'wall',     '<:t010:1095915432331984927>'  ); //Shop Upper Right
-        create_tile(42, 'wall',     '<:t011:1095915433216983070>'  ); //Shop Lower Left
+        create_tile(42, 'shop',     '<:t011:1095915433216983070>'  ); //Shop Lower Left (interactable tile)
         create_tile(43, 'wall',     '<:t012:1095915434114551888>'  ); //Shop Lower Right
         create_tile(44, 'floor',    '<:t218:1096230878750974115>'  ); //Cave Floor
         create_tile(45, 'floor',    '<:t219:1096230880701337651>'  ); //Cave Floor Entrance
@@ -73,7 +73,7 @@ module.exports = {
         create_tile(54, 'wall',     '<:t217:1096230624005726238>'  ); //Hub Barrel
         create_tile(55, 'floor',    '<:t105:1152708847920758794>'  ); //Fungal Floor Entrance
         create_tile(56, 'wall',     '<:t223:1152708885954691292>'  ); //Cave Stalagtite
-        create_tile(57, 'board',    '<:t224:1152708922306727997>'  ); //Job Board
+        create_tile(57, 'board',     '<:t224:1152708922306727997>'  ); //Job Board
         
         //#endregion
 

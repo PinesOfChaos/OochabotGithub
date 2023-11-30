@@ -12,7 +12,7 @@ module.exports = {
                 .setDescription('Where will we be going today?')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Testmap 1', value: 'testmap' },
+                    { name: 'Hub', value: 'hub' },
                     { name: 'Testmap 2', value: 'testmap2' },
                 )),
     async execute(interaction) {

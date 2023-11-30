@@ -64,18 +64,20 @@ module.exports = {
                                         y: parseInt(line_data[2]),
                                         beaten: Boolean(parseInt(line_data[3])),
                                         sprite_id: parseInt(line_data[4]),
-                                        coin: parseInt(line_data[5]),
-                                        item_id: parseInt(line_data[6]),
-                                        item_count: parseInt(line_data[7]),
-                                        flag_required: (line_data[8] == '' ? false : line_data[8]),
-                                        flag_given: (line_data[9] == '' ? false : line_data[9]),
-                                        remove_on_finish: Boolean(parseInt(line_data[10])),
-                                        pre_combat_dialogue: line_data[11].split('`').filter(v => v != ''),
-                                        post_combat_dialogue: line_data[12].split('`').filter(v => v != ''),
+                                        sprite_combat: line_data[5],
+                                        coin: parseInt(line_data[6]),
+                                        item_id: parseInt(line_data[7]),
+                                        item_count: parseInt(line_data[8]),
+                                        flag_required: (line_data[9] == '' ? false : line_data[9]),
+                                        flag_given: (line_data[10] == '' ? false : line_data[10]),
+                                        flag_kill: (line_data[11] == '' ? false : line_data[11]),
+                                        remove_on_finish: Boolean(parseInt(line_data[12])),
+                                        pre_combat_dialogue: line_data[13].split('`').filter(v => v != ''),
+                                        post_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
                                         team: [],
                                     };
 
-                                    for (let i = 13; i < line_data.length; i++) {
+                                    for (let i = 15; i < line_data.length; i++) {
                                         if (line_data[i] == '') continue;
                                         npc_team_data = line_data[i].split('`');
                                         ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
@@ -151,6 +153,9 @@ module.exports = {
                                         x: parseInt(line_data[0]),
                                         y: parseInt(line_data[1]),
                                         type: line_data[2],
+                                        special_items: line_data[3] == '' ? [] : line_data[3].split('`'),
+                                        image: line_data[4],
+                                        greeting_dialogue: line_data[5],
                                     }
                                     shop_data.push(output);
                                 break;

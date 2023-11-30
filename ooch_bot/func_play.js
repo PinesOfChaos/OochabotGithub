@@ -143,7 +143,7 @@ module.exports = {
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
-                    message.channel.send({ content: obj.greeting, components: [confirm_buttons] }).then(async msg => {
+                    message.channel.send({ content: obj.greeting_dialogue, components: [confirm_buttons] }).then(async msg => {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
                             if (sel.customId == 'yes') {
@@ -199,10 +199,10 @@ module.exports = {
                     playery -= ymove;
                     db.profile.set(message.author.id, PlayerState.Shop, 'player_state');
                     let shopSelectOptions = [];
-                    if (obj.type == 'default') {
+                    if (obj.type == 'default' || obj.type == null) {
                         shopSelectOptions = db.profile.get(message.author.id, 'global_shop_items');
                     }
-                    shopSelectOptions.push(obj.inventory);
+                    shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = shopSelectOptions.map(id => {
                         return { 
@@ -212,6 +212,8 @@ module.exports = {
                             emoji: db.item_data.get(id, 'emote'),
                         }
                     });
+
+                    console.log(shopSelectOptions);
                     
                     // Setup shop select menu
                     let shopSelectMenu = new ActionRowBuilder()
@@ -224,8 +226,9 @@ module.exports = {
 
                     //start shop stuff here
                     let oochabux = db.profile.get(message.author.id, 'oochabux');
+                    if (obj.image == '') obj.image = 'https://cdn.discordapp.com/attachments/1149873572291035298/1149873767351332976/image.png';
                     let image_msg = await message.channel.send({ content: obj.image });
-                    let msg = await message.channel.send({ content: `${obj.greeting}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button] });
+                    let msg = await message.channel.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button] });
                     
                     // Delete the current playspace
                     let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
@@ -264,7 +267,7 @@ module.exports = {
                             }
                             
                             sel.reply({ content: `Successfully purchased ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.`, ephemeral: true });
-                            msg.edit({ content: `${obj.greeting}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                            msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
                         } else {
                             sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.`, ephemeral: true });
                             msg.edit({ components: [shopSelectMenu, back_button] });
@@ -360,7 +363,7 @@ module.exports = {
                     emote_map_array[xx][yy] = tile.emote;
 
                     //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
-                    if (plr_interacted && obj.remove_on_finish) { 
+                    if ((plr_interacted && obj.remove_on_finish) || (player_flags.includes(obj.flag_kill))) { 
                         emote_map_array[xx][yy] = plain_tile;
                     }
                 }
@@ -432,7 +435,11 @@ module.exports = {
      */
     give_item: function(user_id, item_id, item_count) {
         let item = db.item_data.get(item_id);
-        db.profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
+        if (db.profile.get(user_id, `${item.category}.${item_id}`) != undefined) {
+            db.profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
+        } else {
+            db.profile.set(user_id, item_count, `${item.category}.${item_id}`);
+        }
     },
 
     /**

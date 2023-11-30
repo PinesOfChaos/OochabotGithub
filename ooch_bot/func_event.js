@@ -7,14 +7,14 @@ module.exports = {
     /**
      * Runs an event based on event array
      * @param {String} user_id The ID of the user who called the event.
-     * @param {String} channel The main channel that Oochamon is being played in.
+     * @param {Object} thread The main thread that Oochamon is being played in.
      * @param {Array} event_array The event array.
      * @param {Number} start_pos The position to start in the event array (defaults to 0)
      */
-    event_process: async function(user_id, channel, event_array, start_pos = 0) {
+    event_process: async function(user_id, thread, event_array, start_pos = 0) {
 
         const { setup_battle } = require('./func_battle.js');
-        const { give_item } = require('./func_play.js');
+        const { give_item, setup_playspace_str } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -27,14 +27,14 @@ module.exports = {
         let current_place = start_pos;
         let event_mode = event_array[current_place][0];
         let obj_content = event_array[current_place][1];
-        let placeholder_title = 'Error';
         let placeholder_desc = 'Error';
         let info_data;
         let quit_init_loop = false;
+        let profile_data = db.profile.get(user_id);
+        let msg_to_edit = profile_data.display_msg_id;
 
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
-            .setTitle(placeholder_title)
             .setDescription(placeholder_desc)
 
         while (!quit_init_loop) {
@@ -44,19 +44,30 @@ module.exports = {
                 //Basic Text Event
                 case EventMode.Text: 
                     if (obj_content.description == '') obj_content.description = ' ';
+                    if (obj_content.description.includes('{')) {
+                        let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
+                        switch (dialogue_var) {
+                            case 'player':
+                                obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
+                            break;
+                        }
+                    }
+
                     event_embed
-                        .setTitle(obj_content.title)
                         .setDescription(obj_content.description);
+                    if (obj_content.title != '') {
+                        event_embed.setTitle(obj_content.title);
+                    }
 
                     info_data = '';
                     if (obj_content.money != 0) {
-                        info_data += `${obj_content.money} oochabux!\n`;
+                        info_data += `**${obj_content.money}** Oochabux\n`;
                         db.profile.math(user_id, '+', obj_content.money, 'oochabux');
                     } 
 
                     if (obj_content.item != false) {
                         let item = db.item_data.get(obj_content.item.item_id);
-                        info_data += `${obj_content.item.item_count} ${item.name} ${item.emote}!`;
+                        info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
                         give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
                     } 
 
@@ -73,7 +84,7 @@ module.exports = {
                     db.profile.set(user_id, current_place+1, 'npc_event_pos');
                     console.log('test');
                     // Setup the battle
-                    await setup_battle(channel, user_id, obj_content, true);
+                    await setup_battle(thread, user_id, obj_content, true);
                     return;
                 break;
 
@@ -86,6 +97,9 @@ module.exports = {
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                        await thread.messages.fetch(msg_to_edit).then((msg) => {
+                            msg.edit({ content: setup_playspace_str(user_id) });
+                        })
                         return;
                     }
                 break;
@@ -95,7 +109,7 @@ module.exports = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await channel.send({ embeds: [event_embed], components: [next_buttons] })
+        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons] })
         let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
@@ -108,6 +122,9 @@ module.exports = {
                 await confirm_collector.stop();
                 await msg.delete();
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                await message.channel.messages.fetch(msg_to_edit).then((msg) => {
+                    msg.edit({ content: setup_playspace_str(user_id) });
+                })
                 return;
             }
 
@@ -123,19 +140,31 @@ module.exports = {
                     //Basic Text Event
                     case EventMode.Text: 
                         quit = true;
+
+                        if (obj_content.description.includes('{')) {
+                            let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
+                            switch (dialogue_var) {
+                                case 'player':
+                                    obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
+                                break;
+                            }
+                        }
+
                         event_embed
-                            .setTitle(obj_content.title)
                             .setDescription(obj_content.description);
+                        if (obj_content.title != '') {
+                            event_embed.setTitle(obj_content.title);
+                        }
 
                         info_data = '';
                         if (obj_content.money != 0) {
-                            info_data += `${obj_content.money} oochabux!\n`;
+                            info_data += `**${obj_content.money}** Oochabux\n`;
                             db.profile.math(user_id, '+', obj_content.money, 'oochabux');
                         } 
     
                         if (obj_content.item != false) {
                             let item = db.item_data.get(obj_content.item.item_id);
-                            info_data += `${obj_content.item.item_count} ${item.name} ${item.emote}!`;
+                            info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
                             give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
                         } 
     
@@ -156,7 +185,7 @@ module.exports = {
                         await msg.delete();
                         confirm_collector.stop();
                         // Setup the battle
-                        await setup_battle(channel, user_id, obj_content, true);
+                        await setup_battle(thread, user_id, obj_content, true);
                     break;
 
                     //No Visual representation, just sets appropriate flags in the player
@@ -172,7 +201,13 @@ module.exports = {
                             await msg.delete();
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                             quit = true;
+                            await thread.messages.fetch(msg_to_edit).then((msg) => {
+                                msg.edit({ content: setup_playspace_str(user_id) });
+                            })
                             return;
+                        } else {
+                            current_place++;
+                            continue;
                         }
                     break;
                 }

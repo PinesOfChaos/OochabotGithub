@@ -200,6 +200,7 @@ client.on('messageCreate', async message => {
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     // Do movement stuff
                     let args = message.content.split(' ');
+                    if (args.length == 1) args = args[0].split('');
                     let dist = (args.length == 2) ? parseInt(args[1]) : 1;
                     if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
                     switch (args[0]) {
