@@ -15,7 +15,7 @@ var origin_y = 0
 @export var scale_x = 1
 @export var scale_y = 1
 var dragging_scale = false
-var refreshed = false
+@export var refreshed = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
