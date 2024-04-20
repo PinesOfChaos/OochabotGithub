@@ -82,12 +82,10 @@ module.exports = {
                     // Hold the data related to our current NPC event in our profile, so we can access it post battle.
                     db.profile.set(user_id, event_array, 'npc_event_data');
                     db.profile.set(user_id, current_place+1, 'npc_event_pos');
-                    console.log('test');
                     // Setup the battle
                     await setup_battle(thread, user_id, obj_content, true);
-                    return;
-                break;
-
+                return;
+                
                 //No Visual representation, just gives appropriate flags in the player if they don't already have them
                 case EventMode.Flags: 
                     let flags = db.profile.get(user_id, 'flags');
