@@ -10,6 +10,7 @@ extends Control
 @onready var v_box_menu = $VBoxMenu
 @onready var tooltips_paint = $TooltipsPaint
 @onready var h_slider_grid_alpha = $VBoxMenu/HBoxMapInfo/HSliderGridAlpha
+@onready var timer = $Timer
 
 @onready var o_menu = $"."
 @onready var menu_children = $MenuChildren
@@ -20,20 +21,25 @@ extends Control
 @onready var menu_shops = $MenuChildren/shops
 @onready var menu_npcs = $MenuChildren/npcs
 
-var map_name = "testmap"
+@export var map_name = "testmap"
 @export var map_width = 64
 @export var map_height = 64
 @export var map_tiles = [[]]
-var map_battleback = ""
+@export var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
 @export var cam_x = 0
 @export var cam_y = 0
 var highlightbox_tex = null
-var grid_alpha = .1
+@export var grid_alpha = .1
+@export var loaded = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if(loaded):
+		return
+	
+	loaded = true
 	load_preferences()
 	map_reset()
 	
@@ -283,7 +289,6 @@ func map_reset():
 		for j in map_height:
 			map_tiles[i].push_back([])
 			map_tiles[i][j] = 0
-		
 
 #Load  default filepaths and values
 func load_preferences():
@@ -316,9 +321,23 @@ func set_working_dir(path):
 	fd_save.current_dir = Global.WorkingDir
 	fd_load.current_dir = Global.WorkingDir
 
+func set_node_owners_to_menu():
+	for n in o_menu.get_children():
+		n.owner = o_menu
+		set_node_owners(n)
+
+func set_node_owners(node):
+	for n in node.get_children():
+		n.owner = o_menu
+		if n.get_child_count() > 0:
+			set_node_owners(n)
+
 # Save map data
 func _on_file_dialog_save_file_selected(path):
 	var save_file = FileAccess.open(path + ".txt", FileAccess.WRITE)
+	
+	# set the owner of every single node to the menu
+	set_node_owners_to_menu()
 	
 	if FileAccess.file_exists(path + ".txt"):
 		set_working_dir(path)
@@ -458,9 +477,6 @@ func _on_file_dialog_save_file_selected(path):
 		packed_scene.pack(get_tree().get_current_scene())
 		ResourceSaver.save(packed_scene, packed_path)
 		
-		var result = ResourceSaver.save(o_menu, path + ".tres")
-		assert(result == OK)
-		
 		print("FILE SAVED")
 	else:
 		print("FILE SAVE FAILED")
@@ -529,6 +545,7 @@ func refresh_data():
 	Global.DataMoves = []
 	Global.DataOochamon = []
 	Global.DataTiles = []
+	
 	var ln
 	var lnsplit
 	
@@ -768,3 +785,8 @@ func resize_map(prev_w, prev_h):
 	
 func _on_line_edit_map_name_text_changed(new_text):
 	map_name = new_text
+
+func _on_timer_timeout():
+	timer.start(300)
+	print("Autosave")
+	pass # Replace with function body.

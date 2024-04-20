@@ -120,7 +120,7 @@ module.exports = {
                 await confirm_collector.stop();
                 await msg.delete();
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                await message.channel.messages.fetch(msg_to_edit).then((msg) => {
+                await thread.messages.fetch(msg_to_edit).then((msg) => {
                     msg.edit({ content: setup_playspace_str(user_id) });
                 })
                 return;

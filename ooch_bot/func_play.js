@@ -34,6 +34,12 @@ module.exports = {
                 new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
             );
         let shop_collector;
+
+        let qty_back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('quantity_back').setLabel('Back').setStyle(ButtonStyle.Danger),
+            );
+        let item_qty_collector;
             
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
@@ -213,8 +219,6 @@ module.exports = {
                         }
                     });
 
-                    console.log(shopSelectOptions);
-                    
                     // Setup shop select menu
                     let shopSelectMenu = new ActionRowBuilder()
                     .addComponents(
@@ -245,29 +249,62 @@ module.exports = {
                             msg.delete();
                             image_msg.delete();
                             shop_collector.stop();
+                            if (item_qty_collector) item_qty_collector.stop();
                             return;
+                        } else if (sel.customId == 'quantity_back') {
+                            await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                            if (item_qty_collector) item_qty_collector.stop();
                         }
                         
                         let item_id = sel.values[0];
                         let item = db.item_data.get(item_id);
                         if (item.price <= oochabux) {
-                            oochabux -= item.price;
-                            let new_inv_qty = 0;
-                            switch (item.type) {
-                                case 'potion': 
-                                    db.profile.ensure(message.author.id, 0, `heal_inv.${item_id}`)
-                                    db.profile.math(message.author.id, '+', 1, `heal_inv.${item_id}`);
-                                    new_inv_qty = db.profile.get(message.author.id, `heal_inv.${item_id}`);
-                                break;
-                                case 'prism': 
-                                    db.profile.ensure(message.author.id, 0, `prism_inv.${item_id}`)
-                                    db.profile.math(message.author.id, '+', 1, `prism_inv.${item_id}`);
-                                    new_inv_qty = db.profile.get(message.author.id, `prism_inv.${item_id}`);
-                                break;
+                            const qty_filter = m => {
+                                if (m.author.id != message.author.id) return false;
+                                if (!isNaN(parseInt(m.content))) {
+                                    if (parseInt(m.content) != 0) {
+                                        if (oochabux < item.price * parseInt(m.content)) {
+                                            sel.followUp({ content: `You do not have enough money to buy ${m.content}x ${item.emote} **${item.name}**.`, ephemeral: true });
+                                            m.delete();
+                                            return false;
+                                        }
+                                        return true;
+                                    } else {
+                                        sel.followUp({ content: `You cannot buy 0 of an item.`, ephemeral: true });
+                                        m.delete();
+                                        return false;
+                                    }
+                                } else {
+                                    sel.followUp({ content: `You must type in a number quantity of items you want to buy!`, ephemeral: true });
+                                    m.delete();
+                                    return false;
+                                }
                             }
+
+                            await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.`, ephemeral: true })
+                            item_qty_collector = message.channel.createMessageCollector({ filter: qty_filter, max: 1 });
+
+                            item_qty_collector.on('collect', async m => {
+                                let new_inv_qty = 0;
+                                let buyAmount = parseInt(m.content);
+                                oochabux -= item.price * buyAmount;
+                                switch (item.type) {
+                                    case 'potion': 
+                                        db.profile.ensure(message.author.id, 0, `heal_inv.${item_id}`)
+                                        db.profile.math(message.author.id, '+', buyAmount, `heal_inv.${item_id}`);
+                                        new_inv_qty = db.profile.get(message.author.id, `heal_inv.${item_id}`);
+                                    break;
+                                    case 'prism': 
+                                        db.profile.ensure(message.author.id, 0, `prism_inv.${item_id}`)
+                                        db.profile.math(message.author.id, '+', buyAmount, `prism_inv.${item_id}`);
+                                        new_inv_qty = db.profile.get(message.author.id, `prism_inv.${item_id}`);
+                                    break;
+                                }
+                                
+                                sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.`, ephemeral: true });
+                                msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                            });
                             
-                            sel.reply({ content: `Successfully purchased ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.`, ephemeral: true });
-                            msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
                         } else {
                             sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.`, ephemeral: true });
                             msg.edit({ components: [shopSelectMenu, back_button] });

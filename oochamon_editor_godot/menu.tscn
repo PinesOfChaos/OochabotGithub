@@ -12,11 +12,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ift6h")
-map_width = null
-map_height = null
-map_tiles = null
-cam_x = null
-cam_y = null
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save Map File"
@@ -266,6 +261,10 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 300.0
+autostart = true
+
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
 [connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected"]
@@ -293,3 +292,4 @@ offset_bottom = 40.0
 [connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled"]
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
 [connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

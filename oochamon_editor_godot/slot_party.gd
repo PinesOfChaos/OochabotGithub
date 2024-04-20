@@ -13,7 +13,7 @@ extends VBoxContainer
 @export var slot_move3 = 0
 @export var slot_move4 = 0
 @export var slot_nickname = ""
-var refreshed = false
+@export var refreshed = false
 
 
 @onready var o_slot_enable = $row_enable/slot_enable

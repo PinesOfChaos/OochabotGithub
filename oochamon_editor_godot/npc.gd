@@ -33,7 +33,7 @@ extends Control
 @export var npc_dialog_pre = ""
 @export var npc_dialog_post = ""
 @export var npc_slots = [slot_1, slot_2, slot_3, slot_4]
-var refreshed = false
+@export var refreshed = false
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.
