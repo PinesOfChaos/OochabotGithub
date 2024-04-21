@@ -563,6 +563,67 @@ module.exports = {
             doom_timer: 3, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote')
         }
+    },
+
+    // Builds the action rows and places emotes in for the Oochabox, based on the database.
+    // Updates with new database info every time the function is run
+    // Needs to be updated in a lot of cases, so easier to put it in a function!
+    buildBoxData: function(user, page_num) {
+        box_row = [];
+        box_row[0] = new ActionRowBuilder();
+        box_row[1] = new ActionRowBuilder();
+        box_row[2] = new ActionRowBuilder();
+        box_row[3] = new ActionRowBuilder();
+        let box_idx = 0;
+        let oochabox_data = db.profile.get(user.id, 'ooch_pc');
+        let party_data = db.profile.get(user.id, 'ooch_party');
+        let offset = (16 * page_num)
+
+        for (let i = (0 + offset); i < (16 + offset); i++) {
+            if (_.inRange(i, 0+offset, 3+offset)) box_idx = 0; 
+            if (_.inRange(i, 4+offset, 7+offset)) box_idx = 1; 
+            if (_.inRange(i, 8+offset, 11+offset)) box_idx = 2; 
+            if (_.inRange(i, 12+offset, 15+offset)) box_idx = 3; 
+
+            if (oochabox_data[i] == undefined) {
+                box_row[box_idx].addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`box_emp_${i}`)
+                        .setLabel('‎')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(true)
+                    )              
+            } else {
+                let ooch_data = db.monster_data.get(oochabox_data[i].id);
+                box_row[box_idx].addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`box_ooch_${oochabox_data[i].id}_${i}`)
+                        .setEmoji(ooch_data.emote)
+                        .setStyle(ButtonStyle.Secondary)
+                )
+            }          
+        }
+        
+        for (let i = 0; i < 4; i++) {
+            if (party_data[i] == undefined) {
+                box_row[i].addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`box_emp_${i}_party`)
+                        .setLabel('‎')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(true)
+                    )              
+            } else {
+                let ooch_data = db.monster_data.get(party_data[i].id);
+                box_row[i].addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`box_ooch_${party_data[i].id}_${i}_party`)
+                        .setEmoji(ooch_data.emote)
+                        .setStyle(ButtonStyle.Success)
+                )
+            }
+        }
+        return box_row;
     }
 
 }

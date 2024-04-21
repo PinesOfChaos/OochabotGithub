@@ -8,6 +8,7 @@ const PlayerState = {
     Combat: 'combat',
     Cutscene: 'cutscene',
     NotPlaying: 'notplaying',
+    Trading: 'trading',
 }
 
 const TypeEmote = {
