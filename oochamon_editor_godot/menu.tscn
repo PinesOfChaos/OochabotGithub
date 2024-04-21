@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
 [ext_resource type="Script" path="res://GridTiles.gd" id="3_idg2d"]
 
-[node name="Menu" type="Control"]
+[node name="Menu" type="Control" groups=["MainMenu"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

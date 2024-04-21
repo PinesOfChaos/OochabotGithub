@@ -1,25 +1,28 @@
 extends Control
 
 @onready var o_transition_object = $transition_object
-@onready var o_transition_map_to = $VBoxContainer/transition_map_to
-@onready var o_transition_xto = $VBoxContainer/HBoxContainer/transition_x
-@onready var o_transition_yto = $VBoxContainer/HBoxContainer/transition_y
+@onready var o_transition_map_to = $transition_vbox_container/transition_map_to
+@onready var o_transition_xto = $transition_vbox_container/HBoxContainer/transition_x
+@onready var o_transition_yto = $transition_vbox_container/HBoxContainer/transition_y
 @onready var transition_vbox_container = $transition_vbox_container
 
-@export var transition_map_to = ""
-@export var transition_xto = 0
-@export var transition_yto = 0
-@export var transition_x = 0
-@export var transition_y = 0
+var transition_map_to = ""
+var transition_xto = 0
+var transition_yto = 0
+var transition_x = 0
+var transition_y = 0
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	o_transition_xto.text = str(transition_xto)
+	o_transition_yto.text = str(transition_yto)
+	o_transition_map_to.text = transition_map_to
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+		
+	
 	#Hide the Display if not selected
 	if typeof(Global.ObjSelected) == typeof(get_instance_id()) and Global.ObjSelected == get_instance_id():
 		transition_vbox_container.visible = true
