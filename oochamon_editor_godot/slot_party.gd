@@ -1,19 +1,18 @@
 extends VBoxContainer
 
-@export var slot_enabled = false
-@export var slot_species = 0
-@export var slot_level = 1
-@export var slot_ability = 0
-@export var slot_hp = 0
-@export var slot_atk = 0
-@export var slot_def = 0
-@export var slot_spd = 0
-@export var slot_move1 = 0
-@export var slot_move2 = 0
-@export var slot_move3 = 0
-@export var slot_move4 = 0
-@export var slot_nickname = ""
-@export var refreshed = false
+var slot_enabled = false
+var slot_species = 0
+var slot_level = 1
+var slot_ability = 0
+var slot_hp = 0
+var slot_atk = 0
+var slot_def = 0
+var slot_spd = 0
+var slot_move1 = 0
+var slot_move2 = 0
+var slot_move3 = 0
+var slot_move4 = 0
+var refreshed = false
 
 
 @onready var o_slot_enable = $row_enable/slot_enable

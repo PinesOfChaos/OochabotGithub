@@ -458,7 +458,7 @@ func _on_file_dialog_save_file_selected(path):
 			save_str += "\n"
 			
 		#Transitions
-		save_str += "#transitions"
+		save_str += "#transitions" + "\n"
 		for transition in menu_transitions.get_children():
 			save_str += str(transition.transition_x) + "|"
 			save_str += str(transition.transition_y) + "|"
@@ -483,14 +483,103 @@ func _on_file_dialog_save_file_selected(path):
 	
 # Load map data
 func _on_file_dialog_load_file_selected(path):
-	var load_file = FileAccess.open(path, FileAccess.READ)
+	var f = FileAccess.open(path, FileAccess.READ)
 	if FileAccess.file_exists(path):
-		set_working_dir(path)
-		save_preferences()
+		var _main = get_parent()
+		var _menu = load("res://menu.tscn")
+		var _inst = _menu.instantiate()
+		_main.add_child(_inst)
+		_inst.owner = _main
 		
-		print(path)
-		get_tree().change_scene_to_file(path)
+		var _events = _inst.menu_events
+		var _spawnzones = _inst.menu_spawnzones
+		var _transitions = _inst.menu_transitions
+		var _save_points = _inst.menu_save_points
+		var _shops = _inst.menu_shops
+		var _npcs = _inst.menu_npcs
 		
+		var _line
+		var _index = 0
+		var _load_mode = ""
+		var _tiles = []
+		while(not f.eof_reached()):
+			_line = f.get_line()
+			#print(str(_index) + " " + _line)
+			match(_line):
+				"": #Skip Blank Lines
+					pass
+				"#map_info":
+					_load_mode = "map_info"
+				"#tiles":
+					_load_mode = "tiles"
+				"#npcs":
+					_load_mode = "npcs"
+				"#spawn_zones":
+					_load_mode = "spawn_zones"
+				"#savepoints":
+					_load_mode = "savepoints"
+				"#shops":
+					_load_mode = "shops"
+				"#events":
+					_load_mode = "events"
+				"#transitions":
+					_load_mode = "transitions"
+				_: #we are on a data line, do different things based on the load mode
+					match(_load_mode):
+						"tiles":
+							var j = _tiles.size()
+							var _row = _line.split("|")
+							var _row2 = []
+							
+							for i in _row.size():
+								_row2.push_back(int(_row[i]))
+							_tiles.push_back(_row2)
+						"npcs":
+							pass
+						"spawn_zones":
+							pass
+						"savepoints":
+							# create a new object
+							var _load = load("res://savepoint.tscn")
+							var _obj = _load.instantiate()
+
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.savepoint_initial = bool(int(_data[0]))
+							_obj.savepoint_x = int(_data[1])
+							_obj.savepoint_y = int(_data[2])
+					
+							
+							#assign new object as a child of the relevant menu part
+							_save_points.add_child(_obj)
+							_obj.owner = _save_points
+						"shops":
+							pass
+						"events":
+							pass
+						"transitions":
+							# create a new object
+							var _load = load("res://transition.tscn")
+							var _obj = _load.instantiate()
+						
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.transition_x = int(_data[0])
+							_obj.transition_y = int(_data[1])
+							_obj.transition_map_to = _data[2]
+							_obj.transition_xto = int(_data[3])
+							_obj.transition_yto = int(_data[4])
+							
+							#assign new object as a child of the relevant menu part
+							_transitions.add_child(_obj)
+							_obj.owner = _transitions
+			
+			_index += 1
+			pass
+		
+		#assign map tiles
+		_inst.map_tiles = _tiles
+		self.queue_free()
 		print("FILE LOADED")
 	else:
 		print("FILE LOAD FAILED")
