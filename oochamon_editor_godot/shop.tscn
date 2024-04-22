@@ -31,6 +31,12 @@ text = "Welcome to my store. Buy whatever you need below!"
 placeholder_text = "Shop Greeting"
 expand_to_text_length = true
 
+[node name="shop_image_link" type="LineEdit" parent="shop_vbox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "Image Link (Blank for Default)"
+expand_to_text_length = true
+
 [node name="shop_type" type="OptionButton" parent="shop_vbox"]
 layout_mode = 2
 item_count = 2
@@ -49,5 +55,6 @@ layout_mode = 2
 
 [connection signal="button_down" from="shop_object" to="." method="_on_shop_object_button_down"]
 [connection signal="text_changed" from="shop_vbox/shop_greeting" to="." method="_on_shop_greeting_text_changed"]
+[connection signal="text_changed" from="shop_vbox/shop_image_link" to="." method="_on_shop_image_link_text_changed"]
 [connection signal="item_selected" from="shop_vbox/shop_type" to="." method="_on_shop_type_item_selected"]
 [connection signal="pressed" from="shop_vbox/shop_add_item" to="." method="_on_shop_add_item_pressed"]

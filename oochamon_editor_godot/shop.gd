@@ -1,23 +1,46 @@
 extends Control
 
 @onready var o_shop_object = $shop_object
-@onready var o_shop_greeting = $VBoxContainer/shop_greeting
-@onready var o_shop_type = $VBoxContainer/shop_type
+@onready var o_shop_greeting = $shop_vbox/shop_greeting
+@onready var o_shop_type = $shop_vbox/shop_type
 @onready var shop_vbox = $shop_vbox
 @onready var shop_add_item = $shop_vbox/shop_add_item
 @onready var o_shop_special_items = $shop_vbox/shop_special_items
+@onready var o_shop_image_link = $shop_vbox/shop_image_link
 
-@export var shop_x = 0
-@export var shop_y = 0
-@export var shop_image = ""
-@export var shop_greeting = "Welcome to my store. Buy whatever you need below!"
-@export var shop_type = "default"
+var shop_x = 0
+var shop_y = 0
+var shop_image = ""
+var shop_greeting = "Welcome to my store. Buy whatever you need below!"
+var shop_type = "default"
+var shop_special_items = []
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	o_shop_greeting.text = shop_greeting
+	o_shop_image_link.text = shop_image
+	
+	if(shop_type == "default"):
+		o_shop_type.select(0)
+	if(shop_type == "special"):
+		o_shop_type.select(1)
+	
+	var n0 = 0
+	var n1 = 1
+	for i in (shop_special_items.size() / 2):
+		n0 = (i * 2)
+		n1 = (i * 2) + 1
+		
+		var _load = load("res://slot_item.tscn")
+		var _obj = _load.instantiate()
+		
+		_obj.item_id = int(shop_special_items[n0])
+		_obj.item_price = int(shop_special_items[n1])
+		
+		o_shop_special_items.add_child(_obj)
+		_obj.owner = o_shop_special_items
+		pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -58,3 +81,7 @@ func _on_shop_add_item_pressed():
 	var scene = load("res://slot_item.tscn")
 	var instance = scene.instantiate()
 	o_shop_special_items.add_child(instance)
+
+
+func _on_shop_image_link_text_changed(new_text):
+	shop_image = new_text

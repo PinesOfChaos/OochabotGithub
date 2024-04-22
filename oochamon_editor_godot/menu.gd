@@ -450,8 +450,8 @@ func _on_file_dialog_save_file_selected(path):
 			bbox = ev.bounding_box
 			save_str += str(bbox.pos_x) + "|"
 			save_str += str(bbox.pos_y) + "|"
-			save_str += str(bbox.scale_x) + "|"
-			save_str += str(bbox.scale_y) + "|"
+			save_str += str(bbox.scale_x + 1) + "|"
+			save_str += str(bbox.scale_y + 1) + "|"
 			save_str += ev.event_name + "|"
 			save_str += ev.event_required + "|"
 			save_str += ev.event_kill + "|"
@@ -554,9 +554,41 @@ func _on_file_dialog_load_file_selected(path):
 							_save_points.add_child(_obj)
 							_obj.owner = _save_points
 						"shops":
-							pass
+							# create a new object
+							var _load = load("res://shop.tscn")
+							var _obj = _load.instantiate()
+
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.shop_x = int(_data[0])
+							_obj.shop_y = int(_data[1])
+							_obj.shop_type = _data[2]
+							var _specials = _data[3]
+							_obj.shop_special_items = _specials.split("`")
+							_obj.shop_image = _data[4]
+							_obj.shop_greeting = _data[5]
+							
+							#assign new object as a child of the relevant menu part
+							_shops.add_child(_obj)
+							_obj.owner = _shops
 						"events":
-							pass
+							# create a new object
+							var _load = load("res://event_trigger.tscn")
+							var _obj = _load.instantiate()
+						
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.bbox_x = int(_data[0])
+							_obj.bbox_y = int(_data[1])
+							_obj.bbox_w = int(_data[2]) - 1
+							_obj.bbox_h = int(_data[3]) - 1
+							_obj.event_name = _data[4]
+							_obj.event_required = _data[5]
+							_obj.event_kill = _data[6]
+							
+							#assign new object as a child of the relevant menu part
+							_events.add_child(_obj)
+							_obj.owner = _events
 						"transitions":
 							# create a new object
 							var _load = load("res://transition.tscn")
