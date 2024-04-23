@@ -24,8 +24,6 @@ func _ready():
 	bounding_box.pos_y = bbox_y
 	bounding_box.scale_x = bbox_w
 	bounding_box.scale_y = bbox_h
-	
-	print([bbox_x, bbox_y, bbox_w, bbox_h])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

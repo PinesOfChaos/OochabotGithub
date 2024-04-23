@@ -1,19 +1,26 @@
 extends Control
 
-@onready var button_slot_species = $slot_info/button_slot_species
+@onready var o_button_slot_species = $slot_info/button_slot_species
+@onready var o_lv_min = $slot_info/lv_min
+@onready var o_lv_max = $slot_info/lv_max
 
-@export var species = 0
-@export var lv_min = 1
-@export var lv_max = 1
+var species = 0
+var lv_min = 1
+var lv_max = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for i in Global.DataOochamon.size():
-			button_slot_species.add_icon_item(
-				Global.DataOochamon[i].ooch_texture,
-				Global.DataOochamon[i].ooch_name,
-				i
-			)
+		o_button_slot_species.add_icon_item(
+			Global.DataOochamon[i].ooch_texture,
+			Global.DataOochamon[i].ooch_name,
+			i
+		)
+	o_lv_min.value = lv_min
+	o_lv_max.value = lv_max
+	o_button_slot_species.selected = species
+	
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -21,7 +28,7 @@ func _process(delta):
 
 
 func _on_button_slot_species_item_selected(index):
-	species = button_slot_species.get_item_id(index)
+	species = o_button_slot_species.get_item_id(index)
 
 func _on_lv_min_value_changed(value):
 	lv_min = value
