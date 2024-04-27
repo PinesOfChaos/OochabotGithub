@@ -1,23 +1,12 @@
 extends VBoxContainer
 
-var slot_enabled = false
-var slot_species = 0
-var slot_level = 1
-var slot_ability = 0
-var slot_hp = 0
-var slot_atk = 0
-var slot_def = 0
-var slot_spd = 0
-var slot_move1 = 0
-var slot_move2 = 0
-var slot_move3 = 0
-var slot_move4 = 0
-var refreshed = false
-
 
 @onready var o_slot_enable = $row_enable/slot_enable
+
 @onready var o_slot_species = $row_general/slot_species
 @onready var o_slot_level = $row_general/slot_level
+@onready var o_slot_nickname = $row_element/nickname
+
 @onready var o_slot_ability = $row_general/slot_ability
 @onready var row_general = $row_general
 @onready var row_element = $row_element
@@ -35,25 +24,71 @@ var refreshed = false
 @onready var o_slot_def = $row_ivs/slot_def
 @onready var o_slot_spd = $row_ivs/slot_spd
 
+var slot_enabled = false
+var slot_species = 0
+var slot_nickname = ""
+var slot_level = 1
+var slot_ability = 0
+var slot_hp = 0
+var slot_atk = 0
+var slot_def = 0
+var slot_spd = 0
+var slot_move1 = 0
+var slot_move2 = 0
+var slot_move3 = 0
+var slot_move4 = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	for i in Global.DataOochamon.size():
+		o_slot_species.add_icon_item(
+			Global.DataOochamon[i].ooch_texture,
+			Global.DataOochamon[i].ooch_name,
+			i
+		)
+	
+	refresh_abilities(slot_species)
+	refresh_moves(slot_species)
+	refresh_summary(slot_species)
+
+#Called just after the ready function does its thing
+func re_ready():
+	if(slot_enabled):
+		o_slot_enable.button_pressed = true
+		_on_slot_enable_toggled(true)
+		
+	o_slot_species.select(o_slot_species.get_item_index(slot_species))
+	o_slot_level.update_on_text_changed = false
+	o_slot_level.value = slot_level
+	o_slot_level.update_on_text_changed = true
+	
+	refresh_abilities(slot_species)
+	refresh_moves(slot_species, false)
+	
+	o_slot_ability.select(o_slot_ability.get_item_index(slot_ability))
+	o_slot_nickname.text = slot_nickname
+	
+	print("Move IDs / Indices")
+	print([slot_move1, o_move_1.get_item_index(slot_move1)])
+	print([slot_move2, o_move_2.get_item_index(slot_move2)])
+	print([slot_move3, o_move_3.get_item_index(slot_move3)])
+	print([slot_move4, o_move_4.get_item_index(slot_move4)])
+
+	o_move_1.select(o_move_1.get_item_index(slot_move1))
+	o_move_2.select(o_move_2.get_item_index(slot_move2))
+	o_move_3.select(o_move_3.get_item_index(slot_move3))
+	o_move_4.select(o_move_4.get_item_index(slot_move4))
+	
+	o_slot_hp.value = slot_hp
+	o_slot_atk.value = slot_atk
+	o_slot_def.value = slot_def
+	o_slot_spd.value = slot_spd
+	
+	refresh_summary(slot_species)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if(!refreshed):
-		refreshed = true
-		refresh_abilities(slot_species)
-		refresh_moves(slot_species)
-		refresh_summary(slot_species)
-		
-		for i in Global.DataOochamon.size():
-			o_slot_species.add_icon_item(
-				Global.DataOochamon[i].ooch_texture,
-				Global.DataOochamon[i].ooch_name,
-				i
-			)
+	pass
 
 func _on_slot_enable_toggled(button_pressed):
 	slot_enabled = button_pressed
@@ -87,7 +122,7 @@ func refresh_abilities(index):
 			if i == 0:
 				slot_ability = ability
 			
-func refresh_moves(index):
+func refresh_moves(index, overwrite = true):
 	print(["move_refresh", index])
 	if index != -1:
 		var ooch_data = Global.DataOochamon[index]
@@ -112,24 +147,21 @@ func refresh_moves(index):
 				
 				if move_lv <= slot_level:
 					move = Global.DataMoves[move_id]
-					element_texture = Global.element_info(Global.DataMoves[move_id].move_element)[1]
+					element_texture = Global.element_info(move.move_element)[1]
 					tip = (move.move_desc + "\n" +
 						"Damage: " + str(move.move_power) + "\n" +
 						"Accuracy: " + str(move.move_acc) + "\n"
 					)
 					if(move.move_status != "-1"):
 						tip += "(" + str(move.move_chance) + "%) " + move.move_status.capitalize()
-					child.add_icon_item(element_texture, Global.DataMoves[move_id].move_name, move_id)
+					child.add_icon_item(element_texture, move.move_name, move_id)
 					child.set_item_tooltip(step + 1, tip)
 					step += 1
 					
-					if(i == 1):
-						slot_move1 = move_id
+
 			#if this is the first, set it to Bash
-			if i == 0:
+			if (i == 0) and (overwrite):
 				child.select(1)
-				
-			
 					
 
 func _on_slot_level_value_changed(value):
@@ -141,11 +173,6 @@ func _on_slot_ability_item_selected(index):
 	slot_ability = o_slot_ability.get_item_id(index)
 
 func refresh_summary(index):
-	slot_hp = o_slot_hp.value
-	slot_atk = o_slot_atk.value
-	slot_def = o_slot_def.value
-	slot_spd = o_slot_spd.value
-	
 	var hp = floor(Global.DataOochamon[index].ooch_hp * pow(1.05, slot_level) * (slot_hp/10 + 1)) + 10
 	var atk = floor(Global.DataOochamon[index].ooch_atk * pow(1.05, slot_level) * (slot_atk/10 + 1))
 	var def = floor(Global.DataOochamon[index].ooch_def * pow(1.05, slot_level) * (slot_def/10 + 1))

@@ -73,8 +73,8 @@ testmap
 #savepoints
 1|15|8|
 #shops
-16|7|default|||Welcome to my store. Buy whatever you need below!|
+16|7|default|0`1`||Welcome to my store. Buy whatever you need below!|
 #events
-2|2|1|1|EventTest|required_event|kill_event|
+2|2|2|2|EventTest|required_event|kill_event|
 #transitions
 15|7|GarysMap|0|0|

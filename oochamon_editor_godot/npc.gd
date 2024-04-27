@@ -5,40 +5,115 @@ extends Control
 @onready var o_npc_sprite = $"npc_tab_container/Basic Info/general_info/npc_sprite"
 @onready var o_npc_sprite_combat = $"npc_tab_container/Basic Info/general_info/npc_sprite_combat"
 @onready var o_npc_name = $"npc_tab_container/Basic Info/general_info/npc_name"
+
 @onready var o_flag_required = $"npc_tab_container/Basic Info/flag_required"
 @onready var o_flag_given = $"npc_tab_container/Basic Info/flag_given"
 @onready var o_flag_kill = $"npc_tab_container/Basic Info/flag_kill"
 @onready var o_check_remove_finish = $"npc_tab_container/Basic Info/remove_on_finish/check_remove_finish"
 @onready var o_text_pre_combat = $"npc_tab_container/Basic Info/text_pre_combat"
 @onready var o_text_post_combat = $"npc_tab_container/Basic Info/text_post_combat"
+
+@onready var o_coin_count = $"npc_tab_container/Basic Info/coin/coin_count"
 @onready var o_item_select = $"npc_tab_container/Basic Info/items/item_select"
+@onready var o_item_count = $"npc_tab_container/Basic Info/items/item_count"
+
 @onready var button_back = $button_back
 @onready var slot_1 = $"npc_tab_container/Slot 1"
 @onready var slot_2 = $"npc_tab_container/Slot 2"
 @onready var slot_3 = $"npc_tab_container/Slot 3"
 @onready var slot_4 = $"npc_tab_container/Slot 4"
 
-@export var npc_x = 0
-@export var npc_y = 0
-@export var npc_sprite = 0
-@export var npc_sprite_combat = ""
-@export var npc_name = ""
-@export var npc_flag_required = ""
-@export var npc_flag_given = ""
-@export var npc_flag_kill = ""
-@export var npc_remove_on_finish = false
-@export var npc_item_id = -1
-@export var npc_item_number = 0
-@export var npc_coin = 0
-@export var npc_dialog_pre = ""
-@export var npc_dialog_post = ""
-@export var npc_slots = [slot_1, slot_2, slot_3, slot_4]
-@export var refreshed = false
+var npc_x = 0
+var npc_y = 0
+var npc_sprite = 0
+var npc_sprite_combat = ""
+var npc_name = ""
+var npc_flag_required = ""
+var npc_flag_given = ""
+var npc_flag_kill = ""
+var npc_remove_on_finish = false
+var npc_item_id = -1
+var npc_item_number = 0
+var npc_coin = 0
+var npc_dialog_pre = ""
+var npc_dialog_post = ""
+var npc_slots = []
+var npc_slots_data = []
+var refreshed = false
 var dragging = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	
+	o_item_select.add_item("No Item", -1)
+	o_item_select.set_item_id(-1, -1)
+	for item_data in Global.DataItems:
+		o_item_select.add_item(item_data.item_name, item_data.item_index)
+		o_item_select.set_item_tooltip(item_data.item_index, item_data.item_desc)
+	
+	var tile_data
+	var tile_string
+	for i in Global.DataTiles.size():
+		tile_data = Global.DataTiles[i]
+		tile_string = "res://tiles/" + ("00" + str(i)).right(3) + ".png"
+		if tile_data.tile_use == "npc":
+			o_npc_sprite.add_icon_item(load(tile_string),"",i)
+	
+	npc_slots = [slot_1, slot_2, slot_3, slot_4]
+	
+	o_npc_name.text = npc_name
+	
+	o_npc_sprite.selected = npc_sprite
+	o_npc_sprite_combat.text = npc_sprite_combat
+	
+	o_coin_count.value = npc_coin
+	o_item_select.selected = npc_item_id
+	o_item_count.value = npc_item_number
+	
+	o_flag_required.text = npc_flag_required
+	o_flag_given.text = npc_flag_given
+	o_flag_kill.text = npc_flag_kill
+	o_check_remove_finish.button_pressed = npc_remove_on_finish
+	
+	o_text_pre_combat.text = npc_dialog_pre
+	o_text_post_combat.text = npc_dialog_post
+	
+	for i in npc_slots_data.size():
+		var _data_str = npc_slots_data[i]
+		
+		if not (_data_str == ""):
+			var _data = _data_str.split("`")
+			var _slot = npc_slots[i]
+			
+			print(_data_str)
+			print(_data)
+			
+			_slot.slot_enabled = true
+			
+			_slot.slot_species = int(_data[0])
+			_slot.slot_nickname = _data[1]
+			_slot.slot_ability = int(_data[2])
+			_slot.slot_level = int(_data[3])
+			
+			_slot.slot_move1 = int(_data[4])
+			_slot.slot_move2 = int(_data[5])
+			_slot.slot_move3 = int(_data[6])
+			_slot.slot_move4 = int(_data[7])
+			
+			_slot.slot_hp = int(_data[8])
+			_slot.slot_atk = int(_data[9])
+			_slot.slot_def = int(_data[10])
+			_slot.slot_spd = int(_data[11])
+			
+			print("IVs Submitted")
+			print([
+				[_slot.slot_hp, int(_data[8])],
+				[_slot.slot_atk, int(_data[9])],
+				[_slot.slot_def, int(_data[10])],
+				[_slot.slot_spd, int(_data[11])],
+			])
+			
+			_slot.re_ready()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -64,19 +139,7 @@ func _process(delta):
 		refreshed = true
 		dragging = true
 		
-		o_item_select.add_item("No Item", -1)
-		o_item_select.set_item_id(-1, -1)
-		for item_data in Global.DataItems:
-			o_item_select.add_item(item_data.item_name, item_data.item_index)
-			o_item_select.set_item_tooltip(item_data.item_index, item_data.item_desc)
 		
-		var tile_data
-		var tile_string
-		for i in Global.DataTiles.size():
-			tile_data = Global.DataTiles[i]
-			tile_string = "res://tiles/" + ("00" + str(i)).right(3) + ".png"
-			if tile_data.tile_use == "npc":
-				o_npc_sprite.add_icon_item(load(tile_string),"",i)
 	
 
 

@@ -10,16 +10,33 @@ extends Control
 
 var origin_x = 0
 var origin_y = 0
-@export var pos_x = 0
-@export var pos_y = 0
-@export var scale_x = 1
-@export var scale_y = 1
+var pos_x = 0
+var pos_y = 0
+var scale_x = 1
+var scale_y = 1
 var dragging_scale = false
-@export var refreshed = false
+var refreshed = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	refreshed = true
+	
+	var sx = (scale_x + 1) * Global.TileSize
+	var sy = (scale_y + 1) * Global.TileSize
+	var x1 = pos_x * Global.TileSize - Global.CamX
+	var y1 = pos_y * Global.TileSize - Global.CamY
+	var x2 = x1 + sx
+	var y2 = y1 + sy
+	
+	anchor_top_left.set_position(	Vector2(x1, y1))
+	anchor_top_right.set_position(	Vector2(x2, y1))
+	anchor_bot_left.set_position(	Vector2(x1, y2))
+	anchor_bot_right.set_position(	Vector2(x2, y2))
+	
+	box_button.set_position(Vector2(x1, y1))
+	box_button.set_size(Vector2(sx, sy))
+
+	drawn_rect.set_size(Vector2(sx, sy))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

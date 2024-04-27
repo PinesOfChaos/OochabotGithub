@@ -20,6 +20,11 @@ text = "Enable Slot"
 visible = false
 layout_mode = 2
 
+[node name="nickname" type="LineEdit" parent="row_element"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Nickname"
+
 [node name="element_lable" type="Label" parent="row_element"]
 custom_minimum_size = Vector2(63, 0)
 layout_mode = 2

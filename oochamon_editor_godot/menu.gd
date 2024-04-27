@@ -450,8 +450,8 @@ func _on_file_dialog_save_file_selected(path):
 			bbox = ev.bounding_box
 			save_str += str(bbox.pos_x) + "|"
 			save_str += str(bbox.pos_y) + "|"
-			save_str += str(bbox.scale_x) + "|"
-			save_str += str(bbox.scale_y) + "|"
+			save_str += str(bbox.scale_x + 1) + "|"
+			save_str += str(bbox.scale_y + 1) + "|"
 			save_str += ev.event_name + "|"
 			save_str += ev.event_required + "|"
 			save_str += ev.event_kill + "|"
@@ -469,13 +469,6 @@ func _on_file_dialog_save_file_selected(path):
 		
 		#Put the save string into the save file
 		save_file.store_string(save_str)
-
-		#Save the .TSCN file to be reloaded into Godot
-		fd_save.visible = false
-		var packed_scene = PackedScene.new()
-		var packed_path = path + ".tscn"
-		packed_scene.pack(get_tree().get_current_scene())
-		ResourceSaver.save(packed_scene, packed_path)
 		
 		print("FILE SAVED")
 	else:
@@ -535,9 +528,55 @@ func _on_file_dialog_load_file_selected(path):
 								_row2.push_back(int(_row[i]))
 							_tiles.push_back(_row2)
 						"npcs":
-							pass
+							var _load = load("res://npc.tscn")
+							var _obj = _load.instantiate()
+
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.npc_name = _data[0]
+							_obj.npc_x = int(_data[1])
+							_obj.npc_y = int(_data[2])
+							
+							#_data[3] is no longer used
+							_obj.npc_sprite = int(_data[4])
+							_obj.npc_sprite_combat = _data[5]
+							
+							_obj.npc_coin = int(_data[6])
+							_obj.npc_item_id = int(_data[7])
+							_obj.npc_item_number = int(_data[8])
+							
+							_obj.npc_flag_required = _data[9]
+							_obj.npc_flag_given = _data[10]
+							_obj.npc_flag_kill = _data[11]
+							_obj.npc_remove_on_finish = bool(int(_data[12]))
+							
+							var _dialog_pre = _data[13]
+							var _dialog_post = _data[14]
+							_obj.npc_dialog_pre = _dialog_pre.replace("`", "\n")
+							_obj.npc_dialog_post = _dialog_post.replace("`", "\n")
+							
+							_obj.npc_slots_data = [_data[15], _data[16], _data[17], _data[18]]
+							
+							#assign new object as a child of the relevant menu part
+							_npcs.add_child(_obj)
+							_obj.owner = _npcs
 						"spawn_zones":
-							pass
+							# create a new object
+							var _load = load("res://spawn_zone.tscn")
+							var _obj = _load.instantiate()
+
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.bbox_x = int(_data[0])
+							_obj.bbox_y = int(_data[1])
+							_obj.bbox_w = int(_data[2])
+							_obj.bbox_h = int(_data[3])
+							var _spawns = _data[4]
+							_obj.spawn_list = _spawns.split("`")
+							
+							#assign new object as a child of the relevant menu part
+							_spawnzones.add_child(_obj)
+							_obj.owner = _spawnzones
 						"savepoints":
 							# create a new object
 							var _load = load("res://savepoint.tscn")
@@ -554,9 +593,41 @@ func _on_file_dialog_load_file_selected(path):
 							_save_points.add_child(_obj)
 							_obj.owner = _save_points
 						"shops":
-							pass
+							# create a new object
+							var _load = load("res://shop.tscn")
+							var _obj = _load.instantiate()
+
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.shop_x = int(_data[0])
+							_obj.shop_y = int(_data[1])
+							_obj.shop_type = _data[2]
+							var _specials = _data[3]
+							_obj.shop_special_items = _specials.split("`")
+							_obj.shop_image = _data[4]
+							_obj.shop_greeting = _data[5]
+							
+							#assign new object as a child of the relevant menu part
+							_shops.add_child(_obj)
+							_obj.owner = _shops
 						"events":
-							pass
+							# create a new object
+							var _load = load("res://event_trigger.tscn")
+							var _obj = _load.instantiate()
+						
+							# add data to the object
+							var _data = _line.split("|")
+							_obj.bbox_x = int(_data[0])
+							_obj.bbox_y = int(_data[1])
+							_obj.bbox_w = int(_data[2]) - 1
+							_obj.bbox_h = int(_data[3]) - 1
+							_obj.event_name = _data[4]
+							_obj.event_required = _data[5]
+							_obj.event_kill = _data[6]
+							
+							#assign new object as a child of the relevant menu part
+							_events.add_child(_obj)
+							_obj.owner = _events
 						"transitions":
 							# create a new object
 							var _load = load("res://transition.tscn")
