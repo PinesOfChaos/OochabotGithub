@@ -268,7 +268,7 @@ module.exports = {
             }
             // Back to Box Select
             else if (selected == 'back_to_box') {
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
             //#endregion
@@ -699,7 +699,7 @@ module.exports = {
                 user_profile = db.profile.get(interaction.user.id);
                 pages = 9; // Number of pages, starts at 0
                 page_num = 0;
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             }
             // Label buttons
@@ -711,7 +711,7 @@ module.exports = {
                 selected == 'left' ? page_num -= 1 : page_num += 1;
                 page_num = (page_num + pages) % pages; // Handle max page overflow
                 
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 box_buttons.components[3].setLabel(`${page_num + 1}`);
                 i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
@@ -746,7 +746,7 @@ module.exports = {
                 user_profile.ooch_party.splice(slot_num, 1)
                 db.profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
                 // Build new PC button rows
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
@@ -759,7 +759,7 @@ module.exports = {
                 user_profile.ooch_pc.splice(slot_num, 1);
                 db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
                 // Build new PC button rows
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
                 //i.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
@@ -776,7 +776,7 @@ module.exports = {
                 user_profile.ooch_pc.splice(slot_num, 1);
                 db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
                 // Build new PC button rows
-                box_row = buildBoxData(page_num);
+                box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             }
