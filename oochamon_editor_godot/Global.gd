@@ -24,6 +24,7 @@ var ElementIcons = {
 }
 var DataPath = "/"
 var WorkingDir = "/"
+var LastFileName = "/"
 var OochSelected = -1
 var TileSelected = -1
 var TileSize = 32

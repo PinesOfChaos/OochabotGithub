@@ -17,7 +17,9 @@ script = ExtResource("1_ift6h")
 title = "Save Map File"
 initial_position = 2
 size = Vector2i(500, 400)
+ok_button_text = "Save"
 access = 2
+filters = PackedStringArray("*.txt")
 
 [node name="FileDialogLoad" type="FileDialog" parent="."]
 title = "Open a File"
@@ -26,6 +28,7 @@ size = Vector2i(500, 400)
 ok_button_text = "Open"
 file_mode = 0
 access = 2
+filters = PackedStringArray("*.txt")
 
 [node name="FileDialogSetFilePaths" type="FileDialog" parent="."]
 title = "Open a Directory"
@@ -82,7 +85,7 @@ tooltip_text = "Map Width"
 focus_mode = 1
 min_value = 1.0
 max_value = 200.0
-value = 64.0
+value = 100.0
 prefix = "W"
 
 [node name="SpinBoxMapH" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
@@ -91,7 +94,7 @@ tooltip_text = "Map Height"
 focus_mode = 1
 min_value = 1.0
 max_value = 200.0
-value = 64.0
+value = 100.0
 prefix = "H"
 
 [node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxMapInfo"]
@@ -103,6 +106,11 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 value = 10.0
 ticks_on_borders = true
+
+[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+placeholder_text = "Battleback Link"
+expand_to_text_length = true
 
 [node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
@@ -262,7 +270,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 300.0
+wait_time = 10.0
 autostart = true
 
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
@@ -278,6 +286,7 @@ autostart = true
 [connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapH" to="." method="_on_spin_box_map_h_value_changed"]
 [connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
 [connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
+[connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapBattleBack" to="." method="_on_line_edit_map_battle_back_text_changed"]
 [connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]
 [connection signal="pressed" from="VBoxMenu/HBoxEvent/ButtonNewEvent" to="." method="_on_button_new_event_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled"]

@@ -11,9 +11,7 @@ var refreshed = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	o_item_id.selected = item_id
-	o_item_price.value = item_price
-	pass # Replace with function body.
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -22,6 +20,10 @@ func _process(delta):
 		for item_data in Global.DataItems:
 			o_item_id.add_item(item_data.item_name, item_data.item_index)
 			o_item_id.set_item_tooltip(item_data.item_index, item_data.item_desc)
+			
+		#select the intended item
+		o_item_id.selected = item_id
+		o_item_price.value = item_price
 
 func _on_item_remove_pressed():
 	slot_item.queue_free()

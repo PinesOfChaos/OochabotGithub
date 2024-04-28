@@ -17,6 +17,7 @@ func _ready():
 	bounding_box.scale_y = bbox_h
 	
 	var _spawn
+	print(spawn_list)
 	for i in spawn_list.size()/3:
 		
 		var _load = load("res://slot_spawn.tscn")

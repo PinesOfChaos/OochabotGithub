@@ -25,7 +25,7 @@ extends Control
 
 var npc_x = 0
 var npc_y = 0
-var npc_sprite = 0
+var npc_sprite = 2
 var npc_sprite_combat = ""
 var npc_name = ""
 var npc_flag_required = ""
@@ -59,15 +59,20 @@ func _ready():
 		if tile_data.tile_use == "npc":
 			o_npc_sprite.add_icon_item(load(tile_string),"",i)
 	
+	print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
+	
 	npc_slots = [slot_1, slot_2, slot_3, slot_4]
 	
 	o_npc_name.text = npc_name
 	
-	o_npc_sprite.selected = npc_sprite
+	o_npc_sprite.select(o_npc_sprite.get_item_index(npc_sprite))
+	var txt = "res://tiles/" + ("00" + str(npc_sprite)).right(3) + ".png"
+	o_npc_object.texture_normal = load(txt)
+	
 	o_npc_sprite_combat.text = npc_sprite_combat
 	
 	o_coin_count.value = npc_coin
-	o_item_select.selected = npc_item_id
+	o_item_select.select(o_item_select.get_item_index(npc_item_id))
 	o_item_count.value = npc_item_number
 	
 	o_flag_required.text = npc_flag_required
@@ -84,9 +89,6 @@ func _ready():
 		if not (_data_str == ""):
 			var _data = _data_str.split("`")
 			var _slot = npc_slots[i]
-			
-			print(_data_str)
-			print(_data)
 			
 			_slot.slot_enabled = true
 			
@@ -181,3 +183,11 @@ func _on_npc_object_button_down():
 	else:
 		Global.ObjSelected = get_instance_id()
 		Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+
+
+func _on_npc_sprite_combat_text_changed(new_text):
+	npc_sprite_combat = new_text
+
+
+func _on_npc_name_text_changed(new_text):
+	npc_name = new_text

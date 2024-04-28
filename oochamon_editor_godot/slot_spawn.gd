@@ -16,6 +16,9 @@ func _ready():
 			Global.DataOochamon[i].ooch_name,
 			i
 		)
+	
+	print([lv_min, lv_max, species])
+	
 	o_lv_min.value = lv_min
 	o_lv_max.value = lv_max
 	o_button_slot_species.selected = species

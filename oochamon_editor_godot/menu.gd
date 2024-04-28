@@ -11,6 +11,8 @@ extends Control
 @onready var tooltips_paint = $TooltipsPaint
 @onready var h_slider_grid_alpha = $VBoxMenu/HBoxMapInfo/HSliderGridAlpha
 @onready var timer = $Timer
+@onready var line_edit_map_name = $VBoxMenu/HBoxMapInfo/LineEditMapName
+@onready var line_edit_map_battle_back = $VBoxMenu/HBoxMapInfo/LineEditMapBattleBack
 
 @onready var o_menu = $"."
 @onready var menu_children = $MenuChildren
@@ -33,9 +35,14 @@ var mouse_y_prev = 0
 var highlightbox_tex = null
 @export var grid_alpha = .1
 @export var loaded = false
+var do_screen_refresh = true
+var file_known = false
+var file_last_path = ""
+var post_ready_complete = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
 	if(loaded):
 		return
 	
@@ -43,8 +50,6 @@ func _ready():
 	load_preferences()
 	map_reset()
 	
-	fd_save.current_dir = Global.WorkingDir
-	fd_load.current_dir = Global.WorkingDir
 	fd_path.current_dir = Global.DataPath
 	if Global.DataPath != "":
 		refresh_data()
@@ -125,6 +130,11 @@ func _ready():
 	dir.list_dir_end()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if not post_ready_complete:
+		post_ready_complete = true
+		line_edit_map_name.text = map_name
+		line_edit_map_battle_back.text = map_battleback
+	
 	step()	
 	step_end()		
 			
@@ -150,7 +160,8 @@ func step_begin():
 	pass
 
 func step():
-	if Input.is_action_pressed("mouse_middle"):
+	if Input.is_action_pressed("mouse_middle") or do_screen_refresh:
+		do_screen_refresh = false
 		Global.CamX -= get_local_mouse_position().x - mouse_x_prev
 		Global.CamY -= get_local_mouse_position().y - mouse_y_prev
 		
@@ -282,6 +293,13 @@ func step_end():
 	mouse_x_prev = get_local_mouse_position().x
 	mouse_y_prev = get_local_mouse_position().y
 	
+	if(Input.is_action_just_pressed("quicksave")):
+		print("quicksaving")
+		if(file_known) and not (file_last_path == ""):
+			_on_file_dialog_save_file_selected(file_last_path)
+		else:
+			_on_button_save_pressed()
+	
 func map_reset():
 	map_tiles = []
 	for i in map_width:
@@ -300,6 +318,9 @@ func load_preferences():
 		Global.DataPath = config.get_value("Preferences", "DataPath", "/")
 		Global.WorkingDir = config.get_value("Preferences", "WorkingDir", "/")
 		
+		fd_save.current_dir = Global.WorkingDir
+		fd_load.current_dir = Global.WorkingDir
+		
 #Save default filepaths and values
 func save_preferences():
 	var config = ConfigFile.new()
@@ -317,6 +338,7 @@ func download_texture(url : String, file_name : String):
 
 #Set the working directory for saving/loading
 func set_working_dir(path):
+	print(path)
 	Global.WorkingDir = path
 	fd_save.current_dir = Global.WorkingDir
 	fd_load.current_dir = Global.WorkingDir
@@ -334,14 +356,17 @@ func set_node_owners(node):
 
 # Save map data
 func _on_file_dialog_save_file_selected(path):
-	var save_file = FileAccess.open(path + ".txt", FileAccess.WRITE)
-	
+	var save_file = FileAccess.open(path, FileAccess.WRITE)
+
 	# set the owner of every single node to the menu
 	set_node_owners_to_menu()
 	
-	if FileAccess.file_exists(path + ".txt"):
-		set_working_dir(path)
+	if FileAccess.file_exists(path):
+		set_working_dir(path.left(path.rfindn("/"))+"/")
+		print(path.left(path.rfindn("/")))
 		save_preferences()
+		file_known = true
+		file_last_path = path
 		
 		#Save the .TXT file to be loaded into Oochabot
 		var save_str = ""
@@ -418,7 +443,7 @@ func _on_file_dialog_save_file_selected(path):
 					save_str += str(slot.species) + "`"
 					save_str += str(slot.lv_min) + "`"
 					save_str += str(slot.lv_max) + "`"
-					save_str += "|"
+			save_str += "|"
 			save_str += "\n"
 					
 		#Save Points
@@ -478,11 +503,15 @@ func _on_file_dialog_save_file_selected(path):
 func _on_file_dialog_load_file_selected(path):
 	var f = FileAccess.open(path, FileAccess.READ)
 	if FileAccess.file_exists(path):
+		
+		set_working_dir(path.left(path.rfindn("/"))+"/")
 		var _main = get_parent()
 		var _menu = load("res://menu.tscn")
 		var _inst = _menu.instantiate()
 		_main.add_child(_inst)
 		_inst.owner = _main
+		_inst.file_known = true
+		_inst.file_last_path = path
 		
 		var _events = _inst.menu_events
 		var _spawnzones = _inst.menu_spawnzones
@@ -503,6 +532,11 @@ func _on_file_dialog_load_file_selected(path):
 					pass
 				"#map_info":
 					_load_mode = "map_info"
+					_inst.map_name = f.get_line()
+					_inst.map_battleback = f.get_line()
+					_inst.line_edit_map_name.text = map_name
+					print(_inst.map_name)
+					print(_inst.map_battleback)
 				"#tiles":
 					_load_mode = "tiles"
 				"#npcs":
@@ -681,6 +715,9 @@ func _on_button_set_filepaths_pressed():
 func _on_button_new_pressed():
 	map_width = 64
 	map_height = 64
+	file_known = false
+	file_last_path = ""
+	
 	map_reset()
 	for child in menu_npcs.get_children():
 		child.queue_free()
@@ -945,8 +982,16 @@ func resize_map(prev_w, prev_h):
 	
 func _on_line_edit_map_name_text_changed(new_text):
 	map_name = new_text
+	
+func _on_line_edit_map_battle_back_text_changed(new_text):
+	line_edit_map_battle_back = new_text
 
 func _on_timer_timeout():
-	timer.start(300)
-	print("Autosave")
-	pass # Replace with function body.
+	if(file_known) and not(file_last_path == ""):
+		print("Autosave: " + file_last_path)
+		_on_file_dialog_save_file_selected(file_last_path)
+	else:
+		print("Save the file to enable autosave")
+
+
+
