@@ -1,10 +1,10 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, AttachmentBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
 const { setup_playspace_str, create_ooch, buildBoxData } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
-const { ooch_info_embed } = require('../func_other.js');
+const { ooch_info_embed, get_ooch_art } = require('../func_other.js');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -254,13 +254,13 @@ module.exports = {
             //#region Back Buttons
             // Back to Main Menu
             if (selected == 'back_to_menu') {
-                i.update({ content: '**Menu:**', embeds: [], components: [settings_row_1, settings_row_2, settings_row_3] });
+                i.update({ content: '**Menu:**', embeds: [], files: [], components: [settings_row_1, settings_row_2, settings_row_3] });
             } 
             // Back to Party Select
             else if (selected == 'back_to_party') {
                 ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
                 pa_components = buildPartyData(ooch_party);
-                i.update({ content: `**Oochamon Party:**`, components: pa_components, embeds: [] });
+                i.update({ content: `**Oochamon Party:**`, components: pa_components, files: [], embeds: [] });
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
@@ -269,7 +269,7 @@ module.exports = {
             // Back to Box Select
             else if (selected == 'back_to_box') {
                 box_row = buildBoxData(interaction.user, page_num);
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
             //#endregion
 
@@ -308,8 +308,10 @@ module.exports = {
                 }
 
                 dexEmbed = ooch_info_embed(selected_ooch);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
 
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Set to Primary Button
             else if (selected == 'primary') {
@@ -361,7 +363,9 @@ module.exports = {
                 
                 if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
                 let dexEmbed = ooch_info_embed(selected_ooch);
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
+                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Evolve button
             else if (selected == 'evolve') {
@@ -372,13 +376,16 @@ module.exports = {
                 let newEvoOoch = create_ooch(oochData.evo_id, selected_ooch.level, selected_ooch.moveset, nickname, selected_ooch.current_exp, false, 
                                           selected_ooch.stats.hp_iv, selected_ooch.stats.atk_iv, selected_ooch.stats.def_iv, selected_ooch.stats.spd_iv);
                 let dexEmbed = ooch_info_embed(newEvoOoch);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
+
                 oochData = db.monster_data.get(newEvoOoch.id);
 
                 if (oochData.evo_id == -1 || oochData.evo_lvl == -1 || newEvoOoch.level < oochData.evo_lvl) {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
 
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
                 interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉`, ephemeral: true });
 
                 // Finalize putting the ooch into the database and in our menu
@@ -644,10 +651,11 @@ module.exports = {
 
                 ooch_data = db.monster_data.get(0);
                 let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
+                let ooch_img_file = get_ooch_art(ooch_data.name);
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(ooch_data.image)
+                    .setThumbnail(`attachment://${ooch_data.name}.png`)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
@@ -659,10 +667,10 @@ module.exports = {
 
                 if (oochadex_data[0].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 }
             }
             // Oochadex Select Menus
@@ -670,10 +678,11 @@ module.exports = {
                 selected = parseInt(selected.replace('dex_', ''));
                 ooch_data = db.monster_data.get(selected);
                 let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
+                let ooch_img_file = get_ooch_art(ooch_data.name);
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(ooch_data.image)
+                    .setThumbnail(`attachment://${ooch_data.name}.png`)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
@@ -685,10 +694,10 @@ module.exports = {
 
                 if (oochadex_data[selected].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[selected].seen} | **Caught:** ${oochadex_data[selected].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 }
             }
             //#endregion
@@ -735,8 +744,10 @@ module.exports = {
                 box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
 
                 dexEmbed = ooch_info_embed(ooch_user_data);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
 
-                i.update({ content: null, embeds: [dexEmbed], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
+                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
             }
             // Add Oochamon to Box
             else if (selected == 'add_box') {

@@ -197,11 +197,13 @@ module.exports = {
                 }
 
                 dexEmbed = ooch_info_embed(ooch_user_data);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
                 userPageData.ooch_selected = ooch_user_data;
                 userPageData.ooch_is_party = party_slot;
                 userPageData.ooch_slot_num = slot_num;
 
-                await i.update({ embeds: [dexEmbed], components: [oochTradeButtons] });
+                await i.update({ embeds: [dexEmbed], files: [dexPng], components: [oochTradeButtons] });
             } else if (i.customId == 'back') {
                 userPageData.box_row = buildBoxData(userPageData.user, userPageData.page_num);
                 userPageData.ready_to_trade = false;
@@ -239,9 +241,16 @@ module.exports = {
             }
 
             if (userPageData.ready_to_trade == true && oppUserPageData.ready_to_trade == true && tradeState == 'trading') {
+                let oppUserDexEmbed = ooch_info_embed(oppUserPageData.ooch_selected);
+                let oppUserDexPng = oppUserDexEmbed[1];
+                oppUserDexEmbed = oppUserDexEmbed[0];
 
-                await userPageData.trade_msg.edit({ content: `Trading ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.nickname}**!\n${oppTradeMember.displayName} has offered up a ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [ooch_info_embed(oppUserPageData.ooch_selected)], components: [tradeConfirmButtons] })
-                await oppUserPageData.trade_msg.edit({ content: `Trading ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.nickname}**!\n${userPageData.member.displayName} has offered up a ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [ooch_info_embed(userPageData.ooch_selected)], components: [tradeConfirmButtons] })
+                let userDexEmbed = ooch_info_embed(userPageData.ooch_selected)
+                let userDexPng = userDexEmbed[1];
+                userDexEmbed = userDexEmbed[0];
+
+                await userPageData.trade_msg.edit({ content: `Trading ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.nickname}**!\n${oppTradeMember.displayName} has offered up a ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [oppUserDexEmbed], files: [oppUserDexPng], components: [tradeConfirmButtons] })
+                await oppUserPageData.trade_msg.edit({ content: `Trading ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.nickname}**!\n${userPageData.member.displayName} has offered up a ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [userDexEmbed], files: [userDexPng], components: [tradeConfirmButtons] })
                 tradeState = 'confirm';
 
             } else if (tradeState == 'confirm' && i.customId == 'confirm' && oppUserPageData.trade_confirmed == false) {
@@ -269,8 +278,8 @@ module.exports = {
                 userPageData.box_row = buildBoxData(userPageData.user, userPageData.page_num);
                 oppUserPageData.box_row = buildBoxData(oppUserPageData.user, oppUserPageData.page_num);
 
-                await i.update({ content: `**Trade with ${userPageData.other_member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
-                await oppTradeMsg.edit({ content: `**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], components: [oppUserPageData.box_row[0], oppUserPageData.box_row[1], oppUserPageData.box_row[2], oppUserPageData.box_row[3], oppUserPageData.box_buttons] });
+                await i.update({ content: `**Trade with ${userPageData.other_member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
+                await oppTradeMsg.edit({ content: `**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [oppUserPageData.box_row[0], oppUserPageData.box_row[1], oppUserPageData.box_row[2], oppUserPageData.box_row[3], oppUserPageData.box_buttons] });
                 let confirmMsg = await userPageData.thread.send(`# Confirmed trade!\nYou have received ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.name}** from **${oppTradeMember.displayName}**!`)
                 let oppConfirmMsg = await oppUserThread.send(`# Confirmed trade!\nYou have received ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** from **${userPageData.member.displayName}**!`)
 

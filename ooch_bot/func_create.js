@@ -22,7 +22,6 @@ module.exports = {
      * @param {Number} id The ID of the Oochamon
      * @param {String} emote The emote of the Oochamon
      * @param {String} name The name of the Oochamon
-     * @param {String} image The image link
      * @param {String} oochive_entry The Oochive Entry
      * @param {String} type The type of the Oochamon
      * @param {Number} hp The base HP stat
@@ -36,11 +35,10 @@ module.exports = {
      * @param {Number} evo_lvl What level the Oochamon evolves at
      * @param {Number} evo_stage What stage the Oochamon is at evolution wise
      */
-    create_monster: function(id, emote, name, image, oochive_entry, type, hp, atk, def, spd, move_list, abilities, pre_evo_id, evo_id, evo_lvl, evo_stage) { 
+    create_monster: function(id, emote, name, oochive_entry, type, hp, atk, def, spd, move_list, abilities, pre_evo_id, evo_id, evo_lvl, evo_stage) { 
         let key_id = id.toString();
         db.monster_data.set(key_id, id, 'id')
         db.monster_data.set(key_id, emote, 'emote')
-        db.monster_data.set(key_id, image, 'image')
         db.monster_data.set(key_id, name, 'name')
         db.monster_data.set(key_id, oochive_entry, 'oochive_entry')
         db.monster_data.set(key_id, type, 'type')

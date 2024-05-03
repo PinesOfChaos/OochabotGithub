@@ -90,7 +90,7 @@ module.exports = {
                 }
             }
 
-            let ooch = create_ooch(ooch_id);
+            let ooch = create_ooch(starter);
             db.profile.set(interaction.user.id, [ooch], 'ooch_party');
 
         });

@@ -718,9 +718,11 @@ prompt_battle_input: async function(thread, user_id) {
                                 }
                                 db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.id}].caught`)
                                 let infoEmbed = ooch_info_embed(ooch_enemy)
+                                let oochPng = infoEmbed[1];
+                                infoEmbed = infoEmbed[0];
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
 
-                                item_sel.followUp({ embeds: [infoEmbed], ephemeral: true })
+                                item_sel.followUp({ embeds: [infoEmbed], files: [oochPng], ephemeral: true })
                                 await finish_battle(thread, user_id);
 
                                 return;
