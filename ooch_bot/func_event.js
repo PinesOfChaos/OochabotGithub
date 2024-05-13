@@ -221,7 +221,7 @@ module.exports = {
     event_from_npc: function(npc_obj, user_id) {
 
         const { generate_trainer_battle } = require('./func_battle.js');
-
+        console.log(npc_obj);
         let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.x}${npc_obj.y}`; //Flag generated for this npc at this position
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
@@ -236,6 +236,7 @@ module.exports = {
                     description: npc_obj.pre_combat_dialogue[i],
                     money: 0,
                     item: false,
+                    sprite_id: npc_obj.sprite_id,
                 }])
             }
 
@@ -252,6 +253,7 @@ module.exports = {
                     description: npc_obj.pre_combat_dialogue[i],
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
+                    sprite_id: npc_obj.sprite_id,
                 }]);
             }
         }
@@ -278,6 +280,7 @@ module.exports = {
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
+                        sprite_id: npc_obj.sprite_id,
                     }])
                 } else {
                     return_array.push([EventMode.Text, {
@@ -285,6 +288,7 @@ module.exports = {
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         item: false,
+                        sprite_id: npc_obj.sprite_id,
                     }])
                 }
             }

@@ -10,11 +10,7 @@ module.exports = {
     .addStringOption(option => 
             option.setName('biome')
                 .setDescription('Where will we be going today?')
-                .setRequired(true)
-                .addChoices(
-                    { name: 'Hub', value: 'hub' },
-                    { name: 'Testmap 2', value: 'testmap2' },
-                )),
+                .setRequired(true)),
     async execute(interaction) {
         let biome_to = interaction.options.getString('biome');
         let target = interaction.user.id;
