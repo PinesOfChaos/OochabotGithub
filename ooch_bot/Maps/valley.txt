@@ -67,15 +67,15 @@ Sandstone Valley
 0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
 0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
 #npcs
-???|46|36|0|27||0|-1|0||cromet_encounter||0|*rawr x3*||35``14`5`0`0`0`0`10`2`2`2`||||
+???|46|36|0|27||0|-1|0||cromet_encounter||0|*rawr x3*||35``6`5`0`0`0`0`10`2`2`2`||||
 Researcher|50|35|0|32||0|-1|0|||cromet_encounter|0|What're ya doin?`I'm researchin' here!|Yeah, uh, still researchin'.|||||
 Chest|24|39|0|2||0|0|3||||1|||||||
 Researcher|29|23|0|32||0|-1|0|||fungal_cave_unlock|0|Cave's off limits until we can figure out what's going on in there...|Look, it's nothing serious.`It's just... off limits.|||||
-Wanderer Sasha|41|20|0|24||100|-1|0||||0|Ya wanna scrap?|Okay, okay, you win.|11``15`2`0`0`0`0`0`0`0`0`|11``14`2`0`0`0`0`0`0`0`0`|||
+Wanderer Sasha|41|20|0|24||100|-1|0||||0|Ya wanna scrap?|Okay, okay, you win.|11``22`2`0`0`0`0`0`0`0`0`|11``22`2`0`0`0`0`0`0`0`0`|||
 Researcher Braden|38|31|0|32||0|-1|0||||0|I'm bored, wanna fight?|Thanks, now I can keep staring at this wall.|||||
-Shopkeep Starla|20|30|0|38||50|3|2||||0|On my lunch break~`Win for a free sample~|I just lost~`There goes my paycheck~|39``8`4`0`0`0`0`3`5`3`2`||||
+Shopkeep Starla|20|30|0|38||50|3|2||||0|On my lunch break~`Win for a free sample~|I just lost~`There goes my paycheck~|39``37`4`0`0`0`0`3`5`3`2`||||
 Researcher Cliff|33|36|0|32||0|-1|0||||0|Be careful out there!`I hear there's all sorts of nonsense goin on.|Me?`I'm staying right here.`Near this patch of grass.`Where it's safe.|||||
-Guard J|40|35|0|25||0|-1|0||||0|Uh, HALT!`Yeah, that'll show 'em.|Don't tell the other two I'm hiding out over here okay?|9``4`3`3`3`0`0`0`0`0`0`||||
+Guard J|40|35|0|25||0|-1|0||||0|Uh, HALT!`Yeah, that'll show 'em.|Don't tell the other two I'm hiding out over here okay?|9``20`3`3`3`0`0`0`0`0`0`||||
 #spawn_zones
 27|15|4|4|35`2`5`9`1`3`|
 17|8|11|9|9`1`2`46`1`1`59`1`1`|
