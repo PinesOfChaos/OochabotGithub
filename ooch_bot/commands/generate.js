@@ -14,7 +14,7 @@ module.exports = {
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
             return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         }
-
+        
         //#region Tile Data
         //          ID  Use         Emote                           Emote_Simple (Optional)
         create_tile(0,  'floor',    '<:t000:1057163944889946173>'  ); //Black 
@@ -155,8 +155,7 @@ module.exports = {
 
 
         //#endregion
-        
-        // All abilities need to be thoroughly tested still, keep track
+
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Ability Data
         //             ID,  NAME,               Description
@@ -214,7 +213,8 @@ module.exports = {
         create_ability(51, 'Radioactive',       'Changes type to Flame every other turn.');
         create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.');
         create_ability(53, 'Patient',           'Increases DEF by 5% each turn.');
-        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.'); 
+        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.');
+        create_ability(55, 'Bomber',            'Halves the enemy HP on death.') 
         
 
         //#endregion
@@ -694,35 +694,217 @@ module.exports = {
         create_monster(77, get_emote_string(client, 'sabrink'), 'Sabrink',
         'A grinning energy blade that relentlessly pursues its enemies. ', [OochType.Tech], 18, 30, 17, 30, //total 85
         [ [1, Move.Bash] ],
-        [ Ability.Efficient ], 76, -1, -1, 1);
+        [ Ability.Efficient, Ability.Inertia ], 76, -1, -1, 1);
 
         //Sapler
         create_monster(78, get_emote_string(client, 'sapler'), 'Sapler',
-        'A sapling!', [OochType.Tech], 18, 30, 17, 30, //total 85
+        'These little guys are known to infest power stations and cables, slowly draining their energy.', [OochType.Tech], 15, 10, 20, 5, //total 50
         [ [1, Move.Bash] ],
-        [ Ability.Efficient ], -1, 79, 15, 0);
+        [ Ability.Bomber, Ability.Leech ], -1, 79, 20, 0);
 
         //Radient
         create_monster(79, get_emote_string(client, 'radient'), 'Radient',
-        'A radiant tree.', [OochType.Tech], 18, 30, 17, 30, //total 85
+        'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.', [OochType.Tech], 25, 20, 20, 15, //total 80
         [ [1, Move.Bash] ],
-        [ Ability.Efficient ], 78, -1, -1, 1);
+        [ Ability.Bomber, Ability.Energized ], 78, -1, -1, 1);
 
         //Lasangato
         create_monster(80, get_emote_string(client, 'lasangato'), 'Lasangato',
-        'Garfield lmao!', [OochType.Stone], 18, 30, 17, 30, //total 85
+        'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.', [OochType.Stone], 27, 10, 23, 10, //total 70
         [ [1, Move.Bash] ],
-        [ Ability.Efficient ], -1, -1, -1, 0);
+        [ Ability.Burdened, Ability.Burrower ], -1, -1, -1, 0);
 
         //Nullifly
         create_monster(81, get_emote_string(client, 'nullifly'), 'Nullifly',
-        'Nulling fly.', [OochType.Void], 18, 30, 17, 30, //total 85
+        'Strange creatures which begin to swarm where pockets of Void appear.', [OochType.Void], 20, 20, 20, 20, //total 80
         [ [1, Move.Bash] ],
-        [ Ability.Efficient ], -1, -1, -1, 0);
+        [ Ability.Nullify ], -1, -1, -1, 0);
 
         //#endregion
 
-        // Generate text file for GMS2 map editor project
+        //#region Create Maps
+        await db.maps.clear();
+        let files = fs.readdirSync('./Maps/');
+        for (let file of files) {
+            let map_name = file.replace('.txt', '');
+
+            fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
+                let map_data = data.split('\n');
+                let data_header = 'err';
+                let map_info_step = 0;
+                let map_info_name = '';
+                let map_info_battleback = '';
+                let tile_data = [];
+                let npc_data = [];
+                let npc_team_data, ooch_data, moveset, spawn_ooch_data;
+                let spawn_data = [];
+                let savepoint_data = [];
+                let transition_data = [];
+                let event_data = [];
+                let shop_data = [];
+                
+                for (let line of map_data) {
+                    line = line.replace(/\r\n/g, '').replace(/[\r\n]/g, '');
+                    if (line[0] == '#') {
+                        data_header = `${line.replace('#', '')}`;
+                    } else {
+                        let line_data = line.split('|');
+                        let output;
+                        switch (data_header) {
+                            case 'map_info':
+                                if(map_info_step == 0){ map_info_name = line_data[0]}
+                                if(map_info_step == 1){ map_info_battleback = line_data[0]}
+                                map_info_step += 1;
+                            break;
+                            case 'tiles':
+                                line_data.pop();
+                                line_data = line_data.map(v => parseInt(v));
+                                tile_data.push(line_data);
+                            break;
+                            case 'npcs':
+                                output = {
+                                    name: line_data[0],
+                                    x: parseInt(line_data[1]),
+                                    y: parseInt(line_data[2]),
+                                    beaten: false,
+                                    sprite_id: parseInt(line_data[4]),
+                                    sprite_combat: line_data[5],
+                                    coin: parseInt(line_data[6]),
+                                    item_id: parseInt(line_data[7]),
+                                    item_count: parseInt(line_data[8]),
+                                    flag_required: (line_data[9] == '' ? false : line_data[9]),
+                                    flag_given: (line_data[10] == '' ? false : line_data[10]),
+                                    flag_kill: (line_data[11] == '' ? false : line_data[11]),
+                                    remove_on_finish: Boolean(parseInt(line_data[12])),
+                                    pre_combat_dialogue: line_data[13].split('`').filter(v => v != ''),
+                                    post_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
+                                    team: [],
+                                };
+
+                                for (let i = 15; i < line_data.length; i++) {
+                                    if (line_data[i] == '') continue;
+                                    npc_team_data = line_data[i].split('`');
+                                    ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
+                                    moveset = [
+                                        parseInt(npc_team_data[4]),
+                                        parseInt(npc_team_data[5]),
+                                        parseInt(npc_team_data[6]),
+                                        parseInt(npc_team_data[7]),
+                                    ];
+                                    moveset = moveset.filter(id => id != -1);
+
+                                    output.team.push({
+                                        id: parseInt(npc_team_data[0]),
+                                        name: ooch_data.name,
+                                        nickname: npc_team_data[1],
+                                        current_hp: ooch_data.hp,
+                                        type: ooch_data.type,
+                                        item: -1,
+                                        alive: true,
+                                        ability: parseInt(npc_team_data[2]),
+                                        level: parseInt(npc_team_data[3]),
+                                        moveset: moveset,
+                                        status_effects: [],
+                                        stats: {
+                                            acc_mul: 1,
+                                            eva_mul: 1,
+                                            hp: ooch_data.hp,
+                                            hp_iv: parseInt(npc_team_data[8]),
+                                            atk: ooch_data.atk,
+                                            atk_iv: parseInt(npc_team_data[9]),
+                                            atk_mul: 1,
+                                            def: ooch_data.def,
+                                            def_iv: parseInt(npc_team_data[10]),
+                                            def_mul: 1,
+                                            spd: ooch_data.spd,
+                                            spd_iv: parseInt(npc_team_data[11]),
+                                            spd_mul: 1,
+                                        }
+                                    });
+                                }
+                                npc_data.push(output);
+                            break;
+                            case 'spawns':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    width: parseInt(line_data[2]),
+                                    height: parseInt(line_data[3]),
+                                    spawn_slots: [],
+                                }
+
+                                for (let i = 4; i < line_data.length; i++) {
+                                    if (line_data[i] == '') continue;
+                                    spawn_ooch_data = line_data[i].split('`')
+                                    output.spawn_slots.push({
+                                        ooch_id: parseInt(spawn_ooch_data[0]),
+                                        min_level: parseInt(spawn_ooch_data[1]),
+                                        max_level: parseInt(spawn_ooch_data[2])
+                                    })
+                                }
+                                spawn_data.push(output);
+                            break;
+                            case 'savepoints':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    is_default: Boolean(parseInt(line_data[2]))
+                                }
+                                savepoint_data.push(output);
+                            break;
+                            case 'shops':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    type: line_data[2],
+                                    special_items: line_data[3] == '' ? [] : line_data[3].split('`'),
+                                    image: line_data[4],
+                                    greeting_dialogue: line_data[5],
+                                }
+                                shop_data.push(output);
+                            break;
+                            case 'transitions':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    connect_map: parseInt(line_data[2]),
+                                    connect_x: parseInt(line_data[3]),
+                                    connect_y: parseInt(line_data[4]),
+                                }
+                                transition_data.push(output);
+                            break;
+                            case 'events':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    width:  parseInt(line_data[2]),
+                                    height: parseInt(line_data[3]),
+                                    event_name: line_data[4],
+                                    flag_required: (line_data[5] == '' ? false : line_data[5]),
+                                    flag_kill: (line_data[6] == '' ? false : line_data[6]),
+                                }
+                                event_data.push(output);
+                            break;
+                        }
+                    }
+                }
+
+                //Set the map's data
+                db.maps.set(map_name, {
+                    map_title: map_info_name,
+                    map_info_battleback : map_info_battleback,
+                    tiles: tile_data,
+                    npcs: npc_data,
+                    spawns: spawn_data,
+                    savepoints: savepoint_data,
+                    transitions: transition_data,
+                    events: event_data,
+                    shops: shop_data
+                });
+            });
+        }
+
+        // Generate text file for map editor project
         let ooch_output_str = "";
         let moves_output_str = "";
         let items_output_str = "";

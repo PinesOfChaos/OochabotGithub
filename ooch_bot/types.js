@@ -218,6 +218,7 @@ const Ability = {
     Energized: 52,
     Patient: 53,
     EasyGo: 54,
+    Bomber: 55
 }
 
 const Item = {

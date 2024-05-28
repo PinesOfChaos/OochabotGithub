@@ -53,3 +53,4 @@
 52|Energized|Increases ATK and SPD by 10% on kill.
 53|Patient|Increases DEF by 5% each turn.
 54|Easy Go|Heals the rest of your party by 10% when defeated.
+55|Bomber|Halves the enemy HP on death.

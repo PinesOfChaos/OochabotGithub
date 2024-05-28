@@ -155,16 +155,16 @@ module.exports = {
             );
 
         //#endregion End of making action rows
+        let user_profile = db.profile.get(interaction.user.id);
 
         let menuMsg;
-        await interaction.reply({ content: '**Menu:**', components: [settings_row_1, settings_row_2, settings_row_3] });
+        await interaction.reply({ content: `**Menu**`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
             menuMsg = msg;
         });
 
         let filter = i => i.user.id == interaction.user.id;
         const collector = await menuMsg.createMessageComponentCollector({ filter });
-        let user_profile = db.profile.get(interaction.user.id);
 
         // Builds the action rows for the move selector, since this also needs to be run multiple times
         function buildMoveData(selected_ooch) {
@@ -254,7 +254,7 @@ module.exports = {
             //#region Back Buttons
             // Back to Main Menu
             if (selected == 'back_to_menu') {
-                i.update({ content: '**Menu:**', embeds: [], files: [], components: [settings_row_1, settings_row_2, settings_row_3] });
+                i.update({ content: `**Menu**`, embeds: [], files: [], components: [settings_row_1, settings_row_2, settings_row_3] });
             } 
             // Back to Party Select
             else if (selected == 'back_to_party') {
@@ -518,10 +518,11 @@ module.exports = {
 
                 bagEmbed = new EmbedBuilder()
                     .setColor('#808080')
+                    .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
                     .setTitle(display_title)
                     .setDescription(item_list_str.length != 0 ? item_list_str : `You have no healing items in your bag.`);
 
-                i.update({ content: `**Oochabag:**`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
 
             } 
             // Heal Button
@@ -539,7 +540,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             } 
             // Prism Button
             else if (selected == 'prism_button') {
@@ -556,7 +557,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             }
             // Key Button
             else if (selected == 'key_button') {
@@ -573,7 +574,7 @@ module.exports = {
                 }
 
                 bagEmbed.setDescription(item_list_str);
-                i.update({ content: `__**Item Bag**__`, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
             }
             //#endregion
         
@@ -670,7 +671,7 @@ module.exports = {
                     embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
                 }
             }
             // Oochadex Select Menus
@@ -697,7 +698,7 @@ module.exports = {
                     embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
                 }
             }
             //#endregion

@@ -398,6 +398,9 @@ prompt_battle_input: async function(thread, user_id) {
                         turn_order = ['p', 'e'];
                     }
 
+                    await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
+                    db.profile.inc(user_id, 'battle_msg_counter');
+
                     for (let i = 0; i < turn_order.length; i++) {
 
                         let atk_id = atk.customId;
@@ -482,6 +485,9 @@ prompt_battle_input: async function(thread, user_id) {
                             .setDisabled(ooch_disable),
                     )
                 }
+
+                await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
+                db.profile.inc(user_id, 'battle_msg_counter');
 
                 thread.send({ content: `**------------ Player Turn ------------**` + 
                 `\nSelect the new Oochamon you want to switch in!`, components: (switch_buttons_2.components.length != 0) ? [switch_buttons_1, switch_buttons_2] : [switch_buttons_1] })
@@ -924,10 +930,10 @@ exp_to_next_level: function(level) {
  */
 get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
     // TODO: Change the output to an object, not an array
-    let hp = Math.floor(db.monster_data.get(species_id, Stats.HP) * (1.05 ** level) * hp_iv + 10) ;
-    let atk = Math.floor(db.monster_data.get(species_id, Stats.Attack) * (1.05 ** level) * atk_iv);
-    let def = Math.floor(db.monster_data.get(species_id, Stats.Defense) * (1.05 ** level) * def_iv);
-    let spd = Math.floor(db.monster_data.get(species_id, Stats.Speed) * (1.05 ** level) * spd_iv);
+    let hp = Math.floor(db.monster_data.get(species_id, Stats.HP) * (1.05 ** level) * ((hp_iv + 10) / 10) + 10) ;
+    let atk = Math.floor(db.monster_data.get(species_id, Stats.Attack) * (1.05 ** level) * ((atk_iv + 10) / 10));
+    let def = Math.floor(db.monster_data.get(species_id, Stats.Defense) * (1.05 ** level) * ((def_iv + 10) / 10));
+    let spd = Math.floor(db.monster_data.get(species_id, Stats.Speed) * (1.05 ** level) * ((spd_iv + 10) / 10));
     return [hp, atk, def, spd];
 },
 
@@ -1944,7 +1950,7 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
     const enemySprite = await loadImage('./Art/Tiles/t057.png')
     const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
-    const prismIcon = await loadImage('./Art/item_prism.png');
+    const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
     let playerMemberObj = thread.guild.members.cache.get(user_id);
     const playerName = playerMemberObj.displayName;
     

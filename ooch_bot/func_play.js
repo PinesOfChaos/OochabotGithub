@@ -181,19 +181,21 @@ module.exports = {
             for(let obj of map_npcs){
                 //Check if player collides with this NPC's position
                 let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
-                if(obj.x == playerx && obj.y == playery){
-                    //Check if this NPC requires a flag to spawn, and if it does check if the player has it
-                    if(obj.flag_required == false || player_flags.includes(obj.flag_required)){
-                        if (!obj.remove_on_finish || !player_flags.includes(npc_flag)) { //NPC should continue to persist after being beaten
-                            stop_moving = true;
-                            playerx -= xmove;
-                            playery -= ymove;
+                if(
+                    obj.x == playerx && 
+                    obj.y == playery && 
+                    (!player_flags.includes(obj.flag_kill)) &&
+                    (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
+                    (!obj.remove_on_finish || !player_flags.includes(npc_flag))
+                ){
+                    stop_moving = true;
+                    playerx -= xmove;
+                    playery -= ymove;
 
-                            //Dialogue Stuff goes here
-                            event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
-                        }
-                    }
+                    //Dialogue Stuff goes here
+                    event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
                 }
+                
             }
 
             //Shops
@@ -259,7 +261,7 @@ module.exports = {
                         let item_id = sel.values[0];
                         let item = db.item_data.get(item_id);
                         if (item.price <= oochabux) {
-                            const qty_filter = m => {
+                            const qty_filter = async m => {
                                 if (m.author.id != message.author.id) return false;
                                 if (!isNaN(parseInt(m.content))) {
                                     if (parseInt(m.content) != 0) {
@@ -281,7 +283,7 @@ module.exports = {
                                 }
                             }
 
-                            await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.`, ephemeral: true })
+                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.` });
                             item_qty_collector = message.channel.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
@@ -301,13 +303,21 @@ module.exports = {
                                     break;
                                 }
                                 
-                                sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.`, ephemeral: true });
+                                purchaseReqMsg.delete();
+                                m.delete();
+                                let followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
                                 msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                                await wait(7000);
+                                await followUpMsg.delete();
                             });
                             
                         } else {
-                            sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.`, ephemeral: true });
+                            purchaseReqMsg.delete();
+                            m.delete();
+                            let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
                             msg.edit({ components: [shopSelectMenu, back_button] });
+                            await wait(5000);
+                            await followUpMsg.delete();
                         }
                     });
 
@@ -362,7 +372,7 @@ module.exports = {
         let view_size = Math.floor(window_size / 2);
         let xx, yy, tile;
         let emote_map = ``;
-        if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
+        //if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
         let map_obj = db.maps.get(map_name);
         let emote_map_array = [];
         let player_sprite = db.profile.get(user_id, 'player_sprite');

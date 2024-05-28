@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
 const { setup_playspace_str } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
