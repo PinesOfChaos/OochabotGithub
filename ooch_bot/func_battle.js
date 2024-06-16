@@ -1942,7 +1942,7 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     let canvas = new Canvas(480, 270);
     FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
     let ctx = canvas.getContext("2d");
-    const background = await loadImage('./battle_art/battle_background_temp.png');
+    const background = await loadImage('./Art/battle_art/battle_background_temp.png');
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);

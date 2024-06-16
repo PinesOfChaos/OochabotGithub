@@ -66,6 +66,16 @@ module.exports = {
     get_ooch_art: function(ooch_name) {
         let file = new AttachmentBuilder(`./Art/ResizedArt/${_.toLower(ooch_name)}.png`);
         return file;
+    },
+
+    /**
+     * Creates and returns an attachment file object for a file path.
+     * @param {String} path File path for the art
+     * @returns The attachment file object.
+     */
+    get_art_file: function(path) {
+        let file = new AttachmentBuilder(path);
+        return file;
     }
 
 }

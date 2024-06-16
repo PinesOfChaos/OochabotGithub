@@ -232,8 +232,31 @@ const Item = {
     AttackCrystal: 7,
 }
 
+const Tile = {
+    Floor: 0,
+    Npc: 1,
+    Wall: 2,
+    Grass: 3,
+    Shop: 4,
+}
+
+const Zone = {
+    Global: 0,
+    Fungal: 1,
+    Sandy: 2,
+    Cave: 3,
+    Obsidian: 4
+}
+
+const TileEmoteGuildsArray = [
+    '1023031950878965812',
+    '1096230798149025825',
+    '1251726480652632114'
+]
+
 module.exports = { 
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, TrainerType, 
-    Stats, Status, OochType, Move, Ability, Item
+    Stats, Status, OochType, Move, Ability, Item,
+    Tile, Zone, TileEmoteGuildsArray
 };

@@ -300,7 +300,7 @@ module.exports = {
                 if (available_moves >= 5) party_extra_buttons_2.components[1].setDisabled(false);
 
                 // Check if we can evolve
-                let evoLvl = db.monster_data.get(selected_ooch.id, 'evo_id');
+                let evoLvl = db.monster_data.get(selected_ooch.id, 'evo_lvl');
                 if (selected_ooch.level >= evoLvl && evoLvl != -1) {
                     party_extra_buttons.components[2].setDisabled(false);
                 } else {

@@ -1,20 +1,29 @@
-const db = require("./db")
+const db = require("./db");
 
 module.exports = {
     /**
      * Creates a tile data object and adds it to the database.
      * @param {Number} id The ID of the tile
      * @param {String} use The use of the tile
-     * @param {String} emote The emote of the tile
-     * @param {String} emote_simple The non-animated emote of the tile (for performance mode)
+     * @param {Array} guilds All the emote guilds to put the emotes in
      */
-    create_tile: function(id, use, emote, emote_simple = -1){
-        if(emote_simple == -1) emote_simple = emote; //Replace simple emote with default value if there is no simple variant
-        let key_id = id.toString();
-        db.tile_data.set(key_id, id, 'id');
-        db.tile_data.set(key_id, use, 'use');
-        db.tile_data.set(key_id, emote, 'emote');
-        db.tile_data.set(key_id, emote_simple, 'emote_simple');
+    create_tile: function(id, use, guilds) {
+
+        // This line IDs the ID so I can set the ID
+        db.tile_data.set(id, id, 'id');
+        db.tile_data.set(id, use, 'use');
+
+        // If its an NPC tile
+        if (id.includes('c')) {
+            for (let guild of guilds) {
+                guild.emojis.create({ attachment: './', name: 'banana' })
+                    .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+                    .catch(console.error);
+            }
+        } else {
+
+        }
+        
     },
 
     /**

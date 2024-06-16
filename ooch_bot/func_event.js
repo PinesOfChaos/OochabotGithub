@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('
 const db = require('./db.js');
 const _ = require('lodash');
 const { PlayerState, EventMode, Flags } = require('./types.js');
+const { get_art_file } = require('./func_other.js');
 
 module.exports = {
     /**
@@ -32,6 +33,7 @@ module.exports = {
         let quit_init_loop = false;
         let profile_data = db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
+        let npcDialoguePortrait;
 
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -53,10 +55,22 @@ module.exports = {
                         }
                     }
 
-                    event_embed
-                        .setDescription(obj_content.description);
+                    // This is the actual dialogue
+                    event_embed.setDescription(obj_content.description);
+
+                    // Set name of NPC
                     if (obj_content.title != '') {
                         event_embed.setTitle(obj_content.title);
+                    }
+
+                    // Set NPC dialogue portrait
+                    if (obj_content.sprite_dialogue === false) {
+                        let fileName = db.tile_data.get(obj_content.sprite_id, 'file');
+                        event_embed.setThumbnail(`attachment://${fileName}`)
+                        npcDialoguePortrait = get_art_file(`./Art/Tiles/${fileName}`);
+                    } else {
+                        event_embed.setThumbnail(`attachment://${obj_content.sprite_dialogue}`)
+                        npcDialoguePortrait = get_art_file(`./Art/DialoguePortraits/${obj_content.sprite_dialogue}`);
                     }
 
                     info_data = '';
@@ -107,7 +121,7 @@ module.exports = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons] })
+        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: [npcDialoguePortrait] })
         let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
@@ -148,10 +162,20 @@ module.exports = {
                             }
                         }
 
-                        event_embed
-                            .setDescription(obj_content.description);
+                        event_embed.setDescription(obj_content.description);
+
                         if (obj_content.title != '') {
                             event_embed.setTitle(obj_content.title);
+                        }
+
+                        // Set NPC dialogue portrait
+                        if (obj_content.sprite_dialogue === false) {
+                            let fileName = db.tile_data.get(obj_content.sprite_id, 'file');
+                            event_embed.setThumbnail(`attachment://${fileName}`)
+                            npcDialoguePortrait = get_art_file(`./Art/Tiles/${fileName}`);
+                        } else {
+                            event_embed.setThumbnail(`attachment://${obj_content.sprite_dialogue}`)
+                            npcDialoguePortrait = get_art_file(`./Art/DialoguePortraits/${obj_content.sprite_dialogue}`);
                         }
 
                         info_data = '';
@@ -170,7 +194,7 @@ module.exports = {
                             event_embed.addFields({name: 'You Received:', value: info_data })
                         }
 
-                        sel.update({ embeds: [event_embed], components: [next_buttons] })
+                        sel.update({ embeds: [event_embed], components: [next_buttons], files: [npcDialoguePortrait] })
                 
                     break;
 
@@ -221,7 +245,6 @@ module.exports = {
     event_from_npc: function(npc_obj, user_id) {
 
         const { generate_trainer_battle } = require('./func_battle.js');
-        console.log(npc_obj);
         let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.x}${npc_obj.y}`; //Flag generated for this npc at this position
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
@@ -237,6 +260,8 @@ module.exports = {
                     money: 0,
                     item: false,
                     sprite_id: npc_obj.sprite_id,
+                    sprite_dialogue: npc_obj.sprite_dialogue,
+                    sprite_combat: npc_obj.sprite_combat,
                 }])
             }
 
@@ -254,6 +279,8 @@ module.exports = {
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     sprite_id: npc_obj.sprite_id,
+                    sprite_dialogue: npc_obj.sprite_dialogue,
+                    sprite_combat: npc_obj.sprite_combat,
                 }]);
             }
         }
@@ -281,6 +308,8 @@ module.exports = {
                         money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         sprite_id: npc_obj.sprite_id,
+                        sprite_dialogue: npc_obj.sprite_dialogue,
+                        sprite_combat: npc_obj.sprite_combat,
                     }])
                 } else {
                     return_array.push([EventMode.Text, {
@@ -289,6 +318,8 @@ module.exports = {
                         money: 0,
                         item: false,
                         sprite_id: npc_obj.sprite_id,
+                        sprite_dialogue: npc_obj.sprite_dialogue,
+                        sprite_combat: npc_obj.sprite_combat,
                     }])
                 }
             }

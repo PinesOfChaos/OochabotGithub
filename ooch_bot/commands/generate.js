@@ -2,13 +2,20 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('generate')
-        .setDescription('Generates the game data.'),
+        .setDescription('Generates the game data.')
+        .addStringOption(option => 
+            option.setName('emotes')
+                .setDescription('Re-generate all emotes on Discord (SLOW)')
+                .setRequired(false)
+                .addChoices(
+                    { name: 'Yes', value: 'yes' },
+                )),
     async execute(interaction, client) {
 
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
@@ -16,65 +23,96 @@ module.exports = {
         }
         
         //#region Tile Data
-        //          ID  Use         Emote                           Emote_Simple (Optional)
-        create_tile(0,  'floor',    '<:t000:1057163944889946173>'  ); //Black 
-        create_tile(1,  'floor',    '<:t001:1057163945900773436>'  ); //Teleporter 
-        create_tile(2,  'npc',      '<:t002:1095915495020044308>'  ); //Chest
-        create_tile(3,  'floor',    '<:t003:1057163947553341492>'  ); //Arrow Left
-        create_tile(4,  'floor',    '<:t004:1057163948585132102>'  ); //Arrow Up
-        create_tile(5,  'floor',    '<:t005:1057163949319127140>'  ); //Arrow Right
-        create_tile(6,  'floor',    '<:t006:1057163950262857780>'  ); //Arrow Down
-        create_tile(7,  'floor',    '<:t100:1057164009335439491>'  ); //Fungal Floor
-        create_tile(8,  'wall',     '<:t101:1057164010774069268>'  ); //Fungal Wall
-        create_tile(9,  'grass',    '<:t102:1057164012288221234>'  ); //Fungal Grass
-        create_tile(10,  'floor',   '<:t200:1057164043426738186>'  ); //Sandy Floor
-        create_tile(11,  'wall',    '<:t201:1057164044395626537>'  ); //Sandy Wall
-        create_tile(12,  'grass',   '<:t202:1057164045242859571>'  ); //Sandy Grass
-        create_tile(13,  'floor',   '<:t300:1057164046320807946>'  ); //Obsidian Floor
-        create_tile(14,  'wall',    '<:t301:1057164047910436944>'  ); //Obsidian Wall
-        create_tile(15,  'grass',   '<:t302:1057164048866758776>'  ); //Obsidian Grass
-        create_tile(16,  'wall',    '<:t203:1057499365574459493>'  ); //HUB Wall Top
-        create_tile(17,  'wall',    '<:t204:1057499366815977593>'  ); //HUB Wall Middle
-        create_tile(18,  'wall',    '<:t205:1057499367889698866>'  ); //Hub Wall Bottom
-        create_tile(19,  'wall',    '<:t206:1057499368997015572>'  ); //Hub Gate Top
-        create_tile(20,  'wall',    '<:t207:1057499369684861019>'  ); //Hub Gate Bottom
-        create_tile(21,  'shop',    '<:t208:1152709558129668096>'  ); //Hub Tent
-        create_tile(22,  'npc',     '<:t050:1095915042165235812>'  ); //Character Player
-        create_tile(23,  'npc',     '<:t051:1095915201070637138>'  ); //Character Obsidian
-        create_tile(24,  'npc',     '<:t052:1095915028097552494>'  ); //Character Desert Rags
-        create_tile(25,  'npc',     '<:t053:1095915029745909862>'  ); //Character Neon Blue
-        create_tile(26,  'npc',     '<:t054:1095915030899347476>'  ); //Character Fungal
-        create_tile(27,  'npc',     '<:t209:1059665037473624104>'  ); //Crater
-        create_tile(28,  'wall',    '<:t210:1059665038950006855>'  ); //Hub Dropship Upper Left
-        create_tile(29,  'wall',    '<:t211:1059665040002793543>'  ); //Hub Dropship Upper Right
-        create_tile(30,  'wall',    '<:t212:1059665041269469304>'  ); //Hub Dropship Lower Left
-        create_tile(31,  'wall',    '<:t213:1059665036173385748>'  ); //Hub Dropship Lower Right
-        create_tile(32,  'npc',     '<:t055:1095915031734005831>'  ); //Scientist
-        create_tile(33,  'npc',     '<:t056:1095915032648355921>'  ); //Elderly Researcher
-        create_tile(34,  'npc',     '<:t057:1095915033948586076>'  ); //Rival
-        create_tile(35,  'npc',     '<:t058:1095915034783260722>'  ); //Desert Raider
-        create_tile(36,  'npc',     '<:t059:1095915035622129735>'  ); //Department Head
-        create_tile(37,  'npc',     '<:t060:1095915320830611476>'  ); //Hollowed Scientist
-        create_tile(38,  'npc',     '<:t061:1095915322218909696>'  ); //Shop Clerk
-        create_tile(39, 'wall',     '<:t007:1095915429802811423>'  ); //Shop Mini
-        create_tile(40, 'wall',     '<:t009:1095915431379877928>'  ); //Shop Upper Left
-        create_tile(41, 'wall',     '<:t010:1095915432331984927>'  ); //Shop Upper Right
-        create_tile(42, 'shop',     '<:t011:1095915433216983070>'  ); //Shop Lower Left (interactable tile)
-        create_tile(43, 'wall',     '<:t012:1095915434114551888>'  ); //Shop Lower Right
-        create_tile(44, 'floor',    '<:t218:1096230878750974115>'  ); //Cave Floor
-        create_tile(45, 'floor',    '<:t219:1096230880701337651>'  ); //Cave Floor Entrance
-        create_tile(46, 'wall',     '<:t220:1096230881682800730>'  ); //Cave Wall
-        create_tile(47, 'wall',     '<:t221:1096230882697818112>'  ); //Lava
-        create_tile(48, 'floor',    '<:t222:1096230883536683028>'  ); //Cave Exit
-        create_tile(49, 'wall',     '<:t103:1096230516635742420>'  ); //Fungal Wall
-        create_tile(50, 'floor',    '<:t104:1096230514500841575>'  ); //Fungal Exit
-        create_tile(51, 'wall',     '<:t214:1096230625524060251>'  ); //Desert Wall Lower
-        create_tile(52, 'wall',     '<:t215:1096230626107064413>'  ); //Desert Wall Upper
-        create_tile(53, 'floor',    '<:t216:1096230627386343474>'  ); //Desert Exit
-        create_tile(54, 'wall',     '<:t217:1096230624005726238>'  ); //Hub Barrel
-        create_tile(55, 'floor',    '<:t105:1152708847920758794>'  ); //Fungal Floor Entrance
-        create_tile(56, 'wall',     '<:t223:1152708885954691292>'  ); //Cave Stalagtite
-        create_tile(57, 'board',     '<:t224:1152708922306727997>'  ); //Job Board
+        // ZONES IDs
+        // 0: GLOBAL
+        // 1: FUNGAL
+        // 2: SANDY
+        // 3: OBSIDIAN
+        let zG = Zone.Global < 10 ? `0${Zone.Global}` : Zone.Global;
+        let zF = Zone.Fungal < 10 ? `0${Zone.Fungal}` : Zone.Fungal;
+        let zS = Zone.Sandy < 10 ? `0${Zone.Sandy}` : Zone.Sandy;
+        let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
+        let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
+
+        let tileGuilds = [];
+        for (let guildId of TileEmoteGuildsArray) {
+            let guild = await client.guilds.fetch(guildId);
+            if (guild.emojis.cache.size != 50) {
+                tileGuilds.push(guild);
+            }
+        }
+
+        //           ID            Use           Guilds
+        // Global
+        create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
+        create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
+        create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Left
+        create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Up
+        create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Right
+        create_tile(`t${zG}_006`,  Tile.Floor,   tileGuilds  ); //Arrow Down
+        create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Mini
+        create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
+        create_tile(`t${zG}_009`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
+        create_tile(`t${zG}_010`,  Tile.Shop,    tileGuilds  ); //Shop Lower Left (interactable tile)
+        create_tile(`t${zG}_011`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        
+        // Fungal
+        create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
+        create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
+        create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
+        create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        
+        // Sandy
+        create_tile(`t${zS}_000`,  Tile.Floor,   tileGuilds  ); //Sandy Floor
+        create_tile(`t${zS}_001`,  Tile.Wall,    tileGuilds  ); //Sandy Wall
+        create_tile(`t${zS}_002`,  Tile.Grass,   tileGuilds  ); //Sandy Grass
+        create_tile(`t${zS}_003`,  Tile.Wall,    tileGuilds  ); //HUB Wall Top
+        create_tile(`t${zS}_004`,  Tile.Wall,    tileGuilds  ); //HUB Wall Middle
+        create_tile(`t${zS}_005`,  Tile.Wall,    tileGuilds  ); //Hub Wall Bottom
+        create_tile(`t${zS}_006`,  Tile.Wall,    tileGuilds  ); //Hub Gate Top
+        create_tile(`t${zS}_007`,  Tile.Wall,    tileGuilds  ); //Hub Gate Bottom
+        create_tile(`t${zS}_008`,  Tile.Shop,    tileGuilds  ); //Hub Tent
+        create_tile(`t${zS}_009`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
+        create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
+        create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
+        create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
+        create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
+        create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
+        create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
+        create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
+        create_tile(`t${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
+
+        // Cave
+        create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
+        create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
+        create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
+        create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
+        create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
+        create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+
+        // Obsidian
+        create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
+        create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
+        create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
+
+        // Interactables
+        create_tile(`i${zG}_000`,  Tile.Npc,     tileGuilds  ); //Chest
+        create_tile(`i${zG}_001`,  Tile.Npc,     tileGuilds  ); //Shop Clerk
+
+        // NPCs
+        create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
+        create_tile(`c_001`,       Tile.Npc,     tileGuilds  ); // Basic NPC Obsidian
+        create_tile(`c_002`,       Tile.Npc,     tileGuilds  ); // Basic NPC Desert Rags
+        create_tile(`c_003`,       Tile.Npc,     tileGuilds  ); // Basic NPC Neon Blue
+        create_tile(`c_004`,       Tile.Npc,     tileGuilds  ); // Basic NPC Fungal
+        create_tile(`c_005`,       Tile.Npc,     tileGuilds  ); // Global Scientist
+        create_tile(`c_006`,       Tile.Npc,     tileGuilds  ); // Global Elderly Researcher
+        create_tile(`c_007`,       Tile.Npc,     tileGuilds  ); // Global Rival
+        create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
+        create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
+        create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
         
         //#endregion
 
@@ -768,20 +806,21 @@ module.exports = {
                                     y: parseInt(line_data[2]),
                                     beaten: false,
                                     sprite_id: parseInt(line_data[4]),
-                                    sprite_combat: line_data[5],
-                                    coin: parseInt(line_data[6]),
-                                    item_id: parseInt(line_data[7]),
-                                    item_count: parseInt(line_data[8]),
-                                    flag_required: (line_data[9] == '' ? false : line_data[9]),
-                                    flag_given: (line_data[10] == '' ? false : line_data[10]),
-                                    flag_kill: (line_data[11] == '' ? false : line_data[11]),
-                                    remove_on_finish: Boolean(parseInt(line_data[12])),
-                                    pre_combat_dialogue: line_data[13].split('`').filter(v => v != ''),
-                                    post_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
+                                    sprite_combat: (line_data[5] == '' ? false : line_data[5]),
+                                    sprite_dialogue: (line_data[6] == '' ? false : line_data[6]),
+                                    coin: parseInt(line_data[7]),
+                                    item_id: parseInt(line_data[8]),
+                                    item_count: parseInt(line_data[9]),
+                                    flag_required: (line_data[10] == '' ? false : line_data[10]),
+                                    flag_given: (line_data[11] == '' ? false : line_data[11]),
+                                    flag_kill: (line_data[12] == '' ? false : line_data[12]),
+                                    remove_on_finish: Boolean(parseInt(line_data[13])),
+                                    pre_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
+                                    post_combat_dialogue: line_data[15].split('`').filter(v => v != ''),
                                     team: [],
                                 };
 
-                                for (let i = 15; i < line_data.length; i++) {
+                                for (let i = 16; i < line_data.length; i++) {
                                     if (line_data[i] == '') continue;
                                     npc_team_data = line_data[i].split('`');
                                     ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
