@@ -1,4 +1,5 @@
 const db = require("./db");
+const { Zone } = require('./types');
 
 module.exports = {
     /**
@@ -7,21 +8,38 @@ module.exports = {
      * @param {String} use The use of the tile
      * @param {Array} guilds All the emote guilds to put the emotes in
      */
-    create_tile: function(id, use, guilds) {
+    create_tile: async function(id, use, guilds) {
 
-        // This line IDs the ID so I can set the ID
-        db.tile_data.set(id, id, 'id');
+        let splitId = id.split('_');
+        db.tile_data.set(id, id, 'full_id');
+        if (!id.includes('c')) {
+            db.tile_data.set(id, splitId[0].replace('t', '').replace('c', ''), 'zone_id');
+        } else {
+            db.tile_data.set(id, false, 'zone_id');
+        }
+        db.tile_data.set(id, splitId[1], 'tile_id');
         db.tile_data.set(id, use, 'use');
 
         // If its an NPC tile
         if (id.includes('c')) {
-            for (let guild of guilds) {
-                guild.emojis.create({ attachment: './', name: 'banana' })
+            for (let i = 0; i < guilds.length; i++) {
+                if (guilds[i].emojis.cache.size == 50) continue;
+                for (let zone of Object.values(Zone)) {
+                    let zoneId = zone < 10 ? `0${zone}` : `${zone}`;
+                    await guilds[i].emojis.create({ attachment: `./TileNPCs/c${zoneId}_${splitId[1]}.png`, name: `c${zoneId}_${splitId[1]}` })
+                        .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+                        .catch(console.error);
+                    if (guilds[i].emojis.cache.size == 50) i += 1;
+                }
+            }
+        // Any other tile
+        } else {
+            for (let i = 0; i < guilds.length; i++) {
+                if (guilds[i].emojis.cache.size == 50) continue;
+                await guilds[i].emojis.create({ attachment: `./TileNPCs/${id}.png`, name: id })
                     .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
                     .catch(console.error);
             }
-        } else {
-
         }
         
     },

@@ -36,10 +36,12 @@ module.exports = {
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
 
         let tileGuilds = [];
-        for (let guildId of TileEmoteGuildsArray) {
-            let guild = await client.guilds.fetch(guildId);
-            if (guild.emojis.cache.size != 50) {
-                tileGuilds.push(guild);
+        if (interaction.options.getString('emotes') == 'yes') {
+            for (let guildId of TileEmoteGuildsArray) {
+                let guild = await client.guilds.fetch(guildId);
+                if (guild.emojis.cache.size != 50) {
+                    tileGuilds.push(guild);
+                }
             }
         }
 
@@ -54,7 +56,9 @@ module.exports = {
         create_tile(`t${zG}_006`,  Tile.Wall,    tileGuilds  ); //Shop Mini
         create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
         create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
-        create_tile(`t${zG}_009`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        create_tile(`t${zG}_009`,  Tile.Npc,     tileGuilds  ); //Shop Lower Left
+        create_tile(`t${zG}_010`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        create_tile(`t${zG}_011`,  Tile.Npc,     tileGuilds  ); //Chest
         
         // Fungal
         create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
@@ -82,6 +86,7 @@ module.exports = {
         create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
         create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
         create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
+        create_tile(`i${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // Cave
         create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
@@ -95,13 +100,6 @@ module.exports = {
         create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
         create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
         create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
-
-        // Interactables
-        // Global
-        create_tile(`i${zG}_000`,  Tile.Npc,     tileGuilds  ); //Chest
-        create_tile(`i${zG}_001`,  Tile.Npc,     tileGuilds  ); //Shop Clerk
-        // Sandy
-        create_tile(`i${zS}_000`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // NPCs
         create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
