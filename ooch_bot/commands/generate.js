@@ -27,7 +27,8 @@ module.exports = {
         // 0: GLOBAL
         // 1: FUNGAL
         // 2: SANDY
-        // 3: OBSIDIAN
+        // 3: CAVE
+        // 4: OBSIDIAN
         let zG = Zone.Global < 10 ? `0${Zone.Global}` : Zone.Global;
         let zF = Zone.Fungal < 10 ? `0${Zone.Fungal}` : Zone.Fungal;
         let zS = Zone.Sandy < 10 ? `0${Zone.Sandy}` : Zone.Sandy;
@@ -46,15 +47,14 @@ module.exports = {
         // Global
         create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
-        create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Left
-        create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Up
-        create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Right
-        create_tile(`t${zG}_006`,  Tile.Floor,   tileGuilds  ); //Arrow Down
-        create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Mini
-        create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
-        create_tile(`t${zG}_009`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
-        create_tile(`t${zG}_010`,  Tile.Shop,    tileGuilds  ); //Shop Lower Left (interactable tile)
-        create_tile(`t${zG}_011`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        create_tile(`t${zG}_002`,  Tile.Floor,   tileGuilds  ); //Arrow Left
+        create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Up
+        create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Right
+        create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Down
+        create_tile(`t${zG}_006`,  Tile.Wall,    tileGuilds  ); //Shop Mini
+        create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
+        create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
+        create_tile(`t${zG}_009`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
         
         // Fungal
         create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
@@ -82,7 +82,6 @@ module.exports = {
         create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
         create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
         create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
-        create_tile(`t${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // Cave
         create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
@@ -98,8 +97,11 @@ module.exports = {
         create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
 
         // Interactables
+        // Global
         create_tile(`i${zG}_000`,  Tile.Npc,     tileGuilds  ); //Chest
         create_tile(`i${zG}_001`,  Tile.Npc,     tileGuilds  ); //Shop Clerk
+        // Sandy
+        create_tile(`i${zS}_000`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // NPCs
         create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
@@ -113,6 +115,7 @@ module.exports = {
         create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
         create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
         create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
+        create_tile(`c_011`,       Tile.Npc,     tileGuilds  ); // Shopkeep (outside of shop)
         
         //#endregion
 
