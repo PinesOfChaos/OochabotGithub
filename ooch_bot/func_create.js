@@ -6,9 +6,10 @@ module.exports = {
      * Creates a tile data object and adds it to the database.
      * @param {Number} id The ID of the tile
      * @param {String} use The use of the tile
-     * @param {Array} guilds All the emote guilds to put the emotes in
+     * @param {Object} tileGuilds All the emote guilds to put the emotes in, and also tracks number of emotes placed in discord so far.
      */
-    create_tile: async function(id, use, guilds) {
+    create_tile: async function(id, use, tileGuilds ) {
+        console.log(tileGuilds.emoteNum);
 
         let splitId = id.split('_');
         db.tile_data.set(id, id, 'full_id');
@@ -22,23 +23,48 @@ module.exports = {
 
         // If its an NPC tile
         if (id.includes('c')) {
-            for (let i = 0; i < guilds.length; i++) {
-                if (guilds[i].emojis.cache.size == 50) continue;
+            for (let i = 0; i < tileGuilds.guilds.length; i++) {
+                if (tileGuilds.emoteNum >= 50) {
+                    tileGuilds.emoteNum = 0;
+                    i += 1;
+                    continue;
+                }
                 for (let zone of Object.values(Zone)) {
                     let zoneId = zone < 10 ? `0${zone}` : `${zone}`;
-                    await guilds[i].emojis.create({ attachment: `./TileNPCs/c${zoneId}_${splitId[1]}.png`, name: `c${zoneId}_${splitId[1]}` })
-                        .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-                        .catch(console.error);
-                    if (guilds[i].emojis.cache.size == 50) i += 1;
+                    await tileGuilds.guilds[i].emojis.create({ attachment: `./Art/TileNPCs/c${zoneId}_${splitId[1]}.png`, name: `c${zoneId}_${splitId[1]}` })
+                        .then(emoji => {
+                            db.tile_data.set(id, tileGuilds.guilds[i].id, 'emote_guild_id')
+                            db.tile_data.set(id, emoji.id, 'emote_id');
+                            tileGuilds.emoteNum += 1;
+                            console.log(`Created new emoji with name ${emoji.name}!`)
+                        })
+                        .catch(err => console.error(err));
+                    if (tileGuilds.emoteNum >= 50) {
+                        tileGuilds.emoteNum = 0;
+                        i += 1;
+                    }
                 }
+                break;
             }
         // Any other tile
         } else {
-            for (let i = 0; i < guilds.length; i++) {
-                if (guilds[i].emojis.cache.size == 50) continue;
-                await guilds[i].emojis.create({ attachment: `./TileNPCs/${id}.png`, name: id })
-                    .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-                    .catch(console.error);
+            for (let guild of tileGuilds.guilds) {
+                console.log('test')
+                if (tileGuilds.emoteNum >= 50) {
+                    tileGuilds.emoteNum = 0;
+                    console.log('test 2')
+                    continue;
+                }
+                await guild.emojis.create({ attachment: `./Art/Tiles/${id}.png`, name: id })
+                    .then(emoji => {
+                        console.log('help')
+                        db.tile_data.set(id, guild.id, 'emote_guild_id')
+                        db.tile_data.set(id, emoji.id, 'emote_id');
+                        tileGuilds.emoteNum += 1;
+                        console.log(`Created new emoji with name ${emoji.name}!`)
+                    })
+                    .catch(err => console.error(err));
+                break;
             }
         }
         

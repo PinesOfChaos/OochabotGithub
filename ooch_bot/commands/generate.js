@@ -4,6 +4,7 @@ const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
+const wait = require('wait');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,9 +18,9 @@ module.exports = {
                     { name: 'Yes', value: 'yes' },
                 )),
     async execute(interaction, client) {
-
+        await interaction.deferReply();
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
-            return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+            return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
         }
         
         //#region Tile Data
@@ -35,85 +36,104 @@ module.exports = {
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
 
-        let tileGuilds = [];
+        let emoteUpdate = interaction.options.getString('emotes');
+        let tileGuilds = { emoteNum: 0, guilds: [] };
         if (interaction.options.getString('emotes') == 'yes') {
+            interaction.editReply('Deleting pre-existing emotes... this may take a while!');
             for (let guildId of TileEmoteGuildsArray) {
                 let guild = await client.guilds.fetch(guildId);
-                if (guild.emojis.cache.size != 50) {
-                    tileGuilds.push(guild);
+                let emoteArray = Array.from(guild.emojis.cache.values());
+                for (let emote of emoteArray) {
+                    await guild.emojis.delete(emote)
+                        .then(() => console.log(`Successfully deleted the emote ${emote.name}.`))
+                        .catch(console.error);
                 }
+                tileGuilds.guilds.push(guild);
             }
         }
 
-        //           ID            Use           Guilds
+        interaction.editReply('Adding new emotes... this may take a while!');
+
+        // wait is used to help space out emote updates, if the emote update option is selected.
+        //                  ID            Use          Guilds (also keeps track of the num of emotes added so far)
         // Global
-        create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
-        create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
-        create_tile(`t${zG}_002`,  Tile.Floor,   tileGuilds  ); //Arrow Left
-        create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Up
-        create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Right
-        create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Down
-        create_tile(`t${zG}_006`,  Tile.Wall,    tileGuilds  ); //Shop Mini
-        create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
-        create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
-        create_tile(`t${zG}_009`,  Tile.Npc,     tileGuilds  ); //Shop Lower Left
-        create_tile(`t${zG}_010`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
-        create_tile(`t${zG}_011`,  Tile.Npc,     tileGuilds  ); //Chest
+        await create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
+        console.log(tileGuilds);
+        await create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
+        await create_tile(`t${zG}_002`,  Tile.Floor,   tileGuilds  ); //Arrow Left
+        await create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Up
+        await create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Right
+        await create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Down
+        if (emoteUpdate == 'yes') await wait(10000);
+        await create_tile(`t${zG}_006`,  Tile.Wall,    tileGuilds  ); //Shop Mini
+        await create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
+        await create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
+        await create_tile(`t${zG}_009`,  Tile.Npc,     tileGuilds  ); //Shop Lower Left
+        await create_tile(`t${zG}_010`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        await create_tile(`t${zG}_011`,  Tile.Npc,     tileGuilds  ); //Chest
+        if (emoteUpdate == 'yes') await wait(10000);
         
         // Fungal
-        create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
-        create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
-        create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
-        create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        await create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
+        await create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        await create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
+        await create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        await create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
+        await create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        if (emoteUpdate == 'yes') await wait(10000);
         
         // Sandy
-        create_tile(`t${zS}_000`,  Tile.Floor,   tileGuilds  ); //Sandy Floor
-        create_tile(`t${zS}_001`,  Tile.Wall,    tileGuilds  ); //Sandy Wall
-        create_tile(`t${zS}_002`,  Tile.Grass,   tileGuilds  ); //Sandy Grass
-        create_tile(`t${zS}_003`,  Tile.Wall,    tileGuilds  ); //HUB Wall Top
-        create_tile(`t${zS}_004`,  Tile.Wall,    tileGuilds  ); //HUB Wall Middle
-        create_tile(`t${zS}_005`,  Tile.Wall,    tileGuilds  ); //Hub Wall Bottom
-        create_tile(`t${zS}_006`,  Tile.Wall,    tileGuilds  ); //Hub Gate Top
-        create_tile(`t${zS}_007`,  Tile.Wall,    tileGuilds  ); //Hub Gate Bottom
-        create_tile(`t${zS}_008`,  Tile.Shop,    tileGuilds  ); //Hub Tent
-        create_tile(`t${zS}_009`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
-        create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
-        create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
-        create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
-        create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
-        create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
-        create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
-        create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
-        create_tile(`i${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
+        await create_tile(`t${zS}_000`,  Tile.Floor,   tileGuilds  ); //Sandy Floor
+        await create_tile(`t${zS}_001`,  Tile.Wall,    tileGuilds  ); //Sandy Wall
+        await create_tile(`t${zS}_002`,  Tile.Grass,   tileGuilds  ); //Sandy Grass
+        await create_tile(`t${zS}_003`,  Tile.Wall,    tileGuilds  ); //HUB Wall Top
+        await create_tile(`t${zS}_004`,  Tile.Wall,    tileGuilds  ); //HUB Wall Middle
+        await create_tile(`t${zS}_005`,  Tile.Wall,    tileGuilds  ); //Hub Wall Bottom
+        await create_tile(`t${zS}_006`,  Tile.Wall,    tileGuilds  ); //Hub Gate Top
+        await create_tile(`t${zS}_007`,  Tile.Wall,    tileGuilds  ); //Hub Gate Bottom
+        if (emoteUpdate == 'yes') await wait(10000);
+        await create_tile(`t${zS}_008`,  Tile.Shop,    tileGuilds  ); //Hub Tent
+        await create_tile(`t${zS}_009`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
+        await create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
+        await create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
+        await create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
+        await create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
+        await create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
+        await create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
+        await create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
+        await create_tile(`i${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
+        if (emoteUpdate == 'yes') await wait(10000);
 
         // Cave
-        create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
-        create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
-        create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
-        create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
-        create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
-        create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+        await create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
+        await create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
+        await create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
+        await create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
+        await create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
+        await create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+        if (emoteUpdate == 'yes') await wait(10000);
 
         // Obsidian
-        create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
-        create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
-        create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
+        await create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
+        await create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
+        await create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
+        if (emoteUpdate == 'yes') await wait(10000);
 
         // NPCs
-        create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
-        create_tile(`c_001`,       Tile.Npc,     tileGuilds  ); // Basic NPC Obsidian
-        create_tile(`c_002`,       Tile.Npc,     tileGuilds  ); // Basic NPC Desert Rags
-        create_tile(`c_003`,       Tile.Npc,     tileGuilds  ); // Basic NPC Neon Blue
-        create_tile(`c_004`,       Tile.Npc,     tileGuilds  ); // Basic NPC Fungal
-        create_tile(`c_005`,       Tile.Npc,     tileGuilds  ); // Global Scientist
-        create_tile(`c_006`,       Tile.Npc,     tileGuilds  ); // Global Elderly Researcher
-        create_tile(`c_007`,       Tile.Npc,     tileGuilds  ); // Global Rival
-        create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
-        create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
-        create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
-        create_tile(`c_011`,       Tile.Npc,     tileGuilds  ); // Shopkeep (outside of shop)
+        await create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
+        await create_tile(`c_001`,       Tile.Npc,     tileGuilds  ); // Basic NPC Obsidian
+        await create_tile(`c_002`,       Tile.Npc,     tileGuilds  ); // Basic NPC Desert Rags
+        await create_tile(`c_003`,       Tile.Npc,     tileGuilds  ); // Basic NPC Neon Blue
+        await create_tile(`c_004`,       Tile.Npc,     tileGuilds  ); // Basic NPC Fungal
+        await create_tile(`c_005`,       Tile.Npc,     tileGuilds  ); // Global Scientist
+        if (emoteUpdate == 'yes') await wait(10000);
+        await create_tile(`c_006`,       Tile.Npc,     tileGuilds  ); // Global Elderly Researcher
+        await create_tile(`c_007`,       Tile.Npc,     tileGuilds  ); // Global Rival
+        await create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
+        await create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
+        await create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
+        await create_tile(`c_011`,       Tile.Npc,     tileGuilds  ); // Shopkeep (outside of shop)
+        if (emoteUpdate == 'yes') await wait(10000);
         
         //#endregion
 
@@ -978,7 +998,7 @@ module.exports = {
         fs.writeFile('./editor_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
 
-        interaction.reply('Generated game data.');
+        await interaction.editReply('Generated game data.');
     },
 };
 
