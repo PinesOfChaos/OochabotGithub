@@ -12,18 +12,14 @@ module.exports = {
         // This line IDs the ID so I can set the ID
         db.tile_data.set(id, id, 'id');
         db.tile_data.set(id, use, 'use');
-
-        // If its an NPC tile
+        
         if (id.includes('c')) {
-            for (let guild of guilds) {
-                guild.emojis.create({ attachment: './', name: 'banana' })
-                    .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-                    .catch(console.error);
-            }
+            db.tile_data.set(id, false, 'zone_id');
         } else {
-
+            db.tile_data.set(id, parseInt(id.split('_')[0].replace('t', '')), 'zone_id')
         }
         
+        db.tile_data.set(id, parseInt(id.split('_')[1]), 'tile_id');
     },
 
     /**

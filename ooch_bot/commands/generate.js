@@ -27,25 +27,19 @@ module.exports = {
         // 0: GLOBAL
         // 1: FUNGAL
         // 2: SANDY
-        // 3: OBSIDIAN
+        // 3: CAVE
+        // 4: OBSIDIAN
         let zG = Zone.Global < 10 ? `0${Zone.Global}` : Zone.Global;
         let zF = Zone.Fungal < 10 ? `0${Zone.Fungal}` : Zone.Fungal;
         let zS = Zone.Sandy < 10 ? `0${Zone.Sandy}` : Zone.Sandy;
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
 
-        let tileGuilds = [];
-        for (let guildId of TileEmoteGuildsArray) {
-            let guild = await client.guilds.fetch(guildId);
-            if (guild.emojis.cache.size != 50) {
-                tileGuilds.push(guild);
-            }
-        }
-
         //           ID            Use           Guilds
         // Global
         create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
+        create_tile(`t${zG}_002`,  Tile.Npc,     tileGuilds  ); //Chest
         create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Left
         create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Up
         create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Right
@@ -74,15 +68,16 @@ module.exports = {
         create_tile(`t${zS}_006`,  Tile.Wall,    tileGuilds  ); //Hub Gate Top
         create_tile(`t${zS}_007`,  Tile.Wall,    tileGuilds  ); //Hub Gate Bottom
         create_tile(`t${zS}_008`,  Tile.Shop,    tileGuilds  ); //Hub Tent
-        create_tile(`t${zS}_009`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
-        create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
-        create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
-        create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
-        create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
-        create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
-        create_tile(`t${zS}_015`,  Tile.Floor,   tileGuilds  ); //Desert Exit
-        create_tile(`t${zS}_016`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
-        create_tile(`t${zS}_017`,  Tile.Board,   tileGuilds  ); //Job Board
+        create_tile(`t${zS}_009`,  Tile.Shop,    tileGuilds  ); //Crater
+        create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
+        create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
+        create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
+        create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
+        create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
+        create_tile(`t${zS}_015`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
+        create_tile(`t${zS}_016`,  Tile.Floor,   tileGuilds  ); //Desert Exit
+        create_tile(`t${zS}_017`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
+        create_tile(`t${zS}_018`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // Cave
         create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
@@ -96,10 +91,7 @@ module.exports = {
         create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
         create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
         create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
-
-        // Interactables
-        create_tile(`i${zG}_000`,  Tile.Npc,     tileGuilds  ); //Chest
-        create_tile(`i${zG}_001`,  Tile.Npc,     tileGuilds  ); //Shop Clerk
+        
 
         // NPCs
         create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
@@ -113,6 +105,7 @@ module.exports = {
         create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
         create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
         create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
+        create_tile(`c_011`,       Tile.Npc,     tileGuilds  ); // Shopkeeper
         
         //#endregion
 
