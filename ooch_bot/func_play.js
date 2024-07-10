@@ -388,7 +388,7 @@ module.exports = {
                     tile = db.tile_data.get(map_tiles[xx][yy].toString());
                 }
                 else {
-                    tile = db.tile_data.get('0')//This is the default tile
+                    tile = db.tile_data.get('t00_000')//This is the default tile
                 }
                 emote_map_array[i + view_size][j + view_size] = tile.emote;
             }
@@ -423,7 +423,7 @@ module.exports = {
             xx = obj.x - x_pos + view_size;
             yy = obj.y - y_pos + view_size;
             if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
-                emote_map_array[xx][yy] = '<:t001:1057163945900773436>'; //this is the savepoint tile
+                emote_map_array[xx][yy] = db.tile_data.get('t00_001', 'emote'); //this is the savepoint tile
             }
         }
 

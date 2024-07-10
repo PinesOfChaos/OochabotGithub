@@ -1192,7 +1192,11 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 db.monster_data.inc('34', 'hp');
             break;
             case Ability.EasyGo:
-                defender_field_text += `\n💖 Healed the rest of ${defender_emote} **${defender.nickname}**'s team by **10%** due to its ability **Easy Go**!`
+                defender_field_text += `\n💖 Healed the rest of ${defender_emote} **${defender.nickname}**'s team by **10%** due to its ability **Easy Go**!`;
+            break;
+            case Ability.Bomber:
+                attacker.current_hp = _.ceil(attacker.current_hp / 2);
+                defender_field_text += `\n${attacker_emote} **${attacker.nickname}** had its current HP halved from ${defender_emote} **${defender.nickname}**'s ability **Bomber**!`;
             break;
         }
     }

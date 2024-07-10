@@ -1,4 +1,5 @@
 const db = require("./db");
+const { Zone } = require('./types');
 
 module.exports = {
     /**
@@ -13,13 +14,47 @@ module.exports = {
         db.tile_data.set(id, id, 'id');
         db.tile_data.set(id, use, 'use');
         
+        // Set specific IDs
         if (id.includes('c')) {
             db.tile_data.set(id, false, 'zone_id');
         } else {
             db.tile_data.set(id, parseInt(id.split('_')[0].replace('t', '')), 'zone_id')
         }
-        
         db.tile_data.set(id, parseInt(id.split('_')[1]), 'tile_id');
+
+        let splitId = id.split('_');
+        let zoneEmoteIds = {};
+        for (let guild of guilds) {
+            if (id.includes('c')) {
+                for (let zoneId of Object.values(Zone)) {
+                    zoneId = zoneId < 10 ? `0${zoneId}` : zoneId; 
+                    let emoji = guild.emojis.cache.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`)
+                    if (emoji != undefined) {
+                        zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote_guild_id: guild.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>` };
+                    }
+                }
+            } else {
+                let emoji = guild.emojis.cache.find(emoji => emoji.name === id)
+                if (emoji != undefined) {
+                    db.tile_data.set(id, emoji.id, 'emote_id');
+                    db.tile_data.set(id, `<:${id}:${emoji.id}>`, 'emote');
+                    db.tile_data.set(id, guild.id, 'emote_guild_id');
+                    break;
+                } else {
+                    continue;
+                }
+            } 
+        }
+
+        if (id.includes('c')) {
+            db.tile_data.set(id, false, 'emote_id');
+            db.tile_data.set(id, false, 'emote_guild_id');
+            db.tile_data.set(id, false, 'emote');
+            db.tile_data.set(id, zoneEmoteIds, 'zone_emote_ids');
+        } else {
+            db.tile_data.set(id, {}, 'zone_emote_ids');
+        }
+        
     },
 
     /**

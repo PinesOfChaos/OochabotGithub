@@ -29,77 +29,83 @@ module.exports = {
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
 
-        //           ID            Use           Guilds
+        let TileGuilds = [];
+        for (let guildId of TileEmoteGuildsArray) {
+            let guild = await client.guilds.fetch(guildId);
+            TileGuilds.push(guild);
+        }
+
+        //           ID            Use            Emote Guilds
         // Global
-        create_tile(`t${zG}_000`,  Tile.Floor,   tileGuilds  ); //Black 
-        create_tile(`t${zG}_001`,  Tile.Floor,   tileGuilds  ); //Teleporter 
-        create_tile(`t${zG}_002`,  Tile.Npc,     tileGuilds  ); //Chest
-        create_tile(`t${zG}_003`,  Tile.Floor,   tileGuilds  ); //Arrow Left
-        create_tile(`t${zG}_004`,  Tile.Floor,   tileGuilds  ); //Arrow Up
-        create_tile(`t${zG}_005`,  Tile.Floor,   tileGuilds  ); //Arrow Right
-        create_tile(`t${zG}_006`,  Tile.Floor,   tileGuilds  ); //Arrow Down
-        create_tile(`t${zG}_007`,  Tile.Wall,    tileGuilds  ); //Shop Mini
-        create_tile(`t${zG}_008`,  Tile.Wall,    tileGuilds  ); //Shop Upper Left
-        create_tile(`t${zG}_009`,  Tile.Wall,    tileGuilds  ); //Shop Upper Right
-        create_tile(`t${zG}_010`,  Tile.Shop,    tileGuilds  ); //Shop Lower Left (interactable tile)
-        create_tile(`t${zG}_011`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
+        create_tile(`t${zG}_000`,  Tile.Floor,    TileGuilds ); //Black 
+        create_tile(`t${zG}_001`,  Tile.Floor,    TileGuilds ); //Teleporter 
+        create_tile(`t${zG}_002`,  Tile.Npc,      TileGuilds ); //Chest
+        create_tile(`t${zG}_003`,  Tile.Floor,    TileGuilds ); //Arrow Left
+        create_tile(`t${zG}_004`,  Tile.Floor,    TileGuilds ); //Arrow Up
+        create_tile(`t${zG}_005`,  Tile.Floor,    TileGuilds ); //Arrow Right
+        create_tile(`t${zG}_006`,  Tile.Floor,    TileGuilds ); //Arrow Down
+        create_tile(`t${zG}_007`,  Tile.Wall,     TileGuilds ); //Shop Mini
+        create_tile(`t${zG}_008`,  Tile.Wall,     TileGuilds ); //Shop Upper Left
+        create_tile(`t${zG}_009`,  Tile.Wall,     TileGuilds ); //Shop Upper Right
+        create_tile(`t${zG}_010`,  Tile.Shop,     TileGuilds ); //Shop Lower Left (interactable tile)
+        create_tile(`t${zG}_011`,  Tile.Wall,     TileGuilds ); //Shop Lower Right 
         
         // Fungal
-        create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
-        create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
-        create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
-        create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        create_tile(`t${zF}_000`,  Tile.Floor,    TileGuilds ); //Fungal Floor
+        create_tile(`t${zF}_001`,  Tile.Wall,     TileGuilds ); //Fungal Wall
+        create_tile(`t${zF}_002`,  Tile.Grass,    TileGuilds ); //Fungal Grass
+        create_tile(`t${zF}_003`,  Tile.Wall,     TileGuilds ); //Fungal Wall
+        create_tile(`t${zF}_004`,  Tile.Floor,    TileGuilds ); //Fungal Exit
+        create_tile(`t${zF}_005`,  Tile.Floor,    TileGuilds ); //Fungal Floor Entrance
         
         // Sandy
-        create_tile(`t${zS}_000`,  Tile.Floor,   tileGuilds  ); //Sandy Floor
-        create_tile(`t${zS}_001`,  Tile.Wall,    tileGuilds  ); //Sandy Wall
-        create_tile(`t${zS}_002`,  Tile.Grass,   tileGuilds  ); //Sandy Grass
-        create_tile(`t${zS}_003`,  Tile.Wall,    tileGuilds  ); //HUB Wall Top
-        create_tile(`t${zS}_004`,  Tile.Wall,    tileGuilds  ); //HUB Wall Middle
-        create_tile(`t${zS}_005`,  Tile.Wall,    tileGuilds  ); //Hub Wall Bottom
-        create_tile(`t${zS}_006`,  Tile.Wall,    tileGuilds  ); //Hub Gate Top
-        create_tile(`t${zS}_007`,  Tile.Wall,    tileGuilds  ); //Hub Gate Bottom
-        create_tile(`t${zS}_008`,  Tile.Shop,    tileGuilds  ); //Hub Tent
-        create_tile(`t${zS}_009`,  Tile.Shop,    tileGuilds  ); //Crater
-        create_tile(`t${zS}_010`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Left
-        create_tile(`t${zS}_011`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Upper Right
-        create_tile(`t${zS}_012`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Left
-        create_tile(`t${zS}_013`,  Tile.Wall,    tileGuilds  ); //Hub Dropship Lower Right
-        create_tile(`t${zS}_014`,  Tile.Wall,    tileGuilds  ); //Desert Wall Lower
-        create_tile(`t${zS}_015`,  Tile.Wall,    tileGuilds  ); //Desert Wall Upper
-        create_tile(`t${zS}_016`,  Tile.Floor,   tileGuilds  ); //Desert Exit
-        create_tile(`t${zS}_017`,  Tile.Wall,    tileGuilds  ); //Hub Barrel
-        create_tile(`t${zS}_018`,  Tile.Board,   tileGuilds  ); //Job Board
+        create_tile(`t${zS}_000`,  Tile.Floor,    TileGuilds ); //Sandy Floor
+        create_tile(`t${zS}_001`,  Tile.Wall,     TileGuilds ); //Sandy Wall
+        create_tile(`t${zS}_002`,  Tile.Grass,    TileGuilds ); //Sandy Grass
+        create_tile(`t${zS}_003`,  Tile.Wall,     TileGuilds ); //HUB Wall Top
+        create_tile(`t${zS}_004`,  Tile.Wall,     TileGuilds ); //HUB Wall Middle
+        create_tile(`t${zS}_005`,  Tile.Wall,     TileGuilds ); //Hub Wall Bottom
+        create_tile(`t${zS}_006`,  Tile.Wall,     TileGuilds ); //Hub Gate Top
+        create_tile(`t${zS}_007`,  Tile.Wall,     TileGuilds ); //Hub Gate Bottom
+        create_tile(`t${zS}_008`,  Tile.Shop,     TileGuilds ); //Hub Tent
+        create_tile(`t${zS}_009`,  Tile.Shop,     TileGuilds ); //Crater
+        create_tile(`t${zS}_010`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Left
+        create_tile(`t${zS}_011`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Right
+        create_tile(`t${zS}_012`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Left
+        create_tile(`t${zS}_013`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Right
+        create_tile(`t${zS}_014`,  Tile.Wall,     TileGuilds ); //Desert Wall Lower
+        create_tile(`t${zS}_015`,  Tile.Wall,     TileGuilds ); //Desert Wall Upper
+        create_tile(`t${zS}_016`,  Tile.Floor,    TileGuilds ); //Desert Exit
+        create_tile(`t${zS}_017`,  Tile.Wall,     TileGuilds ); //Hub Barrel
+        create_tile(`t${zS}_018`,  Tile.Board,    TileGuilds ); //Job Board
 
         // Cave
-        create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
-        create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
-        create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
-        create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
-        create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
-        create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+        create_tile(`t${zC}_000`,  Tile.Floor,    TileGuilds ); //Cave Floor
+        create_tile(`t${zC}_001`,  Tile.Floor,    TileGuilds ); //Cave Floor Entrance
+        create_tile(`t${zC}_002`,  Tile.Wall,     TileGuilds ); //Cave Wall
+        create_tile(`t${zC}_003`,  Tile.Wall,     TileGuilds ); //Lava
+        create_tile(`t${zC}_004`,  Tile.Floor,    TileGuilds ); //Cave Exit
+        create_tile(`t${zC}_005`,  Tile.Wall,     TileGuilds ); //Cave Stalagtite
 
         // Obsidian
-        create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
-        create_tile(`t${zO}_001`,  Tile.Wall ,   tileGuilds  ); //Obsidian Wall
-        create_tile(`t${zO}_002`,  Tile.Grass,   tileGuilds  ); //Obsidian Grass
+        create_tile(`t${zO}_000`,  Tile.Floor,    TileGuilds ); //Obsidian Floor
+        create_tile(`t${zO}_001`,  Tile.Wall ,    TileGuilds ); //Obsidian Wall
+        create_tile(`t${zO}_002`,  Tile.Grass,    TileGuilds ); //Obsidian Grass
         
 
         // NPCs
-        create_tile(`c_000`,       Tile.Npc,     tileGuilds  ); // Main Character
-        create_tile(`c_001`,       Tile.Npc,     tileGuilds  ); // Basic NPC Obsidian
-        create_tile(`c_002`,       Tile.Npc,     tileGuilds  ); // Basic NPC Desert Rags
-        create_tile(`c_003`,       Tile.Npc,     tileGuilds  ); // Basic NPC Neon Blue
-        create_tile(`c_004`,       Tile.Npc,     tileGuilds  ); // Basic NPC Fungal
-        create_tile(`c_005`,       Tile.Npc,     tileGuilds  ); // Global Scientist
-        create_tile(`c_006`,       Tile.Npc,     tileGuilds  ); // Global Elderly Researcher
-        create_tile(`c_007`,       Tile.Npc,     tileGuilds  ); // Global Rival
-        create_tile(`c_008`,       Tile.Npc,     tileGuilds  ); // Global Desert Raider
-        create_tile(`c_009`,       Tile.Npc,     tileGuilds  ); // Global Department Head
-        create_tile(`c_010`,       Tile.Npc,     tileGuilds  ); // Global Hollowed Scientist
-        create_tile(`c_011`,       Tile.Npc,     tileGuilds  ); // Shopkeeper
+        create_tile(`c_000`,       Tile.Npc,      TileGuilds ); // Main Character
+        create_tile(`c_001`,       Tile.Npc,      TileGuilds ); // Basic NPC Obsidian
+        create_tile(`c_002`,       Tile.Npc,      TileGuilds ); // Basic NPC Desert Rags
+        create_tile(`c_003`,       Tile.Npc,      TileGuilds ); // Basic NPC Neon Blue
+        create_tile(`c_004`,       Tile.Npc,      TileGuilds ); // Basic NPC Fungal
+        create_tile(`c_005`,       Tile.Npc,      TileGuilds ); // Global Scientist
+        create_tile(`c_006`,       Tile.Npc,      TileGuilds ); // Global Elderly Researcher
+        create_tile(`c_007`,       Tile.Npc,      TileGuilds ); // Global Rival
+        create_tile(`c_008`,       Tile.Npc,      TileGuilds ); // Global Desert Raider
+        create_tile(`c_009`,       Tile.Npc,      TileGuilds ); // Global Department Head
+        create_tile(`c_010`,       Tile.Npc,      TileGuilds ); // Global Hollowed Scientist
+        create_tile(`c_011`,       Tile.Npc,      TileGuilds ); // Shopkeeper
         
         //#endregion
 
