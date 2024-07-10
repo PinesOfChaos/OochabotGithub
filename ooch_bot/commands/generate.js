@@ -4,6 +4,7 @@ const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
+const wait = require('wait');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,9 +18,9 @@ module.exports = {
                     { name: 'Yes', value: 'yes' },
                 )),
     async execute(interaction, client) {
-
+        await interaction.deferReply();
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
-            return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+            return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
         }
         
         //#region Tile Data
@@ -51,12 +52,13 @@ module.exports = {
         create_tile(`t${zG}_011`,  Tile.Wall,    tileGuilds  ); //Shop Lower Right 
         
         // Fungal
-        create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
-        create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
-        create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
-        create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
-        create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        await create_tile(`t${zF}_000`,  Tile.Floor,   tileGuilds  ); //Fungal Floor
+        await create_tile(`t${zF}_001`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        await create_tile(`t${zF}_002`,  Tile.Grass,   tileGuilds  ); //Fungal Grass
+        await create_tile(`t${zF}_003`,  Tile.Wall,    tileGuilds  ); //Fungal Wall
+        await create_tile(`t${zF}_004`,  Tile.Floor,   tileGuilds  ); //Fungal Exit
+        await create_tile(`t${zF}_005`,  Tile.Floor,   tileGuilds  ); //Fungal Floor Entrance
+        if (emoteUpdate == 'yes') await wait(10000);
         
         // Sandy
         create_tile(`t${zS}_000`,  Tile.Floor,   tileGuilds  ); //Sandy Floor
@@ -80,12 +82,13 @@ module.exports = {
         create_tile(`t${zS}_018`,  Tile.Board,   tileGuilds  ); //Job Board
 
         // Cave
-        create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
-        create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
-        create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
-        create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
-        create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
-        create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+        await create_tile(`t${zC}_000`,  Tile.Floor,   tileGuilds  ); //Cave Floor
+        await create_tile(`t${zC}_001`,  Tile.Floor,   tileGuilds  ); //Cave Floor Entrance
+        await create_tile(`t${zC}_002`,  Tile.Wall,    tileGuilds  ); //Cave Wall
+        await create_tile(`t${zC}_003`,  Tile.Wall,    tileGuilds  ); //Lava
+        await create_tile(`t${zC}_004`,  Tile.Floor,   tileGuilds  ); //Cave Exit
+        await create_tile(`t${zC}_005`,  Tile.Wall,    tileGuilds  ); //Cave Stalagtite
+        if (emoteUpdate == 'yes') await wait(10000);
 
         // Obsidian
         create_tile(`t${zO}_000`,  Tile.Floor,   tileGuilds  ); //Obsidian Floor
@@ -970,7 +973,7 @@ module.exports = {
         fs.writeFile('./editor_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
 
-        interaction.reply('Generated game data.');
+        await interaction.editReply('Generated game data.');
     },
 };
 
