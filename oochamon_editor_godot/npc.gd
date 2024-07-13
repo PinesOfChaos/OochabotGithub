@@ -4,6 +4,7 @@ extends Control
 @onready var o_npc_object = $npc_object
 @onready var o_npc_sprite = $"npc_tab_container/Basic Info/general_info/npc_sprite"
 @onready var o_npc_sprite_combat = $"npc_tab_container/Basic Info/general_info/npc_sprite_combat"
+@onready var o_npc_sprite_dialog = $"npc_tab_container/Basic Info/general_info/npc_sprite_dialog"
 @onready var o_npc_name = $"npc_tab_container/Basic Info/general_info/npc_name"
 
 @onready var o_flag_required = $"npc_tab_container/Basic Info/flag_required"
@@ -27,6 +28,7 @@ var npc_x = 0
 var npc_y = 0
 var npc_sprite = 2
 var npc_sprite_combat = ""
+var npc_sprite_dialog = ""
 var npc_name = ""
 var npc_flag_required = ""
 var npc_flag_given = ""
@@ -41,6 +43,7 @@ var npc_slots = []
 var npc_slots_data = []
 var refreshed = false
 var dragging = false
+var npc_sprite_name = "c00_000"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,11 +56,14 @@ func _ready():
 	
 	var tile_data
 	var tile_string
-	for i in Global.DataTiles.size():
-		tile_data = Global.DataTiles[i]
-		tile_string = "res://tiles/" + ("00" + str(i)).right(3) + ".png"
-		if tile_data.tile_use == "npc":
-			o_npc_sprite.add_icon_item(load(tile_string),"",i)
+	for i in Global.DataNPCs.size():
+		tile_data = Global.DataNPCs[i]
+		tile_string = "res://npcs/" + tile_data.tile_index + ".png"
+		o_npc_sprite.add_icon_item(load(tile_string),tile_data.tile_index,i)
+		if npc_sprite_name == tile_data.tile_index:
+			o_npc_sprite.select(i)
+			o_npc_object.texture_normal = load(tile_string)
+			
 	
 	print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
 	
@@ -65,11 +71,8 @@ func _ready():
 	
 	o_npc_name.text = npc_name
 	
-	o_npc_sprite.select(o_npc_sprite.get_item_index(npc_sprite))
-	var txt = "res://tiles/" + ("00" + str(npc_sprite)).right(3) + ".png"
-	o_npc_object.texture_normal = load(txt)
-	
 	o_npc_sprite_combat.text = npc_sprite_combat
+	o_npc_sprite_dialog.text = npc_sprite_dialog
 	
 	o_coin_count.value = npc_coin
 	o_item_select.select(o_item_select.get_item_index(npc_item_id))
@@ -82,6 +85,8 @@ func _ready():
 	
 	o_text_pre_combat.text = npc_dialog_pre
 	o_text_post_combat.text = npc_dialog_post
+	
+	
 	
 	for i in npc_slots_data.size():
 		var _data_str = npc_slots_data[i]
@@ -174,7 +179,8 @@ func _on_text_post_combat_text_changed():
 
 func _on_npc_sprite_item_selected(index):
 	npc_sprite = o_npc_sprite.get_item_id(index)
-	var tile_string = "res://tiles/" + ("00" + str(npc_sprite)).right(3) + ".png"
+	npc_sprite_name = o_npc_sprite.get_item_text(index)
+	var tile_string = "res://npcs/" + npc_sprite_name + ".png"
 	o_npc_object.texture_normal = load(tile_string)
 	
 func _on_npc_object_button_down():
@@ -191,3 +197,7 @@ func _on_npc_sprite_combat_text_changed(new_text):
 
 func _on_npc_name_text_changed(new_text):
 	npc_name = new_text
+
+
+func _on_npc_sprite_dialog_text_changed(new_text):
+	npc_sprite_dialog = new_text

@@ -109,15 +109,14 @@ func _ready():
 	while file_name != "":
 		if !file_name.begins_with("."):
 			file_num = int(file_name.split(".")[0])
+			
 			for i in Global.DataTiles.size():
 				tile_id = Global.DataTiles[i].tile_index
-				if tile_id == file_num:
+				if tile_id + ".png" == file_name:
 					image = Image.new()
 					err = image.load(path + file_name)
 					if !err:
 						Global.DataTiles[i].tile_sprite = load(path + file_name)
-						
-						
 						Global.DataTiles[i].tile_texture = ImageTexture.new()
 						Global.DataTiles[i].tile_texture.create_from_image(Global.DataTiles[i].tile_sprite)
 						box_child = val_button.new()
@@ -381,7 +380,9 @@ func _on_file_dialog_save_file_selected(path):
 		save_str += "#tiles" + "\n"
 		for i in map_width:
 			for j in map_height:
-				save_str += str(map_tiles[i][j]) + "|"
+				var tile_info = Global.DataTiles[map_tiles[i][j]]
+				var tile_name = tile_info.tile_index
+				save_str += tile_name + "|"
 			save_str += "\n"
 		
 		#NPCs
@@ -392,7 +393,7 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += str(npc.npc_x) + "|"
 			temp_str += str(npc.npc_y) + "|"
 			
-			temp_str += str(0) + "|" #NPC Beaten, this is no-longer used
+			temp_str += npc.npc_sprite_name + "|" 
 			temp_str += str(npc.npc_sprite) + "|"
 			temp_str += npc.npc_sprite_combat + "|"
 			
@@ -557,9 +558,13 @@ func _on_file_dialog_load_file_selected(path):
 							var j = _tiles.size()
 							var _row = _line.split("|")
 							var _row2 = []
-							
+							var _global_tile_pos
 							for i in _row.size():
-								_row2.push_back(int(_row[i]))
+								
+								for k in Global.DataTiles.size():
+									if Global.DataTiles[k].tile_index == _row[i]:
+										_global_tile_pos = k
+								_row2.push_back(_global_tile_pos)
 							_tiles.push_back(_row2)
 						"npcs":
 							var _load = load("res://npc.tscn")
@@ -571,25 +576,29 @@ func _on_file_dialog_load_file_selected(path):
 							_obj.npc_x = int(_data[1])
 							_obj.npc_y = int(_data[2])
 							
-							#_data[3] is no longer used
+							_obj.npc_sprite_name = _data[3]
 							_obj.npc_sprite = int(_data[4])
 							_obj.npc_sprite_combat = _data[5]
+							_obj.npc_sprite_dialog = _data[6]
 							
-							_obj.npc_coin = int(_data[6])
-							_obj.npc_item_id = int(_data[7])
-							_obj.npc_item_number = int(_data[8])
+							_obj.npc_coin = int(_data[7])
+							_obj.npc_item_id = int(_data[8])
+							_obj.npc_item_number = int(_data[9])
 							
-							_obj.npc_flag_required = _data[9]
-							_obj.npc_flag_given = _data[10]
-							_obj.npc_flag_kill = _data[11]
-							_obj.npc_remove_on_finish = bool(int(_data[12]))
+							_obj.npc_flag_required = _data[10]
+							_obj.npc_flag_given = _data[11]
+							_obj.npc_flag_kill = _data[12]
+							_obj.npc_remove_on_finish = bool(int(_data[13]))
 							
-							var _dialog_pre = _data[13]
-							var _dialog_post = _data[14]
+							
+							var _dialog_pre = _data[14]
+							var _dialog_post = _data[15]
 							_obj.npc_dialog_pre = _dialog_pre.replace("`", "\n")
 							_obj.npc_dialog_post = _dialog_post.replace("`", "\n")
 							
-							_obj.npc_slots_data = [_data[15], _data[16], _data[17], _data[18]]
+							print([_obj.npc_dialog_pre, _obj.npc_dialog_post])
+							
+							_obj.npc_slots_data = [_data[16], _data[17], _data[18], _data[18]]
 							
 							#assign new object as a child of the relevant menu part
 							_npcs.add_child(_obj)
@@ -853,20 +862,42 @@ func refresh_data():
 	while ln != "":
 		lnsplit = ln.split("|")
 		
-		var index = lnsplit[0]
-		var emote = lnsplit[2].split(":")[2]
+		var index = lnsplit[1].split(":")[1]
+		var emote = lnsplit[1].split(":")[2]
 		emote = emote.replace(">","")
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + ("00" + index).right(3) + ".png")
+		
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + index + ".png")
 		
 		Global.DataTiles.push_back({
-			tile_index = int(lnsplit[0]),
-			tile_use = lnsplit[1],
-			tile_emote = lnsplit[2],
-			tile_emote_detailed = lnsplit[2],
+			tile_index = index,
+			tile_emote = lnsplit[1],
+			tile_emote_detailed = lnsplit[1],
 			tile_sprite = -1,
 			tile_texture = -1
 		})
 		ln = f_tiles.get_line()
+		
+		
+	#NPCs
+	var f_npcs = FileAccess.open(Global.DataPath + "/npc_data.txt", FileAccess.READ)
+	ln = f_npcs.get_line()
+	while ln != "":
+		lnsplit = ln.split("|")
+		
+		var index = lnsplit[1].split(":")[1]
+		var emote = lnsplit[1].split(":")[2]
+		emote = emote.replace(">","")
+		
+		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","npcs/" + index + ".png")
+		
+		Global.DataNPCs.push_back({
+			tile_index = index,
+			tile_emote = lnsplit[1],
+			tile_emote_detailed = lnsplit[1],
+			tile_sprite = -1,
+			tile_texture = -1
+		})
+		ln = f_npcs.get_line()
 	
 func _on_button_map_brush_pressed():
 	Global.TileSelected = -1

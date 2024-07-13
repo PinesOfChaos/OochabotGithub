@@ -12,6 +12,7 @@ var DataItems = []
 var DataMoves = []
 var DataOochamon = []
 var DataTiles = []
+var DataNPCs = []
 var ElementIcons = {
 	icon_flame = preload("res://elements/icon_flame.png"),
 	icon_fungal = preload("res://elements/icon_fungal.png"),
