@@ -1950,9 +1950,9 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    const plrSprite = await loadImage('./Art/Tiles/t054.png')
+    const plrSprite = await loadImage('./Art/NPCs/c00_000.png')
     const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
-    const enemySprite = await loadImage('./Art/Tiles/t057.png')
+    const enemySprite = await loadImage('./Art/NPCs/c00_000.png')
     const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
     const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
     let playerMemberObj = thread.guild.members.cache.get(user_id);

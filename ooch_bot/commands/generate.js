@@ -789,7 +789,6 @@ module.exports = {
                             break;
                             case 'tiles':
                                 line_data.pop();
-                                line_data = line_data.map(v => parseInt(v));
                                 tile_data.push(line_data);
                             break;
                             case 'npcs':
@@ -798,7 +797,7 @@ module.exports = {
                                     x: parseInt(line_data[1]),
                                     y: parseInt(line_data[2]),
                                     emote_name: line_data[3],
-                                    sprite_id: parseInt(line_data[4]),
+                                    sprite_id: line_data[4],
                                     sprite_combat: (line_data[5] == '' ? false : line_data[5]),
                                     sprite_dialogue: (line_data[6] == '' ? false : line_data[6]),
                                     coin: parseInt(line_data[7]),
@@ -856,7 +855,7 @@ module.exports = {
                                 }
                                 npc_data.push(output);
                             break;
-                            case 'spawns':
+                            case 'spawn_zones':
                                 output = {
                                     x: parseInt(line_data[0]),
                                     y: parseInt(line_data[1]),
@@ -896,6 +895,7 @@ module.exports = {
                                 shop_data.push(output);
                             break;
                             case 'transitions':
+                                console.log(line_data);
                                 output = {
                                     x: parseInt(line_data[0]),
                                     y: parseInt(line_data[1]),
@@ -927,7 +927,7 @@ module.exports = {
                     map_info_battleback : map_info_battleback,
                     tiles: tile_data,
                     npcs: npc_data,
-                    spawns: spawn_data,
+                    spawn_zones: spawn_data,
                     savepoints: savepoint_data,
                     transitions: transition_data,
                     events: event_data,

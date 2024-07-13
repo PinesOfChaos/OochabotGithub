@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState } = require('./types.js');
+const { Flags, PlayerState, Tile } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -57,7 +57,7 @@ module.exports = {
         let map_obj =   db.maps.get(map_name.toLowerCase());
         let map_tiles =         map_obj.tiles; 
         let map_npcs =          map_obj.npcs;
-        let map_spawns =        map_obj.spawns;
+        let map_spawns =        map_obj.spawn_zones;
         let map_savepoints =    map_obj.savepoints;
         let map_transitions =   map_obj.transitions;
         let map_events =        map_obj.events;
@@ -87,18 +87,16 @@ module.exports = {
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
             var tile = db.tile_data.get(tile_id.toString());
             switch(tile.use){
-
-                case 'board':
+                case Tile.Board:
                     stop_moving = true;
                 break;
-                case 'wall':
+                case Tile.Wall:
                     stop_moving = true;
                 break;
-                case 'grass':
+                case Tile.Grass:
                     playerx += xmove;
                     playery += ymove;
                     if (0 < .25) {//if(Math.random() < .25){
-                        console.log('Mon Enountered!')
                         stop_moving = true;
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
@@ -375,7 +373,7 @@ module.exports = {
         //if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
         let map_obj = db.maps.get(map_name);
         let emote_map_array = [];
-        let player_sprite = db.profile.get(user_id, 'player_sprite');
+        let player_sprite_id = db.profile.get(user_id, 'player_sprite');
 
         //Plain map tiles
         for (let i = -view_size; i < view_size + 1; i++) {
@@ -403,11 +401,13 @@ module.exports = {
             xx = obj.x - x_pos + view_size;
             yy = obj.y - y_pos + view_size;
             if ((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)) {
-                if (obj.flag_required == '' || player_flags.includes(obj.flag_required)) {
+                if (obj.flag_required == '' || obj.flag_required == false || player_flags.includes(obj.flag_required)) {
                     let plr_interacted = player_flags.includes(npc_flag); //check if the player has defeated this npc
                     let plain_tile = emote_map_array[xx][yy];
-                    tile = db.tile_data.get(obj.sprite_id.toString());
-                    emote_map_array[xx][yy] = tile.emote;
+                    let npcZoneId = parseInt(emote_map_array[xx][yy].split(':')[1].replace('t', ''));
+                    tile = db.tile_data.get(obj.sprite_id);
+                    if (tile.use === Tile.Int) npcZoneId = 0;
+                    emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
 
                     //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
                     if ((plr_interacted && obj.remove_on_finish) || (player_flags.includes(obj.flag_kill))) { 
@@ -427,8 +427,9 @@ module.exports = {
             }
         }
 
-        //Put player sprite in center
-        emote_map_array[view_size][view_size] = player_sprite;
+        //Put player sprite in center and change it based on the zone ID
+        let zoneId = parseInt(emote_map_array[view_size][view_size].split(':')[1].replace('t', ''));
+        emote_map_array[view_size][view_size] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
         let transpose = [];

@@ -47,7 +47,7 @@ module.exports = {
 
             // Setup user data
             db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
-            db.profile.set(interaction.user.id, '<:t050:1095915042165235812>', 'player_sprite');
+            db.profile.set(interaction.user.id, 'c_000', 'player_sprite');
             db.profile.set(interaction.user.id, [], 'ooch_pc')
             db.profile.set(interaction.user.id, 0, 'ooch_active_slot')
             db.profile.set(interaction.user.id, {}, 'other_inv')
