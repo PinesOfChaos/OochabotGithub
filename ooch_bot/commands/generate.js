@@ -39,7 +39,6 @@ module.exports = {
         // Global
         create_tile(`t${zG}_000`,  Tile.Floor,    TileGuilds ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,    TileGuilds ); //Teleporter 
-        create_tile(`t${zG}_002`,  Tile.Npc,      TileGuilds ); //Chest
         create_tile(`t${zG}_003`,  Tile.Floor,    TileGuilds ); //Arrow Left
         create_tile(`t${zG}_004`,  Tile.Floor,    TileGuilds ); //Arrow Up
         create_tile(`t${zG}_005`,  Tile.Floor,    TileGuilds ); //Arrow Right
@@ -68,7 +67,6 @@ module.exports = {
         create_tile(`t${zS}_006`,  Tile.Wall,     TileGuilds ); //Hub Gate Top
         create_tile(`t${zS}_007`,  Tile.Wall,     TileGuilds ); //Hub Gate Bottom
         create_tile(`t${zS}_008`,  Tile.Shop,     TileGuilds ); //Hub Tent
-        create_tile(`t${zS}_009`,  Tile.Shop,     TileGuilds ); //Crater
         create_tile(`t${zS}_010`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Left
         create_tile(`t${zS}_011`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Right
         create_tile(`t${zS}_012`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Left
@@ -106,6 +104,8 @@ module.exports = {
         create_tile(`c_009`,       Tile.Npc,      TileGuilds ); // Global Department Head
         create_tile(`c_010`,       Tile.Npc,      TileGuilds ); // Global Hollowed Scientist
         create_tile(`c_011`,       Tile.Npc,      TileGuilds ); // Shopkeeper
+        create_tile(`c_012`,       Tile.Int,      TileGuilds ); // Crater
+        create_tile(`c_013`,       Tile.Int,      TileGuilds ); // Chest
         
         //#endregion
 
@@ -797,7 +797,7 @@ module.exports = {
                                     name: line_data[0],
                                     x: parseInt(line_data[1]),
                                     y: parseInt(line_data[2]),
-                                    beaten: false,
+                                    emote_name: line_data[3],
                                     sprite_id: parseInt(line_data[4]),
                                     sprite_combat: (line_data[5] == '' ? false : line_data[5]),
                                     sprite_dialogue: (line_data[6] == '' ? false : line_data[6]),

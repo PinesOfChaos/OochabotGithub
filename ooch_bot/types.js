@@ -238,6 +238,7 @@ const Tile = {
     Wall: 2,
     Grass: 3,
     Shop: 4,
+    Int: 5, // Interactible
 }
 
 const Zone = {
