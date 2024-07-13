@@ -942,6 +942,7 @@ module.exports = {
         let items_output_str = "";
         let abilities_output_str = "";
         let tiles_output_str = "";
+        let npc_output_str = "";
 
         for (let obj of db.monster_data.array()) {
             ooch_output_str += `${obj.id}|${obj.emote}|${obj.image}|${obj.name}|${obj.oochive_entry}|${obj.type}|${obj.hp}|${obj.atk}|${obj.def}|${obj.spd}|` + 
@@ -961,7 +962,11 @@ module.exports = {
         }
 
         for (let obj of db.tile_data.array()) {
-            tiles_output_str += `${obj.id}|${obj.use}|${obj.emote}|${obj.emote_simple}\n`;
+            if (obj.id.includes('c')) {
+                npc_output_str += `${obj.id}|${Object.values(obj.zone_emote_ids).map(v => `${v.emote}`).join('|')}\n`;
+            } else {
+                tiles_output_str += `${obj.id}|${obj.emote}\n`;
+            }
         }
 
         fs.writeFile('./editor_data/ooch_data.txt', ooch_output_str, (err) => { if (err) throw err; });
@@ -969,6 +974,7 @@ module.exports = {
         fs.writeFile('./editor_data/items_data.txt', items_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
+        fs.writeFile('./editor_data/npc_data.txt', npc_output_str, (err) => { if (err) throw err; });
 
         await interaction.editReply('Generated game data.');
     },
