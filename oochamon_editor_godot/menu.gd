@@ -356,7 +356,8 @@ func set_node_owners(node):
 # Save map data
 func _on_file_dialog_save_file_selected(path):
 	var save_file = FileAccess.open(path, FileAccess.WRITE)
-
+	var save_json = FileAccess.open(path.replace(".txt", ".json"), FileAccess.WRITE)
+	
 	# set the owner of every single node to the menu
 	set_node_owners_to_menu()
 	
@@ -370,6 +371,19 @@ func _on_file_dialog_save_file_selected(path):
 		#Save the .TXT file to be loaded into Oochabot
 		var save_str = ""
 		var temp_str = ""
+		var save_data = {
+			"map_info" : {
+				"map_name" : map_name,
+				"map_battleback" : map_battleback
+			},
+			"map_tiles" : [],
+			"map_npcs" : [],
+			"map_spawn_zones" : [],
+			"map_savepoints" : [],
+			"map_shops" : [],
+			"map_events" : [],
+			"map_transitions" : [],
+		}
 		
 		#General Map Info
 		save_str += "#map_info" + "\n"
@@ -379,15 +393,69 @@ func _on_file_dialog_save_file_selected(path):
 		#Map Tiles
 		save_str += "#tiles" + "\n"
 		for i in map_width:
+			print(i)
+			save_data.map_tiles.push_back([])
+			#save_data.map_tiles[i] = []
+			
 			for j in map_height:
 				var tile_info = Global.DataTiles[map_tiles[i][j]]
 				var tile_name = tile_info.tile_index
+				save_data.map_tiles[i].push_back(tile_name)
+				#save_data.map_tiles[i][j].push_back(tile_name)
+				
 				save_str += tile_name + "|"
 			save_str += "\n"
 		
 		#NPCs
 		save_str += "#npcs" + "\n"
 		for npc in menu_npcs.get_children():
+			var npc_data = {
+				"npc_name" : npc.npc_name,
+				"npc_x" : npc.npc_x,
+				"npc_y" : npc.npc_y,
+				
+				"npc_sprite_name" : npc.npc_sprite_name,
+				"npc_short_name" : "c_" + npc.npc_sprite_name.right(3), #not used here, this is used in discord
+				"npc_sprite_combat" : npc.npc_sprite_combat,
+				"npc_sprite_dialog" : npc.npc_sprite_dialog,
+				
+				"npc_coin" : npc.npc_coin,
+				"npc_item_id" : npc.npc_item_id,
+				"npc_item_number" : npc.npc_item_number,
+				
+				"npc_flag_required" : npc.npc_flag_required,
+				"npc_flag_given" : npc.npc_flag_given,
+				"npc_flag_kill" : npc.npc_flag_kill,
+				"npc_remove_on_finish" : 1 if npc.npc_remove_on_finish else 0,
+				
+				"npc_dialog_pre" : npc.npc_dialog_pre,
+				"npc_dialog_post" : npc.npc_dialog_post,
+				
+				"npc_slots" : []
+			}
+			
+			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
+			for slot in slots:
+				if slot.slot_enabled:
+					npc_data.npc_slots.push_back({
+						"slot_species" : slot.slot_species,
+						"slot_nickname" : slot.slot_nickname,
+						"slot_ability" : slot.slot_ability,
+						"slot_level" : slot.slot_level,
+						
+						"slot_move1" : slot.slot_move1,
+						"slot_move2" : slot.slot_move2,
+						"slot_move3" : slot.slot_move3,
+						"slot_move4" : slot.slot_move4,
+						
+						"slot_hp" : slot.slot_hp,
+						"slot_atk" : slot.slot_atk,
+						"slot_def" : slot.slot_def,
+						"slot_spd" : slot.slot_spd
+					})
+					
+			save_data.map_npcs.push_back(npc_data)
+			
 			temp_str = ""
 			temp_str += npc.npc_name + "|"
 			temp_str += str(npc.npc_x) + "|"
@@ -396,6 +464,7 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += npc.npc_sprite_name + "|" 
 			temp_str += "c_" + npc.npc_sprite_name.right(3) + "|" #not used here, this is used in discord
 			temp_str += npc.npc_sprite_combat + "|"
+			temp_str += npc.npc_sprite_dialog + "|"
 			
 			temp_str += str(npc.npc_coin) + "|"
 			temp_str += str(npc.npc_item_id) + "|"
@@ -409,7 +478,6 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += npc.npc_dialog_pre.replace("\n", "`") + "|"
 			temp_str += npc.npc_dialog_post.replace("\n", "`") + "|"
 			
-			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
 			for slot in slots:
 				if slot.slot_enabled:
 					temp_str += str(slot.slot_species) + "`"
@@ -435,6 +503,26 @@ func _on_file_dialog_save_file_selected(path):
 		var bbox
 		for spawn in menu_spawnzones.get_children():	
 			bbox = spawn.bounding_box
+			
+			var spawn_data = {
+				"spawn_pos_x" : bbox.pos_x,
+				"spawn_pos_y" : bbox.pos_y,
+				"spawn_scale_x" : bbox.scale_x,
+				"spawn_scale_y" : bbox.scale_y,
+				"spawn_slots" : []
+			}
+			
+			for slot in spawn.spawn_slots.get_children():
+				if slot.species != -1:
+					spawn_data.spawn_slots.push_back({
+						"slot_species" : slot.species,
+						"slot_lv_min" : slot.lv_min,
+						"slot_lv_max" : slot.lv_max
+					})
+					
+			save_data.map_npcs.push_back(spawn_data)
+			
+			
 			save_str += str(bbox.pos_x) + "|"
 			save_str += str(bbox.pos_y) + "|"
 			save_str += str(bbox.scale_x) + "|"
@@ -450,6 +538,14 @@ func _on_file_dialog_save_file_selected(path):
 		#Save Points
 		save_str += "#savepoints" + "\n"
 		for savepoint in menu_save_points.get_children():
+			var savepoint_data = {
+				"savepoint_initial" : savepoint.savepoint_initial,
+				"savepoint_x" : savepoint.savepoint_x,
+				"savepoint_y" : savepoint.savepoint_y
+			}
+			save_data.map_savepoints.push_back(savepoint_data)
+			
+			
 			save_str += str(1 if savepoint.savepoint_initial else 0) + "|"
 			save_str += str(savepoint.savepoint_x) + "|"
 			save_str += str(savepoint.savepoint_y) + "|"
@@ -458,9 +554,25 @@ func _on_file_dialog_save_file_selected(path):
 		#Shops
 		save_str += "#shops" + "\n"
 		for shop in menu_shops.get_children():
+			var shop_data = {
+				"shop_x" : shop.shop_x,
+				"shop_y" : shop.shop_y,
+				"shop_type" : shop.shop_type,
+				"shop_specials" : [],
+				"shop_image" : shop.shop_image,
+				"shop_greeting" : shop.shop_greeting
+				
+			}
+			
 			var shop_specials = ""
 			for child in shop.o_shop_special_items.get_children():
 				shop_specials += str(child.item_id) + "`" + str(child.item_price) + "`"
+				shop_data.shop_specials.push_back({
+					"special_id" : child.item_id,
+					"special_price" : child.item_price
+				})
+			
+			save_data.map_shops.push_back(shop_data)
 			
 			save_str += str(shop.shop_x) + "|"
 			save_str += str(shop.shop_y) + "|"
@@ -473,7 +585,21 @@ func _on_file_dialog_save_file_selected(path):
 		#Events
 		save_str += "#events" + "\n"
 		for ev in menu_events.get_children():
+			
 			bbox = ev.bounding_box
+			
+			var ev_data = {
+				"ev_pos_x" : bbox.pos_x,
+				"ev_pos_y" : bbox.pos_y,
+				"ev_scale_x" : bbox.scale_x,
+				"ev_scale_y" : bbox.scale_y,
+				"ev_name" : ev.event_name,
+				"ev_required" : ev.event_required,
+				"ev_kill" : ev.event_kill
+			}
+			save_data.map_events.push_back(ev_data)
+			
+			
 			save_str += str(bbox.pos_x) + "|"
 			save_str += str(bbox.pos_y) + "|"
 			save_str += str(bbox.scale_x + 1) + "|"
@@ -486,6 +612,15 @@ func _on_file_dialog_save_file_selected(path):
 		#Transitions
 		save_str += "#transitions" + "\n"
 		for transition in menu_transitions.get_children():
+			var transition_data = {
+				"transition_x" : transition.transition_x,
+				"transition_y" : transition.transition_y,
+				
+				"transition_map_to" : transition.transition_map_to,
+				"transition_xto" : transition.transition_xto,
+				"transition_yto" : transition.transition_yto,
+			}
+			
 			save_str += str(transition.transition_x) + "|"
 			save_str += str(transition.transition_y) + "|"
 			save_str += transition.transition_map_to + "|"
@@ -495,6 +630,7 @@ func _on_file_dialog_save_file_selected(path):
 		
 		#Put the save string into the save file
 		save_file.store_string(save_str)
+		save_json.store_line(JSON.stringify(save_data,"\t"))
 		
 		print("FILE SAVED")
 	else:
@@ -590,16 +726,14 @@ func _on_file_dialog_load_file_selected(path):
 							_obj.npc_flag_kill = _data[12]
 							_obj.npc_remove_on_finish = bool(int(_data[13]))
 							
-							
 							var _dialog_pre = _data[14]
 							var _dialog_post = _data[15]
 							_obj.npc_dialog_pre = _dialog_pre.replace("`", "\n")
 							_obj.npc_dialog_post = _dialog_post.replace("`", "\n")
 							
-							print([_obj.npc_dialog_pre, _obj.npc_dialog_post])
-							
-							_obj.npc_slots_data = [_data[16], _data[17], _data[18], _data[18]]
-							
+							_obj.npc_slots_data = [_data[16], _data[17], _data[18], _data[19]]
+							print(_data)
+							print( ["SLOTS", _data[16], _data[17], _data[18], _data[19]])
 							#assign new object as a child of the relevant menu part
 							_npcs.add_child(_obj)
 							_obj.owner = _npcs
