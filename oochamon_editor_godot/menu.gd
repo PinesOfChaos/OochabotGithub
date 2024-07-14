@@ -394,7 +394,7 @@ func _on_file_dialog_save_file_selected(path):
 			temp_str += str(npc.npc_y) + "|"
 			
 			temp_str += npc.npc_sprite_name + "|" 
-			temp_str += str(npc.npc_sprite) + "|"
+			temp_str += "c_" + npc.npc_sprite_name.right(3) + "|" #not used here, this is used in discord
 			temp_str += npc.npc_sprite_combat + "|"
 			
 			temp_str += str(npc.npc_coin) + "|"
