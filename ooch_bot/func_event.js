@@ -15,7 +15,7 @@ module.exports = {
     event_process: async function(user_id, thread, event_array, start_pos = 0) {
 
         const { setup_battle } = require('./func_battle.js');
-        const { give_item, setup_playspace_str } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -33,7 +33,7 @@ module.exports = {
         let quit_init_loop = false;
         let profile_data = db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
-        let npcDialoguePortrait;
+        let npcDialoguePortrait = false;
 
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -42,9 +42,10 @@ module.exports = {
         while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
+
             switch (event_mode) {
                 //Basic Text Event
-                case EventMode.Text: 
+                case EventMode.Dialogue: 
                     if (obj_content.description == '') obj_content.description = ' ';
                     if (obj_content.description.includes('{')) {
                         let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
@@ -64,13 +65,9 @@ module.exports = {
                     }
 
                     // Set NPC dialogue portrait
-                    if (obj_content.sprite_dialogue === false) {
-                        let fileName = db.tile_data.get(obj_content.sprite_id, 'file');
-                        event_embed.setThumbnail(`attachment://${fileName}`)
-                        npcDialoguePortrait = get_art_file(`./Art/NPCs/${fileName}`);
-                    } else {
-                        event_embed.setThumbnail(`attachment://${obj_content.sprite_dialogue}`)
-                        npcDialoguePortrait = get_art_file(`./Art/DialoguePortraits/${obj_content.sprite_dialogue}`);
+                    if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
+                        event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
+                        npcDialoguePortrait = get_art_file(`./Art/${obj_content.dialogue_file_path}`);
                     }
 
                     info_data = '';
@@ -88,7 +85,6 @@ module.exports = {
                     if (info_data.length != 0) {
                         event_embed.addFields({name: 'You Received:', value: info_data })
                     }
-
                     quit_init_loop = true;
 
                 break;
@@ -99,6 +95,28 @@ module.exports = {
                     // Setup the battle
                     await setup_battle(thread, user_id, obj_content, true);
                 return;
+
+                case EventMode.OochamonPick:
+                        let oochamonPicks = new ActionRowBuilder();
+
+                        for (let ooch of obj_content.options) {
+                            let oochData = db.monster_data.get(ooch.ooch_id)
+                            oochamonPicks.addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ooch|${ooch.ooch_id}|${ooch.level}`)
+                                    .setLabel(`${oochData.name}`)
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setEmoji(`${oochData.emote}`),
+                            );
+                        }
+
+                        let selOochEmbed = new EmbedBuilder()
+                            .setColor('#808080')
+                            .setTitle('Select an Oochamon!');
+
+                        await msg.edit({ embeds: [selOochEmbed], components: [oochamonPicks] });
+                        quit_init_loop = true;
+                    break;
                 
                 //No Visual representation, just gives appropriate flags in the player if they don't already have them
                 case EventMode.Flags: 
@@ -121,12 +139,37 @@ module.exports = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: [npcDialoguePortrait] })
+        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: npcDialoguePortrait === false ? [] : [npcDialoguePortrait] })
         let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
         await confirm_collector.on('collect', async sel => {
             let quit = false;
+
+            // If we collect an Oochamon data type, handle that first then move on
+            if (sel.customId.includes('ooch')) {
+                let oochChoices = event_array[current_place][1].options.map(v => v = v.ooch_id);
+                let chosenOochId = sel.customId.split('|');
+                let chosenOochLevel = chosenOochId[2];
+                chosenOochId = chosenOochId[1];
+
+                // Oochadex update
+                for (ooch_id of oochChoices) {
+                    db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].seen`);
+                    if (ooch_id == chosenOochId) {
+                        db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].caught`);
+                    }
+                }
+
+                let ooch = create_ooch(chosenOochId);
+                // Have it check here if you want to send the Oochamon to your party or not
+                if (db.profile.get(user_id, 'ooch_party').length < 4) {
+                    db.profile.push(user_id, ooch, `ooch_party`);
+                } else {
+                    db.profile.push(user_id, ooch, `ooch_pc`)
+                }
+            }
+
             current_place++;
 
             // Check if we are at the end of the event array, and if we are, cut back to the normal player state.
@@ -140,9 +183,6 @@ module.exports = {
                 return;
             }
 
-            event_mode = event_array[current_place][0];
-            obj_content = event_array[current_place][1];
-
             while (!quit) {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
@@ -150,7 +190,7 @@ module.exports = {
                 //Customize Embed
                 switch (event_mode) {
                     //Basic Text Event
-                    case EventMode.Text: 
+                    case EventMode.Dialogue: 
                         quit = true;
 
                         if (obj_content.description.includes('{')) {
@@ -169,13 +209,14 @@ module.exports = {
                         }
 
                         // Set NPC dialogue portrait
-                        if (obj_content.sprite_dialogue === false) {
-                            let fileName = db.tile_data.get(obj_content.sprite_id, 'file');
-                            event_embed.setThumbnail(`attachment://${fileName}`)
-                            npcDialoguePortrait = get_art_file(`./Art/Tiles/${fileName}`);
-                        } else {
-                            event_embed.setThumbnail(`attachment://${obj_content.sprite_dialogue}`)
-                            npcDialoguePortrait = get_art_file(`./Art/DialoguePortraits/${obj_content.sprite_dialogue}`);
+                        if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
+                            event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
+                            npcDialoguePortrait = get_art_file(`./Art/${obj_content.dialogue_file_path}`);
+                        }
+
+                        
+                        if (obj_content.image !== false) {
+                            // TODO: USE THE IMAGE ATTRIBUTE
                         }
 
                         info_data = '';
@@ -194,7 +235,7 @@ module.exports = {
                             event_embed.addFields({name: 'You Received:', value: info_data })
                         }
 
-                        sel.update({ embeds: [event_embed], components: [next_buttons], files: [npcDialoguePortrait] })
+                        sel.update({ embeds: [event_embed], components: [next_buttons], files: npcDialoguePortrait === false ? [] : [npcDialoguePortrait] })
                 
                     break;
 
@@ -210,6 +251,28 @@ module.exports = {
                         await setup_battle(thread, user_id, obj_content, true);
                     break;
 
+                    case EventMode.OochamonPick:
+                        quit = true;
+                        let oochamonPicks = new ActionRowBuilder();
+
+                        for (let ooch of obj_content.options) {
+                            let oochData = db.monster_data.get(ooch.ooch_id)
+                            oochamonPicks.addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ooch|${ooch.ooch_id}|${ooch.level}`)
+                                    .setLabel(`${oochData.name}`)
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setEmoji(`${oochData.emote}`),
+                            );
+                        }
+
+                        let selOochEmbed = new EmbedBuilder()
+                            .setColor('#808080')
+                            .setTitle('Select an Oochamon!');
+
+                        sel.update({embeds: [selOochEmbed], components: [oochamonPicks] });
+                    break;
+
                     //No Visual representation, just sets appropriate flags in the player
                     case EventMode.Flags: 
                         let flags = db.profile.get(user_id, 'flags');
@@ -222,10 +285,10 @@ module.exports = {
                             await confirm_collector.stop();
                             await msg.delete();
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                            quit = true;
+                            quit = true; 
                             await thread.messages.fetch(msg_to_edit).then((msg) => {
                                 msg.edit({ content: setup_playspace_str(user_id) });
-                            })
+                            });
                             return;
                         } else {
                             current_place++;
@@ -254,14 +317,15 @@ module.exports = {
         if (!user_flags.includes(npc_flag) && battle_npc == true) {
             //Pre-combat dialogue
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
-                return_array.push([EventMode.Text, {
+                return_array.push([EventMode.Dialogue, {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
                     money: 0,
+                    // TODO: Make this (image) able to be set in the editor
+                    image: false,
                     item: false,
-                    sprite_id: npc_obj.sprite_id,
-                    sprite_dialogue: npc_obj.sprite_dialogue,
-                    sprite_combat: npc_obj.sprite_combat,
+                    portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                 }])
             }
 
@@ -273,14 +337,14 @@ module.exports = {
             // we should throw their pre interaction dialogue into the event_array. Otherwise, we don't include it.
             // Also put their designated items and money at the end of their dialogue.
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
-                return_array.push([EventMode.Text, {
+                return_array.push([EventMode.Dialogue, {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
-                    sprite_id: npc_obj.sprite_id,
-                    sprite_dialogue: npc_obj.sprite_dialogue,
-                    sprite_combat: npc_obj.sprite_combat,
+                    image: false,
+                    portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                 }]);
             }
         }
@@ -302,24 +366,23 @@ module.exports = {
                 // If we are on the last dialogue, and the user has not interacted with this NPC, and the NPC is a battle NPC,
                 // put their designated items at the end of their dialogue.
                 if (i+1 == npc_obj.post_combat_dialogue.length && !user_flags.includes(npc_flag) && battle_npc == true) {
-                    return_array.push([EventMode.Text, {
+                    return_array.push([EventMode.Dialogue, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
-                        sprite_id: npc_obj.sprite_id,
-                        sprite_dialogue: npc_obj.sprite_dialogue,
-                        sprite_combat: npc_obj.sprite_combat,
+                        image: false,
+                        portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                     }])
                 } else {
-                    return_array.push([EventMode.Text, {
+                    return_array.push([EventMode.Dialogue, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         item: false,
-                        sprite_id: npc_obj.sprite_id,
-                        sprite_dialogue: npc_obj.sprite_dialogue,
-                        sprite_combat: npc_obj.sprite_combat,
+                        portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                     }])
                 }
             }

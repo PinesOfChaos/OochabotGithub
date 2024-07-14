@@ -50,6 +50,7 @@ generate_trainer_battle(trainer_obj){
         trainer_type: TrainerType.NPCTrainer,
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
+        trainer_battle_sprite: trainer_obj.sprite_combat,
     }
     return trainer_return;
 },

@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, EmbedBuilde
 const db = require('../db.js');
 const { setup_playspace_str } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
+const { event_process } = require('../func_event.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -34,8 +35,11 @@ module.exports = {
             await thread.bulkDelete(100);
         }
 
-        db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
-        let playspace_str = setup_playspace_str(interaction.user.id);
+        let playspace_str = '**Intro**';
+        if (db.profile.get(interaction.user.id, 'player_state') != PlayerState.Intro) {
+            db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+            playspace_str = setup_playspace_str(interaction.user.id);
+        }
 
         // Reset Oochamon's stat and abilities and status effects
         let ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
@@ -56,8 +60,12 @@ module.exports = {
         let outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nRun \`/quit\` when you are done playing!`;
         //Send reply displaying the player's location on the map
         (thread != interaction.channel) ? thread.send(outputMsg) : interaction.reply(outputMsg);
-        thread.send({ content: playspace_str }).then(msg => {
+        await thread.send({ content: playspace_str }).then(msg => {
             db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
+
+        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
+            event_process(interaction.user.id, thread, db.events_data.get('ev_intro'));
+        }
     },
 };

@@ -42,12 +42,12 @@ const Flags = {
 }
 
 const EventMode = {
-    Text:   0,
-    Image:  1,
-    Video:  2,
-    BattleTrainer: 3,
-    BattleWild: 4,
-    Flags: 5,
+    Dialogue: 0,
+    BattleTrainer: 1,
+    BattleWild: 2,
+    Flags: 3,
+    OochamonPick: 4,
+    BeginGame: 5,
 }
 
 const DialogueType = {

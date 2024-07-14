@@ -1,27 +1,63 @@
 {
-    "e_intro": [
+    "ev_intro": [
         [
           0,
           {
-            "title": "???",
-            "description": "*rawr x3*",
+            "title": "Introduction",
+            "description": "Welcome to Oochamon! Your journey starts here.",
             "money": 0,
             "item": false,
-            "sprite_id": "c_012",
-            "sprite_dialogue": false,
-            "sprite_combat": false
+            "image": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
           }
         ],
+        
         [
-          3,
+          0,
           {
-            "name": "???",
-            "ooch_active_slot": 0,
-            "trainer_type": 1,
-            "oochabux": 0,
-            "ooch_party": []
+            "title": "Introduction",
+            "description": "Please, feel free to pick an Oochamon to begin with. Any will do!",
+            "image": "starter.png",
+            "money": 0,
+            "item": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
           }
         ],
-        [ 5, "cromet_encounter" ]
+
+        [ 4,
+          {
+            "options": [ { "ooch_id": 0, "level": 5 }, { "ooch_id": 3, "level": 5 }, { "ooch_id": 6, "level": 5 } ]
+          }
+        ],
+
+        [
+          0,
+          {
+            "title": "Introduction",
+            "description": "Great choice! Your Oochamon will love you, I'm sure.",
+            "image": false,
+            "money": 0,
+            "item": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [
+          0,
+          {
+            "title": "Introduction",
+            "description": "Get out there and go have some fun. The head researcher would like to speak with you, so start there!",
+            "image": false,
+            "money": 0,
+            "item": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [ 3, "intro" ]
     ]
 }
