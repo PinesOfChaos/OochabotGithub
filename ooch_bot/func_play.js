@@ -62,8 +62,7 @@ module.exports = {
         let map_transitions =   map_obj.transitions;
         let map_events =        map_obj.events;
         let map_shops =         map_obj.shops;
-        if (map_shops == undefined || map_shops == null) map_shops = [];
-        
+        if (map_shops == undefined || map_shops == null) map_shops = [];        
         
         //set where the player is going to move
         switch(direction){

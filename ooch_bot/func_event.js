@@ -67,7 +67,7 @@ module.exports = {
                     if (obj_content.sprite_dialogue === false) {
                         let fileName = db.tile_data.get(obj_content.sprite_id, 'file');
                         event_embed.setThumbnail(`attachment://${fileName}`)
-                        npcDialoguePortrait = get_art_file(`./Art/Tiles/${fileName}`);
+                        npcDialoguePortrait = get_art_file(`./Art/NPCs/${fileName}`);
                     } else {
                         event_embed.setThumbnail(`attachment://${obj_content.sprite_dialogue}`)
                         npcDialoguePortrait = get_art_file(`./Art/DialoguePortraits/${obj_content.sprite_dialogue}`);
@@ -324,6 +324,8 @@ module.exports = {
                 }
             }
         }
+
+        console.log(return_array);
 
         return return_array;
     }

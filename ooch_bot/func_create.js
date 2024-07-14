@@ -30,7 +30,7 @@ module.exports = {
                     zoneId = zoneId < 10 ? `0${zoneId}` : zoneId; 
                     let emoji = guild.emojis.cache.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`)
                     if (emoji != undefined) {
-                        zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote_guild_id: guild.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>` };
+                        zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote_guild_id: guild.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
                     }
                 }
             } else {
@@ -39,6 +39,7 @@ module.exports = {
                     db.tile_data.set(id, emoji.id, 'emote_id');
                     db.tile_data.set(id, `<:${id}:${emoji.id}>`, 'emote');
                     db.tile_data.set(id, guild.id, 'emote_guild_id');
+                    db.tile_data.set(id, `${id}.png`, 'file');
                     break;
                 } else {
                     continue;
@@ -50,6 +51,7 @@ module.exports = {
             db.tile_data.set(id, false, 'emote_id');
             db.tile_data.set(id, false, 'emote_guild_id');
             db.tile_data.set(id, false, 'emote');
+            db.tile_data.set(id, `c00_${splitId[1]}.png`, 'file');
             db.tile_data.set(id, zoneEmoteIds, 'zone_emote_ids');
         } else {
             db.tile_data.set(id, {}, 'zone_emote_ids');

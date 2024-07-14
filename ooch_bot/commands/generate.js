@@ -37,7 +37,7 @@ module.exports = {
 
         //           ID            Use            Emote Guilds
         // Global
-        create_tile(`t${zG}_000`,  Tile.Floor,    TileGuilds ); //Black 
+        create_tile(`t${zG}_000`,  Tile.Wall,     TileGuilds ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,    TileGuilds ); //Teleporter 
         create_tile(`t${zG}_003`,  Tile.Floor,    TileGuilds ); //Arrow Left
         create_tile(`t${zG}_004`,  Tile.Floor,    TileGuilds ); //Arrow Up
@@ -87,10 +87,9 @@ module.exports = {
 
         // Obsidian
         create_tile(`t${zO}_000`,  Tile.Floor,    TileGuilds ); //Obsidian Floor
-        create_tile(`t${zO}_001`,  Tile.Wall ,    TileGuilds ); //Obsidian Wall
+        create_tile(`t${zO}_001`,  Tile.Wall,     TileGuilds ); //Obsidian Wall
         create_tile(`t${zO}_002`,  Tile.Grass,    TileGuilds ); //Obsidian Grass
         
-
         // NPCs
         create_tile(`c_000`,       Tile.Npc,      TileGuilds ); // Main Character
         create_tile(`c_001`,       Tile.Npc,      TileGuilds ); // Basic NPC Obsidian
@@ -895,7 +894,6 @@ module.exports = {
                                 shop_data.push(output);
                             break;
                             case 'transitions':
-                                console.log(line_data);
                                 output = {
                                     x: parseInt(line_data[0]),
                                     y: parseInt(line_data[1]),

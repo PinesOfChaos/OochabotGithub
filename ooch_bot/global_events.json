@@ -1,0 +1,27 @@
+{
+    "e_intro": [
+        [
+          0,
+          {
+            "title": "???",
+            "description": "*rawr x3*",
+            "money": 0,
+            "item": false,
+            "sprite_id": "c_012",
+            "sprite_dialogue": false,
+            "sprite_combat": false
+          }
+        ],
+        [
+          3,
+          {
+            "name": "???",
+            "ooch_active_slot": 0,
+            "trainer_type": 1,
+            "oochabux": 0,
+            "ooch_party": []
+          }
+        ],
+        [ 5, "cromet_encounter" ]
+    ]
+}
