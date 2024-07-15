@@ -33,7 +33,7 @@ module.exports = {
         let quit_init_loop = false;
         let profile_data = db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
-        let npcDialoguePortrait = false;
+        let imageFiles = [];
 
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -67,7 +67,13 @@ module.exports = {
                     // Set NPC dialogue portrait
                     if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
                         event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                        npcDialoguePortrait = get_art_file(`./Art/${obj_content.dialogue_file_path}`);
+                        imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
+                        
+                    }
+
+                    if (obj_content.image !== false) {
+                        event_embed.setImage(`attachment://${obj_content.image}`)
+                        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
                     }
 
                     info_data = '';
@@ -139,12 +145,13 @@ module.exports = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: npcDialoguePortrait === false ? [] : [npcDialoguePortrait] })
+        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
         let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
         await confirm_collector.on('collect', async sel => {
             let quit = false;
+            imageFiles = [];
 
             // If we collect an Oochamon data type, handle that first then move on
             if (sel.customId.includes('ooch')) {
@@ -211,12 +218,12 @@ module.exports = {
                         // Set NPC dialogue portrait
                         if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
                             event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                            npcDialoguePortrait = get_art_file(`./Art/${obj_content.dialogue_file_path}`);
+                            imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
                         }
 
-                        
                         if (obj_content.image !== false) {
-                            // TODO: USE THE IMAGE ATTRIBUTE
+                            event_embed.setImage(`attachment://${obj_content.image}`)
+                            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
                         }
 
                         info_data = '';
@@ -235,7 +242,7 @@ module.exports = {
                             event_embed.addFields({name: 'You Received:', value: info_data })
                         }
 
-                        sel.update({ embeds: [event_embed], components: [next_buttons], files: npcDialoguePortrait === false ? [] : [npcDialoguePortrait] })
+                        sel.update({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
                 
                     break;
 
@@ -270,7 +277,7 @@ module.exports = {
                             .setColor('#808080')
                             .setTitle('Select an Oochamon!');
 
-                        sel.update({embeds: [selOochEmbed], components: [oochamonPicks] });
+                        sel.update({embeds: [selOochEmbed], components: [oochamonPicks], files: imageFiles });
                     break;
 
                     //No Visual representation, just sets appropriate flags in the player
