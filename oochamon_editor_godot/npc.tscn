@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_61jdu"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jcqjf"]
-load_path = "res://.godot/imported/002.png-d3ce61a2a69e9f38d7ad36baa2ca5093.ctex"
 
 [node name="npc" type="Control"]
 layout_mode = 3
@@ -25,8 +24,8 @@ texture_normal = SubResource("CompressedTexture2D_jcqjf")
 [node name="npc_tab_container" type="TabContainer" parent="."]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 550.0
+offset_bottom = 573.0
 
 [node name="Basic Info" type="VBoxContainer" parent="npc_tab_container"]
 custom_minimum_size = Vector2(410, 400)
@@ -146,8 +145,8 @@ layout_mode = 2
 [connection signal="item_rect_changed" from="npc_object" to="." method="_on_npc_object_item_rect_changed"]
 [connection signal="item_selected" from="npc_tab_container/Basic Info/general_info/npc_sprite" to="." method="_on_npc_sprite_item_selected"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_combat" to="." method="_on_npc_sprite_combat_text_changed"]
-[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_dialog_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_combat_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_dialog_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_name" to="." method="_on_npc_name_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_changed"]
 [connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_submitted"]

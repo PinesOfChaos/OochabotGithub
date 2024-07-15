@@ -42,7 +42,7 @@ func _ready():
 func _process(delta):
 	if !refreshed:
 		refreshed = true
-		reset_box(get_position().x, get_position().y, get_position().x, get_position().y)
+		reset_box(anchor_top_left.get_position().x, anchor_top_left.get_position().y, anchor_bot_right.get_position().x, anchor_bot_right.get_position().y)
 	if dragging_scale and typeof(Global.ObjSelected) == typeof(get_instance_id()) and Global.ObjSelected == get_parent().get_instance_id():
 		var mpos = get_local_mouse_position()
 		mpos.x = floor((mpos.x + Global.CamX)/Global.TileSize) * Global.TileSize
@@ -50,6 +50,9 @@ func _process(delta):
 		reset_box(origin_x, origin_y, mpos.x, mpos.y)
 		if Input.is_action_just_released("mouse_left"):
 			dragging_scale = false
+			
+			print([origin_x, origin_y, mpos.x, mpos.y])
+			print([pos_x, pos_y, scale_x, scale_y])
 
 func _on_anchor_top_left_button_down():
 	Global.ObjSelected = get_parent().get_instance_id()

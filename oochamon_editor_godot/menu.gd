@@ -520,7 +520,7 @@ func _on_file_dialog_save_file_selected(path):
 						"slot_lv_max" : slot.lv_max
 					})
 					
-			save_data.map_npcs.push_back(spawn_data)
+			save_data.map_spawn_zones.push_back(spawn_data)
 			
 			
 			save_str += str(bbox.pos_x) + "|"
@@ -620,6 +620,7 @@ func _on_file_dialog_save_file_selected(path):
 				"transition_xto" : transition.transition_xto,
 				"transition_yto" : transition.transition_yto,
 			}
+			save_data.map_transitions.push_back(transition_data)
 			
 			save_str += str(transition.transition_x) + "|"
 			save_str += str(transition.transition_y) + "|"
@@ -827,6 +828,7 @@ func _on_file_dialog_load_file_selected(path):
 		
 		#assign map tiles
 		_inst.map_tiles = _tiles
+		_inst.do_screen_refresh = true
 		self.queue_free()
 		print("FILE LOADED")
 	else:
@@ -1082,7 +1084,6 @@ func _on_button_new_spawn_region_pressed():
 	Global.ObjSelected = menu_spawnzones.get_child(menu_spawnzones.get_child_count() - 1).get_instance_id()
 	var x1 = Global.get_camera_center().x
 	var y1 = Global.get_camera_center().y
-	instance.bounding_box.set_position(Vector2(x1, y1))
 	refresh_all_children()
 	
 func _on_button_new_event_pressed():
@@ -1093,7 +1094,6 @@ func _on_button_new_event_pressed():
 	Global.ObjSelected = menu_events.get_child(menu_events.get_child_count() - 1).get_instance_id()
 	var x1 = Global.get_camera_center().x
 	var y1 = Global.get_camera_center().y
-	instance.bounding_box.set_position(Vector2(x1, y1))
 	refresh_all_children()
 	
 func _on_button_visible_event_toggled(button_pressed):
