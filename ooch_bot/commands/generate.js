@@ -78,7 +78,7 @@ module.exports = {
         create_tile(`t${zS}_018`,  Tile.Board,    TileGuilds ); //Job Board
 
         // Cave
-        create_tile(`t${zC}_000`,  Tile.Floor,    TileGuilds ); //Cave Floor
+        create_tile(`t${zC}_000`,  Tile.Grass,    TileGuilds ); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
         create_tile(`t${zC}_001`,  Tile.Floor,    TileGuilds ); //Cave Floor Entrance
         create_tile(`t${zC}_002`,  Tile.Wall,     TileGuilds ); //Cave Wall
         create_tile(`t${zC}_003`,  Tile.Wall,     TileGuilds ); //Lava
