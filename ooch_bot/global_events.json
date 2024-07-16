@@ -17,7 +17,7 @@
           0,
           {
             "title": "Introduction",
-            "description": "Please, feel free to pick an Oochamon to begin with. Any will do!",
+            "description": "Please, feel free to pick an Oochamon to begin with. Any will do!\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
             "image": "starter.png",
             "money": 0,
             "item": false,
@@ -50,6 +50,19 @@
           {
             "title": "Introduction",
             "description": "Get out there and go have some fun. The head researcher would like to speak with you, so start there!",
+            "image": false,
+            "money": 0,
+            "item": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [
+          0,
+          {
+            "title": "Quick Tutorial",
+            "description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `wasd` in the chat, and send it as a message. You can use a number after `wasd` to jump up to 4 tiles in one direction.\nYou can type `/menu` as well to pull up the in game menu!\n\nIf you have any questions, please ask Pines or Jeff!",
             "image": false,
             "money": 0,
             "item": false,

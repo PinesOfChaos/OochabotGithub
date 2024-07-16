@@ -79,7 +79,7 @@ module.exports = {
                 ymove = 1;
             break;
         }
-        
+
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){

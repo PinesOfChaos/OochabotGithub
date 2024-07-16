@@ -4,7 +4,7 @@ const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
-const wait = require('wait');
+const globalEventsJSON = require('../global_events.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -977,6 +977,13 @@ module.exports = {
         fs.writeFile('./editor_data/abilities_data.txt', abilities_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/npc_data.txt', npc_output_str, (err) => { if (err) throw err; });
+
+        // Generate the global events!
+        for (let event of Object.entries(globalEventsJSON)) {
+            db.events_data.clear();
+            db.events_data.set(event[0], event[1]);
+        }
+        
 
         await interaction.editReply('Generated game data.');
     },

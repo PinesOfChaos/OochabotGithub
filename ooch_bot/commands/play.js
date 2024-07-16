@@ -27,10 +27,15 @@ module.exports = {
 
             if (thread.joinable) await thread.join();
             await thread.members.add(interaction.user.id);
+
+            // Add Jeff and Pines, this should be REMOVED on full release, just useful for beta testing
+            await thread.members.add('145342159724347393');
+            await thread.members.add('122568101995872256');
+
             await thread.setInvitable(false);
             
             db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
-            interaction.reply({ content: `Made your playspace! Use the thread created for you to play!`, ephemeral: true });
+            interaction.reply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
         } else {
             await thread.bulkDelete(100);
         }
@@ -57,7 +62,7 @@ module.exports = {
         db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
         db.profile.set(interaction.user.id, {}, 'ooch_enemy');
 
-        let outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nRun \`/quit\` when you are done playing!`;
+        let outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nRun \`/quit\` when you are done playing!\n`;
         //Send reply displaying the player's location on the map
         (thread != interaction.channel) ? thread.send(outputMsg) : interaction.reply(outputMsg);
         await thread.send({ content: playspace_str }).then(msg => {
