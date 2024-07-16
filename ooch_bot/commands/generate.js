@@ -246,6 +246,10 @@ module.exports = {
         create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.');
         create_ability(55, 'Bomber',            'Halves the enemy HP on death.') 
         
+        //New abilites to add, have fun jeff :D
+        create_ability(55, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
+        create_ability(55, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
+        create_ability(55, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
 
         //#endregion
 
