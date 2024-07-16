@@ -87,3 +87,5 @@ Guard J|40|35|c00_003|c_003|||0|-1|0||||0|Uh, HALT!`Yeah, that'll show 'em.|Don'
 #events
 #transitions
 29|22|stone_tunnel|27|43|
+31|37|hub|12|5|
+32|37|hub|13|5|

@@ -4598,9 +4598,23 @@
 		{
 			"transition_map_to": "stone_tunnel",
 			"transition_x": 29,
-			"transition_xto": "27",
+			"transition_xto": 27,
 			"transition_y": 22,
-			"transition_yto": "43"
+			"transition_yto": 43
+		},
+		{
+			"transition_map_to": "hub",
+			"transition_x": 31,
+			"transition_xto": "12",
+			"transition_y": 37,
+			"transition_yto": "5"
+		},
+		{
+			"transition_map_to": "hub",
+			"transition_x": 32,
+			"transition_xto": "13",
+			"transition_y": 37,
+			"transition_yto": "5"
 		}
 	]
 }

@@ -67,12 +67,12 @@ t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|
 t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|
 t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|t00_000|
 #npcs
-Head Researcher|18|8|c00_006|c_006|||0|3|10||||0|Oh, hi there, you must be the new arrival!`I run this humble outpost along with some fellow researchers.`Do take some time to introduce yourself around here.`Ah, silly me, you'll need some of these to handle the local wildlife.|Staying safe out there?`Feel free to come back any time you need some rest.|||||
+Head Researcher|18|8|c00_006|c_006|||200|3|10||||0|Oh, hi there, you must be the new arrival!`I run this humble outpost along with some fellow researchers.`Do take some time to introduce yourself around here.`Ah, silly me, you'll need some of these to handle the local wildlife.|Staying safe out there?`Feel free to come back any time you need some rest.|||||
 Guard Robert|12|5|c00_003|c_003|||0|-1|0|||hub_remove_guards|0|And just who do you think YOU are?`No ID? You're not getting through!|Show me some ID and maybe I'll think about letting you pass.|||||
 Guard Geo|13|5|c00_003|c_003|||0|-1|0|||hub_remove_guards|0|Sorry, you'll need some sort of ID before we can let you pass.`Maybe  try talking to Carl down by the tents?|Sorry, still can't let you through...|||||
 Guard Robert|11|5|c00_003|c_003|||0|-1|0|hub_remove_guards|||0|Guess you've got your ID, you can pass, for now...|Yeah, yeah, move along.|||||
 Guard Geo|14|5|c00_003|c_003|||0|-1|0|hub_remove_guards|||0|Oh hey, you got your ID. Come on through any time.|Good luck out there!|||||
-Researcher Carl|10|9|c00_005|c_005|||0|-1|0||hub_remove_guards||0|Sorry. Busy.`Oh, you're the new guy, one sec.`You needed your ID right?`Here you go.|Can't talk right now. Busy.|||||
+Researcher Carl|10|9|c00_005|c_005|||0|8|1||hub_remove_guards||0|Sorry. Busy.`Oh, you're the new guy, one sec.`You needed your ID right?`Here you go.|Can't talk right now. Busy.|||||
 #spawn_zones
 #savepoints
 1|15|9|
@@ -80,3 +80,5 @@ Researcher Carl|10|9|c00_005|c_005|||0|-1|0||hub_remove_guards||0|Sorry. Busy.`O
 15|5|default|||Welcome to my store. Buy whatever you need below!|
 #events
 #transitions
+12|4|valley|31|36|
+13|4|valley|32|36|
