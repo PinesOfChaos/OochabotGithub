@@ -56,6 +56,7 @@ module.exports = {
         create_tile(`t${zF}_003`,  Tile.Wall,     TileGuilds ); //Fungal Wall
         create_tile(`t${zF}_004`,  Tile.Floor,    TileGuilds ); //Fungal Exit
         create_tile(`t${zF}_005`,  Tile.Floor,    TileGuilds ); //Fungal Floor Entrance
+        create_tile(`t${zF}_006`,  Tile.Wall,     TileGuilds ); //Fungal Inaccessible Area
         
         // Sandy
         create_tile(`t${zS}_000`,  Tile.Floor,    TileGuilds ); //Sandy Floor
@@ -76,6 +77,7 @@ module.exports = {
         create_tile(`t${zS}_016`,  Tile.Floor,    TileGuilds ); //Desert Exit
         create_tile(`t${zS}_017`,  Tile.Wall,     TileGuilds ); //Hub Barrel
         create_tile(`t${zS}_018`,  Tile.Board,    TileGuilds ); //Job Board
+        create_tile(`t${zS}_019`,  Tile.Wall,     TileGuilds ); //Sandy Inaccessible Area
 
         // Cave
         create_tile(`t${zC}_000`,  Tile.Grass,    TileGuilds ); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
@@ -84,6 +86,7 @@ module.exports = {
         create_tile(`t${zC}_003`,  Tile.Wall,     TileGuilds ); //Lava
         create_tile(`t${zC}_004`,  Tile.Floor,    TileGuilds ); //Cave Exit
         create_tile(`t${zC}_005`,  Tile.Wall,     TileGuilds ); //Cave Stalagtite
+        create_tile(`t${zC}_006`,  Tile.Wall,     TileGuilds ); //Cave Inaccessible Area
 
         // Obsidian
         create_tile(`t${zO}_000`,  Tile.Floor,    TileGuilds ); //Obsidian Floor
