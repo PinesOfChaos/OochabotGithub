@@ -204,9 +204,9 @@
 					"slot_species": 11
 				},
 				{
-					"slot_lv_max": 4,
+					"slot_lv_max": 6,
 					"slot_lv_min": 1,
-					"slot_species": 13
+					"slot_species": 17
 				}
 			]
 		},
@@ -227,9 +227,9 @@
 					"slot_species": 11
 				},
 				{
-					"slot_lv_max": 7,
+					"slot_lv_max": 6,
 					"slot_lv_min": 1,
-					"slot_species": 17
+					"slot_species": 13
 				}
 			]
 		}
@@ -4471,9 +4471,9 @@
 		{
 			"transition_map_to": "valley",
 			"transition_x": 27,
-			"transition_xto": "29",
+			"transition_xto": 29,
 			"transition_y": 44,
-			"transition_yto": "23"
+			"transition_yto": 23
 		},
 		{
 			"transition_map_to": "fungal_cave",

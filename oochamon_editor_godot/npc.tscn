@@ -104,6 +104,7 @@ layout_mode = 2
 [node name="coin_count" type="SpinBox" parent="npc_tab_container/Basic Info/coin"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
+max_value = 99999.0
 prefix = "Coin: x"
 
 [node name="text_pre_combat" type="TextEdit" parent="npc_tab_container/Basic Info"]

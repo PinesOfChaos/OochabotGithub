@@ -182,7 +182,8 @@ const Move = {
     ThornShot: 77,
     SlurpUp: 78,
     DigitalGamble: 79,
-    Sedimentation: 80
+    Sedimentation: 80,
+    PhantomBullet: 81
 }
 
 const Ability = {

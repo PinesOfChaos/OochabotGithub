@@ -205,8 +205,10 @@ module.exports = {
         create_move(76,'Myco-Burst',      OochType.Fungal,75,80,    'blinded',100,   'Fire a spore-filled bomb which BLINDS the opponent.')
         create_move(77,'Thorn Shot',      OochType.Fungal,60,90,    'critical',50,   'Shoot a condensed fungal thorn with a high crit chance.')
         create_move(78,'Slurp Up',        OochType.Ooze,0,-100,     'heal',50,       'The user gathers missing parts of its body to restore half its HP.')
-        create_move(79,'Digital Gamble',  OochType.Tech,0,-100,     'random',100,    'The user randomly uses one of its other moves with the base power doubled.')
+        create_move(79,'Digital Gamble',  OochType.Tech,0,-100,     'random',100,    'The user randomly uses a move.')
         create_move(80,'Sedimentation',   OochType.Stone,0,-100,    '+_def_50',100,  'Spend the turn gathering stone to greatly increase DEF.')
+        create_move(81,'Plasma Cannon',   OochType.Flame,120,70,    -1,0,            'A high damage blast of extreme heat.')
+        create_move(82,'Phantom Bullet',  OochType.Magic,30,100,    'critical',100,  'Fire a highly accurate ghost bullet that always crits.')
         
 
         //#endregion
@@ -461,31 +463,31 @@ module.exports = {
         //Nucleorb
         create_monster(29, get_emote_string(client, 'nucleorb'), 'Nucleorb',
         'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', [OochType.Ooze], 7, 13, 9, 11, //total 40
-        [ [1, Move.Bash],[5, Move.Glob],[11, Move.Parasitize],[14, Move.CursedEye],[18, Move.Corrode],[24, Move.Pulverize],[-1, Move.Bloom] ],
+        [ [1, Move.Bash],[2, Move.Soften],[5, Move.Glob],[11, Move.Parasitize],[14, Move.CursedEye],[18, Move.Corrode],[24, Move.Pulverize],[-1, Move.Bloom] ],
         [ Ability.Miniscule, Ability.Gentle ], -1, 30, 12, 0)
 
         //Amebite
         create_monster(30, get_emote_string(client, 'amebite'), 'Amebite',
         'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', [OochType.Ooze], 11, 18, 12, 14, //total 55
-        [ [1, Move.Bash],[7, Move.Glob],[18, Move.Parasitize],[20, Move.CursedEye],[23, Move.Corrode],[35, Move.Pulverize],[-1, Move.Bloom] ],
+        [ [1, Move.Bash],[2, Move.Soften],[7, Move.Glob],[18, Move.Parasitize],[20, Move.CursedEye],[23, Move.Corrode],[35, Move.Pulverize],[-1, Move.Bloom] ],
         [ Ability.Tough, Ability.Ravenous ], 29, 31, 28, 1)
 
         //Amalgrime
         create_monster(31, get_emote_string(client, 'amalgrime'), 'Amalgrime',
         'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', [OochType.Ooze], 25, 20, 20, 20, //total 85
-        [ [1, Move.Bash],[12, Move.Glob],[24, Move.Parasitize],[26, Move.CursedEye],[29, Move.Corrode],[32, Move.Suplex],[41, Move.Pulverize],[-1, Move.Bloom] ],
+        [ [1, Move.Bash],[2, Move.Soften],[12, Move.Glob],[24, Move.Parasitize],[26, Move.CursedEye],[29, Move.Corrode],[32, Move.Suplex],[41, Move.Pulverize],[-1, Move.Bloom] ],
         [ Ability.Immense, Ability.Gentle ], 30, -1, -1, 2)
 
         //Drilline
         create_monster(32, get_emote_string(client, 'drilline'), 'Drilline',
         'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', [OochType.Tech], 11, 14, 15, 5, //total 45
-        [ [1, Move.Bash],[4, Move.PebbleBlast],[7, Move.IronHammer],[8, Move.Sedimentation],[12, Move.Entomb],[20, Move.MetalLance],[29, Move.Grind],[-1, Move.Boulderdash] ],
+        [ [1, Move.Bash],[2, Move.Embolden],[4, Move.PebbleBlast],[7, Move.IronHammer],[8, Move.Sedimentation],[12, Move.Entomb],[20, Move.MetalLance],[29, Move.Grind],[-1, Move.Boulderdash] ],
         [ Ability.Armored, Ability.Inertia ], -1, 33, 21, 0)
 
         //Erwrek
         create_monster(33, get_emote_string(client, 'erwrek'), 'Erwrek',
         'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', [OochType.Tech], 15, 19, 25, 16, //total 75
-        [ [1, Move.Bash],[9, Move.PebbleBlast],[12, Move.IronHammer],[14, Move.Sedimentation],[17, Move.Entomb],[27, Move.MetalLance],[35, Move.Grind],[-1, Move.Boulderdash] ],
+        [ [1, Move.Bash],[2, Move.Embolden],[9, Move.PebbleBlast],[12, Move.IronHammer],[14, Move.Sedimentation],[17, Move.Entomb],[27, Move.MetalLance],[35, Move.Grind],[-1, Move.Boulderdash] ],
         [ Ability.Armored, Ability.Leech ], 32, -1, -1, 1)
 
         //i_
@@ -523,13 +525,13 @@ module.exports = {
         create_monster(39, get_emote_string(client, 'digityke'), 'Digityke',
         'An old-model of machine companion, its feeble body prevents it from being of much use.', [OochType.Tech], 10, 7, 8, 5, //total 30
         [ [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble], [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [-1, Move.BlindingBeam] ],
-        [ Ability.Gentle ], -1, 40, 21, 0);
+        [ Ability.Gentle, Ability.Efficient ], -1, 40, 21, 0);
 
         //Codet
         create_monster(40, get_emote_string(client, 'codet'), 'Codet',
         'An attempt to modernize the DGTY-k gone wrong. Despite being decomissioned these haunting machines continue to run.', [OochType.Tech], 30, 10, 10, 10, //total 60
-        [ [1, Move.Bash], [2, Move.Strike], [7, Move.ByteBite], [Move.Sawblade], [9, Move.DigitalGamble], [13, Move.Barrage], [15, Move.Suplex], [20, Move.SyncStrike], [26, Move.SelfDestruct], [28, Move.ArcaStrike], [35, Move.ThornShot] [-1, Move.BlindingBeam]  ],
-        [ Ability.Tangled ], 39, -1, -1, 1);
+        [ [1, Move.Bash], [2, Move.Strike], [7, Move.ByteBite], [Move.Sawblade], [9, Move.DigitalGamble], [13, Move.Barrage], [15, Move.Suplex], [20, Move.SyncStrike], [26, Move.SelfDestruct], [28, Move.PhantomBullet], [35, Move.ThornShot] [-1, Move.BlindingBeam]  ],
+        [ Ability.Alert, Ability.Rogue ], 39, -1, -1, 1);
 
         //Heatri
         create_monster(41, get_emote_string(client, 'heatri'), 'Heatri',
