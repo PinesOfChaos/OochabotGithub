@@ -4,7 +4,6 @@
     "discord-api-types": "^0.25.2",
     "discord.js": "^14.13.0",
     "enmap": "^5.9.8",
-    "eslint": "^8.17.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.7",
     "skia-canvas": "^1.0.1",

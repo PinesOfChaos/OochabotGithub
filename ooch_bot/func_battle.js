@@ -380,11 +380,19 @@ prompt_battle_input: async function(thread, user_id) {
                 }
 
                 //Select the move to use
-                let atk_msg = await thread.send({ content: `Select a move to use!`, components: [move_buttons]});
+                let atk_msg = await thread.send({ content: `Select a move to use!`, components: [move_buttons, back_button]});
                 db.profile.inc(user_id, 'battle_msg_counter');
                 const atk_collector = thread.createMessageComponentCollector({ max: 1 });   
 
                 await atk_collector.on('collect', async atk => {
+
+                    if (atk.customId == 'back') {
+                        atk_collector.stop();
+                        await atk_msg.delete();
+                        await prompt_battle_input(thread, user_id);
+                        return;
+                    }
+
                     await atk_msg.delete();
                     let enemy_snare = ooch_enemy.status_effects.includes(Status.Snare);
                     let plr_snare = ooch_plr.status_effects.includes(Status.Snare);
@@ -477,7 +485,7 @@ prompt_battle_input: async function(thread, user_id) {
                         ooch_disable = true;
                     }
 
-                    ((i <= 2) ? switch_buttons_1 : switch_buttons_2).addComponents(
+                    ((i <= 1) ? switch_buttons_1 : switch_buttons_2).addComponents(
                         new ButtonBuilder()
                             .setCustomId(`${i}`)
                             .setLabel(`${ooch_name} (${ooch_hp})`)
@@ -487,16 +495,24 @@ prompt_battle_input: async function(thread, user_id) {
                     )
                 }
 
-                await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
-                db.profile.inc(user_id, 'battle_msg_counter');
-
-                thread.send({ content: `**------------ Player Turn ------------**` + 
-                `\nSelect the new Oochamon you want to switch in!`, components: (switch_buttons_2.components.length != 0) ? [switch_buttons_1, switch_buttons_2] : [switch_buttons_1] })
+                let switch_msg = await thread.send({ content: `**------------ Player Turn ------------**` + 
+                `\nSelect the new Oochamon you want to switch in!`, components: (switch_buttons_2.components.length != 0) ? [switch_buttons_1, switch_buttons_2, back_button] : [switch_buttons_1, back_button] })
                 db.profile.inc(user_id, 'battle_msg_counter');
 
                 const s_collector = thread.createMessageComponentCollector({ max: 1 });
 
                 await s_collector.on('collect', async ooch_sel => {
+
+                    if (ooch_sel.customId == 'back') {
+                        s_collector.stop();
+                        await switch_msg.delete();
+                        await prompt_battle_input(thread, user_id);
+                        return;
+                    }
+                        
+                    await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
+                    db.profile.inc(user_id, 'battle_msg_counter');
+
                     let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
                     let string_to_send = `You switched your active Oochamon from ${db.monster_data.get(ooch_prev.id, 'emote')} **${ooch_prev.nickname}** to ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}**.`;
                     displayEmbed = new EmbedBuilder()
@@ -833,7 +849,7 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let ooch of [ooch_plr, ooch_enemy]) {
                     let oochStatusEffects = ooch.status_effects.map(v => get_status_emote(v));
                     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                    `**Type:** ${type_to_emote(ooch.type[0])} **${ooch.type[0]}**\n` +
+                    `**Type:** ${type_to_emote(ooch.type[0])} **${_.upperCase(ooch.type[0])}**\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
                     `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
                     `**Multipliers:**\n` +
@@ -2000,7 +2016,6 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     const background = await loadImage(`./Art/BattleArt/battle_bg_${plr.location_data.area}.png`);
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
-    console.log(enemy);
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     const plrSprite = await loadImage('./Art/NPCs/c_000.png')
     const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
@@ -2036,22 +2051,24 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     ctx.font = `italic bold 20px main_med`;
     ctx.textAlign = 'right';
     ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
-    ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 175);
+    fillTextScaled(is_npc_battle ? enemy.name : '', 'main_med', 20, 150, canvas, 'italic bold');
+    ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 170);
     ctx.fillStyle = 'white';
 
     if (is_npc_battle) {
         // Enemy Prisms
         for (let i = 0; i < enemy.ooch_party.length; i++) {
-            ctx.drawImage(prismIcon, 330 + (30 * i), 120);
+            ctx.drawImage(prismIcon, 420 - (30 * i), 120);
         }
 
         // Enemy Sprite
-        ctx.drawImage(enemySprite, 420, 75);
+        ctx.drawImage(enemySprite, 421, 75);
     }
+
     // Enemy Oochamon
     ctx.drawImage(oochEnemy, 350, 15);
     ctx.font = `10px main_med`;
-    ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 421, 75)
+    ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 90)
     ctx.textAlign = 'left';
 
     let pngData = await canvas.png;
