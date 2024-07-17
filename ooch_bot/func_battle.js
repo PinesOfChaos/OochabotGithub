@@ -1247,6 +1247,7 @@ type_effectiveness: function(attack_type, target_type) {
                 switch(type_defender){
                     case OochType.Ooze:    multiplier *= .5; break;
                     case OochType.Flame:   multiplier *= .5; break;
+                    case OochType.Stone:   multiplier *= .5; break;
                     case OochType.Void:    multiplier *= 2; break;
                     case OochType.Fungal:  multiplier *= 2; break;
                 }
@@ -1261,8 +1262,9 @@ type_effectiveness: function(attack_type, target_type) {
             case OochType.Tech:
                 switch(type_defender){
                     case OochType.Magic:   multiplier *= .5; break;
+                    case OochType.Ooze:    multiplier *= .5; break;
                     case OochType.Fungal:  multiplier *= 2; break;
-                    case OochType.Ooze:    multiplier *= 2; break;
+                    case OochType.Stone:   multiplier *= 2; break;
                 }
             break;
             case OochType.Ooze:
