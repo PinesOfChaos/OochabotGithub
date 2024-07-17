@@ -52,7 +52,7 @@
 					"slot_species": 13
 				},
 				{
-					"slot_ability": 15,
+					"slot_ability": 14,
 					"slot_atk": 0,
 					"slot_def": 0,
 					"slot_hp": 0,
@@ -194,11 +194,6 @@
 			"spawn_scale_y": 6,
 			"spawn_slots": [
 				{
-					"slot_lv_max": 4,
-					"slot_lv_min": 3,
-					"slot_species": 9
-				},
-				{
 					"slot_lv_max": 5,
 					"slot_lv_min": 2,
 					"slot_species": 11
@@ -207,13 +202,18 @@
 					"slot_lv_max": 6,
 					"slot_lv_min": 1,
 					"slot_species": 17
+				},
+				{
+					"slot_lv_max": 1,
+					"slot_lv_min": 1,
+					"slot_species": 19
 				}
 			]
 		},
 		{
 			"spawn_pos_x": 20,
 			"spawn_pos_y": 24,
-			"spawn_scale_x": 23,
+			"spawn_scale_x": 9,
 			"spawn_scale_y": 20,
 			"spawn_slots": [
 				{
@@ -230,6 +230,34 @@
 					"slot_lv_max": 6,
 					"slot_lv_min": 1,
 					"slot_species": 13
+				},
+				{
+					"slot_lv_max": 6,
+					"slot_lv_min": 1,
+					"slot_species": 24
+				}
+			]
+		},
+		{
+			"spawn_pos_x": 30,
+			"spawn_pos_y": 24,
+			"spawn_scale_x": 13,
+			"spawn_scale_y": 16,
+			"spawn_slots": [
+				{
+					"slot_lv_max": 8,
+					"slot_lv_min": 3,
+					"slot_species": 24
+				},
+				{
+					"slot_lv_max": 4,
+					"slot_lv_min": 1,
+					"slot_species": 39
+				},
+				{
+					"slot_lv_max": 8,
+					"slot_lv_min": 3,
+					"slot_species": 46
 				}
 			]
 		}
