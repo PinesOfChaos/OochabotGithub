@@ -137,22 +137,94 @@ module.exports = {
                     .setPlaceholder('Change a preference with this menu!')
                     .addOptions(
                         {
-                            label: 'Graphics Mode',
-                            description: 'Change the graphics mode of the game.',
-                            value: 'graphics',
+                            label: 'Show Controls Msg',
+                            description: 'Set whether you want to see the controls msg when starting up Oochamon.',
+                            value: 'controls_msg',
                         },
                         {
                             label: 'Battle Text Cleanup',
-                            description: 'Set whether text should be cleaned up after a battle or not.',
+                            description: 'Set whether battle text should be deleted after a battle or not.',
                             value: 'battle_cleanup',
                         },
                         {
                             label: 'Zoom Level',
-                            description: 'Set the window size of the game window (5x5 or 7x7)',
+                            description: 'Set the window size of the game (5x5, 7x7, 7x9, 9x7)',
                             value: 'zoom_level',
                         },
                     ),
             );
+
+
+        let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
+        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
+        let oochadex_sel_options_1 = [];
+        let oochadex_sel_options_2 = [];
+        let oochadex_sel_options_3 = [];
+        let oochadex_sel_options_4 = [];
+        let ooch_data = db.monster_data.get(0);
+        let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
+
+        for (let i = 0; i < db.monster_data.keyArray().length; i++) {
+            ooch_data = db.monster_data.get(i);
+            oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
+            if (i < 25) {
+                oochadex_sel_options_1.push({
+                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    value: `dex_${i}`,
+                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                })
+            } else if (i >= 25 && i < 50) {
+                oochadex_sel_options_2.push({
+                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    value: `dex_${i}`,
+                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                })
+            } else if (i >= 50 && i < 75) {
+                oochadex_sel_options_3.push({
+                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    value: `dex_${i}`,
+                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                })
+            } else {
+                oochadex_sel_options_4.push({
+                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    value: `dex_${i}`,
+                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                })
+            }
+        }
+
+        oochadex_sel_1.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('oochadex_sel_1')
+                .setPlaceholder('Oochadex #1-#25')
+                .addOptions(oochadex_sel_options_1),
+        );
+
+        oochadex_sel_2.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('oochadex_sel_2')
+                .setPlaceholder(`Oochadex #26-#50`)
+                .addOptions(oochadex_sel_options_2),
+        );
+
+        oochadex_sel_3.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('oochadex_sel_3')
+                .setPlaceholder(`Oochadex #51-#75`)
+                .addOptions(oochadex_sel_options_3),
+        );
+
+        oochadex_sel_4.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('oochadex_sel_4')
+                .setPlaceholder(`Oochadex #76-#${db.monster_data.keyArray().length}`)
+                .addOptions(oochadex_sel_options_4),
+        );
 
         //#endregion End of making action rows
         let user_profile = db.profile.get(interaction.user.id);
@@ -228,8 +300,7 @@ module.exports = {
         let selected, collectorId;
         let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch,
         move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed,
-        heal_inv, prism_inv, key_inv, display_inv, oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder(), oochadex_data, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
+        heal_inv, prism_inv, key_inv, display_inv, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
         pref_data, pref_desc;
 
         // Enable party healing button if we have healing items
@@ -285,11 +356,12 @@ module.exports = {
                 selected = parseInt(selected.replace('par_ooch_id_', ''));
                 party_idx = parseInt(selected);
                 selected_ooch = ooch_party[party_idx]
-
+                heal_inv = db.profile.get(interaction.user.id, 'heal_inv');
+                
                 // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
                 // Also reset the heal button to be enabled or disabled based on current HP values
                 party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
-                party_extra_buttons.components[1].setDisabled(selected_ooch.current_hp == selected_ooch.stats.hp ? true : false)
+                party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || Object.keys(heal_inv).length == 0) ? true : false)
                 
                 // Check if we can enable the move switcher, if we have more options outside of the main 4 moves
                 let available_moves = 0;
@@ -360,6 +432,13 @@ module.exports = {
                 let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
                 interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**`, ephemeral: true });
                 db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
+
+                if (db.profile.get(interaction.user.id, `heal_inv.${selected}`) === 0) {
+                    db.profile.delete(interaction.user.id, `heal_inv.${selected}`);
+                }
+
+                // Disable the heal Oochamon button if its enabled, if we are out of healing items
+                party_extra_buttons.components[1].setDisabled((Object.keys(db.profile.get(interaction.user.id, 'heal_inv')).length == 0) ? true : false);
                 
                 if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
                 let dexEmbed = ooch_info_embed(selected_ooch);
@@ -561,12 +640,12 @@ module.exports = {
             }
             // Key Button
             else if (selected == 'key_button') {
-                bagEmbed.setTitle('🔑 Key Items')
+                bagEmbed.setTitle('🔑 Misc Items')
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[1].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[2].setStyle(ButtonStyle.Success)
                 display_inv = key_inv;
-                let item_list_str;
+                let item_list_str = ``;
 
                 for (const [item_id, quantity] of Object.entries(display_inv)) {
                     let item_obj = db.item_data.get(item_id);
@@ -581,74 +660,6 @@ module.exports = {
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
-                let oochadex_sel_options_1 = [];
-                let oochadex_sel_options_2 = [];
-                let oochadex_sel_options_3 = [];
-                let oochadex_sel_options_4 = [];
-                ooch_data = db.monster_data.get(0);
-                oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
-
-                for (let i = 0; i < db.monster_data.keyArray().length; i++) {
-                    ooch_data = db.monster_data.get(i);
-                    oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
-                    if (i < 25) {
-                        oochadex_sel_options_1.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else if (i >= 25 && i < 50) {
-                        oochadex_sel_options_2.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else if (i >= 50 && i < 75) {
-                        oochadex_sel_options_3.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else {
-                        oochadex_sel_options_4.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    }
-                }
-
-                oochadex_sel_1.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_1')
-                        .setPlaceholder('Oochadex #1-#25')
-                        .addOptions(oochadex_sel_options_1),
-                );
-
-                oochadex_sel_2.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_2')
-                        .setPlaceholder(`Oochadex #26-#50`)
-                        .addOptions(oochadex_sel_options_2),
-                );
-
-                oochadex_sel_3.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_3')
-                        .setPlaceholder(`Oochadex #51-#75`)
-                        .addOptions(oochadex_sel_options_3),
-                );
-
-                oochadex_sel_4.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_4')
-                        .setPlaceholder(`Oochadex #76-#${db.monster_data.keyArray().length}`)
-                        .addOptions(oochadex_sel_options_4),
-                );
 
                 ooch_data = db.monster_data.get(0);
                 let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
@@ -656,7 +667,7 @@ module.exports = {
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(`attachment://${ooch_data.name}.png`)
+                    .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
@@ -683,7 +694,7 @@ module.exports = {
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(`attachment://${ooch_data.name}.png`)
+                    .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
@@ -804,9 +815,9 @@ module.exports = {
             else if (selected == 'preferences') {
                 user_profile = db.profile.get(interaction.user.id);
                 pref_data = user_profile.settings;
-                pref_desc = [`Graphics Mode: **\`${pref_data.graphics == 0 ? 'Quality' : 'Performance' }\`**`,
-                `Battle Text Cleanup: **\`${pref_data.battle_cleanup}\`**`,
-                `Zoom Level: **\`${pref_data.zoom}x${pref_data.zoom}\`**`];
+                pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
+                `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
+                `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -815,9 +826,9 @@ module.exports = {
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }
             // Graphics Switcher
-            else if (selected == 'graphics') {
-                await db.profile.set(interaction.user.id, user_profile.settings.graphics == 1 ? 0 : 1, 'settings.graphics');
-                pref_desc[0] = `Graphics Mode: **\`${db.profile.get(interaction.user.id, 'settings.graphics') == 0 ? 'Quality' : 'Performance' }\`**`;
+            else if (selected == 'controls_msg') {
+                await db.profile.set(interaction.user.id, !(user_profile.settings.controls_msg), 'settings.controls_msg');
+                pref_desc[0] = `Show Controls Message: **${db.profile.get(interaction.user.id, 'settings.controls_msg') === true ? `✅` : `❌`}**`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
@@ -825,21 +836,26 @@ module.exports = {
             // Battle Cleanup Option
             else if (selected == 'battle_cleanup') {
                 await db.profile.set(interaction.user.id, !(user_profile.settings.battle_cleanup), 'settings.battle_cleanup');
-                pref_desc[1] = `Battle Text Cleanup: **\`${db.profile.get(interaction.user.id, 'settings.battle_cleanup')}\`**`;
+                pref_desc[1] = `Battle Text Cleanup: **${db.profile.get(interaction.user.id, 'settings.battle_cleanup') === true ? `✅` : `❌`}**`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }
             // Zoom Level Option
             else if (selected == 'zoom_level') {
-                if (user_profile.settings.zoom == 5) {
-                    await db.profile.set(interaction.user.id, 7, 'settings.zoom');
-                } else {
-                    await db.profile.set(interaction.user.id, 5, 'settings.zoom');
+                if (user_profile.settings.zoom == '5_5') {
+                    await db.profile.set(interaction.user.id, '7_7', 'settings.zoom');
+                } else if (user_profile.settings.zoom == '7_7') {
+                    await db.profile.set(interaction.user.id, '9_7', 'settings.zoom');
+                } else if (user_profile.settings.zoom == '9_7') {
+                    await db.profile.set(interaction.user.id, '7_9', 'settings.zoom');
+                } else if (user_profile.settings.zoom == '7_9') {
+                    await db.profile.set(interaction.user.id, '5_5', 'settings.zoom');
                 }
 
                 user_profile = await db.profile.get(interaction.user.id);
-                pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom}x${user_profile.settings.zoom}\`**`;
+                console.log(user_profile.settings.zoom.split('_'))
+                pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom.split('_')[0]}x${user_profile.settings.zoom.split('_')[1]}\`**`;
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }

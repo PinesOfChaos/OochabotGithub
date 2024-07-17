@@ -17,18 +17,19 @@ module.exports = {
 
         let map_obj = db.maps.get(biome_to);
         let map_arr = map_obj.tiles;
-        let center = Math.floor((map_arr.length)/2);
+        let map_savepoints = map_obj.savepoints;
+        map_savepoints = map_savepoints.filter(v => v.is_default !== false);
         let player_location = db.profile.get(target, 'location_data');
         let biome_from =  player_location.area;
 
         //remove the player's info from the old biome and add it to the new one
-        db.player_positions.set(biome_to, { x: center, y: center }, target);
+        db.player_positions.set(biome_to, { x: map_savepoints[0].x, y: map_savepoints[0].y }, target);
         db.player_positions.delete(biome_from, target);
-        db.profile.set(target, { area: biome_to, x: center, y: center }, 'location_data')
+        db.profile.set(target, { area: biome_to, x: map_savepoints[0].x, y: map_savepoints[0].y }, 'location_data')
 
         let msg_to_edit = db.profile.get(target, 'display_msg_id');
         (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome_to, map_arr, center, center, target) });
+            msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) });
         });
 
         interaction.reply({ content: `Successfully traveled to ${biome_to}!`, ephemeral: true });

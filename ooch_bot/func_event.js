@@ -65,13 +65,12 @@ module.exports = {
                     }
 
                     // Set NPC dialogue portrait
-                    if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
+                    if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
                         event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
                         imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
-                        
                     }
 
-                    if (obj_content.image !== false) {
+                    if (obj_content.image) {
                         event_embed.setImage(`attachment://${obj_content.image}`)
                         imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
                     }
@@ -168,7 +167,7 @@ module.exports = {
                     }
                 }
 
-                let ooch = create_ooch(chosenOochId);
+                let ooch = create_ooch(chosenOochId, chosenOochLevel);
                 // Have it check here if you want to send the Oochamon to your party or not
                 if (db.profile.get(user_id, 'ooch_party').length < 4) {
                     db.profile.push(user_id, ooch, `ooch_party`);
@@ -216,12 +215,12 @@ module.exports = {
                         }
 
                         // Set NPC dialogue portrait
-                        if (obj_content.dialogue_file_name !== false && obj_content.dialogue_file_path !== false) {
+                        if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
                             event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
                             imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
                         }
 
-                        if (obj_content.image !== false) {
+                        if (obj_content.image) {
                             event_embed.setImage(`attachment://${obj_content.image}`)
                             imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
                         }
@@ -331,8 +330,8 @@ module.exports = {
                     // TODO: Make this (image) able to be set in the editor
                     image: false,
                     item: false,
-                    portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                    portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                    dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                 }])
             }
 
@@ -350,8 +349,8 @@ module.exports = {
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     image: false,
-                    portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                    portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                    dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                 }]);
             }
         }
@@ -379,8 +378,8 @@ module.exports = {
                         money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         image: false,
-                        portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                        dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                     }])
                 } else {
                     return_array.push([EventMode.Dialogue, {
@@ -388,14 +387,12 @@ module.exports = {
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         item: false,
-                        portrait_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        portrait_file_path: npc_obj.sprite_dialogue === false ? `Tiles/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                        dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                     }])
                 }
             }
         }
-
-        console.log(return_array);
 
         return return_array;
     }

@@ -50,7 +50,7 @@ generate_trainer_battle(trainer_obj){
         trainer_type: TrainerType.NPCTrainer,
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
-        trainer_battle_sprite: trainer_obj.sprite_combat,
+        trainer_battle_sprite: trainer_obj.sprite_combat === false ? trainer_obj.sprite_id : trainer_obj.sprite_combat,
     }
     return trainer_return;
 },
@@ -588,7 +588,7 @@ prompt_battle_input: async function(thread, user_id) {
                     return;
                 }
 
-                thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
+                let bag_msg = await thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
                 db.profile.inc(user_id, 'battle_msg_counter');
 
                 const b_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
@@ -599,7 +599,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                     if (i_sel.customId == 'back') {
                         b_collector.stop();
-                        i_sel.update({ content: `Backed out of bag menu.`, components: [] });
+                        await bag_msg.delete();
                         await prompt_battle_input(thread, user_id);
                         return;
                     }
@@ -716,6 +716,9 @@ prompt_battle_input: async function(thread, user_id) {
                                 `Your playspace will appear momentarily.`;
                                 displayEmbed.setDescription(string_to_send)
                                 await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+
+                                // Heal the caught Oochamon when you catch it.
+                                ooch_enemy.current_hp = ooch_enemy.stats.hp;
 
                                 // Have it check here if you want to send the Oochamon to your party or not
                                 if (db.profile.get(user_id, 'ooch_party').length < 4) {
@@ -1033,7 +1036,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         attacker.current_hp += _.clamp(vampire_heal * attacker.current_hp, 0, attacker.stats.hp);
         attacker.current_hp -= recoil_damage;
 
-        // Check for on hit abilities
+        // When the Oochamon attacker hits the defender
         switch (attacker.ability) {
             case Ability.Leech:
                 attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); 
@@ -1062,6 +1065,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             break;
         }
         
+        // When the Oochamon defender gets hit by the attacker
         switch (defender.ability) {
             case Ability.Reactive:
                 attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.05), 0, attacker.stats.hp)
@@ -1365,7 +1369,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
             db.profile.math(user_id, '+', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
-            await finish_battle(thread, user_id);
+            await finish_battle(thread, user_id, true);
             return true;
         };
     } else if (ooch_plr.current_hp <= 0) { // Lost one of our own Oochamon
@@ -1381,12 +1385,13 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
         if (slot_to_send == -1) { //if there is no slot to send in
             oochabux = _.random(5, 10)
-            oochabux = _.clamp(user_profile.oochabux - oochabux, 0, 100000000);
+            oochabux = _.clamp(oochabux, 0, user_profile.oochabux);
             thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.math(user_id, '-', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
-            await finish_battle(thread, user_id);
+            
+            await finish_battle(thread, user_id, false);
             return true;
         }
     };
@@ -1639,6 +1644,7 @@ item_use: function(ooch, item_id) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
     if (item_data.type == 'potion') {
+        ooch.alive = true;
         ooch.current_hp += Math.ceil(ooch.stats.hp * item_data.potency);
         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
         return ooch;
@@ -1817,8 +1823,9 @@ use_eot_ability: function(ooch) {
  * Handle finishing an Oochamon battle and setting back up the playspace.
  * @param {Object} thread The thread Oochamon is being played in.
  * @param {String} user_id The user id of the user playing Oochamon.
+ * @param {Boolean} battle_won If the user won the battle or not
  */
-finish_battle: async function(thread, user_id) {
+finish_battle: async function(thread, user_id, battle_won) {
     const { event_process } = require('./func_event');
 
     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
@@ -1842,7 +1849,17 @@ finish_battle: async function(thread, user_id) {
         ooch.type = ooch.og_type;
         ooch.doom_timer = 3;
         ooch.status_effects = [];
+        if (battle_won === false) {
+            ooch.current_hp = ooch.stats.hp;
+            ooch.alive = true;
+        }
+
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
+    }
+
+    // If we lost, go back to the teleporter location.
+    if (battle_won === false) {
+        db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
     }
 
     // Setup playspace
@@ -1947,53 +1964,61 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     let canvas = new Canvas(480, 270);
     FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
     let ctx = canvas.getContext("2d");
-    const background = await loadImage('./Art/battle_art/battle_background_temp.png');
+    const background = await loadImage(`./Art/BattleArt/battle_bg_${plr.location_data.area}.png`);
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
+    console.log(enemy);
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    const plrSprite = await loadImage('./Art/NPCs/c00_000.png')
+    const plrSprite = await loadImage('./Art/NPCs/c_000.png')
     const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
-    const enemySprite = await loadImage('./Art/NPCs/c00_000.png')
+    let enemySprite = null;
+    if (enemy.trainer_battle_sprite != undefined) {
+        enemySprite = await loadImage(`./Art/NPCs/${enemy.trainer_battle_sprite}.png`)
+    }
     const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
     const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
     let playerMemberObj = thread.guild.members.cache.get(user_id);
     const playerName = playerMemberObj.displayName;
-    
+
     // Player
+    ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
     ctx.font = `italic bold 20px main_med`;
     fillTextScaled(playerName, 'main_med', 20, 150, canvas, 'italic bold');
-    ctx.fillText(playerName, 30, 120);
+    ctx.fillText(playerName, 10, 130);
+    ctx.fillStyle = 'white';
 
     // Player Prisms
     for (let i = 0; i < plr.ooch_party.length; i++) {
-        ctx.drawImage(prismIcon, 30 + (30 * i), 125);
+        ctx.drawImage(prismIcon, 10 + (30 * i), 135);
     }
 
     // Player Oochamon and Player Sprite
-    flipDrawImage(ctx, plrSprite, 25, 210, true); // horizontal mirror
-    flipDrawImage(ctx, oochPlr, 58, 170, true); // horizontal mirror
+    flipDrawImage(ctx, plrSprite, 27, 210, true); // horizontal mirror
+    flipDrawImage(ctx, oochPlr, 65, 180, true); // horizontal mirror
     ctx.font = `10px main_med`;
-    ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 65, 245);
-    ctx.fillText(`HP: ${plr.ooch_party[plr.ooch_active_slot].current_hp} / ${plr.ooch_party[plr.ooch_active_slot].stats.hp}`, 65, 255);
+    ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 75, 255);
+    ctx.fillText(`HP: ${plr.ooch_party[plr.ooch_active_slot].current_hp} / ${plr.ooch_party[plr.ooch_active_slot].stats.hp}`, 75, 265);
 
     // Enemy
     ctx.font = `italic bold 20px main_med`;
     ctx.textAlign = 'right';
-    ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 165);
+    ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
+    ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 175);
+    ctx.fillStyle = 'white';
 
     if (is_npc_battle) {
         // Enemy Prisms
         for (let i = 0; i < enemy.ooch_party.length; i++) {
-            ctx.drawImage(prismIcon, 330 + (30 * i), 110);
+            ctx.drawImage(prismIcon, 330 + (30 * i), 120);
         }
 
         // Enemy Sprite
         ctx.drawImage(enemySprite, 420, 75);
     }
     // Enemy Oochamon
-    ctx.drawImage(oochEnemy, 350, 27);
+    ctx.drawImage(oochEnemy, 350, 15);
     ctx.font = `10px main_med`;
-    ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 100)
+    ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 421, 75)
     ctx.textAlign = 'left';
 
     let pngData = await canvas.png;

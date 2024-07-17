@@ -53,4 +53,7 @@
 52|Energized|Increases ATK and SPD by 10% on kill.
 53|Patient|Increases DEF by 5% each turn.
 54|Easy Go|Heals the rest of your party by 10% when defeated.
-55|Liquid Cooled|Prevents BURN and boosts the power of TECH type moves by 25%.
+55|Bomber|Halves the enemy HP on death.
+56|Hole Dweller|Gets the Vanished status at the end of every other turn.
+57|Power Conduit|Boosts the power of FLAME moves against OOZE and TECH types by 50%.
+58|Liquid Cooled|Prevents BURN and boosts the power of TECH type moves by 25%.

@@ -72,5 +72,47 @@
         ],
 
         [ 3, "intro" ]
+    ],
+    "ev_end": [
+        [
+          0,
+          {
+            "title": "Ending",
+            "description": "Congratulations! You have finished the Oochamon 1st Beta Test!",
+            "money": 0,
+            "item": false,
+            "image": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [
+          0,
+          {
+            "title": "Ending",
+            "description": "Please tell Jeffdev and PinesOfChaos what you thought, we welcome all feedback as it will help us make our game better!",
+            "money": 0,
+            "item": false,
+            "image": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [
+          0,
+          {
+            "title": "Ending",
+            "description": "We hope you enjoyed!",
+            "money": 0,
+            "item": false,
+            "image": false,
+            "dialogue_file_name": false,
+            "dialogue_file_path": false
+          }
+        ],
+
+        [ 3, "end" ]
     ]
 }

@@ -66,7 +66,7 @@ module.exports = {
         create_tile(`t${zS}_005`,  Tile.Wall,     TileGuilds ); //Hub Wall Bottom
         create_tile(`t${zS}_006`,  Tile.Wall,     TileGuilds ); //Hub Gate Top
         create_tile(`t${zS}_007`,  Tile.Wall,     TileGuilds ); //Hub Gate Bottom
-        create_tile(`t${zS}_008`,  Tile.Shop,     TileGuilds ); //Hub Tent
+        create_tile(`t${zS}_008`,  Tile.Wall,     TileGuilds ); //Hub Tent
         create_tile(`t${zS}_010`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Left
         create_tile(`t${zS}_011`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Right
         create_tile(`t${zS}_012`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Left
@@ -109,15 +109,16 @@ module.exports = {
         //#endregion
 
         //#region Item Data
-        //          ID   Name             Emote                                       Category     Type     Price   Potency   Description
-        create_item(0, 'Potion',        '<:item_potion:1023031022566260776>',        'heal_inv',  'potion',  10,     0.25,    'Used to quickly heal 25% of an Oochamon\'s HP')
-        create_item(1, 'Hi-Potion',     '<:item_potion_hi:1023031023598047284>',     'heal_inv',  'potion',  50,     0.5,     'An advanced potion which heals 50% of an Oochamon\'s HP')
-        create_item(2, 'Max-Potion',    '<:item_potion_magic:1023031024726327426>',  'heal_inv',  'potion',  100,    1,       'The ultimate potion which heals 100% of an Oochamon\'s HP')
-        create_item(3, 'Prism',         '<:item_prism:1023031025716179076>',         'prism_inv', 'prism',   10,     1,       'A device used to capture Oochamon.')
-        create_item(4, 'Greater Prism', '<:item_prism_greater:1023031027775578112>', 'prism_inv', 'prism',   50,     1.5,     'An improved prism with a higher capture rate.')
-        create_item(5, 'Grand Prism',   '<:item_prism_grand:1023031026626347028>',   'prism_inv', 'prism',   100,    2,       'A further modified prism with an even higher capture rate.')
-        create_item(6, 'Perfect Prism', '<:item_prism_perfect:1023031028782211173>', 'prism_inv', 'prism',   9999,   1000,    'A prism with a shattered casing, nothing escapes its pull.')
-        create_item(7, 'Attack Crystal','<:item_attack_crystal:1023031021517672540>','other_inv', 'misc',    20,     1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
+        //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
+        create_item(0, 'Potion',         '<:item_potion:1023031022566260776>',         'heal_inv',  'potion',  10,     0.25,    'Used to quickly heal 25% of an Oochamon\'s HP')
+        create_item(1, 'Hi-Potion',      '<:item_potion_hi:1023031023598047284>',      'heal_inv',  'potion',  50,     0.5,     'An advanced potion which heals 50% of an Oochamon\'s HP')
+        create_item(2, 'Max-Potion',     '<:item_potion_magic:1023031024726327426>',   'heal_inv',  'potion',  100,    1,       'The ultimate potion which heals 100% of an Oochamon\'s HP')
+        create_item(3, 'Prism',          '<:item_prism:1023031025716179076>',          'prism_inv', 'prism',   10,     1,       'A device used to capture Oochamon.')
+        create_item(4, 'Greater Prism',  '<:item_prism_greater:1023031027775578112>',  'prism_inv', 'prism',   50,     1.5,     'An improved prism with a higher capture rate.')
+        create_item(5, 'Grand Prism',    '<:item_prism_grand:1023031026626347028>',    'prism_inv', 'prism',   100,    2,       'A further modified prism with an even higher capture rate.')
+        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1023031028782211173>',  'prism_inv', 'prism',   9999,   1000,    'A prism with a shattered casing, nothing escapes its pull.')
+        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1023031021517672540>', 'other_inv', 'misc',    20,     1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
+        create_item(8, 'ID Card',        ':identification_card:',                      'other_inv', 'misc',    9999,   1,       'Your ID card. You look so fabulous!')
         //#endregion
 
         //#region Move Data
@@ -246,10 +247,10 @@ module.exports = {
         create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.');
         create_ability(55, 'Bomber',            'Halves the enemy HP on death.') 
         
-        //New abilites to add, have fun jeff :D
-        create_ability(55, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
-        create_ability(55, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
-        create_ability(55, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
+        // TODO: Add these
+        create_ability(56, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
+        create_ability(57, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
+        create_ability(58, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
 
         //#endregion
 
@@ -760,6 +761,7 @@ module.exports = {
         await db.maps.clear();
         let files = fs.readdirSync('./Maps/');
         for (let file of files) {
+            if (file.includes('.json')) continue;
             let map_name = file.replace('.txt', '');
 
             fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
@@ -880,9 +882,9 @@ module.exports = {
                             break;
                             case 'savepoints':
                                 output = {
-                                    x: parseInt(line_data[0]),
-                                    y: parseInt(line_data[1]),
-                                    is_default: Boolean(parseInt(line_data[2]))
+                                    is_default: Boolean(parseInt(line_data[0])),
+                                    x: parseInt(line_data[1]),
+                                    y: parseInt(line_data[2]),
                                 }
                                 savepoint_data.push(output);
                             break;
@@ -898,10 +900,11 @@ module.exports = {
                                 shop_data.push(output);
                             break;
                             case 'transitions':
+                                if (line == '') continue;
                                 output = {
                                     x: parseInt(line_data[0]),
                                     y: parseInt(line_data[1]),
-                                    connect_map: parseInt(line_data[2]),
+                                    connect_map: line_data[2],
                                     connect_x: parseInt(line_data[3]),
                                     connect_y: parseInt(line_data[4]),
                                 }
@@ -979,8 +982,8 @@ module.exports = {
         fs.writeFile('./editor_data/npc_data.txt', npc_output_str, (err) => { if (err) throw err; });
 
         // Generate the global events!
+        db.events_data.clear();
         for (let event of Object.entries(globalEventsJSON)) {
-            db.events_data.clear();
             db.events_data.set(event[0], event[1]);
         }
         

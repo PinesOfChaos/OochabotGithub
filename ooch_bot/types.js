@@ -232,6 +232,12 @@ const Item = {
     AttackCrystal: 7,
 }
 
+const ItemType = {
+    Heal: 0,
+    Prism: 1,
+    Misc: 2,
+}
+
 const Tile = {
     Floor: 0,
     Npc: 1,
@@ -261,5 +267,5 @@ module.exports = {
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, TrainerType, 
     Stats, Status, OochType, Move, Ability, Item,
-    Tile, Zone, TileEmoteGuildsArray
+    ItemType, Tile, Zone, TileEmoteGuildsArray
 };

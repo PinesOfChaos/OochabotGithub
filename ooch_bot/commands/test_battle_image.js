@@ -46,50 +46,54 @@ module.exports = {
         FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
         FontLibrary.use("main_reg", ["./fonts/LEMONMILK-Regular.otf"]);
         let ctx = canvas.getContext("2d");
-        const background = await loadImage('./battle_art/battle_background_temp.png');
+        const background = await loadImage('./Art/BattleArt/battle_bg_stone_tunnel.png');
         
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        const plrSprite = await loadImage('./Art/Tiles/t054.png')
+        const plrSprite = await loadImage('./Art/NPCs/c_000.png')
         const oochPlr = await loadImage(`./Art/ResizedArt/chantern.png`);
-        const enemySprite = await loadImage('./Art/Tiles/t057.png')
+        const enemySprite = await loadImage('./Art/NPCs/c_001.png')
         const oochEnemy = await loadImage(`./Art/ResizedArt/chantern.png`);
-        const prismIcon = await loadImage('./Art/item_prism.png');
+        const prismIcon = await loadImage(`./Art/ArtFiles/item_prism.png`);
 
+        ctx.fillStyle = 'black';
         ctx.font = `italic bold 20px main_med`;
         // Player
-        fillTextScaled('PinesOfChaos', 'main_med', 20, 150, canvas, 'italic bold');
-        ctx.fillText('PinesOfChaos', 30, 120);
+        fillTextScaled('PinesOfChaos', 'main_med', 120, 150, canvas, 'italic bold');
+        ctx.fillText('PinesOfChaos', 10, 130);
+        ctx.fillStyle = 'white';
 
         // Player Prisms
-        ctx.drawImage(prismIcon, 30, 125);
-        ctx.drawImage(prismIcon, 60, 125);
-        ctx.drawImage(prismIcon, 90, 125);
-        ctx.drawImage(prismIcon, 120, 125);
+        ctx.drawImage(prismIcon, 10, 135);
+        ctx.drawImage(prismIcon, 40, 135);
+        ctx.drawImage(prismIcon, 70, 135);
+        ctx.drawImage(prismIcon, 100, 135);
 
         // Player Oochamon and Player
-        flipDrawImage(ctx, plrSprite, 25, 210, true); // horizontal mirror
-        flipDrawImage(ctx, oochPlr, 58, 170, true); // horizontal mirror
+        flipDrawImage(ctx, plrSprite, 27, 210, true); // horizontal mirror
+        flipDrawImage(ctx, oochPlr, 65, 180, true); // horizontal mirror
         ctx.font = `10px main_med`;
-        ctx.fillText('Lv. 50 Chantern', 65, 245)
-        ctx.fillText(`HP: 80/100`, 65, 255);
+        ctx.fillText('Lv. 50 Chantern', 75, 255)
+        ctx.fillText(`HP: 80/100`, 75, 265);
 
         ctx.font = `italic bold 20px main_med`;
         // Enemy
         ctx.textAlign = 'right';
-        ctx.fillText('Captain', 450, 165);
+        ctx.fillStyle = 'black';
+        ctx.fillText('Captain', 450, 175);
+        ctx.fillStyle = 'white';
 
         // Enemy prisms
-        ctx.drawImage(prismIcon, 330, 110);
-        ctx.drawImage(prismIcon, 360, 110);
-        ctx.drawImage(prismIcon, 390, 110);
-        ctx.drawImage(prismIcon, 420, 110);
+        ctx.drawImage(prismIcon, 330, 120);
+        ctx.drawImage(prismIcon, 360, 120);
+        ctx.drawImage(prismIcon, 390, 120);
+        ctx.drawImage(prismIcon, 420, 120);
 
         // Enemy Oochamon
-        ctx.drawImage(enemySprite, 420, 75);
-        ctx.drawImage(oochEnemy, 350, 27);
+        ctx.drawImage(enemySprite, 421, 75);
+        ctx.drawImage(oochEnemy, 350, 15);
         ctx.font = `10px main_med`;
-        ctx.fillText('Lv. 2 Chantern', 410, 100)
+        ctx.fillText('Lv. 2 Chantern', 410, 90)
         ctx.textAlign = 'left';
 
         render();

@@ -1,15 +1,11 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
-const _ = require('lodash');
-const { get_stats } = require('../func_battle.js');
-const { PlayerState, GraphicsMode, Item } = require('../types.js');
-const { create_ooch } = require('../func_play.js');
+const { PlayerState, Item } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('setup')
-        .setDescription('Choose your starter'),
+        .setName('start')
+        .setDescription('Begin your Oochamon quest!'),
     async execute(interaction, client) {
         // Setup user data
         db.profile.set(interaction.user.id, interaction.member.displayName, 'player_name');
@@ -18,12 +14,12 @@ module.exports = {
         db.profile.set(interaction.user.id, 0, 'ooch_active_slot')
         db.profile.set(interaction.user.id, {}, 'other_inv')
         db.profile.set(interaction.user.id, {}, 'prism_inv')
-        db.profile.set(interaction.user.id, {}, 'heal_inv')
+        db.profile.set(interaction.user.id, { [Item.Potion]: 3 }, 'heal_inv') // Start with 3 potions, TODO: MAKE THIS BE GIVEN TO YOU BY RESEARCHER LATER
         db.profile.set(interaction.user.id, 0, 'oochabux')
         db.profile.set(interaction.user.id, PlayerState.Intro, 'player_state')
         db.profile.set(interaction.user.id, {}, 'ooch_enemy')
-        db.profile.set(interaction.user.id, { area: 'valley', x: 30, y: 36 }, 'location_data')
-        db.profile.set(interaction.user.id, { area: 'valley', x: 30, y: 36 }, 'savepoint_data');
+        db.profile.set(interaction.user.id, { area: 'hub', x: 20, y: 8 }, 'location_data')
+        db.profile.set(interaction.user.id, { area: 'hub', x: 15, y: 9 }, 'checkpoint_data');
         db.profile.set(interaction.user.id, false, 'display_msg_id');
         db.profile.set(interaction.user.id, false, 'play_thread_id');
         db.profile.set(interaction.user.id, 0, 'battle_msg_counter');
@@ -40,9 +36,9 @@ module.exports = {
         
         // Settings
         db.profile.set(interaction.user.id, {
-            graphics: GraphicsMode.Quality,
+            controls_msg: true,
             battle_cleanup: true,
-            zoom: 7
+            zoom: '9_7',
         }, 'settings');
 
         // Setup Oochadex template

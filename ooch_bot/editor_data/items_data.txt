@@ -6,3 +6,4 @@
 5|Grand Prism|<:item_prism_grand:1023031026626347028>|prism_inv|prism|2|A further modified prism with an even higher capture rate.
 6|Perfect Prism|<:item_prism_perfect:1023031028782211173>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
 7|Attack Crystal|<:item_attack_crystal:1023031021517672540>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
+8|ID Card|:identification_card:|other_inv|misc|undefined|Your ID card. You look so fabulous!

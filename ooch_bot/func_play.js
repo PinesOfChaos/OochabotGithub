@@ -1,6 +1,6 @@
 const db = require("./db")
 const { Flags, PlayerState, Tile } = require('./types.js');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
@@ -28,6 +28,14 @@ module.exports = {
                 new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
             );
         let confirm_collector;
+
+        let wild_encounter_buttons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('fight').setLabel('Fight').setStyle(ButtonStyle.Success).setEmoji('⚔️'),
+            ).addComponents(
+                new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
+            );
+        let wild_encounter_collector;
 
         let back_button = new ActionRowBuilder()
             .addComponents(
@@ -85,6 +93,7 @@ module.exports = {
         for(let i = 0; i < dist; i++){
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
             var tile = db.tile_data.get(tile_id.toString());
+
             switch(tile.use){
                 case Tile.Board:
                     stop_moving = true;
@@ -95,7 +104,7 @@ module.exports = {
                 case Tile.Grass:
                     playerx += xmove;
                     playery += ymove;
-                    if (0 < .25) {//if(Math.random() < .25){
+                    if (Math.random() < .40) {
                         stop_moving = true;
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
@@ -113,22 +122,22 @@ module.exports = {
                                 let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
                                 let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
                                 //use slot .ooch_id, .min_level, .max_level to setup the encounter
-                                message.channel.send({ content: `Start battle with wild ${mon_emote} ${mon_name} (LV ${mon_level})?`, components: [confirm_buttons]}).then(async msg =>{
-                                    confirm_collector = msg.createMessageComponentCollector({max: 1});
-                                    confirm_collector.on('collect', async sel => {
+                                message.channel.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
+                                    wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
+                                    wild_encounter_collector.on('collect', async sel => {
                                         let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
-                                        if (sel.customId == 'yes') {
+                                        if (sel.customId == 'fight') {
                                             await msg.delete();
                                             await setup_battle(message.channel, message.author.id, generated_ooch);
                                         }
                                         else {
-                                            /*if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'No' is chosen
+                                            if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'Run' is chosen
                                                 await setup_battle(message.channel, message.author.id, generated_ooch);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 50/50, ignore the input*/
                                                 await msg.delete();
-                                            //}
+                                            }
                                         }
                                     })
                                 })
@@ -142,16 +151,41 @@ module.exports = {
                 break;
             }
 
+            //Transitions
+            for(let obj of map_transitions){
+                if(obj.x == playerx && obj.y == playery){
+                    stop_moving = true;
+                    playerx = obj.connect_x;
+                    playery = obj.connect_y;
+                    map_name = obj.connect_map;
+                    
+                    //Get the map array based on the player's current map
+                    map_obj =   db.maps.get(map_name.toLowerCase());
+                    map_tiles =         map_obj.tiles; 
+                    map_npcs =          map_obj.npcs;
+                    map_spawns =        map_obj.spawn_zones;
+                    map_savepoints =    map_obj.savepoints;
+                    map_transitions =   map_obj.transitions;
+                    map_events =        map_obj.events;
+                    map_shops =         map_obj.shops;
+                    if (map_shops == undefined || map_shops == null) map_shops = [];        
+                }
+            }
+
             //Save Points
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
-                    message.channel.send({ content: obj.greeting_dialogue, components: [confirm_buttons] }).then(async msg => {
+                    message.channel.send({ content: 'Would you like to set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
                             if (sel.customId == 'yes') {
-                                db.profile.set(user_id, { area: 'map_name', x: obj.x, y: obj.y }, 'savepoint_data');
-                                await sel.update({ content: 'Checkpoint set.', components: [] });
+                                db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
+                                for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
+                                    db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+                                    db.profile.set(user_id, true, `ooch_party[${i}].alive`);
+                                }
+                                await sel.update({ content: 'Checkpoint set, and healed all your Oochamon!', components: [] });
                                 await wait(5000);
                                 await msg.delete();
                             } else {
@@ -229,9 +263,9 @@ module.exports = {
 
                     //start shop stuff here
                     let oochabux = db.profile.get(message.author.id, 'oochabux');
-                    if (obj.image == '') obj.image = 'https://cdn.discordapp.com/attachments/1149873572291035298/1149873767351332976/image.png';
-                    let image_msg = await message.channel.send({ content: obj.image });
-                    let msg = await message.channel.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button] });
+
+                    let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
+                    let msg = await message.channel.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button], files: [shopImage] });
                     
                     // Delete the current playspace
                     let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
@@ -257,6 +291,7 @@ module.exports = {
                         
                         let item_id = sel.values[0];
                         let item = db.item_data.get(item_id);
+                        let purchaseReqMsg;
                         if (item.price <= oochabux) {
                             const qty_filter = async m => {
                                 if (m.author.id != message.author.id) return false;
@@ -309,8 +344,10 @@ module.exports = {
                             });
                             
                         } else {
-                            purchaseReqMsg.delete();
-                            m.delete();
+                            if (purchaseReqMsg !== undefined) { 
+                                purchaseReqMsg.delete();
+                                m.delete();
+                            }
                             let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
                             msg.edit({ components: [shopSelectMenu, back_button] });
                             await wait(5000);
@@ -335,16 +372,6 @@ module.exports = {
                 }
             }
 
-            //Transitions
-            for(let obj of map_transitions){
-                if(obj.x == playerx && obj.y == playery){
-                    stop_moving = true;
-                    playerx = obj.connect_x;
-                    playery = obj.connect_y;
-                    biome = obj.connect_map;
-                }
-            }
-
             //if the player has run into anything that would cause them to stop moving, make them stop
             if(stop_moving){ break; }
         }
@@ -364,9 +391,12 @@ module.exports = {
 
     map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id) {
 
-        // Window size can either be 5x5 or 7x7
+        // Window size can either be 5x5 or 7x7 or 7x9
         let window_size = db.profile.get(user_id, 'settings.zoom');
-        let view_size = Math.floor(window_size / 2);
+        let x_window_size = window_size.split('_')[0];
+        let y_window_size = window_size.split('_')[1];
+        let x_center = Math.floor(parseInt(x_window_size) / 2);
+        let y_center = Math.floor(parseInt(y_window_size) / 2);
         let xx, yy, tile;
         let emote_map = ``;
         //if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
@@ -375,9 +405,9 @@ module.exports = {
         let player_sprite_id = db.profile.get(user_id, 'player_sprite');
 
         //Plain map tiles
-        for (let i = -view_size; i < view_size + 1; i++) {
-            emote_map_array[i + view_size] = [];
-            for (let j = -view_size; j < view_size + 1; j++) {
+        for (let i = -x_center; i < x_center + 1; i++) {
+            emote_map_array[i + x_center] = [];
+            for (let j = -y_center; j < y_center + 1; j++) {
                 //add emote based on tile data to position
                 xx = i + x_pos;
                 yy = j + y_pos;
@@ -387,7 +417,7 @@ module.exports = {
                 else {
                     tile = db.tile_data.get('t00_000')//This is the default tile
                 }
-                emote_map_array[i + view_size][j + view_size] = tile.emote;
+                emote_map_array[i + x_center][j + y_center] = tile.emote;
             }
         }
 
@@ -397,9 +427,9 @@ module.exports = {
         
         for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
-            xx = obj.x - x_pos + view_size;
-            yy = obj.y - y_pos + view_size;
-            if ((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)) {
+            xx = obj.x - x_pos + x_center;
+            yy = obj.y - y_pos + y_center;
+            if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
                 if (obj.flag_required == '' || obj.flag_required == false || player_flags.includes(obj.flag_required)) {
                     let plr_interacted = player_flags.includes(npc_flag); //check if the player has defeated this npc
                     let plain_tile = emote_map_array[xx][yy];
@@ -419,24 +449,24 @@ module.exports = {
         //Savepoint tiles
         let map_savepoints = map_obj.savepoints;
         for(let obj of map_savepoints){
-            xx = obj.x - x_pos + view_size;
-            yy = obj.y - y_pos + view_size;
-            if((xx >= 0) && (xx <= view_size * 2) && (yy >= 0) && (yy <= view_size * 2)){
+            xx = obj.x - x_pos + x_center;
+            yy = obj.y - y_pos + y_center;
+            if((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)){
                 emote_map_array[xx][yy] = db.tile_data.get('t00_001', 'emote'); //this is the savepoint tile
             }
         }
 
         //Put player sprite in center and change it based on the zone ID
-        let zoneId = parseInt(emote_map_array[view_size][view_size].split(':')[1].replace('t', ''));
-        emote_map_array[view_size][view_size] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
+        let zoneId = parseInt(emote_map_array[x_center][y_center].split(':')[1].replace('t', ''));
+        emote_map_array[x_center][y_center] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
         let transpose = [];
         let w = emote_map_array.length;
         let h = emote_map_array[0].length;
-        for(let i = 0; i < w; i++){
+        for(let i = 0; i < h; i++){
             transpose[i] = []
-            for(let j = 0; j < h; j++){
+            for(let j = 0; j < w; j++){
                 transpose[i][j] = emote_map_array[j][i];
             }
         }
@@ -527,7 +557,7 @@ module.exports = {
         if (move_list.length == 0) {
             learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
             for(let i = 0; i < learn_list.length; i++){
-                move_list[i] = learn_list[i][0];
+                move_list[i] = learn_list[i][1];
             }
 
             // Make sure the move_list is 4 moves
