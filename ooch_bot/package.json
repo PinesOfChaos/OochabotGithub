@@ -8,6 +8,7 @@
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.7",
     "skia-canvas": "^1.0.1",
+    "string-progressbar": "^1.0.4",
     "wait": "^0.4.2"
   },
   "compilerOptions": {

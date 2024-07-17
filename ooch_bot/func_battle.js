@@ -154,7 +154,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote } = require('./func_battle.js');
+    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote, battle_calc_exp, level_up } = require('./func_battle.js');
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
@@ -715,6 +715,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
                                 `Your playspace will appear momentarily.`;
 
+                                let user_profile = db.profile.get(user_id);
                                 let ooch_party = user_profile.ooch_party;
                                 // Distribute XP for a caught Oochamon
                                 // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
@@ -737,7 +738,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
                                     if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
                                         ooch_data = await level_up(ooch_data);
-                                        string_to_send += ooch_data[1];
+                                        string_to_send += `\n${ooch_data[1]}`;
                                         await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
                                     }
                                 }
@@ -1057,7 +1058,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         defender.status_effects = defender.status_effects.filter(v => v !== Status.Double);
     }
 
-    if ((move_accuracy/100 * status_blind > Math.random()) || (defender.ability == 'Immense') || (!defender.status_effects.includes(Status.Vanish))) {
+    if (((move_accuracy/100 * status_blind > Math.random()) || (defender.ability == 'Immense')) || (!defender.status_effects.includes(Status.Vanish))) {
         defender.current_hp -= dmg
         defender.current_hp = clamp(defender.current_hp, 0, defender.stats.hp);
 
@@ -1860,7 +1861,7 @@ finish_battle: async function(thread, user_id, battle_won) {
 
     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     db.profile.set(user_id, {}, 'ooch_enemy');
-    await wait(5000);
+    await wait(10000);
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {

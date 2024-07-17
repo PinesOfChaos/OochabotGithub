@@ -3,6 +3,7 @@ const db = require("./db")
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { TypeEmote } = require('./types.js');
 const _ = require('lodash');
+const progressbar = require('string-progressbar');
 
 module.exports = {
     /**
@@ -20,6 +21,8 @@ module.exports = {
             : ooch_title += ` [Lv. ${ooch.level}] ${TypeEmote[_.capitalize(ooch.type)]}`;
         let moveset_str = ``;
 
+        let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 12, '▱', '▰')[0];
+
         let infoEmbed = new EmbedBuilder()
             .setColor('#808080')
             .setTitle(ooch_title)
@@ -33,6 +36,7 @@ module.exports = {
 
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
         infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}**\nATK: **${ooch.stats.atk}**\nDEF: **${ooch.stats.def}**\nSPD: **${ooch.stats.spd}**`, inline: true }]);
+        infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
 
         return [infoEmbed, get_ooch_art(ooch.name)];
     },
