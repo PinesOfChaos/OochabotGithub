@@ -714,6 +714,34 @@ prompt_battle_input: async function(thread, user_id) {
                             if (prism_result == true) { 
                                 string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.name}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
                                 `Your playspace will appear momentarily.`;
+
+                                let ooch_party = user_profile.ooch_party;
+                                // Distribute XP for a caught Oochamon
+                                // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
+                                exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
+                                let exp_earned_main = Math.round(exp_earned * 1.25);
+                                if (ooch_plr.level != 50) {
+                                    string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
+                                                        ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
+                                }
+                                string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
+
+                                for (let i = 0; i < ooch_party.length; i++) {
+                                    if (i == user_profile.ooch_active_slot) { 
+                                        db.profile.math(user_id, '+', Math.round(exp_earned * 1.25), `ooch_party[${i}].current_exp`);
+                                    } else { 
+                                        db.profile.math(user_id, '+', exp_earned, `ooch_party[${i}].current_exp`); 
+                                    }
+                                    
+                                    // Check for level ups
+                                    let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
+                                    if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                                        ooch_data = await level_up(ooch_data);
+                                        string_to_send += ooch_data[1];
+                                        await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
+                                    }
+                                }
+
                                 displayEmbed.setDescription(string_to_send)
                                 await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
 
@@ -804,7 +832,7 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let ooch of [ooch_plr, ooch_enemy]) {
                     let oochStatusEffects = ooch.status_effects.map(v => get_status_emote(v));
                     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                    `**Type:** ${type_to_emote(ooch.type[0])} ${type_to_emote(ooch.type[0], true)}\n` +
+                    `**Type:** ${type_to_emote(ooch.type[0])} **${ooch.type[0]}**\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
                     `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
                     `**Multipliers:**\n` +
@@ -1912,6 +1940,8 @@ level_up: async function(ooch) {
         possibleMoves = possibleMoves.filter(v => _.inRange(v[0], starting_level + 1, ooch.level));
         possibleMoves = possibleMoves.map(v => {
             let moveData = db.move_data.get(v[1]);
+            // If the Oochamon can learn the new move and has room, add it automatically.
+            if (ooch.moveset < 4) ooch.moveset.push(moveData.id);
             return `- ${type_to_emote(moveData.type)} **${moveData.name}**`;
         })
 

@@ -168,6 +168,7 @@ module.exports = {
         create_move(38,'Laminate',        OochType.Tech,30,90,       'snared',100,   'Covers the target in a tough plastic substance to SNARE them.')
         create_move(39,'Entomb',          OochType.Stone,60,80,      'snared',50,    'Causes stones to fall onto the target, leaving them SNARED if they get trapped.')
         create_move(40,'undefined_int',   OochType.Void,100,100,     -1,0,           'TEST MOVE')
+        
         ////NEW MOVES 
         create_move(41,'Strike',          OochType.Neutral,20,100,  'critical',30,   'A targeted strike that is likely to land a Critical Hit.')
         create_move(42,'Barrage',         OochType.Tech,100,80,     'recoil',30,     'Devastating blasts damage the target, the user is hit with Recoil.')
@@ -186,6 +187,7 @@ module.exports = {
         create_move(55,'Glass Blades',    OochType.Stone,80,70,     'critical',50,   'Brittle blades are used to strike at the opponent\'s weak spots.')
         create_move(56,'Gravitate',       OochType.Magic,60,30,     -1,0,            'The user manipulates gravity to fling itself at the target.')
         create_move(57,'Tenderize',       OochType.Neutral,120,70,  'recoil',30,     'The user slams its body into the opponent, but is hit with recoil.')
+        
         ////MORE NEW MOVES
         create_move(58,'Byte Bite',       OochType.Tech,30,100,     -1,0,            'Form digital jaws that clamp down on the target.')
         create_move(59,'Sawblade',        OochType.Tech,50,100,     -1,0,            'The user hits the target with a metal blade.')
