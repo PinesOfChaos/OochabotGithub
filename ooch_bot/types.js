@@ -183,7 +183,15 @@ const Move = {
     SlurpUp: 78,
     DigitalGamble: 79,
     Sedimentation: 80,
-    PhantomBullet: 81
+    PhantomBullet: 81,
+    FireyHorn: 83,
+    Radiate: 84,
+    Caltrops: 85,
+    Lurk: 86,
+    Fog: 87,
+    Purify: 88,
+    Reset: 89,
+    DebugBomb: 90
 }
 
 const Ability = {

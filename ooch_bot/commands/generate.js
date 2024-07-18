@@ -214,7 +214,14 @@ module.exports = {
         create_move(80,'Sedimentation',   OochType.Stone,0,-100,    '+_def_50',100,  'Spend the turn gathering stone to greatly increase DEF.')
         create_move(81,'Plasma Cannon',   OochType.Flame,120,70,    -1,0,            'A high damage blast of extreme heat.')
         create_move(82,'Phantom Bullet',  OochType.Magic,30,100,    'critical',100,  'Fire a highly accurate ghost bullet that always crits.')
-        
+        create_move(83,'Firey Horn',      OochType.Flame,75,100,    'burned',50,     'Attack with blazing horns that have a chance to BURN the target.')
+        create_move(84,'Radiate',         OochType.Flame,0,100,     '-_atk_50|burned',100, 'Release stored-up heat to BURN the target and reduce its ATK.')
+        create_move(85,'Caltrops',        OochType.Neutral,20,100,  '-_spd_25',100,  'Scatter damaging spikes that damage and reduce the target\'s SPD')
+        create_move(86,'Lurk',            OochType.Neutral,0,-100,  '+_atk_25|+_crit_10', 'Lurk in the shadows boosting ATK and crit chance.')
+        create_move(87,'Fog',             OochType.Neutral,0,100,   '-_acc_10',100,  'Spray thick fog which reduces accuracy.')
+        create_move(88,'Purify',          OochType.Neutral,0,-100,  'clear_status',100, 'Remove all status effects.')
+        create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_multi',100, 'Reset all stat multipliers to 1.')
+        create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
 
         //#endregion
 

@@ -921,7 +921,7 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
         attacker_atk_stat = ooch_attacker.stats.def * ooch_attacker.stats.def_mul;
     }
 
-    let damage = Math.round(Math.ceil((2 * ooch_attacker.level / 5 + 2) // Level Adjustment
+    let damage = Math.round(Math.ceil((4 * ooch_attacker.level / 5 + 2) // Level Adjustment
     * move_damage // Damage
     * (ooch_attacker.ability == Ability.Gravity ? (turn_count / 100) + 1 : 1)
     * (ooch_attacker.ability == Ability.Hexiply ? ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 : 1) // Hexiply ability
