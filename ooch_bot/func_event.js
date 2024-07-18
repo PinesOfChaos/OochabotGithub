@@ -134,7 +134,7 @@ module.exports = {
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                         await thread.messages.fetch(msg_to_edit).then((msg) => {
                             msg.edit({ content: setup_playspace_str(user_id) });
-                        })
+                        }).catch(() => {});
                         return;
                     }
                 break;
@@ -185,7 +185,7 @@ module.exports = {
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
                     msg.edit({ content: setup_playspace_str(user_id) });
-                })
+                }).catch(() => {});
                 return;
             }
 
@@ -294,7 +294,7 @@ module.exports = {
                             quit = true; 
                             await thread.messages.fetch(msg_to_edit).then((msg) => {
                                 msg.edit({ content: setup_playspace_str(user_id) });
-                            });
+                            }).catch(() => {});
                             return;
                         } else {
                             current_place++;

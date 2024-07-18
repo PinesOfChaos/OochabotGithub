@@ -82,7 +82,7 @@
 			"npc_dialog_post": "Look, it's nothing serious.\nIt's just... off limits.",
 			"npc_dialog_pre": "Cave's off limits until we can figure out what's going on in there...",
 			"npc_flag_given": "",
-			"npc_flag_kill": "fungal_cave_unlock",
+			"npc_flag_kill": "cromet_encounter",
 			"npc_flag_required": "",
 			"npc_item_id": -1,
 			"npc_item_number": 0,
@@ -247,7 +247,7 @@
 			"npc_y": 36
 		},
 		{
-			"npc_coin": 0,
+			"npc_coin": 130,
 			"npc_dialog_post": "Don't tell the other two I'm hiding out over here okay?",
 			"npc_dialog_pre": "Uh, HALT!\nYeah, that'll show 'em.",
 			"npc_flag_given": "",

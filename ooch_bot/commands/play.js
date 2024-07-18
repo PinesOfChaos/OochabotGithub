@@ -91,6 +91,9 @@ module.exports = {
                 await interaction.deferReply();
                 await interaction.deleteReply();
             }
+        } else if (thread === interaction.channel) {
+            await interaction.deferReply();
+            await interaction.deleteReply();
         }
     },
 };

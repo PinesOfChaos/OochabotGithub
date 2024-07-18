@@ -54,7 +54,7 @@
 53|Sync Strike|neutral|70|100|typematch|100|Launch a ball of energy synchronized with the user's type
 54|Threefold|neutral|90|90|critical|30|The target is struck repeatedly, leaving it open to Critical Hits.
 55|Glass Blades|stone|80|70|critical|50|Brittle blades are used to strike at the opponent's weak spots.
-56|Gravitate|magic|60|30|-1|0|The user manipulates gravity to fling itself at the target.
+56|Gravitate|magic|60|100|-1|0|The user manipulates gravity to fling itself at the target.
 57|Tenderize|neutral|120|70|recoil|30|The user slams its body into the opponent, but is hit with recoil.
 58|Byte Bite|tech|30|100|-1|undefined|Form digital jaws that clamp down on the target.
 59|Sawblade|tech|50|100|-1|undefined|The user hits the target with a metal blade.
@@ -81,3 +81,11 @@
 80|Sedimentation|stone|0|-100|+_def_50|undefined|Spend the turn gathering stone to greatly increase DEF.
 81|Plasma Cannon|flame|120|70|-1|undefined|A high damage blast of extreme heat.
 82|Phantom Bullet|magic|30|100|critical|undefined|Fire a highly accurate ghost bullet that always crits.
+83|Firey Horn|flame|75|100|burned|undefined|Attack with blazing horns that have a chance to BURN the target.
+84|Radiate|flame|0|100|-_atk_50|burned|undefined|Release stored-up heat to BURN the target and reduce its ATK.
+85|Caltrops|neutral|20|100|-_spd_25|undefined|Scatter damaging spikes that damage and reduce the target's SPD
+86|Lurk|neutral|0|-100|+_atk_25|+_crit_10|undefined|undefined
+87|Fog|neutral|0|100|-_acc_10|undefined|Spray thick fog which reduces accuracy.
+88|Purify|neutral|0|-100|clear_status|undefined|Remove all status effects.
+89|Reset|neutral|0|-100|clear_multi|undefined|Reset all stat multipliers to 1.
+90|Debug Bomb|tech|100|80|clear_status|undefined|Fire a high-damage bomb that clears any status effects from its target.

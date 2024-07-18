@@ -8,7 +8,7 @@
 		{
 			"npc_coin": 200,
 			"npc_dialog_post": "Staying safe out there?\nFeel free to come back any time you need some rest.",
-			"npc_dialog_pre": "Oh, hi there, you must be the new arrival!\nI run this humble outpost along with some fellow researchers.\nDo take some time to introduce yourself around here.\nAh, silly me, you'll need some of these to handle the local wildlife.",
+			"npc_dialog_pre": "Oh, hi there, you must be the new arrival!\nI run this humble outpost along with some fellow researchers.\nDo take some time to introduce yourself around here\nYou'll also want to get your ID card to venture out into the Valley. A researcher should around here should have it.\nAh! Silly me, you'll need some of these to handle the local wildlife.",
 			"npc_flag_given": "",
 			"npc_flag_kill": "",
 			"npc_flag_required": "",
@@ -103,7 +103,7 @@
 		{
 			"npc_coin": 0,
 			"npc_dialog_post": "Can't talk right now. Busy.",
-			"npc_dialog_pre": "Sorry. Busy.\nOh, you're the new guy, one sec.\nYou needed your ID right?\nHere you go.",
+			"npc_dialog_pre": "Sorry. Busy.\nOh, you're the new guy, one sec.\nYou needed your ID right?\nI'll give it to you, but only if you go help us out with a little problem.\nA meteor crashed around here not too long ago, and we've discovered a new Oochamon out of it.\nIt's name is Cromet, I believe? Go deal with that.\nHere you go.",
 			"npc_flag_given": "hub_remove_guards",
 			"npc_flag_kill": "",
 			"npc_flag_required": "",

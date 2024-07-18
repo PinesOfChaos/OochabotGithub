@@ -92,8 +92,10 @@ module.exports = {
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
+            if(stop_moving){ break; }
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
             var tile = db.tile_data.get(tile_id.toString());
+
 
             switch(tile.use){
                 case Tile.Board:
@@ -179,6 +181,7 @@ module.exports = {
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
+                    stop_moving = true;
                     message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
@@ -207,6 +210,7 @@ module.exports = {
                 x2 = (x1 + obj.width) > playerx;
                 y2 = (y1 + obj.height) > playery;
                 if(x1 && y1 && x2 && y2){
+                    //stop_moving = true;
                     //trigger this event if the player hasn't triggered it already
                 }
             }
@@ -283,7 +287,6 @@ module.exports = {
                             db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
                             db.profile.set(message.author.id, oochabux, 'oochabux')
                             msg.delete();
-                            image_msg.delete();
                             shop_collector.stop();
                             if (item_qty_collector) item_qty_collector.stop();
                             return;
@@ -366,7 +369,6 @@ module.exports = {
                             db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
                             db.profile.set(message.author.id, oochabux, 'oochabux')
                             msg.delete();
-                            image_msg.delete();
                             shop_collector.stop();
                         }
                     });
@@ -583,7 +585,7 @@ module.exports = {
             status_effects: [],
             current_hp: stats[0],
             current_exp: cur_exp,
-            next_lvl_exp: exp_to_next_level(1),
+            next_lvl_exp: exp_to_next_level(0),
             current_hp: stats[0],
             alive: true,
             evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
@@ -595,9 +597,9 @@ module.exports = {
 
         //Level up the ooch until its at the appropriate level
         while(ooch_obj.level < level){
-            ooch_obj.current_exp = ooch_obj.next_lvl_exp
-            let leveled_ooch = level_up(ooch_obj)
-            ooch_obj = leveled_ooch[0]
+            ooch_obj.current_exp = exp_to_next_level(ooch_obj.level);
+            let leveled_ooch = level_up(ooch_obj);
+            ooch_obj = leveled_ooch[0];
         }
 
         //Find what moves the mon should know

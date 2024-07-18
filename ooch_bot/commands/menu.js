@@ -345,7 +345,7 @@ module.exports = {
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button], files: [] });
             }
             // Back to Box Select
             else if (selected == 'back_to_box') {
@@ -740,11 +740,11 @@ module.exports = {
                 pages = 9; // Number of pages, starts at 0
                 page_num = 0;
                 box_row = buildBoxData(interaction.user, page_num);
-                i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             }
             // Label buttons
             else if (selected.includes('emp') || selected.includes('label')) {
-                i.update({ content: `**Oochabox**` });
+                i.update({ content: `**Oochabox**`, files: [] });
             }
             // Page buttons
             else if (selected == 'left' || selected == 'right') {
@@ -753,7 +753,7 @@ module.exports = {
                 
                 box_row = buildBoxData(interaction.user, page_num);
                 box_buttons.components[3].setLabel(`${page_num + 1}`);
-                i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             } 
             // Oochamon in Box View
             else if (selected.includes('box_ooch')) {
@@ -790,7 +790,7 @@ module.exports = {
                 // Build new PC button rows
                 box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             } 
             // Add Oochamon to team
             else if (selected == 'add_ooch') {
@@ -803,13 +803,13 @@ module.exports = {
                 // Build new PC button rows
                 box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             
             }
             // Release an Oochamon
             else if (selected == 'release') {
                 user_profile = db.profile.get(interaction.user.id);
-                await i.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [confirm_buttons] });
+                await i.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [confirm_buttons], files: [] });
             }
             // Confirm to release an Oochamon
             else if (selected == 'yes') {
@@ -819,12 +819,12 @@ module.exports = {
                 // Build new PC button rows
                 box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             }
             // Confirm to not release an Oochamon
             else if (selected == 'no') {
                 user_profile = db.profile.get(interaction.user.id);
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
+                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
             }
             //#endregion
 
