@@ -21,7 +21,7 @@ module.exports = {
             : ooch_title += ` [Lv. ${ooch.level}] ${TypeEmote[_.capitalize(ooch.type)]}`;
         let moveset_str = ``;
 
-        let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 12, '▱', '▰')[0];
+        let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
 
         let infoEmbed = new EmbedBuilder()
             .setColor('#808080')
@@ -34,8 +34,12 @@ module.exports = {
             moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
         }
 
+        let iv_hp = Math.round((ooch.stats.hp_iv - 1) * 20)
+        let iv_atk = Math.round((ooch.stats.atk_iv - 1) * 20)
+        let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
+        let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}**\nATK: **${ooch.stats.atk}**\nDEF: **${ooch.stats.def}**\nSPD: **${ooch.stats.spd}**`, inline: true }]);
+        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}**(${iv_hp})\nATK: **${ooch.stats.atk}**(${iv_atk})\nDEF: **${ooch.stats.def}**(${iv_def})\nSPD: **${ooch.stats.spd}**(${iv_spd})`, inline: true }]);
         infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
 
         return [infoEmbed, get_ooch_art(ooch.name)];

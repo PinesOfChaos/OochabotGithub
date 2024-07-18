@@ -39,6 +39,7 @@ module.exports = {
             controls_msg: true,
             battle_cleanup: true,
             zoom: '9_7',
+            battle_speed: 1250,
         }, 'settings');
 
         // Setup Oochadex template

@@ -29,13 +29,13 @@ module.exports = {
         } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t trade here.', ephemeral: true });
         } else if (intUserState == PlayerState.Trading) {
-            return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`});
+            return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`, ephemeral: true });
         }
 
         if (otherUserState == PlayerState.NotPlaying) {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
         } else if (otherUserState == PlayerState.Trading) {
-            return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`});
+            return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`, ephemeral: true });
         }
 
         //#region Setup Rows/Functions

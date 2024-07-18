@@ -64,6 +64,7 @@ client.on('interactionCreate', async interaction => {
         let ooch_ids = db.monster_data.array();
         let item_ids = db.item_data.array();
         let ability_ids = db.ability_data.array();
+        let move_ids = db.move_data.array();
         let ooch_names;
 
         function ooch_filter(v) {
@@ -78,9 +79,14 @@ client.on('interactionCreate', async interaction => {
             return msg == search_segment;
         }
 
-        // Temporary
         function ability_filter(v) {
             let msg = interaction.options.getString('ability').toLowerCase();
+            let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
+            return msg == search_segment;
+        }
+
+        function move_filter(v) {
+            let msg = interaction.options.getString('move').toLowerCase();
             let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
             return msg == search_segment;
         }
@@ -91,13 +97,19 @@ client.on('interactionCreate', async interaction => {
                 msg_id = interaction.options.getString('item');
                 if (msg_id == null || msg_id == undefined) {
                     msg_id = interaction.options.getString('ability');
+                    if (msg_id == null || msg_id == undefined) {
+                        msg_id = interaction.options.getString('move');
+                    }
                 }
             }
             let search_segment = id.split(':')[0];
             return search_segment == msg_id;
         }
 
-        switch (interaction.commandName) {
+        let commandName = interaction.commandName;
+        if (commandName == 'lookup') commandName = 'change_ability';
+
+        switch (commandName) {
             case 'oochadex':
                 ooch_names = ooch_ids.map(v => {
                     if (db.profile.get(interaction.user.id, `oochadex`)[v.id].seen != 0) {
@@ -146,21 +158,37 @@ client.on('interactionCreate', async interaction => {
                 interaction.respond(item_names);
             break;
             case 'change_ability':
-                // Temporary
-                ability_names = ability_ids.map(v => {
-                    return `${v.id}: ${_.startCase(v.name)}`
-                })
-
-                if (interaction.options.getString('ability') != '') {
-                    if (!isNaN(interaction.options.getString('ability'))) {
-                        ability_names = ability_names.filter(id_filter);
-                    } else {
-                        ability_names = ability_names.filter(ability_filter);
-                    }
-                } 
-                ability_names = ability_names.slice(0, 25);
-                ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[0] });
-                interaction.respond(ability_names);
+                if (interaction.options.getSubcommand() == 'move') {
+                    move_names = move_ids.map(v => {
+                        return `${v.id}: ${_.startCase(v.name)}`
+                    })
+    
+                    if (interaction.options.getString('move') != '') {
+                        if (!isNaN(interaction.options.getString('move'))) {
+                            move_names = move_names.filter(id_filter);
+                        } else {
+                            move_names = move_names.filter(move_filter);
+                        }
+                    } 
+                    move_names = move_names.slice(0, 25);
+                    move_names = move_names.map(v => v = { name: v, value: v.split(':')[0] });
+                    interaction.respond(move_names);
+                } else {
+                    ability_names = ability_ids.map(v => {
+                        return `${v.id}: ${_.startCase(v.name)}`
+                    })
+    
+                    if (interaction.options.getString('ability') != '') {
+                        if (!isNaN(interaction.options.getString('ability'))) {
+                            ability_names = ability_names.filter(id_filter);
+                        } else {
+                            ability_names = ability_names.filter(ability_filter);
+                        }
+                    } 
+                    ability_names = ability_names.slice(0, 25);
+                    ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[0] });
+                    interaction.respond(ability_names);
+                }
             break;
         }
     }

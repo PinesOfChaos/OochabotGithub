@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, AttachmentBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
+const wait = require('wait');
 const { setup_playspace_str, create_ooch, buildBoxData } = require('../func_play');
 const { PlayerState, TypeEmote } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
@@ -151,8 +152,13 @@ module.exports = {
                         },
                         {
                             label: 'Zoom Level',
-                            description: 'Set the window size of the game (5x5, 7x7, 7x9, 9x7)',
+                            description: 'Set the window size of the game. (5x5, 7x7, 7x9, 9x7)',
                             value: 'zoom_level',
+                        },
+                        {
+                            label: 'Battle Speed',
+                            description: 'Set the battle event speed.',
+                            value: 'battle_speed',
                         },
                     ),
             );
@@ -396,7 +402,9 @@ module.exports = {
                 db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
                 party_extra_buttons.components[0].setDisabled(true);
                 i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
-                interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.', ephemeral: true })
+                let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
+                await wait(5000);
+                await followUpMsg.delete();
             }
             // Heal Oochamon button
             else if (selected == 'party_heal') {
@@ -433,12 +441,12 @@ module.exports = {
             else if (collectorId == 'party_heal_select') {
                 let item_data = db.item_data.get(selected);
                 selected_ooch = item_use(selected_ooch, selected);
+                db.profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
                 let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
-                interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**`, ephemeral: true });
-                db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
+                await db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
 
                 if (db.profile.get(interaction.user.id, `heal_inv.${selected}`) === 0) {
-                    db.profile.delete(interaction.user.id, `heal_inv.${selected}`);
+                    await db.profile.delete(interaction.user.id, `heal_inv.${selected}`);
                 }
 
                 // Disable the heal Oochamon button if its enabled, if we are out of healing items
@@ -448,7 +456,11 @@ module.exports = {
                 let dexEmbed = ooch_info_embed(selected_ooch);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
-                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+
+                let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**` });
+                await wait(2500);
+                await followUpMsg.delete();
             }
             // Evolve button
             else if (selected == 'evolve') {
@@ -469,11 +481,14 @@ module.exports = {
                 }
 
                 i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
-                interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉`, ephemeral: true });
 
                 // Finalize putting the ooch into the database and in our menu
                 selected_ooch = newEvoOoch;
                 db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
+
+                let followUpMsg = await interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
+                await wait(2500);
+                await followUpMsg.delete();
             }   
             // Set a nickname button
             else if (selected == 'nickname') {
@@ -789,7 +804,6 @@ module.exports = {
                 box_row = buildBoxData(interaction.user, page_num);
                 // Kick back to PC screen
                 i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
-                //i.followUp({ content: `The Oochamon **${ooch_user_data.nickname}** has been added to your party.`, ephemeral: true });
             
             }
             // Release an Oochamon
@@ -821,7 +835,8 @@ module.exports = {
                 pref_data = user_profile.settings;
                 pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
                 `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
-                `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`];
+                `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
+                `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -860,6 +875,20 @@ module.exports = {
                 user_profile = await db.profile.get(interaction.user.id);
                 console.log(user_profile.settings.zoom.split('_'))
                 pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom.split('_')[0]}x${user_profile.settings.zoom.split('_')[1]}\`**`;
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Battle Speed Option
+            else if (selected == 'battle_speed') {
+                if (user_profile.settings.battle_speed == 500) {
+                    user_profile.settings.battle_speed = 1250;
+                } else {
+                    user_profile.settings.battle_speed = 500;
+                }
+
+                await db.profile.set(interaction.user.id, user_profile.settings.battle_speed, 'settings.battle_speed');
+                pref_desc[3] = `Battle Speed: **\`${user_profile.settings.battle_speed == 500 ? `Fast` : `Normal`}\`**`;
+                user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }

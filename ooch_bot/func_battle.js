@@ -168,8 +168,9 @@ prompt_battle_input: async function(thread, user_id) {
     let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
     let ooch_pos = active_slot;
     let move_list = ooch_plr.moveset;
-    let move_id, move_name, turn_order; // Battle variables
+    let move_id, move_name, move_damage, move_accuracy, turn_order; // Battle variables
     let displayEmbed = new EmbedBuilder();
+    let battleSpeed = ooch_plr_profile.settings.battle_speed;
 
     //#region Setup buttons and select menus
     const row = new ActionRowBuilder()
@@ -368,10 +369,8 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let i = 0; i < move_list.length; i++) {
                     
                     move_id = move_list[i];
-                    
                     move_name = db.move_data.get(`${move_id}`, 'name')
                     move_type = db.move_data.get(`${move_id}`, 'type')
-                    move_accuracy = db.move_data.get(`${move_id}`, 'accuracy')
 
                     move_buttons.addComponents(
                         new ButtonBuilder()
@@ -589,7 +588,7 @@ prompt_battle_input: async function(thread, user_id) {
                 });
             break;
             case 'bag':
-                //#region BAG
+                //#region
                 let heal_inv = db.profile.get(user_id, 'heal_inv')
                 let heal_inv_keys = Object.keys(heal_inv);
                 let prism_inv = db.profile.get(user_id, 'prism_inv')
@@ -780,7 +779,8 @@ prompt_battle_input: async function(thread, user_id) {
                                 infoEmbed = infoEmbed[0];
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
 
-                                item_sel.followUp({ embeds: [infoEmbed], files: [oochPng], ephemeral: true })
+                                await thread.send({ embeds: [infoEmbed], files: [oochPng] });
+                                await db.profile.inc(user_id, 'battle_msg_counter');
                                 await finish_battle(thread, user_id);
 
                                 return;
@@ -811,13 +811,15 @@ prompt_battle_input: async function(thread, user_id) {
             break;
             case 'run':
                 if ((ooch_plr.stats.spd + ooch_plr.level * 10) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
-                    thread.send(`**------------ Player Turn ------------**` +
+                    await wait(battleSpeed);
+                    await thread.send(`**------------ Player Turn ------------**` +
                     `\nYou successfully ran away!\nYour playspace will appear momentarily.`);
                     db.profile.inc(user_id, 'battle_msg_counter');
                     await finish_battle(thread, user_id);
                     return;
                 } else {
-                    thread.send(`**------------ Player Turn ------------**` + 
+                    await wait(battleSpeed);
+                    await thread.send(`**------------ Player Turn ------------**` + 
                     `\nYou failed to run away!`)
                     db.profile.inc(user_id, 'battle_msg_counter');
 
@@ -852,7 +854,7 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let ooch of [ooch_plr, ooch_enemy]) {
                     let oochStatusEffects = ooch.status_effects.map(v => get_status_emote(v));
                     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                    `**Type:** ${type_to_emote(ooch.type[0])} **${_.upperCase(ooch.type[0])}**\n` +
+                    `**Type:** ${type_to_emote(ooch.type[0])} **${_.capitalize(ooch.type[0])}**\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
                     `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
                     `**Multipliers:**\n` +
@@ -1065,9 +1067,14 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let defender_field_text = ``;
     let string_to_send = ``;
     let ability_dmg_multiplier = 1;
+    let battleSpeed = db.profile.get(user_id, 'settings.battle_speed')
     if (attacker.ability == Ability.Rogue && defender.current_hp === defender.stats.hp) {
         ability_dmg_multiplier = 2;
     }
+
+    let displayEmbed = new EmbedBuilder()
+    .setColor(header.includes('Player') ? '#00ff80' : '#ffaa00')
+    .setTitle(`⚔️ Attack ⚔️`)
 
     dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled * ability_dmg_multiplier, 
                              move_type, attacker, defender, db.profile.get(user_id, 'battle_turn_counter'));
@@ -1131,11 +1138,11 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 defender.field_text += `${attacker_emote} **${attacker.nickname}** was **SNARED** by the opposing Oochamon's ability **Tangled**!`;
         }
 
-        string_to_send += `\n${attacker_emote} **${attacker.nickname}** uses **${move_type_emote}** **${move_name}** and deals **${dmg}** damage to the opposing ${defender_emote} **${defender.nickname}**!`
+        string_to_send += `\n${attacker_emote} **${attacker.nickname}** used **${move_type_emote}** **${move_name}**!\n\n${defender_emote} **${defender.nickname}** took **${dmg} damage**!`;
         
         //If a crit lands
         if (crit_multiplier >= 2) {
-            string_to_send += `\n**💢 A critical hit!**`
+            string_to_send += `\n--- 💢 **A critical hit!**`
         }
 
         //If a attack has vampire
@@ -1187,7 +1194,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 break;
             }
 
-            defender_field_text += `\nThe opposing ${defender_emote} **${defender.nickname}** was **${move_effect.toUpperCase()}!**`
+            defender_field_text += `\n--- The opposing ${defender_emote} **${defender.nickname}** was **${move_effect.toUpperCase()}!**`
             defender.status_effects.push(status_adds);
             defender.status_effects = defender.status_effects.flat(1);
         } else if(-Math.random() > move_effect_chance/100 && move_effect_chance < 0 && attacker.ability != 'Mundane') {
@@ -1205,7 +1212,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
     // Check if opposing Oochamon is dead
     if (defender.current_hp <= 0) {
-        defender_field_text += `\n🪦 ${defender_emote} **${defender.nickname}** fainted!`
+        defender_field_text += `\n--- 🪦 ${defender_emote} **${defender.nickname}** fainted!`
         defender.alive = false;
         
         // Attacker oochamon on kill ability triggers
@@ -1255,11 +1262,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         }
     }
 
-    let displayEmbed = new EmbedBuilder()
-    .setColor('#ff6f00')
-    .setTitle(`⚔️ ${attacker_emote} ${attacker.nickname} Attack ⚔️`)
-    .setDescription(`${string_to_send}\n${defender_field_text}`)
+    
+    displayEmbed.setDescription(`${string_to_send}${defender_field_text}`);
 
+    await wait(battleSpeed);
     await thread.send({ content: header, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'battle_msg_counter');
     return [attacker, defender];
@@ -1277,7 +1283,7 @@ type_effectiveness: function(attack_type, target_type) {
     let multiplier = 1;
     let string = '';
 
-    for(let type_defender in target_type){
+    for (let type_defender of target_type) {
         switch(attack_type){
             case OochType.Neutral:
                 switch(type_defender){
@@ -1338,12 +1344,12 @@ type_effectiveness: function(attack_type, target_type) {
     multiplier = Math.min(8, Math.max(.125,multiplier))
 
     switch(multiplier){
-        case(0.125):    string = '\n**It\'s barely effective...**';     break;
-        case(0.25):     string = '\n**It\'s very ineffective...**';     break;
-        case(0.5):      string = '\n**It\'s not very effective...**';   break;
-        case(2):        string = '\n**It\'s super effective!**';        break;
-        case(4):        string = '\n**It\'s incredibly effective!**';   break;
-        case(8):        string = '\n**It\'s devastatingly effective!**';   break;
+        case(0.125):    string = '\n--- 🛡️ **It\'s barely effective...**';        break;
+        case(0.25):     string = '\n--- 🛡️ **It\'s very ineffective...**';        break;
+        case(0.5):      string = '\n--- 🛡️ **It\'s not very effective...**';      break;
+        case(2):        string = '\n--- 🗡️ **It\'s super effective!**';           break;
+        case(4):        string = '\n--- 🗡️ **It\'s incredibly effective!**';      break;
+        case(8):        string = '\n--- 🗡️ **It\'s devastatingly effective!**';   break;
     }
 
     return([multiplier,string])
@@ -1362,6 +1368,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
     const { finish_battle, battle_calc_exp, level_up } = require('./func_battle.js');
     let ooch_enemy_party, ooch_party, slot_to_send, oochabux;
     let user_profile = db.profile.get(user_id);
+    let battleSpeed = user_profile.settings.battle_speed;
 
     // Victory/Defeat Check
     if (ooch_enemy.current_hp <= 0) { // Beat the enemy Oochamon
@@ -1415,6 +1422,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             displayEmbed.setTitle('Rewards')
             displayEmbed.setDescription(string_to_send);
 
+            await wait(battleSpeed);
             await thread.send({ content: `**------------ You win! ------------**`, embeds: [displayEmbed] });
             db.profile.inc(user_id, 'battle_msg_counter');
 
@@ -1437,7 +1445,8 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
         if (slot_to_send == -1) { //if there is no slot to send in
             oochabux = _.random(5, 10)
             oochabux = _.clamp(oochabux, 0, user_profile.oochabux);
-            thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
+            await wait(battleSpeed);
+            await thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.math(user_id, '-', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
@@ -1465,6 +1474,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     let enemy_send_string_to_send = ``;
     let user_profile = db.profile.get(user_id);
     let enemy_profile = db.profile.get(user_id, 'ooch_enemy');
+    let battleSpeed = user_profile.settings.battle_speed;
 
     for (let i = 0; i < ooch_list.length; i++) {
         let ooch = ooch_list[i];
@@ -1551,7 +1561,9 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         // Distribute XP for a defeated Oochamon
         // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
         exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
-        string_to_send += `\n\n${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**\nThe rest of your team earned **${exp_earned} exp** as well.`
+        string_to_send += `\n\n${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
+                                                        ` (EXP: **${_.clamp(ooch_plr.current_exp + Math.round(exp_earned * 1.25), 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**` + 
+                                                        `\nThe rest of your team earned **${exp_earned} exp** as well.`
 
         for (let i = 0; i < ooch_party.length; i++) {
             if (i == user_profile.ooch_active_slot) { 
@@ -1633,8 +1645,9 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     db.profile.set(user_id, ooch_plr, `ooch_party[${user_profile.ooch_active_slot}]`);
 
     let displayEmbed = new EmbedBuilder()
-    .setColor('#00ff80')
+    .setColor('#ffffff')
     .setDescription(`${string_to_send}`);
+    await wait(battleSpeed);
     await thread.send({ content: `**------------ End of Round ------------**`, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'battle_msg_counter');
     if (enemy_send_string_to_send != '') {
@@ -1907,10 +1920,23 @@ finish_battle: async function(thread, user_id, battle_won) {
 
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
-
+    
     // If we lost, go back to the teleporter location.
     if (battle_won === false) {
         db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
+        db.profile.set(user_id, [], 'npc_event_data');
+        db.profile.set(user_id, 0, 'npc_event_pos')
+    } else {
+        // If we won the battle
+        let npc_event_data = db.profile.get(user_id, 'npc_event_data');
+        let npc_event_pos = parseInt(db.profile.get(user_id, 'npc_event_pos'));
+
+        if (npc_event_data.length != 0 ) {
+            // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
+            event_process(user_id, thread, npc_event_data, npc_event_pos);
+            db.profile.set(user_id, [], 'npc_event_data');
+            db.profile.set(user_id, 0, 'npc_event_pos');
+        }
     }
 
     // Setup playspace
@@ -1920,15 +1946,6 @@ finish_battle: async function(thread, user_id, battle_won) {
     await thread.send({ content: playspace_str }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
     });
-
-    let npc_event_data = db.profile.get(user_id, 'npc_event_data');
-    let npc_event_pos = parseInt(db.profile.get(user_id, 'npc_event_pos'));
-    if (npc_event_data.length != 0) {
-        // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
-        event_process(user_id, thread, npc_event_data, npc_event_pos);
-        db.profile.set(user_id, [], 'npc_event_data');
-        db.profile.set(user_id, 0, 'npc_event_pos');
-    }
 },
 
 /**

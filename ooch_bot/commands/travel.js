@@ -32,6 +32,9 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) });
         });
 
-        interaction.reply({ content: `Successfully traveled to ${biome_to}!`, ephemeral: true });
+        let travelMsg = await interaction.reply({ content: `Successfully traveled to ${biome_to}!` });
+        await wait(5000);
+        await travelMsg.delete();
+        
     },
 };

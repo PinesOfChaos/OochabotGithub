@@ -179,7 +179,7 @@ module.exports = {
             for(let obj of map_savepoints){
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
-                    message.channel.send({ content: 'Would you like to set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
+                    message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
                         confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                         confirm_collector.on('collect', async sel => {
                             if (sel.customId == 'yes') {
@@ -188,7 +188,7 @@ module.exports = {
                                     db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                     db.profile.set(user_id, true, `ooch_party[${i}].alive`);
                                 }
-                                await sel.update({ content: 'Checkpoint set, and healed all your Oochamon!', components: [] });
+                                await sel.update({ content: 'Checkpoint set, and healed your Oochamon!', components: [] });
                                 await wait(5000);
                                 await msg.delete();
                             } else {
