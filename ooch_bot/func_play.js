@@ -5,6 +5,7 @@ const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
 
+
 module.exports = {
 
     move: async function(message, direction, dist = 1) {
@@ -13,7 +14,7 @@ module.exports = {
         */
 
         const { map_emote_string, setup_playspace_str } = require('./func_play.js');
-        const { generate_wild_battle, setup_battle } = require("./func_battle");
+        const { generate_wild_battle, setup_battle, level_up, exp_to_next_level } = require("./func_battle");
 
         let user_id = message.author.id;
         let xmove = 0;
@@ -105,7 +106,7 @@ module.exports = {
                     playerx += xmove;
                     playery += ymove;
                     if (Math.random() < .40) {
-                        stop_moving = true;
+                        
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
                             
@@ -116,7 +117,9 @@ module.exports = {
                             y2 = (spawn_zone.y + spawn_zone.height) > playery;
 
                             if(x1 && y1 && x2 && y2){
-                                let slot_index = _.random(0, spawn_zone.spawn_slots.length - 1);
+                                stop_moving = true;
+                                let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
+                                console.log([spawn_zone.spawn_slots, slot_index])
                                 let slot = spawn_zone.spawn_slots[slot_index];
                                 let mon_level = _.random(slot.min_level, slot.max_level);
                                 let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
@@ -537,7 +540,7 @@ module.exports = {
     create_ooch: function(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = _.random(0,10)/20+1, atk_iv = _.random(0,10)/20+1,
                             def_iv = _.random(0,10)/20+1, spd_iv = _.random(0,10)/20+1, held_item = -1) {
 
-        const { get_stats } = require('./func_battle');
+        const { get_stats, level_up, exp_to_next_level } = require('./func_battle');
                             
         // Setup ooch_id data
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
@@ -553,29 +556,15 @@ module.exports = {
         //Get the stats accounting for the ID, Level, and IVs
         let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
 
-        //Find what moves the starter should initially know
-        if (move_list.length == 0) {
-            learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
-            for(let i = 0; i < learn_list.length; i++){
-                move_list[i] = learn_list[i][1];
-            }
-
-            // Make sure the move_list is 4 moves
-            while (move_list.length > 4) {
-                let rand_move_pos = _.random(0, move_list.length)
-                move_list.splice(rand_move_pos, 1);
-            }
-        }
-
-        return { 
+        let ooch_obj = { 
             id: ooch_id,
             name: db.monster_data.get(ooch_id, 'name'), 
             nickname: nickname,
             item: held_item,
             ability: rand_ability,
             og_ability: rand_ability,
-            level: level,
-            moveset: move_list,
+            level: 0,
+            moveset: [],
             stats: {
                 hp: stats[0],
                 atk: stats[1],
@@ -594,7 +583,7 @@ module.exports = {
             status_effects: [],
             current_hp: stats[0],
             current_exp: cur_exp,
-            next_lvl_exp: level ** 3,
+            next_lvl_exp: exp_to_next_level(1),
             current_hp: stats[0],
             alive: true,
             evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
@@ -603,6 +592,31 @@ module.exports = {
             doom_timer: 3, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote')
         }
+
+        //Level up the ooch until its at the appropriate level
+        while(ooch_obj.level < level){
+            ooch_obj.current_exp = ooch_obj.next_lvl_exp
+            let leveled_ooch = level_up(ooch_obj)
+            ooch_obj = leveled_ooch[0]
+        }
+
+        //Find what moves the mon should know
+        if (move_list.length == 0) {
+            learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
+            for(let i = 0; i < learn_list.length; i++){
+                move_list[i] = learn_list[i][1];
+            }
+
+            // Make sure the move_list is 4 moves
+            while (move_list.length > 4) {
+                let rand_move_pos = _.random(0, move_list.length)
+                move_list.splice(rand_move_pos, 1);
+            }
+        }
+
+        ooch_obj.moveset = move_list
+
+        return(ooch_obj)
     },
 
     // Builds the action rows and places emotes in for the Oochabox, based on the database.

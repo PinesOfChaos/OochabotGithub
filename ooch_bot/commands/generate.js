@@ -294,7 +294,7 @@ module.exports = {
         // Sporbee
         create_monster(0, get_emote_string(client, 'sporbee'), 'Sporbee',
         'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', [OochType.Fungal], 8, 12, 8, 12, //total 40
-        [ [1, Move.Bash],[2, Move.Embolden],[3, Move.SporeShot],[7, Move.Slash],[10, Move.Siphon][13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ],
+        [ [1, Move.Bash],[2, Move.Embolden],[3, Move.SporeShot],[7, Move.Slash],[10, Move.Siphon], [13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ],
         [ Ability.Miniscule, Ability.Icky ], -1, 1, 16, 0)
 
         //Stingrowth
@@ -306,7 +306,7 @@ module.exports = {
         //Queenect
         create_monster(2, get_emote_string(client, 'queenect'), 'Queenect',
         'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', [OochType.Fungal], 25, 25, 16, 14, //total 80
-        [ [1, Move.Bash],[2, Move.Embolden],[6,Move.SporeShot],[12, Move.Slash],[16, Move.Siphon][20, Move.TakeOver],[25, Move.Bloom],[36, Move.Blight],[-1, Move.CausticOrb] ],
+        [ [1, Move.Bash],[2, Move.Embolden],[6,Move.SporeShot],[12, Move.Slash],[16, Move.Siphon],[20, Move.TakeOver],[25, Move.Bloom],[36, Move.Blight],[-1, Move.CausticOrb] ],
         [ Ability.Burdened, Ability.Broodmother ], 1, -1, -1, 2)
 
         // Roocky
@@ -414,7 +414,7 @@ module.exports = {
         //Chantern
         create_monster(20, get_emote_string(client, 'chantern'), 'Chantern',
         'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', [OochType.Flame], 21, 20, 24, 15, //total 80
-        [ [1, Move.Bash],[5, Move.Fireball],[6, Move.Embolden],[8, Move.Impale],[13, Move.MagicBolt],[19, Move.Torch],[25, Move.ClampDown],[32, Move.Blink],[40, Move.DrainLife][-1, Move.ArcaStrike] ],
+        [ [1, Move.Bash],[5, Move.Fireball],[6, Move.Embolden],[8, Move.Impale],[13, Move.MagicBolt],[19, Move.Torch],[25, Move.ClampDown],[32, Move.Blink],[40, Move.DrainLife], [-1, Move.ArcaStrike] ],
         [ Ability.Boisterous, Ability.Haunted ], 19, -1, -1, 1)
 
         //Eluslug
@@ -511,7 +511,7 @@ module.exports = {
         //Lobstar
         create_monster(36, get_emote_string(client, 'lobstar'), 'Lobstar',
         'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', [OochType.Stone], 10, 35, 20, 10, //total 75
-        [ [1, Move.Bash], [2, Move.Hasten], [6, Move.PebbleBlast], [12, Move.Gravitate], [15, Move.ClampDown], [20, Move.CrashLanding], [24, Move.Boulderdash], [28, Move.SolarBlast], [36, Move.DustStorm] [-1, Move. SyncStrike] ],
+        [ [1, Move.Bash], [2, Move.Hasten], [6, Move.PebbleBlast], [12, Move.Gravitate], [15, Move.ClampDown], [20, Move.CrashLanding], [24, Move.Boulderdash], [28, Move.SolarBlast], [36, Move.DustStorm], [-1, Move. SyncStrike] ],
         [ Ability.Immense, Ability.Scorching ], 35, -1, -1, 1) 
 
         //Spoolette
@@ -535,7 +535,7 @@ module.exports = {
         //Codet
         create_monster(40, get_emote_string(client, 'codet'), 'Codet',
         'An attempt to modernize the DGTY-k gone wrong. Despite being decomissioned these haunting machines continue to run.', [OochType.Tech], 30, 10, 10, 10, //total 60
-        [ [1, Move.Bash], [2, Move.Strike], [7, Move.ByteBite], [Move.Sawblade], [9, Move.DigitalGamble], [13, Move.Barrage], [15, Move.Suplex], [20, Move.SyncStrike], [26, Move.SelfDestruct], [28, Move.PhantomBullet], [35, Move.ThornShot] [-1, Move.BlindingBeam]  ],
+        [ [1, Move.Bash], [2, Move.Strike], [7, Move.ByteBite], [Move.Sawblade], [9, Move.DigitalGamble], [13, Move.Barrage], [15, Move.Suplex], [20, Move.SyncStrike], [26, Move.SelfDestruct], [28, Move.PhantomBullet], [35, Move.ThornShot], [-1, Move.BlindingBeam]  ],
         [ Ability.Alert, Ability.Rogue ], 39, -1, -1, 1);
 
         //Heatri
@@ -900,15 +900,16 @@ module.exports = {
                                     spawn_slots: [],
                                 }
 
-                                for (let i = 4; i < line_data.length; i++) {
-                                    if (line_data[i] == '') continue;
-                                    spawn_ooch_data = line_data[i].split('`')
+                                spawn_ooch_data = line_data[4].split('`')
+                                for(let i = 0; i < spawn_ooch_data.length/3 - 1; i++){
+                                    
                                     output.spawn_slots.push({
-                                        ooch_id: parseInt(spawn_ooch_data[0]),
-                                        min_level: parseInt(spawn_ooch_data[1]),
-                                        max_level: parseInt(spawn_ooch_data[2])
+                                        ooch_id:    parseInt(spawn_ooch_data[i * 3 + 0]),
+                                        min_level:  parseInt(spawn_ooch_data[i * 3 + 1]),
+                                        max_level:  parseInt(spawn_ooch_data[i * 3 + 2])
                                     })
                                 }
+                                
                                 spawn_data.push(output);
                             break;
                             case 'savepoints':

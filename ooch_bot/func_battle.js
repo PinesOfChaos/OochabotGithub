@@ -4,9 +4,9 @@ const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, C
 const _ = require('lodash');
 const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote } = require("./types");
 const { Status } = require('./types.js');
-const { setup_playspace_str, create_ooch } = require("./func_play");
 const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
+const { create_ooch, setup_playspace_str } = require('./func_play');
 
 module.exports = {
 
@@ -17,6 +17,7 @@ module.exports = {
  * @returns The enemy Oochamon data in an object.
  */
 generate_wild_battle: function(ooch_id, ooch_level) {
+
     let ooch = create_ooch(ooch_id, ooch_level);
     let ooch_enemy = {
         name: 'Wild Oochamon',
@@ -32,6 +33,8 @@ generate_wild_battle: function(ooch_id, ooch_level) {
  * @param {Object} trainer_obj The base trainer object to convert
  */
 generate_trainer_battle(trainer_obj){
+    
+
     let party_base = trainer_obj.team;
     let party_generated = [];
     
@@ -753,7 +756,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     // Check for level ups
                                     let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
                                     if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                                        ooch_data = await level_up(ooch_data);
+                                        ooch_data = level_up(ooch_data);
                                         string_to_send += `\n${ooch_data[1]}`;
                                         await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
                                     }
@@ -979,10 +982,11 @@ exp_to_next_level: function(level) {
  */
 get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
     // TODO: Change the output to an object, not an array
-    let hp = Math.floor(db.monster_data.get(species_id, Stats.HP) * (1.05 ** level) * ((hp_iv + 10) / 10) + 10) ;
-    let atk = Math.floor(db.monster_data.get(species_id, Stats.Attack) * (1.05 ** level) * ((atk_iv + 10) / 10));
-    let def = Math.floor(db.monster_data.get(species_id, Stats.Defense) * (1.05 ** level) * ((def_iv + 10) / 10));
-    let spd = Math.floor(db.monster_data.get(species_id, Stats.Speed) * (1.05 ** level) * ((spd_iv + 10) / 10));
+    let lv_multi = (2 * Math.log(level + 2)) + (level/10)
+    let hp = Math.floor(db.monster_data.get(species_id, Stats.HP) * lv_multi * ((hp_iv + 10) / 10) + 10) ;
+    let atk = Math.floor(db.monster_data.get(species_id, Stats.Attack) * lv_multi  * ((atk_iv + 10) / 10));
+    let def = Math.floor(db.monster_data.get(species_id, Stats.Defense) * lv_multi  * ((def_iv + 10) / 10));
+    let spd = Math.floor(db.monster_data.get(species_id, Stats.Speed) * lv_multi  * ((spd_iv + 10) / 10));
     return [hp, atk, def, spd];
 },
 
@@ -1401,7 +1405,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
                 // Check for level ups
                 let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
                 if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                    ooch_data = await level_up(ooch_data);
+                    ooch_data = level_up(ooch_data);
                     string_to_send += ooch_data[1];
                     await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
                 }
@@ -1559,7 +1563,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             // Check for level ups
             let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
             if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                ooch_data = await level_up(ooch_data);
+                ooch_data = level_up(ooch_data);
                 string_to_send += ooch_data[1];
                 await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
             }
@@ -1721,23 +1725,23 @@ modify_stat: function(ooch, stat, mod_percent, set = false) {
     switch(stat) {
         case 'atk': 
             ooch.stats.atk_mul = (set == true ? mod_percent : ooch.stats.atk_mul + mod_percent); 
-            ooch.stats.atk_mul = _.clamp(ooch.stats.atk_mul, 0, 4); 
+            ooch.stats.atk_mul = _.clamp(ooch.stats.atk_mul, .25, 4); 
         break; 
         case 'def': 
             ooch.stats.def_mul = (set == true ? mod_percent : ooch.stats.def_mul + mod_percent);
-            ooch.stats.def_mul = _.clamp(ooch.stats.def_mul, 0, 4); 
+            ooch.stats.def_mul = _.clamp(ooch.stats.def_mul, .25, 4); 
         break;
         case 'spd': 
             ooch.stats.spd_mul = (set == true ? mod_percent : ooch.stats.spd_mul + mod_percent);
-            ooch.stats.spd_mul = _.clamp(ooch.stats.spd_mul, 0, 4); 
+            ooch.stats.spd_mul = _.clamp(ooch.stats.spd_mul, .25, 4); 
         break; 
         case 'acc': 
             ooch.stats.acc_mul = (set == true ? mod_percent : ooch.stats.acc_mul + mod_percent); 
-            ooch.stats.acc_mul = _.clamp(ooch.stats.acc_mul, 0, 4); 
+            ooch.stats.acc_mul = _.clamp(ooch.stats.acc_mul, .25, 4); 
         break; 
         case 'eva': 
             ooch.stats.eva_mul = (set == true ? mod_percent : ooch.stats.eva_mul + mod_percent);
-            ooch.stats.eva_mul = _.clamp(ooch.stats.eva_mul, 0, 4); 
+            ooch.stats.eva_mul = _.clamp(ooch.stats.eva_mul, .25, 4); 
         break;
     }
 
@@ -1933,20 +1937,23 @@ finish_battle: async function(thread, user_id, battle_won) {
  * @param {Object} ooch The oochamon that is leveling up
  * @returns A leveled up oochamon, and the output text, both in an array.
  */
-level_up: async function(ooch) {
+level_up: function(ooch) {
     const { exp_to_next_level, get_stats, type_to_emote } = require('./func_battle');
     let level_counter = 0;
     let starting_level = ooch.level;
     let evoData = false;
     let output = ``;
-    if (ooch.level != 50) {
+    if (ooch.level <= 50) {
         while (ooch.current_exp >= ooch.next_lvl_exp && ooch.level < 50) {
             let new_exp = exp_to_next_level(ooch.level);
             let new_stats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
+            let hp_dif = new_stats[0] - ooch.stats.hp //Get the difference between new HP and old HP to be added to the mon
+
             ooch.stats.hp = new_stats[0]
             ooch.stats.atk = new_stats[1]
             ooch.stats.def = new_stats[2]
             ooch.stats.spd = new_stats[3]
+            ooch.current_hp += hp_dif
             ooch.next_lvl_exp = new_exp;
             ooch.level += 1;
             level_counter += 1;

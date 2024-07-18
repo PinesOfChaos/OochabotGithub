@@ -13,12 +13,15 @@ module.exports = {
     async execute(interaction) {
 
         let playerState = db.profile.get(interaction.user.id, 'player_state');
+        
         if (playerState == PlayerState.NotPlaying) {
             return interaction.reply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
         } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
         } else if (playerState == PlayerState.Menu) {
             return interaction.reply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`});
+        }else if (playerState != PlayerState.Playspace){
+            return interaction.reply({ content: 'You can\'t pull up the menu right now.', ephemeral: true });
         }
 
         db.profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
@@ -240,6 +243,7 @@ module.exports = {
 
         // Builds the action rows for the move selector, since this also needs to be run multiple times
         function buildMoveData(selected_ooch) {
+            //PINESNOTE let swappable = selected_ooch.*learnable_moves*.length - selected_ooch.moveset.length (if this is <= 0, don't allow move swapping)
             let move_buttons = [new ActionRowBuilder(), new ActionRowBuilder()];
             let move_idx = 0;
             for (let i = 0; i < 4; i++) {
