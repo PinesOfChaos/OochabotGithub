@@ -185,7 +185,7 @@ module.exports = {
         create_move(53,'Sync Strike',     OochType.Neutral,70,100,  'typematch',100, 'Launch a ball of energy synchronized with the user\'s type')
         create_move(54,'Threefold',       OochType.Neutral,90,90,   'critical',30,   'The target is struck repeatedly, leaving it open to Critical Hits.')
         create_move(55,'Glass Blades',    OochType.Stone,80,70,     'critical',50,   'Brittle blades are used to strike at the opponent\'s weak spots.')
-        create_move(56,'Gravitate',       OochType.Magic,60,30,     -1,0,            'The user manipulates gravity to fling itself at the target.')
+        create_move(56,'Gravitate',       OochType.Magic,60,100,     -1,0,            'The user manipulates gravity to fling itself at the target.')
         create_move(57,'Tenderize',       OochType.Neutral,120,70,  'recoil',30,     'The user slams its body into the opponent, but is hit with recoil.')
         
         ////MORE NEW MOVES
