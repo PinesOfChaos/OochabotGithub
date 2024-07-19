@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
 const { map_emote_string } = require('../func_play.js');
 const wait = require('wait');
+const { PlayerState } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,6 +22,10 @@ module.exports = {
         let target = interaction.user.id;
         let biome_from = db.profile.get(target, 'location_data.area');
 
+        if (db.profile.get(target, 'player_state') !== PlayerState.Playspace) {
+            return interaction.reply({ content: 'You can\'t teleport right now.', ephemeral: true })
+        }
+
         let checkpoint = db.profile.get(target, 'checkpoint_data');
         if (biome_to == 'checkpoint') {
             biome_to = checkpoint.area;
@@ -35,6 +40,11 @@ module.exports = {
         db.player_positions.set(biome_to, { x: map_savepoints[0].x, y: map_savepoints[0].y }, target);
         db.player_positions.delete(biome_from, target);
         db.profile.set(target, { area: biome_to, x: map_savepoints[0].x, y: map_savepoints[0].y }, 'location_data')
+
+        for (let i = 0; i < db.profile.get(interaction.user.id, 'ooch_party').length; i++) {
+            db.profile.set(interaction.user.id, db.profile.get(interaction.user.id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+            db.profile.set(interaction.user.id, true, `ooch_party[${i}].alive`);
+        }
 
         let msg_to_edit = db.profile.get(target, 'display_msg_id');
         (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {

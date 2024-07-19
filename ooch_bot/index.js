@@ -230,6 +230,7 @@ client.on('messageCreate', async message => {
                     let args = message.content.split(' ');
                     if (args.length == 1) args = args[0].split('');
                     let dist = (args.length == 2) ? parseInt(args[1]) : 1;
+                    args[0] = args[0].toLowerCase();
                     if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
                     switch (args[0]) {
                         case 'd': move(message, 'd', dist); break;
@@ -243,6 +244,7 @@ client.on('messageCreate', async message => {
             default: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     let args = message.content.split(' ');
+                    args[0] = args[0].toLowerCase();
                     if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
                 }
             break;

@@ -475,7 +475,7 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let i = 0; i < ooch_inv.length; i++) {
                     ooch_check = ooch_inv[i];
                     ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                    ooch_name = ooch_check.nickname;
+                    ooch_name = ooch_check.nickname;``
                     ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                     ooch_button_color = ButtonStyle.Primary;
                     ooch_disable = false;
@@ -659,6 +659,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                             if (db.profile.get(user_id, `heal_inv.${item_id}`) == undefined) return;
 
+                            
                             ooch_plr = item_use(ooch_plr, item_id)
                             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
                             displayEmbed.setColor('#02ff2c');
@@ -667,6 +668,10 @@ prompt_battle_input: async function(thread, user_id) {
                             item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             
                             db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
+                            if(db.profile.get(user_id, `heal_inv.${item_id}`) <= 0){
+                                db.profile.delete(user_id, `heal_inv.${item_id}`);
+                            }
+
                             b_collector.stop();
                             if (prism_collector != undefined) prism_collector.stop();
                             heal_collector.stop();
@@ -721,6 +726,11 @@ prompt_battle_input: async function(thread, user_id) {
                             let string_to_send = `${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.nickname}**`;
                             
                             db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`)
+
+                            if(db.profile.get(user_id, `prism_inv.${item_id}`) <= 0){
+                                db.profile.delete(user_id, `prism_inv.${item_id}`);
+                            }
+
                             let prism_result = item_use(ooch_enemy, item_id)
                             b_collector.stop();
                             prism_collector.stop();
@@ -868,12 +878,14 @@ prompt_battle_input: async function(thread, user_id) {
                     `Eva: \`${ooch.stats.eva_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.eva_mul*100-100)}%\`\n` +
                     `Acc: \`${ooch.stats.acc_mul >= 1 ? `+` : ``}${Math.round(ooch.stats.acc_mul*100-100)}%\`\n`;
 
+                    
                     if (ooch != ooch_enemy) {
                         let moveset_str = ``;
                         for (let move_id of ooch.moveset) {
                             let move = db.move_data.get(move_id)
+                            move.accuracy = Math.abs(move.accuracy);
                             if (move.damage !== 0) {
-                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
+                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
                             } else {
                                 let move_info = move.effect.split('_');
                                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** chance to work\n`;
@@ -1264,6 +1276,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                                 }
                             break;
                         }
+
+                        // Remove duplicates
+                        status_adds = status_adds.filter((item,
+                            index) => status_adds.indexOf(item) === index);     
 
                         defender_field_text += `\n--- The opposing ${status_target_emote} **${status_target.nickname}** was **${eff.toUpperCase()}!**`
                         status_target.status_effects.push(status_adds);
@@ -1991,9 +2007,8 @@ use_eot_ability: function(ooch) {
 finish_battle: async function(thread, user_id, battle_won) {
     const { event_process } = require('./func_event');
 
-    db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     db.profile.set(user_id, {}, 'ooch_enemy');
-    await wait(10000);
+    await wait(5000);
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {

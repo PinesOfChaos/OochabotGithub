@@ -36,6 +36,8 @@ module.exports = {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
         } else if (otherUserState == PlayerState.Trading) {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`, ephemeral: true });
+        } else if (otherUserState !== PlayerState.Playspace) {
+            return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` })
         }
 
         //#region Setup Rows/Functions

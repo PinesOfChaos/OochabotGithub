@@ -31,7 +31,12 @@ module.exports = {
                     option.setName('ability')
                         .setDescription('The name of the ability')
                         .setAutocomplete(true)
-                        .setRequired(true))),
+                        .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('controls')
+                .setDescription('View the controls!')),
     async execute(interaction) {
 
         let selected_db = interaction.options.getSubcommand();
@@ -108,6 +113,20 @@ module.exports = {
                     ephemeral: true
                 })
             break;
+            case 'controls':
+                let controls_embed = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle('Controls')
+                    .setDescription('`wasd` typed into the chat to move, type in a number afterwards to jump ahead up to 6 tiles in a direction\n' +  
+                        '`/lookup` lets you look up what a move does or ability does, and the type chart\n' + 
+                        '`/teleport` lets you teleport to the hub or your last used teleporter\n' + 
+                        '`/menu` pulls up the menu\n' + 
+                        '`/play` to play the game\n' +
+                        '`/quit` to quit and close your thread')
+                return interaction.reply({
+                    embeds: [controls_embed],
+                    ephemeral: true
+                })
         }
 
     },

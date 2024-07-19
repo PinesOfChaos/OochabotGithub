@@ -32,7 +32,7 @@ module.exports = {
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)
             if (move.damage !== 0) {
-                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
+                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
             } else {
                 let move_info = move.effect.split('_');
                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** chance to work\n`;

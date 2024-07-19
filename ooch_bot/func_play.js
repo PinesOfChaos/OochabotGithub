@@ -52,8 +52,8 @@ module.exports = {
             
         profile_arr = profile_arr.filter(val => val != message.author.id);
         
-        // Max limit of 4 tiles that you can move at once
-        dist = _.clamp(dist, 0, 4);
+        // Max limit of 6 tiles that you can move at once
+        dist = _.clamp(dist, 0, 6);
         
         //Get the player's location
         let player_location = profile_data.location_data;
@@ -74,7 +74,7 @@ module.exports = {
         if (map_shops == undefined || map_shops == null) map_shops = [];        
         
         //set where the player is going to move
-        switch(direction){
+        switch(direction.toLowerCase()){
             case('a'):
                 xmove = -1;
             break;
@@ -138,7 +138,7 @@ module.exports = {
                                             await setup_battle(message.channel, message.author.id, generated_ooch);
                                         }
                                         else {
-                                            if (Math.random() > .4) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
+                                            if (Math.random() > .6) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
                                                 await setup_battle(message.channel, message.author.id, generated_ooch);
                                                 await msg.delete();
                                             }
@@ -189,6 +189,7 @@ module.exports = {
                         //prompt the player 
                         stop_moving = true;
                         message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
+                            db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                             confirm_collector.on('collect', async sel => {
                                 if (sel.customId == 'yes') {
@@ -197,10 +198,12 @@ module.exports = {
                                         db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                         db.profile.set(user_id, true, `ooch_party[${i}].alive`);
                                     }
+                                    db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                                     await sel.update({ content: 'Checkpoint set, and healed your Oochamon!', components: [] });
                                     await wait(5000);
-                                    await msg.delete();
+                                    await msg.delete().catch(() => {});
                                 } else {
+                                    db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                                     msg.delete();
                                 }
                             });
@@ -231,11 +234,13 @@ module.exports = {
                     let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
                     let quarter_circle_radians = 90 * Math.PI / 180;
                     let steps = 3;
+                    let stop_check = false;
                     let _vx, _vy, _xx, _yy, _t;
                     if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) {
                         for(let i = 0; i < 4; i++){
                             _vx = Math.cos(quarter_circle_radians * i);
                             _vy = Math.sin(quarter_circle_radians * i);
+                            if(stop_check){ break; }
                             for(let j = 0; j < steps; j++){
                                 _xx = Math.round(_.clamp(obj.x + _vx * j, 0, 99));
                                 _yy = Math.round(_.clamp(obj.y + _vy * j, 0, 99));
@@ -243,6 +248,7 @@ module.exports = {
                                 if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){
                                     break;
                                 }
+                                if(stop_check){ break; }
                                 else{
                                     if(
                                         _xx == playerx && 
@@ -252,7 +258,7 @@ module.exports = {
                                         (!obj.remove_on_finish || !player_flags.includes(npc_flag))
                                     ){
                                         stop_moving = true;
-                
+                                        stop_check = true;
                                         //Dialogue Stuff goes here
                                         event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
                                     }

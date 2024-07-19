@@ -445,7 +445,7 @@ module.exports = {
                 let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
                 await db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
 
-                if (db.profile.get(interaction.user.id, `heal_inv.${selected}`) === 0) {
+                if (db.profile.get(interaction.user.id, `heal_inv.${selected}`) <= 0) {
                     await db.profile.delete(interaction.user.id, `heal_inv.${selected}`);
                 }
 
@@ -537,7 +537,7 @@ module.exports = {
                             let db_move_data = db.move_data.get(move_data[1]);
                             move_list_select_options.push(
                                 new StringSelectMenuOptionBuilder()
-                                    .setLabel(`${db_move_data.name} [${db_move_data.damage} dmg, ${db_move_data.accuracy}% hit chance]`)
+                                    .setLabel(`${db_move_data.name} [${db_move_data.damage} power, ${db_move_data.accuracy}% hit chance]`)
                                     .setValue(`move_sel_${db_move_data.id}`)
                                     .setDescription(`${db_move_data.description}`)
                                     .setEmoji(`${type_to_emote(db_move_data.type)}`)
@@ -567,7 +567,7 @@ module.exports = {
                     let moveset_str = ``;
                     for (let move_id of selected_ooch.moveset) {
                         let move = db.move_data.get(move_id)
-                        moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** dmg, **${move.accuracy}%** chance to hit\n`;
+                        moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
                     }
                     dexEmbed.data.fields[0].value = moveset_str;
 
