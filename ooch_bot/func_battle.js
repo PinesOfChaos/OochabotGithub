@@ -736,7 +736,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 let ooch_party = user_profile.ooch_party;
                                 // Distribute XP for a caught Oochamon
                                 // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
-                                exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), enemy_profile.trainer_type === TrainerType.NPCTrainer ? 2 : 1);
+                                exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), 1); //catching mons will always give 1x EXP
                                 let exp_earned_main = Math.round(exp_earned * 1.25);
                                 if (ooch_plr.level != 50) {
                                     string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
@@ -1445,8 +1445,10 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
         if (slot_to_send == -1) { //if there is no slot to send in
             let string_to_send = ``;
             let displayEmbed = new EmbedBuilder();
+            let is_wild = false;
             if (db.profile.get(user_id, 'ooch_enemy.trainer_type') == TrainerType.Wild) {
                 oochabux = _.random(5, 40);
+                is_wild = true;
             } else {
                 oochabux = user_profile.ooch_enemy.oochabux;
             }
@@ -1455,7 +1457,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             let ooch_party = user_profile.ooch_party;
             // Distribute XP for a defeated Oochamon
             // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
-            exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), enemy_profile.trainer_type === TrainerType.NPCTrainer ? 2 : 1);
+            exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), is_wild ? 1 : 2);
             let exp_earned_main = Math.round(exp_earned * 1.25);
             if (ooch_plr.level != 50) {
                 string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
@@ -1527,7 +1529,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
  * @param {Object} ooch_enemy The object of the "enemy" Oochamon
  */
 end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
-    const { generate_hp_bar, use_eot_ability, battle_calc_exp, level_up, ability_stat_change } = require('./func_battle.js');
+    const { generate_hp_bar, use_eot_ability, battle_calc_exp, level_up, ability_stat_change, modify_stat } = require('./func_battle.js');
 
     let ooch_list = [ooch_plr, ooch_enemy].filter(o => o.current_hp > 0);
     let ooch_status_emotes = [[], []]; // 0 is ooch_plr, 1 is ooch_enemy

@@ -1,5 +1,6 @@
 const db = require("./db");
 const { Zone } = require('./types');
+const fs = require("fs");
 
 module.exports = {
     /**
@@ -78,6 +79,8 @@ module.exports = {
      * @param {Number} evo_stage What stage the Oochamon is at evolution wise
      */
     create_monster: function(id, emote, name, oochive_entry, type, hp, atk, def, spd, move_list, abilities, pre_evo_id, evo_id, evo_lvl, evo_stage) { 
+        
+
         let key_id = id.toString();
         db.monster_data.set(key_id, id, 'id')
         db.monster_data.set(key_id, emote, 'emote')
@@ -94,6 +97,15 @@ module.exports = {
         db.monster_data.set(key_id, evo_id, 'evo_id')
         db.monster_data.set(key_id, evo_lvl, 'evo_lvl')
         db.monster_data.set(key_id, evo_stage, 'evo_stage')
+
+        fs.access(`./Art/ResizedArt/${name.toLowerCase()}.png`, (err) => {
+            if(err){
+                console.log(`ART ERROR: ${name}`)
+            }
+        });
+        
+
+        
     },
 
     /**

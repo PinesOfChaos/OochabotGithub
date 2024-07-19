@@ -431,7 +431,7 @@ module.exports = {
         [ Ability.Leech, Ability.Icky ], -1, -1, -1, 0)
 
         //Jellime
-        create_monster(22, get_emote_string(client, 'jellime'), 'Jelime',
+        create_monster(22, get_emote_string(client, 'jellime'), 'Jellime',
         'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', [OochType.Ooze], 14, 10, 16, 10, //total 50
         [ [1, Move.Bash],[2, Move.Soften],[3, Move.Glob],[7, Move.MagicBolt],[11, Move.ClampDown],[18, Move.Impale],[25, Move.TangledThreads],[-1, Move.Laminate] ],
         [ Ability.Leech, Ability.Icky ], -1, 23, 15, 0)
