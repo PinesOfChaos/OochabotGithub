@@ -180,7 +180,7 @@
 	],
 	"map_savepoints": [
 		{
-			"savepoint_initial": false,
+			"savepoint_initial": true,
 			"savepoint_x": 26,
 			"savepoint_y": 42
 		}

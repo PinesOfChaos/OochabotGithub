@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState, Tile } = require('./types.js');
+const { Flags, PlayerState, Tile, Zone } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -95,7 +95,8 @@ module.exports = {
             if(stop_moving){ break; }
             let tile_id = map_tiles[playerx + xmove][playery + ymove]
             var tile = db.tile_data.get(tile_id.toString());
-
+            // 25% chance on cave, 40% chance on other places
+            let encounter_chance = tile.zone_id == Zone.Cave ? .25 : .40;
 
             switch(tile.use){
                 case Tile.Board:
@@ -107,7 +108,7 @@ module.exports = {
                 case Tile.Grass:
                     playerx += xmove;
                     playery += ymove;
-                    if (Math.random() < .40) {
+                    if ((Math.random() < encounter_chance) && (!stop_moving)){
                         
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
@@ -128,6 +129,7 @@ module.exports = {
                                 let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
                                 //use slot .ooch_id, .min_level, .max_level to setup the encounter
                                 message.channel.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
+                                    db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
                                         let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
@@ -136,11 +138,12 @@ module.exports = {
                                             await setup_battle(message.channel, message.author.id, generated_ooch);
                                         }
                                         else {
-                                            if (Math.random() > .5) { //50/50 chance to run ignoring the encounter entirely if 'Run' is chosen
+                                            if (Math.random() > .4) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
                                                 await setup_battle(message.channel, message.author.id, generated_ooch);
                                                 await msg.delete();
                                             }
-                                            else { // If we fail the 50/50, ignore the input*/
+                                            else { // If we fail the 60/40, ignore the input*/
+                                                db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                                                 await msg.delete();
                                             }
                                         }
@@ -157,89 +160,131 @@ module.exports = {
             }
 
             //Transitions
-            for(let obj of map_transitions){
-                if(obj.x == playerx && obj.y == playery){
-                    stop_moving = true;
-                    playerx = obj.connect_x;
-                    playery = obj.connect_y;
-                    map_name = obj.connect_map;
-                    
-                    //Get the map array based on the player's current map
-                    map_obj =   db.maps.get(map_name.toLowerCase());
-                    map_tiles =         map_obj.tiles; 
-                    map_npcs =          map_obj.npcs;
-                    map_spawns =        map_obj.spawn_zones;
-                    map_savepoints =    map_obj.savepoints;
-                    map_transitions =   map_obj.transitions;
-                    map_events =        map_obj.events;
-                    map_shops =         map_obj.shops;
-                    if (map_shops == undefined || map_shops == null) map_shops = [];        
+            if(!stop_moving){
+                for(let obj of map_transitions){
+                    if(obj.x == playerx && obj.y == playery){
+                        stop_moving = true;
+                        playerx = obj.connect_x;
+                        playery = obj.connect_y;
+                        map_name = obj.connect_map;
+                        
+                        //Get the map array based on the player's current map
+                        map_obj =   db.maps.get(map_name.toLowerCase());
+                        map_tiles =         map_obj.tiles; 
+                        map_npcs =          map_obj.npcs;
+                        map_spawns =        map_obj.spawn_zones;
+                        map_savepoints =    map_obj.savepoints;
+                        map_transitions =   map_obj.transitions;
+                        map_events =        map_obj.events;
+                        map_shops =         map_obj.shops;
+                        if (map_shops == undefined || map_shops == null) map_shops = [];        
+                    }
                 }
             }
 
             //Save Points
-            for(let obj of map_savepoints){
-                if(obj.x == playerx && obj.y == playery){
-                    //prompt the player 
-                    stop_moving = true;
-                    message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
-                        confirm_collector = msg.createMessageComponentCollector({ max: 1 });
-                        confirm_collector.on('collect', async sel => {
-                            if (sel.customId == 'yes') {
-                                db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
-                                for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
-                                    db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                    db.profile.set(user_id, true, `ooch_party[${i}].alive`);
+            if(!stop_moving){
+                for(let obj of map_savepoints){
+                    if(obj.x == playerx && obj.y == playery){
+                        //prompt the player 
+                        stop_moving = true;
+                        message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
+                            confirm_collector = msg.createMessageComponentCollector({ max: 1 });
+                            confirm_collector.on('collect', async sel => {
+                                if (sel.customId == 'yes') {
+                                    db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
+                                    for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
+                                        db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+                                        db.profile.set(user_id, true, `ooch_party[${i}].alive`);
+                                    }
+                                    await sel.update({ content: 'Checkpoint set, and healed your Oochamon!', components: [] });
+                                    await wait(5000);
+                                    await msg.delete();
+                                } else {
+                                    msg.delete();
                                 }
-                                await sel.update({ content: 'Checkpoint set, and healed your Oochamon!', components: [] });
-                                await wait(5000);
-                                await msg.delete();
-                            } else {
-                                msg.delete();
-                            }
+                            });
                         });
-                    });
+                    }
                 }
             }
 
             //Events
-            let x1,y1,x2,y2;
-            for(let obj of map_events){
-                x1 = (obj.x) <= playerx;
-                y1 = (obj.y) <= playery;
-                x2 = (x1 + obj.width) > playerx;
-                y2 = (y1 + obj.height) > playery;
-                if(x1 && y1 && x2 && y2){
-                    //stop_moving = true;
-                    //trigger this event if the player hasn't triggered it already
+            if(!stop_moving){
+                let x1,y1,x2,y2;
+                for(let obj of map_events){
+                    x1 = (obj.x) <= playerx;
+                    y1 = (obj.y) <= playery;
+                    x2 = (x1 + obj.width) > playerx;
+                    y2 = (y1 + obj.height) > playery;
+                    if(x1 && y1 && x2 && y2){
+                        //stop_moving = true;
+                        //trigger this event if the player hasn't triggered it already
+                    }
                 }
             }
 
             //NPCs
-            for(let obj of map_npcs){
-                //Check if player collides with this NPC's position
-                let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
-                if(
-                    obj.x == playerx && 
-                    obj.y == playery && 
-                    (!player_flags.includes(obj.flag_kill)) &&
-                    (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
-                    (!obj.remove_on_finish || !player_flags.includes(npc_flag))
-                ){
-                    stop_moving = true;
-                    playerx -= xmove;
-                    playery -= ymove;
-
-                    //Dialogue Stuff goes here
-                    event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
-                }
+            if(!stop_moving){
+                for(let obj of map_npcs){
+                    //Check if player collides with this NPC's position
+                    let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
+                    let quarter_circle_radians = 90 * Math.PI / 180;
+                    let steps = 3;
+                    let _vx, _vy, _xx, _yy, _t;
+                    if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) {
+                        for(let i = 0; i < 4; i++){
+                            _vx = Math.cos(quarter_circle_radians * i);
+                            _vy = Math.sin(quarter_circle_radians * i);
+                            for(let j = 0; j < steps; j++){
+                                _xx = Math.round(_.clamp(obj.x + _vx * j, 0, 99));
+                                _yy = Math.round(_.clamp(obj.y + _vy * j, 0, 99));
+                                _t = db.tile_data.get(map_tiles[_xx][_yy]);
+                                if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){
+                                    break;
+                                }
+                                else{
+                                    if(
+                                        _xx == playerx && 
+                                        _yy == playery && 
+                                        (!player_flags.includes(obj.flag_kill)) &&
+                                        (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
+                                        (!obj.remove_on_finish || !player_flags.includes(npc_flag))
+                                    ){
+                                        stop_moving = true;
                 
+                                        //Dialogue Stuff goes here
+                                        event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        if(
+                            obj.x == playerx && 
+                            obj.y == playery && 
+                            (!player_flags.includes(obj.flag_kill)) &&
+                            (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
+                            (!obj.remove_on_finish || !player_flags.includes(npc_flag))
+                        ){
+                            stop_moving = true;
+                            playerx -= xmove;
+                            playery -= ymove;
+                            
+                            //Dialogue Stuff goes here
+                            event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
+                        }
+                    }
+                    
+                    
+                }
             }
 
             //Shops
             for(let obj of map_shops){
                 //Check if player collides with this shop's position
-                if(obj.x == playerx && obj.y == playery){
+                if(obj.x == playerx && obj.y == playery && !stop_moving){
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;

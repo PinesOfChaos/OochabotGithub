@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
 const { type_to_emote, get_status_emote } = require('../func_battle');
+const { get_art_file } = require('../func_other.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,6 +17,11 @@ module.exports = {
                         .setDescription('The name of the ability')
                         .setAutocomplete(true)
                         .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('type_chart')
+                .setDescription('See weaknesses and resistances'))
 
         .addSubcommand(subcommand =>
             subcommand
@@ -88,6 +94,17 @@ module.exports = {
                     .setDescription(info_ability.description);
                 return interaction.reply({
                     embeds: [ embed_ability ],
+                    ephemeral: true
+                })
+            break;
+            case 'type_chart':
+                let embed_type_chart = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle('Type Chart')
+                    .setImage('attachment://type_chart.png')
+                return interaction.reply({
+                    embeds: [ embed_type_chart ],
+                    files: [ get_art_file('./Art/ArtFiles/type_chart.png') ],
                     ephemeral: true
                 })
             break;

@@ -7,6 +7,7 @@ const PlayerState = {
     Menu: 'menu',
     Combat: 'combat',
     Cutscene: 'cutscene',
+    Encounter: 'encounter',
     NotPlaying: 'notplaying',
     Trading: 'trading',
 }

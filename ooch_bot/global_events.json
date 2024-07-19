@@ -62,7 +62,7 @@
           0,
           {
             "title": "Quick Tutorial",
-            "description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `wasd` in the chat, and send it as a message. You can use a number after `wasd` to jump up to 4 tiles in one direction.\nYou can type `/menu` as well to pull up the in game menu!\n\nIf you have any questions, please ask Pines or Jeff!",
+            "description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `wasd` in the chat, and send it as a message. You can use a number after `wasd` to jump up to 4 tiles in one direction.\nYou can type `/menu` as well to pull up the in game menu!\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table at any time!\n\nIf you have any questions, please ask Pines or Jeff!",
             "image": false,
             "money": 0,
             "item": false,
@@ -72,47 +72,5 @@
         ],
 
         [ 3, "intro" ]
-    ],
-    "ev_end": [
-        [
-          0,
-          {
-            "title": "Ending",
-            "description": "Congratulations! You have finished the Oochamon 1st Beta Test!",
-            "money": 0,
-            "item": false,
-            "image": false,
-            "dialogue_file_name": false,
-            "dialogue_file_path": false
-          }
-        ],
-
-        [
-          0,
-          {
-            "title": "Ending",
-            "description": "Please tell Jeffdev and PinesOfChaos what you thought, we welcome all feedback as it will help us make our game better!",
-            "money": 0,
-            "item": false,
-            "image": false,
-            "dialogue_file_name": false,
-            "dialogue_file_path": false
-          }
-        ],
-
-        [
-          0,
-          {
-            "title": "Ending",
-            "description": "We hope you enjoyed!",
-            "money": 0,
-            "item": false,
-            "image": false,
-            "dialogue_file_name": false,
-            "dialogue_file_path": false
-          }
-        ],
-
-        [ 3, "end" ]
     ]
 }

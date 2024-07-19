@@ -69,7 +69,7 @@ t02_019|t02_019|t02_019|t02_019|t02_019|t02_019|t02_019|t02_019|t02_019|t02_019|
 #npcs
 ???|46|36|c00_012|c_012|||0|-1|0||cromet_encounter||0|*rawr x3*|*dies cutely, opens up path to the right*|35``14`5`1`62`3`0`10`2`2`2`||||
 Researcher|50|35|c00_005|c_005|||0|-1|0|||cromet_encounter|0|What're ya doin?`I'm researchin' here!|Yeah, uh, still researchin'.|||||
-Chest|24|39|c00_013|c_013|||0|0|3||||1|||||||
+Chest|24|39|c00_013|c_013|||0|0|3||||1|You open the chest...||||||
 Researcher|29|23|c00_005|c_005|||0|-1|0|||cromet_encounter|0|Cave's off limits until we can figure out what's going on in there...|Look, it's nothing serious.`It's just... off limits.|||||
 Wanderer Sasha|41|20|c00_002|c_002|||100|-1|0||||0|Ya wanna scrap?|Okay, okay, you win.|11``14`2`0`62`-1`-1`0`0`0`0`|11``14`4`0`3`62`-1`0`0`0`0`|||
 Researcher Braden|38|31|c00_005|c_005|||85|-1|0||||0|I'm bored, wanna fight?|Thanks, now I can keep staring at this wall.|15``8`3`1`60`0`0`0`0`0`0`||||
