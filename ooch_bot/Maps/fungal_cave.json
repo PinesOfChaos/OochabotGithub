@@ -64,7 +64,7 @@
 		},
 		{
 			"npc_coin": 1092,
-			"npc_dialog_post": "Why...\nMe...",
+			"npc_dialog_post": "Why...\nMe...\n...\n[That's all for the playtest session!]\n[Feel free to continue adventuring!]\n[And don't forget to let us know your throughts!]",
 			"npc_dialog_pre": "*mumble*\n*groan*\nConsume...",
 			"npc_flag_given": "cleared_fungal_caves",
 			"npc_flag_kill": "",
@@ -95,13 +95,13 @@
 					"slot_def": 5,
 					"slot_hp": 5,
 					"slot_level": 10,
-					"slot_move1": 0,
-					"slot_move2": 2,
-					"slot_move3": 9,
-					"slot_move4": 65,
+					"slot_move1": -1,
+					"slot_move2": 65,
+					"slot_move3": 2,
+					"slot_move4": 9,
 					"slot_nickname": "",
 					"slot_spd": 0,
-					"slot_species": 13
+					"slot_species": 14
 				}
 			],
 			"npc_sprite_combat": "",

@@ -404,7 +404,7 @@ module.exports = {
         create_monster(17, get_emote_string(client, 'charlite'), 'Charlite',
         'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.', [OochType.Flame], 5, 15, 5, 10, //total 35
         [ [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],[16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],[-1, Move.Inferno] ],
-        [ Ability.Fleeting, Ability.Warm ], -1, 18, 12, 0)
+        [ Ability.Fleeting, Ability.Warm ], -1, 18, 9, 0)
 
         //Darcoal
         create_monster(18, get_emote_string(client, 'darcoal'), 'Darcoal',
