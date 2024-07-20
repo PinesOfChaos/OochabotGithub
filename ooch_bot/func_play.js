@@ -8,7 +8,7 @@ const { event_process, event_from_npc } = require('./func_event');
 
 module.exports = {
 
-    move: async function(message, direction, dist = 1) {
+    move: async function(thread, user_id, direction, dist = 1) {
         /*
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
         */
@@ -16,10 +16,9 @@ module.exports = {
         const { map_emote_string, setup_playspace_str } = require('./func_play.js');
         const { generate_wild_battle, setup_battle, level_up, exp_to_next_level } = require("./func_battle");
 
-        let user_id = message.author.id;
         let xmove = 0;
         let ymove = 0;
-        let profile_data = db.profile.get(user_id);
+        let profile_data = await db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
         let profile_arr = db.profile.keyArray();
         let confirm_buttons = new ActionRowBuilder()
@@ -50,7 +49,7 @@ module.exports = {
             );
         let item_qty_collector;
             
-        profile_arr = profile_arr.filter(val => val != message.author.id);
+        profile_arr = profile_arr.filter(val => val != user_id);
         
         // Max limit of 6 tiles that you can move at once
         dist = _.clamp(dist, 0, 6);
@@ -93,71 +92,13 @@ module.exports = {
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
             if(stop_moving){ break; }
-            let tile_id = map_tiles[playerx + xmove][playery + ymove]
+            playerx += xmove;
+            playery += ymove;
+
+            let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());
             // 25% chance on cave, 40% chance on other places
             let encounter_chance = tile.zone_id == Zone.Cave ? .25 : .40;
-
-            switch(tile.use){
-                case Tile.Board:
-                    stop_moving = true;
-                break;
-                case Tile.Wall:
-                    stop_moving = true;
-                break;
-                case Tile.Grass:
-                    playerx += xmove;
-                    playery += ymove;
-                    if ((Math.random() < encounter_chance) && (!stop_moving)){
-                        
-                        let spawn_zone, x1,y1,x2,y2;
-                        for(let j = 0; j < map_spawns.length; j++){
-                            
-                            spawn_zone = map_spawns[j];
-                            x1 = (spawn_zone.x) <= playerx;
-                            y1 = (spawn_zone.y) <= playery;
-                            x2 = (spawn_zone.x + spawn_zone.width) > playerx;
-                            y2 = (spawn_zone.y + spawn_zone.height) > playery;
-
-                            if(x1 && y1 && x2 && y2){
-                                stop_moving = true;
-                                let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
-                                console.log([spawn_zone.spawn_slots, slot_index])
-                                let slot = spawn_zone.spawn_slots[slot_index];
-                                let mon_level = _.random(slot.min_level, slot.max_level);
-                                let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
-                                let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
-                                //use slot .ooch_id, .min_level, .max_level to setup the encounter
-                                message.channel.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
-                                    db.profile.set(user_id, PlayerState.Encounter, 'player_state');
-                                    wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
-                                    wild_encounter_collector.on('collect', async sel => {
-                                        let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
-                                        if (sel.customId == 'fight') {
-                                            await msg.delete();
-                                            await setup_battle(message.channel, message.author.id, generated_ooch);
-                                        }
-                                        else {
-                                            if (Math.random() > .6) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
-                                                await setup_battle(message.channel, message.author.id, generated_ooch);
-                                                await msg.delete();
-                                            }
-                                            else { // If we fail the 60/40, ignore the input*/
-                                                db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                                await msg.delete();
-                                            }
-                                        }
-                                    })
-                                })
-                            }
-;                        }
-                    }
-                break;
-                default:
-                    playerx += xmove;
-                    playery += ymove;
-                break;
-            }
 
             //Transitions
             if(!stop_moving){
@@ -188,7 +129,7 @@ module.exports = {
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
                         stop_moving = true;
-                        message.channel.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
+                        thread.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
                             db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                             confirm_collector.on('collect', async sel => {
@@ -230,58 +171,49 @@ module.exports = {
             //NPCs
             if(!stop_moving){
                 for(let obj of map_npcs){
-                    //Check if player collides with this NPC's position
                     let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
-                    let quarter_circle_radians = 90 * Math.PI / 180;
-                    let steps = 3;
-                    let stop_check = false;
-                    let _vx, _vy, _xx, _yy, _t;
-                    if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) {
+                    //Skip NPCs if they meet any of these conditions
+                    if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
+                        (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
+                        (obj.remove_on_finish && player_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
+                    if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
+                    
+                    
+                    if(obj.x == playerx && obj.y == playery){ //Check if player collides with this NPC's position
+                        stop_moving = true;
+                        playerx -= xmove;
+                        playery -= ymove;
+                        
+                        event_process(user_id, thread, event_from_npc(obj, user_id));
+                    }
+                    else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
+                        let quarter_circle_radians = 90 * Math.PI / 180;
+                        let steps = 3;
+                        let stop_check = false;
+                        let _vx, _vy, _xx, _yy, _t;
                         for(let i = 0; i < 4; i++){
                             _vx = Math.cos(quarter_circle_radians * i);
                             _vy = Math.sin(quarter_circle_radians * i);
                             if(stop_check){ break; }
-                            for(let j = 0; j < steps; j++){
-                                _xx = Math.round(_.clamp(obj.x + _vx * j, 0, 99));
-                                _yy = Math.round(_.clamp(obj.y + _vy * j, 0, 99));
+                            for(let j = 1; j <= steps; j++){
+                                _xx = Math.round(_.clamp(obj.x + (_vx * j), 0, 99));
+                                _yy = Math.round(_.clamp(obj.y + (_vy * j), 0, 99));
                                 _t = db.tile_data.get(map_tiles[_xx][_yy]);
-                                if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){
+
+                                if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){ //If the tile type checked is not floor or grass
                                     break;
                                 }
-                                if(stop_check){ break; }
-                                else{
-                                    if(
-                                        _xx == playerx && 
-                                        _yy == playery && 
-                                        (!player_flags.includes(obj.flag_kill)) &&
-                                        (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
-                                        (!obj.remove_on_finish || !player_flags.includes(npc_flag))
-                                    ){
-                                        stop_moving = true;
-                                        stop_check = true;
-                                        //Dialogue Stuff goes here
-                                        event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
-                                    }
+                                else if(_xx == playerx &&  _yy == playery){ //If this is a tile that the npc can see, stop the player
+                                    stop_moving = true;
+                                    stop_check = true;
+                                    
+                                    event_process(user_id, thread, event_from_npc(obj, user_id));
+                                    break;
                                 }
                             }
                         }
                     }
-                    else{
-                        if(
-                            obj.x == playerx && 
-                            obj.y == playery && 
-                            (!player_flags.includes(obj.flag_kill)) &&
-                            (obj.flag_required == "" || player_flags.includes(obj.flag_required)) &&
-                            (!obj.remove_on_finish || !player_flags.includes(npc_flag))
-                        ){
-                            stop_moving = true;
-                            playerx -= xmove;
-                            playery -= ymove;
-                            
-                            //Dialogue Stuff goes here
-                            event_process(message.author.id, message.channel, event_from_npc(obj, message.author.id));
-                        }
-                    }
+                    
                     
                     
                 }
@@ -294,10 +226,10 @@ module.exports = {
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
-                    db.profile.set(message.author.id, PlayerState.Shop, 'player_state');
+                    db.profile.set(user_id, PlayerState.Shop, 'player_state');
                     let shopSelectOptions = [];
                     if (obj.type == 'default' || obj.type == null) {
-                        shopSelectOptions = db.profile.get(message.author.id, 'global_shop_items');
+                        shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
                     }
                     shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);
@@ -320,24 +252,24 @@ module.exports = {
                     );
 
                     //start shop stuff here
-                    let oochabux = db.profile.get(message.author.id, 'oochabux');
+                    let oochabux = db.profile.get(user_id, 'oochabux');
 
                     let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
-                    let msg = await message.channel.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button], files: [shopImage] });
+                    let msg = await thread.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button], files: [shopImage] });
                     
                     // Delete the current playspace
-                    let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id'));
+                    let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id')).catch(() => {});
                     await playspace_msg.delete();
 
                     shop_collector = await msg.createMessageComponentCollector({ time: 600000 });
                     shop_collector.on('collect', async sel => {
                         if (sel.customId == 'back') {
-                            db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
-                            let playspace_str = setup_playspace_str(message.author.id);
-                            let play_msg = await message.channel.send(playspace_str);
-                            db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
-                            db.profile.set(message.author.id, oochabux, 'oochabux')
-                            msg.delete();
+                            db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                            let playspace_str = setup_playspace_str(user_id);
+                            let play_msg = await thread.send(playspace_str);
+                            db.profile.set(user_id, play_msg.id, 'display_msg_id')
+                            db.profile.set(user_id, oochabux, 'oochabux')
+                            await msg.delete().catch(() => {});
                             shop_collector.stop();
                             if (item_qty_collector) item_qty_collector.stop();
                             return;
@@ -351,29 +283,29 @@ module.exports = {
                         let purchaseReqMsg;
                         if (item.price <= oochabux) {
                             const qty_filter = async m => {
-                                if (m.author.id != message.author.id) return false;
+                                if (m.author.id != user_id) return false;
                                 if (!isNaN(parseInt(m.content))) {
                                     if (parseInt(m.content) != 0) {
                                         if (oochabux < item.price * parseInt(m.content)) {
                                             sel.followUp({ content: `You do not have enough money to buy ${m.content}x ${item.emote} **${item.name}**.`, ephemeral: true });
-                                            m.delete();
+                                            m.delete().catch(() => {});
                                             return false;
                                         }
                                         return true;
                                     } else {
                                         sel.followUp({ content: `You cannot buy 0 of an item.`, ephemeral: true });
-                                        m.delete();
+                                        m.delete().catch(() => {});
                                         return false;
                                     }
                                 } else {
                                     sel.followUp({ content: `You must type in a number quantity of items you want to buy!`, ephemeral: true });
-                                    m.delete();
+                                    m.delete().catch(() => {});
                                     return false;
                                 }
                             }
 
                             let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.` });
-                            item_qty_collector = message.channel.createMessageCollector({ filter: qty_filter, max: 1 });
+                            item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
                                 let new_inv_qty = 0;
@@ -381,51 +313,111 @@ module.exports = {
                                 oochabux -= item.price * buyAmount;
                                 switch (item.type) {
                                     case 'potion': 
-                                        db.profile.ensure(message.author.id, 0, `heal_inv.${item_id}`)
-                                        db.profile.math(message.author.id, '+', buyAmount, `heal_inv.${item_id}`);
-                                        new_inv_qty = db.profile.get(message.author.id, `heal_inv.${item_id}`);
+                                        db.profile.ensure(user_id, 0, `heal_inv.${item_id}`)
+                                        db.profile.math(user_id, '+', buyAmount, `heal_inv.${item_id}`);
+                                        new_inv_qty = db.profile.get(user_id, `heal_inv.${item_id}`);
                                     break;
                                     case 'prism': 
-                                        db.profile.ensure(message.author.id, 0, `prism_inv.${item_id}`)
-                                        db.profile.math(message.author.id, '+', buyAmount, `prism_inv.${item_id}`);
-                                        new_inv_qty = db.profile.get(message.author.id, `prism_inv.${item_id}`);
+                                        db.profile.ensure(user_id, 0, `prism_inv.${item_id}`)
+                                        db.profile.math(user_id, '+', buyAmount, `prism_inv.${item_id}`);
+                                        new_inv_qty = db.profile.get(user_id, `prism_inv.${item_id}`);
                                     break;
                                 }
                                 
-                                purchaseReqMsg.delete();
-                                m.delete();
+                                await purchaseReqMsg.delete().catch(() => {});
+                                await m.delete().catch(() => {});
                                 let followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
-                                msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                                await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] }).catch(() => {});
                                 await wait(7000);
-                                await followUpMsg.delete();
+                                await followUpMsg.delete().catch(() => {});
                             });
                             
                         } else {
                             if (purchaseReqMsg !== undefined) { 
-                                purchaseReqMsg.delete();
-                                m.delete();
+                                await purchaseReqMsg.delete().catch(() => {});
+                                await m.delete().catch(() => {});
                             }
                             let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
                             msg.edit({ components: [shopSelectMenu, back_button] });
                             await wait(5000);
-                            await followUpMsg.delete();
+                            await followUpMsg.delete().catch(() => {});
                         }
                     });
 
                     shop_collector.on('end', async () => {
-                        if (db.profile.get(message.author.id, 'player_state') != PlayerState.Playspace) {
-                            db.profile.set(message.author.id, PlayerState.Playspace, 'player_state');
-                            let playspace_str = setup_playspace_str(message.author.id);
-                            let play_msg = await message.channel.send(playspace_str);
-                            db.profile.set(message.author.id, play_msg.id, 'display_msg_id')
-                            db.profile.set(message.author.id, oochabux, 'oochabux')
-                            msg.delete();
+                        if (db.profile.get(user_id, 'player_state') != PlayerState.Playspace) {
+                            db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                            let playspace_str = setup_playspace_str(user_id);
+                            let play_msg = await thread.send(playspace_str);
+                            db.profile.set(user_id, play_msg.id, 'display_msg_id')
+                            db.profile.set(user_id, oochabux, 'oochabux')
+                            await msg.delete().catch(() => {});
                             shop_collector.stop();
                         }
                     });
 
                     return;
                 }
+            }
+
+            switch (tile.use) {
+                case Tile.Board:
+                    stop_moving = true;
+                    playerx -= xmove;
+                    playery -= ymove;
+                break;
+                case Tile.Wall:
+                    stop_moving = true;
+                    playerx -= xmove;
+                    playery -= ymove;
+                break;
+                case Tile.Grass:
+                    if ((Math.random() < encounter_chance) && (!stop_moving)) {
+                        let spawn_zone, x1,y1,x2,y2;
+                        for(let j = 0; j < map_spawns.length; j++){
+                            
+                            spawn_zone = map_spawns[j];
+                            x1 = (spawn_zone.x) <= playerx;
+                            y1 = (spawn_zone.y) <= playery;
+                            x2 = (spawn_zone.x + spawn_zone.width) > playerx;
+                            y2 = (spawn_zone.y + spawn_zone.height) > playery;
+
+                            if(x1 && y1 && x2 && y2){
+                                stop_moving = true;
+                                let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
+                                let slot = spawn_zone.spawn_slots[slot_index];
+                                let mon_level = _.random(slot.min_level, slot.max_level);
+                                let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
+                                let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
+                                //use slot .ooch_id, .min_level, .max_level to setup the encounter
+                                await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
+                                    await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
+                                    wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
+                                    wild_encounter_collector.on('collect', async sel => {
+                                        let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
+                                        if (sel.customId == 'fight') {
+                                            await msg.delete();
+                                            await setup_battle(thread, user_id, generated_ooch);
+                                        }
+                                        else {
+                                            if (Math.random() > .6) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
+                                                await setup_battle(thread, user_id, generated_ooch);
+                                                await msg.delete();
+                                            }
+                                            else { // If we fail the 60/40, ignore the input*/
+                                                db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                                                await msg.delete();
+                                            }
+                                        }
+                                    })
+                                })
+                            }
+;                        }
+                    }
+                break;
+                default:
+                    
+                break;
             }
 
             //if the player has run into anything that would cause them to stop moving, make them stop
@@ -439,9 +431,9 @@ module.exports = {
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
         //Send reply displaying the player's location on the map
-        message.channel.messages.fetch(msg_to_edit).then((msg) => {
+        await thread.messages.fetch(msg_to_edit).then((msg) => {
             msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) });
-        })
+        });
 
     },
 

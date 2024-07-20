@@ -59,7 +59,7 @@ client.on('ready', async () => {
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 client.on('interactionCreate', async interaction => {
-
+    
     if (interaction.isAutocomplete()) {
         let ooch_ids = db.monster_data.array();
         let item_ids = db.item_data.array();
@@ -227,25 +227,38 @@ client.on('messageCreate', async message => {
             case PlayerState.Playspace: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     // Do movement stuff
-                    let args = message.content.split(' ');
-                    if (args.length == 1) args = args[0].split('');
-                    let dist = (args.length == 2) ? parseInt(args[1]) : 1;
-                    args[0] = args[0].toLowerCase();
-                    if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
-                    switch (args[0]) {
-                        case 'd': move(message, 'd', dist); break;
-                        case 's': move(message, 's', dist); break;
-                        case 'a': move(message, 'a', dist); break; 
-                        case 'w': move(message, 'w', dist); break;
+
+                    let moveMsg = message.content;
+                    for (let msg of moveMsg.split(',')) {
+                        // Check for wwwwww or aaaaaa or ssssss or dddddd
+                        let matches = msg.match(/^([wasd])\1{1,5}$/);
+                        let matchLength = matches ? matches[0].length : null;
+
+                        let args, dist;
+                        if (matchLength === null) { 
+                            args = msg.split(' ');
+                            if (args.length == 1) args = args[0].split('');
+                            dist = (args.length == 2) ? parseInt(args[1]) : 1;
+                            args[0] = args[0].toLowerCase();
+                            if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
+                        } else {
+                            args = [msg[0]];
+                            dist = matchLength;
+                        }
+
+                        switch (args[0]) {
+                            case 'd': await move(message.channel, message.author.id, 'd', dist); break;
+                            case 's': await move(message.channel, message.author.id, 's', dist); break;
+                            case 'a': await move(message.channel, message.author.id, 'a', dist); break; 
+                            case 'w': await move(message.channel, message.author.id, 'w', dist); break;
+                        }
+                        await message.delete().catch(() => {});
                     }
-                    if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
                 }
             break;
             default: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
-                    let args = message.content.split(' ');
-                    args[0] = args[0].toLowerCase();
-                    if (args[0] == 'w' || args[0] == 'a' || args[0] == 's' || args[0] == 'd') message.delete();
+                    await message.delete().catch(() => {});
                 }
             break;
         }

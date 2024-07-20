@@ -8,6 +8,7 @@
             "money": 0,
             "item": false,
             "image": false,
+            "flags": [],
             "dialogue_file_name": false,
             "dialogue_file_path": false
           }
@@ -20,6 +21,7 @@
             "description": "Please, feel free to pick an Oochamon to begin with. Any will do!\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
             "image": "starter.png",
             "money": 0,
+            "flags": [],
             "item": false,
             "dialogue_file_name": false,
             "dialogue_file_path": false
@@ -39,6 +41,7 @@
             "description": "Great choice! Your Oochamon will love you, I'm sure.",
             "image": false,
             "money": 0,
+            "flags": [],
             "item": false,
             "dialogue_file_name": false,
             "dialogue_file_path": false
@@ -52,6 +55,7 @@
             "description": "Get out there and go have some fun. The head researcher would like to speak with you, so start there!",
             "image": false,
             "money": 0,
+            "flags": [],
             "item": false,
             "dialogue_file_name": false,
             "dialogue_file_path": false
@@ -62,8 +66,9 @@
           0,
           {
             "title": "Quick Tutorial",
-            "description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `wasd` in the chat, and send it as a message. You can use a number after `wasd` to jump up to 6 tiles in one direction.\nYou can type `/menu` as well to pull up the in game menu!\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table or the controls at any time!\n\nIf you have any questions, please ask Pines or Jeff!",
+            "description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `w` `a` `s` or `d` in the chat, and send it as a message. You can use a number after the direction, or something like \"www\" or \"ssss\" to jump up to 6 tiles in one direction.\nIf you want to chain together these, you can do something like this: `w4,d4` to do 2 movement actions at once.\nYou can type `/menu` as well to pull up the in game menu!\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table or the controls at any time!\n\nIf you have any questions, please ask Pines or Jeff!",
             "image": false,
+            "flags": [],
             "money": 0,
             "item": false,
             "dialogue_file_name": false,

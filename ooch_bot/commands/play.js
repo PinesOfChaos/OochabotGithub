@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
-const { setup_playspace_str } = require('../func_play.js');
+const { setup_playspace_str, move } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
 const { event_process } = require('../func_event.js');
 const wait = require('wait');
@@ -13,11 +13,23 @@ module.exports = {
         let target = interaction.user.id;
 
         if (!db.profile.has(target)) {
-            return interaction.reply({ content: 'Please run `/setup` before you play the game!', ephemeral: true });
+            return interaction.reply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
         } 
         let thread = interaction.channel;
 
         if (interaction.channel.type != ChannelType.PrivateThread) {
+
+            if (db.profile.has(target)) {
+                if (db.profile.get(target, 'play_thread_id') !== false) {
+                    let thread = await interaction.guild.channels.cache.get(db.profile.get(interaction.user.id, 'play_thread_id'));
+                    if (thread && thread.isThread()) {
+                        await thread.members.remove(interaction.user.id);
+                        await thread.leave();
+                        await thread.setArchived(true);
+                    } 
+                }
+            }
+
             // Setup the play thread
             thread = await interaction.channel.threads.create({
                 name: `${interaction.member.displayName}'s Oochamon Play Thread`,
@@ -68,16 +80,18 @@ module.exports = {
 
         let outputMsg = false;
         if (db.profile.get(interaction.user.id, 'settings.controls_msg') == true) {
-            outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nType in \`wasd\` in the chat to move, and use \`wasd\` followed by a space and a number (\`w 4\` for example) to jump ahead to a different tile.\nType in \`/menu\` if you would like to access the menu.\nRun \`/quit\` when you are done playing!`;
+            outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nUse \`/lookup controls\` if you would like to view controls.`;
         }
 
         //Send reply displaying the player's location on the map
-        await thread.send({ content: playspace_str }).then(msg => {
-            db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
+        await thread.send({ content: playspace_str }).then(async msg => {
+            await db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
 
         if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
             await event_process(interaction.user.id, thread, db.events_data.get('ev_intro'));
+        } else {
+            await move(thread, interaction.user.id, '', 1);
         }
 
         if (playspace_str != "**Intro**") {

@@ -40,6 +40,12 @@ module.exports = {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` })
         }
 
+        let otherUserThread = db.profile.get(otherTradeUser.id, 'play_thread_id');
+        otherUserThread = await interaction.guild.channels.cache.get(db.profile.get(otherTradeUser.id, 'play_thread_id'));
+        if (!otherUserThread || !otherUserThread.isThread()) {
+            return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
+        }
+
         //#region Setup Rows/Functions
         let confirmButtons = new ActionRowBuilder()
             .addComponents(
@@ -101,7 +107,6 @@ module.exports = {
         });
 
         let intUserThread = interaction.channel;
-        let otherUserThread = interaction.guild.channels.cache.get(db.profile.get(otherTradeUser.id, 'play_thread_id'));
         let otherUserTradeMsg = await otherUserThread.send({ content: `You have received an invitation to trade Oochamon from **${interaction.member.displayName}**! Would you like to accept?`, components: [confirmButtons] });
 
         // Setup trade display for interaction user

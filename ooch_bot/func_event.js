@@ -87,6 +87,13 @@ module.exports = {
                         give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
                     } 
 
+                    if (obj_content.flags.length != 0) {
+                        let flags = db.profile.get(user_id, 'flags');
+                        for (let flag of obj_content.flags) {
+                            if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
+                        }
+                    }
+
                     if (info_data.length != 0) {
                         event_embed.addFields({name: 'You Received:', value: info_data })
                     }
@@ -236,6 +243,13 @@ module.exports = {
                             info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
                             give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
                         } 
+
+                        if (obj_content.flags.length != 0) {
+                            let flags = db.profile.get(user_id, 'flags');
+                            for (let flag of obj_content.flags) {
+                                if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
+                            }
+                        }
     
                         if (info_data.length != 0) {
                             event_embed.addFields({name: 'You Received:', value: info_data })
@@ -318,6 +332,15 @@ module.exports = {
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
         let battle_npc = npc_obj.team.length != 0;
+        let flags_to_give = []
+
+        //Set any post-default dialogue flags
+        if (npc_obj.flag_given != false) {
+            flags_to_give.push(npc_obj.flag_given)
+        }
+
+        //Set any post-combat_flags
+        flags_to_give.push(npc_flag)
         
         // If we don't have the NPCs flag, it means they haven't been beaten yet.
         if (!user_flags.includes(npc_flag) && battle_npc == true) {
@@ -330,6 +353,7 @@ module.exports = {
                     // TODO: Make this (image) able to be set in the editor
                     image: false,
                     item: false,
+                    flags: [],
                     dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
                     dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
                 }])
@@ -350,7 +374,8 @@ module.exports = {
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     image: false,
                     dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                    flags : flags_to_give
                 }]);
             }
         }
@@ -379,7 +404,8 @@ module.exports = {
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         image: false,
                         dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                        flags : flags_to_give
                     }])
                 } else {
                     return_array.push([EventMode.Dialogue, {
@@ -388,7 +414,8 @@ module.exports = {
                         money: 0,
                         item: false,
                         dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                        flags: []
                     }])
                 }
             }

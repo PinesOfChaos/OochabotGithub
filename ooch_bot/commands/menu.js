@@ -20,7 +20,7 @@ module.exports = {
         } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
         } else if (playerState == PlayerState.Menu) {
-            return interaction.reply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`});
+            return interaction.reply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, ephemeral: true });
         }else if (playerState != PlayerState.Playspace){
             return interaction.reply({ content: 'You can\'t pull up the menu right now.', ephemeral: true });
         }
@@ -28,7 +28,7 @@ module.exports = {
         db.profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
         // Delete the current playspace
         let playspace_msg = await interaction.channel.messages.fetch(db.profile.get(interaction.user.id, 'display_msg_id'));
-        await playspace_msg.delete();
+        await playspace_msg.delete().catch(() => {});;
 
         //#region Setup action rows for the main menu and some submenus
         // Main Menu
@@ -404,7 +404,7 @@ module.exports = {
                 i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
                 let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
                 await wait(5000);
-                await followUpMsg.delete();
+                await followUpMsg.delete().catch(() => {});
             }
             // Heal Oochamon button
             else if (selected == 'party_heal') {
@@ -460,7 +460,7 @@ module.exports = {
 
                 let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**` });
                 await wait(2500);
-                await followUpMsg.delete();
+                await followUpMsg.delete().catch(() => {});
             }
             // Evolve button
             else if (selected == 'evolve') {
@@ -488,7 +488,7 @@ module.exports = {
 
                 let followUpMsg = await interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
                 await wait(2500);
-                await followUpMsg.delete();
+                await followUpMsg.delete().catch(() => {});
             }   
             // Set a nickname button
             else if (selected == 'nickname') {
@@ -498,7 +498,7 @@ module.exports = {
                         return true;
                     } else {
                         i.followUp({ content: `Nicknames must be 16 characters or less.`, ephemeral: true });
-                        m.delete();
+                        m.delete().catch(() => {});
                         return false;
                     }
                 }
@@ -516,7 +516,7 @@ module.exports = {
 
                     db.profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
                     menuMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
-                    msg.delete();
+                    await msg.delete().catch(() => {});;
                 });
             }
             // Move switcher button
@@ -539,7 +539,7 @@ module.exports = {
                                 new StringSelectMenuOptionBuilder()
                                     .setLabel(`${db_move_data.name} [${db_move_data.damage} power, ${db_move_data.accuracy}% hit chance]`)
                                     .setValue(`move_sel_${db_move_data.id}`)
-                                    .setDescription(`${db_move_data.description}`)
+                                    .setDescription(`${db_move_data.description.substring(0, 25)}`)
                                     .setEmoji(`${type_to_emote(db_move_data.type)}`)
                             );
                         }

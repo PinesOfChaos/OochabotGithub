@@ -252,7 +252,7 @@ module.exports = {
         create_ability(21, 'Haunted',           'Applies the DOOMED status to an enemy when the holder of the ability dies.'); 
         create_ability(22, 'Leech',             'Restores HP equal to 10% of damage done to the enemy.'); 
         create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.'); 
-        create_ability(24, 'Uncontrolled',      'Increases ATK by 30% but randomly chooses an attack each turn'); 
+        create_ability(24, 'Uncontrolled',      'Increases ATK by 50% but randomly chooses an attack each turn'); 
         create_ability(25, 'Apprentice',        'Increases ATK by 15% if any other party members share a move with it.'); 
         create_ability(26, 'Focused',           'Increases damage by 10% if unaffected by status effects.'); 
         create_ability(27, 'Ravenous',          'Whenever defeating an enemy, restore 20% HP.'); 

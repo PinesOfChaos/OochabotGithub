@@ -31,6 +31,7 @@ module.exports = {
 
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)
+            move.accuracy = Math.abs(move.accuracy);
             if (move.damage !== 0) {
                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
             } else {
@@ -44,7 +45,7 @@ module.exports = {
         let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}**(${iv_hp})\nATK: **${ooch.stats.atk}**(${iv_atk})\nDEF: **${ooch.stats.def}**(${iv_def})\nSPD: **${ooch.stats.spd}**(${iv_spd})`, inline: true }]);
+        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(IV: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(IV: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(IV: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(IV: ${iv_spd})\``, inline: true }]);
         infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
 
         return [infoEmbed, get_ooch_art(ooch.name)];

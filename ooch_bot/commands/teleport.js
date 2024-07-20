@@ -51,7 +51,7 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) });
         });
 
-        let travelMsg = await interaction.reply({ content: `Successfully teleported to ${biome_to}!` });
+        let travelMsg = await interaction.reply({ content: `Successfully teleported to ${biome_to} and healed all your Oochamon!` });
         await wait(5000);
         await travelMsg.delete();
         
