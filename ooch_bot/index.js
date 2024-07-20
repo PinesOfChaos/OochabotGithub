@@ -228,7 +228,8 @@ client.on('messageCreate', async message => {
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     // Do movement stuff
 
-                    let moveMsg = message.content;
+                    let moveMsg = message.content.toLowerCase();
+                    moveMsg = moveMsg.replace(' ', '');
                     for (let msg of moveMsg.split(',')) {
                         // Check for wwwwww or aaaaaa or ssssss or dddddd
                         let matches = msg.match(/^([wasd])\1{1,5}$/);

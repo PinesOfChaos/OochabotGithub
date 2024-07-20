@@ -22,7 +22,7 @@
 21|Haunted|Applies the DOOMED status to an enemy when the holder of the ability dies.
 22|Leech|Restores HP equal to 10% of damage done to the enemy.
 23|Ensnare|Grants a 30% chance to SNARE an enemy when attacking.
-24|Uncontrolled|Increases ATK by 30% but randomly chooses an attack each turn
+24|Uncontrolled|Increases ATK by 50% but randomly chooses an attack each turn
 25|Apprentice|Increases ATK by 15% if any other party members share a move with it.
 26|Focused|Increases damage by 10% if unaffected by status effects.
 27|Ravenous|Whenever defeating an enemy, restore 20% HP.

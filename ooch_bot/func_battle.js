@@ -140,7 +140,8 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     await db.profile.set(user_id, 1, 'battle_msg_counter');
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
-    if (abilityMsg != '') {
+    if (abilityMsg.replaceAll('\n','') != '') {
+        console.log(`Sent Ability Message: ${abilityMsg}`)
         await thread.send(abilityMsg);
         db.profile.math(user_id, '+', 1, 'battle_msg_counter');
     }
