@@ -159,9 +159,10 @@ func refresh_moves(index, overwrite = true):
 					step += 1
 					
 
-			#if this is the first, set it to Bash
+			#if this is the first, set it to the first move the mon can learn
 			if (i == 0) and (overwrite):
 				child.select(1)
+				slot_move1 = child.get_item_id(1)
 					
 
 func _on_slot_level_value_changed(value):

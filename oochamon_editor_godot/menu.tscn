@@ -28,7 +28,7 @@ size = Vector2i(500, 400)
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-filters = PackedStringArray("*.txt")
+filters = PackedStringArray("*.json")
 
 [node name="FileDialogSetFilePaths" type="FileDialog" parent="."]
 title = "Open a Directory"
@@ -270,7 +270,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 60.0
 autostart = true
 
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]

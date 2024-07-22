@@ -355,8 +355,8 @@ func set_node_owners(node):
 
 # Save map data
 func _on_file_dialog_save_file_selected(path):
-	var save_file = FileAccess.open(path, FileAccess.WRITE)
-	var save_json = FileAccess.open(path.replace(".txt", ".json"), FileAccess.WRITE)
+	var save_file = FileAccess.open(path.replace(".json", ".txt"), FileAccess.WRITE)
+	var save_json = FileAccess.open(path, FileAccess.WRITE)
 	
 	# set the owner of every single node to the menu
 	set_node_owners_to_menu()
@@ -416,8 +416,12 @@ func _on_file_dialog_save_file_selected(path):
 				
 				"npc_sprite_name" : npc.npc_sprite_name,
 				"npc_short_name" : "c_" + npc.npc_sprite_name.right(3), #not used here, this is used in discord
+				"npc_sprite" : npc.npc_sprite,
 				"npc_sprite_combat" : npc.npc_sprite_combat,
 				"npc_sprite_dialog" : npc.npc_sprite_dialog,
+				
+				"npc_aggro_range" : npc.npc_aggro_range,
+				"npc_is_wild" : npc.npc_is_wild,
 				
 				"npc_coin" : npc.npc_coin,
 				"npc_item_id" : npc.npc_item_id,
@@ -639,6 +643,159 @@ func _on_file_dialog_save_file_selected(path):
 	
 # Load map data
 func _on_file_dialog_load_file_selected(path):
+	
+	if(FileAccess.file_exists(path)):
+		var f = FileAccess.open(path, FileAccess.READ)
+		set_working_dir(path.left(path.rfindn("/"))+"/")
+		var _main = get_parent()
+		var _menu = load("res://menu.tscn")
+		var _inst = _menu.instantiate()
+		_main.add_child(_inst)
+		_inst.owner = _main
+		_inst.file_known = true
+		_inst.file_last_path = path
+		
+		var _text = f.get_as_text(true)
+		var _json = JSON.parse_string(_text)
+		
+		var _events = _inst.menu_events
+		var _spawnzones = _inst.menu_spawnzones
+		var _transitions = _inst.menu_transitions
+		var _save_points = _inst.menu_save_points
+		var _shops = _inst.menu_shops
+		var _npcs = _inst.menu_npcs
+		
+		#Map General Info
+		_inst.map_name = _json.map_info.map_name
+		_inst.map_battleback = _json.map_info.map_battleback
+		
+		#Tiles
+		var _tiles = _json.map_tiles
+		for i in _tiles.size():
+			for j in _tiles[i].size():
+				for k in Global.DataTiles.size():
+					if(Global.DataTiles[k].tile_index == _tiles[i][j]):
+						_inst.map_tiles[i][j] = k
+		
+		
+		#NPCs
+		for _info in _json.map_npcs:
+			var _load = load("res://npc.tscn")
+			var _obj = _load.instantiate()
+			
+			_obj.npc_name = _info.npc_name
+			_obj.npc_x = _info.npc_x
+			_obj.npc_y = _info.npc_y
+			
+			_obj.npc_sprite_name = _info.npc_sprite_name
+			_obj.npc_sprite = _info.npc_sprite
+			_obj.npc_sprite_combat = _info.npc_sprite_combat
+			_obj.npc_sprite_dialog = _info.npc_sprite_dialog
+			
+			_obj.npc_aggro_range = _info.npc_aggro_range
+			_obj.npc_is_wild = _info.npc_is_wild
+			
+			_obj.npc_coin = _info.npc_coin
+			_obj.npc_item_id = _info.npc_item_id
+			_obj.npc_item_number = _info.npc_item_number
+			
+			_obj.npc_flag_required = _info.npc_flag_required
+			_obj.npc_flag_given = _info.npc_flag_given
+			_obj.npc_flag_kill = _info.npc_flag_kill
+			_obj.npc_remove_on_finish = _info.npc_remove_on_finish
+			
+			_obj.npc_dialog_pre = _info.npc_dialog_pre
+			_obj.npc_dialog_post = _info.npc_dialog_post
+			
+			_obj.npc_slots_data = _info.npc_slots #"npc_slots" is used to track the list of slots in the npc
+			
+			_npcs.add_child(_obj)
+			_obj.owner = _npcs
+			
+		#spawn_zones
+		for _info in _json.map_spawn_zones:
+			var _load = load("res://spawn_zone.tscn")
+			var _obj = _load.instantiate()
+
+			# add data to the object
+			_obj.bbox_x = _info.spawn_pos_x
+			_obj.bbox_y = _info.spawn_pos_y
+			_obj.bbox_w = _info.spawn_scale_x
+			_obj.bbox_h = _info.spawn_scale_y
+			_obj.spawn_list = _info.spawn_slots
+			
+			#assign new object as a child of the relevant menu part
+			_spawnzones.add_child(_obj)
+			_obj.owner = _spawnzones
+		
+		for _info in _json.map_savepoints:
+			# create a new object
+			var _load = load("res://savepoint.tscn")
+			var _obj = _load.instantiate()
+
+			# add data to the object
+			_obj.savepoint_initial = _info.savepoint_initial
+			_obj.savepoint_x = _info.savepoint_x
+			_obj.savepoint_y = _info.savepoint_y
+	
+			
+			#assign new object as a child of the relevant menu part
+			_save_points.add_child(_obj)
+			_obj.owner = _save_points
+		
+		for _info in _json.map_shops:
+			# create a new object
+			var _load = load("res://shop.tscn")
+			var _obj = _load.instantiate()
+
+			# add data to the object
+			_obj.shop_x = _info.shop_x
+			_obj.shop_y = _info.shop_y
+			_obj.shop_type = _info.shop_type
+			_obj.shop_special_items = _info.shop_specials
+			_obj.shop_image = _info.shop_image
+			_obj.shop_greeting = _info.shop_greeting
+			
+			#assign new object as a child of the relevant menu part
+			_shops.add_child(_obj)
+			_obj.owner = _shops		
+							
+		for _info in _json.map_events:
+			var _load = load("res://event_trigger.tscn")
+			var _obj = _load.instantiate()
+		
+			# add data to the object
+			_obj.bbox_x = _info.ev_pos_x
+			_obj.bbox_y = _info.ev_pos_y
+			_obj.bbox_w = _info.ev_scale_x
+			_obj.bbox_h = _info.ev_scale_y
+			_obj.event_name = _info.ev_name
+			_obj.event_required = _info.ev_required
+			_obj.event_kill = _info.ev_kill
+			
+			#assign new object as a child of the relevant menu part
+			_events.add_child(_obj)
+			_obj.owner = _events
+							
+		for _info in _json.map_transitions:
+			var _load = load("res://transition.tscn")
+			var _obj = _load.instantiate()
+		
+			# add data to the object
+			_obj.transition_x = _info.transition_x
+			_obj.transition_y = _info.transition_y
+			_obj.transition_map_to = _info.transition_map_to
+			_obj.transition_xto = _info.transition_xto
+			_obj.transition_yto = _info.transition_yto
+			
+			#assign new object as a child of the relevant menu part
+			_transitions.add_child(_obj)
+			_obj.owner = _transitions
+		
+		_inst.do_screen_refresh = true
+		self.queue_free()
+		return
+		
 	var f = FileAccess.open(path, FileAccess.READ)
 	if FileAccess.file_exists(path):
 		
@@ -697,7 +854,6 @@ func _on_file_dialog_load_file_selected(path):
 							var _row2 = []
 							var _global_tile_pos
 							for i in _row.size():
-								
 								for k in Global.DataTiles.size():
 									if Global.DataTiles[k].tile_index == _row[i]:
 										_global_tile_pos = k

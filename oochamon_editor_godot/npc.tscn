@@ -88,6 +88,19 @@ text = "Remove On Finish ?"
 layout_mode = 2
 focus_mode = 0
 
+[node name="addt_settings" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="aggro_range" type="SpinBox" parent="npc_tab_container/Basic Info/addt_settings"]
+layout_mode = 2
+max_value = 8.0
+value = 3.0
+prefix = "Aggro"
+
+[node name="wild_encounter" type="CheckButton" parent="npc_tab_container/Basic Info/addt_settings"]
+layout_mode = 2
+text = "Is Wild Encounter?"
+
 [node name="items" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
 layout_mode = 2
 
@@ -156,6 +169,8 @@ layout_mode = 2
 [connection signal="text_changed" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_changed"]
 [connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_submitted"]
 [connection signal="toggled" from="npc_tab_container/Basic Info/remove_on_finish/check_remove_finish" to="." method="_on_check_remove_finish_toggled"]
+[connection signal="value_changed" from="npc_tab_container/Basic Info/addt_settings/aggro_range" to="." method="_on_aggro_range_value_changed"]
+[connection signal="toggled" from="npc_tab_container/Basic Info/addt_settings/wild_encounter" to="." method="_on_wild_encounter_toggled"]
 [connection signal="item_selected" from="npc_tab_container/Basic Info/items/item_select" to="." method="_on_item_select_item_selected"]
 [connection signal="value_changed" from="npc_tab_container/Basic Info/items/item_count" to="." method="_on_item_count_value_changed"]
 [connection signal="value_changed" from="npc_tab_container/Basic Info/coin/coin_count" to="." method="_on_coin_count_value_changed"]

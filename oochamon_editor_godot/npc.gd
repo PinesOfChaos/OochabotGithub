@@ -24,6 +24,9 @@ extends Control
 @onready var slot_3 = $"npc_tab_container/Slot 3"
 @onready var slot_4 = $"npc_tab_container/Slot 4"
 
+@onready var o_aggro_range = $"npc_tab_container/Basic Info/addt_settings/aggro_range"
+@onready var o_wild_encounter = $"npc_tab_container/Basic Info/addt_settings/wild_encounter"
+
 var npc_x = 0
 var npc_y = 0
 var npc_sprite = 2
@@ -44,6 +47,9 @@ var npc_slots_data = []
 var refreshed = false
 var dragging = false
 var npc_sprite_name = "c00_000"
+
+var npc_aggro_range = 3
+var npc_is_wild = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -86,41 +92,39 @@ func _ready():
 	o_text_pre_combat.text = npc_dialog_pre
 	o_text_post_combat.text = npc_dialog_post
 	
-	
+	o_aggro_range.value = npc_aggro_range
+	o_wild_encounter.button_pressed = npc_is_wild
 	
 	for i in npc_slots_data.size():
-		var _data_str = npc_slots_data[i]
+		var _data = npc_slots_data[i]
+		var _slot = npc_slots[i]
 		
-		if not (_data_str == ""):
-			var _data = _data_str.split("`")
-			var _slot = npc_slots[i]
-			
-			_slot.slot_enabled = true
-			
-			_slot.slot_species = int(_data[0])
-			_slot.slot_nickname = _data[1]
-			_slot.slot_ability = int(_data[2])
-			_slot.slot_level = int(_data[3])
-			
-			_slot.slot_move1 = int(_data[4])
-			_slot.slot_move2 = int(_data[5])
-			_slot.slot_move3 = int(_data[6])
-			_slot.slot_move4 = int(_data[7])
-			
-			_slot.slot_hp = int(_data[8])
-			_slot.slot_atk = int(_data[9])
-			_slot.slot_def = int(_data[10])
-			_slot.slot_spd = int(_data[11])
-			
-			print("IVs Submitted")
-			print([
-				[_slot.slot_hp, int(_data[8])],
-				[_slot.slot_atk, int(_data[9])],
-				[_slot.slot_def, int(_data[10])],
-				[_slot.slot_spd, int(_data[11])],
-			])
-			
-			_slot.re_ready()
+		_slot.slot_enabled = true
+		
+		_slot.slot_species = _data.slot_species
+		_slot.slot_nickname = _data.slot_nickname
+		_slot.slot_ability = _data.slot_ability
+		_slot.slot_level = _data.slot_level
+		
+		_slot.slot_move1 = _data.slot_move1
+		_slot.slot_move2 = _data.slot_move2
+		_slot.slot_move3 = _data.slot_move3
+		_slot.slot_move4 = _data.slot_move4
+		
+		_slot.slot_hp = _data.slot_hp
+		_slot.slot_atk = _data.slot_atk
+		_slot.slot_def = _data.slot_def
+		_slot.slot_spd = _data.slot_spd
+		
+		print("IVs Submitted")
+		print([
+			[_slot.slot_hp, _data.slot_hp],
+			[_slot.slot_atk, _data.slot_atk],
+			[_slot.slot_def, _data.slot_atk],
+			[_slot.slot_spd, _data.slot_atk],
+		])
+		
+		_slot.re_ready()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -201,3 +205,11 @@ func _on_npc_name_text_changed(new_text):
 
 func _on_npc_sprite_dialog_text_changed(new_text):
 	npc_sprite_dialog = new_text
+
+
+func _on_aggro_range_value_changed(value):
+	npc_aggro_range = value
+
+
+func _on_wild_encounter_toggled(toggled_on):
+	npc_is_wild = toggled_on

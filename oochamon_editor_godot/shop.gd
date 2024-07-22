@@ -26,21 +26,16 @@ func _ready():
 	if(shop_type == "special"):
 		o_shop_type.select(1)
 	
-	var n0 = 0
-	var n1 = 1
-	for i in (shop_special_items.size() / 2):
-		n0 = (i * 2)
-		n1 = (i * 2) + 1
+	for _info in shop_special_items:
 		
 		var _load = load("res://slot_item.tscn")
 		var _obj = _load.instantiate()
 		
-		_obj.item_id = int(shop_special_items[n0])
-		_obj.item_price = int(shop_special_items[n1])
+		_obj.item_id = _info.special_id
+		_obj.item_price = _info.special_price
 		
 		o_shop_special_items.add_child(_obj)
 		_obj.owner = o_shop_special_items
-		pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

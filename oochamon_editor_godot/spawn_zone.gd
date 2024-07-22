@@ -18,15 +18,14 @@ func _ready():
 	
 	var _spawn
 	print(spawn_list)
-	for i in spawn_list.size()/3:
-		
+	for _info in spawn_list:
 		var _load = load("res://slot_spawn.tscn")
 		var _obj = _load.instantiate()
 
 		# add data to the object
-		_obj.species = 	int(spawn_list[(i * 3)])
-		_obj.lv_min = 	int(spawn_list[(i * 3) + 1])
-		_obj.lv_max = 	int(spawn_list[(i * 3) + 2])
+		_obj.species = 	_info.slot_species
+		_obj.lv_min = 	_info.slot_lv_min
+		_obj.lv_max = 	_info.slot_lv_max
 
 		#assign new object as a child of the relevant menu part
 		spawn_slots.add_child(_obj)
