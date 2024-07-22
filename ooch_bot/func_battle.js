@@ -1013,11 +1013,18 @@ exp_to_next_level: function(level) {
  * @returns An array for each stat, adjusted by level and IVs.
  */
 get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
-    let lv_multi = (2 * Math.log(level + 2)) + (level/10)
-    let hp =    Math.floor((db.monster_data.get(species_id, Stats.HP) * lv_multi * ((hp_iv + 10) / 10) + 10) / 2) ;
-    let atk =   Math.floor(db.monster_data.get(species_id, Stats.Attack) * lv_multi  * ((atk_iv + 10) / 10));
-    let def =   Math.floor(db.monster_data.get(species_id, Stats.Defense) * lv_multi  * ((def_iv + 10) / 10));
-    let spd =   Math.floor(db.monster_data.get(species_id, Stats.Speed) * lv_multi  * ((spd_iv + 10) / 10));
+    let base_hp = db.monster_data.get(species_id, Stats.HP)
+    let base_atk = db.monster_data.get(species_id, Stats.Attack)
+    let base_def = db.monster_data.get(species_id, Stats.Defense)
+    let base_spd = db.monster_data.get(species_id, Stats.Speed)
+    let iv_influence = .025
+    let base_influence1 = 12
+    let base_influence2 = .5
+
+    let hp =    floor(((level * ((base_hp *  base_influence1) *  ((hp_iv *  iv_influence) + 1)))/100 + (base_hp *  base_influence2)) + level + 10);
+    let atk =   floor(((level * ((base_atk * base_influence1) *  ((atk_iv * iv_influence + 1))))/100 + (base_atk * base_influence2)) + level + 5);
+    let def =   floor(((level * ((base_def * base_influence1) *  ((def_iv * iv_influence + 1))))/100 + (base_def * base_influence2)) + level + 5);
+    let spd =   floor(((level * ((base_spd * base_influence1) *  ((spd_iv * iv_influence + 1))))/100 + (base_spd * base_influence2)) + level + 5);
     return [hp, atk, def, spd];
 },
 

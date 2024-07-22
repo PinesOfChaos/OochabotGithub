@@ -73,6 +73,7 @@ const Stats = {
 }
 
 const Status = {
+    All: 'all',
     Burn: 'burned',
     BurnEmote: '<:status_burned:1023031032083128441>',
     Infect: 'infected',
@@ -279,6 +280,7 @@ const Tile = {
     Shop: 4,
     Int: 5, // Interactible
     Board: 6,
+    Ice: 7
 }
 
 const Zone = {

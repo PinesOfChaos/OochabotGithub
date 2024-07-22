@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 const globalEventsJSON = require('../global_events.json');
 
@@ -114,14 +114,28 @@ module.exports = {
         //#region Item Data
         //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
         create_item(0, 'Potion',         '<:item_potion:1023031022566260776>',         'heal_inv',  'potion',  50,     0.25,    'Used to quickly heal 25% of an Oochamon\'s HP')
-        create_item(1, 'Hi-Potion',      '<:item_potion_hi:1023031023598047284>',      'heal_inv',  'potion',  150,     0.5,     'An advanced potion which heals 50% of an Oochamon\'s HP')
+        create_item(1, 'Hi-Potion',      '<:item_potion_hi:1023031023598047284>',      'heal_inv',  'potion',  150,    0.5,     'An advanced potion which heals 50% of an Oochamon\'s HP')
         create_item(2, 'Max-Potion',     '<:item_potion_magic:1023031024726327426>',   'heal_inv',  'potion',  500,    1,       'The ultimate potion which heals 100% of an Oochamon\'s HP')
         create_item(3, 'Prism',          '<:item_prism:1023031025716179076>',          'prism_inv', 'prism',   50,     1,       'A device used to capture Oochamon.')
-        create_item(4, 'Greater Prism',  '<:item_prism_greater:1023031027775578112>',  'prism_inv', 'prism',   150,     1.5,     'An improved prism with a higher capture rate.')
+        create_item(4, 'Greater Prism',  '<:item_prism_greater:1023031027775578112>',  'prism_inv', 'prism',   150,    1.5,     'An improved prism with a higher capture rate.')
         create_item(5, 'Grand Prism',    '<:item_prism_grand:1023031026626347028>',    'prism_inv', 'prism',   500,    2,       'A further modified prism with an even higher capture rate.')
-        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1023031028782211173>',  'prism_inv', 'prism',   9999,   1000,    'A prism with a shattered casing, nothing escapes its pull.')
-        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1023031021517672540>', 'other_inv', 'misc',    200,     1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
-        create_item(8, 'ID Card',        ':identification_card:',                      'other_inv', 'misc',    9999,   1,       'Your ID card. You look so fabulous!')
+        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1023031028782211173>',  'prism_inv', 'prism',   10000,  1000,    'A prism with a shattered casing, nothing escapes its pull.')
+        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1023031021517672540>', 'other_inv', 'misc',    200,    1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
+        create_item(8, 'ID Card',        ':identification_card:',                      'other_inv', 'misc',    -1,     1,       'Your ID card. You look so fabulous!')
+
+        //NEW ITEMS
+        create_item(9,  'Eyedrops',      '<:item_eyedrops:1176611226403475506>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
+        create_item(10, 'Shears',        '<:item_shears:1176611593044381707>',         'heal_inv',  'status',  200,   Status.Snare,     'Removes SNARED status effect.')
+        create_item(11, 'Daylilly',      '<:item_daylily:1176611228995555417>',        'heal_inv',  'status',  200,   Status.Doom,      'Removes DOOMED status effect.')
+        create_item(12, 'Antiparasite',  '<:item_antiparasite:1176611225166172290>',   'heal_inv',  'status',  200,   Status.Infect,    'Removes INFECTED status effect.')
+        create_item(13, 'Debug Chip',    '<:item_debugchip:1176611228127342622>',      'heal_inv',  'status',  200,   Status.Digitize,  'Removes DIGITIZED status effect.')
+        create_item(14, 'Nullifying Sphere', '<:item_null_sphere:1265063633780473876>','heal_inv',  'status',  1200,  Status.All,       'Removes all status effects.')
+
+        create_item(15, 'Greem Boostgem', '<:item_iv_hp:1265048909600915516>',         'other_inv', 'iv',     25000, 'hp',    'Permanently increases Health of an Oochamon.')
+        create_item(16, 'Red Boostgem',   '<:item_iv_atk:1265048907759489079>',        'other_inv', 'iv',     25000, 'atk',   'Permanently increases Attack of an Oochamon.')
+        create_item(17, 'Blue Boostgem',  '<:item_iv_def:1265048908728369202>',        'other_inv', 'iv',     25000, 'def',   'Permanently increases Defense of an Oochamon.')
+        create_item(18, 'Yellow Boostgem','<:item_iv_spd:1265048907143053455>',        'other_inv', 'iv',     25000, 'spd',   'Permanently increases Speed of an Oochamon.')
+        
         //#endregion
 
         //#region Move Data
@@ -408,7 +422,7 @@ module.exports = {
 
         //Darcoal
         create_monster(18, get_emote_string(client, 'darcoal'), 'Darcoal',
-        'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', [OochType.Flame], 15, 35, 13, 12, //total 75
+        'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', [OochType.Flame], 15, 25, 13, 12, //total 65
         [ [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],[16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],[-1, Move.Inferno] ],
         [ Ability.Efficient, Ability.Warm ], 17, -1, -1, 1)
 

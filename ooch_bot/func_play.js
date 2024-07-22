@@ -100,6 +100,58 @@ module.exports = {
             // 25% chance on cave, 40% chance on other places
             let encounter_chance = tile.zone_id == Zone.Cave ? .25 : .40;
 
+            //NPCs
+            if(!stop_moving){
+                for(let obj of map_npcs){
+                    let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
+                    //Skip NPCs if they meet any of these conditions
+                    if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
+                        (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
+                        (obj.remove_on_finish && player_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
+                    if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
+                    
+                    
+                    if(obj.x == playerx && obj.y == playery){ //Check if player collides with this NPC's position
+                        stop_moving = true;
+                        playerx -= xmove;
+                        playery -= ymove;
+                        
+                        event_process(user_id, thread, event_from_npc(obj, user_id));
+                    }
+                    else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
+                        let quarter_circle_radians = 90 * Math.PI / 180;
+                        let steps = 3;
+                        let stop_check = false;
+                        let _vx, _vy, _xx, _yy, _t;
+                        for(let i = 0; i < 4; i++){
+                            _vx = Math.cos(quarter_circle_radians * i);
+                            _vy = Math.sin(quarter_circle_radians * i);
+                            if(stop_check){ break; }
+                            for(let j = 1; j <= steps; j++){
+                                _xx = Math.round(_.clamp(obj.x + (_vx * j), 0, 99));
+                                _yy = Math.round(_.clamp(obj.y + (_vy * j), 0, 99));
+                                _t = db.tile_data.get(map_tiles[_xx][_yy]);
+
+                                if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){ //If the tile type checked is not floor or grass
+                                    break;
+                                }
+                                else if(_xx == playerx &&  _yy == playery){ //If this is a tile that the npc can see, stop the player
+                                    stop_moving = true;
+                                    stop_check = true;
+                                    
+                                    event_process(user_id, thread, event_from_npc(obj, user_id));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                    
+                }
+            }
+
+
             //Transitions
             if(!stop_moving){
                 for(let obj of map_transitions){
@@ -168,56 +220,7 @@ module.exports = {
                 }
             }
 
-            //NPCs
-            if(!stop_moving){
-                for(let obj of map_npcs){
-                    let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
-                    //Skip NPCs if they meet any of these conditions
-                    if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
-                        (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
-                        (obj.remove_on_finish && player_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
-                    if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
-                    
-                    
-                    if(obj.x == playerx && obj.y == playery){ //Check if player collides with this NPC's position
-                        stop_moving = true;
-                        playerx -= xmove;
-                        playery -= ymove;
-                        
-                        event_process(user_id, thread, event_from_npc(obj, user_id));
-                    }
-                    else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
-                        let quarter_circle_radians = 90 * Math.PI / 180;
-                        let steps = 3;
-                        let stop_check = false;
-                        let _vx, _vy, _xx, _yy, _t;
-                        for(let i = 0; i < 4; i++){
-                            _vx = Math.cos(quarter_circle_radians * i);
-                            _vy = Math.sin(quarter_circle_radians * i);
-                            if(stop_check){ break; }
-                            for(let j = 1; j <= steps; j++){
-                                _xx = Math.round(_.clamp(obj.x + (_vx * j), 0, 99));
-                                _yy = Math.round(_.clamp(obj.y + (_vy * j), 0, 99));
-                                _t = db.tile_data.get(map_tiles[_xx][_yy]);
-
-                                if(!(_t.use == Tile.Floor || _t.use == Tile.Grass)){ //If the tile type checked is not floor or grass
-                                    break;
-                                }
-                                else if(_xx == playerx &&  _yy == playery){ //If this is a tile that the npc can see, stop the player
-                                    stop_moving = true;
-                                    stop_check = true;
-                                    
-                                    event_process(user_id, thread, event_from_npc(obj, user_id));
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    
-                    
-                }
-            }
+            
 
             //Shops
             for(let obj of map_shops){
@@ -370,6 +373,11 @@ module.exports = {
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
+                break;
+                case Tile.Ice:
+                    if(!stop_moving && (xmove != 0 || ymove != 0)){ //This check prevents infinite loops
+                        dist += 1;
+                    }
                 break;
                 case Tile.Grass:
                     if ((Math.random() < encounter_chance) && (!stop_moving)) {
