@@ -299,10 +299,13 @@ module.exports = {
         create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.');
         create_ability(55, 'Bomber',            'Halves the enemy HP on death.') 
         
+        
         // TODO: Add these
-        create_ability(56, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
-        create_ability(57, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
-        create_ability(58, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
+        create_ability(56, 'Flammable',         'Gains ATK when hit with a FLAME type move.') 
+        create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
+        create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
+        create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
+        
 
         //#endregion
 
@@ -727,7 +730,7 @@ module.exports = {
         create_monster(68, get_emote_string(client, 'speculidae'), 'Speculidae',
         'Their thin bodies and stained glass-like wings belie their incredible rigidity.', [OochType.Stone], 12, 10, 35, 23, //total 80
         [ [1, Move.Bash] ],
-        [ Ability.Crystallize, Ability.Gravity ], 67, -1, -1, 2);
+        [ Ability.Crystallize, Ability.Lacerating ], 67, -1, -1, 2);
 
         //Nisythe
         create_monster(69, get_emote_string(client, 'nisythe'), 'Nisythe',
@@ -806,6 +809,96 @@ module.exports = {
         'Strange creatures which begin to swarm where pockets of Void appear.', [OochType.Void], 20, 20, 20, 20, //total 80
         [ [1, Move.Bash] ],
         [ Ability.Nullify ], -1, -1, -1, 0);
+
+        //Crudoil
+        create_monster(82, get_emote_string(client, 'crudoil'), 'Crudoil',
+        'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.', [OochType.Ooze], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Flammable, Ability.Warm ], -1, 83, 25, 0);
+
+        //Oilantern
+        create_monster(83, get_emote_string(client, 'oilantern'), 'Oilanten',
+        'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.', [OochType.Ooze], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Flammable, Ability.Hearty ], 82, -1, -1, 1);
+
+        //Saporite
+        create_monster(84, get_emote_string(client, 'saporite'), 'Saporite',
+        'Also called mushroom fairies, these small creatures are very peaceful.', [OochType.Fungal], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Gentle, Ability.Patient ], -1, 85, 32, 0);
+
+        //Faering
+        create_monster(85, get_emote_string(client, 'faering'), 'Faering',
+        'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.', [OochType.Fungal], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Tangled, Ability.Immense ], 84, -1, -1, 1);
+
+        //Kercobble
+        create_monster(86, get_emote_string(client, 'kercobble'), 'Kerkobble',
+        'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.', [OochType.Stone], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Gentle, Ability.Patient ], -1, 87, 42, 0);
+
+        //Korkobble
+        create_monster(87, get_emote_string(client, 'korkobble'), 'Korkobble',
+        'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'n very smart though.', [OochType.Stone], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Tangled, Ability.Immense ], 86, -1, -1, 1);
+
+        //Ilushand
+        create_monster(88, get_emote_string(client, 'ilushand'), 'Ilushand',
+        'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Reactive, Ability.Focused ], -1, 89, 20, 0);
+
+        //Miroraj
+        create_monster(89, get_emote_string(client, 'miroraj'), 'Miroraj',
+        'It endlessly reflects its inner core making it incredibly difficult to percieve.', [OochType.Magic], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Reactive, Ability.Rogue ], 88, -1, -1, 1);
+
+        //Fritarge
+        create_monster(90, get_emote_string(client, 'fritarge'), 'Fritarge',
+        'The empty hust of what appears to be a bronze turtle. It rarely moves.', [OochType.Tech], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Immobile, Ability.Armored ], -1, 91, 18, 0);
+
+        //Wardred
+        create_monster(91, get_emote_string(client, 'wardred'), 'Wardred',
+        'The gaping maw on this creature\'s back echoes metallic whispers.', [OochType.Tech], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Ravenous, Ability.Mundane ], 90, -1, -1, 1);
+
+        //Congsume
+        create_monster(92, get_emote_string(client, 'congsume'), 'Congsume',
+        'It can\'t stop moving or the flames on its body will eventually catch up.', [OochType.Flame], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Ravenous, Ability.EasyGo ], -1, 93, 18, 0);
+
+        //Fevour
+        create_monster(93, get_emote_string(client, 'fevour'), 'Fevour',
+        'Whatever it eats is immediately burned to keep it alive.', [OochType.Flame], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.Ravenous, Ability.Withering ], 92, -1, -1, 1);
+
+        //Tryptid
+        create_monster(94, get_emote_string(client, 'tryptid'), 'Tryptid',
+        'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.', [OochType.Stone, OochType.Fungal], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.HoleDweller ], -1, -1, -1, 0);
+
+        //Roswier
+        create_monster(95, get_emote_string(client, 'roswier'), 'Roswier',
+        'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controled by organisms related to Ooze-types.', [OochType.Tech, OochType.Ooze], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.LiquidCooled ], -1, -1, -1, 0);
+
+        //Chemerai
+        create_monster(96, get_emote_string(client, 'chemerai'), 'Chemerai',
+        'The crystal atop acts as an matter-energy converter of sorts, though its inner workings are completely unknown.', [OochType.Magic, OochType.Flame], 20, 20, 20, 20, //total 80
+        [ [1, Move.Bash] ],
+        [ Ability.PowerConduit ], -1, -1, -1, 0);
 
         //#endregion
 

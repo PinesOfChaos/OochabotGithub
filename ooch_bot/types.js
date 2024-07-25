@@ -252,7 +252,11 @@ const Ability = {
     Energized: 52,
     Patient: 53,
     EasyGo: 54,
-    Bomber: 55
+    Bomber: 55,
+    Flammable: 56,
+    HoleDweller: 57,
+    PowerConduit: 58,
+    LiquidCooled: 59
 }
 
 const Item = {
