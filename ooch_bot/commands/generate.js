@@ -305,6 +305,7 @@ module.exports = {
         create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
         create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
         create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
+        //ALSO we should change Gentle to reduce the opponent's ATK as well
         
 
         //#endregion
@@ -541,13 +542,13 @@ module.exports = {
         //Spoolette
         create_monster(37, get_emote_string(client, 'spoolette'), 'Spoolette',
         'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', [OochType.Magic], 10, 15, 15, 10, //total 50
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance] ],
         [ Ability.Tangled, Ability.Tangled ], -1, 38, 18, 0);
 
         //Thimbite
         create_monster(38, get_emote_string(client, 'thimbite'), 'Thimbite',
         'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', [OochType.Magic], 20, 20, 20, 10, //total 70
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance] ],
         [ Ability.Tangled, Ability.Leech ], 37, -1, -1, 1);
 
         //Digityke
@@ -583,13 +584,13 @@ module.exports = {
         //Solidifyr
         create_monster(44, get_emote_string(client, 'solidifyr'), 'Solidifyr',
         'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', [OochType.Flame], 17, 13, 11, 9, //total 50
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb], [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash], [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam] ],
         [ Ability.Warm, Ability.Scorching ], -1, 45, 38, 0);
 
         //Obstaggard
         create_monster(45, get_emote_string(client, 'obstaggard'), 'Obstaggard',
         'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', [OochType.Stone], 19, 23, 17, 11, //total 70
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb], [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash], [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam] ],
         [ Ability.Withering, Ability.Lacerating ], 44, -1, -1, 1);
 
         //Droplunk
@@ -607,25 +608,25 @@ module.exports = {
         //Polyplute
         create_monster(48, get_emote_string(client, 'polyplute'), 'Polyplute',
         'Blooms of Polyplute create beatiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', [OochType.Fungal], 12, 13, 12, 8, //total 45
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2,  Move.Soften], [5, Move.Glob], [7, Move.Corrode], [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom], [37, Move.DrainLife], [-1, Move.Laminate] ],
         [ Ability.Sporespray, Ability.Leech ], -1, 49, 29, 0);
 
         //Reefest
         create_monster(49, get_emote_string(client, 'reefest'), 'Reefest',
         'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', [OochType.Fungal], 35, 15, 15, 5, //total 70
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2,  Move.Soften], [5, Move.Glob], [7, Move.Corrode], [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom], [37, Move.DrainLife], [-1, Move.Laminate] ],
         [ Ability.Sporespray, Ability.Leech ], 48, -1, -1, 1);
 
         //Frigook
         create_monster(50, get_emote_string(client, 'frigook'), 'Frigook',
         'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', [OochType.Ooze], 15, 5, 15, 5, //total 40
-        [ [1, Move.Bash] ],
+        [ [1, Move.Hit], [2,  Move.Soften], [3, Move.Glob], [6, Move.Fog], [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye], [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope] ],
         [ Ability.Moist, Ability.Frostbite ], -1, 51, 23, 0);
 
         //Boreyuc
         create_monster(51, get_emote_string(client, 'boreyuc'), 'Boreyuc',
         'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', [OochType.Ooze], 15, 7, 30, 3, //total 65
-        [ [1, Move.Bash] ],
+        [ [1, Move.Hit], [2,  Move.Soften], [3, Move.Glob], [6, Move.Fog], [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye], [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope] ],
         [ Ability.Bipolar, Ability.Frostbite ], 50, -1, -1, 1);
 
         //Vrumbox
@@ -658,18 +659,16 @@ module.exports = {
         [ [1, Move.Bash] ],
         [ Ability.Duplicant ], 55, -1, -1, 1);
 
-        //NEW MONS START HERE
-
         //Kindeep
         create_monster(57, get_emote_string(client, 'kindeep'), 'Kindeep',
         'Schools of this fish-like oochamon are often found floating down in the caverns.', [OochType.Flame], 10, 13, 12, 20, //total 55
-        [ [1, Move.Bash] ],
+        [ [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno], [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam] ],
         [ Ability.Spectral, Ability.Gentle ], -1, 58, 30, 0);
 
         //Ablayzz
         create_monster(58, get_emote_string(client, 'ablayzz'), 'Ablayzz',
         'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.', [OochType.Flame], 20, 18, 17, 25, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno], [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam] ],
         [ Ability.Spectral, Ability.Shadow ], 57, -1, -1, 1);
 
         //Krakle

@@ -394,6 +394,14 @@ module.exports = {
                                 stop_moving = true;
                                 let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                 let slot = spawn_zone.spawn_slots[slot_index];
+                                if(_.random(0, 10000) > 9999){ //This is the index of _i (the mon that randomly spawns 1/10,000 battles)
+                                    let new_slot = {
+                                        ooch_id : 34,
+                                        min_level : slot.min_level,
+                                        max_level : slot.max_level,
+                                    }
+                                    slot = new_slot;
+                                } 
                                 let mon_level = _.random(slot.min_level, slot.max_level);
                                 let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
                                 let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
