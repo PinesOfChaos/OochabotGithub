@@ -764,25 +764,25 @@ module.exports = {
         //Rustail
         create_monster(74, get_emote_string(client, 'rustail'), 'Rustail',
         'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.', [OochType.Tech], 15, 15, 15, 10, //total 55
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode], [34, Move.Flurry], [36, Move.HypeUp],  [41, Move.CallThunder], [-1, Move.Eruption] ],
         [ Ability.Tangled, Ability.Lacerating ], -1, 75, 35, 0);
 
         //Oxydrake
         create_monster(75, get_emote_string(client, 'oxydrake'), 'Oxydrake',
         'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.', [OochType.Tech], 20, 25, 23, 17, //total 85
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode], [34, Move.Flurry], [36, Move.HypeUp],  [41, Move.CallThunder], [-1, Move.Eruption] ],
         [ Ability.Radioactive, Ability.Withering ], 74, -1, -1, 1);
 
         //Chakreye
         create_monster(76, get_emote_string(client, 'chakreye'), 'Chakreye',
         'Their body is surrounded by a rapidly spinning disc of plasma.', [OochType.Tech], 12, 18, 10, 15, //total 55
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash], [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades] ],
         [ Ability.Energized, Ability.Focused ], -1, 77, 30, 0);
 
         //Sabrink
         create_monster(77, get_emote_string(client, 'sabrink'), 'Sabrink',
         'A grinning energy blade that relentlessly pursues its enemies. ', [OochType.Tech], 18, 30, 17, 30, //total 85
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash], [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades] ],
         [ Ability.Efficient, Ability.Inertia ], 76, -1, -1, 1);
 
         //Sapler
