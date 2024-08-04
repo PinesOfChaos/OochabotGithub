@@ -236,6 +236,8 @@ module.exports = {
         create_move(88,'Purify',          OochType.Neutral,0,-100,  'clear_status',100, 'Remove all status effects.')
         create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_multi',100, 'Reset all stat multipliers to 1.')
         create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
+        create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_75|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
+
 
         //#endregion
 
@@ -788,19 +790,19 @@ module.exports = {
         //Sapler
         create_monster(78, get_emote_string(client, 'sapler'), 'Sapler',
         'These little guys are known to infest power stations and cables, slowly draining their energy.', [OochType.Tech], 15, 10, 20, 5, //total 50
-        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.TangledThreads] ],
+        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight], [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder] ],
         [ Ability.Bomber, Ability.Leech ], -1, 79, 20, 0);
 
         //Radient
         create_monster(79, get_emote_string(client, 'radient'), 'Radient',
         'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.', [OochType.Tech], 25, 20, 20, 15, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight], [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder] ],
         [ Ability.Bomber, Ability.Energized ], 78, -1, -1, 1);
 
         //Lasangato
         create_monster(80, get_emote_string(client, 'lasangato'), 'Lasangato',
         'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.', [OochType.Stone], 27, 10, 23, 10, //total 70
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Mud], [8, Move.DustStorm], [12, Move.ClampDown], [17,  Move.HypeUp], [22, Move.Sedimentation], [27, Move.Gravitate], [35, Move.SlurpUp], [41, Move.Suplex], [-1, Move.Inferno] ],
         [ Ability.Burdened, Ability.Burrower ], -1, -1, -1, 0);
 
         //Nullifly
@@ -813,44 +815,44 @@ module.exports = {
 
         //Crudoil
         create_monster(82, get_emote_string(client, 'crudoil'), 'Crudoil',
-        'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.', [OochType.Ooze], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.', [OochType.Ooze], 7, 12, 8, 8, //total 35
+        [ [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball], [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [31, Move.SlurpUp], [35,  Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize] ],
         [ Ability.Flammable, Ability.Warm ], -1, 83, 25, 0);
 
         //Oilantern
         create_monster(83, get_emote_string(client, 'oilantern'), 'Oilanten',
-        'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.', [OochType.Ooze], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.', [OochType.Ooze], 15, 25, 15, 20, //total 75
+        [ [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball], [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [31, Move.SlurpUp], [35,  Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize] ],
         [ Ability.Flammable, Ability.Hearty ], 82, -1, -1, 1);
 
         //Saporite
         create_monster(84, get_emote_string(client, 'saporite'), 'Saporite',
-        'Also called mushroom fairies, these small creatures are very peaceful.', [OochType.Fungal], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'Also called mushroom fairies, these small creatures are very peaceful.', [OochType.Fungal], 7, 5, 13, 5, //total 30
+        [ [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog], [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash], [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]  ],
         [ Ability.Gentle, Ability.Patient ], -1, 85, 32, 0);
 
         //Faering
         create_monster(85, get_emote_string(client, 'faering'), 'Faering',
-        'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.', [OochType.Fungal], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.', [OochType.Fungal], 24, 26, 16, 9, //total 80
+        [ [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog], [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash], [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]  ],
         [ Ability.Tangled, Ability.Immense ], 84, -1, -1, 1);
 
         //Kercobble
         create_monster(86, get_emote_string(client, 'kercobble'), 'Kerkobble',
         'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.', [OochType.Stone], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
         [ Ability.Gentle, Ability.Patient ], -1, 87, 42, 0);
 
         //Korkobble
         create_monster(87, get_emote_string(client, 'korkobble'), 'Korkobble',
         'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'n very smart though.', [OochType.Stone], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
         [ Ability.Tangled, Ability.Immense ], 86, -1, -1, 1);
 
         //Ilushand
         create_monster(88, get_emote_string(client, 'ilushand'), 'Ilushand',
         'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink] ],
         [ Ability.Reactive, Ability.Focused ], -1, 89, 20, 0);
 
         //Miroraj

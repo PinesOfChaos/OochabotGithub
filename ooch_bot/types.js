@@ -193,7 +193,8 @@ const Move = {
     Fog: 87,
     Purify: 88,
     Reset: 89,
-    DebugBomb: 90
+    DebugBomb: 90,
+    Entrench: 91
 }
 
 const Ability = {

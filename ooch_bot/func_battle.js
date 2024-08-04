@@ -17,7 +17,6 @@ module.exports = {
  * @returns The enemy Oochamon data in an object.
  */
 generate_wild_battle: function(ooch_id, ooch_level) {
-
     let ooch = create_ooch(ooch_id, ooch_level);
     let ooch_enemy = {
         name: 'Wild Oochamon',
@@ -33,7 +32,6 @@ generate_wild_battle: function(ooch_id, ooch_level) {
  * @param {Object} trainer_obj The base trainer object to convert
  */
 generate_trainer_battle(trainer_obj){
-    
 
     let party_base = trainer_obj.team;
     let party_generated = [];
@@ -169,7 +167,7 @@ prompt_battle_input: async function(thread, user_id) {
     let ooch_plr_profile = db.profile.get(user_id);
     let ooch_enemy = ooch_enemy_profile.ooch_party[ooch_enemy_profile.ooch_active_slot];
     // Get the players oochamon in the first spot of their party
-    let active_slot = ooch_plr_profile.ooch_active_slot;
+    // let active_slot = ooch_plr_profile.ooch_active_slot;
     let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
     let ooch_pos = active_slot;
     let move_list = ooch_plr.moveset;
@@ -1021,10 +1019,10 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
     let base_influence1 = 12
     let base_influence2 = .5
 
-    let hp =    floor(((level * ((base_hp *  base_influence1) *  ((hp_iv *  iv_influence) + 1)))/100 + (base_hp *  base_influence2)) + level + 10);
-    let atk =   floor(((level * ((base_atk * base_influence1) *  ((atk_iv * iv_influence + 1))))/100 + (base_atk * base_influence2)) + level + 5);
-    let def =   floor(((level * ((base_def * base_influence1) *  ((def_iv * iv_influence + 1))))/100 + (base_def * base_influence2)) + level + 5);
-    let spd =   floor(((level * ((base_spd * base_influence1) *  ((spd_iv * iv_influence + 1))))/100 + (base_spd * base_influence2)) + level + 5);
+    let hp =    Math.floor(((level * ((base_hp *  base_influence1) *  ((hp_iv *  iv_influence) + 1)))/100 + (base_hp *  base_influence2)) + level + 10);
+    let atk =   Math.floor(((level * ((base_atk * base_influence1) *  ((atk_iv * iv_influence + 1))))/100 + (base_atk * base_influence2)) + level + 5);
+    let def =   Math.floor(((level * ((base_def * base_influence1) *  ((def_iv * iv_influence + 1))))/100 + (base_def * base_influence2)) + level + 5);
+    let spd =   Math.floor(((level * ((base_spd * base_influence1) *  ((spd_iv * iv_influence + 1))))/100 + (base_spd * base_influence2)) + level + 5);
     return [hp, atk, def, spd];
 },
 
@@ -2228,16 +2226,16 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
     ctx.font = `italic bold 20px main_med`;
     fillTextScaled(playerName, 'main_med', 20, 150, canvas, 'italic bold');
-    ctx.fillText(playerName, 10, 130);
+    ctx.fillText(playerName, 10, 110);
     ctx.fillStyle = 'white';
 
     // Player Prisms
     for (let i = 0; i < plr.ooch_party.length; i++) {
-        ctx.drawImage(prismIcon, 10 + (30 * i), 135);
+        ctx.drawImage(prismIcon, 10 + (30 * i), 115);
     }
 
     // Player Oochamon and Player Sprite
-    flipDrawImage(ctx, plrSprite, 27, 210, true); // horizontal mirror
+    flipDrawImage(ctx, plrSprite, 27, 157, true); // horizontal mirror
     flipDrawImage(ctx, oochPlr, 65, 180, true); // horizontal mirror
     ctx.font = `10px main_med`;
     ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 75, 255);
