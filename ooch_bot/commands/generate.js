@@ -788,7 +788,7 @@ module.exports = {
         //Sapler
         create_monster(78, get_emote_string(client, 'sapler'), 'Sapler',
         'These little guys are known to infest power stations and cables, slowly draining their energy.', [OochType.Tech], 15, 10, 20, 5, //total 50
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.TangledThreads] ],
         [ Ability.Bomber, Ability.Leech ], -1, 79, 20, 0);
 
         //Radient
