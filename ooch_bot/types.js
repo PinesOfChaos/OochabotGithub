@@ -194,7 +194,8 @@ const Move = {
     Purify: 88,
     Reset: 89,
     DebugBomb: 90,
-    Entrench: 91
+    Entrench: 91,
+    NullSphere: 92,
 }
 
 const Ability = {
@@ -257,7 +258,8 @@ const Ability = {
     Flammable: 56,
     HoleDweller: 57,
     PowerConduit: 58,
-    LiquidCooled: 59
+    LiquidCooled: 59,
+    Increment: 60,
 }
 
 const Item = {

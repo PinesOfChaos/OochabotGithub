@@ -237,7 +237,7 @@ module.exports = {
         create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_multi',100, 'Reset all stat multipliers to 1.')
         create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
         create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_75|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
-
+        create_move(92,'Null Sphere',     OochType.Void,60,100,     -1,0,            'Fire a sphere of dark matter.')
 
         //#endregion
 
@@ -307,6 +307,7 @@ module.exports = {
         create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
         create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
         create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
+        create_ability(60, 'Increment',         'Randomly boosts a stat at the end of each turn.')
         //ALSO we should change Gentle to reduce the opponent's ATK as well
         
 
@@ -522,13 +523,12 @@ module.exports = {
         [ [1, Move.Bash],[2, Move.Embolden],[4, Move.PebbleBlast],[7, Move.IronHammer],[8, Move.Sedimentation],[12, Move.Entomb],[20, Move.MetalLance],[29, Move.Grind],[-1, Move.Boulderdash] ],
         [ Ability.Armored, Ability.Leech ], 32, -1, -1, 1)
 
-        //i_
-        create_monster(34, get_emote_string(client, 'i_'), 'i_',
-        'ERROR: entry not found', [OochType.Void], 1, 1, 1, 1, //total 30
-        [ [1, Move.UndefinedInt] ], 
-        [ Ability.InvalidEntry ], -1, -1, -1, 0)
+        //Purif-i
+        create_monster(34, get_emote_string(client, 'purifi'), 'Purif-i',
+        'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.', [OochType.Void, OochType.Stone], 10, 10, 10, 10, //total 40
+        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Brittle], [7, Move.CursedEye], [10, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm], [24, Move.Entrench], [30, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope] ], 
+        [ Ability.Increment ], -1, -1, -1, 0)
 
-        //NEW ONES, MAKE GOOD YES
         //Cromet
         create_monster(35, get_emote_string(client, 'cromet'), 'Cromet',
         'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', [OochType.Stone], 12, 13, 10, 15, //total 50
@@ -808,10 +808,8 @@ module.exports = {
         //Nullifly
         create_monster(81, get_emote_string(client, 'nullifly'), 'Nullifly',
         'Strange creatures which begin to swarm where pockets of Void appear.', [OochType.Void], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],  [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode], [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]],
         [ Ability.Nullify ], -1, -1, -1, 0);
-
-        //NEW MONS START HERE, NEED MOVES AND STAT BLOCKS
 
         //Crudoil
         create_monster(82, get_emote_string(client, 'crudoil'), 'Crudoil',
@@ -839,69 +837,79 @@ module.exports = {
 
         //Kercobble
         create_monster(86, get_emote_string(client, 'kercobble'), 'Kerkobble',
-        'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.', [OochType.Stone], 20, 20, 20, 20, //total 80
+        'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.', [OochType.Stone], 9, 8, 6, 7, //total 30
         [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
         [ Ability.Gentle, Ability.Patient ], -1, 87, 42, 0);
 
         //Korkobble
         create_monster(87, get_emote_string(client, 'korkobble'), 'Korkobble',
-        'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'n very smart though.', [OochType.Stone], 20, 20, 20, 20, //total 80
+        'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'n very smart though.', [OochType.Stone], 31, 19, 17, 18, //total 85
         [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
         [ Ability.Tangled, Ability.Immense ], 86, -1, -1, 1);
 
         //Ilushand
         create_monster(88, get_emote_string(client, 'ilushand'), 'Ilushand',
-        'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink] ],
+        'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 8, 10, 9, 8, //total 35
+        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
         [ Ability.Reactive, Ability.Focused ], -1, 89, 20, 0);
 
         //Miroraj
         create_monster(89, get_emote_string(client, 'miroraj'), 'Miroraj',
-        'It endlessly reflects its inner core making it incredibly difficult to percieve.', [OochType.Magic], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'It endlessly reflects its inner core making it incredibly difficult to percieve.', [OochType.Magic], 18, 22, 19, 21, //total 80
+        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
         [ Ability.Reactive, Ability.Rogue ], 88, -1, -1, 1);
 
         //Fritarge
         create_monster(90, get_emote_string(client, 'fritarge'), 'Fritarge',
-        'The empty hust of what appears to be a bronze turtle. It rarely moves.', [OochType.Tech], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'The empty hust of what appears to be a bronze turtle. It rarely moves.', [OochType.Tech], 11, 9, 13, 7, //total 40
+        [ [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer], [-1, Move.AshBlast] ],
         [ Ability.Immobile, Ability.Armored ], -1, 91, 18, 0);
 
         //Wardred
         create_monster(91, get_emote_string(client, 'wardred'), 'Wardred',
-        'The gaping maw on this creature\'s back echoes metallic whispers.', [OochType.Tech], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'The gaping maw on this creature\'s back echoes metallic whispers.', [OochType.Tech], 20, 19, 22, 14, //total 75
+        [ [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer], [-1, Move.AshBlast] ],
         [ Ability.Ravenous, Ability.Mundane ], 90, -1, -1, 1);
 
         //Congsume
         create_monster(92, get_emote_string(client, 'congsume'), 'Congsume',
-        'It can\'t stop moving or the flames on its body will eventually catch up.', [OochType.Flame], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'It can\'t stop moving or the flames on its body will eventually catch up.', [OochType.Flame], 8, 12, 7, 13, //total 40
+        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown], [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf], [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify] ],
         [ Ability.Ravenous, Ability.EasyGo ], -1, 93, 18, 0);
 
         //Fevour
         create_monster(93, get_emote_string(client, 'fevour'), 'Fevour',
-        'Whatever it eats is immediately burned to keep it alive.', [OochType.Flame], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'Whatever it eats is immediately burned to keep it alive.', [OochType.Flame], 11, 26, 14, 24, //total 75
+        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown], [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf], [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify] ],
         [ Ability.Ravenous, Ability.Withering ], 92, -1, -1, 1);
 
         //Tryptid
         create_monster(94, get_emote_string(client, 'tryptid'), 'Tryptid',
-        'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.', [OochType.Stone, OochType.Fungal], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.', [OochType.Stone, OochType.Fungal], 17, 18, 24, 16, //total 75
+        [ [1, Move.Bash], [5, Move.Brittle], [8, Move.SporeShot], [10, Move.PebbleBlast], [13, Move.Lurk], [16, Move.Grind], [19, Move.CursedEye], [21, Move.Boulderdash], [24, Move.ThornShot], [29, Move.Restruct], [36, Move.DustStorm], [40, Move.ClampDown], [-1, Move.Siphon] ],
         [ Ability.HoleDweller ], -1, -1, -1, 0);
 
         //Roswier
         create_monster(95, get_emote_string(client, 'roswier'), 'Roswier',
-        'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controled by organisms related to Ooze-types.', [OochType.Tech, OochType.Ooze], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controled by organisms related to Ooze-types.', [OochType.Tech, OochType.Ooze], 26, 24, 19, 21, //total 90
+        [ [1, Move.Bash], [5, Move.Glob], [8, Move.ByteBite], [10, Move.Digitize], [12, Move.Corrode], [16, Move.Impale], [20, Move.MetalLance], [23, Move.TangledThreads], [25, Move.Radiate], [28, Move.Flurry], [34, Move.Entrench], [40, Move.CrashLanding], [-1, Move.PhantomBullet] ],
         [ Ability.LiquidCooled ], -1, -1, -1, 0);
 
         //Chemerai
         create_monster(96, get_emote_string(client, 'chemerai'), 'Chemerai',
-        'The crystal atop acts as an matter-energy converter of sorts, though its inner workings are completely unknown.', [OochType.Magic, OochType.Flame], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash] ],
+        'The crystal atop this creature acts as an matter-energy converter of sorts, though its inner workings are completely unknown.', [OochType.Magic, OochType.Flame], 18, 29, 21, 22, //total 90
+        [ [1, Move.Bash], [3, Move.Fireball], [5, Move.Sparkler], [7, Move.Intimidate], [11, Move.HypeUp], [14, Move.DrainLife], [17, Move.ArcaStrike], [22, Move.GemBash], [27, Move.Inferno], [33, Move.BlindingBeam], [37, Move.GlassBlades], [43, Move.CallThunder], [-1, Move.Kaleidoscope] ],
         [ Ability.PowerConduit ], -1, -1, -1, 0);
+
+        //#endregion
+
+        //#region Uncatchable Data
+
+        //i_
+        create_monster(-1, get_emote_string(client, 'i_'), 'i_',
+        'ERROR: entry not found', [OochType.Void], 1, 1, 1, 1, //total 4
+        [ [1, Move.UndefinedInt] ], 
+        [ Ability.InvalidEntry ], -1, -1, -1, 0)
 
         //#endregion
 
