@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status, MoveTag } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 const globalEventsJSON = require('../global_events.json');
 
@@ -218,8 +218,8 @@ module.exports = {
         create_move(70,'Enfeebling Spore',OochType.Fungal,30,100,   '-_atk_25|-_spd_25',100, 'Launch a damaging spore at the opponent which lowers ATK and SPD.')
         create_move(71,'Torque',          OochType.Tech,0,-100,     '-_spd_50|+_atk_100',100, 'Reduce the user\'s SPD to massively increase ATK.')
         create_move(72,'Slow Burn',       OochType.Flame,0,-100,    '-_atk_25|+_def_50',100, 'Cool the user\'s flame, greatly increasing DEF at the cost of some SPD.')
-        create_move(73,'Kaleidoscope',    OochType.Magic,50,100,    'blinded|snared',100, 'Disorient the opponent in a room that BLINDS and SNARES')
-        create_move(74,'Blinding Beam',   OochType.Flame,75,80,     'blinded',100,   'Fire a brilliant beam of light that BLINDS the opponent.')
+        create_move(73,'Kaleidoscope',    OochType.Magic,50,100,    'blinded|snared',100, 'Disorient the opponent in a room that BLINDS and SNARES', [MoveTag.Light])
+        create_move(74,'Blinding Beam',   OochType.Flame,75,80,     'blinded',100,   'Fire a brilliant beam of light that BLINDS the opponent.', [MoveTag.Light])
         create_move(75,'Overgrowth',      OochType.Fungal,0,-100,   '+_atk_25|+_def_25|+_spd_25',100,   'Rapid fungal growth increases ATK, DEF and SPD.')
         create_move(76,'Myco-Burst',      OochType.Fungal,75,80,    'blinded',100,   'Fire a spore-filled bomb which BLINDS the opponent.')
         create_move(77,'Thorn Shot',      OochType.Fungal,60,90,    'critical',50,   'Shoot a condensed fungal thorn with a high crit chance.')
@@ -308,6 +308,8 @@ module.exports = {
         create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
         create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
         create_ability(60, 'Increment',         'Randomly boosts a stat at the end of each turn.')
+        create_ability(61, 'Parry',             'Reduces damage taken. When hit by an attack, this ability becomes Riposte.')
+        create_ability(62, 'Riposte',           'Increases damage dealt. After attacking or the turn ends, this ability becomes Parry.')
         //ALSO we should change Gentle to reduce the opponent's ATK as well
         
 
@@ -785,7 +787,7 @@ module.exports = {
         create_monster(77, get_emote_string(client, 'sabrink'), 'Sabrink',
         'A grinning energy blade that relentlessly pursues its enemies. ', [OochType.Tech], 18, 30, 17, 30, //total 85
         [ [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash], [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades] ],
-        [ Ability.Efficient, Ability.Inertia ], 76, -1, -1, 1);
+        [ Ability.Efficient, Ability.Parry ], 76, -1, -1, 1);
 
         //Sapler
         create_monster(78, get_emote_string(client, 'sapler'), 'Sapler',
@@ -851,13 +853,13 @@ module.exports = {
         create_monster(88, get_emote_string(client, 'ilushand'), 'Ilushand',
         'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 8, 10, 9, 8, //total 35
         [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
-        [ Ability.Reactive, Ability.Focused ], -1, 89, 20, 0);
+        [ Ability.Reactive, Ability.Rogue ], -1, 89, 20, 0);
 
         //Miroraj
         create_monster(89, get_emote_string(client, 'miroraj'), 'Miroraj',
         'It endlessly reflects its inner core making it incredibly difficult to percieve.', [OochType.Magic], 18, 22, 19, 21, //total 80
         [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
-        [ Ability.Reactive, Ability.Rogue ], 88, -1, -1, 1);
+        [ Ability.Reactive, Ability.Duplicant ], 88, -1, -1, 1);
 
         //Fritarge
         create_monster(90, get_emote_string(client, 'fritarge'), 'Fritarge',

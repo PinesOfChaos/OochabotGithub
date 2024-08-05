@@ -260,6 +260,8 @@ const Ability = {
     PowerConduit: 58,
     LiquidCooled: 59,
     Increment: 60,
+    Parry: 61,
+    Riposte: 62,
 }
 
 const Item = {
@@ -296,6 +298,11 @@ const Zone = {
     Sandy: 2,
     Cave: 3,
     Obsidian: 4
+}
+
+const MoveTag = {
+    Light: 0,
+    Sound: 1,
 }
 
 const TileEmoteGuildsArray = [

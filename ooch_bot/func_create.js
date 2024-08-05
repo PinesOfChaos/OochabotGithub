@@ -119,7 +119,7 @@ module.exports = {
      * @param {Number} effect_chance The % chance for the move to hit
      * @param {String} description The moves description
      */
-    create_move: function(id, name, type, damage, accuracy, effect, effect_chance, description){
+    create_move: function(id, name, type, damage, accuracy, effect, effect_chance, description, tags = []){
         let key_id = id.toString();
         db.move_data.set(key_id, id, 'id')
         db.move_data.set(key_id, name, 'name')
@@ -129,6 +129,7 @@ module.exports = {
         db.move_data.set(key_id, effect, 'effect')
         db.move_data.set(key_id, effect_chance, 'effect_chance')
         db.move_data.set(key_id, description, 'description')
+        db.move_data.set(key_id, tags, 'tags')
     },
 
     /**
