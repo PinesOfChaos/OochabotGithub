@@ -25,8 +25,11 @@ module.exports = {
             db.profile.set(interaction.user.id, { area: 'hub', x: 15, y: 9 }, 'checkpoint_data');
             db.profile.set(interaction.user.id, false, 'display_msg_id');
             db.profile.set(interaction.user.id, false, 'play_thread_id');
+            db.profile.set(interaction.user.id, false, 'play_guild_id');
+            db.profile.set(interaction.user.id, false, 'rollback_profile');
             db.profile.set(interaction.user.id, 0, 'battle_msg_counter');
             db.profile.set(interaction.user.id, 0, 'battle_turn_counter');
+            db.profile.set(interaction.user.id, 0, 'turn_msg_counter');
             db.profile.set(interaction.user.id, [], 'oochadex');
             db.profile.set(interaction.user.id, [], 'flags');
             db.profile.set(interaction.user.id, [], 'ooch_party');

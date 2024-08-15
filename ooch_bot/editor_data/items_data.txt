@@ -7,3 +7,13 @@
 6|Perfect Prism|<:item_prism_perfect:1023031028782211173>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
 7|Attack Crystal|<:item_attack_crystal:1023031021517672540>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
 8|ID Card|:identification_card:|other_inv|misc|undefined|Your ID card. You look so fabulous!
+9|Eyedrops|<:item_eyedrops:1176611226403475506>|heal_inv|status|undefined|Removes BLIND status effect.
+10|Shears|<:item_shears:1176611593044381707>|heal_inv|status|undefined|Removes SNARED status effect.
+11|Daylilly|<:item_daylily:1176611228995555417>|heal_inv|status|undefined|Removes DOOMED status effect.
+12|Antiparasite|<:item_antiparasite:1176611225166172290>|heal_inv|status|undefined|Removes INFECTED status effect.
+13|Debug Chip|<:item_debugchip:1176611228127342622>|heal_inv|status|undefined|Removes DIGITIZED status effect.
+14|Nullifying Sphere|<:item_null_sphere:1265063633780473876>|heal_inv|status|undefined|Removes all status effects.
+15|Greem Boostgem|<:item_iv_hp:1265048909600915516>|other_inv|iv|undefined|Permanently increases Health of an Oochamon.
+16|Red Boostgem|<:item_iv_atk:1265048907759489079>|other_inv|iv|undefined|Permanently increases Attack of an Oochamon.
+17|Blue Boostgem|<:item_iv_def:1265048908728369202>|other_inv|iv|undefined|Permanently increases Defense of an Oochamon.
+18|Yellow Boostgem|<:item_iv_spd:1265048907143053455>|other_inv|iv|undefined|Permanently increases Speed of an Oochamon.

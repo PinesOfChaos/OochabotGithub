@@ -316,5 +316,5 @@ module.exports = {
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, TrainerType, 
     Stats, Status, OochType, Move, Ability, Item,
-    ItemType, Tile, Zone, TileEmoteGuildsArray
+    ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
 };

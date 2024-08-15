@@ -325,7 +325,7 @@ module.exports = {
         create_monster(0, get_emote_string(client, 'sporbee'), 'Sporbee',
         'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', [OochType.Fungal], 8, 12, 8, 12, //total 40
         [ [1, Move.Bash],[2, Move.Embolden],[3, Move.SporeShot],[7, Move.Slash],[10, Move.Siphon], [13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ],
-        [ Ability.Miniscule, Ability.Icky ], -1, 1, 12, 0)
+        [ Ability.Miniscule, Ability.Icky ], -1, 1, 11, 0)
 
         //Stingrowth
         create_monster(1, get_emote_string(client, 'stingrowth'), 'Stingrowth',
@@ -343,7 +343,7 @@ module.exports = {
         create_monster(3, get_emote_string(client, 'roocky'), 'Roocky',
         'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', [OochType.Stone], 12, 8, 12, 8, //total 40
         [ [1, Move.Bash],[2, Move.Brittle],[3, Move.PebbleBlast],[8, Move.DustStorm],[11, Move.Sharpen],[17, Move.Boulderdash],[27, Move.LavaLance],[-1, Move.AshBlast] ],
-        [ Ability.Tough, Ability.Shadow ], -1, 4, 12, 0)
+        [ Ability.Tough, Ability.Shadow ], -1, 4, 11, 0)
 
         //Graknight
         create_monster(4, get_emote_string(client, 'graknight'), 'Graknight',
@@ -361,7 +361,7 @@ module.exports = {
         create_monster(6, get_emote_string(client, 'puppyre'), 'Puppyre',
         'A very good boy, empowered by the spiraling patterns on its body.', [OochType.Flame], 10, 12, 8, 10, //total 40
         [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.Fireball],[8, Move.Engulf],[11, Move.Torch],[17, Move.ClampDown],[20, Move.SlowBurn],[27, Move.Tumorize],[-1, Move.Inferno] ],
-        [ Ability.Gentle, Ability.Warm ], -1, 7, 12, 0)
+        [ Ability.Gentle, Ability.Warm ], -1, 7, 11, 0)
 
         //Dogglow
         create_monster(7, get_emote_string(client, 'dogglow'), 'Dogglow',

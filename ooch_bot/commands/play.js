@@ -48,9 +48,11 @@ module.exports = {
             await thread.setInvitable(false);
             
             db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
+            db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
             interaction.reply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
         } else {
             db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
+            db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
             await thread.bulkDelete(100);
         }
 
@@ -76,6 +78,8 @@ module.exports = {
         db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
         db.profile.set(interaction.user.id, {}, 'ooch_enemy');
         db.profile.set(interaction.user.id, [], 'npc_event_data'); 
+        db.profile.set(interaction.user.id, 0, 'battle_msg_counter'); 
+        db.profile.set(interaction.user.id, 0, 'turn_msg_counter'); 
         db.profile.set(interaction.user.id, 0, 'npc_event_pos');
 
         let outputMsg = false;

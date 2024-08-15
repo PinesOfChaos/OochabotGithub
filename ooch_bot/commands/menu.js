@@ -690,7 +690,7 @@ module.exports = {
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
+                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
                         dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
                     } else {
                         dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
@@ -717,7 +717,7 @@ module.exports = {
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
+                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
                         dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
                     } else {
                         dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });

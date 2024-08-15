@@ -9,8 +9,9 @@ const _ = require('lodash');
 // create a new Discord client and give it some variables
 const { Client, Partials, GatewayIntentBits, Collection } = require('discord.js');
 const db = require('./db.js');
-const { move } = require('./func_play.js');
+const { move, setup_playspace_str } = require('./func_play.js');
 const { PlayerState } = require('./types.js');
+const { prompt_battle_input } = require('./func_battle.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
@@ -54,8 +55,52 @@ for(let i = 0; i < guild_ids.length; i++){
 //#endregion
 
 client.on('ready', async () => {
+    let userIds = db.profile.keyArray();
+    for (let user of userIds) {
+        let user_profile = db.profile.get(user);
+        if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
+        let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
+        let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
+
+        if (user_profile.player_state === PlayerState.Combat) {
+            // Delete turn messages
+            let msgDeleteCount = db.profile.get(user, 'turn_msg_counter');
+            if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
+                await userThread.bulkDelete(msgDeleteCount);
+            }
+
+            //let warningMsg = await userThread.send({ content: '## The bot has crashed, the current battle turn has been undone to avoid corruption.' });
+
+            // Rollback profile to previous turn.
+            if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
+                db.profile.set(user, JSON.parse(user_profile.rollback_profile));
+            }
+
+            await prompt_battle_input(userThread, user);
+            // await wait(2000);
+            // await warningMsg.delete();
+        } else if (user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace) {
+
+            await userThread.bulkDelete(100);
+            db.profile.set(user, [], 'npc_event_data');
+            db.profile.set(user, 0, 'npc_event_pos')
+
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user);
+            await db.profile.set(user, PlayerState.Playspace, 'player_state');
+
+            await userThread.send({ content: playspace_str }).then(msg => {
+                db.profile.set(user, msg.id, 'display_msg_id');
+            });
+
+            // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
+
+            // await wait(2000);
+            // await warningMsg.delete();
+        }
+    }
     console.log('Bot Ready')
-})
+});
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 client.on('interactionCreate', async interaction => {

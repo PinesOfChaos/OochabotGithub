@@ -89,3 +89,5 @@
 88|Purify|neutral|0|-100|clear_status|undefined|Remove all status effects.
 89|Reset|neutral|0|-100|clear_multi|undefined|Reset all stat multipliers to 1.
 90|Debug Bomb|tech|100|80|clear_status|undefined|Fire a high-damage bomb that clears any status effects from its target.
+91|Entrench|fungal|0|-100|+_def_75|snared|undefined|Becomes SNARED, but greatly boosts DEF.
+92|Null Sphere|void|60|100|-1|undefined|Fire a sphere of dark matter.

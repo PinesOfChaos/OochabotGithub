@@ -127,7 +127,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 
     // Generate intro to battle image
     let battle_image = await generate_battle_image(thread, user_id, db.profile.get(user_id), trainer_obj, is_npc_battle);
-    await thread.send({ 
+    thread.send({ 
         content: is_npc_battle ? `# ${trainer_obj.name} wants to battle!`
                 : `# You encounter a wild **${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`,
         files: [battle_image]
@@ -136,6 +136,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     await db.profile.set(user_id, PlayerState.Combat, 'player_state')
     await db.profile.set(user_id, trainer_obj, 'ooch_enemy')
     await db.profile.set(user_id, 1, 'battle_msg_counter');
+    await db.profile.set(user_id, 0, 'turn_msg_counter');
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
     if (abilityMsg.replaceAll('\n','') != '') {
@@ -160,14 +161,15 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote, battle_calc_exp, level_up } = require('./func_battle.js');
+    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote, battle_calc_exp,
+    level_up, type_effectiveness } = require('./func_battle.js');
 
     // Get enemy oochamon data that was previously generated
     let ooch_enemy_profile = db.profile.get(user_id, 'ooch_enemy')
     let ooch_plr_profile = db.profile.get(user_id);
     let ooch_enemy = ooch_enemy_profile.ooch_party[ooch_enemy_profile.ooch_active_slot];
     // Get the players oochamon in the first spot of their party
-    // let active_slot = ooch_plr_profile.ooch_active_slot;
+    let active_slot = ooch_plr_profile.ooch_active_slot;
     let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
     let ooch_pos = active_slot;
     let move_list = ooch_plr.moveset;
@@ -248,6 +250,10 @@ prompt_battle_input: async function(thread, user_id) {
                 .setStyle(ButtonStyle.Danger),
         )
     //#endregion
+
+    // Store current battle state to roll back to if needed
+    db.profile.set(user_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
+    db.profile.set(user_id, 0, 'turn_msg_counter');
         
     // If our current oochamon sent out is dead, we need to get input to switch our oochamon.
     if (ooch_plr.current_hp <= 0) {
@@ -297,6 +303,7 @@ prompt_battle_input: async function(thread, user_id) {
         }
 
         await thread.send({ content: `Select the new Oochamon you want to switch in!`, components: (switch_buttons_2_die.components.length != 0) ? [switch_buttons_1_die, switch_buttons_2_die] : [switch_buttons_1_die] })
+        db.profile.inc(user_id, 'turn_msg_counter');
         db.profile.inc(user_id, 'battle_msg_counter');
 
         const s_collector_d = thread.createMessageComponentCollector({ max: 1 });
@@ -361,10 +368,14 @@ prompt_battle_input: async function(thread, user_id) {
     } else { // If our currently sent out Oochamon is alive, do input as normal.
 
     let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2, row3] });
+    db.profile.inc(user_id, 'turn_msg_counter');
+    db.profile.inc(user_id, 'battle_msg_counter');
     const collector = thread.createMessageComponentCollector({ max: 1 });
 
     await collector.on('collect', async sel => {
         await sel_msg.delete().catch(() => {});
+        db.profile.dec(user_id, 'turn_msg_counter');
+        db.profile.dec(user_id, 'battle_msg_counter');
         switch (sel.customId) {
             case 'fight':
 
@@ -374,11 +385,19 @@ prompt_battle_input: async function(thread, user_id) {
                     move_id = move_list[i];
                     move_name = db.move_data.get(`${move_id}`, 'name')
                     move_type = db.move_data.get(`${move_id}`, 'type')
+                    move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
+                    if (move_effective_emote[0] > 1) {
+                        move_effective_emote = ' ⏫';
+                    } else if (move_effective_emote[0] < 1) {
+                        move_effective_emote = ' ⏬';
+                    } else {
+                        move_effective_emote = '';
+                    }
 
                     move_buttons.addComponents(
                         new ButtonBuilder()
                             .setCustomId(`${move_id}`)
-                            .setLabel(`${move_name}`)
+                            .setLabel(`${move_name}${move_effective_emote}`)
                             .setStyle(ButtonStyle.Primary)
                             .setEmoji(type_to_emote(move_type))
                     )
@@ -386,6 +405,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                 //Select the move to use
                 let atk_msg = await thread.send({ content: `Select a move to use!`, components: [move_buttons, back_button]});
+                db.profile.inc(user_id, 'turn_msg_counter');
                 db.profile.inc(user_id, 'battle_msg_counter');
                 const atk_collector = thread.createMessageComponentCollector({ max: 1 });   
 
@@ -394,11 +414,15 @@ prompt_battle_input: async function(thread, user_id) {
                     if (atk.customId == 'back') {
                         atk_collector.stop();
                         await atk_msg.delete();
+                        db.profile.dec(user_id, 'turn_msg_counter');
+                        db.profile.dec(user_id, 'battle_msg_counter');
                         await prompt_battle_input(thread, user_id);
                         return;
                     }
 
                     await atk_msg.delete();
+                    db.profile.dec(user_id, 'turn_msg_counter');
+                    db.profile.dec(user_id, 'battle_msg_counter');
                     let enemy_snare = !ooch_enemy.status_effects.includes(Status.Snare);
                     let enemy_speed = enemy_snare ? ooch_enemy.stats.spd / 100 : ooch_enemy.stats.spd;
 
@@ -416,6 +440,7 @@ prompt_battle_input: async function(thread, user_id) {
                     }
 
                     await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
+                    db.profile.inc(user_id, 'turn_msg_counter');
                     db.profile.inc(user_id, 'battle_msg_counter');
 
                     for (let i = 0; i < turn_order.length; i++) {
@@ -469,6 +494,7 @@ prompt_battle_input: async function(thread, user_id) {
                 if (ooch_inv.length == 1) {
                     thread.send('You only have 1 oochamon in your party, so you cannot switch.' +
                     '\nSelect a different action!');
+                    db.profile.inc(user_id, 'turn_msg_counter');
                     db.profile.inc(user_id, 'battle_msg_counter');
                     
                     // Prompt for more input
@@ -505,6 +531,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                 let switch_msg = await thread.send({ content: `**------------ Player Turn ------------**` + 
                 `\nSelect the new Oochamon you want to switch in!`, components: (switch_buttons_2.components.length != 0) ? [switch_buttons_1, switch_buttons_2, back_button] : [switch_buttons_1, back_button] })
+                db.profile.inc(user_id, 'turn_msg_counter');
                 db.profile.inc(user_id, 'battle_msg_counter');
 
                 const s_collector = thread.createMessageComponentCollector({ max: 1 });
@@ -514,11 +541,14 @@ prompt_battle_input: async function(thread, user_id) {
                     if (ooch_sel.customId == 'back') {
                         s_collector.stop();
                         await switch_msg.delete();
+                        db.profile.dec(user_id, 'turn_msg_counter');
+                        db.profile.dec(user_id, 'battle_msg_counter');
                         await prompt_battle_input(thread, user_id);
                         return;
                     }
                         
                     await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
+                    db.profile.inc(user_id, 'turn_msg_counter');
                     db.profile.inc(user_id, 'battle_msg_counter');
 
                     let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
@@ -614,6 +644,7 @@ prompt_battle_input: async function(thread, user_id) {
                 }
 
                 let bag_msg = await thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
+                db.profile.inc(user_id, 'turn_msg_counter');
                 db.profile.inc(user_id, 'battle_msg_counter');
 
                 const b_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
@@ -625,6 +656,8 @@ prompt_battle_input: async function(thread, user_id) {
                     if (i_sel.customId == 'back') {
                         b_collector.stop();
                         await bag_msg.delete();
+                        db.profile.dec(user_id, 'turn_msg_counter');
+                        db.profile.dec(user_id, 'battle_msg_counter');
                         await prompt_battle_input(thread, user_id);
                         return;
                     }
@@ -706,7 +739,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                             prism_select_options.push({ 
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description'),
+                                description: db.item_data.get(id, 'description').slice(0,25),
                                 value: `${id}`,
                                 emoji: db.item_data.get(id, 'emote'),
                             })
@@ -719,7 +752,9 @@ prompt_battle_input: async function(thread, user_id) {
                                 .addOptions(prism_select_options),
                         );
 
-                        await i_sel.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bag_buttons] })
+                        console.log(bag_select.components, bag_buttons.components);
+
+                        await i_sel.update({ content: `Select a prism to use!`, components: [bag_select, bag_buttons] })
 
                         prism_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
 
@@ -747,8 +782,13 @@ prompt_battle_input: async function(thread, user_id) {
 
                             // If we caught the Oochamon successfully
                             if (prism_result == true) { 
-                                string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.nickname}!**\nIt's been added to your party, or to your PC if your party is full.\n` +
-                                `Your playspace will appear momentarily.`;
+                                string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.nickname}!**`;
+
+                                if (db.profile.get(user_id, 'ooch_party').length < 4) {
+                                    string_to_send += `\nIt's been added to your party!\nYour playspace will appear momentarily.`;
+                                } else {
+                                    string_to_send += `\nIt's been added to your box.\nYour playspace will appear momentarily.`;
+                                }
 
                                 let user_profile = db.profile.get(user_id);
                                 let ooch_party = user_profile.ooch_party;
@@ -776,7 +816,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
                                         ooch_data = level_up(ooch_data);
                                         string_to_send += `\n${ooch_data[1]}`;
-                                        await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
+                                        await 1(user_id, ooch_data[0], `ooch_party[${i}]`)
                                     }
                                 }
 
@@ -801,6 +841,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 // Wait a bit after finishing a battle to allow viewing info about Oochamon
                                 await wait(10000);
                                 await thread.send({ embeds: [infoEmbed], files: [oochPng] });
+                                await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
                                 await finish_battle(thread, user_id);
 
@@ -835,14 +876,16 @@ prompt_battle_input: async function(thread, user_id) {
                     await wait(battleSpeed);
                     await thread.send(`**------------ Player Turn ------------**` +
                     `\nYou successfully ran away!\nYour playspace will appear momentarily.`);
-                    db.profile.inc(user_id, 'battle_msg_counter');
+                    await db.profile.inc(user_id, 'turn_msg_counter');
+                    await db.profile.inc(user_id, 'battle_msg_counter');
                     await finish_battle(thread, user_id);
                     return;
                 } else {
                     await wait(battleSpeed);
                     await thread.send(`**------------ Player Turn ------------**` + 
                     `\nYou failed to run away!`)
-                    db.profile.inc(user_id, 'battle_msg_counter');
+                    await db.profile.inc(user_id, 'turn_msg_counter');
+                    await db.profile.inc(user_id, 'battle_msg_counter');
 
                     // Enemy attacks player
                     let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
@@ -1367,6 +1410,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
     await wait(battleSpeed);
     await thread.send({ content: header, embeds: [displayEmbed] });
+    db.profile.inc(user_id, 'turn_msg_counter');
     db.profile.inc(user_id, 'battle_msg_counter');
 
     return [attacker, defender];
@@ -1531,6 +1575,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
             await wait(battleSpeed);
             await thread.send({ content: `**------------ You win! ------------**`, embeds: [displayEmbed] });
+            db.profile.inc(user_id, 'turn_msg_counter');
             db.profile.inc(user_id, 'battle_msg_counter');
 
             db.profile.math(user_id, '+', oochabux, 'oochabux');
@@ -1554,6 +1599,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             oochabux = _.clamp(oochabux, 0, user_profile.oochabux);
             await wait(battleSpeed);
             await thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
+            db.profile.inc(user_id, 'turn_msg_counter');
             db.profile.inc(user_id, 'battle_msg_counter');
             db.profile.math(user_id, '-', oochabux, 'oochabux');
             db.profile.set(user_id, 0, 'ooch_active_slot');
@@ -1780,9 +1826,11 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     .setDescription(`${string_to_send}`);
     await wait(battleSpeed);
     await thread.send({ content: `**------------ End of Round ------------**`, embeds: [displayEmbed] });
+    db.profile.inc(user_id, 'turn_msg_counter');
     db.profile.inc(user_id, 'battle_msg_counter');
     if (enemy_send_string_to_send != '') {
         await thread.send({ content: enemy_send_string_to_send });
+        db.profile.inc(user_id, 'turn_msg_counter');
         db.profile.inc(user_id, 'battle_msg_counter');
     }
 
@@ -2145,6 +2193,8 @@ level_up: function(ooch) {
             level_counter += 1;
         }
 
+        let curOochMoveset = ooch.moveset;
+
         // Determine new moves
         possibleMoves = possibleMoves.filter(v => {
             return _.inRange(v[0], starting_level + 1, ooch.level + 1)
@@ -2163,7 +2213,7 @@ level_up: function(ooch) {
 
         output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
         `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**` : ``}` +
-        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\nYou can teach these moves to your Oochamon in the party menu!` : `` }`;
+        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\n${curOochMoveset.length <= 4 && ooch_moveset.length > 4 ? `You can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
     }
     return [ooch, output];
 },
@@ -2265,7 +2315,8 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 90)
     ctx.textAlign = 'left';
 
-    let pngData = await canvas.png;
+    let pngData = canvas.toBufferSync('png');
+
     return pngData;
 },
 

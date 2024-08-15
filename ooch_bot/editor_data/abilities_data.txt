@@ -54,6 +54,10 @@
 53|Patient|Increases DEF by 5% each turn.
 54|Easy Go|Heals the rest of your party by 10% when defeated.
 55|Bomber|Halves the enemy HP on death.
-56|Hole Dweller|Gets the Vanished status at the end of every other turn.
-57|Power Conduit|Boosts the power of FLAME moves against OOZE and TECH types by 50%.
-58|Liquid Cooled|Prevents BURN and boosts the power of TECH type moves by 25%.
+56|Flammable|Gains ATK when hit with a FLAME type move.
+57|Hole Dweller|Gets the Vanished status at the end of every other turn.
+58|Power Conduit|Boosts the power of FLAME moves against OOZE and TECH types by 50%.
+59|Liquid Cooled|Prevents BURN and boosts the power of TECH type moves by 25%.
+60|Increment|Randomly boosts a stat at the end of each turn.
+61|Parry|Reduces damage taken. When hit by an attack, this ability becomes Riposte.
+62|Riposte|Increases damage dealt. After attacking or the turn ends, this ability becomes Parry.
