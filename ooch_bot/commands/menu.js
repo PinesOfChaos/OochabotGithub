@@ -372,14 +372,16 @@ module.exports = {
             } 
             // Quick Party Heal Oochamon
             else if (selected == 'quick_heal') {
-                let itemKeys = db.item_data.keyArray();
-                let healOptions = [];
-                for (let item of healOptions) {
-                    let itemData = db.item_data.get(item);
-                    if (itemData.type === ItemType.Heal) healOptions.push(itemData);
-                }
-
                 let healInv = db.profile.get(interaction.user.id, 'heal_inv');
+                healInv = Object.entries(healInv);
+                let healOptions = [];
+                
+                for (let item of healInv) {
+                    if (item[1] !== 0) {
+                        let itemData = db.item_data.get(item[0]);
+                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0 });
+                    }
+                }
 
                 if (healOptions.length == 0) {
                     let followUpMsg = await interaction.followUp({ content: 'You do not have any items to heal with.' });
@@ -387,7 +389,48 @@ module.exports = {
                     await followUpMsg.delete().catch(() => {});
                 }
 
-                healOptions = healOptions.map(v => [v.id, v.potency])
+                console.log(healOptions);
+
+                i.update({ content: `**Oochamon Party:**`, components: pa_components })
+
+                // hp_dif = mon.max_hp - mon.hp
+                // hp_restored = 0;
+                // tier_max = healOptions.length - 1
+                // tier_current = tier_max;
+                // pot = healOptions[tier_current]
+                // backwards = false;
+
+                // while(hp_dif - hp_restored > 0) {
+                //     if ((pot.owned - pot.used) == 0) {
+                //         tier_current += backwards ? 1 : -1;
+                //         if (tier_current > tier_max) { break; } //end while loop if we've run out of options
+                //         else if (tier_current <= 0) { backwards = true; } //start working backwards if we're out of the minimum potion
+                //         else { pot = tiers[tier_current]; }
+                //     }
+                //     else if ((pot.hp > hp_dif - hp_restored) && (!backwards)) {
+                //         if (tier_current == 0) {
+                //             pot.used += 1
+                //             hp_restored += pot.hp
+                //         }
+                //         else {
+                //             tier_current -= 1;
+                //             if (tier_current < 0) break; 
+                //             else pot = tiers[tier_current];  
+                //         }
+                //     }
+                //     else {
+                //         pot.used += 1
+                //         hp_restored += pot.hp    
+                //     }
+                // }
+
+                // for (let i = tier_max; i >= 0; i--) {
+                //     pot = tiers[i];
+                //     while ((pot.hp <= hp_restored - hp_dif) && (pot.used > 0)) {
+                //         hp_restored -= pot.hp;
+                //         pot.used -= 1;
+                //     }
+                // }
             }
             // Party Oochamon Details Menu Button
             else if (selected.includes('par_ooch_id_')) {
