@@ -107,24 +107,12 @@ PREFERENCES:
 GIMMICK (CORRUPTED FORMS):
 	- Oochamon imbued with a special power from the planet (or Oochabot) gain the ability to twist into a corrupted version of themselves.
 	- In gameplay terms, this gives every(?) final stage evolution oochamon the ability to swap between a "pure" and "corrupted" form of the oochamon.
-		- There are 2 types of Corrupted Forms:
-			- Crystal: Gives the Oochamon a second typing as well as major stat changes and an ability change, that can change how the oochamon is played
-			- Void: Gives the Oochamon a second Void typing with slightly lowered stat changes and access to Void moves, that makes them offensively very strong.
-		- Each of these Corrupted Forms has a downside to having too many of them:
-			- Crystal Oochamon have a base chance to disobey your orders, that increases the more of them you have in your party.
-			- Void Oochamon have a bit lowered stats, and their stats decrease a little bit more the more of them you have in your party.
-			- Both Crystal and Void Corrupted Oochamon do add to each others "void total", but less.
 		
-	- To turn an Oochamon into it's corrupted form or purify it into it's pure form, you must use one of these 3 items:
-		- [Abyssal Droplet]
-			- Item used to turn an Oochamon into it's Void Corrupted Form.
+	- To turn an Oochamon into it's corrupted form or purify it into it's pure form, you must use one of these 2 items:
 		- [Prismatic Key]
-			- Item used to turn an Oochamon into it's Crystal Corrupted Form.
+			- Item used to turn an Oochamon into it's Corrupted Form.
 		- [Extractor]
 			- Item used to turn an Oochamon into it's Pure Form.
-
-	- Some Oochamon will have a crystal corrupted form, while some will have a void corrupted form.
-	- [Thief] will be heavily involved with Void corruption, while the main story will deal with Crystal corruption.
 	
 
 STORY:

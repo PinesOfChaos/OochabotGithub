@@ -65,7 +65,7 @@ module.exports = {
                 new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
             )
             .addComponents(
-                new ButtonBuilder().setCustomId('quick_heal').setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️')
+                new ButtonBuilder().setCustomId('quick_heal').setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️').setDisabled(true)
             );
 
         let party_back_button = new ActionRowBuilder()
@@ -326,9 +326,14 @@ module.exports = {
         let healItems = Object.entries(user_profile.heal_inv);
         if (healItems.length != 0) {
             for (let item of healItems) {
-                if (user_profile.heal_inv[item] != 0) party_extra_buttons.components[1].setDisabled(false); 
+                if (item[1] != 0) ooch_back_button.components[1].setDisabled(false); 
             }
-        }  
+        }
+        // Disable the party healing button if all Oochamon are at full HP
+        let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
+        oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
+        if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
+        
 
         // Menu operation is handled in this collector
         await collector.on('collect', async i => {
@@ -379,58 +384,65 @@ module.exports = {
                 for (let item of healInv) {
                     if (item[1] !== 0) {
                         let itemData = db.item_data.get(item[0]);
-                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0 });
+                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
                     }
                 }
 
-                if (healOptions.length == 0) {
-                    let followUpMsg = await interaction.followUp({ content: 'You do not have any items to heal with.' });
-                    await wait(5000);
-                    await followUpMsg.delete().catch(() => {});
+                let oochParty = db.profile.get(interaction.user.id, 'ooch_party');
+                for (let i = 0; i < oochParty.length; i++) {
+                    let hp_dif = oochParty[i].stats.hp - oochParty[i].current_hp
+                    let hp_restored = 0;
+                    let tier_max = healOptions.length - 1
+                    let tier_current = tier_max;
+                    let backwards = false;
+
+                    while (hp_dif - hp_restored > 0) {
+                        if ((healOptions[tier_current].owned - healOptions[tier_current].used) == 0) {
+                            tier_current += backwards ? 1 : -1;
+                            if (tier_current > tier_max) { break; } //end while loop if we've run out of options
+                            else if (tier_current <= 0) { backwards = true; } //start working backwards if we're out of the minimum potion
+                        }
+                        else if ((healOptions[tier_current].hp > hp_dif - hp_restored) && (!backwards)) {
+                            if (tier_current == 0) {
+                                healOptions[tier_current].used += 1
+                                hp_restored += healOptions[tier_current].hp
+                            }
+                            else {
+                                tier_current -= 1;
+                                if (tier_current < 0) break; 
+                            }
+                        }
+                        else {
+                            healOptions[tier_current].used += 1
+                            hp_restored += healOptions[tier_current].hp    
+                        }
+                    }
+
+                    for (let i = tier_max; i >= 0; i--) {
+                        while ((healOptions[i].hp <= hp_restored - hp_dif) && (healOptions[i].used > 0)) {
+                            hp_restored -= healOptions[i].hp;
+                            healOptions[i].used -= 1;
+                        }
+                    }
+
+                    hp_restored = _.clamp(oochParty[i].current_hp + hp_restored, 0, oochParty[i].stats.hp);
+                    oochParty[i].current_hp = hp_restored;
                 }
+                
+                db.profile.set(interaction.user.id, oochParty, 'ooch_party');
+                let outputMsg = 'Potions used for quick heals:';
+                healOptions.forEach(item => {
+                    if (item.used > 0) {
+                        db.profile.math(interaction.user.id, '-', item.used, `heal_inv.${item.id}`);
+                        outputMsg += `\n${item.emote} **${item.name}** (${item.used}x)`;
+                    }
+                });
+                pa_components = buildPartyData(oochParty);       
 
-                console.log(healOptions);
-
-                i.update({ content: `**Oochamon Party:**`, components: pa_components })
-
-                // hp_dif = mon.max_hp - mon.hp
-                // hp_restored = 0;
-                // tier_max = healOptions.length - 1
-                // tier_current = tier_max;
-                // pot = healOptions[tier_current]
-                // backwards = false;
-
-                // while(hp_dif - hp_restored > 0) {
-                //     if ((pot.owned - pot.used) == 0) {
-                //         tier_current += backwards ? 1 : -1;
-                //         if (tier_current > tier_max) { break; } //end while loop if we've run out of options
-                //         else if (tier_current <= 0) { backwards = true; } //start working backwards if we're out of the minimum potion
-                //         else { pot = tiers[tier_current]; }
-                //     }
-                //     else if ((pot.hp > hp_dif - hp_restored) && (!backwards)) {
-                //         if (tier_current == 0) {
-                //             pot.used += 1
-                //             hp_restored += pot.hp
-                //         }
-                //         else {
-                //             tier_current -= 1;
-                //             if (tier_current < 0) break; 
-                //             else pot = tiers[tier_current];  
-                //         }
-                //     }
-                //     else {
-                //         pot.used += 1
-                //         hp_restored += pot.hp    
-                //     }
-                // }
-
-                // for (let i = tier_max; i >= 0; i--) {
-                //     pot = tiers[i];
-                //     while ((pot.hp <= hp_restored - hp_dif) && (pot.used > 0)) {
-                //         hp_restored -= pot.hp;
-                //         pot.used -= 1;
-                //     }
-                // }
+                let followUpMsg = await interaction.followUp({ content: outputMsg });
+                await i.update({ content: `**Oochamon Party:**`, components: pa_components });
+                await wait(5000);
+                await followUpMsg.delete().catch(() => {});
             }
             // Party Oochamon Details Menu Button
             else if (selected.includes('par_ooch_id_')) {
