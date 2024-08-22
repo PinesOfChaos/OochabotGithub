@@ -70,10 +70,12 @@ client.on('ready', async () => {
             }
 
             //let warningMsg = await userThread.send({ content: '## The bot has crashed, the current battle turn has been undone to avoid corruption.' });
+           
 
             // Rollback profile to previous turn.
             if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
                 db.profile.set(user, JSON.parse(user_profile.rollback_profile));
+                db.profile.set(user, false, 'rollback_profile');
             }
 
             await prompt_battle_input(userThread, user);

@@ -3,7 +3,7 @@ const db = require('../db.js');
 const _ = require('lodash');
 const wait = require('wait');
 const { setup_playspace_str, create_ooch, buildBoxData } = require('../func_play');
-const { PlayerState, TypeEmote } = require('../types.js');
+const { PlayerState, TypeEmote, ItemType } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
 const { ooch_info_embed, get_ooch_art } = require('../func_other.js');
  
@@ -57,6 +57,15 @@ module.exports = {
         let back_button = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
+            );
+
+        // Back Buttons
+        let ooch_back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
+            )
+            .addComponents(
+                new ButtonBuilder().setCustomId('quick_heal').setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️')
             );
 
         let party_back_button = new ActionRowBuilder()
@@ -302,7 +311,7 @@ module.exports = {
             }
 
             if (ooch_party.length > 2) pa_components.push(party_2);
-            pa_components.push(back_button);
+            pa_components.push(ooch_back_button);
             return pa_components;
         }
 
@@ -361,6 +370,25 @@ module.exports = {
                 pa_components = buildPartyData(ooch_party);
                 i.update({ content: `**Oochamon Party:**`, components: pa_components })
             } 
+            // Quick Party Heal Oochamon
+            else if (selected == 'quick_heal') {
+                let itemKeys = db.item_data.keyArray();
+                let healOptions = [];
+                for (let item of healOptions) {
+                    let itemData = db.item_data.get(item);
+                    if (itemData.type === ItemType.Heal) healOptions.push(itemData);
+                }
+
+                let healInv = db.profile.get(interaction.user.id, 'heal_inv');
+
+                if (healOptions.length == 0) {
+                    let followUpMsg = await interaction.followUp({ content: 'You do not have any items to heal with.' });
+                    await wait(5000);
+                    await followUpMsg.delete().catch(() => {});
+                }
+
+                healOptions = healOptions.map(v => [v.id, v.potency])
+            }
             // Party Oochamon Details Menu Button
             else if (selected.includes('par_ooch_id_')) {
                 selected = parseInt(selected.replace('par_ooch_id_', ''));

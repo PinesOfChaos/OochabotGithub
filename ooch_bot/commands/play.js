@@ -103,7 +103,7 @@ module.exports = {
                 if (thread != interaction.channel) {
                     let tipMsg = await thread.send({ content: outputMsg, ephemeral: true });
                     await wait(15000);
-                    await tipMsg.delete();
+                    await tipMsg.delete().catch(() => {});
                 } else {
                     await interaction.reply({ content: outputMsg, ephemeral: true });
                 }

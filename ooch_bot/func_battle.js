@@ -252,6 +252,7 @@ prompt_battle_input: async function(thread, user_id) {
     //#endregion
 
     // Store current battle state to roll back to if needed
+    db.profile.delete(user_id, 'rollback_profile');
     db.profile.set(user_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
     db.profile.set(user_id, 0, 'turn_msg_counter');
         
@@ -1888,7 +1889,7 @@ item_use: function(ooch, item_id) {
 
     if (item_data.type == 'potion') {
         ooch.alive = true;
-        ooch.current_hp += Math.ceil(ooch.stats.hp * item_data.potency);
+        ooch.current_hp += item_data.potency;
         ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
         return ooch;
     } else if (item_data.type == 'prism') {
@@ -2150,6 +2151,7 @@ finish_battle: async function(thread, user_id, battle_won) {
     // Setup playspace
     let playspace_str = await setup_playspace_str(user_id);
     await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+    await db.profile.delete(user_id, 'rollback_profile');
 
     await thread.send({ content: playspace_str }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
@@ -2213,7 +2215,7 @@ level_up: function(ooch) {
 
         output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
         `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**` : ``}` +
-        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\n${curOochMoveset.length <= 4 && ooch_moveset.length > 4 ? `You can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
+        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\n${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `You can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
     }
     return [ooch, output];
 },
