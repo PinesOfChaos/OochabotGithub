@@ -257,7 +257,7 @@ module.exports = {
                     //start shop stuff here
                     let oochabux = db.profile.get(user_id, 'oochabux');
 
-                    let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
+                    let shopImage = new AttachmentBuilder(`./art/ShopImages/shopPlaceholder.png`);
                     let msg = await thread.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button], files: [shopImage] });
                     
                     // Delete the current playspace

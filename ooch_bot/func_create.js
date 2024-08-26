@@ -78,35 +78,47 @@ module.exports = {
      * @param {Number} evo_lvl What level the Oochamon evolves at
      * @param {Number} evo_stage What stage the Oochamon is at evolution wise
      */
-    create_monster: function(id, emote, name, oochive_entry, type, hp, atk, def, spd, move_list, abilities, pre_evo_id, evo_id, evo_lvl, evo_stage) { 
-        
-
-        let key_id = id.toString();
-        db.monster_data.set(key_id, id, 'id')
-        db.monster_data.set(key_id, emote, 'emote')
-        db.monster_data.set(key_id, name, 'name')
-        db.monster_data.set(key_id, oochive_entry, 'oochive_entry')
-        db.monster_data.set(key_id, type, 'type')
-        db.monster_data.set(key_id, hp, 'hp')
-        db.monster_data.set(key_id, atk, 'atk')
-        db.monster_data.set(key_id, def, 'def')
-        db.monster_data.set(key_id, spd, 'spd')
-        db.monster_data.set(key_id, move_list, 'move_list')
-        db.monster_data.set(key_id, abilities, 'abilities')
-        db.monster_data.set(key_id, pre_evo_id, 'pre_evo_id')
-        db.monster_data.set(key_id, evo_id, 'evo_id')
-        db.monster_data.set(key_id, evo_lvl, 'evo_lvl')
-        db.monster_data.set(key_id, evo_stage, 'evo_stage')
-
-        fs.access(`./Art/ResizedArt/${name.toLowerCase()}.png`, (err) => {
-            if(err){
-                console.log(`ART ERROR: ${name}`)
+    create_monster: function(monster) {
+        // Required attributes
+        const requiredAttributes = [
+            "id",
+            "emote",
+            "name",
+            "oochive_entry",
+            "type",
+            "hp",
+            "atk",
+            "def",
+            "spd",
+            "move_list",
+            "abilities",
+            "pre_evo_id",
+            "evo_id",
+            "evo_lvl",
+            "evo_stage"
+        ];
+    
+        // Check if all required attributes are present
+        for (let attr of requiredAttributes) {
+            if (!monster.hasOwnProperty(attr)) {
+                console.log(`DATA ERROR: Missing required attribute: ${attr} for ${monster.name}`);
+                return;
+            }
+        }
+    
+        // Set the monster data in the enmap database
+        let key_id = monster.id.toString();
+        db.monster_data.set(key_id, monster);
+    
+        // Check if the artwork exists
+        fs.access(`./art/ResizedArt/${monster.name.toLowerCase()}.png`, (err) => {
+            if (err) {
+                console.log(`ART ERROR: ${monster.name}`);
             }
         });
-        
 
-        
     },
+    
 
     /**
      * Creates a move data object and adds it to the database.

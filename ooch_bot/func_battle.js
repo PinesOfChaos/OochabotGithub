@@ -2259,18 +2259,18 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     let canvas = new Canvas(480, 270);
     FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
     let ctx = canvas.getContext("2d");
-    const background = await loadImage(`./Art/BattleArt/battle_bg_${plr.location_data.area}.png`);
+    const background = await loadImage(`./art/BattleArt/battle_bg_${plr.location_data.area}.png`);
     
     // This uses the canvas dimensions to stretch the image onto the entire canvas
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    const plrSprite = await loadImage('./Art/NPCs/c_000.png')
-    const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
+    const plrSprite = await loadImage('./art/NPCs/c_000.png')
+    const oochPlr = await loadImage(`./art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
     let enemySprite = null;
     if (enemy.trainer_battle_sprite != undefined) {
-        enemySprite = await loadImage(`./Art/NPCs/${enemy.trainer_battle_sprite}.png`)
+        enemySprite = await loadImage(`./art/NPCs/${enemy.trainer_battle_sprite}.png`)
     }
-    const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
-    const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
+    const oochEnemy = await loadImage(`./art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
+    const prismIcon = await loadImage('./art/ArtFiles/item_prism.png');
     let playerMemberObj = thread.guild.members.cache.get(user_id);
     const playerName = playerMemberObj.displayName;
 

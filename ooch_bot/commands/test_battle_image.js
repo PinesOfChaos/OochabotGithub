@@ -46,15 +46,15 @@ module.exports = {
         FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
         FontLibrary.use("main_reg", ["./fonts/LEMONMILK-Regular.otf"]);
         let ctx = canvas.getContext("2d");
-        const background = await loadImage('./Art/BattleArt/battle_bg_stone_tunnel.png');
+        const background = await loadImage('./art/BattleArt/battle_bg_stone_tunnel.png');
         
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        const plrSprite = await loadImage('./Art/NPCs/c_000.png')
-        const oochPlr = await loadImage(`./Art/ResizedArt/chantern.png`);
-        const enemySprite = await loadImage('./Art/NPCs/c_001.png')
-        const oochEnemy = await loadImage(`./Art/ResizedArt/chantern.png`);
-        const prismIcon = await loadImage(`./Art/ArtFiles/item_prism.png`);
+        const plrSprite = await loadImage('./art/NPCs/c_000.png')
+        const oochPlr = await loadImage(`./art/ResizedArt/chantern.png`);
+        const enemySprite = await loadImage('./art/NPCs/c_001.png')
+        const oochEnemy = await loadImage(`./art/ResizedArt/chantern.png`);
+        const prismIcon = await loadImage(`./art/ArtFiles/item_prism.png`);
 
         ctx.fillStyle = 'black';
         ctx.font = `italic bold 20px main_med`;

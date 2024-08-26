@@ -67,12 +67,12 @@ module.exports = {
                     // Set NPC dialogue portrait
                     if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
                         event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                        imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
+                        imageFiles.push(get_art_file(`./art/${obj_content.dialogue_file_path}`));
                     }
 
                     if (obj_content.image) {
                         event_embed.setImage(`attachment://${obj_content.image}`)
-                        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+                        imageFiles.push(get_art_file(`./art/EventImages/${obj_content.image}`));
                     }
 
                     info_data = '';
@@ -224,12 +224,12 @@ module.exports = {
                         // Set NPC dialogue portrait
                         if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
                             event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                            imageFiles.push(get_art_file(`./Art/${obj_content.dialogue_file_path}`));
+                            imageFiles.push(get_art_file(`./art/${obj_content.dialogue_file_path}`));
                         }
 
                         if (obj_content.image) {
                             event_embed.setImage(`attachment://${obj_content.image}`)
-                            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+                            imageFiles.push(get_art_file(`./art/EventImages/${obj_content.image}`));
                         }
 
                         info_data = '';

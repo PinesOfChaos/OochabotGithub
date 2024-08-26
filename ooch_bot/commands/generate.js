@@ -322,124 +322,297 @@ module.exports = {
         //Abilities, Pre-Evolution ID, Evolution ID, Evolution Level, Evolution Stage
 
         // Sporbee
-        create_monster(0, get_emote_string(client, 'sporbee'), 'Sporbee',
-        'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', [OochType.Fungal], 8, 12, 8, 12, //total 40
-        [ [1, Move.Bash],[2, Move.Embolden],[3, Move.SporeShot],[7, Move.Slash],[10, Move.Siphon], [13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ],
-        [ Ability.Miniscule, Ability.Icky ], -1, 1, 11, 0)
-
-        //Stingrowth
-        create_monster(1, get_emote_string(client, 'stingrowth'), 'Stingrowth',
-        'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', [OochType.Fungal], 15, 20, 11, 14, //total 60
-        [ [1, Move.Bash],[2, Move.Embolden],[3, Move.SporeShot],[7, Move.Slash],[10, Move.Siphon],[13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ], 
-        [ Ability.Burdened, Ability.Icky ], 0, 2, 25, 1)
-
-        //Queenect
-        create_monster(2, get_emote_string(client, 'queenect'), 'Queenect',
-        'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', [OochType.Fungal], 25, 25, 16, 14, //total 80
-        [ [1, Move.Bash],[2, Move.Embolden],[3,Move.SporeShot],[7, Move.Slash],[10, Move.Siphon],[13, Move.TakeOver],[17, Move.Bloom],[27, Move.Blight],[-1, Move.CausticOrb] ],
-        [ Ability.Burdened, Ability.Broodmother ], 1, -1, -1, 2)
-
-        // Roocky
-        create_monster(3, get_emote_string(client, 'roocky'), 'Roocky',
-        'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', [OochType.Stone], 12, 8, 12, 8, //total 40
-        [ [1, Move.Bash],[2, Move.Brittle],[3, Move.PebbleBlast],[8, Move.DustStorm],[11, Move.Sharpen],[17, Move.Boulderdash],[27, Move.LavaLance],[-1, Move.AshBlast] ],
-        [ Ability.Tough, Ability.Shadow ], -1, 4, 11, 0)
-
-        //Graknight
-        create_monster(4, get_emote_string(client, 'graknight'), 'Graknight',
-        'The stones have continued deteriorating revealing a gremlin-like form, it weilds fragments of its former body as a spear.', [OochType.Stone], 18, 15, 15, 12, //total 60
-        [ [1, Move.Bash],[2, Move.Brittle],[3, Move.PebbleBlast],[8, Move.DustStorm],[11, Move.Sharpen],[17, Move.DustStorm],[27, Move.LavaLance],[-1, Move.AshBlast] ],
-        [ Ability.Withering, Ability.Shadow ], 3, 5, 25, 1)
-
-        //Kracking
-        create_monster(5, get_emote_string(client, 'kracking'), 'Kracking',
-        'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.', [OochType.Stone], 22, 18, 22, 18, //total 80
-        [ [1, Move.Bash],[2, Move.Brittle],[3, Move.PebbleBlast],[8, Move.DustStorm],[11, Move.Sharpen],[17, Move.DustStorm],[27, Move.LavaLance],[-1, Move.AshBlast] ], 
-        [ Ability.Withering, Ability.Darkbright], 4, -1, -1, 2)
-
-        //Puppyre
-        create_monster(6, get_emote_string(client, 'puppyre'), 'Puppyre',
-        'A very good boy, empowered by the spiraling patterns on its body.', [OochType.Flame], 10, 12, 8, 10, //total 40
-        [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.Fireball],[8, Move.Engulf],[11, Move.Torch],[17, Move.ClampDown],[20, Move.SlowBurn],[27, Move.Tumorize],[-1, Move.Inferno] ],
-        [ Ability.Gentle, Ability.Warm ], -1, 7, 11, 0)
-
-        //Dogglow
-        create_monster(7, get_emote_string(client, 'dogglow'), 'Dogglow',
-        'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', [OochType.Flame], 13, 18, 14, 15, //total 60
-        [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.Fireball],[8, Move.Engulf],[11, Move.Torch],[17, Move.ClampDown],[20, Move.SlowBurn],[27, Move.Tumorize],[-1, Move.Inferno] ],
-        [ Ability.Gentle, Ability.Radiant ], 6, 8, 25, 1)
-
-        //Hounuke
-        create_monster(8, get_emote_string(client, 'hounuke'), 'Hounuke',
-        'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', [OochType.Flame], 16, 26, 18, 20, //total 80
-        [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.Fireball],[8, Move.Engulf],[11, Move.Torch],[17, Move.ClampDown],[20, Move.SlowBurn],[27, Move.Tumorize],[-1, Move.Inferno] ],
-        [ Ability.Conflicted, Ability.Radiant ], 7, -1, -1, 2)
-
-        //Glither
-        create_monster(9, get_emote_string(client, 'glither'), 'Glither',
-        'Its diamond-hard skin protects it from the most brutal of sandstorms.', [OochType.Stone], 15, 9, 14, 12, //total 50
-        [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.PebbleBlast],[8, Move.Slash],[13, Move.DustStorm],[15, Move.Sedimentation],[21, Move.Impale],[27, Move.Glimmer],[34, Move.Entomb],[-1, Move.GemBash] ],
-        [ Ability.Tough, Ability.Reactive ], -1, 10, 12, 0)
-
-        //Sparafura
-        create_monster(10, get_emote_string(client, 'sparafura'), 'Sparafura',
-        'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', [OochType.Stone], 18, 25, 16, 11, //total 70
-        [ [1, Move.Bash],[2, Move.Intimidate],[3, Move.PebbleBlast],[8, Move.Slash],[13, Move.DustStorm],[15, Move.Sedimentation],[21, Move.Impale],[27, Move.Glimmer],[34, Move.Entomb],[-1, Move.GemBash] ],
-        [ Ability.Burrower, Ability.Reactive ], 9, -1, -1, 1)
+        create_monster({
+            id: 0,
+            emote: get_emote_string(client, 'sporbee'),
+            name: 'Sporbee',
+            oochive_entry: 'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', 
+            type: [OochType.Fungal],
+            hp: 8, atk: 12, def: 8, spd: 12, //total 40
+            move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], 
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight],
+             [-1, Move.CausticOrb] ],
+            abilities: [ Ability.Miniscule, Ability.Icky ],
+            pre_evo_id: -1, evo_id: 1, evo_lvl: 11, evo_stage: 0
+        });
         
-        //Constone
-        create_monster(11, get_emote_string(client, 'constone'), 'Constone',
-        'Found on salt flats, these strange beings move about on a single wheel rather than legs.', [OochType.Stone], 10, 10, 10, 20, //total 50
-        [ [1, Move.Bash],[2, Move.Hasten],[4, Move.PebbleBlast],[7, Move.MagicBolt],[11, Move.Restruct],[18, Move.Boulderdash],[26, Move.Grind],[-1, Move.ArcaStrike] ],
-        [ Ability.Inertia, Ability.Dense ], -1, 12, 15, 0)
+        // Stingrowth
+        create_monster({
+            id: 1,
+            emote: get_emote_string(client, 'stingrowth'),
+            name: 'Stingrowth',
+            oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', 
+            type: [OochType.Fungal],
+            hp: 15, atk: 20, def: 11, spd: 14, //total 60
+            move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash],
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight], 
+             [-1, Move.CausticOrb] ],
+            abilities: [ Ability.Burdened, Ability.Icky ],
+            pre_evo_id: 0, evo_id: 2, evo_lvl: 25, evo_stage: 1
+        });
+        
+        // Queenect
+        create_monster({
+            id: 2,
+            emote: get_emote_string(client, 'queenect'),
+            name: 'Queenect',
+            oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', 
+            type: [OochType.Fungal],
+            hp: 25, atk: 25, def: 16, spd: 14, //total 80
+            move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], 
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight], 
+             [-1, Move.CausticOrb] ],
+            abilities: [ Ability.Burdened, Ability.Broodmother ],
+            pre_evo_id: 1, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
+        
+        // Roocky
+        create_monster({
+            id: 3,
+            emote: get_emote_string(client, 'roocky'),
+            name: 'Roocky',
+            oochive_entry: 'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', 
+            type: [OochType.Stone],
+            hp: 12, atk: 8, def: 12, spd: 8, //total 40
+            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm],
+             [11, Move.Sharpen], [17, Move.Boulderdash], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+            abilities: [ Ability.Tough, Ability.Shadow ],
+            pre_evo_id: -1, evo_id: 4, evo_lvl: 11, evo_stage: 0
+        });
+        
+        // Graknight
+        create_monster({
+            id: 4,
+            emote: get_emote_string(client, 'graknight'),
+            name: 'Graknight',
+            oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.', 
+            type: [OochType.Stone],
+            hp: 18, atk: 15, def: 15, spd: 12, //total 60
+            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm], 
+             [11, Move.Sharpen], [17, Move.DustStorm], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+            abilities: [ Ability.Withering, Ability.Shadow ],
+            pre_evo_id: 3, evo_id: 5, evo_lvl: 25, evo_stage: 1
+        });
+        
+        // Kracking
+        create_monster({
+            id: 5,
+            emote: get_emote_string(client, 'kracking'),
+            name: 'Kracking',
+            oochive_entry: 'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.', 
+            type: [OochType.Stone],
+            hp: 22, atk: 18, def: 22, spd: 18, //total 80
+            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm], 
+             [11, Move.Sharpen], [17, Move.DustStorm], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+            abilities: [ Ability.Withering, Ability.Darkbright ],
+            pre_evo_id: 4, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
+        
+        // Puppyre
+        create_monster({
+            id: 6,
+            emote: get_emote_string(client, 'puppyre'),
+            name: 'Puppyre',
+            oochive_entry: 'A very good boy, empowered by the spiraling patterns on its body.', 
+            type: [OochType.Flame],
+            hp: 10, atk: 12, def: 8, spd: 10, //total 40
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf],
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
+             [-1, Move.Inferno] ],
+            abilities: [ Ability.Gentle, Ability.Warm ],
+            pre_evo_id: -1, evo_id: 7, evo_lvl: 11, evo_stage: 0
+        });
+        
+        // Dogglow
+        create_monster({
+            id: 7,
+            emote: get_emote_string(client, 'dogglow'),
+            name: 'Dogglow',
+            oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', 
+            type: [OochType.Flame],
+            hp: 13, atk: 18, def: 14, spd: 15, //total 60
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], [-1, Move.Inferno] ],
+            abilities: [ Ability.Gentle, Ability.Radiant ],
+            pre_evo_id: 6, evo_id: 8, evo_lvl: 25, evo_stage: 1
+        });
+        
+        // Hounuke
+        create_monster({
+            id: 8,
+            emote: get_emote_string(client, 'hounuke'),
+            name: 'Hounuke',
+            oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 
+            type: [OochType.Flame],
+            hp: 16, atk: 26, def: 18, spd: 20, //total 80
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], [-1, Move.Inferno] ],
+            abilities: [ Ability.Conflicted, Ability.Radiant ],
+            pre_evo_id: 7, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
 
-        //Amephyst
-        create_monster(12, get_emote_string(client, 'amephyst'), 'Amephyst',
-        'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', [OochType.Stone], 15, 20, 15, 30, //total 80
-        [ [1, Move.Bash],[2, Move.Hasten],[4, Move.PebbleBlast],[7, Move.MagicBolt],[11, Move.Restruct],[18, Move.Boulderdash],[26, Move.Grind],[33, Move.GemBash],[-1, Move.ArcaStrike] ],
-        [ Ability.Inertia, Ability.Dense ], 11, -1, -1, 1)
-
-        //Widew
-        create_monster(13, get_emote_string(client, 'widew'), 'Widew',
-        'The growth on its back forms a symbyotic relationship with the host, maximizing the amount of nutrients each can absorb.', [OochType.Fungal], 14, 10, 9, 12, //total 35
-        [ [1, Move.Hit],[2, Move.Mud],[3, Move.SporeShot],[7, Move.Impale],[11, Move.StickyOrb],[17, Move.ThornShot],[23, Move.MycoBurst],[-1, Move.Glimmer] ],
-        [ Ability.Moist, Ability.Miniscule ], -1, 14, 9, 0)
-
-        //Tarotula
-        create_monster(14, get_emote_string(client, 'tarotula'), 'Tarotula',
-        'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', [OochType.Fungal], 21, 17, 12, 15, //total 65
-        [ [1, Move.Hit],[2, Move.Mud],[3, Move.SporeShot],[7, Move.Impale],[11, Move.StickyOrb],[17, Move.TakeOver],[23, Move.MycoBurst],[32, Move.Bloom],[-1, Move.Glimmer] ], 
-        [ Ability.Moist, Ability.Alert ], 13, -1, -1, 1)
+        // Glither
+        create_monster({
+            id: 9,
+            emote: get_emote_string(client, 'glither'),
+            name: 'Glither',
+            oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.', 
+            type: [OochType.Stone],
+            hp: 15, atk: 9, def: 14, spd: 12, //total 50
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], [34, Move.Entomb], [-1, Move.GemBash] ],
+            abilities: [ Ability.Tough, Ability.Reactive ],
+            pre_evo_id: -1, evo_id: 10, evo_lvl: 12, evo_stage: 0
+        });
+        
+        // Sparafura
+        create_monster({
+            id: 10,
+            emote: get_emote_string(client, 'sparafura'),
+            name: 'Sparafura',
+            oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 
+            type: [OochType.Stone],
+            hp: 18, atk: 25, def: 16, spd: 11, //total 70
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], [34, Move.Entomb], [-1, Move.GemBash] ],
+            abilities: [ Ability.Burrower, Ability.Reactive ],
+            pre_evo_id: 9, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Constone
+        create_monster({
+            id: 11,
+            emote: get_emote_string(client, 'constone'),
+            name: 'Constone',
+            oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 
+            type: [OochType.Stone],
+            hp: 10, atk: 10, def: 10, spd: 20, //total 50
+            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [-1, Move.ArcaStrike] ],
+            abilities: [ Ability.Inertia, Ability.Dense ],
+            pre_evo_id: -1, evo_id: 12, evo_lvl: 15, evo_stage: 0
+        });
+        
+        // Amephyst
+        create_monster({
+            id: 12,
+            emote: get_emote_string(client, 'amephyst'),
+            name: 'Amephyst',
+            oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
+            type: [OochType.Stone],
+            hp: 15, atk: 20, def: 15, spd: 30, //total 80
+            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], [-1, Move.ArcaStrike] ],
+            abilities: [ Ability.Inertia, Ability.Dense ],
+            pre_evo_id: 11, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Widew
+        create_monster({
+            id: 13,
+            emote: get_emote_string(client, 'widew'),
+            name: 'Widew',
+            oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.', 
+            type: [OochType.Fungal],
+            hp: 14, atk: 10, def: 9, spd: 12, //total 35
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [-1, Move.Glimmer] ],
+            abilities: [ Ability.Moist, Ability.Miniscule ],
+            pre_evo_id: -1, evo_id: 14, evo_lvl: 9, evo_stage: 0
+        });
+        
+        // Tarotula
+        create_monster({
+            id: 14,
+            emote: get_emote_string(client, 'tarotula'),
+            name: 'Tarotula',
+            oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 
+            type: [OochType.Fungal],
+            hp: 21, atk: 17, def: 12, spd: 15, //total 65
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], [11, Move.StickyOrb], [17, Move.TakeOver], [23, Move.MycoBurst], [32, Move.Bloom], [-1, Move.Glimmer] ],
+            abilities: [ Ability.Moist, Ability.Alert ],
+            pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
 
         //Moldot
-        create_monster(15, get_emote_string(client, 'moldot'), 'Moldot',
-        'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.', [OochType.Fungal], 5, 5, 25, 5, //total 40
-        [ [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],[17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],[-1, Move.Entomb] ],
-        [ Ability.Gentle, Ability.Burrower ], -1, 16, 26, 0)
+        create_monster({
+            id: 15,
+            emote: get_emote_string(client, 'moldot'),
+            name: 'Moldot',
+            oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
+            type: [OochType.Fungal],
+            hp: 5, atk: 5, def: 25, spd: 5, //total 40
+            move_list: [
+                [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],
+                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],
+                [-1, Move.Entomb]
+            ],
+            abilities: [ Ability.Gentle, Ability.Burrower ],
+            pre_evo_id: -1, evo_id: 16, evo_lvl: 26, evo_stage: 0
+        })
 
-        //Moldire
-        create_monster(16, get_emote_string(client, 'moldire'), 'Moldire',
-        'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.', [OochType.Fungal], 25, 25, 30, 5, //total 85
-        [ [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],[17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],[45, Move.Corrode],[-1, Move.Entomb] ],
-        [ Ability.Gentle, Ability.Reactive ], 15, -1, -1, 1)
+        // Moldire
+        create_monster({
+            id: 16,
+            emote: get_emote_string(client, 'moldire'),
+            name: 'Moldire',
+            oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
+            type: [OochType.Fungal],
+            hp: 25, atk: 25, def: 30, spd: 5, //total 85
+            move_list: [
+                [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],
+                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],
+                [45, Move.Corrode],[-1, Move.Entomb]
+            ],
+            abilities: [ Ability.Gentle, Ability.Reactive ],
+            pre_evo_id: 15, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Charlite
-        create_monster(17, get_emote_string(client, 'charlite'), 'Charlite',
-        'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.', [OochType.Flame], 5, 15, 5, 10, //total 35
-        [ [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],[16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],[-1, Move.Inferno] ],
-        [ Ability.Fleeting, Ability.Warm ], -1, 18, 10, 0)
+        // Charlite
+        create_monster({
+            id: 17,
+            emote: get_emote_string(client, 'charlite'),
+            name: 'Charlite',
+            oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
+            type: [OochType.Flame],
+            hp: 5, atk: 15, def: 5, spd: 10, //total 35
+            move_list: [
+                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
+                [16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],
+                [-1, Move.Inferno]
+            ],
+            abilities: [ Ability.Fleeting, Ability.Warm ],
+            pre_evo_id: -1, evo_id: 18, evo_lvl: 10, evo_stage: 0
+        })
 
-        //Darcoal
-        create_monster(18, get_emote_string(client, 'darcoal'), 'Darcoal',
-        'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.', [OochType.Flame], 15, 25, 13, 12, //total 65
-        [ [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],[16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],[-1, Move.Inferno] ],
-        [ Ability.Efficient, Ability.Warm ], 17, -1, -1, 1)
+        // Darcoal
+        create_monster({
+            id: 18,
+            emote: get_emote_string(client, 'darcoal'),
+            name: 'Darcoal',
+            oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
+            type: [OochType.Flame],
+            hp: 15, atk: 25, def: 13, spd: 12, //total 65
+            move_list: [
+                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
+                [16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],
+                [-1, Move.Inferno]
+            ],
+            abilities: [ Ability.Efficient, Ability.Warm ],
+            pre_evo_id: 17, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Torchoir
-        create_monster(19, get_emote_string(client, 'torchoir'), 'Torchoir',
-        'A sentient torch that hums a haunting tune. Its song fills people with dread.', [OochType.Flame], 12, 13, 11, 9, //total 45
-        [ [1, Move.Bash],[3, Move.Fireball],[4, Move.Embolden],[7, Move.Impale],[12, Move.MagicBolt],[17, Move.Torch],[21, Move.ClampDown],[27, Move.Blink],[-1, Move.ArcaStrike] ],
-        [ Ability.Boisterous, Ability.Haunted ], -1, 20, 18, 0)
+        // Torchoir
+        create_monster({
+            id: 19,
+            emote: get_emote_string(client, 'torchoir'),
+            name: 'Torchoir',
+            oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
+            type: [OochType.Flame],
+            hp: 12, atk: 13, def: 11, spd: 9, //total 45
+            move_list: [
+                [1, Move.Bash],[3, Move.Fireball],[4, Move.Embolden],[7, Move.Impale],
+                [12, Move.MagicBolt],[17, Move.Torch],[21, Move.ClampDown],[27, Move.Blink],
+                [-1, Move.ArcaStrike]
+            ],
+            abilities: [ Ability.Boisterous, Ability.Haunted ],
+            pre_evo_id: -1, evo_id: 20, evo_lvl: 18, evo_stage: 0
+        })
+
 
         //Chantern
         create_monster(20, get_emote_string(client, 'chantern'), 'Chantern',
@@ -917,186 +1090,18 @@ module.exports = {
 
         //#region Create Maps
         await db.maps.clear();
-        let files = fs.readdirSync('./Maps/');
+        let files = fs.readdirSync('./maps/');
         for (let file of files) {
-            if (file.includes('.json')) continue;
-            let map_name = file.replace('.txt', '');
+            if (!file.includes('.json')) continue;
+            let map_name = file.replace('.json', '');
 
-            fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
-                let map_data = data.split('\n');
-                let data_header = 'err';
-                let map_info_step = 0;
-                let map_info_name = '';
-                let map_info_battleback = '';
-                let tile_data = [];
-                let npc_data = [];
-                let npc_team_data, ooch_data, moveset, spawn_ooch_data;
-                let spawn_data = [];
-                let savepoint_data = [];
-                let transition_data = [];
-                let event_data = [];
-                let shop_data = [];
-                
-                for (let line of map_data) {
-                    line = line.replace(/\r\n/g, '').replace(/[\r\n]/g, '');
-                    if (line[0] == '#') {
-                        data_header = `${line.replace('#', '')}`;
-                    } else {
-                        let line_data = line.split('|');
-                        let output;
-                        switch (data_header) {
-                            case 'map_info':
-                                if(map_info_step == 0){ map_info_name = line_data[0]}
-                                if(map_info_step == 1){ map_info_battleback = line_data[0]}
-                                map_info_step += 1;
-                            break;
-                            case 'tiles':
-                                line_data.pop();
-                                tile_data.push(line_data);
-                            break;
-                            case 'npcs':
-                                output = {
-                                    name: line_data[0],
-                                    x: parseInt(line_data[1]),
-                                    y: parseInt(line_data[2]),
-                                    emote_name: line_data[3],
-                                    sprite_id: line_data[4],
-                                    sprite_combat: (line_data[5] == '' ? false : line_data[5]),
-                                    sprite_dialogue: (line_data[6] == '' ? false : line_data[6]),
-                                    coin: parseInt(line_data[7]),
-                                    item_id: parseInt(line_data[8]),
-                                    item_count: parseInt(line_data[9]),
-                                    flag_required: (line_data[10] == '' ? false : line_data[10]),
-                                    flag_given: (line_data[11] == '' ? false : line_data[11]),
-                                    flag_kill: (line_data[12] == '' ? false : line_data[12]),
-                                    remove_on_finish: Boolean(parseInt(line_data[13])),
-                                    pre_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
-                                    post_combat_dialogue: line_data[15].split('`').filter(v => v != ''),
-                                    team: [],
-                                };
-
-                                for (let i = 16; i < line_data.length; i++) {
-                                    if (line_data[i] == '') continue;
-                                    npc_team_data = line_data[i].split('`');
-                                    ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
-                                    moveset = [
-                                        parseInt(npc_team_data[4]),
-                                        parseInt(npc_team_data[5]),
-                                        parseInt(npc_team_data[6]),
-                                        parseInt(npc_team_data[7]),
-                                    ];
-                                    moveset = moveset.filter(id => id != -1);
-
-                                    output.team.push({
-                                        id: parseInt(npc_team_data[0]),
-                                        name: ooch_data.name,
-                                        nickname: npc_team_data[1],
-                                        current_hp: ooch_data.hp,
-                                        type: ooch_data.type,
-                                        item: -1,
-                                        alive: true,
-                                        ability: parseInt(npc_team_data[2]),
-                                        level: parseInt(npc_team_data[3]),
-                                        moveset: moveset,
-                                        status_effects: [],
-                                        stats: {
-                                            acc_mul: 1,
-                                            eva_mul: 1,
-                                            hp: ooch_data.hp,
-                                            hp_iv: parseInt(npc_team_data[8]),
-                                            atk: ooch_data.atk,
-                                            atk_iv: parseInt(npc_team_data[9]),
-                                            atk_mul: 1,
-                                            def: ooch_data.def,
-                                            def_iv: parseInt(npc_team_data[10]),
-                                            def_mul: 1,
-                                            spd: ooch_data.spd,
-                                            spd_iv: parseInt(npc_team_data[11]),
-                                            spd_mul: 1,
-                                        }
-                                    });
-                                }
-                                npc_data.push(output);
-                            break;
-                            case 'spawn_zones':
-                                output = {
-                                    x: parseInt(line_data[0]),
-                                    y: parseInt(line_data[1]),
-                                    width: parseInt(line_data[2]),
-                                    height: parseInt(line_data[3]),
-                                    spawn_slots: [],
-                                }
-
-                                spawn_ooch_data = line_data[4].split('`')
-                                for(let i = 0; i < spawn_ooch_data.length/3 - 1; i++){
-                                    
-                                    output.spawn_slots.push({
-                                        ooch_id:    parseInt(spawn_ooch_data[i * 3 + 0]),
-                                        min_level:  parseInt(spawn_ooch_data[i * 3 + 1]),
-                                        max_level:  parseInt(spawn_ooch_data[i * 3 + 2])
-                                    })
-                                }
-                                
-                                spawn_data.push(output);
-                            break;
-                            case 'savepoints':
-                                output = {
-                                    is_default: Boolean(parseInt(line_data[0])),
-                                    x: parseInt(line_data[1]),
-                                    y: parseInt(line_data[2]),
-                                }
-                                savepoint_data.push(output);
-                            break;
-                            case 'shops':
-                                output = {
-                                    x: parseInt(line_data[0]),
-                                    y: parseInt(line_data[1]),
-                                    type: line_data[2],
-                                    special_items: line_data[3] == '' ? [] : line_data[3].split('`'),
-                                    image: line_data[4],
-                                    greeting_dialogue: line_data[5],
-                                }
-                                shop_data.push(output);
-                            break;
-                            case 'transitions':
-                                if (line == '') continue;
-                                output = {
-                                    x: parseInt(line_data[0]),
-                                    y: parseInt(line_data[1]),
-                                    connect_map: line_data[2],
-                                    connect_x: parseInt(line_data[3]),
-                                    connect_y: parseInt(line_data[4]),
-                                }
-                                transition_data.push(output);
-                            break;
-                            case 'events':
-                                output = {
-                                    x: parseInt(line_data[0]),
-                                    y: parseInt(line_data[1]),
-                                    width:  parseInt(line_data[2]),
-                                    height: parseInt(line_data[3]),
-                                    event_name: line_data[4],
-                                    flag_required: (line_data[5] == '' ? false : line_data[5]),
-                                    flag_kill: (line_data[6] == '' ? false : line_data[6]),
-                                }
-                                event_data.push(output);
-                            break;
-                        }
-                    }
+            fs.readFile(`./maps/${file}`, 'utf8', (err, data) => {
+                if (err) {
+                    console.log(`Error reading file: ${file}`);
+                    return;
                 }
 
-                //Set the map's data
-                db.maps.set(map_name, {
-                    map_title: map_info_name,
-                    map_info_battleback : map_info_battleback,
-                    tiles: tile_data,
-                    npcs: npc_data,
-                    spawn_zones: spawn_data,
-                    savepoints: savepoint_data,
-                    transitions: transition_data,
-                    events: event_data,
-                    shops: shop_data
-                });
+                db.maps.set(map_name, JSON.parse(data));
             });
         }
 

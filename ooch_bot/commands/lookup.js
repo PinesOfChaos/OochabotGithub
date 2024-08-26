@@ -114,7 +114,7 @@ module.exports = {
                     .setImage('attachment://type_chart.png')
                 return interaction.reply({
                     embeds: [ embed_type_chart ],
-                    files: [ get_art_file('./Art/ArtFiles/type_chart.png') ],
+                    files: [ get_art_file('./art/ArtFiles/type_chart.png') ],
                     ephemeral: true
                 })
             break;
