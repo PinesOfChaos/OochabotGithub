@@ -262,6 +262,9 @@ const Ability = {
     Increment: 60,
     Parry: 61,
     Riposte: 62,
+    Swaying: 63,
+    Thrashing: 64,
+    Union: 65,
 }
 
 const Item = {

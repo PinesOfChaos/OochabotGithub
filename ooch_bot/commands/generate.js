@@ -310,6 +310,10 @@ module.exports = {
         create_ability(60, 'Increment',         'Randomly boosts a stat at the end of each turn.')
         create_ability(61, 'Parry',             'Reduces damage taken. When hit by an attack, this ability becomes Riposte.')
         create_ability(62, 'Riposte',           'Increases damage dealt. After attacking or the turn ends, this ability becomes Parry.')
+        
+        create_ability(63, 'Swaying',           'Increases DEF but lowers accuracy.')
+        create_ability(64, 'Thrashing',         'Increases ATK but lowers evasion.')
+        create_ability(65, 'Union',             'Boosts ATK and DEF.')
         //ALSO we should change Gentle to reduce the opponent's ATK as well
         
 
@@ -1075,6 +1079,79 @@ module.exports = {
         'The crystal atop this creature acts as an matter-energy converter of sorts, though its inner workings are completely unknown.', [OochType.Magic, OochType.Flame], 18, 29, 21, 22, //total 90
         [ [1, Move.Bash], [3, Move.Fireball], [5, Move.Sparkler], [7, Move.Intimidate], [11, Move.HypeUp], [14, Move.DrainLife], [17, Move.ArcaStrike], [22, Move.GemBash], [27, Move.Inferno], [33, Move.BlindingBeam], [37, Move.GlassBlades], [43, Move.CallThunder], [-1, Move.Kaleidoscope] ],
         [ Ability.PowerConduit ], -1, -1, -1, 0);
+
+
+        //NEW MONS START HERE
+
+        create_monster({
+            id: 97,
+            emote: get_emote_string(client, 'rosun'),
+            name: 'Rosun',
+            oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
+            type: [OochType.Stone],
+            hp: 10, atk: 8, def: 12, spd: 10, //total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Swaying, Ability.Armored ],
+            pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
+        })
+
+        create_monster({
+            id: 98,
+            emote: get_emote_string(client, 'Morgoun'),
+            name: 'Morgoun',
+            oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
+            type: [OochType.Stone],
+            hp: 17, atk: 13, def: 26, spd: 14, //total 70
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Swaying, Ability.Armored ],
+            pre_evo_id: 97, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
+
+        create_monster({
+            id: 99,
+            emote: get_emote_string(client, 'garnetie'),
+            name: 'Garnetie',
+            oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
+            type: [OochType.Stone],
+            hp: 10, atk: 12, def: 8, spd: 10, //total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Thrashing, Ability.Brittle ],
+            pre_evo_id: -1, evo_id: 100, evo_lvl: 34, evo_stage: 0
+        })
+
+        create_monster({
+            id: 100,
+            emote: get_emote_string(client, 'aventux'),
+            name: 'Aventux',
+            oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
+            type: [OochType.Stone],
+            hp: 14, atk: 26, def: 13, spd: 17, //total 70
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Thrashing, Ability.Brittle ],
+            pre_evo_id: 99, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
+
+        create_monster({
+            id: 101,
+            emote: get_emote_string(client, 'galagge'),
+            name: 'Galagge',
+            oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
+            type: [OochType.Stone],
+            hp: 18, atk: 21, def: 21, spd: 15, //total 75
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Union ],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        })
 
         //#endregion
 
