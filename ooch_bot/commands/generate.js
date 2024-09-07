@@ -618,471 +618,1311 @@ module.exports = {
         })
 
 
-        //Chantern
-        create_monster(20, get_emote_string(client, 'chantern'), 'Chantern',
-        'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', [OochType.Flame], 21, 20, 24, 15, //total 80
-        [ [1, Move.Bash],[3, Move.Fireball],[4, Move.Embolden],[7, Move.Impale],[12, Move.MagicBolt],[17, Move.Torch],[21, Move.ClampDown],[27, Move.Blink],[40, Move.DrainLife], [-1, Move.ArcaStrike] ],
-        [ Ability.Boisterous, Ability.Haunted ], 19, -1, -1, 1)
+        // Chantern
+        create_monster({
+            id: 20,
+            emote: get_emote_string(client, 'chantern'),
+            name: 'Chantern',
+            oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 
+            type: [OochType.Flame],
+            hp: 21, atk: 20, def: 24, spd: 15, //total 80
+            move_list: [
+                [1, Move.Bash], [3, Move.Fireball], [4, Move.Embolden], [7, Move.Impale],
+                [12, Move.MagicBolt], [17, Move.Torch], [21, Move.ClampDown], [27, Move.Blink],
+                [40, Move.DrainLife], [-1, Move.ArcaStrike]
+            ],
+            abilities: [Ability.Boisterous, Ability.Haunted],
+            pre_evo_id: 19, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Eluslug
-        create_monster(21, get_emote_string(client, 'eluslug'), 'Eluslug',
-        'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', [OochType.Tech], 11, 12, 12, 14, //total 50
-        [ [1, Move.Bash],[2, Move.Soften], [3, Move.ByteBite],[10, Move.Digitize],[16, Move.SyncStrike],[24, Move.BlindingBeam],[-1, Move.Laminate] ],
-        [ Ability.Leech, Ability.Icky ], -1, -1, -1, 0)
+        // Eluslug
+        create_monster({
+            id: 21,
+            emote: get_emote_string(client, 'eluslug'),
+            name: 'Eluslug',
+            oochive_entry: 'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 
+            type: [OochType.Tech],
+            hp: 11, atk: 12, def: 12, spd: 14, //total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [3, Move.ByteBite], [10, Move.Digitize],
+                [16, Move.SyncStrike], [24, Move.BlindingBeam], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Leech, Ability.Icky],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        })
 
-        //Jellime
-        create_monster(22, get_emote_string(client, 'jellime'), 'Jellime',
-        'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', [OochType.Ooze], 14, 10, 16, 10, //total 50
-        [ [1, Move.Bash],[2, Move.Soften],[3, Move.Glob],[7, Move.MagicBolt],[11, Move.ClampDown],[18, Move.Impale],[25, Move.TangledThreads],[-1, Move.Laminate] ],
-        [ Ability.Leech, Ability.Icky ], -1, 23, 15, 0)
+        // Jellime
+        create_monster({
+            id: 22,
+            emote: get_emote_string(client, 'jellime'),
+            name: 'Jellime',
+            oochive_entry: 'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', 
+            type: [OochType.Ooze],
+            hp: 14, atk: 10, def: 16, spd: 10, //total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [3, Move.Glob], [7, Move.MagicBolt],
+                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Leech, Ability.Icky],
+            pre_evo_id: -1, evo_id: 23, evo_lvl: 15, evo_stage: 0
+        })
 
-        //Meduslime
-        create_monster(23, get_emote_string(client, 'meduslime'), 'Meduslime',
-        'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', [OochType.Ooze], 16, 25, 19, 15, //total 75
-        [ [1, Move.Bash],[2, Move.Soften],[3, Move.Glob],[7, Move.MagicBolt],[11, Move.ClampDown],[18, Move.Impale],[25, Move.TangledThreads],[-1, Move.Laminate] ],
-        [ Ability.Leech, Ability.Icky ], 22, -1, -1, 1)
+        // Meduslime
+        create_monster({
+            id: 23,
+            emote: get_emote_string(client, 'meduslime'),
+            name: 'Meduslime',
+            oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 
+            type: [OochType.Ooze],
+            hp: 16, atk: 25, def: 19, spd: 15, //total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [3, Move.Glob], [7, Move.MagicBolt],
+                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Leech, Ability.Icky],
+            pre_evo_id: 22, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Tisparc
-        create_monster(24, get_emote_string(client, 'tisparc'), 'Tisparc',
-        'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', [OochType.Magic], 8, 15, 7, 10, //total 45
-        [ [1, Move.Bash],[2, Move.Embolden],[5, Move.MagicBolt],[9, Move.Sparkler],[14, Move.ArcaStrike],[16, Move.Kaleidoscope],[21, Move.Glimmer],[26, Move.CallThunder],[35, Move.GemBash],[-1, Move.Torch] ],
-        [ Ability.Uncontrolled, Ability.Apprentice ], -1, 25, 13, 0)
+        // Tisparc
+        create_monster({
+            id: 24,
+            emote: get_emote_string(client, 'tisparc'),
+            name: 'Tisparc',
+            oochive_entry: 'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', 
+            type: [OochType.Magic],
+            hp: 8, atk: 15, def: 7, spd: 10, //total 45
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [9, Move.Sparkler],
+                [14, Move.ArcaStrike], [16, Move.Kaleidoscope], [21, Move.Glimmer], [26, Move.CallThunder],
+                [35, Move.GemBash], [-1, Move.Torch]
+            ],
+            abilities: [Ability.Uncontrolled, Ability.Apprentice],
+            pre_evo_id: -1, evo_id: 25, evo_lvl: 13, evo_stage: 0
+        })
 
-        //Wizzap
-        create_monster(25, get_emote_string(client, 'wizzap'), 'Wizzap',
-        'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', [OochType.Magic], 13, 23, 12, 12, //total 65
-        [ [1, Move.Bash],[2, Move.Embolden],[5, Move.MagicBolt],[9, Move.Sparkler],[14, Move.ArcaStrike],[16, Move.Kaleidoscope],[21, Move.Glimmer],[26, Move.CallThunder],[35, Move.GemBash],[-1, Move.Torch] ],
-        [ Ability.Focused, Ability.Patient ], 24, -1, -1, 1)
+        // Wizzap
+        create_monster({
+            id: 25,
+            emote: get_emote_string(client, 'wizzap'),
+            name: 'Wizzap',
+            oochive_entry: 'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', 
+            type: [OochType.Magic],
+            hp: 13, atk: 23, def: 12, spd: 12, //total 65
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [9, Move.Sparkler],
+                
+                [14, Move.ArcaStrike], [16, Move.Kaleidoscope], [21, Move.Glimmer], [26, Move.CallThunder],
+                
+                [35, Move.GemBash], [-1, Move.Torch]
+            ],
+            abilities: [Ability.Focused, Ability.Patient],
+            pre_evo_id: 24, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Blipoint
-        create_monster(26, get_emote_string(client, 'blipoint'), 'Blipoint',
-        'An eye peeks through a rift in space-time.', [OochType.Magic], 10, 7, 6, 7, //total 30
-        [ [1, Move.Bash], [2, Move.Strike], [5, Move.Blink],[11, Move.HypeUp],[15, Move.Slash],[25, Move.Impale],[35, Move.TimeWarp],[-1, Move.Pulverize] ],
-        [ Ability.Fleeting, Ability.Reactive ], -1, 27, 20, 0)        
+        // Blipoint
+        create_monster({
+            id: 26,
+            emote: get_emote_string(client, 'blipoint'),
+            name: 'Blipoint',
+            oochive_entry: 'An eye peeks through a rift in space-time.', 
+            type: [OochType.Magic], 
+            hp: 10, atk: 7, def: 6, spd: 7, // total 30
+            move_list: [
+                [1, Move.Bash], [2, Move.Strike], [5, Move.Blink], [11, Move.HypeUp], 
+                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+            ],
+            abilities: [Ability.Fleeting, Ability.Reactive], 
+            pre_evo_id: -1, evo_id: 27, evo_lvl: 20, evo_stage: 0
+        });
 
-        //Rerune
-        create_monster(27, get_emote_string(client, 'rerune'), 'Rerune',
-        'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', [OochType.Magic], 10, 15, 15, 15, //total 55
-        [ [1, Move.Bash], [2, Move.Strike], [5, Move.Blink],[11, Move.HypeUp],[15, Move.Slash],[25, Move.Impale],[35, Move.TimeWarp],[-1, Move.Pulverize] ],
-        [ Ability.Fleeting, Ability.Reactive ], 26, 28, 40, 1)   
+        // Rerune
+        create_monster({
+            id: 27,
+            emote: get_emote_string(client, 'rerune'),
+            name: 'Rerune',
+            oochive_entry: 'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 
+            type: [OochType.Magic], 
+            hp: 10, atk: 15, def: 15, spd: 15, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.Strike], [5, Move.Blink], [11, Move.HypeUp], 
+                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+            ],
+            abilities: [Ability.Fleeting, Ability.Reactive], 
+            pre_evo_id: 26, evo_id: 28, evo_lvl: 40, evo_stage: 1
+        });
 
-        //Temporath
-        create_monster(28, get_emote_string(client, 'temporath'), 'Temporath',
-        'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', [OochType.Magic], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash], [2, Move.Strike], [5, Move.Blink],[11, Move.HypeUp],[15, Move.Slash],[25, Move.Impale],[35, Move.TimeWarp],[-1, Move.Pulverize] ],
-        [ Ability.Uncontrolled, Ability.Withering ], 27, -1, -1, 2)
+        // Temporath
+        create_monster({
+            id: 28,
+            emote: get_emote_string(client, 'temporath'),
+            name: 'Temporath',
+            oochive_entry: 'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', 
+            type: [OochType.Magic], 
+            hp: 20, atk: 20, def: 20, spd: 20, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Strike], [5, Move.Blink], [11, Move.HypeUp], 
+                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+            ],
+            abilities: [Ability.Uncontrolled, Ability.Withering], 
+            pre_evo_id: 27, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
 
-        //Nucleorb
-        create_monster(29, get_emote_string(client, 'nucleorb'), 'Nucleorb',
-        'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', [OochType.Ooze], 7, 13, 9, 11, //total 40
-        [ [1, Move.Bash],[2, Move.Soften],[5, Move.Glob],[11, Move.Parasitize],[14, Move.CursedEye],[18, Move.Corrode],[24, Move.Pulverize],[-1, Move.Bloom] ],
-        [ Ability.Miniscule, Ability.Gentle ], -1, 30, 12, 0)
+        // Nucleorb
+        create_monster({
+            id: 29,
+            emote: get_emote_string(client, 'nucleorb'),
+            name: 'Nucleorb',
+            oochive_entry: 'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', 
+            type: [OochType.Ooze], 
+            hp: 7, atk: 13, def: 9, spd: 11, // total 40
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Glob], [11, Move.Parasitize], 
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [-1, Move.Bloom]
+            ],
+            abilities: [Ability.Miniscule, Ability.Gentle], 
+            pre_evo_id: -1, evo_id: 30, evo_lvl: 12, evo_stage: 0
+        });
 
-        //Amebite
-        create_monster(30, get_emote_string(client, 'amebite'), 'Amebite',
-        'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', [OochType.Ooze], 11, 18, 12, 14, //total 55
-        [ [1, Move.Bash],[2, Move.Soften],[5, Move.Glob],[11, Move.Parasitize],[14, Move.CursedEye],[18, Move.Corrode],[24, Move.Pulverize],[-1, Move.Bloom] ],
-        [ Ability.Tough, Ability.Ravenous ], 29, 31, 22, 1)
+        // Amebite
+        create_monster({
+            id: 30,
+            emote: get_emote_string(client, 'amebite'),
+            name: 'Amebite',
+            oochive_entry: 'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', 
+            type: [OochType.Ooze], 
+            hp: 11, atk: 18, def: 12, spd: 14, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Glob], [11, Move.Parasitize], 
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [-1, Move.Bloom]
+            ],
+            abilities: [Ability.Tough, Ability.Ravenous], 
+            pre_evo_id: 29, evo_id: 31, evo_lvl: 22, evo_stage: 1
+        });
 
-        //Amalgrime
-        create_monster(31, get_emote_string(client, 'amalgrime'), 'Amalgrime',
-        'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', [OochType.Ooze], 25, 20, 20, 20, //total 85
-        [ [1, Move.Bash],[2, Move.Soften],[5, Move.Glob],[11, Move.Parasitize],[14, Move.CursedEye],[18, Move.Corrode],[24, Move.Pulverize],[30, Move.Suplex],[-1, Move.Bloom] ],
-        [ Ability.Immense, Ability.Gentle ], 30, -1, -1, 2)
+        // Amalgrime
+        create_monster({
+            id: 31,
+            emote: get_emote_string(client, 'amalgrime'),
+            name: 'Amalgrime',
+            oochive_entry: 'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 
+            type: [OochType.Ooze], 
+            hp: 25, atk: 20, def: 20, spd: 20, // total 85
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Glob], [11, Move.Parasitize], 
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [30, Move.Suplex], [-1, Move.Bloom]
+            ],
+            abilities: [Ability.Immense, Ability.Gentle], 
+            pre_evo_id: 30, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
 
-        //Drilline
-        create_monster(32, get_emote_string(client, 'drilline'), 'Drilline',
-        'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', [OochType.Tech], 11, 14, 15, 5, //total 45
-        [ [1, Move.Bash],[2, Move.Embolden],[4, Move.PebbleBlast],[7, Move.IronHammer],[8, Move.Sedimentation],[12, Move.Entomb],[20, Move.MetalLance],[29, Move.Grind],[-1, Move.Boulderdash] ],
-        [ Ability.Armored, Ability.Inertia ], -1, 33, 21, 0)
+        // Drilline
+        create_monster({
+            id: 32,
+            emote: get_emote_string(client, 'drilline'),
+            name: 'Drilline',
+            oochive_entry: 'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', 
+            type: [OochType.Tech], 
+            hp: 11, atk: 14, def: 15, spd: 5, // total 45
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], 
+                [8, Move.Sedimentation], [12, Move.Entomb], [20, Move.MetalLance], [29, Move.Grind], [-1, Move.Boulderdash]
+            ],
+            abilities: [Ability.Armored, Ability.Inertia], 
+            pre_evo_id: -1, evo_id: 33, evo_lvl: 21, evo_stage: 0
+        });
 
-        //Erwrek
-        create_monster(33, get_emote_string(client, 'erwrek'), 'Erwrek',
-        'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', [OochType.Tech], 15, 19, 25, 16, //total 75
-        [ [1, Move.Bash],[2, Move.Embolden],[4, Move.PebbleBlast],[7, Move.IronHammer],[8, Move.Sedimentation],[12, Move.Entomb],[20, Move.MetalLance],[29, Move.Grind],[-1, Move.Boulderdash] ],
-        [ Ability.Armored, Ability.Leech ], 32, -1, -1, 1)
+        // Erwrek
+        create_monster({
+            id: 33,
+            emote: get_emote_string(client, 'erwrek'),
+            name: 'Erwrek',
+            oochive_entry: 'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', 
+            type: [OochType.Tech], 
+            hp: 15, atk: 19, def: 25, spd: 16, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], 
+                [8, Move.Sedimentation], [12, Move.Entomb], [20, Move.MetalLance], [29, Move.Grind], [-1, Move.Boulderdash]
+            ],
+            abilities: [Ability.Armored, Ability.Leech], 
+            pre_evo_id: 32, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Purif-i
-        create_monster(34, get_emote_string(client, 'purifi'), 'Purif-i',
-        'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.', [OochType.Void, OochType.Stone], 10, 10, 10, 10, //total 40
-        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Brittle], [7, Move.CursedEye], [10, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm], [24, Move.Entrench], [30, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope] ], 
-        [ Ability.Increment ], -1, -1, -1, 0)
+        // Purif-i
+        create_monster({
+            id: 34,
+            emote: get_emote_string(client, 'purifi'),
+            name: 'Purif-i',
+            oochive_entry: 'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.', 
+            type: [OochType.Void, OochType.Stone], 
+            hp: 10, atk: 10, def: 10, spd: 10, // total 40
+            move_list: [
+                [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Brittle], [7, Move.CursedEye], 
+                [10, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm], 
+                [24, Move.Entrench], [30, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope]
+            ],
+            abilities: [Ability.Increment], 
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
-        //Cromet
-        create_monster(35, get_emote_string(client, 'cromet'), 'Cromet',
-        'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', [OochType.Stone], 12, 13, 10, 15, //total 50
-        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [-1, Move. SyncStrike] ],
-        [ Ability.Inertia, Ability.Scorching ], -1, 36, 20, 0);
+        // Cromet
+        create_monster({
+            id: 35,
+            emote: get_emote_string(client, 'cromet'),
+            name: 'Cromet',
+            oochive_entry: 'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', 
+            type: [OochType.Stone], 
+            hp: 12, atk: 13, def: 10, spd: 15, // total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], 
+                [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [-1, Move.SyncStrike]
+            ],
+            abilities: [Ability.Inertia, Ability.Scorching], 
+            pre_evo_id: -1, evo_id: 36, evo_lvl: 20, evo_stage: 0
+        });
 
-        //Lobstar
-        create_monster(36, get_emote_string(client, 'lobstar'), 'Lobstar',
-        'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', [OochType.Stone], 10, 35, 20, 10, //total 75
-        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [23, Move.SolarBlast], [36, Move.DustStorm], [-1, Move. SyncStrike] ],
-        [ Ability.Immense, Ability.Scorching ], 35, -1, -1, 1) 
+        // Lobstar
+        create_monster({
+            id: 36,
+            emote: get_emote_string(client, 'lobstar'),
+            name: 'Lobstar',
+            oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 
+            type: [OochType.Stone], 
+            hp: 10, atk: 35, def: 20, spd: 10, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], 
+                [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [23, Move.SolarBlast], 
+                [36, Move.DustStorm], [-1, Move.SyncStrike]
+            ],
+            abilities: [Ability.Immense, Ability.Scorching], 
+            pre_evo_id: 35, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Spoolette
-        create_monster(37, get_emote_string(client, 'spoolette'), 'Spoolette',
-        'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', [OochType.Magic], 10, 15, 15, 10, //total 50
-        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance] ],
-        [ Ability.Tangled, Ability.Tangled ], -1, 38, 18, 0);
+        // Spoolette
+        create_monster({
+            id: 37,
+            emote: get_emote_string(client, 'spoolette'),
+            name: 'Spoolette',
+            oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', 
+            type: [OochType.Magic], 
+            hp: 10, atk: 15, def: 15, spd: 10, // total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], 
+                [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], 
+                [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance]
+            ],
+            abilities: [Ability.Tangled, Ability.Leech], 
+            pre_evo_id: -1, evo_id: 38, evo_lvl: 18, evo_stage: 0
+        });
 
-        //Thimbite
-        create_monster(38, get_emote_string(client, 'thimbite'), 'Thimbite',
-        'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', [OochType.Magic], 20, 20, 20, 10, //total 70
-        [ [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance] ],
-        [ Ability.Tangled, Ability.Leech ], 37, -1, -1, 1);
+        // Thimbite
+        create_monster({
+            id: 38,
+            emote: get_emote_string(client, 'thimbite'),
+            name: 'Thimbite',
+            oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 
+            type: [OochType.Magic], 
+            hp: 20, atk: 20, def: 20, spd: 10, // total 70
+            move_list: [
+                [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], 
+                [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], 
+                [28, Move.FatedThreads], [40, Move.Impale], [-1, Move.MetalLance]
+            ],
+            abilities: [Ability.Tangled, Ability.Leech], 
+            pre_evo_id: 37, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Digityke
-        create_monster(39, get_emote_string(client, 'digityke'), 'Digityke',
-        'An old-model of machine companion, its feeble body prevents it from being of much use.', [OochType.Tech], 10, 7, 8, 5, //total 30
-        [ [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble], [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [-1, Move.BlindingBeam] ],
-        [ Ability.Gentle, Ability.Efficient ], -1, 40, 21, 0);
-
-        //Codet
-        create_monster(40, get_emote_string(client, 'codet'), 'Codet',
-        'An attempt to modernize the DGTY-k gone wrong. Despite being decomissioned these haunting machines continue to run.', [OochType.Tech], 30, 10, 10, 10, //total 60
-        [ [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble], [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [26, Move.PhantomBullet], [32, Move.SyncStrike], [35, Move.ThornShot], [-1, Move.BlindingBeam]  ],
-        [ Ability.Alert, Ability.Rogue ], 39, -1, -1, 1);
-
-        //Heatri
-        create_monster(41, get_emote_string(client, 'heatri'), 'Heatri',
-        'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.', [OochType.Flame], 25, 10, 10, 20, //total 65
-        [ [1, Move.Bash], [3, Move.Hasten], [5, Move.Fireball], [10, Move.Threefold], [15, Move.Engulf], [25, Move.LavaLance], [30, Move.Eruption], [36, Move.Inferno], [-1, Move.SlowBurn] ],
-        [ Ability.Crystallize ], 43, 42, 33, 1);
-
-        //Moistri
-        create_monster(42, get_emote_string(client, 'moistri'), 'Moistri',
-        'Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.', [OochType.Ooze], 25, 20, 10, 10, //total 65
-        [ [1, Move.Bash], [3, Move.Soften], [5, Move.Glob], [10, Move.Threefold], [15, Move. Impale], [25, Move.ThornShot], [30, Move.SlurpUp], [36, Move.Kaleidoscope], [-1, Move.Blight]],
-        [ Ability.Crystallize ], 41, 43, 33, 1);
-
-        //Crystri
-        create_monster(43, get_emote_string(client, 'crystri'), 'Crystri',
-        'While its crystals appear rigid they maintain some sort of fluidity.', [OochType.Stone], 25, 10, 20, 10, //total 65
-        [ [1, Move.Bash], [3, Move.MagicBolt], [5, Move.PebbleBlast], [10, Move.Threefold], [15, Move.Blink], [25, Move.DustStorm], [30, Move.Glimmer], [40, Move.GemBash], [-1, Move.GlassBlades] ],
-        [ Ability.Crystallize ], 42, 41, 33, 1);
-
-        //Solidifyr
-        create_monster(44, get_emote_string(client, 'solidifyr'), 'Solidifyr',
-        'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', [OochType.Flame], 17, 13, 11, 9, //total 50
-        [ [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb], [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash], [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam] ],
-        [ Ability.Warm, Ability.Scorching ], -1, 45, 38, 0);
-
-        //Obstaggard
-        create_monster(45, get_emote_string(client, 'obstaggard'), 'Obstaggard',
-        'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', [OochType.Stone], 19, 23, 17, 11, //total 70
-        [ [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb], [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash], [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam] ],
-        [ Ability.Withering, Ability.Lacerating ], 44, -1, -1, 1);
-
-        //Droplunk
-        create_monster(46, get_emote_string(client, 'droplunk'), 'Droplunk',
-        'Oops, don\'t let this one drop on your head!', [OochType.Stone], 7, 10, 8, 15, //total 40
-        [ [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [12, Move.Entomb], [13, Move.Mud], [20, Move.CursedEye], [27, Move.SyncStrike], [37, Move.Boulderdash], [43, Move.AshBlast], [-1, Move.ByteBite] ],
-        [ Ability.Inertia, Ability.Gravity ], -1, 45, 28, 0);
-
-        //Brykurse
-        create_monster(47, get_emote_string(client, 'brykurse'), 'Brykurse',
-        'Square meatball!', [OochType.Magic], 14, 28, 8, 25, //total 75
-        [ [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [12, Move.Entomb], [13, Move.Mud], [20, Move.CursedEye], [27, Move.SyncStrike], [37, Move.Boulderdash], [43, Move.AshBlast], [-1, Move.ByteBite] ],
-        [ Ability.Inertia, Ability.Gravity ], 46, -1, -1, 1);
-
-        //Polyplute
-        create_monster(48, get_emote_string(client, 'polyplute'), 'Polyplute',
-        'Blooms of Polyplute create beatiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', [OochType.Fungal], 12, 13, 12, 8, //total 45
-        [ [1, Move.Bash], [2,  Move.Soften], [5, Move.Glob], [7, Move.Corrode], [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom], [37, Move.DrainLife], [-1, Move.Laminate] ],
-        [ Ability.Sporespray, Ability.Leech ], -1, 49, 29, 0);
-
-        //Reefest
-        create_monster(49, get_emote_string(client, 'reefest'), 'Reefest',
-        'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', [OochType.Fungal], 35, 15, 15, 5, //total 70
-        [ [1, Move.Bash], [2,  Move.Soften], [5, Move.Glob], [7, Move.Corrode], [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom], [37, Move.DrainLife], [-1, Move.Laminate] ],
-        [ Ability.Sporespray, Ability.Leech ], 48, -1, -1, 1);
-
-        //Frigook
-        create_monster(50, get_emote_string(client, 'frigook'), 'Frigook',
-        'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', [OochType.Ooze], 15, 5, 15, 5, //total 40
-        [ [1, Move.Hit], [2,  Move.Soften], [3, Move.Glob], [6, Move.Fog], [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye], [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope] ],
-        [ Ability.Moist, Ability.Frostbite ], -1, 51, 23, 0);
-
-        //Boreyuc
-        create_monster(51, get_emote_string(client, 'boreyuc'), 'Boreyuc',
-        'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', [OochType.Ooze], 15, 7, 30, 3, //total 65
-        [ [1, Move.Hit], [2,  Move.Soften], [3, Move.Glob], [6, Move.Fog], [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye], [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope] ],
-        [ Ability.Bipolar, Ability.Frostbite ], 50, -1, -1, 1);
-
-        //Vrumbox
-        create_monster(52, get_emote_string(client, 'vrumbox'), 'Vrumbox',
-        'Monowheeled automata built for carrying various pieces of equipment.', [ OochType.Tech ], 10, 10, 10, 15, //total 45
-        [ [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct], [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder] ],
-        [ Ability.Inertia, Ability.Armored ], -1, 53, 18, 0);
-
-        //Folduo
-        create_monster(53, get_emote_string(client, 'folduo'), 'Folduo',
-        'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.', [OochType.Tech], 15, 12, 13, 20, //total 60
-        [ [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct], [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder] ],
-        [ Ability.Inertia, Ability.Armored ], 52, 54, 32, 1);
-
-        //Hexyclone
-        create_monster(54, get_emote_string(client, 'hexyclone'), 'Hexyclone',
-        'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.', [OochType.Tech], 20, 13, 17, 25, //total 75
-        [ [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct], [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [40, Move.Grind], [-1, Move.CallThunder] ],
-        [ Ability.Hexiply, Ability.Efficient ], 53, -1, -1, 2);
-
-        //Oochabit
-        create_monster(55, get_emote_string(client, 'oochabit'), 'Oochabit',
-        'These little guys\'ll consume space-time and do it with a smile on their faces.', [OochType.Void], 10, 9, 5, 6, //total 30
-        [ [1, Move.Bash] ],
-        [ Ability.Nullify ], -1, 56, 18, 0);
-
-        //Oochabound
-        create_monster(56, get_emote_string(client, 'oochabound'), 'Oochabound',
-        'No thank you, I\'d really rather not write a description for this one.', [OochType.Void], 25, 23, 17, 20, //total 85
-        [ [1, Move.Bash] ],
-        [ Ability.Duplicant ], 55, -1, -1, 1);
-
-        //Kindeep
-        create_monster(57, get_emote_string(client, 'kindeep'), 'Kindeep',
-        'Schools of this fish-like oochamon are often found floating down in the caverns.', [OochType.Flame], 10, 13, 12, 20, //total 55
-        [ [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno], [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam] ],
-        [ Ability.Spectral, Ability.Gentle ], -1, 58, 30, 0);
-
-        //Ablayzz
-        create_monster(58, get_emote_string(client, 'ablayzz'), 'Ablayzz',
-        'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.', [OochType.Flame], 20, 18, 17, 25, //total 80
-        [ [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno], [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam] ],
-        [ Ability.Spectral, Ability.Shadow ], 57, -1, -1, 1);
-
-        //Krakle
-        create_monster(59, get_emote_string(client, 'krakle'), 'Krakle',
-        'This small \'mon has a superheated shell, don\'t touch it.', [OochType.Flame], 10, 13, 12, 20, //total 55
-        [ [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn], [14, Move.Engulf], [-1, Move.Overgrowth]],
-        [ Ability.Warm, Ability.Miniscule ], -1, 60, 11, 0);
-
-        //Lightuft
-        create_monster(60, get_emote_string(client, 'lightuft'), 'Lightuft',
-        'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.', [OochType.Flame], 13, 17, 13, 22, //total 65
-        [ [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn], [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam], [-1, Move.AshBlast] ],
-        [ Ability.Warm, Ability.HeightAdvantage ], 59, 61, 25, 1);
-
-        //Infernowl
-        create_monster(61, get_emote_string(client, 'infernowl'), 'Infernowl',
-        'These apex predators will find a single volcano and make its entirety their hunting ground.', [OochType.Flame], 20, 25, 17, 18, //total 80
-        [ [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn], [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam], [-1, Move.AshBlast] ],
-        [ Ability.Scorching, Ability.HeightAdvantage ], 60, -1, -1, 2);
-
-        //Fluffly
-        create_monster(62, get_emote_string(client, 'fluffly'), 'Fluffly',
-        'These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.', [OochType.Fungal], 13, 13, 18, 21, //total 65
-        [ [1, Move.Bash], [2, Move.Soften], [5, Move.Overgrowth], [5, Move.Fireball], [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf], [19, Move.CursedEye], [23, Move.MycoBurst], [29, Move.CausticOrb], [35, Move.ThornShot], [-1, Move.Overgrowth] ],
-        [ Ability.Icky, Ability.Sporespray ], 59, 63, 28, 1);
-
-        //Decavian
-        create_monster(63, get_emote_string(client, 'decavian'), 'Decavian',
-        'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.', [OochType.Fungal], 18, 20, 25, 17, //total 80
-        [ [1, Move.Bash], [2, Move.Soften], [5, Move.Overgrowth], [5, Move.Fireball], [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf], [19, Move.CursedEye], [23, Move.MycoBurst], [29, Move.CausticOrb], [35, Move.ThornShot], [-1, Move.Overgrowth] ],
-        [ Ability.Radiant, Ability.Sporespray ], 62, -1, -1, 2);
-
-        //Phaegrim
-        create_monster(64, get_emote_string(client, 'phaegrim'), 'Phaegrim',
-        'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.', [OochType.Fungal], 10, 13, 12, 20, //total 55
-        [ [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle], [9, Move.CausticOrb], [14, Move.EnfeeblingSpore], [20, Move.CursedEye], [26, Move.DrainLife], [31, Move.Barrage], [36, Move.Blight], [43, Move.Corrode], [-1, Move.Tumorize] ],
-        [ Ability.Icky, Ability.Haunted ], -1, 65, 30, 0);
+        // Digityke
+        create_monster({
+            id: 39,
+            emote: get_emote_string(client, 'digityke'),
+            name: 'Digityke',
+            oochive_entry: 'An old-model of machine companion, its feeble body prevents it from being of much use.', 
+            type: [OochType.Tech],
+            hp: 10, atk: 7, def: 8, spd: 5, // total 30
+            move_list: [
+                [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble],
+                [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [-1, Move.BlindingBeam]
+            ],
+            abilities: [Ability.Gentle, Ability.Efficient],
+            pre_evo_id: -1, evo_id: 40, evo_lvl: 21, evo_stage: 0
+        });
         
-        //Plaghast
-        create_monster(65, get_emote_string(client, 'plaghast'), 'Plaghast',
-        'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.', [OochType.Fungal], 20, 18, 17, 25, //total 80
-        [ [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle], [9, Move.CausticOrb], [14, Move.EnfeeblingSpore], [20, Move.CursedEye], [26, Move.DrainLife], [31, Move.Barrage], [36, Move.Blight], [43, Move.Corrode], [-1, Move.Tumorize] ],
-        [ Ability.Alert, Ability.Leech ], 64, -1, -1, 1);
+        // Codet
+        create_monster({
+            id: 40,
+            emote: get_emote_string(client, 'codet'),
+            name: 'Codet',
+            oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.', 
+            type: [OochType.Tech],
+            hp: 30, atk: 10, def: 10, spd: 10, // total 60
+            move_list: [
+                [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble],
+                [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [26, Move.PhantomBullet],
+                [32, Move.SyncStrike], [35, Move.ThornShot], [-1, Move.BlindingBeam]
+            ],
+            abilities: [Ability.Alert, Ability.Rogue],
+            pre_evo_id: 39, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Heatri
+        create_monster({
+            id: 41,
+            emote: get_emote_string(client, 'heatri'),
+            name: 'Heatri',
+            oochive_entry: 'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.', 
+            type: [OochType.Flame],
+            hp: 25, atk: 10, def: 10, spd: 20, // total 65
+            move_list: [
+                [1, Move.Bash], [3, Move.Hasten], [5, Move.Fireball], [10, Move.Threefold],
+                [15, Move.Engulf], [25, Move.LavaLance], [30, Move.Eruption], [36, Move.Inferno],
+                [-1, Move.SlowBurn]
+            ],
+            abilities: [Ability.Crystallize],
+            pre_evo_id: 43, evo_id: 42, evo_lvl: 33, evo_stage: 1
+        });
+        
+        // Moistri
+        create_monster({
+            id: 42,
+            emote: get_emote_string(client, 'moistri'),
+            name: 'Moistri',
+            oochive_entry: 'Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.', 
+            type: [OochType.Ooze],
+            hp: 25, atk: 20, def: 10, spd: 10, // total 65
+            move_list: [
+                [1, Move.Bash], [3, Move.Soften], [5, Move.Glob], [10, Move.Threefold],
+                [15, Move.Impale], [25, Move.ThornShot], [30, Move.SlurpUp], [36, Move.Kaleidoscope],
+                [-1, Move.Blight]
+            ],
+            abilities: [Ability.Crystallize],
+            pre_evo_id: 41, evo_id: 43, evo_lvl: 33, evo_stage: 1
+        });
+        
+        // Crystri
+        create_monster({
+            id: 43,
+            emote: get_emote_string(client, 'crystri'),
+            name: 'Crystri',
+            oochive_entry: 'While its crystals appear rigid they maintain some sort of fluidity.', 
+            type: [OochType.Stone],
+            hp: 25, atk: 10, def: 20, spd: 10, // total 65
+            move_list: [
+                [1, Move.Bash], [3, Move.MagicBolt], [5, Move.PebbleBlast], [10, Move.Threefold],
+                [15, Move.Blink], [25, Move.DustStorm], [30, Move.Glimmer], [40, Move.GemBash],
+                [-1, Move.GlassBlades]
+            ],
+            abilities: [Ability.Crystallize],
+            pre_evo_id: 42, evo_id: 41, evo_lvl: 33, evo_stage: 1
+        });
+        
+        // Solidifyr
+        create_monster({
+            id: 44,
+            emote: get_emote_string(client, 'solidifyr'),
+            name: 'Solidifyr',
+            oochive_entry: 'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', 
+            type: [OochType.Flame],
+            hp: 17, atk: 13, def: 11, spd: 9, // total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb],
+                [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash],
+                [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam]
+            ],
+            abilities: [Ability.Warm, Ability.Scorching],
+            pre_evo_id: -1, evo_id: 45, evo_lvl: 38, evo_stage: 0
+        });
+        
+        // Obstaggard
+        create_monster({
+            id: 45,
+            emote: get_emote_string(client, 'obstaggard'),
+            name: 'Obstaggard',
+            oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 
+            type: [OochType.Stone],
+            hp: 19, atk: 23, def: 17, spd: 11, // total 70
+            move_list: [
+                [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb],
+                [13, Move.Slash], [17, Move.DustStorm], [23, Move.HypeUp], [28, Move.Boulderdash],
+                [32, Move.Engulf], [38, Move.FireyHorn], [-1, Move.BlindingBeam]
+            ],
+            abilities: [Ability.Withering, Ability.Lacerating],
+            pre_evo_id: 44, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });        
 
-        //Grubbit
-        create_monster(66, get_emote_string(client, 'grubbit'), 'Grubbit',
-        'These small bugs can be found munching on bits of crystal.', [OochType.Stone], 15, 12, 13, 10, //total 50
-        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops], [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb], [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades] [-1, Move.BlindingBeam] ],
-        [ Ability.Tangled, Ability.Miniscule ], -1, 67, 8, 0);
+        // Droplunk
+        create_monster({
+            id: 46,
+            emote: get_emote_string(client, 'droplunk'),
+            name: 'Droplunk',
+            oochive_entry: 'Oops, don\'t let this one drop on your head!', 
+            type: [OochType.Stone],
+            hp: 7, atk: 10, def: 8, spd: 15, // total 40
+            move_list: [
+                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate],
+                [12, Move.Entomb], [13, Move.Mud], [20, Move.CursedEye], [27, Move.SyncStrike],
+                [37, Move.Boulderdash], [43, Move.AshBlast], [-1, Move.ByteBite]
+            ],
+            abilities: [Ability.Inertia, Ability.Gravity],
+            pre_evo_id: -1, evo_id: 45, evo_lvl: 28, evo_stage: 0
+        });
+        
+        // Brykurse
+        create_monster({
+            id: 47,
+            emote: get_emote_string(client, 'brykurse'),
+            name: 'Brykurse',
+            oochive_entry: 'Square meatball!', 
+            type: [OochType.Magic],
+            hp: 14, atk: 28, def: 8, spd: 25, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate],
+                [12, Move.Entomb], [13, Move.Mud], [20, Move.CursedEye], [27, Move.SyncStrike],
+                [37, Move.Boulderdash], [43, Move.AshBlast], [-1, Move.ByteBite]
+            ],
+            abilities: [Ability.Inertia, Ability.Gravity],
+            pre_evo_id: 46, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Polyplute
+        create_monster({
+            id: 48,
+            emote: get_emote_string(client, 'polyplute'),
+            name: 'Polyplute',
+            oochive_entry: 'Blooms of Polyplute create beautiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', 
+            type: [OochType.Fungal],
+            hp: 12, atk: 13, def: 12, spd: 8, // total 45
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Glob], [7, Move.Corrode],
+                [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom],
+                [37, Move.DrainLife], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Sporespray, Ability.Leech],
+            pre_evo_id: -1, evo_id: 49, evo_lvl: 29, evo_stage: 0
+        });
+        
+        // Reefest
+        create_monster({
+            id: 49,
+            emote: get_emote_string(client, 'reefest'),
+            name: 'Reefest',
+            oochive_entry: 'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', 
+            type: [OochType.Fungal],
+            hp: 35, atk: 15, def: 15, spd: 5, // total 70
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Glob], [7, Move.Corrode],
+                [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom],
+                [37, Move.DrainLife], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Sporespray, Ability.Leech],
+            pre_evo_id: 48, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Frigook
+        create_monster({
+            id: 50,
+            emote: get_emote_string(client, 'frigook'),
+            name: 'Frigook',
+            oochive_entry: 'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', 
+            type: [OochType.Ooze],
+            hp: 15, atk: 5, def: 15, spd: 5, // total 40
+            move_list: [
+                [1, Move.Hit], [2, Move.Soften], [3, Move.Glob], [6, Move.Fog],
+                [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye],
+                [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope]
+            ],
+            abilities: [Ability.Moist, Ability.Frostbite],
+            pre_evo_id: -1, evo_id: 51, evo_lvl: 23, evo_stage: 0
+        });
+        
+        // Boreyuc
+        create_monster({
+            id: 51,
+            emote: get_emote_string(client, 'boreyuc'),
+            name: 'Boreyuc',
+            oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 
+            type: [OochType.Ooze],
+            hp: 15, atk: 7, def: 30, spd: 3, // total 65
+            move_list: [
+                [1, Move.Hit], [2, Move.Soften], [3, Move.Glob], [6, Move.Fog],
+                [9, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [25, Move.CursedEye],
+                [32, Move.ArcaStrike], [41, Move.GemBash], [-1, Move.Kaleidoscope]
+            ],
+            abilities: [Ability.Bipolar, Ability.Frostbite],
+            pre_evo_id: 50, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Vrumbox
+        create_monster({
+            id: 52,
+            emote: get_emote_string(client, 'vrumbox'),
+            name: 'Vrumbox',
+            oochive_entry: 'Monowheeled automata built for carrying various pieces of equipment.', 
+            type: [OochType.Tech],
+            hp: 10, atk: 10, def: 10, spd: 15, // total 45
+            move_list: [
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
+                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder]
+            ],
+            abilities: [Ability.Inertia, Ability.Armored],
+            pre_evo_id: -1, evo_id: 53, evo_lvl: 18, evo_stage: 0
+        });
+        
+        // Folduo
+        create_monster({
+            id: 53,
+            emote: get_emote_string(client, 'folduo'),
+            name: 'Folduo',
+            oochive_entry: 'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.', 
+            type: [OochType.Tech],
+            hp: 15, atk: 12, def: 13, spd: 20, // total 60
+            move_list: [
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
+                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder]
+            ],
+            abilities: [Ability.Inertia, Ability.Armored],
+            pre_evo_id: 52, evo_id: 54, evo_lvl: 32, evo_stage: 1
+        });        
 
-        //Culcoon
-        create_monster(67, get_emote_string(client, 'culcoon'), 'Culcoon',
-        'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.', [OochType.Stone], 20, 10, 30, 5, //total 65
-        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops], [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb], [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades] [-1, Move.BlindingBeam] ],
-        [ Ability.Dense, Ability.Immobile ], 66, 68, 20, 1);
+        // Hexyclone
+        create_monster({
+            id: 54,
+            emote: get_emote_string(client, 'hexyclone'),
+            name: 'Hexyclone',
+            oochive_entry: 'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.',
+            type: [OochType.Tech],
+            hp: 20, atk: 13, def: 17, spd: 25, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
+                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [40, Move.Grind],
+                [-1, Move.CallThunder]
+            ],
+            abilities: [ Ability.Hexiply, Ability.Efficient ],
+            pre_evo_id: 53, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        })
 
-        //Speculidae
-        create_monster(68, get_emote_string(client, 'speculidae'), 'Speculidae',
-        'Their thin bodies and stained glass-like wings belie their incredible rigidity.', [OochType.Stone], 12, 10, 35, 23, //total 80
-        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops], [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb], [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades] [-1, Move.BlindingBeam] ],
-        [ Ability.Crystallize, Ability.Lacerating ], 67, -1, -1, 2);
+        // Oochabit
+        create_monster({
+            id: 55,
+            emote: get_emote_string(client, 'oochabit'),
+            name: 'Oochabit',
+            oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
+            type: [OochType.Void],
+            hp: 10, atk: 9, def: 5, spd: 6, // total 30
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Nullify ],
+            pre_evo_id: -1, evo_id: 56, evo_lvl: 18, evo_stage: 0
+        })
 
-        //Nisythe
-        create_monster(69, get_emote_string(client, 'nisythe'), 'Nisythe',
-        'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.', [OochType.Magic], 17, 25, 12, 15, //total 69
-        [ [1, Move.Bash], [2, Move.Slash], [5, Move.Embolden], [7, Move.CursedEye], [10, Move.Blink], [13, Move.Grind], [17, Move.Lurk], [21, Move.LavaLance], [24, Move.Barrage], [29, Move.MetalLance], [35, Move.Siphon], [41, Move.CallThunder], [-1, Move.TangledThreads] ],
-        [ Ability.EasyGo ], -1, -1, -1, 0);
+        // Oochabound
+        create_monster({
+            id: 56,
+            emote: get_emote_string(client, 'oochabound'),
+            name: 'Oochabound',
+            oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
+            type: [OochType.Void],
+            hp: 25, atk: 23, def: 17, spd: 20, // total 85
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Duplicant ],
+            pre_evo_id: 55, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Tidoll
-        create_monster(70, get_emote_string(client, 'tidoll'), 'Tidoll',
-        'These creatures are barely more than sacks of liquid with no bones supporting them.', [OochType.Ooze], 15, 10, 15, 15, //total 55
-        [ [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob], [12, Move.CausticOrb], [16,  Move.SlurpUp], [23, Move.GemBash], [26, Move.TangledThreads], [34, Move.Barrage], [43, Move.Bloom], [-1, Move.FatedThreads] ] ,
-        [ Ability.Moist, Ability.Hearty ], -1, 71, 24, 0);
+        // Kindeep
+        create_monster({
+            id: 57,
+            emote: get_emote_string(client, 'kindeep'),
+            name: 'Kindeep',
+            oochive_entry: 'Schools of this fish-like oochamon are often found floating down in the caverns.',
+            type: [OochType.Flame],
+            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            move_list: [
+                [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten],
+                [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
+                [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam]
+            ],
+            abilities: [ Ability.Spectral, Ability.Gentle ],
+            pre_evo_id: -1, evo_id: 58, evo_lvl: 30, evo_stage: 0
+        })
 
-        //Marinette
-        create_monster(71, get_emote_string(client, 'marinette'), 'Marinette',
-        'The golden threads controlling it are the main body, the rest is just ice-cold water.', [OochType.Ooze], 30, 23, 17, 10, //total 80
-        [ [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob], [12, Move.CausticOrb], [16,  Move.SlurpUp], [23, Move.GemBash], [26, Move.TangledThreads], [34, Move.Barrage], [43, Move.Bloom], [-1, Move.FatedThreads] ],
-        [ Ability.Frostbite, Ability.Hearty ], 70, -1, -1, 1);
+        // Ablayzz
+        create_monster({
+            id: 58,
+            emote: get_emote_string(client, 'ablayzz'),
+            name: 'Ablayzz',
+            oochive_entry: 'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.',
+            type: [OochType.Flame],
+            hp: 20, atk: 18, def: 17, spd: 25, // total 80
+            move_list: [
+                [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten],
+                [12, Move.Engulf], [16, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
+                [33, Move.ArcaStrike], [40, Move.AshBlast], [-1, Move.BlindingBeam]
+            ],
+            abilities: [ Ability.Spectral, Ability.Shadow ],
+            pre_evo_id: 57, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Durble
-        create_monster(72, get_emote_string(client, 'durble'), 'Durble',
-        'These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.', [OochType.Stone], 15, 15, 15, 10, //total 55
-        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Caltrops], [8, Move.Barrage], [13, Move.Boulderdash], [19, Move.DustStorm], [24, Move.Brittle], [28, Move.MetalLance], [30, Move.LavaLance], [40, Move.Sedimentation], [-1, Move.FireyHorn] ],
-        [ Ability.Gentle, Ability.Tough ], -1, 73, 24, 0);
+        // Krakle
+        create_monster({
+            id: 59,
+            emote: get_emote_string(client, 'krakle'),
+            name: 'Krakle',
+            oochive_entry: 'This small \'mon has a superheated shell, don\'t touch it.',
+            type: [OochType.Flame],
+            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn],
+                [14, Move.Engulf], [-1, Move.Overgrowth]
+            ],
+            abilities: [ Ability.Warm, Ability.Miniscule ],
+            pre_evo_id: -1, evo_id: 60, evo_lvl: 11, evo_stage: 0
+        })
 
-        //Durubull
-        create_monster(73, get_emote_string(client, 'durubull'), 'Durubull',
-        'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.', [OochType.Stone], 20, 25, 25, 15, //total 85
-        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Caltrops], [8, Move.Barrage], [13, Move.Boulderdash], [19, Move.DustStorm], [24, Move.Brittle], [28, Move.MetalLance], [30, Move.LavaLance], [40, Move.Sedimentation], [-1, Move.FireyHorn] ],
-        [ Ability.Uncontrolled, Ability.Inertia ], 72, -1, -1, 1);
+        // Lightuft
+        create_monster({
+            id: 60,
+            emote: get_emote_string(client, 'lightuft'),
+            name: 'Lightuft',
+            oochive_entry: 'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.',
+            type: [OochType.Flame],
+            hp: 13, atk: 17, def: 13, spd: 22, // total 65
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn],
+                [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam],
+                [-1, Move.AshBlast]
+            ],
+            abilities: [ Ability.Warm, Ability.HeightAdvantage ],
+            pre_evo_id: 59, evo_id: 61, evo_lvl: 25, evo_stage: 1
+        })
 
-        //Rustail
-        create_monster(74, get_emote_string(client, 'rustail'), 'Rustail',
-        'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.', [OochType.Tech], 15, 15, 15, 10, //total 55
-        [ [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode], [34, Move.Flurry], [36, Move.HypeUp],  [41, Move.CallThunder], [-1, Move.Eruption] ],
-        [ Ability.Tangled, Ability.Lacerating ], -1, 75, 35, 0);
+        // Infernowl
+        create_monster({
+            id: 61,
+            emote: get_emote_string(client, 'infernowl'),
+            name: 'Infernowl',
+            oochive_entry: 'These apex predators will find a single volcano and make its entirety their hunting ground.',
+            type: [OochType.Flame],
+            hp: 20, atk: 25, def: 17, spd: 18, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Fireball], [7, Move.SlowBurn],
+                [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam],
+                [-1, Move.AshBlast]
+            ],
+            abilities: [ Ability.Scorching, Ability.HeightAdvantage ],
+            pre_evo_id: 60, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        })
 
-        //Oxydrake
-        create_monster(75, get_emote_string(client, 'oxydrake'), 'Oxydrake',
-        'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.', [OochType.Tech], 20, 25, 23, 17, //total 85
-        [ [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode], [34, Move.Flurry], [36, Move.HypeUp],  [41, Move.CallThunder], [-1, Move.Eruption] ],
-        [ Ability.Radioactive, Ability.Withering ], 74, -1, -1, 1);
+        // Fluffly
+        create_monster({
+            id: 62,
+            emote: get_emote_string(client, 'fluffly'),
+            name: 'Fluffly',
+            oochive_entry: 'These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.',
+            type: [OochType.Fungal],
+            hp: 13, atk: 13, def: 18, spd: 21, // total 65
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Overgrowth], [5, Move.Fireball],
+                [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
+                [19, Move.CursedEye], [23, Move.MycoBurst], [29, Move.CausticOrb], [35, Move.ThornShot],
+                [-1, Move.Overgrowth]
+            ],
+            abilities: [ Ability.Icky, Ability.Sporespray ],
+            pre_evo_id: 59, evo_id: 63, evo_lvl: 28, evo_stage: 1
+        })
 
-        //Chakreye
-        create_monster(76, get_emote_string(client, 'chakreye'), 'Chakreye',
-        'Their body is surrounded by a rapidly spinning disc of plasma.', [OochType.Tech], 12, 18, 10, 15, //total 55
-        [ [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash], [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades] ],
-        [ Ability.Energized, Ability.Focused ], -1, 77, 30, 0);
+        // Decavian
+        create_monster({
+            id: 63,
+            emote: get_emote_string(client, 'decavian'),
+            name: 'Decavian',
+            oochive_entry: 'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.',
+            type: [OochType.Fungal],
+            hp: 18, atk: 20, def: 25, spd: 17, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Soften], [5, Move.Overgrowth], [5, Move.Fireball],
+                [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
+                [19, Move.CursedEye], [23, Move.MycoBurst], [29, Move.CausticOrb], [35, Move.ThornShot],
+                [-1, Move.Overgrowth]
+            ],
+            abilities: [ Ability.Radiant, Ability.Sporespray ],
+            pre_evo_id: 62, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        })
 
-        //Sabrink
-        create_monster(77, get_emote_string(client, 'sabrink'), 'Sabrink',
-        'A grinning energy blade that relentlessly pursues its enemies. ', [OochType.Tech], 18, 30, 17, 30, //total 85
-        [ [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash], [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades] ],
-        [ Ability.Efficient, Ability.Parry ], 76, -1, -1, 1);
+        // Phaegrim
+        create_monster({
+            id: 64,
+            emote: get_emote_string(client, 'phaegrim'),
+            name: 'Phaegrim',
+            oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
+            type: [OochType.Fungal],
+            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle],
+                [9, Move.CausticOrb], [14, Move.EnfeeblingSpore], [20, Move.CursedEye], [26, Move.DrainLife],
+                [31, Move.Barrage], [36, Move.Blight], [43, Move.Corrode],
+                [-1, Move.Tumorize]
+            ],
+            abilities: [ Ability.Icky, Ability.Haunted ],
+            pre_evo_id: -1, evo_id: 65, evo_lvl: 30, evo_stage: 0
+        })
 
-        //Sapler
-        create_monster(78, get_emote_string(client, 'sapler'), 'Sapler',
-        'These little guys are known to infest power stations and cables, slowly draining their energy.', [OochType.Tech], 15, 10, 20, 5, //total 50
-        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight], [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder] ],
-        [ Ability.Bomber, Ability.Leech ], -1, 79, 20, 0);
+        // Plaghast
+        create_monster({
+            id: 65,
+            emote: get_emote_string(client, 'plaghast'),
+            name: 'Plaghast',
+            oochive_entry: 'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.',
+            type: [OochType.Fungal],
+            hp: 20, atk: 18, def: 17, spd: 25, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle],
+                [9, Move.CausticOrb], [14, Move.EnfeeblingSpore], [20, Move.CursedEye], [26, Move.DrainLife],
+                [31, Move.Barrage], [36, Move.Blight], [43, Move.Corrode],
+                [-1, Move.Tumorize]
+            ],
+            abilities: [ Ability.Alert, Ability.Leech ],
+            pre_evo_id: 64, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
-        //Radient
-        create_monster(79, get_emote_string(client, 'radient'), 'Radient',
-        'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.', [OochType.Tech], 25, 20, 20, 15, //total 80
-        [ [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight], [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder] ],
-        [ Ability.Bomber, Ability.Energized ], 78, -1, -1, 1);
+        // Grubbit
+        create_monster({
+            id: 66,
+            emote: get_emote_string(client, 'grubbit'),
+            name: 'Grubbit',
+            oochive_entry: 'These small bugs can be found munching on bits of crystal.',
+            type: [OochType.Stone],
+            hp: 15, atk: 12, def: 13, spd: 10, // total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
+                [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb],
+                [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades],
+                [-1, Move.BlindingBeam]
+            ],
+            abilities: [ Ability.Tangled, Ability.Miniscule ],
+            pre_evo_id: -1, evo_id: 67, evo_lvl: 8, evo_stage: 0
+        })
 
-        //Lasangato
-        create_monster(80, get_emote_string(client, 'lasangato'), 'Lasangato',
-        'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.', [OochType.Stone], 27, 10, 23, 10, //total 70
-        [ [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Mud], [8, Move.DustStorm], [12, Move.ClampDown], [17,  Move.HypeUp], [22, Move.Sedimentation], [27, Move.Gravitate], [35, Move.SlurpUp], [41, Move.Suplex], [-1, Move.Inferno] ],
-        [ Ability.Burdened, Ability.Burrower ], -1, -1, -1, 0);
+        // Culcoon
+        create_monster({
+            id: 67,
+            emote: get_emote_string(client, 'culcoon'),
+            name: 'Culcoon',
+            oochive_entry: 'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.',
+            type: [OochType.Stone],
+            hp: 20, atk: 10, def: 30, spd: 5, // total 65
+            move_list: [
+                [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
+                [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb],
+                [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades],
+                [-1, Move.BlindingBeam]
+            ],
+            abilities: [ Ability.Dense, Ability.Immobile ],
+            pre_evo_id: 66, evo_id: 68, evo_lvl: 20, evo_stage: 1
+        })
 
-        //Nullifly
-        create_monster(81, get_emote_string(client, 'nullifly'), 'Nullifly',
-        'Strange creatures which begin to swarm where pockets of Void appear.', [OochType.Void], 20, 20, 20, 20, //total 80
-        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],  [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode], [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]],
-        [ Ability.Nullify ], -1, -1, -1, 0);
+        // Speculidae
+        create_monster({
+            id: 68,
+            emote: get_emote_string(client, 'speculidae'),
+            name: 'Speculidae',
+            oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
+            type: [OochType.Stone],
+            hp: 12, atk: 10, def: 35, spd: 23, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
+                [11, Move.Fog], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.CausticOrb],
+                [27, Move.DustStorm], [33, Move.Kaleidoscope], [40, Move.GlassBlades],
+                [-1, Move.BlindingBeam]
+            ],
+            abilities: [ Ability.Crystallize, Ability.Lacerating ],
+            pre_evo_id: 67, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        })
 
-        //Crudoil
-        create_monster(82, get_emote_string(client, 'crudoil'), 'Crudoil',
-        'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.', [OochType.Ooze], 7, 12, 8, 8, //total 35
-        [ [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball], [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [31, Move.SlurpUp], [35,  Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize] ],
-        [ Ability.Flammable, Ability.Warm ], -1, 83, 25, 0);
+        // Nisythe
+        create_monster({
+            id: 69,
+            emote: get_emote_string(client, 'nisythe'),
+            name: 'Nisythe',
+            oochive_entry: 'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.',
+            type: [OochType.Magic],
+            hp: 17, atk: 25, def: 12, spd: 15, // total 69
+            move_list: [
+                [1, Move.Bash], [2, Move.Slash], [5, Move.Embolden], [7, Move.CursedEye],
+                [10, Move.Blink], [13, Move.Grind], [17, Move.Lurk], [21, Move.LavaLance],
+                [24, Move.Barrage], [29, Move.MetalLance], [35, Move.Siphon], [41, Move.CallThunder],
+                [-1, Move.TangledThreads]
+            ],
+            abilities: [ Ability.EasyGo ],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        })
 
-        //Oilantern
-        create_monster(83, get_emote_string(client, 'oilantern'), 'Oilanten',
-        'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.', [OochType.Ooze], 15, 25, 15, 20, //total 75
-        [ [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball], [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [31, Move.SlurpUp], [35,  Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize] ],
-        [ Ability.Flammable, Ability.Hearty ], 82, -1, -1, 1);
+        // Tidoll
+        create_monster({
+            id: 70,
+            emote: get_emote_string(client, 'tidoll'),
+            name: 'Tidoll',
+            oochive_entry: 'These creatures are barely more than sacks of liquid with no bones supporting them.',
+            type: [OochType.Ooze],
+            hp: 15, atk: 10, def: 15, spd: 15, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob],
+                [12, Move.CausticOrb], [16, Move.SlurpUp], [23, Move.GemBash], [26, Move.TangledThreads],
+                [34, Move.Barrage], [43, Move.Bloom], [-1, Move.FatedThreads]
+            ],
+            abilities: [Ability.Moist, Ability.Hearty],
+            pre_evo_id: -1, evo_id: 71, evo_lvl: 24, evo_stage: 0
+        });
 
-        //Saporite
-        create_monster(84, get_emote_string(client, 'saporite'), 'Saporite',
-        'Also called mushroom fairies, these small creatures are very peaceful.', [OochType.Fungal], 7, 5, 13, 5, //total 30
-        [ [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog], [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash], [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]  ],
-        [ Ability.Gentle, Ability.Patient ], -1, 85, 32, 0);
+        // Marinette
+        create_monster({
+            id: 71,
+            emote: get_emote_string(client, 'marinette'),
+            name: 'Marinette',
+            oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
+            type: [OochType.Ooze],
+            hp: 30, atk: 23, def: 17, spd: 10, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob],
+                [12, Move.CausticOrb], [16, Move.SlurpUp], [23, Move.GemBash], [26, Move.TangledThreads],
+                [34, Move.Barrage], [43, Move.Bloom], [-1, Move.FatedThreads]
+            ],
+            abilities: [Ability.Frostbite, Ability.Hearty],
+            pre_evo_id: 70, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Faering
-        create_monster(85, get_emote_string(client, 'faering'), 'Faering',
-        'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.', [OochType.Fungal], 24, 26, 16, 9, //total 80
-        [ [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog], [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash], [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]  ],
-        [ Ability.Tangled, Ability.Immense ], 84, -1, -1, 1);
+        // Durble
+        create_monster({
+            id: 72,
+            emote: get_emote_string(client, 'durble'),
+            name: 'Durble',
+            oochive_entry: 'These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.',
+            type: [OochType.Stone],
+            hp: 15, atk: 15, def: 15, spd: 10, // total 55
+            move_list: [
+                [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Caltrops], [8, Move.Barrage],
+                [13, Move.Boulderdash], [19, Move.DustStorm], [24, Move.Brittle], [28, Move.MetalLance],
+                [30, Move.LavaLance], [40, Move.Sedimentation], [-1, Move.FireyHorn]
+            ],
+            abilities: [Ability.Gentle, Ability.Tough],
+            pre_evo_id: -1, evo_id: 73, evo_lvl: 24, evo_stage: 0
+        });
 
-        //Kercobble
-        create_monster(86, get_emote_string(client, 'kercobble'), 'Kerkobble',
-        'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.', [OochType.Stone], 9, 8, 6, 7, //total 30
-        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
-        [ Ability.Gentle, Ability.Patient ], -1, 87, 42, 0);
+        // Durubull
+        create_monster({
+            id: 73,
+            emote: get_emote_string(client, 'durubull'),
+            name: 'Durubull',
+            oochive_entry: 'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.',
+            type: [OochType.Stone],
+            hp: 20, atk: 25, def: 25, spd: 15, // total 85
+            move_list: [
+                [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Caltrops], [8, Move.Barrage],
+                [13, Move.Boulderdash], [19, Move.DustStorm], [24, Move.Brittle], [28, Move.MetalLance],
+                [30, Move.LavaLance], [40, Move.Sedimentation], [-1, Move.FireyHorn]
+            ],
+            abilities: [Ability.Uncontrolled, Ability.Inertia],
+            pre_evo_id: 72, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Korkobble
-        create_monster(87, get_emote_string(client, 'korkobble'), 'Korkobble',
-        'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'n very smart though.', [OochType.Stone], 31, 19, 17, 18, //total 85
-        [ [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast], [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash], [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage] ],
-        [ Ability.Tangled, Ability.Immense ], 86, -1, -1, 1);
+        // Rustail
+        create_monster({
+            id: 74,
+            emote: get_emote_string(client, 'rustail'),
+            name: 'Rustail',
+            oochive_entry: 'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.',
+            type: [OochType.Tech],
+            hp: 15, atk: 15, def: 15, spd: 10, // total 55
+            move_list: [
+                [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown],
+                [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
+                [34, Move.Flurry], [36, Move.HypeUp], [41, Move.CallThunder], [-1, Move.Eruption]
+            ],
+            abilities: [Ability.Tangled, Ability.Lacerating],
+            pre_evo_id: -1, evo_id: 75, evo_lvl: 35, evo_stage: 0
+        });
 
-        //Ilushand
-        create_monster(88, get_emote_string(client, 'ilushand'), 'Ilushand',
-        'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.', [OochType.Magic], 8, 10, 9, 8, //total 35
-        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
-        [ Ability.Reactive, Ability.Rogue ], -1, 89, 20, 0);
+        // Oxydrake
+        create_monster({
+            id: 75,
+            emote: get_emote_string(client, 'oxydrake'),
+            name: 'Oxydrake',
+            oochive_entry: 'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.',
+            type: [OochType.Tech],
+            hp: 20, atk: 25, def: 23, spd: 17, // total 85
+            move_list: [
+                [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [10, Move.ClampDown],
+                [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
+                [34, Move.Flurry], [36, Move.HypeUp], [41, Move.CallThunder], [-1, Move.Eruption]
+            ],
+            abilities: [Ability.Radioactive, Ability.Withering],
+            pre_evo_id: 74, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Miroraj
-        create_monster(89, get_emote_string(client, 'miroraj'), 'Miroraj',
-        'It endlessly reflects its inner core making it incredibly difficult to percieve.', [OochType.Magic], 18, 22, 19, 21, //total 80
-        [ [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink], [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer], [32, Move.Kaleidoscope], [37, Move.BlindingBeam],  [-1, Move.SolarBlast] ],
-        [ Ability.Reactive, Ability.Duplicant ], 88, -1, -1, 1);
+        // Chakreye
+        create_monster({
+            id: 76,
+            emote: get_emote_string(client, 'chakreye'),
+            name: 'Chakreye',
+            oochive_entry: 'Their body is surrounded by a rapidly spinning disc of plasma.',
+            type: [OochType.Tech],
+            hp: 12, atk: 18, def: 10, spd: 15, // total 55
+            move_list: [
+                [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink],
+                [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash],
+                [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades]
+            ],
+            abilities: [Ability.Energized, Ability.Focused],
+            pre_evo_id: -1, evo_id: 77, evo_lvl: 30, evo_stage: 0
+        });
 
-        //Fritarge
-        create_monster(90, get_emote_string(client, 'fritarge'), 'Fritarge',
-        'The empty hust of what appears to be a bronze turtle. It rarely moves.', [OochType.Tech], 11, 9, 13, 7, //total 40
-        [ [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer], [-1, Move.AshBlast] ],
-        [ Ability.Immobile, Ability.Armored ], -1, 91, 18, 0);
+        // Sabrink
+        create_monster({
+            id: 77,
+            emote: get_emote_string(client, 'sabrink'),
+            name: 'Sabrink',
+            oochive_entry: 'A grinning energy blade that relentlessly pursues its enemies.',
+            type: [OochType.Tech],
+            hp: 18, atk: 30, def: 17, spd: 30, // total 85
+            move_list: [
+                [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink],
+                [17, Move.Barrage], [21, Move.Brittle], [26, Move.Gravitate], [29, Move.Slash],
+                [34, Move.BlindingBeam], [42, Move.Engulf], [-1, Move.GlassBlades]
+            ],
+            abilities: [Ability.Efficient, Ability.Parry],
+            pre_evo_id: 76, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Wardred
-        create_monster(91, get_emote_string(client, 'wardred'), 'Wardred',
-        'The gaping maw on this creature\'s back echoes metallic whispers.', [OochType.Tech], 20, 19, 22, 14, //total 75
-        [ [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer], [-1, Move.AshBlast] ],
-        [ Ability.Ravenous, Ability.Mundane ], 90, -1, -1, 1);
+        // Sapler
+        create_monster({
+            id: 78,
+            emote: get_emote_string(client, 'sapler'),
+            name: 'Sapler',
+            oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
+            type: [OochType.Tech],
+            hp: 15, atk: 10, def: 20, spd: 5, // total 50
+            move_list: [
+                [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon],
+                [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight],
+                [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder]
+            ],
+            abilities: [Ability.Bomber, Ability.Leech],
+            pre_evo_id: -1, evo_id: 79, evo_lvl: 20, evo_stage: 0
+        });
 
-        //Congsume
-        create_monster(92, get_emote_string(client, 'congsume'), 'Congsume',
-        'It can\'t stop moving or the flames on its body will eventually catch up.', [OochType.Flame], 8, 12, 7, 13, //total 40
-        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown], [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf], [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify] ],
-        [ Ability.Ravenous, Ability.EasyGo ], -1, 93, 18, 0);
+        // Radient
+        create_monster({
+            id: 79,
+            emote: get_emote_string(client, 'radient'),
+            name: 'Radient',
+            oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
+            type: [OochType.Tech],
+            hp: 25, atk: 20, def: 20, spd: 15, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon],
+                [13, Move.Fireball], [16, Move.TangledThreads], [23, Move.IronHammer], [29, Move.Blight],
+                [36, Move.DebugBomb], [43, Move.Reset], [-1, Move.CallThunder]
+            ],
+            abilities: [Ability.Bomber, Ability.Energized],
+            pre_evo_id: 78, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
-        //Fevour
-        create_monster(93, get_emote_string(client, 'fevour'), 'Fevour',
-        'Whatever it eats is immediately burned to keep it alive.', [OochType.Flame], 11, 26, 14, 24, //total 75
-        [ [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown], [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf], [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify] ],
-        [ Ability.Ravenous, Ability.Withering ], 92, -1, -1, 1);
+        // Lasangato
+        create_monster({
+            id: 80,
+            emote: get_emote_string(client, 'lasangato'),
+            name: 'Lasangato',
+            oochive_entry: 'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.',
+            type: [OochType.Stone],
+            hp: 27, atk: 10, def: 23, spd: 10, // total 70
+            move_list: [
+                [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Mud], [8, Move.DustStorm],
+                [12, Move.ClampDown], [17, Move.HypeUp], [22, Move.Sedimentation], [27, Move.Gravitate],
+                [35, Move.SlurpUp], [41, Move.Suplex], [-1, Move.Inferno]
+            ],
+            abilities: [Ability.Burdened, Ability.Burrower],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
-        //Tryptid
-        create_monster(94, get_emote_string(client, 'tryptid'), 'Tryptid',
-        'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.', [OochType.Stone, OochType.Fungal], 17, 18, 24, 16, //total 75
-        [ [1, Move.Bash], [5, Move.Brittle], [8, Move.SporeShot], [10, Move.PebbleBlast], [13, Move.Lurk], [16, Move.Grind], [19, Move.CursedEye], [21, Move.Boulderdash], [24, Move.ThornShot], [29, Move.Restruct], [36, Move.DustStorm], [40, Move.ClampDown], [-1, Move.Siphon] ],
-        [ Ability.HoleDweller ], -1, -1, -1, 0);
+        // Nullifly
+        create_monster({
+            id: 81,
+            emote: get_emote_string(client, 'nullifly'),
+            name: 'Nullifly',
+            oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
+            type: [OochType.Void],
+            hp: 20, atk: 20, def: 20, spd: 20, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],
+                [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode],
+                [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]
+            ],
+            abilities: [Ability.Nullify],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
-        //Roswier
-        create_monster(95, get_emote_string(client, 'roswier'), 'Roswier',
-        'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controled by organisms related to Ooze-types.', [OochType.Tech, OochType.Ooze], 26, 24, 19, 21, //total 90
-        [ [1, Move.Bash], [5, Move.Glob], [8, Move.ByteBite], [10, Move.Digitize], [12, Move.Corrode], [16, Move.Impale], [20, Move.MetalLance], [23, Move.TangledThreads], [25, Move.Radiate], [28, Move.Flurry], [34, Move.Entrench], [40, Move.CrashLanding], [-1, Move.PhantomBullet] ],
-        [ Ability.LiquidCooled ], -1, -1, -1, 0);
+        // Crudoil
+        create_monster({
+            id: 82,
+            emote: get_emote_string(client, 'crudoil'),
+            name: 'Crudoil',
+            oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
+            type: [OochType.Ooze],
+            hp: 7, atk: 12, def: 8, spd: 8, // total 35
+            move_list: [
+                [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball],
+                [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf],
+                [31, Move.SlurpUp], [35, Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize]
+            ],
+            abilities: [Ability.Flammable, Ability.Warm],
+            pre_evo_id: -1, evo_id: 83, evo_lvl: 25, evo_stage: 0
+        });
 
-        //Chemerai
-        create_monster(96, get_emote_string(client, 'chemerai'), 'Chemerai',
-        'The crystal atop this creature acts as an matter-energy converter of sorts, though its inner workings are completely unknown.', [OochType.Magic, OochType.Flame], 18, 29, 21, 22, //total 90
-        [ [1, Move.Bash], [3, Move.Fireball], [5, Move.Sparkler], [7, Move.Intimidate], [11, Move.HypeUp], [14, Move.DrainLife], [17, Move.ArcaStrike], [22, Move.GemBash], [27, Move.Inferno], [33, Move.BlindingBeam], [37, Move.GlassBlades], [43, Move.CallThunder], [-1, Move.Kaleidoscope] ],
-        [ Ability.PowerConduit ], -1, -1, -1, 0);
+        // Oilantern
+        create_monster({
+            id: 83,
+            emote: get_emote_string(client, 'oilantern'),
+            name: 'Oilantern',
+            oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
+            type: [OochType.Ooze],
+            hp: 15, atk: 25, def: 15, spd: 20, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball],
+                [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf],
+                [31, Move.SlurpUp], [35, Move.Corrode], [43, Move.Suplex], [-1, Move.Tumorize]
+            ],
+            abilities: [Ability.Flammable, Ability.Hearty],
+            pre_evo_id: 82, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
+        // Saporite
+        create_monster({
+            id: 84,
+            emote: get_emote_string(client, 'saporite'),
+            name: 'Saporite',
+            oochive_entry: 'Also called mushroom fairies, these small creatures are very peaceful.',
+            type: [OochType.Fungal],
+            hp: 7, atk: 5, def: 13, spd: 5, // total 30
+            move_list: [
+                [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog],
+                [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash],
+                [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]
+            ],
+            abilities: [Ability.Gentle, Ability.Patient],
+            pre_evo_id: -1, evo_id: 85, evo_lvl: 32, evo_stage: 0
+        });
 
-        //NEW MONS START HERE
+        // Faering
+        create_monster({
+            id: 85,
+            emote: get_emote_string(client, 'faering'),
+            name: 'Faering',
+            oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
+            type: [OochType.Fungal],
+            hp: 24, atk: 26, def: 16, spd: 9, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog],
+                [11, Move.MyceliumWhip], [15, Move.StickyOrb], [21, Move.Entrench], [26, Move.Boulderdash],
+                [32, Move.EnfeeblingSpore], [37, Move.Gravitate], [44, Move.DrainLife], [-1, Move.TangledThreads]
+            ],
+            abilities: [Ability.Tangled, Ability.Immense],
+            pre_evo_id: 84, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
 
+        // Kerkobble
+        create_monster({
+            id: 86,
+            emote: get_emote_string(client, 'kercobble'),
+            name: 'Kerkobble',
+            oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
+            type: [OochType.Stone],
+            hp: 9, atk: 8, def: 6, spd: 7, // total 30
+            move_list: [
+                [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast],
+                [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash],
+                [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage]
+            ],
+            abilities: [Ability.Gentle, Ability.Patient],
+            pre_evo_id: -1, evo_id: 87, evo_lvl: 42, evo_stage: 0
+        });
+
+        // Korkobble
+        create_monster({
+            id: 87,
+            emote: get_emote_string(client, 'korkobble'),
+            name: 'Korkobble',
+            oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
+            type: [OochType.Stone],
+            hp: 31, atk: 19, def: 17, spd: 18, // total 85
+            move_list: [
+                [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast],
+                [12, Move.HypeUp], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash],
+                [33, Move.Restruct], [40, Move.SelfDestruct], [-1, Move.Barrage]
+            ],
+            abilities: [Ability.Tangled, Ability.Immense],
+            pre_evo_id: 86, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Ilushand
+        create_monster({
+            id: 88,
+            emote: get_emote_string(client, 'ilushand'),
+            name: 'Ilushand',
+            oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
+            type: [OochType.Magic],
+            hp: 8, atk: 10, def: 9, spd: 8, // total 35
+            move_list: [
+                [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink],
+                [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer],
+                [32, Move.Kaleidoscope], [37, Move.BlindingBeam], [-1, Move.SolarBlast]
+            ],
+            abilities: [Ability.Reactive, Ability.Rogue],
+            pre_evo_id: -1, evo_id: 89, evo_lvl: 20, evo_stage: 0
+        });
+
+        // Miroraj
+        create_monster({
+            id: 89,
+            emote: get_emote_string(client, 'miroraj'),
+            name: 'Miroraj',
+            oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
+            type: [OochType.Magic],
+            hp: 18, atk: 22, def: 19, spd: 21, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink],
+                [12, Move.Grind], [17, Move.Embolden], [22, Move.CursedEye], [27, Move.Glimmer],
+                [32, Move.Kaleidoscope], [37, Move.BlindingBeam], [-1, Move.SolarBlast]
+            ],
+            abilities: [Ability.Reactive, Ability.Duplicant],
+            pre_evo_id: 88, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Fritarge
+        create_monster({
+            id: 90,
+            emote: get_emote_string(client, 'fritarge'),
+            name: 'Fritarge',
+            oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
+            type: [OochType.Tech],
+            hp: 11, atk: 9, def: 13, spd: 7, // total 40
+            move_list: [
+                [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball],
+                [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast],
+                [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer],
+                [-1, Move.AshBlast]
+            ],
+            abilities: [Ability.Immobile, Ability.Armored],
+            pre_evo_id: -1, evo_id: 91, evo_lvl: 18, evo_stage: 0
+        });
+
+        // Wardred
+        create_monster({
+            id: 91,
+            emote: get_emote_string(client, 'wardred'),
+            name: 'Wardred',
+            oochive_entry: 'The gaping maw on this creature\'s back echoes metallic whispers.',
+            type: [OochType.Tech],
+            hp: 20, atk: 19, def: 22, spd: 14, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball],
+                [13, Move.Entrench], [16, Move.Caltrops], [21, Move.ClampDown], [24, Move.AshBlast],
+                [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.IronHammer],
+                [-1, Move.AshBlast]
+            ],
+            abilities: [Ability.Ravenous, Ability.Mundane],
+            pre_evo_id: 90, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Congsume
+        create_monster({
+            id: 92,
+            emote: get_emote_string(client, 'congsume'),
+            name: 'Congsume',
+            oochive_entry: 'It can\'t stop moving or the flames on its body will eventually catch up.',
+            type: [OochType.Flame],
+            hp: 8, atk: 12, def: 7, spd: 13, // total 40
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown],
+                [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf],
+                [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify]
+            ],
+            abilities: [Ability.Ravenous, Ability.EasyGo],
+            pre_evo_id: -1, evo_id: 93, evo_lvl: 18, evo_stage: 0
+        });
+
+        // Fevour
+        create_monster({
+            id: 93,
+            emote: get_emote_string(client, 'fevour'),
+            name: 'Fevour',
+            oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
+            type: [OochType.Flame],
+            hp: 11, atk: 26, def: 14, spd: 24, // total 75
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [9, Move.ClampDown],
+                [13, Move.HypeUp], [17, Move.Torch], [23, Move.Hasten], [28, Move.Engulf],
+                [34, Move.Inferno], [40, Move.SelfDestruct], [-1, Move.Purify]
+            ],
+            abilities: [Ability.Ravenous, Ability.Withering],
+            pre_evo_id: 92, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Tryptid
+        create_monster({
+            id: 94,
+            emote: get_emote_string(client, 'tryptid'),
+            name: 'Tryptid',
+            oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
+            type: [OochType.Stone, OochType.Fungal],
+            hp: 17, atk: 18, def: 24, spd: 16, // total 75
+            move_list: [
+                [1, Move.Bash], [5, Move.Brittle], [8, Move.SporeShot], [10, Move.PebbleBlast],
+                [13, Move.Lurk], [16, Move.Grind], [19, Move.CursedEye], [21, Move.Boulderdash],
+                [24, Move.ThornShot], [29, Move.Restruct], [36, Move.DustStorm], [40, Move.ClampDown],
+                [-1, Move.Siphon]
+            ],
+            abilities: [Ability.HoleDweller],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Roswier
+        create_monster({
+            id: 95,
+            emote: get_emote_string(client, 'roswier'),
+            name: 'Roswier',
+            oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
+            type: [OochType.Tech, OochType.Ooze],
+            hp: 26, atk: 24, def: 19, spd: 21, // total 90
+            move_list: [
+                [1, Move.Bash], [5, Move.Glob], [8, Move.ByteBite], [10, Move.Digitize],
+                [12, Move.Corrode], [16, Move.Impale], [20, Move.MetalLance], [23, Move.TangledThreads],
+                [25, Move.Radiate], [28, Move.Flurry], [34, Move.Entrench], [40, Move.CrashLanding],
+                [-1, Move.PhantomBullet]
+            ],
+            abilities: [Ability.LiquidCooled],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Chemerai
+        create_monster({
+            id: 96,
+            emote: get_emote_string(client, 'chemerai'),
+            name: 'Chemerai',
+            oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
+            type: [OochType.Magic, OochType.Flame],
+            hp: 18, atk: 29, def: 21, spd: 22, // total 90
+            move_list: [
+                [1, Move.Bash], [3, Move.Fireball], [5, Move.Sparkler], [7, Move.Intimidate],
+                [11, Move.HypeUp], [14, Move.DrainLife], [17, Move.ArcaStrike], [22, Move.GemBash],
+                [27, Move.Inferno], [33, Move.BlindingBeam], [37, Move.GlassBlades], [43, Move.CallThunder],
+                [-1, Move.Kaleidoscope]
+            ],
+            abilities: [Ability.PowerConduit],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Rosun
         create_monster({
             id: 97,
             emote: get_emote_string(client, 'rosun'),
@@ -1097,9 +1937,10 @@ module.exports = {
             pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
         })
 
+        // Morgoun
         create_monster({
             id: 98,
-            emote: get_emote_string(client, 'Morgoun'),
+            emote: get_emote_string(client, 'morgoun'),
             name: 'Morgoun',
             oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
             type: [OochType.Stone],
@@ -1111,6 +1952,7 @@ module.exports = {
             pre_evo_id: 97, evo_id: -1, evo_lvl: -1, evo_stage: 1
         })
 
+        // Garnetie
         create_monster({
             id: 99,
             emote: get_emote_string(client, 'garnetie'),
@@ -1125,6 +1967,7 @@ module.exports = {
             pre_evo_id: -1, evo_id: 100, evo_lvl: 34, evo_stage: 0
         })
 
+        // Aventux
         create_monster({
             id: 100,
             emote: get_emote_string(client, 'aventux'),
@@ -1139,6 +1982,7 @@ module.exports = {
             pre_evo_id: 99, evo_id: -1, evo_lvl: -1, evo_stage: 1
         })
 
+        // Galagge
         create_monster({
             id: 101,
             emote: get_emote_string(client, 'galagge'),
@@ -1157,11 +2001,21 @@ module.exports = {
 
         //#region Uncatchable Data
 
-        //i_
-        create_monster(-1, get_emote_string(client, 'i_'), 'i_',
-        'ERROR: entry not found', [OochType.Void], 1, 1, 1, 1, //total 4
-        [ [1, Move.UndefinedInt] ], 
-        [ Ability.InvalidEntry ], -1, -1, -1, 0)
+        // i_
+        create_monster({
+            id: -1,
+            emote: get_emote_string(client, 'i_'),
+            name: 'i_',
+            oochive_entry: 'ERROR: entry not found',
+            type: [OochType.Void],
+            hp: 1, atk: 1, def: 1, spd: 1, // total 4
+            move_list: [
+                [1, Move.UndefinedInt]
+            ],
+            abilities: [Ability.InvalidEntry],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
 
         //#endregion
 
@@ -1232,4 +2086,3 @@ module.exports = {
         await interaction.editReply('Generated game data.');
     },
 };
-

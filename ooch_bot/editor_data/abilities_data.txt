@@ -61,3 +61,6 @@
 60|Increment|Randomly boosts a stat at the end of each turn.
 61|Parry|Reduces damage taken. When hit by an attack, this ability becomes Riposte.
 62|Riposte|Increases damage dealt. After attacking or the turn ends, this ability becomes Parry.
+63|Swaying|Increases DEF but lowers accuracy.
+64|Thrashing|Increases ATK but lowers evasion.
+65|Union|Boosts ATK and DEF.
