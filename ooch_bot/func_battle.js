@@ -753,8 +753,6 @@ prompt_battle_input: async function(thread, user_id) {
                                 .addOptions(prism_select_options),
                         );
 
-                        console.log(bag_select.components, bag_buttons.components);
-
                         await i_sel.update({ content: `Select a prism to use!`, components: [bag_select, bag_buttons] })
 
                         prism_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
@@ -2153,7 +2151,7 @@ finish_battle: async function(thread, user_id, battle_won) {
     await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
     await db.profile.delete(user_id, 'rollback_profile');
 
-    await thread.send({ content: playspace_str }).then(msg => {
+    await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
     });
 },

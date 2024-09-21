@@ -269,7 +269,7 @@ module.exports = {
                         if (sel.customId == 'back') {
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                             let playspace_str = setup_playspace_str(user_id);
-                            let play_msg = await thread.send(playspace_str);
+                            let play_msg = await thread.send({ content: playspace_str[0], components: playspace_str[1] });
                             db.profile.set(user_id, play_msg.id, 'display_msg_id')
                             db.profile.set(user_id, oochabux, 'oochabux')
                             await msg.delete().catch(() => {});
@@ -351,7 +351,7 @@ module.exports = {
                         if (db.profile.get(user_id, 'player_state') != PlayerState.Playspace) {
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                             let playspace_str = setup_playspace_str(user_id);
-                            let play_msg = await thread.send(playspace_str);
+                            let play_msg = await thread.send({ content: playspace_str[0], components: playspace_str[1] });
                             db.profile.set(user_id, play_msg.id, 'display_msg_id')
                             db.profile.set(user_id, oochabux, 'oochabux')
                             await msg.delete().catch(() => {});
@@ -548,7 +548,7 @@ module.exports = {
     },
 
     /**
-     * Setup a new playspace window, returns the initial playspace string.
+     * Setup a new playspace window, returns the initial playspace string as well as playspace buttons
      * @param {Number} user_id The user id of the user having a playspace setup.
      */
     setup_playspace_str: function(user_id) {
@@ -565,7 +565,51 @@ module.exports = {
         // Set player position data into the global multiplayer player position db
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
-        return map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id);
+        let moveBtns = [];
+        console.log(db.profile.get(user_id, 'settings.discord_move_buttons'));
+        if (db.profile.get(user_id, 'settings.discord_move_buttons') === true) {
+            const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('-')
+                    .setLabel('‎')
+                    .setStyle(ButtonStyle.Primary),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('w')
+                    .setLabel('⬆️')
+                    .setEmoji('<:item_prism:1023031025716179076>')
+                    .setStyle(ButtonStyle.Primary),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('-')
+                    .setLabel('‎')
+                    .setStyle(ButtonStyle.Primary),
+            )
+
+            const row2 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('a')
+                    .setLabel('⬅️')
+                    .setStyle(ButtonStyle.Primary),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('s')
+                    .setLabel('⬇️')
+                    .setEmoji('<:item_prism:1023031025716179076>')
+                    .setStyle(ButtonStyle.Primary),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('d')
+                    .setLabel('➡️')
+                    .setStyle(ButtonStyle.Primary),
+            )
+
+            moveBtns = [row, row2];
+        }
+
+        return [map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id), moveBtns];
     },
 
     /**

@@ -90,7 +90,7 @@ client.on('ready', async () => {
             let playspace_str = await setup_playspace_str(user);
             await db.profile.set(user, PlayerState.Playspace, 'player_state');
 
-            await userThread.send({ content: playspace_str }).then(msg => {
+            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                 db.profile.set(user, msg.id, 'display_msg_id');
             });
 
@@ -239,6 +239,13 @@ client.on('interactionCreate', async interaction => {
         }
     }
 
+    // Handle move buttons
+    if (db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true && interaction.isButton()) {
+        if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
+            await move(interaction.channel, interaction.user.id, interaction.customId, 1);
+        }
+    }
+
     if (interaction.type !== InteractionType.ApplicationCommand) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -293,12 +300,7 @@ client.on('messageCreate', async message => {
                             dist = matchLength;
                         }
 
-                        switch (args[0]) {
-                            case 'd': await move(message.channel, message.author.id, 'd', dist); break;
-                            case 's': await move(message.channel, message.author.id, 's', dist); break;
-                            case 'a': await move(message.channel, message.author.id, 'a', dist); break; 
-                            case 'w': await move(message.channel, message.author.id, 'w', dist); break;
-                        }
+                        await move(message.channel, message.author.id, args[0], dist);
                         await message.delete().catch(() => {});
                     }
                 }

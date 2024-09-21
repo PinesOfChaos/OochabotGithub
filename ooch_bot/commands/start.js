@@ -47,6 +47,7 @@ module.exports = {
                 battle_cleanup: true,
                 zoom: '9_7',
                 battle_speed: 1250,
+                discord_move_buttons: false,
             }, 'settings');
 
             // Setup Oochadex template

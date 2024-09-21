@@ -56,7 +56,7 @@ module.exports = {
             await thread.bulkDelete(100);
         }
 
-        let playspace_str = '**Intro**';
+        let playspace_str = ['**Intro**', []];
         if (db.profile.get(interaction.user.id, 'player_state') != PlayerState.Intro) {
             db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
             playspace_str = setup_playspace_str(interaction.user.id);
@@ -88,7 +88,7 @@ module.exports = {
         }
 
         //Send reply displaying the player's location on the map
-        await thread.send({ content: playspace_str }).then(async msg => {
+        await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async msg => {
             await db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
 
@@ -98,7 +98,7 @@ module.exports = {
             await move(thread, interaction.user.id, '', 1);
         }
 
-        if (playspace_str != "**Intro**") {
+        if (playspace_str[0] != "**Intro**") {
             if (outputMsg != false) {
                 if (thread != interaction.channel) {
                     let tipMsg = await thread.send({ content: outputMsg, ephemeral: true });

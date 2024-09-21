@@ -169,12 +169,17 @@ module.exports = {
                             description: 'Set the battle event speed.',
                             value: 'battle_speed',
                         },
+                        {
+                            label: 'Discord Move Buttons',
+                            description: 'Add buttons you can click to move your character.',
+                            value: 'discord_move_buttons',
+                        },
                     ),
             );
 
 
         let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
+        oochadex_sel_3 = new ActionRowBuilder()
         let oochadex_sel_options_1 = [];
         let oochadex_sel_options_2 = [];
         let oochadex_sel_options_3 = [];
@@ -235,13 +240,6 @@ module.exports = {
                 .setCustomId('oochadex_sel_3')
                 .setPlaceholder(`Oochadex #51-#75`)
                 .addOptions(oochadex_sel_options_3),
-        );
-
-        oochadex_sel_4.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('oochadex_sel_4')
-                .setPlaceholder(`Oochadex #76-#${db.monster_data.keyArray().length}`)
-                .addOptions(oochadex_sel_options_4),
         );
 
         //#endregion End of making action rows
@@ -608,7 +606,7 @@ module.exports = {
                 i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button]});
             } 
             // Move switcher button/select menu handler
-            else if (selected.includes('move_')) {
+            else if (selected.includes('move_') && selected !== 'discord_move_buttons') {
                 if (i.componentType == ComponentType.Button) { // if a move is selected
                     move_list_select = new ActionRowBuilder()
                     move_list_select_options = [];
@@ -781,10 +779,10 @@ module.exports = {
 
                 if (oochadex_data[0].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [] });
                 }
             }
             // Oochadex Select Menus
@@ -808,10 +806,10 @@ module.exports = {
 
                 if (oochadex_data[selected].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[selected].seen} | **Caught:** ${oochadex_data[selected].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [] });
                 }
             }
             //#endregion
@@ -919,7 +917,8 @@ module.exports = {
                 pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
                 `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
                 `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
-                `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`];
+                `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`,
+                `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -956,7 +955,6 @@ module.exports = {
                 }
 
                 user_profile = await db.profile.get(interaction.user.id);
-                console.log(user_profile.settings.zoom.split('_'))
                 pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom.split('_')[0]}x${user_profile.settings.zoom.split('_')[1]}\`**`;
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
@@ -975,14 +973,23 @@ module.exports = {
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
             }
+            // Discord Movement Buttons Option
+            else if (selected == 'discord_move_buttons') {
+                await db.profile.set(interaction.user.id, !(user_profile.settings.discord_move_buttons), 'settings.discord_move_buttons');
+                pref_desc[4] = `Discord Move Buttons: ${db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true ? `✅` : `❌`}`;
+                user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
             //#endregion
 
             //#region Quit Button (back to playspace)
             else if (selected == 'quit') {
                 let playspace_str = setup_playspace_str(interaction.user.id);
+                console.log(playspace_str);
                 collector.stop();
 
-                await interaction.channel.send({ content: playspace_str }).then(msg => {
+                await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                     db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
                 });
 

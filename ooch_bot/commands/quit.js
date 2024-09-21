@@ -8,7 +8,6 @@ module.exports = {
         .setDescription('Quit playing Oochamon.'),
     async execute(interaction) {
         let state = db.profile.get(interaction.user.id, 'player_state');
-        if (state != PlayerState.Playspace) return interaction.reply({ content: "You can't quit the game here, only while in a playspace!", ephemeral: true });
         const thread = await interaction.guild.channels.cache.get(db.profile.get(interaction.user.id, 'play_thread_id'));
         await db.profile.set(interaction.user.id, false, 'play_thread_id');
         await db.profile.set(interaction.user.id, false, 'play_guild_id');

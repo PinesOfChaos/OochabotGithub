@@ -710,9 +710,7 @@ module.exports = {
             hp: 13, atk: 23, def: 12, spd: 12, //total 65
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [9, Move.Sparkler],
-                
                 [14, Move.ArcaStrike], [16, Move.Kaleidoscope], [21, Move.Glimmer], [26, Move.CallThunder],
-                
                 [35, Move.GemBash], [-1, Move.Torch]
             ],
             abilities: [Ability.Focused, Ability.Patient],
@@ -2021,18 +2019,203 @@ module.exports = {
 
         //#region Create Maps
         await db.maps.clear();
-        let files = fs.readdirSync('./maps/');
+        // let files = fs.readdirSync('./maps/');
+        // for (let file of files) {
+        //     if (!file.includes('.json')) continue;
+        //     let map_name = file.replace('.json', '');
+
+        //     fs.readFile(`./maps/${file}`, 'utf8', (err, data) => {
+        //         if (err) {
+        //             console.log(`Error reading file: ${file}`);
+        //             return;
+        //         }
+
+        //         db.maps.set(map_name, JSON.parse(data));
+        //     });
+        // }
+
+        //#region Create Maps
+        await db.maps.clear();
+        let files = fs.readdirSync('./old_maps/');
         for (let file of files) {
-            if (!file.includes('.json')) continue;
-            let map_name = file.replace('.json', '');
-
-            fs.readFile(`./maps/${file}`, 'utf8', (err, data) => {
-                if (err) {
-                    console.log(`Error reading file: ${file}`);
-                    return;
+            if (file.includes('.json')) continue;
+            let map_name = file.replace('.txt', '');
+    
+            fs.readFile(`./old_maps/${file}`, 'utf8', (err, data) => {
+                let map_data = data.split('\n');
+                let data_header = 'err';
+                let map_info_step = 0;
+                let map_info_name = '';
+                let map_info_battleback = '';
+                let tile_data = [];
+                let npc_data = [];
+                let npc_team_data, ooch_data, moveset, spawn_ooch_data;
+                let spawn_data = [];
+                let savepoint_data = [];
+                let transition_data = [];
+                let event_data = [];
+                let shop_data = [];
+    
+                for (let line of map_data) {
+                    line = line.replace(/\r\n/g, '').replace(/[\r\n]/g, '');
+                    if (line[0] == '#') {
+                        data_header = `${line.replace('#', '')}`;
+                    } else {
+                        let line_data = line.split('|');
+                        let output;
+                        switch (data_header) {
+                            case 'map_info':
+                                if(map_info_step == 0){ map_info_name = line_data[0]}
+                                if(map_info_step == 1){ map_info_battleback = line_data[0]}
+                                map_info_step += 1;
+                            break;
+                            case 'tiles':
+                                line_data.pop();
+                                tile_data.push(line_data);
+                            break;
+                            case 'npcs':
+                                output = {
+                                    name: line_data[0],
+                                    x: parseInt(line_data[1]),
+                                    y: parseInt(line_data[2]),
+                                    emote_name: line_data[3],
+                                    sprite_id: line_data[4],
+                                    sprite_combat: (line_data[5] == '' ? false : line_data[5]),
+                                    sprite_dialogue: (line_data[6] == '' ? false : line_data[6]),
+                                    coin: parseInt(line_data[7]),
+                                    item_id: parseInt(line_data[8]),
+                                    item_count: parseInt(line_data[9]),
+                                    flag_required: (line_data[10] == '' ? false : line_data[10]),
+                                    flag_given: (line_data[11] == '' ? false : line_data[11]),
+                                    flag_kill: (line_data[12] == '' ? false : line_data[12]),
+                                    remove_on_finish: Boolean(parseInt(line_data[13])),
+                                    pre_combat_dialogue: line_data[14].split('`').filter(v => v != ''),
+                                    post_combat_dialogue: line_data[15].split('`').filter(v => v != ''),
+                                    team: [],
+                                };
+    
+                                for (let i = 16; i < line_data.length; i++) {
+                                    if (line_data[i] == '') continue;
+                                    npc_team_data = line_data[i].split('`');
+                                    ooch_data = db.monster_data.get(parseInt(npc_team_data[0]));
+                                    moveset = [
+                                        parseInt(npc_team_data[4]),
+                                        parseInt(npc_team_data[5]),
+                                        parseInt(npc_team_data[6]),
+                                        parseInt(npc_team_data[7]),
+                                    ];
+                                    moveset = moveset.filter(id => id != -1);
+    
+                                    output.team.push({
+                                        id: parseInt(npc_team_data[0]),
+                                        name: ooch_data.name,
+                                        nickname: npc_team_data[1],
+                                        current_hp: ooch_data.hp,
+                                        type: ooch_data.type,
+                                        item: -1,
+                                        alive: true,
+                                        ability: parseInt(npc_team_data[2]),
+                                        level: parseInt(npc_team_data[3]),
+                                        moveset: moveset,
+                                        status_effects: [],
+                                        stats: {
+                                            acc_mul: 1,
+                                            eva_mul: 1,
+                                            hp: ooch_data.hp,
+                                            hp_iv: parseInt(npc_team_data[8]),
+                                            atk: ooch_data.atk,
+                                            atk_iv: parseInt(npc_team_data[9]),
+                                            atk_mul: 1,
+                                            def: ooch_data.def,
+                                            def_iv: parseInt(npc_team_data[10]),
+                                            def_mul: 1,
+                                            spd: ooch_data.spd,
+                                            spd_iv: parseInt(npc_team_data[11]),
+                                            spd_mul: 1,
+                                        }
+                                    });
+                                }
+                                npc_data.push(output);
+                            break;
+                            case 'spawn_zones':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    width: parseInt(line_data[2]),
+                                    height: parseInt(line_data[3]),
+                                    spawn_slots: [],
+                                }
+    
+                                spawn_ooch_data = line_data[4].split('`')
+                                for(let i = 0; i < spawn_ooch_data.length/3 - 1; i++){
+    
+                                    output.spawn_slots.push({
+                                        ooch_id:    parseInt(spawn_ooch_data[i * 3 + 0]),
+                                        min_level:  parseInt(spawn_ooch_data[i * 3 + 1]),
+                                        max_level:  parseInt(spawn_ooch_data[i * 3 + 2])
+                                    })
+                                }
+    
+                                spawn_data.push(output);
+                            break;
+                            case 'savepoints':
+                                output = {
+                                    is_default: Boolean(parseInt(line_data[0])),
+                                    x: parseInt(line_data[1]),
+                                    y: parseInt(line_data[2]),
+                                }
+                                savepoint_data.push(output);
+                            break;
+                            case 'shops':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    type: line_data[2],
+                                    special_items: line_data[3] == '' ? [] : line_data[3].split('`'),
+                                    image: line_data[4],
+                                    greeting_dialogue: line_data[5],
+                                }
+                                shop_data.push(output);
+                            break;
+                            case 'transitions':
+                                if (line == '') continue;
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    connect_map: line_data[2],
+                                    connect_x: parseInt(line_data[3]),
+                                    connect_y: parseInt(line_data[4]),
+                                }
+                                transition_data.push(output);
+                            break;
+                            case 'events':
+                                output = {
+                                    x: parseInt(line_data[0]),
+                                    y: parseInt(line_data[1]),
+                                    width:  parseInt(line_data[2]),
+                                    height: parseInt(line_data[3]),
+                                    event_name: line_data[4],
+                                    flag_required: (line_data[5] == '' ? false : line_data[5]),
+                                    flag_kill: (line_data[6] == '' ? false : line_data[6]),
+                                }
+                                event_data.push(output);
+                            break;
+                        }
+                    }
                 }
-
-                db.maps.set(map_name, JSON.parse(data));
+    
+                //Set the map's data
+                db.maps.set(map_name, {
+                    map_title: map_info_name,
+                    map_info_battleback : map_info_battleback,
+                    tiles: tile_data,
+                    npcs: npc_data,
+                    spawn_zones: spawn_data,
+                    savepoints: savepoint_data,
+                    transitions: transition_data,
+                    events: event_data,
+                    shops: shop_data
+                });
             });
         }
 

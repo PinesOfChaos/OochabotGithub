@@ -139,8 +139,9 @@ module.exports = {
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                        let playspace_str = setup_playspace_str(user_id);
                         await thread.messages.fetch(msg_to_edit).then((msg) => {
-                            msg.edit({ content: setup_playspace_str(user_id) });
+                            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
                         }).catch(() => {});
                         return;
                     }
@@ -190,8 +191,9 @@ module.exports = {
                 await confirm_collector.stop();
                 await msg.delete();
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                let playspace_str = setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: setup_playspace_str(user_id) });
+                    msg.edit({ content: playspace_str[0], components: playspace_str[1] });
                 }).catch(() => {});
                 return;
             }
@@ -306,8 +308,9 @@ module.exports = {
                             await msg.delete();
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                             quit = true; 
+                            let playspace_str = setup_playspace_str(user_id);
                             await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                msg.edit({ content: setup_playspace_str(user_id) });
+                                msg.edit({ content: playspace_str[0], components: playspace_str[1] });
                             }).catch(() => {});
                             return;
                         } else {
