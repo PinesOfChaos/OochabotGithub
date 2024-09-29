@@ -566,43 +566,40 @@ module.exports = {
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
         let moveBtns = [];
-        console.log(db.profile.get(user_id, 'settings.discord_move_buttons'));
         if (db.profile.get(user_id, 'settings.discord_move_buttons') === true) {
             const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId('-')
-                    .setLabel('‎')
-                    .setStyle(ButtonStyle.Primary),
+                    .setCustomId('play_dist')
+                    .setLabel(`${db.profile.get(user_id, 'move_speed')}`)
+                    .setStyle(ButtonStyle.Secondary),
             ).addComponents(
                 new ButtonBuilder()
                     .setCustomId('w')
-                    .setLabel('⬆️')
-                    .setEmoji('<:item_prism:1023031025716179076>')
+                    .setLabel('▲')
                     .setStyle(ButtonStyle.Primary),
             ).addComponents(
                 new ButtonBuilder()
-                    .setCustomId('-')
-                    .setLabel('‎')
-                    .setStyle(ButtonStyle.Primary),
+                    .setCustomId('play_menu')
+                    .setLabel('≡')
+                    .setStyle(ButtonStyle.Secondary),
             )
 
             const row2 = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('a')
-                    .setLabel('⬅️')
+                    .setLabel('◀')
                     .setStyle(ButtonStyle.Primary),
             ).addComponents(
                 new ButtonBuilder()
                     .setCustomId('s')
-                    .setLabel('⬇️')
-                    .setEmoji('<:item_prism:1023031025716179076>')
+                    .setLabel('▼')
                     .setStyle(ButtonStyle.Primary),
             ).addComponents(
                 new ButtonBuilder()
                     .setCustomId('d')
-                    .setLabel('➡️')
+                    .setLabel('▶')
                     .setStyle(ButtonStyle.Primary),
             )
 

@@ -986,7 +986,6 @@ module.exports = {
             //#region Quit Button (back to playspace)
             else if (selected == 'quit') {
                 let playspace_str = setup_playspace_str(interaction.user.id);
-                console.log(playspace_str);
                 collector.stop();
 
                 await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {

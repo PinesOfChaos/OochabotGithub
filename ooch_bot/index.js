@@ -80,7 +80,8 @@ client.on('ready', async () => {
             await prompt_battle_input(userThread, user);
             // await wait(2000);
             // await warningMsg.delete();
-        } else if (user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace) {
+        } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace) ||
+            (user_profile.player_state === PlayerState.Playspace && user_profile.settings.discord_move_buttons === true)) {
 
             await userThread.bulkDelete(100);
             db.profile.set(user, [], 'npc_event_data');
@@ -240,9 +241,18 @@ client.on('interactionCreate', async interaction => {
     }
 
     // Handle move buttons
+    let curSpeed = db.profile.get(interaction.user.id, 'move_speed');
     if (db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true && interaction.isButton()) {
         if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
-            await move(interaction.channel, interaction.user.id, interaction.customId, 1);
+            await interaction.update({ embeds: [] });
+            await move(interaction.channel, interaction.user.id, interaction.customId, curSpeed);
+        } else if (interaction.customId === 'play_dist') {
+            db.profile.set(interaction.user.id, (curSpeed % 5) + 1, 'move_speed');
+            let playspace_str = setup_playspace_str(interaction.user.id);
+            await interaction.update({ components: playspace_str[1] });
+        } else if (interaction.customId === 'play_menu') {
+            let command = client.commands.get('menu');
+            command.execute(interaction, client);
         }
     }
 

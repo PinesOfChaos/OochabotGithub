@@ -26,7 +26,7 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('ability')
-                .setDescription('Get info about a selected ability')
+                .setDescription('Get info about a selected ability.')
                 .addStringOption(option => 
                     option.setName('ability')
                         .setDescription('The name of the ability')
@@ -35,14 +35,25 @@ module.exports = {
 
         .addSubcommand(subcommand =>
             subcommand
+                .setName('status')
+                .setDescription('Get info about a status effect.')
+                .addStringOption(option => 
+                    option.setName('status')
+                        .setDescription('The name of the status effect')
+                        .setAutocomplete(true)
+                        .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('controls')
                 .setDescription('View the controls!')),
+
     async execute(interaction) {
 
         let selected_db = interaction.options.getSubcommand();
-        let selected_id = selected_db == 'move' ? interaction.options.getString('move') : interaction.options.getString('ability');
+        let selected_id = selected_db == 'move' ? interaction.options.getString('move') : (selected_db == 'status' ? interaction.options.getString('status') : interaction.options.getString('ability'));
 
-        if (selected_db === 'move' || selected_db === 'ability') {
+        if (selected_db === 'move' || selected_db === 'ability' || selected_db == 'status') {
             if (isNaN(selected_id)) {
                 // TODO: Just have this try to find it in the database rather than saying this
                 return interaction.reply('Make sure you select from one of the drop down options, don\'t type this in manually!')
@@ -122,17 +133,22 @@ module.exports = {
                 let controls_embed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle('Controls')
-                    .setDescription('To move, type `w` `a` `s` or `d` in the chat, and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n' +
+                    .setDescription('To move, type `w` `a` `s` or `d` in the chat (or click the buttons, if using the discord button setting), and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n' +
                         'If you want to chain together movement actions, you can do movement actions split by a comma (example: `w4,d4,s2`) to do multiple movement directions at once!\n' +  
                         '`/lookup` lets you look up what a move does or ability does, and the type chart\n' + 
                         '`/teleport` lets you teleport to the hub or your last used teleporter\n' + 
                         '`/menu` pulls up the menu\n' + 
                         '`/play` to play the game\n' +
-                        '`/quit` to quit and close your thread')
+                        '`/quit` to quit and close your thread\n' + 
+                        'If you using the discord buttons, the top left button changes your jump speed, and the top right button opens the menu.')
                 return interaction.reply({
                     embeds: [controls_embed],
                     ephemeral: true
                 })
+            break;
+            case 'status':
+                // TODO: Add lookup status
+            break;
         }
 
     },

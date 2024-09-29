@@ -45,7 +45,7 @@ module.exports = {
         let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(IV: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(IV: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(IV: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(IV: ${iv_spd})\``, inline: true }]);
+        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(Bonus: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(Bonus: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(Bonus: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(Bonus: ${iv_spd})\``, inline: true }]);
         infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
 
         return [infoEmbed, get_ooch_art(ooch.name)];

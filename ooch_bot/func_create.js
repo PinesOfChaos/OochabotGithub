@@ -178,5 +178,20 @@ module.exports = {
         db.ability_data.set(key_id, id, 'id');
         db.ability_data.set(key_id, name, 'name');
         db.ability_data.set(key_id, description, 'description');
+    },
+
+    /**
+     * Create a status data object and add it to the database.
+     * @param {Number} id The ID of the status effect
+     * @param {String} name The name of the status effect
+     * @param {String} emote The emote of the status effect
+     * @param {String} description The description of the status effect
+     */
+    create_status: function(id, name, emote, description) {
+        let key_id = id.toString();
+        db.status_data.set(key_id, id, 'id');
+        db.status_data.set(key_id, name, 'name');
+        db.status_data.set(key_id, emote, 'emote');
+        db.status_data.set(key_id, description, 'description');
     }
 }

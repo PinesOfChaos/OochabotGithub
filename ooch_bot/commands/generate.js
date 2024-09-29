@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { create_monster, create_move, create_item, create_ability, create_tile } = require('../func_create');
+const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status, MoveTag } = require('../types.js');
@@ -314,10 +314,24 @@ module.exports = {
         create_ability(63, 'Swaying',           'Increases DEF but lowers accuracy.')
         create_ability(64, 'Thrashing',         'Increases ATK but lowers evasion.')
         create_ability(65, 'Union',             'Boosts ATK and DEF.')
-        //ALSO we should change Gentle to reduce the opponent's ATK as well
-        
 
         //#endregion
+
+        //#region Status Data
+
+        //            ID,  NAME,        EMOTE                                       DESCRIPTION
+        create_status(0,   'Burned',    '<:status_burned:1023031032083128441>',     'Burns the Oochamon at the end of each turn, dealing damage.');
+        create_status(1,   'Infected',  '<:status_infected:1023031033744076930>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
+        create_status(2,   'Blinded',   '<:status_blinded:1023031030837416057>',    'Blinds the Oochamon, reducing its accuracy.');
+        create_status(3,   'Digitized', '<:status_digitized:1023031032934576178>',  'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
+        create_status(4,   'Snared',    '<:status_snared:1023031034733940798>',     'Ensnares the Oochamon, forcing it to go second in battle.');
+        create_status(5,   'Vanished',  '<:status_vanish:1023053679328231424>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
+        create_status(6,   'Doomed',    '<:status_doomed:1023053678179012648>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
+        create_status(7,   'Doubled',   '<:status_doubled:1170203311199240302>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+        
+        //#endregion
+
+
 
         //#region Creature Data
         //ID, Emote, Name, Image, 

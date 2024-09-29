@@ -35,6 +35,7 @@ module.exports = {
             db.profile.set(interaction.user.id, [], 'ooch_party');
             db.profile.set(interaction.user.id, [Item.Potion, Item.Prism], 'global_shop_items');
             db.profile.set(interaction.user.id, [], 'friends_list');
+            db.profile.set(interaction.user.id, 1, 'move_speed');
             
             // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
             // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
