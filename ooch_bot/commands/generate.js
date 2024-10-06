@@ -449,7 +449,9 @@ module.exports = {
             oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', 
             type: [OochType.Flame],
             hp: 13, atk: 18, def: 14, spd: 15, //total 60
-            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], [-1, Move.Inferno] ],
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf],
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
+             [-1, Move.Inferno] ],
             abilities: [ Ability.Gentle, Ability.Radiant ],
             pre_evo_id: 6, evo_id: 8, evo_lvl: 25, evo_stage: 1
         });
@@ -462,7 +464,9 @@ module.exports = {
             oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 
             type: [OochType.Flame],
             hp: 16, atk: 26, def: 18, spd: 20, //total 80
-            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], [-1, Move.Inferno] ],
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], 
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
+             [-1, Move.Inferno] ],
             abilities: [ Ability.Conflicted, Ability.Radiant ],
             pre_evo_id: 7, evo_id: -1, evo_lvl: -1, evo_stage: 2
         });
@@ -475,7 +479,9 @@ module.exports = {
             oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.', 
             type: [OochType.Stone],
             hp: 15, atk: 9, def: 14, spd: 12, //total 50
-            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], [34, Move.Entomb], [-1, Move.GemBash] ],
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], 
+             [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
+             [34, Move.Entomb], [-1, Move.GemBash] ],
             abilities: [ Ability.Tough, Ability.Reactive ],
             pre_evo_id: -1, evo_id: 10, evo_lvl: 12, evo_stage: 0
         });
@@ -488,7 +494,9 @@ module.exports = {
             oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 
             type: [OochType.Stone],
             hp: 18, atk: 25, def: 16, spd: 11, //total 70
-            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], [34, Move.Entomb], [-1, Move.GemBash] ],
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash],
+             [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
+             [34, Move.Entomb], [-1, Move.GemBash] ],
             abilities: [ Ability.Burrower, Ability.Reactive ],
             pre_evo_id: 9, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
@@ -501,7 +509,8 @@ module.exports = {
             oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 
             type: [OochType.Stone],
             hp: 10, atk: 10, def: 10, spd: 20, //total 50
-            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [-1, Move.ArcaStrike] ],
+            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
+             [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [-1, Move.ArcaStrike] ],
             abilities: [ Ability.Inertia, Ability.Dense ],
             pre_evo_id: -1, evo_id: 12, evo_lvl: 15, evo_stage: 0
         });
@@ -514,7 +523,9 @@ module.exports = {
             oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
             type: [OochType.Stone],
             hp: 15, atk: 20, def: 15, spd: 30, //total 80
-            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], [-1, Move.ArcaStrike] ],
+            move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
+             [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], 
+             [-1, Move.ArcaStrike] ],
             abilities: [ Ability.Inertia, Ability.Dense ],
             pre_evo_id: 11, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
@@ -527,7 +538,8 @@ module.exports = {
             oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.', 
             type: [OochType.Fungal],
             hp: 14, atk: 10, def: 9, spd: 12, //total 35
-            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [-1, Move.Glimmer] ],
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale],
+             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Miniscule ],
             pre_evo_id: -1, evo_id: 14, evo_lvl: 9, evo_stage: 0
         });
@@ -540,7 +552,9 @@ module.exports = {
             oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 
             type: [OochType.Fungal],
             hp: 21, atk: 17, def: 12, spd: 15, //total 65
-            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], [11, Move.StickyOrb], [17, Move.TakeOver], [23, Move.MycoBurst], [32, Move.Bloom], [-1, Move.Glimmer] ],
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], 
+             [11, Move.StickyOrb], [17, Move.TakeOver], [23, Move.MycoBurst], [32, Move.Bloom], 
+             [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Alert ],
             pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
