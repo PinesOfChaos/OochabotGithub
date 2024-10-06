@@ -9,8 +9,7 @@
             "item": false,
             "image": false,
             "flags": [],
-            "dialogue_file_name": false,
-            "dialogue_file_path": false
+            "dialogue_portrait": false
           }
         ],
         
@@ -76,6 +75,17 @@
           }
         ],
 
-        [ 3, "intro" ]
+        [ 3, "intro" ],
+
+        [ 2, 
+          {
+            "name": "Wild Oochamon",
+            "ooch_active_slot": 0,
+            "trainer_type": 1,
+            "money": 0,
+            "ooch_party": [],
+            "trainer_battle_sprite": ""
+          }
+        ]
     ]
 }

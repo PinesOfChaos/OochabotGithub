@@ -44,11 +44,10 @@ const Flags = {
 
 const EventMode = {
     Dialogue: 0,
-    BattleTrainer: 1,
-    BattleWild: 2,
-    Flags: 3,
-    OochamonPick: 4,
-    BeginGame: 5,
+    Battle: 1,
+    Flags: 2,
+    OochamonPick: 3,
+    Transition: 4,
 }
 
 const DialogueType = {
