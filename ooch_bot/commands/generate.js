@@ -244,81 +244,77 @@ module.exports = {
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Ability Data
         //             ID,  NAME,               Description
-        create_ability(0,  'Miniscule',         'So small that it reduces the chance to be hit by 10%.');
-        create_ability(1,  'Icky',              'Boosts the power of OOZE & FUNGAL type attacks by 20%');
-        create_ability(2,  'Burdened',          'A large growth reduces SPD by 10% but raises DEF by 15%'); 
-        create_ability(3,  'Broodmother',       'Gains 5% ATK for each Oochamon with the same type in the party.'); 
-        create_ability(4,  'Tough',             'A durable body grants a 10% increase to DEF.'); 
+        create_ability(0,  'Miniscule',         'Becomes super small and increases evasion against attacks by 1 stage.');
+        create_ability(1,  'Icky',              'Boosts the power of OOZE & FUNGAL type attacks by 20%.');
+        create_ability(2,  'Burdened',          'A large growth reduces SPD by 1 stage but raises DEF by 1 stage');
+        create_ability(3,  'Broodmother',       'Gains 1 stage of ATK for each Oochamon with the same type in the party.'); 
+        create_ability(4,  'Tough',             'A durable body grants a 1 stage increase to DEF.');  
         create_ability(5,  'Shadow',            'Grants a 25% chance to VANISH after being attacked.'); 
-        create_ability(6,  'Withering',         'Loss of the body reduces HP by 5% each turn, but raises SPD by 20%'); 
-        create_ability(7,  'Darkbright',        'Attacks that afflict BURN also BLIND and vice-versa.'); 
-        create_ability(8,  'Gentle',            'A kind heart reduces both your ATK and the enemy ATK by 10%'); 
-        create_ability(9,  'Warm',              'Increases the damage of FLAME attacks by 10%.'); 
+        create_ability(6,  'Withering',         'Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages.');  
+        create_ability(7,  'Darkbright',        'Attacks that afflict BURN also BLIND and vice-versa.');  
+        create_ability(8,  'Gentle',            'A kind heart reduces both your ATK and the enemy ATK by 1 stage.');  
+        create_ability(9,  'Warm',              'Increases the damage of FLAME attacks by 10%.');  
         create_ability(10, 'Radiant',           'Dangerous energy causes attacks that BURN also INFECT.'); 
-        create_ability(11, 'Conflicted',        'Multiple minds increase ALL stats by 5%.'); 
-        create_ability(12, 'Burrower',          'Increases the damage of STONE attacks by 10%'); 
+        create_ability(11, 'Conflicted',        'Multiple minds increase ALL stats by 1 stage.'); 
+        create_ability(12, 'Burrower',          'Increases the damage of STONE attacks by 10%.'); 
         create_ability(13, 'Reactive',          'When hit by an attack, reflects 5% of the attacker\'s HP as damage.'); 
-        create_ability(14, 'Inertia',           'Increases SPD by 5% each turn.'); 
-        create_ability(15, 'Dense',             'Increases ATK by 10% but reduces SPD by 10%'); 
-        create_ability(16, 'Moist',             'Reduces FLAME damage by 50%.'); 
-        create_ability(17, 'Alert',             'Increases ATK by 10% when an Oochamon switches in.'); 
-        create_ability(18, 'Fleeting',          'Increases SPD and ATK by 50% but also loses 50% of HP each turn.'); 
-        create_ability(19, 'Efficient',         'Increases ATK by 5% each turn.'); 
-        create_ability(20, 'Boisterous',        'Shatters eardrums when it enters the field dealing 5% of the enemy\'s HP'); 
+        create_ability(14, 'Inertia',           'Increases SPD by 1 stage each turn.'); 
+        create_ability(15, 'Dense',             'Increases ATK by 1 stage but reduces SPD by 1 stage.');  
+        create_ability(16, 'Moist',             'Halves all incoming FLAME damage.'); 
+        create_ability(17, 'Alert',             'Increases ATK by 1 stage when an Oochamon switches in.');  
+        create_ability(18, 'Fleeting',          'Increases SPD and ATK by 4 stages but also loses half of current HP each turn.'); 
+        create_ability(19, 'Efficient',         'Increases ATK by 1 stage each turn.'); 
+        create_ability(20, 'Boisterous',        'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP');
         create_ability(21, 'Haunted',           'Applies the DOOMED status to an enemy when the holder of the ability dies.'); 
         create_ability(22, 'Leech',             'Restores HP equal to 10% of damage done to the enemy.'); 
-        create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.'); 
-        create_ability(24, 'Uncontrolled',      'Increases ATK by 50% but randomly chooses an attack each turn'); 
-        create_ability(25, 'Apprentice',        'Increases ATK by 15% if any other party members share a move with it.'); 
-        create_ability(26, 'Focused',           'Increases damage by 10% if unaffected by status effects.'); 
-        create_ability(27, 'Ravenous',          'Whenever defeating an enemy, restore 20% HP.'); 
-        create_ability(28, 'Immense',           'Increases DEF by 20% but also makes opponent\'s moves always hit.'); 
-        create_ability(29, 'Armored',           'Reduces STONE damage by 20%.'); 
+        create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.');  
+        create_ability(24, 'Uncontrolled',      'Increases ATK by 4 stages but randomly chooses an attack each turn');  
+        create_ability(25, 'Apprentice',        'Increases ATK by 2 stages if any other party members share a move with it.');  
+        create_ability(26, 'Focused',           'Increases damage of attacks by 10% if unaffected by status effects.'); 
+        create_ability(27, 'Ravenous',          'Restores 20% of max HP upon defeating an enemy.'); 
+        create_ability(28, 'Immense',           'Increases DEF by 2 stages but also makes opponent\'s moves always hit.');  
+        create_ability(29, 'Armored',           'Reduces STONE damage by 20%.');
         create_ability(30, 'Scorching',         'Attacks that can BURN always BURN.'); 
         create_ability(31, 'Tangled',           'Causes enemies that hit it to be SNARED.'); 
         create_ability(32, 'Mundane',           'Cannot be affected by Status Effects.'); 
         create_ability(33, 'Rogue',             'DOUBLES the damage dealt to full HP enemies.'); 
-        create_ability(34, 'Crystallize',       'Ooze, Flame, and Stone attacks deal 30% more damage.'); 
-        create_ability(35, 'Lacerating',        'The enemy loses 5% of their HP after you attack.'); 
-        create_ability(36, 'Gravity',           'Attacks deal 1% more damage per number of turns in this battle.'); 
+        create_ability(34, 'Crystallize',       'Boosts the power of Ooze, Flame, and Stone attacks by 30%.'); 
+        create_ability(35, 'Lacerating',        'All attacks do an extra attack to an enemy, dealing 5% of their max HP.'); 
+        create_ability(36, 'Gravity',           'Attacks deal 1% more damage per number of turns in this battle.');
         create_ability(37, 'Sporespray',        'INFECTS the enemy when defeated.'); 
-        create_ability(38, 'Frostbite',         'Attacks reduce the targets SPD by 5%.'); 
+        create_ability(38, 'Frostbite',         'Attacks that strike an enemy reduce their SPD by 1 stage.'); 
         create_ability(39, 'Bipolar',           'Use the DEF stat when dealing damage.'); 
         create_ability(40, 'Hexiply',           'Attacks deal 6% more damage per sixth of HP remaining.'); 
         create_ability(41, 'Nullify',           'Change an opponents ability to Null while out on the field.'); 
         create_ability(42, 'Duplicant',         'Copy the opponent\'s ability.'); 
         create_ability(43, 'Null',              'Does nothing.');
-        create_ability(44, 'invalid_entry',     'FALSE'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
-        create_ability(45, 'Immobile',          'Always goes second.');
-        create_ability(46, 'Strings Attached',  '20% chance to apply a random status effect when attacking.'); // Statuses: Burn, Infect, Blind, Snare
+        create_ability(44, 'invalid_entry',     'I̵͑n̵̤̚c̶̥̈r̴͛͜e̵̛̖a̴̺͗s̵̼̑e̶s̵̺̈ a̶͙͗l̶̖͆l̸̠͐ ̸̪̐b̴͎̋a̸̖̅s̶͖̚ë̴̫́ ̵̹̔ş̶̽t̶̟̎a̴̪̾t̴̥̂ş̵̈́ ̵̱̉ū̵͜p̸̗̆ô̶̰ņ̴̓ ̵̳͋d̵̹̑e̵͎̕a̷͔͐t̵͉͋h̷̰̋.̴̫͘ ̶͈́C̸͙̈a̶̰̔ṅ̵̯n̵̬̾o̶̒ͅt̷̪̎ ̵̆͜b̴͎̄ȩ̸͗ ̵̜͛c̴̰̈́o̴̢͒p̸̣͛i̷̗̍ê̸͈d̶̹͌.̵͍̈'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
+        create_ability(45, 'Immobile',          'Always go last when attacking.');
+        create_ability(46, 'Strings Attached',  '20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking.');
         create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.');
         create_ability(48, 'Spectral',          'Changes type to Magic every other turn.');
-        create_ability(49, 'Height Advantage',  'Increases chance to Crit by 10%.');
+        create_ability(49, 'Height Advantage',  'Increases chance to do a critical hit by 10%.');
         create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.'); 
         create_ability(51, 'Radioactive',       'Changes type to Flame every other turn.');
-        create_ability(52, 'Energized',         'Increases ATK and SPD by 10% on kill.');
-        create_ability(53, 'Patient',           'Increases DEF by 5% each turn.');
-        create_ability(54, 'Easy Go',           'Heals the rest of your party by 10% when defeated.');
-        create_ability(55, 'Bomber',            'Halves the enemy HP on death.') 
-        
-        
-        // TODO: Add these
-        create_ability(56, 'Flammable',         'Gains ATK when hit with a FLAME type move.') 
-        create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.') 
-        create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.') 
-        create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.') 
-        create_ability(60, 'Increment',         'Randomly boosts a stat at the end of each turn.')
-        create_ability(61, 'Parry',             'Reduces damage taken. When hit by an attack, this ability becomes Riposte.')
-        create_ability(62, 'Riposte',           'Increases damage dealt. After attacking or the turn ends, this ability becomes Parry.')
-        
-        create_ability(63, 'Swaying',           'Increases DEF but lowers accuracy.')
-        create_ability(64, 'Thrashing',         'Increases ATK but lowers evasion.')
-        create_ability(65, 'Union',             'Boosts ATK and DEF.')
+        create_ability(52, 'Energized',         'Increases ATK and SPD by 1 stage on kill.'); 
+        create_ability(53, 'Patient',           'Increases DEF by 1 stage each turn.'); 
+        create_ability(54, 'Easy Go',           'Heals the rest of your party by 20% of their max HP when defeated.');
+        create_ability(55, 'Bomber',            'Halves the enemy HP on death.');
+        create_ability(56, 'Flammable',         'Gains 1 stage of ATK when hit with a FLAME type move.');
+        create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.');
+        create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.');
+        create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.'); 
+        create_ability(60, 'Increment',         'Randomly boosts a stat by 1 stage at the end of each turn.');
+        create_ability(61, 'Parry',             'Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte.');
+        create_ability(62, 'Riposte',           'Increases damage dealt by 20%. After attacking or the turn ends, this ability becomes Parry.');
+        create_ability(63, 'Swaying',           'Increases DEF by 1 stage but lowers accuracy by 1 stage.');
+        create_ability(64, 'Thrashing',         'Increases ATK by 1 stage but lowers evasion by 1 stage.');
+        create_ability(65, 'Union',             'Increases ATK and DEF by 1 stage.');
 
         //#endregion
 
+        // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Status Data
-
         //            ID,  NAME,        EMOTE                                       DESCRIPTION
         create_status(0,   'Burned',    '<:status_burned:1023031032083128441>',     'Burns the Oochamon at the end of each turn, dealing damage.');
         create_status(1,   'Infected',  '<:status_infected:1023031033744076930>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   

@@ -556,7 +556,7 @@ module.exports = {
                 dexEmbed = dexEmbed[0];
 
                 oochData = db.monster_data.get(newEvoOoch.id);
-
+                
                 if (oochData.evo_id == -1 || oochData.evo_lvl == -1 || newEvoOoch.level < oochData.evo_lvl) {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
@@ -566,6 +566,9 @@ module.exports = {
                 // Finalize putting the ooch into the database and in our menu
                 selected_ooch = newEvoOoch;
                 db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
+
+                db.profile.math(user_id, '+', 1, `oochadex[${newEvoOoch.id}].seen`);
+                db.profile.math(user_id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
 
                 let followUpMsg = await interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
                 await wait(2500);

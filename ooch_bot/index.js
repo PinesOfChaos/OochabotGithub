@@ -112,43 +112,17 @@ client.on('interactionCreate', async interaction => {
         let item_ids = db.item_data.array();
         let ability_ids = db.ability_data.array();
         let move_ids = db.move_data.array();
+        let status_ids = db.status_data.array();
         let ooch_names;
 
-        function ooch_filter(v) {
-            let msg = interaction.options.getString('oochamon').toLowerCase();
+        function filter(v, arg) {
+            let msg = interaction.options.getString(arg).toLowerCase();
             let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
             return msg == search_segment;
         }
 
-        function item_filter(v) {
-            let msg = interaction.options.getString('item').toLowerCase();
-            let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
-            return msg == search_segment;
-        }
-
-        function ability_filter(v) {
-            let msg = interaction.options.getString('ability').toLowerCase();
-            let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
-            return msg == search_segment;
-        }
-
-        function move_filter(v) {
-            let msg = interaction.options.getString('move').toLowerCase();
-            let search_segment = v.split(' ')[1].slice(0, msg.length).toLowerCase();
-            return msg == search_segment;
-        }
-
-        function id_filter(id) {
-            let msg_id = interaction.options.getString('oochamon');
-            if (msg_id == null || msg_id == undefined) {
-                msg_id = interaction.options.getString('item');
-                if (msg_id == null || msg_id == undefined) {
-                    msg_id = interaction.options.getString('ability');
-                    if (msg_id == null || msg_id == undefined) {
-                        msg_id = interaction.options.getString('move');
-                    }
-                }
-            }
+        function id_filter(id, arg) {
+            let msg_id = interaction.options.getString(arg);
             let search_segment = id.split(':')[0];
             return search_segment == msg_id;
         }
@@ -167,7 +141,7 @@ client.on('interactionCreate', async interaction => {
                 // Search filters
                 ooch_names = ooch_names.filter(v => !v.includes('I'));
                 ooch_names = ooch_names.filter(v => !v.includes('???'));
-                ooch_names = ooch_names.filter(ooch_filter);
+                ooch_names = ooch_names.filter(v => filter(v, 'oochamon'));
                 ooch_names = ooch_names.slice(0, 25);
                 ooch_names = ooch_names.map(v => v = { name: v, value: v.split(' ')[1].toLowerCase() });
                 interaction.respond(ooch_names);
@@ -179,9 +153,9 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.options.getString('oochamon') != '') {
                     if (!isNaN(interaction.options.getString('oochamon'))) {
-                        ooch_names = ooch_names.filter(id_filter);
+                        ooch_names = ooch_names.filter(v => id_filter(v, 'oochamon'));
                     } else {
-                        ooch_names = ooch_names.filter(ooch_filter);
+                        ooch_names = ooch_names.filter(v => filter(v, 'oochamon'));
                     }
                 } 
                 ooch_names = ooch_names.slice(0, 25);
@@ -195,9 +169,9 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.options.getString('item') != '') {
                     if (!isNaN(interaction.options.getString('item'))) {
-                        item_names = item_names.filter(id_filter);
+                        item_names = item_names.filter(v => id_filter(v, 'item'));
                     } else {
-                        item_names = item_names.filter(item_filter);
+                        item_names = item_names.filter(v => filter(v, 'item'));
                     }
                 } 
                 item_names = item_names.slice(0, 25);
@@ -212,29 +186,44 @@ client.on('interactionCreate', async interaction => {
     
                     if (interaction.options.getString('move') != '') {
                         if (!isNaN(interaction.options.getString('move'))) {
-                            move_names = move_names.filter(id_filter);
+                            move_names = move_names.filter(v => id_filter(v, 'move'));
                         } else {
-                            move_names = move_names.filter(move_filter);
+                            move_names = move_names.filter(v => filter(v, 'move'));
                         }
                     } 
                     move_names = move_names.slice(0, 25);
                     move_names = move_names.map(v => v = { name: v, value: v.split(':')[0] });
                     interaction.respond(move_names);
-                } else {
+                } else if (interaction.options.getSubcommand() == 'ability') {
                     ability_names = ability_ids.map(v => {
                         return `${v.id}: ${_.startCase(v.name)}`
                     })
     
                     if (interaction.options.getString('ability') != '') {
                         if (!isNaN(interaction.options.getString('ability'))) {
-                            ability_names = ability_names.filter(id_filter);
+                            ability_names = ability_names.filter(v => id_filter(v, 'ability'));
                         } else {
-                            ability_names = ability_names.filter(ability_filter);
+                            ability_names = ability_names.filter(v => filter(v, 'ability'));
                         }
                     } 
                     ability_names = ability_names.slice(0, 25);
                     ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[0] });
                     interaction.respond(ability_names);
+                } else {
+                    status_names = status_ids.map(v => {
+                        return `${v.id}: ${_.startCase(v.name)}`
+                    })
+    
+                    if (interaction.options.getString('status') != '') {
+                        if (!isNaN(interaction.options.getString('status'))) {
+                            status_names = status_names.filter(v => id_filter(v, 'status'));
+                        } else {
+                            status_names = status_names.filter(v => filter(v, 'status'));
+                        }
+                    } 
+                    status_names = status_names.slice(0, 25);
+                    status_names = status_names.map(v => v = { name: v, value: v.split(':')[0] });
+                    interaction.respond(status_names);
                 }
             break;
         }

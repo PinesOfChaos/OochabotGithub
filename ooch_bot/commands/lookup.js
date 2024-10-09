@@ -135,7 +135,7 @@ module.exports = {
                     .setTitle('Controls')
                     .setDescription('To move, type `w` `a` `s` or `d` in the chat (or click the buttons, if using the discord button setting), and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n' +
                         'If you want to chain together movement actions, you can do movement actions split by a comma (example: `w4,d4,s2`) to do multiple movement directions at once!\n' +  
-                        '`/lookup` lets you look up what a move does or ability does, and the type chart\n' + 
+                        '`/lookup` lets you look up what a move, ability, or status effect does, as well as the type chart\n' + 
                         '`/teleport` lets you teleport to the hub or your last used teleporter\n' + 
                         '`/menu` pulls up the menu\n' + 
                         '`/play` to play the game\n' +
@@ -147,7 +147,15 @@ module.exports = {
                 })
             break;
             case 'status':
-                // TODO: Add lookup status
+                let info_status = db.status_data.get(selected_id);
+                let embed_status = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(`${info_status.name} ${info_status.emote}`)
+                    .setDescription(info_status.description);
+                return interaction.reply({
+                    embeds: [ embed_status ],
+                    ephemeral: true
+                })
             break;
         }
 
