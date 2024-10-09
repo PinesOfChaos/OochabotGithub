@@ -7,9 +7,15 @@ var dragging = false
 var savepoint_x = 0;
 var savepoint_y = 0;
 
+var savepoint_data = {
+	"is_default" : false,
+	"x" : 0,
+	"y" : 0,
+}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	o_savepoint_initial.button_pressed = savepoint_initial
+	o_savepoint_initial.button_pressed = savepoint_data.is_default
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -21,8 +27,8 @@ func _process(delta):
 			var mx = floor((get_local_mouse_position().x + Global.CamX)/ Global.TileSize) * Global.TileSize
 			var my = floor((get_local_mouse_position().y + Global.CamY)/ Global.TileSize) * Global.TileSize
 			
-			savepoint_x = floor(mx/Global.TileSize)
-			savepoint_y = floor(my/Global.TileSize)
+			savepoint_data.x = floor(mx/Global.TileSize)
+			savepoint_data.y = floor(my/Global.TileSize)
 			
 			o_savepoint_object.set_position(Vector2(mx - Global.CamX, my - Global.CamY))
 			if Input.is_action_just_released("mouse_left"):

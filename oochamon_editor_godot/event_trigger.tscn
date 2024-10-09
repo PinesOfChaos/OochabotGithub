@@ -28,11 +28,13 @@ placeholder_text = "Event Name"
 
 [node name="event_required" type="LineEdit" parent="event_vbox"]
 layout_mode = 2
-placeholder_text = "Event Required"
+tooltip_text = "If a flag is required this event will ONLY fire if the player has that flag."
+placeholder_text = "Flag Required"
 
 [node name="event_kill" type="LineEdit" parent="event_vbox"]
 layout_mode = 2
-placeholder_text = "Event Kill"
+tooltip_text = "If a flag is required this event will NEVER fire if the player has that flag."
+placeholder_text = "Flag Kill"
 
 [connection signal="text_changed" from="event_vbox/event_name" to="." method="_on_event_name_text_changed"]
 [connection signal="text_submitted" from="event_vbox/event_name" to="." method="_on_event_name_text_submitted"]

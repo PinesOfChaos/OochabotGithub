@@ -167,28 +167,28 @@ func step():
 		var cx
 		var cy
 		for child in menu_npcs.get_children():
-			cx = child.npc_x * Global.TileSize - Global.CamX
-			cy = child.npc_y * Global.TileSize - Global.CamY
+			cx = child.npc_data.x * Global.TileSize - Global.CamX
+			cy = child.npc_data.y * Global.TileSize - Global.CamY
 			child.o_npc_object.set_position(Vector2(cx, cy))
 		
 		for child in menu_shops.get_children():
-			cx = child.shop_x * Global.TileSize - Global.CamX
-			cy = child.shop_y * Global.TileSize - Global.CamY
+			cx = child.shop_data.x * Global.TileSize - Global.CamX
+			cy = child.shop_data.y * Global.TileSize - Global.CamY
 			child.o_shop_object.set_position(Vector2(cx, cy))
 			
 		for child in menu_transitions.get_children():
-			cx = child.transition_x * Global.TileSize - Global.CamX
-			cy = child.transition_y * Global.TileSize - Global.CamY
+			cx = child.transition_data.x * Global.TileSize - Global.CamX
+			cy = child.transition_data.y * Global.TileSize - Global.CamY
 			child.o_transition_object.set_position(Vector2(cx, cy))
 			
 		for child in menu_save_points.get_children():
-			cx = child.savepoint_x * Global.TileSize - Global.CamX
-			cy = child.savepoint_y * Global.TileSize - Global.CamY
+			cx = child.savepoint_data.x * Global.TileSize - Global.CamX
+			cy = child.savepoint_data.y * Global.TileSize - Global.CamY
 			child.o_savepoint_object.set_position(Vector2(cx, cy))
 			
 		for child in menu_spawnzones.get_children():
 			var bbox = child.bounding_box
-			var x1 =bbox.pos_x * Global.TileSize
+			var x1 = bbox.pos_x * Global.TileSize
 			var y1 = bbox.pos_y * Global.TileSize
 			bbox.reset_box(
 				x1, 
@@ -354,8 +354,8 @@ func set_node_owners(node):
 			set_node_owners(n)
 
 # Save map data
+#region SAVE
 func _on_file_dialog_save_file_selected(path):
-	var save_file = FileAccess.open(path.replace(".json", ".txt"), FileAccess.WRITE)
 	var save_json = FileAccess.open(path, FileAccess.WRITE)
 	
 	# set the owner of every single node to the menu
@@ -369,8 +369,6 @@ func _on_file_dialog_save_file_selected(path):
 		file_last_path = path
 		
 		#Save the .TXT file to be loaded into Oochabot
-		var save_str = ""
-		var temp_str = ""
 		var save_data = {
 			"map_info" : {
 				"map_name" : map_name,
@@ -385,13 +383,7 @@ func _on_file_dialog_save_file_selected(path):
 			"map_transitions" : [],
 		}
 		
-		#General Map Info
-		save_str += "#map_info" + "\n"
-		save_str += map_name + "\n"
-		save_str += map_battleback + "\n"
-		
 		#Map Tiles
-		save_str += "#tiles" + "\n"
 		for i in map_width:
 			print(i)
 			save_data.map_tiles.push_back([])
@@ -402,246 +394,84 @@ func _on_file_dialog_save_file_selected(path):
 				var tile_name = tile_info.tile_index
 				save_data.map_tiles[i].push_back(tile_name)
 				#save_data.map_tiles[i][j].push_back(tile_name)
-				
-				save_str += tile_name + "|"
-			save_str += "\n"
 		
 		#NPCs
-		save_str += "#npcs" + "\n"
 		for npc in menu_npcs.get_children():
-			var npc_data = {
-				"npc_name" : npc.npc_name,
-				"npc_x" : npc.npc_x,
-				"npc_y" : npc.npc_y,
-				
-				"npc_sprite_name" : npc.npc_sprite_name,
-				"npc_short_name" : "c_" + npc.npc_sprite_name.right(3), #not used here, this is used in discord
-				"npc_sprite" : npc.npc_sprite,
-				"npc_sprite_combat" : npc.npc_sprite_combat,
-				"npc_sprite_dialog" : npc.npc_sprite_dialog,
-				
-				"npc_aggro_range" : npc.npc_aggro_range,
-				"npc_is_wild" : npc.npc_is_wild,
-				
-				"npc_coin" : npc.npc_coin,
-				"npc_item_id" : npc.npc_item_id,
-				"npc_item_number" : npc.npc_item_number,
-				
-				"npc_flag_required" : npc.npc_flag_required,
-				"npc_flag_given" : npc.npc_flag_given,
-				"npc_flag_kill" : npc.npc_flag_kill,
-				"npc_remove_on_finish" : 1 if npc.npc_remove_on_finish else 0,
-				
-				"npc_dialog_pre" : npc.npc_dialog_pre,
-				"npc_dialog_post" : npc.npc_dialog_post,
-				
-				"npc_slots" : []
-			}
-			
+			var npc_data = npc.npc_data
+			npc_data.team = []
 			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
 			for slot in slots:
-				if slot.slot_enabled:
-					npc_data.npc_slots.push_back({
-						"slot_species" : slot.slot_species,
-						"slot_nickname" : slot.slot_nickname,
-						"slot_ability" : slot.slot_ability,
-						"slot_level" : slot.slot_level,
-						
-						"slot_move1" : slot.slot_move1,
-						"slot_move2" : slot.slot_move2,
-						"slot_move3" : slot.slot_move3,
-						"slot_move4" : slot.slot_move4,
-						
-						"slot_hp" : slot.slot_hp,
-						"slot_atk" : slot.slot_atk,
-						"slot_def" : slot.slot_def,
-						"slot_spd" : slot.slot_spd
-					})
-					
+				if slot.slot_data.slot_enabled:
+					npc_data.team.push_back(slot.slot_data)
 			save_data.map_npcs.push_back(npc_data)
 			
-			temp_str = ""
-			temp_str += npc.npc_name + "|"
-			temp_str += str(npc.npc_x) + "|"
-			temp_str += str(npc.npc_y) + "|"
-			
-			temp_str += npc.npc_sprite_name + "|" 
-			temp_str += "c_" + npc.npc_sprite_name.right(3) + "|" #not used here, this is used in discord
-			temp_str += npc.npc_sprite_combat + "|"
-			temp_str += npc.npc_sprite_dialog + "|"
-			
-			temp_str += str(npc.npc_coin) + "|"
-			temp_str += str(npc.npc_item_id) + "|"
-			temp_str += str(npc.npc_item_number) + "|"
-			
-			temp_str += npc.npc_flag_required + "|"
-			temp_str += npc.npc_flag_given + "|"
-			temp_str += npc.npc_flag_kill + "|"
-			temp_str += str(1 if npc.npc_remove_on_finish else 0) + "|"
-			
-			temp_str += npc.npc_dialog_pre.replace("\n", "`") + "|"
-			temp_str += npc.npc_dialog_post.replace("\n", "`") + "|"
-			
-			for slot in slots:
-				if slot.slot_enabled:
-					temp_str += str(slot.slot_species) + "`"
-					temp_str += slot.slot_nickname + "`"
-					temp_str += str(slot.slot_ability) + "`"
-					temp_str += str(slot.slot_level) + "`"
-					
-					temp_str += str(slot.slot_move1) + "`"
-					temp_str += str(slot.slot_move2) + "`"
-					temp_str += str(slot.slot_move3) + "`"
-					temp_str += str(slot.slot_move4) + "`"
-					
-					temp_str += str(slot.slot_hp) + "`"
-					temp_str += str(slot.slot_atk) + "`"
-					temp_str += str(slot.slot_def) + "`"
-					temp_str += str(slot.slot_spd) + "`"
-				temp_str += "|"
-			save_str += temp_str + "\n"
-			
-		
 		#Spawn Zones
-		save_str += "#spawn_zones" + "\n"
 		var bbox
 		for spawn in menu_spawnzones.get_children():	
 			bbox = spawn.bounding_box
 			
 			var spawn_data = {
-				"spawn_pos_x" : bbox.pos_x,
-				"spawn_pos_y" : bbox.pos_y,
-				"spawn_scale_x" : bbox.scale_x,
-				"spawn_scale_y" : bbox.scale_y,
+				"x" : bbox.pos_x,
+				"y" : bbox.pos_y,
+				"width" : bbox.scale_x,
+				"height" : bbox.scale_y,
 				"spawn_slots" : []
 			}
 			
 			for slot in spawn.spawn_slots.get_children():
 				if slot.species != -1:
-					spawn_data.spawn_slots.push_back({
-						"slot_species" : slot.species,
-						"slot_lv_min" : slot.lv_min,
-						"slot_lv_max" : slot.lv_max
-					})
-					
+					spawn_data.spawn_slots.push_back(slot.spawn_slot_data)
 			save_data.map_spawn_zones.push_back(spawn_data)
 			
-			
-			save_str += str(bbox.pos_x) + "|"
-			save_str += str(bbox.pos_y) + "|"
-			save_str += str(bbox.scale_x) + "|"
-			save_str += str(bbox.scale_y) + "|"
-			for slot in spawn.spawn_slots.get_children():
-				if slot.species != -1:
-					save_str += str(slot.species) + "`"
-					save_str += str(slot.lv_min) + "`"
-					save_str += str(slot.lv_max) + "`"
-			save_str += "|"
-			save_str += "\n"
 					
 		#Save Points
-		save_str += "#savepoints" + "\n"
 		for savepoint in menu_save_points.get_children():
-			var savepoint_data = {
-				"savepoint_initial" : savepoint.savepoint_initial,
-				"savepoint_x" : savepoint.savepoint_x,
-				"savepoint_y" : savepoint.savepoint_y
-			}
-			save_data.map_savepoints.push_back(savepoint_data)
+			save_data.map_savepoints.push_back(savepoint.savepoint_data)
 			
-			
-			save_str += str(1 if savepoint.savepoint_initial else 0) + "|"
-			save_str += str(savepoint.savepoint_x) + "|"
-			save_str += str(savepoint.savepoint_y) + "|"
-			save_str += "\n"
 			
 		#Shops
-		save_str += "#shops" + "\n"
 		for shop in menu_shops.get_children():
-			var shop_data = {
-				"shop_x" : shop.shop_x,
-				"shop_y" : shop.shop_y,
-				"shop_type" : shop.shop_type,
-				"shop_specials" : [],
-				"shop_image" : shop.shop_image,
-				"shop_greeting" : shop.shop_greeting
-				
-			}
-			
-			var shop_specials = ""
+			var shop_data = shop.shop_data.duplicate()
+			shop_data.special_items = []
 			for child in shop.o_shop_special_items.get_children():
-				shop_specials += str(child.item_id) + "`" + str(child.item_price) + "`"
-				shop_data.shop_specials.push_back({
-					"special_id" : child.item_id,
-					"special_price" : child.item_price
+				shop_data.special_items.push_back({
+					"id" : child.item_id,
+					"price" : child.item_price
 				})
 			
 			save_data.map_shops.push_back(shop_data)
 			
-			save_str += str(shop.shop_x) + "|"
-			save_str += str(shop.shop_y) + "|"
-			save_str += str(shop.shop_type) + "|"
-			save_str += shop_specials + "|"
-			save_str += shop.shop_image + "|"
-			save_str += shop.shop_greeting + "|"
-			save_str += "\n"
-			
 		#Events
-		save_str += "#events" + "\n"
 		for ev in menu_events.get_children():
-			
+			var ev_data = ev.event_info
 			bbox = ev.bounding_box
 			
-			var ev_data = {
-				"ev_pos_x" : bbox.pos_x,
-				"ev_pos_y" : bbox.pos_y,
-				"ev_scale_x" : bbox.scale_x,
-				"ev_scale_y" : bbox.scale_y,
-				"ev_name" : ev.event_name,
-				"ev_required" : ev.event_required,
-				"ev_kill" : ev.event_kill
-			}
+			ev_data.x = bbox.pos_x
+			ev_data.y = bbox.pos_y
+			ev_data.width = bbox.scale_x
+			ev_data.height = bbox.scale_y
+				
 			save_data.map_events.push_back(ev_data)
 			
 			
-			save_str += str(bbox.pos_x) + "|"
-			save_str += str(bbox.pos_y) + "|"
-			save_str += str(bbox.scale_x + 1) + "|"
-			save_str += str(bbox.scale_y + 1) + "|"
-			save_str += ev.event_name + "|"
-			save_str += ev.event_required + "|"
-			save_str += ev.event_kill + "|"
-			save_str += "\n"
-			
 		#Transitions
-		save_str += "#transitions" + "\n"
 		for transition in menu_transitions.get_children():
-			var transition_data = {
-				"transition_x" : transition.transition_x,
-				"transition_y" : transition.transition_y,
-				
-				"transition_map_to" : transition.transition_map_to,
-				"transition_xto" : transition.transition_xto,
-				"transition_yto" : transition.transition_yto,
-			}
+			var transition_data = transition.transition_data 
+			
 			save_data.map_transitions.push_back(transition_data)
 			
-			save_str += str(transition.transition_x) + "|"
-			save_str += str(transition.transition_y) + "|"
-			save_str += transition.transition_map_to + "|"
-			save_str += str(transition.transition_xto) + "|"
-			save_str += str(transition.transition_yto) + "|"
-			save_str += "\n"
 		
 		#Put the save string into the save file
-		save_file.store_string(save_str)
 		save_json.store_line(JSON.stringify(save_data,"\t"))
 		
 		print("FILE SAVED")
 	else:
 		print("FILE SAVE FAILED")
-	
+		
+#endregion 
+
 # Load map data
+#region LOAD
 func _on_file_dialog_load_file_selected(path):
 	
 	if(FileAccess.file_exists(path)):
@@ -683,31 +513,8 @@ func _on_file_dialog_load_file_selected(path):
 			var _load = load("res://npc.tscn")
 			var _obj = _load.instantiate()
 			
-			_obj.npc_name = _info.npc_name
-			_obj.npc_x = _info.npc_x
-			_obj.npc_y = _info.npc_y
-			
-			_obj.npc_sprite_name = _info.npc_sprite_name
-			_obj.npc_sprite = _info.npc_sprite
-			_obj.npc_sprite_combat = _info.npc_sprite_combat
-			_obj.npc_sprite_dialog = _info.npc_sprite_dialog
-			
-			_obj.npc_aggro_range = _info.npc_aggro_range
-			_obj.npc_is_wild = _info.npc_is_wild
-			
-			_obj.npc_coin = _info.npc_coin
-			_obj.npc_item_id = _info.npc_item_id
-			_obj.npc_item_number = _info.npc_item_number
-			
-			_obj.npc_flag_required = _info.npc_flag_required
-			_obj.npc_flag_given = _info.npc_flag_given
-			_obj.npc_flag_kill = _info.npc_flag_kill
-			_obj.npc_remove_on_finish = _info.npc_remove_on_finish
-			
-			_obj.npc_dialog_pre = _info.npc_dialog_pre
-			_obj.npc_dialog_post = _info.npc_dialog_post
-			
-			_obj.npc_slots_data = _info.npc_slots #"npc_slots" is used to track the list of slots in the npc
+			_obj.npc_data = _info
+			#_obj.npc_slots_data = _info.team #"npc_slots" is used to track the list of slots in the npc
 			
 			_npcs.add_child(_obj)
 			_obj.owner = _npcs
@@ -718,11 +525,7 @@ func _on_file_dialog_load_file_selected(path):
 			var _obj = _load.instantiate()
 
 			# add data to the object
-			_obj.bbox_x = _info.spawn_pos_x
-			_obj.bbox_y = _info.spawn_pos_y
-			_obj.bbox_w = _info.spawn_scale_x
-			_obj.bbox_h = _info.spawn_scale_y
-			_obj.spawn_list = _info.spawn_slots
+			_obj.spawn_data = _info
 			
 			#assign new object as a child of the relevant menu part
 			_spawnzones.add_child(_obj)
@@ -734,10 +537,7 @@ func _on_file_dialog_load_file_selected(path):
 			var _obj = _load.instantiate()
 
 			# add data to the object
-			_obj.savepoint_initial = _info.savepoint_initial
-			_obj.savepoint_x = _info.savepoint_x
-			_obj.savepoint_y = _info.savepoint_y
-	
+			_obj.savepoint_data = _info
 			
 			#assign new object as a child of the relevant menu part
 			_save_points.add_child(_obj)
@@ -749,12 +549,7 @@ func _on_file_dialog_load_file_selected(path):
 			var _obj = _load.instantiate()
 
 			# add data to the object
-			_obj.shop_x = _info.shop_x
-			_obj.shop_y = _info.shop_y
-			_obj.shop_type = _info.shop_type
-			_obj.shop_special_items = _info.shop_specials
-			_obj.shop_image = _info.shop_image
-			_obj.shop_greeting = _info.shop_greeting
+			_obj.shop_data = _info
 			
 			#assign new object as a child of the relevant menu part
 			_shops.add_child(_obj)
@@ -765,13 +560,7 @@ func _on_file_dialog_load_file_selected(path):
 			var _obj = _load.instantiate()
 		
 			# add data to the object
-			_obj.bbox_x = _info.ev_pos_x
-			_obj.bbox_y = _info.ev_pos_y
-			_obj.bbox_w = _info.ev_scale_x
-			_obj.bbox_h = _info.ev_scale_y
-			_obj.event_name = _info.ev_name
-			_obj.event_required = _info.ev_required
-			_obj.event_kill = _info.ev_kill
+			_obj.event_info = _info
 			
 			#assign new object as a child of the relevant menu part
 			_events.add_child(_obj)
@@ -782,11 +571,7 @@ func _on_file_dialog_load_file_selected(path):
 			var _obj = _load.instantiate()
 		
 			# add data to the object
-			_obj.transition_x = _info.transition_x
-			_obj.transition_y = _info.transition_y
-			_obj.transition_map_to = _info.transition_map_to
-			_obj.transition_xto = _info.transition_xto
-			_obj.transition_yto = _info.transition_yto
+			_obj.transition_data = _info
 			
 			#assign new object as a child of the relevant menu part
 			_transitions.add_child(_obj)
@@ -794,201 +579,10 @@ func _on_file_dialog_load_file_selected(path):
 		
 		_inst.do_screen_refresh = true
 		self.queue_free()
+		print("FILE LOADED")
 		return
 		
-	var f = FileAccess.open(path, FileAccess.READ)
-	if FileAccess.file_exists(path):
-		
-		set_working_dir(path.left(path.rfindn("/"))+"/")
-		var _main = get_parent()
-		var _menu = load("res://menu.tscn")
-		var _inst = _menu.instantiate()
-		_main.add_child(_inst)
-		_inst.owner = _main
-		_inst.file_known = true
-		_inst.file_last_path = path
-		
-		var _events = _inst.menu_events
-		var _spawnzones = _inst.menu_spawnzones
-		var _transitions = _inst.menu_transitions
-		var _save_points = _inst.menu_save_points
-		var _shops = _inst.menu_shops
-		var _npcs = _inst.menu_npcs
-		
-		var _line
-		var _index = 0
-		var _load_mode = ""
-		var _tiles = []
-		while(not f.eof_reached()):
-			_line = f.get_line()
-			#print(str(_index) + " " + _line)
-			match(_line):
-				"": #Skip Blank Lines
-					pass
-				"#map_info":
-					_load_mode = "map_info"
-					_inst.map_name = f.get_line()
-					_inst.map_battleback = f.get_line()
-					_inst.line_edit_map_name.text = map_name
-					print(_inst.map_name)
-					print(_inst.map_battleback)
-				"#tiles":
-					_load_mode = "tiles"
-				"#npcs":
-					_load_mode = "npcs"
-				"#spawn_zones":
-					_load_mode = "spawn_zones"
-				"#savepoints":
-					_load_mode = "savepoints"
-				"#shops":
-					_load_mode = "shops"
-				"#events":
-					_load_mode = "events"
-				"#transitions":
-					_load_mode = "transitions"
-				_: #we are on a data line, do different things based on the load mode
-					match(_load_mode):
-						"tiles":
-							var j = _tiles.size()
-							var _row = _line.split("|")
-							var _row2 = []
-							var _global_tile_pos
-							for i in _row.size():
-								for k in Global.DataTiles.size():
-									if Global.DataTiles[k].tile_index == _row[i]:
-										_global_tile_pos = k
-								_row2.push_back(_global_tile_pos)
-							_tiles.push_back(_row2)
-						"npcs":
-							var _load = load("res://npc.tscn")
-							var _obj = _load.instantiate()
-
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.npc_name = _data[0]
-							_obj.npc_x = int(_data[1])
-							_obj.npc_y = int(_data[2])
-							
-							_obj.npc_sprite_name = _data[3]
-							_obj.npc_sprite = int(_data[4])
-							_obj.npc_sprite_combat = _data[5]
-							_obj.npc_sprite_dialog = _data[6]
-							
-							_obj.npc_coin = int(_data[7])
-							_obj.npc_item_id = int(_data[8])
-							_obj.npc_item_number = int(_data[9])
-							
-							_obj.npc_flag_required = _data[10]
-							_obj.npc_flag_given = _data[11]
-							_obj.npc_flag_kill = _data[12]
-							_obj.npc_remove_on_finish = bool(int(_data[13]))
-							
-							var _dialog_pre = _data[14]
-							var _dialog_post = _data[15]
-							_obj.npc_dialog_pre = _dialog_pre.replace("`", "\n")
-							_obj.npc_dialog_post = _dialog_post.replace("`", "\n")
-							
-							_obj.npc_slots_data = [_data[16], _data[17], _data[18], _data[19]]
-							print(_data)
-							print( ["SLOTS", _data[16], _data[17], _data[18], _data[19]])
-							#assign new object as a child of the relevant menu part
-							_npcs.add_child(_obj)
-							_obj.owner = _npcs
-						"spawn_zones":
-							# create a new object
-							var _load = load("res://spawn_zone.tscn")
-							var _obj = _load.instantiate()
-
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.bbox_x = int(_data[0])
-							_obj.bbox_y = int(_data[1])
-							_obj.bbox_w = int(_data[2])
-							_obj.bbox_h = int(_data[3])
-							var _spawns = _data[4]
-							_obj.spawn_list = _spawns.split("`")
-							
-							#assign new object as a child of the relevant menu part
-							_spawnzones.add_child(_obj)
-							_obj.owner = _spawnzones
-						"savepoints":
-							# create a new object
-							var _load = load("res://savepoint.tscn")
-							var _obj = _load.instantiate()
-
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.savepoint_initial = bool(int(_data[0]))
-							_obj.savepoint_x = int(_data[1])
-							_obj.savepoint_y = int(_data[2])
-					
-							
-							#assign new object as a child of the relevant menu part
-							_save_points.add_child(_obj)
-							_obj.owner = _save_points
-						"shops":
-							# create a new object
-							var _load = load("res://shop.tscn")
-							var _obj = _load.instantiate()
-
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.shop_x = int(_data[0])
-							_obj.shop_y = int(_data[1])
-							_obj.shop_type = _data[2]
-							var _specials = _data[3]
-							_obj.shop_special_items = _specials.split("`")
-							_obj.shop_image = _data[4]
-							_obj.shop_greeting = _data[5]
-							
-							#assign new object as a child of the relevant menu part
-							_shops.add_child(_obj)
-							_obj.owner = _shops
-						"events":
-							# create a new object
-							var _load = load("res://event_trigger.tscn")
-							var _obj = _load.instantiate()
-						
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.bbox_x = int(_data[0])
-							_obj.bbox_y = int(_data[1])
-							_obj.bbox_w = int(_data[2]) - 1
-							_obj.bbox_h = int(_data[3]) - 1
-							_obj.event_name = _data[4]
-							_obj.event_required = _data[5]
-							_obj.event_kill = _data[6]
-							
-							#assign new object as a child of the relevant menu part
-							_events.add_child(_obj)
-							_obj.owner = _events
-						"transitions":
-							# create a new object
-							var _load = load("res://transition.tscn")
-							var _obj = _load.instantiate()
-						
-							# add data to the object
-							var _data = _line.split("|")
-							_obj.transition_x = int(_data[0])
-							_obj.transition_y = int(_data[1])
-							_obj.transition_map_to = _data[2]
-							_obj.transition_xto = int(_data[3])
-							_obj.transition_yto = int(_data[4])
-							
-							#assign new object as a child of the relevant menu part
-							_transitions.add_child(_obj)
-							_obj.owner = _transitions
-			
-			_index += 1
-			pass
-		
-		#assign map tiles
-		_inst.map_tiles = _tiles
-		_inst.do_screen_refresh = true
-		self.queue_free()
-		print("FILE LOADED")
-	else:
-		print("FILE LOAD FAILED")
+#endregion
 
 func _on_file_dialog_set_file_paths_dir_selected(dir):
 	var data_path = DirAccess.open(dir)
@@ -1313,6 +907,3 @@ func _on_timer_timeout():
 		_on_file_dialog_save_file_selected(file_last_path)
 	else:
 		print("Save the file to enable autosave")
-
-
-

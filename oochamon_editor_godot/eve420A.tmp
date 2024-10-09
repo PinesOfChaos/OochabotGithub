@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://6vepne5x06nk"]
+
+[ext_resource type="Script" path="res://event_type_dialog.gd" id="1_sbktn"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_top = 274.0
+offset_right = 800.0
+offset_bottom = 544.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sbktn")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Title
+"
+
+[node name="Title" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="."]
+clip_contents = false
+custom_minimum_size = Vector2(800, 200)
+layout_mode = 2
+placeholder_text = "Description/Dialog"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Money"
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer2"]
+layout_mode = 2
+max_value = 999999.0

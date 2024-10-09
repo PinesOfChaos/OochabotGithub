@@ -7,6 +7,14 @@ enum MapMode {
 	MAP_OBJ_EDIT
 }
 
+#used for events, see "types" in javascript files
+var EVENT_DIALOG = 		0
+var EVENT_BATTLE = 		1
+var EVENT_FLAG = 		2
+var EVENT_OOCHPICK = 	3
+var EVENT_TRANSITION = 	4
+
+
 var DataAbilities = []
 var DataItems = []
 var DataMoves = []

@@ -19,7 +19,7 @@ initial_position = 2
 size = Vector2i(500, 400)
 ok_button_text = "Save"
 access = 2
-filters = PackedStringArray("*.txt")
+filters = PackedStringArray("*.json")
 
 [node name="FileDialogLoad" type="FileDialog" parent="."]
 title = "Open a File"

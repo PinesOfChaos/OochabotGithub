@@ -27,6 +27,28 @@ extends Control
 @onready var o_aggro_range = $"npc_tab_container/Basic Info/addt_settings/aggro_range"
 @onready var o_wild_encounter = $"npc_tab_container/Basic Info/addt_settings/wild_encounter"
 
+var npc_data = {
+	"x" : 0,
+	"y" : 0,
+	"sprite" : 2,
+	"sprite_name" : "c00_000",
+	"sprite_combat" : "",
+	"sprite_dialog" : "",
+	"name" : "",
+	"pre_combat_dialogue" : "",
+	"post_combat_dialogue" : "",
+	"flag_required" : "",
+	"flag_kill" : "",
+	"flag_given" : "",
+	"remove_on_finish" : false,
+	"item_id" : -1,
+	"item_number" : 0,
+	"coin" : 0,
+	"team" : [],
+	"aggro_range" : 3,
+	"is_wild" : false
+}
+
 var npc_x = 0
 var npc_y = 0
 var npc_sprite = 2
@@ -66,63 +88,42 @@ func _ready():
 		tile_data = Global.DataNPCs[i]
 		tile_string = "res://npcs/" + tile_data.tile_index + ".png"
 		o_npc_sprite.add_icon_item(load(tile_string),tile_data.tile_index,i)
-		if npc_sprite_name == tile_data.tile_index:
+		if npc_data.sprite_name == tile_data.tile_index:
 			o_npc_sprite.select(i)
 			o_npc_object.texture_normal = load(tile_string)
 			
 	
 	print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
 	
+	
+	
+	o_npc_name.text = npc_data.name
+	
+	o_npc_sprite_combat.text = npc_data.sprite_combat
+	o_npc_sprite_dialog.text = npc_data.sprite_dialog
+	
+	o_coin_count.value = npc_data.coin
+	o_item_select.select(o_item_select.get_item_index(npc_data.item_id))
+	o_item_count.value = npc_data.item_number
+	
+	o_flag_required.text = npc_data.flag_required
+	o_flag_given.text = npc_data.flag_given
+	o_flag_kill.text = npc_data.flag_kill
+	o_check_remove_finish.button_pressed = npc_data.remove_on_finish
+	
+	o_text_pre_combat.text = npc_data.pre_combat_dialogue
+	o_text_post_combat.text = npc_data.post_combat_dialogue
+	
+	o_aggro_range.value = npc_data.aggro_range
+	o_wild_encounter.button_pressed = npc_data.is_wild
+	
 	npc_slots = [slot_1, slot_2, slot_3, slot_4]
-	
-	o_npc_name.text = npc_name
-	
-	o_npc_sprite_combat.text = npc_sprite_combat
-	o_npc_sprite_dialog.text = npc_sprite_dialog
-	
-	o_coin_count.value = npc_coin
-	o_item_select.select(o_item_select.get_item_index(npc_item_id))
-	o_item_count.value = npc_item_number
-	
-	o_flag_required.text = npc_flag_required
-	o_flag_given.text = npc_flag_given
-	o_flag_kill.text = npc_flag_kill
-	o_check_remove_finish.button_pressed = npc_remove_on_finish
-	
-	o_text_pre_combat.text = npc_dialog_pre
-	o_text_post_combat.text = npc_dialog_post
-	
-	o_aggro_range.value = npc_aggro_range
-	o_wild_encounter.button_pressed = npc_is_wild
-	
-	for i in npc_slots_data.size():
-		var _data = npc_slots_data[i]
+	for i in npc_data.team.size():
+		var _data = npc_data.team[i]
 		var _slot = npc_slots[i]
 		
-		_slot.slot_enabled = true
-		
-		_slot.slot_species = _data.slot_species
-		_slot.slot_nickname = _data.slot_nickname
-		_slot.slot_ability = _data.slot_ability
-		_slot.slot_level = _data.slot_level
-		
-		_slot.slot_move1 = _data.slot_move1
-		_slot.slot_move2 = _data.slot_move2
-		_slot.slot_move3 = _data.slot_move3
-		_slot.slot_move4 = _data.slot_move4
-		
-		_slot.slot_hp = _data.slot_hp
-		_slot.slot_atk = _data.slot_atk
-		_slot.slot_def = _data.slot_def
-		_slot.slot_spd = _data.slot_spd
-		
-		print("IVs Submitted")
-		print([
-			[_slot.slot_hp, _data.slot_hp],
-			[_slot.slot_atk, _data.slot_atk],
-			[_slot.slot_def, _data.slot_atk],
-			[_slot.slot_spd, _data.slot_atk],
-		])
+		_slot.slot_data = _data
+		_slot.slot_data.slot_enabled = true
 		
 		_slot.re_ready()
 	
@@ -135,8 +136,8 @@ func _process(delta):
 			var mx = floor((get_local_mouse_position().x + Global.CamX)/ Global.TileSize) * Global.TileSize
 			var my = floor((get_local_mouse_position().y + Global.CamY)/ Global.TileSize) * Global.TileSize
 			
-			npc_x = floor(mx/Global.TileSize)
-			npc_y = floor(my/Global.TileSize)
+			npc_data.x = floor(mx/Global.TileSize)
+			npc_data.y = floor(my/Global.TileSize)
 			
 			o_npc_object.set_position(Vector2(mx - Global.CamX, my - Global.CamY))
 			if Input.is_action_just_released("mouse_left"):
@@ -155,36 +156,36 @@ func _process(delta):
 
 
 func _on_flag_required_text_changed(new_text):
-	npc_flag_required = new_text
+	npc_data.flag_required = new_text
 
 func _on_flag_given_text_changed(new_text):
-	npc_flag_given = new_text
+	npc_data.flag_given = new_text
 
 func _on_flag_kill_text_changed(new_text):
-	npc_flag_kill = new_text
+	npc_data.flag_kill = new_text
 
 func _on_check_remove_finish_toggled(button_pressed):
-	npc_remove_on_finish = button_pressed
+	npc_data.remove_on_finish = button_pressed
 
 func _on_item_select_item_selected(index):
-	npc_item_id = o_item_select.get_item_id(index)
+	npc_data.item_id = o_item_select.get_item_id(index)
 
 func _on_item_count_value_changed(value):
-	npc_item_number = value
+	npc_data.item_number = value
 
 func _on_coin_count_value_changed(value):
-	npc_coin = value
+	npc_data.coin = value
 
 func _on_text_pre_combat_text_changed():
-	npc_dialog_pre = o_text_pre_combat.text
+	npc_data.dialog_pre = o_text_pre_combat.text
 
 func _on_text_post_combat_text_changed():
-	npc_dialog_post = o_text_post_combat.text
+	npc_data.dialog_post = o_text_post_combat.text
 
 func _on_npc_sprite_item_selected(index):
-	npc_sprite = o_npc_sprite.get_item_id(index)
-	npc_sprite_name = o_npc_sprite.get_item_text(index)
-	var tile_string = "res://npcs/" + npc_sprite_name + ".png"
+	npc_data.sprite = o_npc_sprite.get_item_id(index)
+	npc_data.sprite_name = o_npc_sprite.get_item_text(index)
+	var tile_string = "res://npcs/" + npc_data.sprite_name + ".png"
 	o_npc_object.texture_normal = load(tile_string)
 	
 func _on_npc_object_button_down():
@@ -196,20 +197,20 @@ func _on_npc_object_button_down():
 
 
 func _on_npc_sprite_combat_text_changed(new_text):
-	npc_sprite_combat = new_text
+	npc_data.sprite_combat = new_text
 
 
 func _on_npc_name_text_changed(new_text):
-	npc_name = new_text
+	npc_data.name = new_text
 
 
 func _on_npc_sprite_dialog_text_changed(new_text):
-	npc_sprite_dialog = new_text
+	npc_data.sprite_dialog = new_text
 
 
 func _on_aggro_range_value_changed(value):
-	npc_aggro_range = value
+	npc_data.aggro_range = value
 
 
 func _on_wild_encounter_toggled(toggled_on):
-	npc_is_wild = toggled_on
+	npc_data.is_wild = toggled_on

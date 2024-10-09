@@ -139,6 +139,7 @@ text = "summary"
 tab_size = 20
 
 [connection signal="toggled" from="row_enable/slot_enable" to="." method="_on_slot_enable_toggled"]
+[connection signal="text_changed" from="row_element/nickname" to="." method="_on_nickname_text_changed"]
 [connection signal="item_selected" from="row_general/slot_species" to="." method="_on_slot_species_item_selected"]
 [connection signal="value_changed" from="row_general/slot_level" to="." method="_on_slot_level_value_changed"]
 [connection signal="item_selected" from="row_general/slot_ability" to="." method="_on_slot_ability_item_selected"]
