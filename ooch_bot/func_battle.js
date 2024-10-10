@@ -318,11 +318,11 @@ prompt_battle_input: async function(thread, user_id) {
             let string_to_send = `You sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`;
 
             // Reset stat multipliers for dead Oochamon
-            ooch_plr.stats.atk_mul = 1;
-            ooch_plr.stats.def_mul = 1;
-            ooch_plr.stats.spd_mul = 1;
-            ooch_plr.stats.acc_mul = 1;
-            ooch_plr.stats.eva_mul = 1;
+            ooch_plr.stats.atk_mul = 0;
+            ooch_plr.stats.def_mul = 0;
+            ooch_plr.stats.spd_mul = 0;
+            ooch_plr.stats.acc_mul = 0;
+            ooch_plr.stats.eva_mul = 0;
             ooch_plr.ability = ooch_plr.og_ability;
             ooch_plr.type = ooch_plr.og_type;
             ooch_plr.status_effects = [];
@@ -565,11 +565,11 @@ prompt_battle_input: async function(thread, user_id) {
                     displayEmbed.setTitle('↩️ Switch ↩️')
 
                     // Reset stat multipliers for oochamon being swapped
-                    ooch_prev.stats.atk_mul = 1;
-                    ooch_prev.stats.def_mul = 1;
-                    ooch_prev.stats.spd_mul = 1;
-                    ooch_prev.stats.acc_mul = 1;
-                    ooch_prev.stats.eva_mul = 1;
+                    ooch_prev.stats.atk_mul = 0;
+                    ooch_prev.stats.def_mul = 0;
+                    ooch_prev.stats.spd_mul = 0;
+                    ooch_prev.stats.acc_mul = 0;
+                    ooch_prev.stats.eva_mul = 0;
                     ooch_prev.ability = ooch_prev.og_ability;
                     ooch_prev.type = ooch_prev.og_type;
                     ooch_prev.doom_timer = 3;
@@ -928,7 +928,7 @@ prompt_battle_input: async function(thread, user_id) {
                     `**Type:** ${type_to_emote(ooch.type[0])} **${_.capitalize(ooch.type[0])}**\n` +
                     `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
                     `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                    `**Multipliers:**\n` +
+                    `**Stat Changes:**\n` +
                     `Atk: \`${ooch.stats.atk_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.atk_mul)}\`\n` +
                     `Def: \`${ooch.stats.def_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.def_mul)}\`\n` +
                     `Spd: \`${ooch.stats.spd_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.spd_mul)}\`\n` +
@@ -942,10 +942,12 @@ prompt_battle_input: async function(thread, user_id) {
                             let move = db.move_data.get(move_id)
                             move.accuracy = Math.abs(move.accuracy);
                             if (move.damage !== 0) {
-                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
-                            } else {
+                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
+                            } else if (move.effect.includes('_')) {
                                 let move_info = move.effect.split('_');
-                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** chance to work\n`;
+                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** accuracy\n`;
+                            } else {
+                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
                             }
                         }
 
@@ -1004,10 +1006,12 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
     let damage = Math.round(Math.ceil((4 * ooch_attacker.level / 5 + 2) // Level Adjustment
     * (move_damage + _.random(-5, 5)) // Damage with random damage variance
     * (ooch_attacker.ability == Ability.Gravity ? (turn_count / 100) + 1 : 1)
-    * (ooch_attacker.ability == Ability.Hexiply ? ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 : 1) // Hexiply ability
+    * (ooch_attacker.ability == Ability.Hexiply ? ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 : 1)
     * (ooch_attacker.ability == Ability.Focused && ooch_attacker.status_effects.length == 0 ? 1.1 : 1)
     * (ooch_attacker.ability == Ability.Corrosive ? (_.clamp(defender_def_stat, 0, 300) / 10) + 1 : 1)
     * (ooch_attacker.ability == Ability.Hearty && ooch_attacker.current_hp > ooch_attacker.stats.hp / 2 ? 1.15 : 1)
+    * (ooch_attacker.ability == Ability.Riposte ? 1.2 : 1)
+    * (ooch_defender.ability == Ability.Parry ? 0.8 : 1)
     * attacker_atk_stat / defender_def_stat) 
     / 50 + 2);
 
@@ -1136,20 +1140,27 @@ type_to_string: function(type, do_capitalize = true) {
  */
 attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     const { type_effectiveness, battle_calc_damage, modify_stat, add_status_effect, type_to_emote, get_stat_multiplier } = require('./func_battle.js');
+    let move_effect =   db.move_data.get(atk_id, 'effect');
+    let ogMoveId = atk_id;
+    if (move_effect == 'random') {
+        atk_id = _.sample(db.move_data.keyArray());
+        move_effect =   db.move_data.get(atk_id, 'effect');
+    }
     let move_name =     db.move_data.get(atk_id, 'name');
     let move_type =     db.move_data.get(atk_id, 'type');
     let move_damage =   db.move_data.get(atk_id, 'damage');
     let move_accuracy = db.move_data.get(atk_id, 'accuracy');
-    let move_effect =   db.move_data.get(atk_id, 'effect');
     let move_effect_chance =   db.move_data.get(atk_id, 'effect_chance');
-    let move_type_emote =      type_to_emote(db.move_data.get(atk_id, 'type'));
+    if (move_effect == 'typematch') move_type = defender.type;
+    let move_type_emote =      type_to_emote(move_type);
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
     let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_effect_chance/100 : 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
-    if (move_damage <= 0) { crit_multiplier = 1; } //Disable the crit text for non-damaging moves
+    if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
     let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
     let recoil_damage = Math.round((move_effect == 'recoil' ? move_effect_chance/100 : 0) * attacker.stats.hp);
     let vampire_heal = (move_effect == 'vampire' ? move_effect_chance/100 : 0);
+    let move_heal = (move_effect == 'heal' ? move_effect_chance / 100 : 0);
     let reflect_dmg = 0;
     let attacker_emote = db.monster_data.get(attacker.id, 'emote');
     let defender_emote = db.monster_data.get(defender.id, 'emote');
@@ -1196,10 +1207,12 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     // If the defender has Vanish AND the attack is not self targeting, it should fail
     let chance_to_hit = move_accuracy/100 * get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 3)
     if (((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false)) {
+        // Take damage and heal from move effects
         defender.current_hp -= dmg
         defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
 
-        attacker.current_hp += vampire_heal * attacker.current_hp;
+        attacker.current_hp += Math.round(vampire_heal * attacker.current_hp);
+        attacker.current_hp += Math.round(attacker.stats.hp * move_heal);
         attacker.current_hp -= recoil_damage;
         attacker.current_hp = _.clamp(attacker.current_hp, 0, attacker.stats.hp)
 
@@ -1231,13 +1244,17 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **${_.upperCase(randomStatus)}** on hit from the ability **Strings Attached!**`;
                     }
                 break;
+                case Ability.Riposte:
+                    attacker.ability = Ability.Parry;
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** changed its stance, and shifted its ability to **Parry**!`;
+                break;
             }
             
             // When the Oochamon defender gets hit by the attacker
             switch (defender.ability) {
                 case Ability.Reactive:
-                    attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.05), 0, attacker.stats.hp)
-                    reflect_dmg = Math.round(attacker.stats.hp * 0.05);
+                    attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp)
+                    reflect_dmg = Math.round(attacker.stats.hp * 0.1);
                 break;
                 case Ability.Shadow:
                     if (check_chance(20)) {
@@ -1255,7 +1272,19 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** raised its ATK after being hit using its ability **Flammable**!`; 
                     }
                 break;
+                case Ability.Parry:
+                    defender.ability = Ability.Riposte;
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}** changed its stance, and shifted its ability to **Riposte**!`;
+                break;
             }
+        }
+
+        if (ogMoveId !== atk_id) {
+            string_to_send += `\n🎲 **${db.move_data.get(ogMoveId, 'name')}** changed into **${move_name}**!\n`;
+        }
+
+        if (move_effect == 'typematch') {
+            string_to_send += `\n✨ **${move_name}** changed into the ${defender_emote} **${defOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
         }
 
         string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
@@ -1266,9 +1295,14 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             string_to_send += `\n--- 💢 **A critical hit!**`
         }
 
-        //If a attack has vampire
+        //If an attack has vampire
         if (vampire_heal > 0) {
-            string_to_send += `\n--- ❤️ ${attacker_emote} **${atkOochName}** restored **${vampire_heal}** HP from its ability **Vampire**!`
+            string_to_send += `\n--- 🩸 ${attacker_emote} **${atkOochName}** leeched **${vampire_heal}** HP from ${defender_emote} **${defOochName}**!`;
+        }
+
+        //If an attack has heal
+        if (move_heal > 0) {
+            string_to_send += `\n--- ❤️ ${attacker_emote} **${atkOochName}** healed **${Math.round(attacker.stats.hp * move_heal)}** HP!`;
         }
 
         //If attack has recoil
@@ -1312,7 +1346,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                     }
                 }
 
-                if (Math.random() < move_effect_chance/100 && move_effect_chance > 0) { //Apply status effect
+                // Apply move effects
+                if (Math.random() < move_effect_chance/100 && move_effect_chance > 0) { 
                     let status_split = eff.split('_')
                     let status_adds = [eff];
 
@@ -1339,7 +1374,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }
                     }
-                    else {
+                    else if (db.status_data.keyArray().includes(eff)) {
                         // Setup list of status effects to add
                         switch (status_target.ability) {
                             case Ability.Darkbright:
@@ -1363,6 +1398,16 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         status_target.status_effects.push(status_adds);
                         status_target.status_effects = status_target.status_effects.flat(1);
                         status_target.status_effects = status_target.status_effects.filter((item, index) => status_target.status_effects.indexOf(item) === index);     
+                    } else if (eff == 'clear_status') {
+                        status_target.status_effects = [];
+                        defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its status effects cleared!`;
+                    } else if (eff == 'clear_stat_stages') {
+                        status_target.stats.atk_mul = 0;
+                        status_target.stats.def_mul = 0;
+                        status_target.stats.spd_mul = 0;
+                        status_target.stats.acc_mul = 0;
+                        status_target.stats.eva_mul = 0;
+                        defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its stats set back to normal!`;
                     }
                 }
             }
@@ -1666,7 +1711,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         let opposing_ooch = ooch_list[!i | 0]; // Flip 1 to 0 or 0 to 1 via type casting
 
         // Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
-        eot_result = use_eot_ability(ooch);
+        eot_result = use_eot_ability(ooch, user_id);
         ooch = eot_result[0];
         string_to_send += eot_result[1];
 
@@ -1820,11 +1865,11 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             }
 
             // Reset modified stats for dead oochamon
-            ooch_enemy.stats.atk_mul = 1;
-            ooch_enemy.stats.def_mul = 1;
-            ooch_enemy.stats.spd_mul = 1;
-            ooch_enemy.stats.acc_mul = 1;
-            ooch_enemy.stats.eva_mul = 1;
+            ooch_enemy.stats.atk_mul = 0;
+            ooch_enemy.stats.def_mul = 0;
+            ooch_enemy.stats.spd_mul = 0;
+            ooch_enemy.stats.acc_mul = 0;
+            ooch_enemy.stats.eva_mul = 0;
             ooch_enemy.ability = ooch_enemy.og_ability;
             ooch_enemy.type = ooch_enemy.og_type;
             ooch_enemy.status_effects = [];
@@ -2077,10 +2122,11 @@ ability_stat_change: function(ooch, ooch_inv) {
  * Have the ooch object use its end of turn ability.
  * Read the generate.js to see what each ability does.
  * @param {Object} ooch The oochamon object to have affected by it's ability
+ * @param {Object} user_id The user id of the person playing the battle (used for some abilities)
  * @returns The Oochamon object that has been affected by an ability.
  */
-use_eot_ability: function(ooch) {
-    const { modify_stat, type_to_emote } = require('./func_battle.js');
+use_eot_ability: function(ooch, user_id) {
+    const { modify_stat, type_to_emote, add_status_effect } = require('./func_battle.js');
     let ability_text = ``;
     switch(ooch.ability) {
         case Ability.Withering:
@@ -2102,6 +2148,21 @@ use_eot_ability: function(ooch) {
         case Ability.Patient:
             ooch = modify_stat(ooch, Stats.Defense, 1); 
             ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Patient**!`;
+        break;
+        case Ability.Increment:
+            let randomStat = _.sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
+            ooch = modify_stat(ooch, randomStat, 1);
+            ability_text = `\n${ooch.emote} **${ooch.nickname}** randomly increased its ${_.upperCase(randomStat)} from its ability **Increment**!`;
+        break;
+        case Ability.Riposte:
+            ooch.ability = Ability.Parry;
+            ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its stance, and shifted its ability to **Parry**!`;
+        break;
+        case Ability.HoleDweller:
+            if (db.profile.get(user_id, 'battle_turn_counter') % 2 === 0) {
+                ooch = add_status_effect(ooch, Status.Vanish);
+                ability_text = `${ooch.emote} **${ooch.nickname}** **VANISHED** into a hole with its ability **Hole Dweller**!`;
+            }
         break;
     }
 
@@ -2152,11 +2213,11 @@ finish_battle: async function(thread, user_id, battle_won) {
     // Reset Oochamon stat multipliers and ability and status effects
     for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
         let ooch = db.profile.get(user_id, `ooch_party[${i}]`);
-        ooch.stats.atk_mul = 1;
-        ooch.stats.def_mul = 1;
-        ooch.stats.spd_mul = 1;
-        ooch.stats.acc_mul = 1;
-        ooch.stats.eva_mul = 1;
+        ooch.stats.atk_mul = 0;
+        ooch.stats.def_mul = 0;
+        ooch.stats.spd_mul = 0;
+        ooch.stats.acc_mul = 0;
+        ooch.stats.eva_mul = 0;
         ooch.ability = ooch.og_ability;
         ooch.type = ooch.og_type;
         ooch.doom_timer = 3;

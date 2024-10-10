@@ -104,17 +104,6 @@ PREFERENCES:
 	- Battle Message Cleanup Toggle (cleans up the messages made from a battle after it's finished, by default this is off)
 	- Zoom Options: 5x5, 7x7 (changes the amount of emotes displayed in the play window, 7x7 has small emotes)
 
-GIMMICK (CORRUPTED FORMS):
-	- Oochamon imbued with a special power from the planet (or Oochabot) gain the ability to twist into a corrupted version of themselves.
-	- In gameplay terms, this gives every(?) final stage evolution oochamon the ability to swap between a "pure" and "corrupted" form of the oochamon.
-		
-	- To turn an Oochamon into it's corrupted form or purify it into it's pure form, you must use one of these 2 items:
-		- [Prismatic Key]
-			- Item used to turn an Oochamon into it's Corrupted Form.
-		- [Extractor]
-			- Item used to turn an Oochamon into it's Pure Form.
-	
-
 STORY:
 	- Intro:
 		- The game begins with a cutscene of you on a ship, traveling to the planet Priatera as part of an elite squad sent to

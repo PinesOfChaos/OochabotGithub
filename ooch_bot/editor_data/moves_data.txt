@@ -58,36 +58,36 @@
 57|Tenderize|neutral|120|70|recoil|30|The user slams its body into the opponent, but is hit with recoil.
 58|Byte Bite|tech|30|100|-1|undefined|Form digital jaws that clamp down on the target.
 59|Sawblade|tech|50|100|-1|undefined|The user hits the target with a metal blade.
-60|Soften|ooze|0|-100|+_def_25|undefined|Softens the body making it harder to damage, increasing its DEF.
-61|Embolden|neutral|0|-100|+_atk_25|undefined|Prepares the user to fight with all its strength, increasing its ATK.
-62|Hasten|neutral|0|-100|+_spd_25|undefined|The user readies itself to move quickly, increasing its SPD.
-63|Brittle|stone|0|100|-_def_25|undefined|Makes the opponent's body brittle, lowering its DEF.
-64|Intimidate|neutral|0|100|-_atk_25|undefined|Glare at the opponent, lowering its DEF.
-65|Mud|ooze|0|100|-_spd_25|undefined|Throw mud on the opponent, lowering its SPD.
-66|Hype-Up|neutral|0|-100|+_atk_25|+_spd_25|undefined|Hypes up the user, increasing its ATK and SPD.
-67|Sharpen|tech|0|-100|+_atk_50|undefined|Sharpens any edges the user has, greatly increasing its ATK.
+60|Soften|ooze|0|-100|+_def_1|undefined|Softens the body making it harder to damage, increasing its DEF.
+61|Embolden|neutral|0|-100|+_atk_1|undefined|Prepares the user to fight with all its strength, increasing its ATK.
+62|Hasten|neutral|0|-100|+_spd_1|undefined|The user readies itself to move quickly, increasing its SPD.
+63|Brittle|stone|0|100|-_def_1|undefined|Makes the opponent's body brittle, lowering its DEF.
+64|Intimidate|neutral|0|100|-_atk_1|undefined|Glare at the opponent, lowering its DEF.
+65|Mud|ooze|0|100|-_spd_1|undefined|Throw mud on the opponent, lowering its SPD.
+66|Hype-Up|neutral|0|-100|+_atk_1|+_spd_1|undefined|Hypes up the user, increasing its ATK and SPD.
+67|Sharpen|tech|0|-100|+_atk_2|undefined|Sharpens any edges the user has, greatly increasing its ATK.
 68|Cursed Eye|magic|10|100|blinded|burned|undefined|Curses the opponent, applying BLINDED and BURNED.
-69|Suplex|neutral|60|100|-_def_25|undefined|Suplex the opponent, damaging them and reducing DEF.
-70|Enfeebling Spore|fungal|30|100|-_atk_25|-_spd_25|undefined|Launch a damaging spore at the opponent which lowers ATK and SPD.
-71|Torque|tech|0|-100|-_spd_50|+_atk_100|undefined|Reduce the user's SPD to massively increase ATK.
-72|Slow Burn|flame|0|-100|-_atk_25|+_def_50|undefined|Cool the user's flame, greatly increasing DEF at the cost of some SPD.
+69|Suplex|neutral|60|100|-_def_1|undefined|Suplex the opponent, damaging them and reducing DEF.
+70|Enfeebling Spore|fungal|30|100|-_atk_1|-_spd_1|undefined|Launch a damaging spore at the opponent which lowers ATK and SPD.
+71|Torque|tech|0|-100|-_spd_2|+_atk_4|undefined|Reduce the user's SPD to massively increase ATK.
+72|Slow Burn|flame|0|-100|-_spd_1|+_def_2|undefined|Cool the user's flame, greatly increasing DEF at the cost of some SPD.
 73|Kaleidoscope|magic|50|100|blinded|snared|undefined|Disorient the opponent in a room that BLINDS and SNARES
 74|Blinding Beam|flame|75|80|blinded|undefined|Fire a brilliant beam of light that BLINDS the opponent.
-75|Overgrowth|fungal|0|-100|+_atk_25|+_def_25|+_spd_25|undefined|Rapid fungal growth increases ATK, DEF and SPD.
+75|Overgrowth|fungal|0|-100|+_atk_1|+_def_1|+_spd_1|undefined|Rapid fungal growth increases ATK, DEF and SPD.
 76|Myco-Burst|fungal|75|80|blinded|undefined|Fire a spore-filled bomb which BLINDS the opponent.
-77|Thorn Shot|fungal|60|90|critical|undefined|Shoot a condensed fungal thorn with a high crit chance.
+77|Thorn Shot|fungal|60|90|critical|undefined|Shoot a condensed fungal thorn with a high critical chance
 78|Slurp Up|ooze|0|-100|heal|undefined|The user gathers missing parts of its body to restore half its HP.
 79|Digital Gamble|tech|0|-100|random|undefined|The user randomly uses a move.
-80|Sedimentation|stone|0|-100|+_def_50|undefined|Spend the turn gathering stone to greatly increase DEF.
+80|Sedimentation|stone|0|-100|+_def_2|undefined|Spend the turn gathering stone to greatly increase DEF.
 81|Plasma Cannon|flame|120|70|-1|undefined|A high damage blast of extreme heat.
 82|Phantom Bullet|magic|30|100|critical|undefined|Fire a highly accurate ghost bullet that always crits.
 83|Firey Horn|flame|75|100|burned|undefined|Attack with blazing horns that have a chance to BURN the target.
-84|Radiate|flame|0|100|-_atk_50|burned|undefined|Release stored-up heat to BURN the target and reduce its ATK.
-85|Caltrops|neutral|20|100|-_spd_25|undefined|Scatter damaging spikes that damage and reduce the target's SPD
-86|Lurk|neutral|0|-100|+_atk_25|+_crit_10|undefined|undefined
-87|Fog|neutral|0|100|-_acc_10|undefined|Spray thick fog which reduces accuracy.
-88|Purify|neutral|0|-100|clear_status|undefined|Remove all status effects.
-89|Reset|neutral|0|-100|clear_multi|undefined|Reset all stat multipliers to 1.
+84|Radiate|flame|0|100|-_atk_2|burned|undefined|Release stored-up heat to BURN the target and reduce its ATK.
+85|Caltrops|neutral|20|100|-_spd_1|undefined|Scatter damaging spikes that damage and reduce the target's SPD
+86|Lurk|neutral|0|-100|+_atk_1|focused|undefined|undefined
+87|Fog|neutral|0|100|-_acc_1|undefined|Spray thick fog which reduces accuracy.
+88|Purify|neutral|0|-100|clear_status|undefined|Removes all status effects.
+89|Reset|neutral|0|-100|clear_stat_stages|undefined|Clears all stat changes.
 90|Debug Bomb|tech|100|80|clear_status|undefined|Fire a high-damage bomb that clears any status effects from its target.
-91|Entrench|fungal|0|-100|+_def_75|snared|undefined|Becomes SNARED, but greatly boosts DEF.
+91|Entrench|fungal|0|-100|+_def_3|snared|undefined|Becomes SNARED, but greatly boosts DEF.
 92|Null Sphere|void|60|100|-1|undefined|Fire a sphere of dark matter.

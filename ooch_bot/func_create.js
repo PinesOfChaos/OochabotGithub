@@ -130,6 +130,7 @@ module.exports = {
      * @param {String} effect The effect of the move
      * @param {Number} effect_chance The % chance for the move to hit
      * @param {String} description The moves description
+     * @param {String} tags Tags related to a move
      */
     create_move: function(id, name, type, damage, accuracy, effect, effect_chance, description, tags = []){
         let key_id = id.toString();

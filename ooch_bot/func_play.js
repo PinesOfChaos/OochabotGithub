@@ -676,11 +676,11 @@ module.exports = {
                 atk_iv: atk_iv,
                 def_iv: def_iv,
                 spd_iv: spd_iv,
-                atk_mul: 1,
-                def_mul: 1,
-                spd_mul: 1,
-                acc_mul: 1, // Accuracy Multiplier, used for accuracy checks
-                eva_mul: 1 // Evasion Multiplier, used for accuracy checks
+                atk_mul: 0,
+                def_mul: 0,
+                spd_mul: 0,
+                acc_mul: 0, // Accuracy Multiplier, used for accuracy checks
+                eva_mul: 0 // Evasion Multiplier, used for accuracy checks
             },
             status_effects: [],
             current_hp: stats[0],

@@ -205,38 +205,38 @@ module.exports = {
         ////MORE NEW MOVES
         create_move(58,'Byte Bite',       OochType.Tech,30,100,     -1,0,            'Form digital jaws that clamp down on the target.')
         create_move(59,'Sawblade',        OochType.Tech,50,100,     -1,0,            'The user hits the target with a metal blade.')
-        create_move(60,'Soften',          OochType.Ooze,0,-100,     '+_def_25',100,  'Softens the body making it harder to damage, increasing its DEF.')
-        create_move(61,'Embolden',        OochType.Neutral,0,-100,  '+_atk_25',100,  'Prepares the user to fight with all its strength, increasing its ATK.')
-        create_move(62,'Hasten',          OochType.Neutral,0,-100,  '+_spd_25',100,  'The user readies itself to move quickly, increasing its SPD.')
-        create_move(63,'Brittle',         OochType.Stone,0,100,     '-_def_25',100,  'Makes the opponent\'s body brittle, lowering its DEF.')
-        create_move(64,'Intimidate',      OochType.Neutral,0,100,   '-_atk_25',100,  'Glare at the opponent, lowering its DEF.')
-        create_move(65,'Mud',             OochType.Ooze,0,100,      '-_spd_25',100,  'Throw mud on the opponent, lowering its SPD.')
-        create_move(66,'Hype-Up',         OochType.Neutral,0,-100,  '+_atk_25|+_spd_25',100, 'Hypes up the user, increasing its ATK and SPD.')
-        create_move(67,'Sharpen',         OochType.Tech,0,-100,     '+_atk_50',-100, 'Sharpens any edges the user has, greatly increasing its ATK.')
+        create_move(60,'Soften',          OochType.Ooze,0,-100,     '+_def_1',100,  'Softens the body making it harder to damage, increasing its DEF.')
+        create_move(61,'Embolden',        OochType.Neutral,0,-100,  '+_atk_1',100,  'Prepares the user to fight with all its strength, increasing its ATK.')
+        create_move(62,'Hasten',          OochType.Neutral,0,-100,  '+_spd_1',100,  'The user readies itself to move quickly, increasing its SPD.')
+        create_move(63,'Brittle',         OochType.Stone,0,100,     '-_def_1',100,  'Makes the opponent\'s body brittle, lowering its DEF.')
+        create_move(64,'Intimidate',      OochType.Neutral,0,100,   '-_atk_1',100,  'Glare at the opponent, lowering its DEF.')
+        create_move(65,'Mud',             OochType.Ooze,0,100,      '-_spd_1',100,  'Throw mud on the opponent, lowering its SPD.')
+        create_move(66,'Hype-Up',         OochType.Neutral,0,-100,  '+_atk_1|+_spd_1',100, 'Hypes up the user, increasing its ATK and SPD.')
+        create_move(67,'Sharpen',         OochType.Tech,0,-100,     '+_atk_2',-100, 'Sharpens any edges the user has, greatly increasing its ATK.')
         create_move(68,'Cursed Eye',      OochType.Magic,10,100,    'blinded|burned',100, 'Curses the opponent, applying BLINDED and BURNED.')
-        create_move(69,'Suplex',          OochType.Neutral,60,100,  '-_def_25',100,  'Suplex the opponent, damaging them and reducing DEF.')
-        create_move(70,'Enfeebling Spore',OochType.Fungal,30,100,   '-_atk_25|-_spd_25',100, 'Launch a damaging spore at the opponent which lowers ATK and SPD.')
-        create_move(71,'Torque',          OochType.Tech,0,-100,     '-_spd_50|+_atk_100',100, 'Reduce the user\'s SPD to massively increase ATK.')
-        create_move(72,'Slow Burn',       OochType.Flame,0,-100,    '-_atk_25|+_def_50',100, 'Cool the user\'s flame, greatly increasing DEF at the cost of some SPD.')
+        create_move(69,'Suplex',          OochType.Neutral,60,100,  '-_def_1',100,  'Suplex the opponent, damaging them and reducing DEF.')
+        create_move(70,'Enfeebling Spore',OochType.Fungal,30,100,   '-_atk_1|-_spd_1',100, 'Launch a damaging spore at the opponent which lowers ATK and SPD.')
+        create_move(71,'Torque',          OochType.Tech,0,-100,     '-_spd_2|+_atk_4',100, 'Reduce the user\'s SPD to massively increase ATK.')
+        create_move(72,'Slow Burn',       OochType.Flame,0,-100,    '-_spd_1|+_def_2',100, 'Cool the user\'s flame, greatly increasing DEF at the cost of some SPD.')
         create_move(73,'Kaleidoscope',    OochType.Magic,50,100,    'blinded|snared',100, 'Disorient the opponent in a room that BLINDS and SNARES', [MoveTag.Light])
         create_move(74,'Blinding Beam',   OochType.Flame,75,80,     'blinded',100,   'Fire a brilliant beam of light that BLINDS the opponent.', [MoveTag.Light])
-        create_move(75,'Overgrowth',      OochType.Fungal,0,-100,   '+_atk_25|+_def_25|+_spd_25',100,   'Rapid fungal growth increases ATK, DEF and SPD.')
+        create_move(75,'Overgrowth',      OochType.Fungal,0,-100,   '+_atk_1|+_def_1|+_spd_1',100,   'Rapid fungal growth increases ATK, DEF and SPD.')
         create_move(76,'Myco-Burst',      OochType.Fungal,75,80,    'blinded',100,   'Fire a spore-filled bomb which BLINDS the opponent.')
-        create_move(77,'Thorn Shot',      OochType.Fungal,60,90,    'critical',50,   'Shoot a condensed fungal thorn with a high crit chance.')
+        create_move(77,'Thorn Shot',      OochType.Fungal,60,90,    'critical',50,   'Shoot a condensed fungal thorn with a high critical chance')
         create_move(78,'Slurp Up',        OochType.Ooze,0,-100,     'heal',50,       'The user gathers missing parts of its body to restore half its HP.')
         create_move(79,'Digital Gamble',  OochType.Tech,0,-100,     'random',100,    'The user randomly uses a move.')
-        create_move(80,'Sedimentation',   OochType.Stone,0,-100,    '+_def_50',100,  'Spend the turn gathering stone to greatly increase DEF.')
+        create_move(80,'Sedimentation',   OochType.Stone,0,-100,    '+_def_2',100,  'Spend the turn gathering stone to greatly increase DEF.')
         create_move(81,'Plasma Cannon',   OochType.Flame,120,70,    -1,0,            'A high damage blast of extreme heat.')
         create_move(82,'Phantom Bullet',  OochType.Magic,30,100,    'critical',100,  'Fire a highly accurate ghost bullet that always crits.')
         create_move(83,'Firey Horn',      OochType.Flame,75,100,    'burned',50,     'Attack with blazing horns that have a chance to BURN the target.')
-        create_move(84,'Radiate',         OochType.Flame,0,100,     '-_atk_50|burned',100, 'Release stored-up heat to BURN the target and reduce its ATK.')
-        create_move(85,'Caltrops',        OochType.Neutral,20,100,  '-_spd_25',100,  'Scatter damaging spikes that damage and reduce the target\'s SPD')
-        create_move(86,'Lurk',            OochType.Neutral,0,-100,  '+_atk_25|+_crit_10', 'Lurk in the shadows boosting ATK and crit chance.')
-        create_move(87,'Fog',             OochType.Neutral,0,100,   '-_acc_10',100,  'Spray thick fog which reduces accuracy.')
-        create_move(88,'Purify',          OochType.Neutral,0,-100,  'clear_status',100, 'Remove all status effects.')
-        create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_multi',100, 'Reset all stat multipliers to 1.')
+        create_move(84,'Radiate',         OochType.Flame,0,100,     '-_atk_2|burned',100, 'Release stored-up heat to BURN the target and reduce its ATK.')
+        create_move(85,'Caltrops',        OochType.Neutral,20,100,  '-_spd_1',100,  'Scatter damaging spikes that damage and reduce the target\'s SPD')
+        create_move(86,'Lurk',            OochType.Neutral,0,-100,  '+_atk_1|focused', 'Lurk in the shadows boosting ATK and makes the user FOCUSED.')
+        create_move(87,'Fog',             OochType.Neutral,0,100,   '-_acc_1',100,  'Spray thick fog which reduces accuracy.')
+        create_move(88,'Purify',          OochType.Neutral,0,-100,  'clear_status',100, 'Removes all status effects.')
+        create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_stat_stages',100, 'Clears all stat changes.')
         create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
-        create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_75|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
+        create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_3|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
         create_move(92,'Null Sphere',     OochType.Void,60,100,     -1,0,            'Fire a sphere of dark matter.')
 
         //#endregion
@@ -257,7 +257,7 @@ module.exports = {
         create_ability(10, 'Radiant',           'Dangerous energy causes attacks that BURN also INFECT.'); 
         create_ability(11, 'Conflicted',        'Multiple minds increase ALL stats by 1 stage.'); 
         create_ability(12, 'Burrower',          'Increases the damage of STONE attacks by 10%.'); 
-        create_ability(13, 'Reactive',          'When hit by an attack, reflects 5% of the attacker\'s HP as damage.'); 
+        create_ability(13, 'Reactive',          'When hit by an attack, reflects 10% of the attacker\'s HP as damage.'); 
         create_ability(14, 'Inertia',           'Increases SPD by 1 stage each turn.'); 
         create_ability(15, 'Dense',             'Increases ATK by 1 stage but reduces SPD by 1 stage.');  
         create_ability(16, 'Moist',             'Halves all incoming FLAME damage.'); 
@@ -324,6 +324,8 @@ module.exports = {
         create_status(5,   'Vanished',  '<:status_vanish:1023053679328231424>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
         create_status(6,   'Doomed',    '<:status_doomed:1023053678179012648>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
         create_status(7,   'Doubled',   '<:status_doubled:1170203311199240302>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+        create_status(7,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+
         
         //#endregion
 
@@ -2143,19 +2145,19 @@ module.exports = {
                                         moveset: moveset,
                                         status_effects: [],
                                         stats: {
-                                            acc_mul: 1,
-                                            eva_mul: 1,
+                                            acc_mul: 0,
+                                            eva_mul: 0,
                                             hp: ooch_data.hp,
                                             hp_iv: parseInt(npc_team_data[8]),
                                             atk: ooch_data.atk,
                                             atk_iv: parseInt(npc_team_data[9]),
-                                            atk_mul: 1,
+                                            atk_mul: 0,
                                             def: ooch_data.def,
                                             def_iv: parseInt(npc_team_data[10]),
-                                            def_mul: 1,
+                                            def_mul: 0,
                                             spd: ooch_data.spd,
                                             spd_iv: parseInt(npc_team_data[11]),
-                                            spd_mul: 1,
+                                            spd_mul: 0,
                                         }
                                     });
                                 }

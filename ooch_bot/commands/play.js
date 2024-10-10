@@ -65,11 +65,11 @@ module.exports = {
         // Reset Oochamon's stat and abilities and status effects
         let ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
         for (let i = 0; i < ooch_party.length; i++) {
-            ooch_party[i].stats.atk_mul = 1;
-            ooch_party[i].stats.def_mul = 1;
-            ooch_party[i].stats.acc_mul = 1;
-            ooch_party[i].stats.eva_mul = 1;
-            ooch_party[i].stats.spd_mul = 1;
+            ooch_party[i].stats.atk_mul = 0;
+            ooch_party[i].stats.def_mul = 0;
+            ooch_party[i].stats.acc_mul = 0;
+            ooch_party[i].stats.eva_mul = 0;
+            ooch_party[i].stats.spd_mul = 0;
             ooch_party[i].ability = ooch_party[i].og_ability;
             ooch_party[i].type = ooch_party[i].og_type;
             ooch_party[i].doom_timer = 3;

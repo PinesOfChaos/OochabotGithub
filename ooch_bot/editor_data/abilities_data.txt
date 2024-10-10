@@ -11,7 +11,7 @@
 10|Radiant|Dangerous energy causes attacks that BURN also INFECT.
 11|Conflicted|Multiple minds increase ALL stats by 1 stage.
 12|Burrower|Increases the damage of STONE attacks by 10%.
-13|Reactive|When hit by an attack, reflects 5% of the attacker's HP as damage.
+13|Reactive|When hit by an attack, reflects 10% of the attacker's HP as damage.
 14|Inertia|Increases SPD by 1 stage each turn.
 15|Dense|Increases ATK by 1 stage but reduces SPD by 1 stage.
 16|Moist|Halves all incoming FLAME damage.
