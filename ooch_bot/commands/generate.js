@@ -615,7 +615,7 @@ module.exports = {
         // Charlite
         create_monster({
             id: 17,
-            emote: get_emote_string(client, 'charlite'),
+            emote: get_emote_string(applicationEmojis, 'charlite'),
             name: 'Charlite',
             oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
             type: [OochType.Flame],
@@ -632,7 +632,7 @@ module.exports = {
         // Darcoal
         create_monster({
             id: 18,
-            emote: get_emote_string(client, 'darcoal'),
+            emote: get_emote_string(applicationEmojis, 'darcoal'),
             name: 'Darcoal',
             oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
             type: [OochType.Flame],
@@ -649,7 +649,7 @@ module.exports = {
         // Torchoir
         create_monster({
             id: 19,
-            emote: get_emote_string(client, 'torchoir'),
+            emote: get_emote_string(applicationEmojis, 'torchoir'),
             name: 'Torchoir',
             oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
             type: [OochType.Flame],
@@ -684,7 +684,7 @@ module.exports = {
         // Eluslug
         create_monster({
             id: 21,
-            emote: get_emote_string(client, 'eluslug'),
+            emote: get_emote_string(applicationEmojis, 'eluslug'),
             name: 'Eluslug',
             oochive_entry: 'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 
             type: [OochType.Tech],
@@ -700,7 +700,7 @@ module.exports = {
         // Jellime
         create_monster({
             id: 22,
-            emote: get_emote_string(client, 'jellime'),
+            emote: get_emote_string(applicationEmojis, 'jellime'),
             name: 'Jellime',
             oochive_entry: 'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', 
             type: [OochType.Ooze],
@@ -1933,7 +1933,7 @@ module.exports = {
         // Roswier
         create_monster({
             id: 95,
-            emote: get_emote_string(client, 'roswier'),
+            emote: get_emote_string(applicationEmojis, 'roswier'),
             name: 'Roswier',
             oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
             type: [OochType.Tech, OochType.Ooze],
@@ -1951,7 +1951,7 @@ module.exports = {
         // Chemerai
         create_monster({
             id: 96,
-            emote: get_emote_string(client, 'chemerai'),
+            emote: get_emote_string(applicationEmojis, 'chemerai'),
             name: 'Chemerai',
             oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
             type: [OochType.Magic, OochType.Flame],
@@ -1969,7 +1969,7 @@ module.exports = {
         // Rosun
         create_monster({
             id: 97,
-            emote: get_emote_string(client, 'rosun'),
+            emote: get_emote_string(applicationEmojis, 'rosun'),
             name: 'Rosun',
             oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
             type: [OochType.Stone],
@@ -1999,7 +1999,7 @@ module.exports = {
         // Garnetie
         create_monster({
             id: 99,
-            emote: get_emote_string(client, 'garnetie'),
+            emote: get_emote_string(applicationEmojis, 'garnetie'),
             name: 'Garnetie',
             oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
             type: [OochType.Stone],
@@ -2014,7 +2014,7 @@ module.exports = {
         // Aventux
         create_monster({
             id: 100,
-            emote: get_emote_string(client, 'aventux'),
+            emote: get_emote_string(applicationEmojis, 'aventux'),
             name: 'Aventux',
             oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
             type: [OochType.Stone],
@@ -2029,6 +2029,7 @@ module.exports = {
         // Galagge
         create_monster({
             id: 101,
+            emote: get_emote_string(applicationEmojis, 'galagge'),
             name: 'Galagge',
             oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
             type: [OochType.Stone],
@@ -2047,6 +2048,7 @@ module.exports = {
         // i_
         create_monster({
             id: -1,
+            emote: get_emote_string(applicationEmojis, 'i_'),
             name: 'i_',
             oochive_entry: 'ERROR: entry not found',
             type: [OochType.Void],
