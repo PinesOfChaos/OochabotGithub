@@ -238,6 +238,7 @@ module.exports = {
         create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
         create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_3|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
         create_move(92,'Null Sphere',     OochType.Void,60,100,     -1,0,            'Fire a sphere of dark matter.')
+        create_move(93,'Impact Blast',    OochType.Neutral,150,80,  'vanished',100,  'Hit the opponent so hard they get launched and VANISH.')
 
         //#endregion
 
@@ -310,6 +311,16 @@ module.exports = {
         create_ability(63, 'Swaying',           'Increases DEF by 1 stage but lowers accuracy by 1 stage.');
         create_ability(64, 'Thrashing',         'Increases ATK by 1 stage but lowers evasion by 1 stage.');
         create_ability(65, 'Union',             'Increases ATK and DEF by 1 stage.');
+        
+        /* EVENTUAL ABILITIES DON'T WORRY ABOUT THEM UNTIL MAIN GAME IS DONE
+        create_ability(66, 'Protector',        'Immune to inneffective damage during the turn it switches in.');
+        create_ability(67, 'Phantasmal',       'Immune to Neutral-type moves.');
+        create_ability(68, 'Matryoshka',       'The first time it would be KO\'d, restores its HP to half.');
+        create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.');
+        create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
+        create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.');
+        create_ability(72, 'Neutralizer',      'No Oochamon are affected by status effects.');
+        */
 
         //#endregion
 
@@ -324,7 +335,7 @@ module.exports = {
         create_status(5,   'Vanished',  '<:status_vanish:1023053679328231424>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
         create_status(6,   'Doomed',    '<:status_doomed:1023053678179012648>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
         create_status(7,   'Doubled',   '<:status_doubled:1170203311199240302>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-        create_status(7,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+        create_status(8,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
 
         
         //#endregion
