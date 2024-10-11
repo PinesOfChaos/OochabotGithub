@@ -48,6 +48,7 @@ const EventMode = {
     Flags: 2,
     OochamonPick: 3,
     Transition: 4,
+    Objective: 5,
 }
 
 const DialogueType = {
@@ -73,24 +74,15 @@ const Stats = {
 
 const Status = {
     All: 'all',
-    Burn: 'burned',
-    BurnEmote: '<:status_burned:1274938453569830997>',
-    Infect: 'infected',
-    InfectEmote: '<:status_infected:1274938506225123358>',
-    Blind: 'blinded',
-    BlindEmote: '<:status_blinded:1274938440940781590>',
-    Digitize: 'digitized',
-    DigitizeEmote: '<:status_digitized:1274938471034654770>',
-    Snare: 'snared',
-    SnareEmote: '<:status_snared:1274938520821305355>',
-    Vanish: 'vanished',
-    VanishEmote: '<:status_vanish:1274938531864776735>',
-    Doom: 'doomed',
-    DoomEmote: '<:status_doomed:1274938483924009062>',
-    Double: 'doubled',
-    DoubleEmote: '<:status_doubled:1274938495953014845>',
-    Focus: 'focused',
-    FocusedEmote: `🔎`
+    Burn: 0,
+    Infect: 1,
+    Blind: 2,
+    Digitize: 3,
+    Snare: 4,
+    Vanish: 5,
+    Doom: 6,
+    Double: 7,
+    Focus: 8,
 }
 
 const OochType = {

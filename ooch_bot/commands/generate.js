@@ -324,17 +324,6 @@ module.exports = {
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Status Data
         //            ID,  NAME,        EMOTE                                       DESCRIPTION
-<<<<<<< Updated upstream
-        create_status(0,   'Burned',    '<:status_burned:1023031032083128441>',     'Burns the Oochamon at the end of each turn, dealing damage.');
-        create_status(1,   'Infected',  '<:status_infected:1023031033744076930>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
-        create_status(2,   'Blinded',   '<:status_blinded:1023031030837416057>',    'Blinds the Oochamon, reducing its accuracy.');
-        create_status(3,   'Digitized', '<:status_digitized:1023031032934576178>',  'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
-        create_status(4,   'Snared',    '<:status_snared:1023031034733940798>',     'Ensnares the Oochamon, forcing it to go second in battle.');
-        create_status(5,   'Vanished',  '<:status_vanish:1023053679328231424>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
-        create_status(6,   'Doomed',    '<:status_doomed:1023053678179012648>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
-        create_status(7,   'Doubled',   '<:status_doubled:1170203311199240302>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-        create_status(8,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
-=======
         create_status(0,   'Burned',    '<:status_burned:1274938453569830997>',     'Burns the Oochamon at the end of each turn, dealing damage.');
         create_status(1,   'Infected',  '<:status_infected:1274938506225123358>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
         create_status(2,   'Blinded',   '<:status_blinded:1274938440940781590>',    'Blinds the Oochamon, reducing its accuracy.');
@@ -344,7 +333,6 @@ module.exports = {
         create_status(6,   'Doomed',    '<:status_doomed:1274938483924009062>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
         create_status(7,   'Doubled',   '<:status_doubled:1274938495953014845>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
         create_status(7,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
->>>>>>> Stashed changes
 
         
         //#endregion

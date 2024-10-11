@@ -174,6 +174,11 @@ module.exports = {
                             description: 'Add buttons you can click to move your character.',
                             value: 'discord_move_buttons',
                         },
+                        {
+                            label: 'Objective Indicator',
+                            description: 'See a message displaying your current objective.',
+                            value: 'objective',
+                        },
                     ),
             );
 
@@ -921,7 +926,8 @@ module.exports = {
                 `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
                 `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
                 `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`,
-                `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`];
+                `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`,
+                `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -980,6 +986,14 @@ module.exports = {
             else if (selected == 'discord_move_buttons') {
                 await db.profile.set(interaction.user.id, !(user_profile.settings.discord_move_buttons), 'settings.discord_move_buttons');
                 pref_desc[4] = `Discord Move Buttons: ${db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true ? `✅` : `❌`}`;
+                user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Objective Indicator
+            else if (selected == 'objective') {
+                await db.profile.set(interaction.user.id, !(user_profile.settings.objective), 'settings.objective');
+                pref_desc[5] = `Objective Indicator: ${db.profile.get(interaction.user.id, 'settings.objective') === true ? `✅` : `❌`}`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });

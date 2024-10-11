@@ -165,7 +165,7 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
 prompt_battle_input: async function(thread, user_id) {
 
     const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-    item_use, finish_battle, ability_stat_change, modify_stat, get_status_emote, battle_calc_exp,
+    item_use, finish_battle, ability_stat_change, modify_stat, battle_calc_exp,
     level_up, type_effectiveness } = require('./func_battle.js');
 
     // Get enemy oochamon data that was previously generated
@@ -921,45 +921,46 @@ prompt_battle_input: async function(thread, user_id) {
                 }
 
                 let oochInfoFields = [];
+                const formatStatBar = (stat) => {
+                    return `${stat > 0 ? '▲' : '▼'}`.repeat(stat) + '○'.repeat(8 - stat);
+                };
+
                 // Setup field info for the embed about both oochamon
                 for (let ooch of [ooch_plr, ooch_enemy]) {
-                    let oochStatusEffects = ooch.status_effects.map(v => get_status_emote(v));
-                    let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                    `**Type:** ${type_to_emote(ooch.type[0])} **${_.capitalize(ooch.type[0])}**\n` +
-                    `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` + 
-                    `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                    `**Stat Changes:**\n` +
-                    `Atk: \`${ooch.stats.atk_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.atk_mul)}\`\n` +
-                    `Def: \`${ooch.stats.def_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.def_mul)}\`\n` +
-                    `Spd: \`${ooch.stats.spd_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.spd_mul)}\`\n` +
-                    `Eva: \`${ooch.stats.eva_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.eva_mul)}\`\n` +
-                    `Acc: \`${ooch.stats.acc_mul >= 1 ? `+` : `-`}${Math.round(ooch.stats.acc_mul)}\`\n`;
-
+                    let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
                     
+                    let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
+                                `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
+                                `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
+                                `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
+                                `**Stat Changes:**\n` +
+                                `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
+                                `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
+                                `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
+                                `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
+                                `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
+
                     if (ooch != ooch_enemy) {
                         let moveset_str = ``;
                         for (let move_id of ooch.moveset) {
-                            let move = db.move_data.get(move_id)
+                            let move = db.move_data.get(move_id);
                             move.accuracy = Math.abs(move.accuracy);
                             if (move.damage !== 0) {
                                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                            } else if (move.effect.includes('_')) {
-                                let move_info = move.effect.split('_');
-                                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** accuracy\n`;
                             } else {
                                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
                             }
                         }
-
                         infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
                     }
-            
-                    oochInfoFields.push({ 
-                        name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`, 
+
+                    oochInfoFields.push({
+                        name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
                         value: infoStr,
                         inline: true,
                     });
                 }
+
 
                 let battleInfoEmbed = new EmbedBuilder()
                     .setTitle('Battle Information 📒')
@@ -1025,7 +1026,7 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
             if (ooch_attacker.ability == Ability.Warm) damage *= 1.1;
             if (ooch_defender.ability == Ability.Moist) damage *= 0.5;
             if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; 
-            if (ooch_attacker.ability == Ability.PowerConduit && (ooch_defender.type == OochType.Ooze || ooch_defender.type == OochType.Tech)) damage *= 1.5; break;
+            if (ooch_attacker.ability == Ability.PowerConduit && (ooch_defender.type.includes(OochType.Ooze) || ooch_defender.type.includes(OochType.Tech))) damage *= 1.5; break;
         case OochType.Stone:
             if (ooch_attacker.ability == Ability.Burrower) damage *= 1.1;
             if (ooch_defender.ability == Ability.Armored) damage *= 0.8;
@@ -1087,18 +1088,18 @@ get_stats: function(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
 
 /**
  * Converts a type string to an emote for that type.
- * @param {String} type_string The type to convert an emote
+ * @param {Array} type_array The type array to turn into a type string
  * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
  * @returns The emote string
  */
-type_to_emote: function(type_string, text_emote = false) {
+type_to_emote: function(type_array, text_emote = false) {
     let return_string = '';
 
-    if (!Array.isArray(type_string)) {
-        type_string = [type_string];
+    if (!Array.isArray(type_array)) {
+        type_array = [type_array];
     }
 
-    for (let type of type_string) {
+    for (let type of type_array) {
         switch(type) {
             case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1274936258811920414>'   : '<:icon_flame:1274936249484050472>';   break;
             case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1274936284497969203>'  : '<:icon_fungal:1274936267884199947>';  break;
@@ -1151,7 +1152,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let move_damage =   db.move_data.get(atk_id, 'damage');
     let move_accuracy = db.move_data.get(atk_id, 'accuracy');
     let move_effect_chance =   db.move_data.get(atk_id, 'effect_chance');
-    if (move_effect == 'typematch') move_type = defender.type;
+    if (move_effect == 'typematch') move_type = _.sample(defender.type);
     let move_type_emote =      type_to_emote(move_type);
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
     let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_effect_chance/100 : 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
@@ -1241,7 +1242,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                     if (check_chance(20)) {
                         let randomStatus = _.sample([Status.Burn, Status.Blind, Status.Infect, Status.Snare]);
                         defender = add_status_effect(defender, randomStatus);
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **${_.upperCase(randomStatus)}** on hit from the ability **Strings Attached!**`;
+                        let statusName = db.status_data.get(randomStatus, 'name');
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **${_.upperCase(statusName)}** on hit from the ability **Strings Attached!**`;
                     }
                 break;
                 case Ability.Riposte:
@@ -1489,7 +1491,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
  * A helper function for type effectiveness, takes 2 types and figures out the
  * attack multiplier for the attacking type based on the defending type.
  * @param {String} attack_type The type that is attacking
- * @param {String} target_type The type that is defending
+ * @param {Array} target_type The type that is defending
  * @returns An array with structured like [attack_multiplier, attack_string]
  */
 type_effectiveness: function(attack_type, target_type) {
@@ -1722,17 +1724,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         let ooch_doomed = ooch.status_effects.includes(Status.Doom);
     
         for (let j = 0; j < ooch.status_effects.length; j++) {
-            switch(ooch.status_effects[j]) {
-                case Status.Burn:      ooch_status_emotes[i].push(Status.BurnEmote); break;
-                case Status.Infect:    ooch_status_emotes[i].push(Status.InfectEmote); break;
-                case Status.Blind:     ooch_status_emotes[i].push(Status.BlindEmote); break;
-                case Status.Digitize:  ooch_status_emotes[i].push(Status.DigitizeEmote); break;
-                case Status.Snare:     ooch_status_emotes[i].push(Status.SnareEmote); break;
-                case Status.Vanish:    ooch_status_emotes[i].push(Status.VanishEmote); break;
-                case Status.Doom:      ooch_status_emotes[i].push(Status.DoomEmote); break;
-                case Status.Double:    ooch_status_emotes[i].push(Status.DoubleEmote); break;
-                case Status.Focus:     ooch_status_emotes[i].push(Status.FocusedEmote); break;
-            }
+            ooch_status_emotes[i].push(db.status_data.get(ooch.status_effects[j], 'emote'));
         }
 
         if (ooch_burned) {
@@ -1750,7 +1742,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             string_to_send += `\n${ooch.emote} **${ooch.nickname}** has **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}**.`;
         }
 
-        if (ooch_digitized && ooch.type[0] != OochType.Tech) {
+        if (ooch_digitized && ooch.type != [OochType.Tech]) {
             ooch.type = [OochType.Tech];
             string_to_send += `\n${ooch.emote} **${ooch.nickname}** was digitized and had its type changed to **Tech**!.`;
         }
@@ -2034,7 +2026,7 @@ ability_stat_change: function(ooch, ooch_inv) {
     switch (ooch.ability) {
         case Ability.Miniscule: 
             ooch = modify_stat(ooch, Stats.Evasion, 1);
-            output_msg = `${ooch.emote} **${ooch.nickname}** increased SPD from its ability **Miniscule**!`;
+            output_msg = `${ooch.emote} **${ooch.nickname}** increased evasion from its ability **Miniscule**!`;
         break;
         case Ability.Burdened: 
             ooch = modify_stat(ooch, Stats.Speed, -1);
@@ -2170,21 +2162,21 @@ use_eot_ability: function(ooch, user_id) {
     if (!ooch.status_effects.includes(Status.Digitize)) {
         switch (ooch.ability) {
             case Ability.Spectral:
-                if (ooch.type[0] == ooch.og_type[0]) {
+                if (ooch.type == ooch.og_type) {
                     ooch.type = [OochType.Magic];
                     ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Magic)} **Magic** through its ability **Spectral**!`
                 } else {
                     ooch.type = ooch.og_type;
-                    ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type[0])} **${_.startCase(ooch.type[0])}**.`
+                    ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**.`
                 }
             break;
             case Ability.Radioactive:
-                if (ooch.type[0] == ooch.og_type[0]) {
+                if (ooch.type == ooch.og_type) {
                     ooch.type = [OochType.Flame];
                     ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Flame)} **Flame** through its ability **Radioactive**!`
                 } else {
                     ooch.type = ooch.og_type;
-                    ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type[0])} **${_.startCase(ooch.type[0])}**.`
+                    ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**.`
                 }
             break;
         }
@@ -2435,24 +2427,6 @@ add_status_effect: function(ooch, status) {
     }
     ooch.status_effects.push(status);
     return ooch;
-},
-
-/**
- * Get a status effect emote from a string.
- * @param {String} status The status effect to get an emote for
- * @returns The status effect emote string.
- */
-get_status_emote: function(status) {
-    switch(status) {
-        case Status.Burn:      return Status.BurnEmote;
-        case Status.Infect:    return Status.InfectEmote;
-        case Status.Blind:     return Status.BlindEmote;
-        case Status.Digitize:  return Status.DigitizeEmote;
-        case Status.Snare:     return Status.SnareEmote;
-        case Status.Vanish:    return Status.VanishEmote;
-        case Status.Doom:      return Status.DoomEmote;
-        case Status.Double:    return Status.DoubleEmote;
-    }
 },
 
 /**

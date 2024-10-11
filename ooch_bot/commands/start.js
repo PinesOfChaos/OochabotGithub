@@ -36,6 +36,7 @@ module.exports = {
             db.profile.set(interaction.user.id, [Item.Potion, Item.Prism], 'global_shop_items');
             db.profile.set(interaction.user.id, [], 'friends_list');
             db.profile.set(interaction.user.id, 1, 'move_speed');
+            db.profile.set(interaction.user.id, 'Talk to the professor.', 'objective');
             
             // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
             // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
@@ -49,6 +50,7 @@ module.exports = {
                 zoom: '9_7',
                 battle_speed: 1250,
                 discord_move_buttons: false,
+                objective: true,
             }, 'settings');
 
             // Setup Oochadex template
