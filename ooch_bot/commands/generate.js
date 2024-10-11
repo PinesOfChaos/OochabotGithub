@@ -519,7 +519,7 @@ module.exports = {
             emote: get_emote_string(client, 'amephyst'),
             name: 'Amephyst',
             oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
-            type: [OochType.Stone],
+            type: [OochType.Stone, OochType.Magic],
             hp: 15, atk: 20, def: 15, spd: 30, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
              [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], 
@@ -910,7 +910,7 @@ module.exports = {
             emote: get_emote_string(client, 'lobstar'),
             name: 'Lobstar',
             oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 
-            type: [OochType.Stone], 
+            type: [OochType.Stone, OochType.Flame], 
             hp: 10, atk: 35, def: 20, spd: 10, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], 
@@ -977,7 +977,7 @@ module.exports = {
             emote: get_emote_string(client, 'codet'),
             name: 'Codet',
             oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.', 
-            type: [OochType.Tech],
+            type: [OochType.Tech, OochType.Magic],
             hp: 30, atk: 10, def: 10, spd: 10, // total 60
             move_list: [
                 [1, Move.Bash], [2, Move.Strike], [5, Move.ByteBite], [7, Move.DigitalGamble],
@@ -1062,7 +1062,7 @@ module.exports = {
             emote: get_emote_string(client, 'obstaggard'),
             name: 'Obstaggard',
             oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 
-            type: [OochType.Stone],
+            type: [OochType.Flame, OochType.Stone],
             hp: 19, atk: 23, def: 17, spd: 11, // total 70
             move_list: [
                 [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Entomb],
@@ -1096,7 +1096,7 @@ module.exports = {
             emote: get_emote_string(client, 'brykurse'),
             name: 'Brykurse',
             oochive_entry: 'Square meatball!', 
-            type: [OochType.Magic],
+            type: [OochType.Stone, OochType.Magic],
             hp: 14, atk: 28, def: 8, spd: 25, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate],
@@ -1380,7 +1380,7 @@ module.exports = {
             emote: get_emote_string(client, 'phaegrim'),
             name: 'Phaegrim',
             oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Ooze],
             hp: 10, atk: 13, def: 12, spd: 20, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle],
@@ -1398,7 +1398,7 @@ module.exports = {
             emote: get_emote_string(client, 'plaghast'),
             name: 'Plaghast',
             oochive_entry: 'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.',
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Ooze],
             hp: 20, atk: 18, def: 17, spd: 25, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [4, Move.Soften], [7, Move.Brittle],
@@ -1624,7 +1624,7 @@ module.exports = {
             emote: get_emote_string(client, 'sapler'),
             name: 'Sapler',
             oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
-            type: [OochType.Tech],
+            type: [OochType.Tech, OochType.Fungal],
             hp: 15, atk: 10, def: 20, spd: 5, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon],
@@ -1641,7 +1641,7 @@ module.exports = {
             emote: get_emote_string(client, 'radient'),
             name: 'Radient',
             oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
-            type: [OochType.Tech],
+            type: [OochType.Tech, OochType.Fungal],
             hp: 25, atk: 20, def: 20, spd: 15, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon],
@@ -1709,7 +1709,7 @@ module.exports = {
             emote: get_emote_string(client, 'oilantern'),
             name: 'Oilantern',
             oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Flame],
             hp: 15, atk: 25, def: 15, spd: 20, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [5, Move.Soften], [7, Move.Fireball],
@@ -1743,7 +1743,7 @@ module.exports = {
             emote: get_emote_string(client, 'faering'),
             name: 'Faering',
             oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Magic],
             hp: 24, atk: 26, def: 16, spd: 9, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.SporeShot], [5, Move.Brittle], [7, Move.Fog],
@@ -1760,7 +1760,7 @@ module.exports = {
             emote: get_emote_string(client, 'kercobble'),
             name: 'Kerkobble',
             oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
-            type: [OochType.Stone],
+            type: [OochType.Stone, OochType.Tech],
             hp: 9, atk: 8, def: 6, spd: 7, // total 30
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast],
@@ -1777,7 +1777,7 @@ module.exports = {
             emote: get_emote_string(client, 'korkobble'),
             name: 'Korkobble',
             oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
-            type: [OochType.Stone],
+            type: [OochType.Stone, OochType.Tech],
             hp: 31, atk: 19, def: 17, spd: 18, // total 85
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.MagicBolt], [8, Move.PebbleBlast],
@@ -1899,7 +1899,7 @@ module.exports = {
             name: 'Tryptid',
             oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
             type: [OochType.Stone, OochType.Fungal],
-            hp: 17, atk: 18, def: 24, spd: 16, // total 75
+            hp: 14, atk: 17, def: 23, spd: 15, // total 70
             move_list: [
                 [1, Move.Bash], [5, Move.Brittle], [8, Move.SporeShot], [10, Move.PebbleBlast],
                 [13, Move.Lurk], [16, Move.Grind], [19, Move.CursedEye], [21, Move.Boulderdash],
