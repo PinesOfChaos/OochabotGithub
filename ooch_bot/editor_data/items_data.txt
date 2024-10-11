@@ -1,11 +1,11 @@
-0|Potion|<:item_potion:1023031022566260776>|heal_inv|potion|0.25|Used to quickly heal 20 HP
-1|Med-Potion|<:item_potion_hi:1023031023598047284>|heal_inv|potion|0.5|An advanced potion which heals 50 HP
-2|Hi-Potion|<:item_potion_magic:1023031024726327426>|heal_inv|potion|1|A high tier potion which heals 200 HP
-3|Prism|<:item_prism:1023031025716179076>|prism_inv|prism|1|A device used to capture Oochamon.
-4|Greater Prism|<:item_prism_greater:1023031027775578112>|prism_inv|prism|1.5|An improved prism with a higher capture rate.
-5|Grand Prism|<:item_prism_grand:1023031026626347028>|prism_inv|prism|2|A further modified prism with an even higher capture rate.
-6|Perfect Prism|<:item_prism_perfect:1023031028782211173>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
-7|Attack Crystal|<:item_attack_crystal:1023031021517672540>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
+0|Potion|<:item_potion:1274937121370669118>|heal_inv|potion|0.25|Used to quickly heal 20 HP
+1|Med-Potion|<:item_potion_hi:1274937134935052328>|heal_inv|potion|0.5|An advanced potion which heals 50 HP
+2|Hi-Potion|<:item_potion_magic:1274937146423115922>|heal_inv|potion|1|A high tier potion which heals 200 HP
+3|Prism|<:item_prism:1274937161262698536>|prism_inv|prism|1|A device used to capture Oochamon.
+4|Greater Prism|<:item_prism_greater:1274937183710740510>|prism_inv|prism|1.5|An improved prism with a higher capture rate.
+5|Grand Prism|<:item_prism_grand:1274937171513442359>|prism_inv|prism|2|A further modified prism with an even higher capture rate.
+6|Perfect Prism|<:item_prism_perfect:1274937195970428928>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
+7|Attack Crystal|<:item_attack_crystal:1274936834883059774>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
 8|ID Card|:identification_card:|other_inv|misc|undefined|Your ID card. You look so fabulous!
 9|Eyedrops|<:item_eyedrops:1176611226403475506>|heal_inv|status|undefined|Removes BLIND status effect.
 10|Shears|<:item_shears:1176611593044381707>|heal_inv|status|undefined|Removes SNARED status effect.

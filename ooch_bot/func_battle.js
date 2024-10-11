@@ -193,7 +193,7 @@ prompt_battle_input: async function(thread, user_id) {
             new ButtonBuilder()
                 .setCustomId('switch')
                 .setLabel('Switch')
-                .setEmoji('<:item_prism:1023031025716179076>')
+                .setEmoji('<:item_prism:1274937161262698536>')
                 .setStyle(ButtonStyle.Success),
         );
 
@@ -231,13 +231,13 @@ prompt_battle_input: async function(thread, user_id) {
                 .setCustomId('heal_button')
                 .setLabel('Healing')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_potion_magic:1023031024726327426>'),
+                .setEmoji('<:item_potion_magic:1274937146423115922>'),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('prism_button')
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_prism:1023031025716179076>')
+                .setEmoji('<:item_prism:1274937161262698536>')
                 .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
         ).addComponents(
             new ButtonBuilder()
@@ -785,7 +785,7 @@ prompt_battle_input: async function(thread, user_id) {
                             
                             // Setup embed
                             displayEmbed.setColor('#f2d751');
-                            displayEmbed.setTitle(`<:item_prism:1023031025716179076> Prism Throw <:item_prism:1023031025716179076>`)
+                            displayEmbed.setTitle(`<:item_prism:1274937161262698536> Prism Throw <:item_prism:1274937161262698536>`)
 
                             // If we caught the Oochamon successfully
                             if (prism_result == true) { 
@@ -912,12 +912,12 @@ prompt_battle_input: async function(thread, user_id) {
             case 'info':
                 let plrOochPrisms = '';
                 for (let ooch of ooch_plr_profile.ooch_party) {
-                    plrOochPrisms += ooch.alive ? '<:item_prism:1023031025716179076>' : `❌`;
+                    plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
                 }
 
                 let enemyOochPrisms = '';
                 for (let ooch of ooch_enemy_profile.ooch_party) {
-                    enemyOochPrisms += ooch.alive ? '<:item_prism:1023031025716179076>' : `❌`;
+                    enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
                 }
 
                 let oochInfoFields = [];
@@ -1100,14 +1100,14 @@ type_to_emote: function(type_string, text_emote = false) {
 
     for (let type of type_string) {
         switch(type) {
-            case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1023031002408439939>'   : '<:icon_flame:1023031001611501648>';   break;
-            case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1023031004220362802>'  : '<:icon_fungal:1023031003381514280>';  break;
-            case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1023031010818015292>'   : '<:icon_magic:1023031009966575686>';   break;
-            case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1023031016845217832>'   : '<:icon_stone:1023031015830204448>';   break;
-            case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1023031012495732746>' : '<:icon_neutral:1023031011703013376>'; break;
-            case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1023031014735491082>'    : '<:icon_ooze:1023031013355569262>';    break;
-            case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1023031018896240640>'    : '<:icon_tech:1023031017730224139>';    break;
-            case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1023031020804645005>'    : '<:icon_void:1023031019466653738>';    break;
+            case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1274936258811920414>'   : '<:icon_flame:1274936249484050472>';   break;
+            case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1274936284497969203>'  : '<:icon_fungal:1274936267884199947>';  break;
+            case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1274936569790468096>'   : '<:icon_magic:1274936558595866787>';   break;
+            case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1274936655236563055>'   : '<:icon_stone:1274936641433243781>';   break;
+            case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1274936596155863080>' : '<:icon_neutral:1274936582583091210>'; break;
+            case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1274936617320316928>'    : '<:icon_ooze:1274936607136288810>';    break;
+            case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1274936688589803613>'    : '<:icon_tech:1274936672022298624>';    break;
+            case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_void:1274936702959485011>';    break;
         }
     }
 
@@ -1723,14 +1723,15 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     
         for (let j = 0; j < ooch.status_effects.length; j++) {
             switch(ooch.status_effects[j]) {
-                case Status.Burn:      ooch_status_emotes[i].push(`<:status_burned:1023031032083128441>`); break;
-                case Status.Infect:    ooch_status_emotes[i].push(`<:status_infected:1023031033744076930>`); break;
-                case Status.Blind:     ooch_status_emotes[i].push(`<:status_blinded:1023031030837416057>`); break;
-                case Status.Digitize:  ooch_status_emotes[i].push(`<:status_digitized:1023031032934576178>`); break;
-                case Status.Snare:     ooch_status_emotes[i].push(`<:status_snared:1023031034733940798>`); break;
-                case Status.Vanish:    ooch_status_emotes[i].push(`<:status_vanish:1023053679328231424>`); break;
-                case Status.Doom:      ooch_status_emotes[i].push(`<:status_doomed:1023053678179012648>`); break;
-                case Status.Double:    ooch_status_emotes[i].push(`<:status_doubled:1170203311199240302>`); break;
+                case Status.Burn:      ooch_status_emotes[i].push(Status.BurnEmote); break;
+                case Status.Infect:    ooch_status_emotes[i].push(Status.InfectEmote); break;
+                case Status.Blind:     ooch_status_emotes[i].push(Status.BlindEmote); break;
+                case Status.Digitize:  ooch_status_emotes[i].push(Status.DigitizeEmote); break;
+                case Status.Snare:     ooch_status_emotes[i].push(Status.SnareEmote); break;
+                case Status.Vanish:    ooch_status_emotes[i].push(Status.VanishEmote); break;
+                case Status.Doom:      ooch_status_emotes[i].push(Status.DoomEmote); break;
+                case Status.Double:    ooch_status_emotes[i].push(Status.DoubleEmote); break;
+                case Status.Focus:     ooch_status_emotes[i].push(Status.FocusedEmote); break;
             }
         }
 
@@ -1833,7 +1834,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
 
         if (slot_to_send != -1) { //if there is a slot to send in
             enemy_send_string_to_send += `**${enemy_profile.name}** sends out ${ooch_enemy_party[slot_to_send].emote} **${ooch_enemy_party[slot_to_send].nickname}!**`;
-            enemy_send_string_to_send += `\n${ooch_enemy_party.map(v => v = v.alive == true ? `<:item_prism:1023031025716179076>` : `❌`).join('')}`;
+            enemy_send_string_to_send += `\n${ooch_enemy_party.map(v => v = v.alive == true ? `<:item_prism:1274937161262698536>` : `❌`).join('')}`;
 
             // Check for on switch in abilities, enemy switching in, player ability activated
             switch (ooch_plr.ability) {
@@ -1922,23 +1923,23 @@ generate_hp_bar: function(ooch, style) {
     hp_string += `\n${db.monster_data.get(ooch.id, 'emote')} `;
 
     if (style == 'plr') {
-        piece_type = `<:p_f_hm:1023031007714226257>`
-        if (sections <= 5) piece_type = `<:p_m_hm:1023031029889511424>`;
-        if (sections <= 2) piece_type = `<:p_l_hm:1023031006581764106>`;
+        piece_type = `<:p_f_hm:1274936333277855775>`
+        if (sections <= 5) piece_type = `<:p_m_hm:1274936384779714680>`;
+        if (sections <= 2) piece_type = `<:p_l_hm:1274936321890193501>`;
 
-        hp_string += `<:p_hs:1023031009106722856>`;
+        hp_string += `<:p_hs:1274936342677028905>`;
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:p_g_hm:1023031005029879818>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:p_he:1023031005797437480>\n`;
+        hp_string += `${`<:p_g_hm:1274936302529155115>`.repeat(10 - sections)}` // Empty slots
+        hp_string += `<:p_he:1274936313123967016>\n`;
     } else {
-        piece_type = `<:e_f_hm:1023030997291380746>`;
-        if (sections <= 5) piece_type = `<:e_m_hm:1023031000730714212>`;
-        if (sections <= 2) piece_type = `<:e_l_hm:1023030999489200199>`;
+        piece_type = `<:e_f_hm:1274935813758521416>`;
+        if (sections <= 5) piece_type = `<:e_m_hm:1274936005777948744>`;
+        if (sections <= 2) piece_type = `<:e_l_hm:1274935997037154417>`;
 
-        hp_string += `<:e_hs:1023030998675496992>`;
+        hp_string += `<:e_hs:1274935985289039915>`;
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:e_g_hm:1023030996192481320>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:e_he:1023030997899542580>\n`;
+        hp_string += `${`<:e_g_hm:1274935806301048974>`.repeat(10 - sections)}` // Empty slots
+        hp_string += `<:e_he:1274935824173240372>\n`;
     }
 
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\`\n**\`Lvl: ${ooch.level}\`**`;

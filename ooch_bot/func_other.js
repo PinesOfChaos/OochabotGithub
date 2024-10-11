@@ -1,6 +1,6 @@
 // For functions that don't fit into the other categories
 const db = require("./db")
-const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, Collection } = require('discord.js');
 const { TypeEmote } = require('./types.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
@@ -61,12 +61,11 @@ module.exports = {
 
     /**
      * Returns the emote text for a specified Oochamon.
-     * @param {Object} client Discord bot client.
+     * @param {Collection} applicationEmojis The collection of emojis
      * @param {String} ooch_name Name of the Oochamon to get emote from.
      */
-    get_emote_string: function(client, ooch_name) {
-        let emojiList = client.emojis.cache;
-        emojiList = emojiList.filter(v => v.name === _.toLower(ooch_name));
+    get_emote_string: function(applicationEmojis, ooch_name) {
+        emojiList = applicationEmojis.filter(v => v.name === _.toLower(ooch_name));
         emojiList = Array.from(emojiList.values());
         if (emojiList.length === 0) throw Error(`Unable to find Oochamon emote for the name ${ooch_name}!`);
         return `<:${emojiList[0].name}:${emojiList[0].id}>`;
