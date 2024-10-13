@@ -91,7 +91,7 @@ module.exports = {
         await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async msg => {
             await db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
-
+         
         if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
             await event_process(interaction.user.id, thread, db.events_data.get('ev_intro'));
         } else {

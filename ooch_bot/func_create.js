@@ -1,3 +1,4 @@
+const { Collection } = require("discord.js");
 const db = require("./db");
 const { Zone } = require('./types');
 const fs = require("fs");
@@ -7,9 +8,9 @@ module.exports = {
      * Creates a tile data object and adds it to the database.
      * @param {Number} id The ID of the tile
      * @param {String} use The use of the tile
-     * @param {Array} guilds All the emote guilds to put the emotes in
+     * @param {Collection} emojis The emojis collection to use.
      */
-    create_tile: function(id, use, guilds) {
+    create_tile: function(id, use, emojis) {
 
         // This line IDs the ID so I can set the ID
         db.tile_data.set(id, id, 'id');
@@ -25,32 +26,25 @@ module.exports = {
 
         let splitId = id.split('_');
         let zoneEmoteIds = {};
-        for (let guild of guilds) {
-            if (id.includes('c')) {
-                for (let zoneId of Object.values(Zone)) {
-                    zoneId = zoneId < 10 ? `0${zoneId}` : zoneId; 
-                    let emoji = guild.emojis.cache.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`)
-                    if (emoji != undefined) {
-                        zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote_guild_id: guild.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
-                    }
-                }
-            } else {
-                let emoji = guild.emojis.cache.find(emoji => emoji.name === id)
+        if (id.includes('c')) {
+            for (let zoneId of Object.values(Zone)) {
+                zoneId = zoneId < 10 ? `0${zoneId}` : zoneId; 
+                let emoji = emojis.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`)
                 if (emoji != undefined) {
-                    db.tile_data.set(id, emoji.id, 'emote_id');
-                    db.tile_data.set(id, `<:${id}:${emoji.id}>`, 'emote');
-                    db.tile_data.set(id, guild.id, 'emote_guild_id');
-                    db.tile_data.set(id, `${id}.png`, 'file');
-                    break;
-                } else {
-                    continue;
+                    zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
                 }
-            } 
-        }
+            }
+        } else {
+            let emoji = emojis.find(emoji => emoji.name === id)
+            if (emoji != undefined) {
+                db.tile_data.set(id, emoji.id, 'emote_id');
+                db.tile_data.set(id, `<:${id}:${emoji.id}>`, 'emote');
+                db.tile_data.set(id, `${id}.png`, 'file');
+            }
+        } 
 
         if (id.includes('c')) {
             db.tile_data.set(id, false, 'emote_id');
-            db.tile_data.set(id, false, 'emote_guild_id');
             db.tile_data.set(id, false, 'emote');
             db.tile_data.set(id, `c00_${splitId[1]}.png`, 'file');
             db.tile_data.set(id, zoneEmoteIds, 'zone_emote_ids');

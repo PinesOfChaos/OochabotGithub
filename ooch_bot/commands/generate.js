@@ -15,7 +15,9 @@ module.exports = {
         if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
             return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
         }
-        
+
+        let applicationEmojis = await client.application.emojis.fetch();
+
         //#region Tile Data
         // ZONES IDs
         // 0: GLOBAL
@@ -29,112 +31,107 @@ module.exports = {
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
 
-        let TileGuilds = [];
-        for (let guildId of TileEmoteGuildsArray) {
-            let guild = await client.guilds.fetch(guildId);
-            TileGuilds.push(guild);
-        }
-
-        //           ID            Use            Emote Guilds
+        //           ID            Use            applicationEmojis
         // Global
-        create_tile(`t${zG}_000`,  Tile.Wall,     TileGuilds ); //Black 
-        create_tile(`t${zG}_001`,  Tile.Floor,    TileGuilds ); //Teleporter 
-        create_tile(`t${zG}_003`,  Tile.Floor,    TileGuilds ); //Arrow Left
-        create_tile(`t${zG}_004`,  Tile.Floor,    TileGuilds ); //Arrow Up
-        create_tile(`t${zG}_005`,  Tile.Floor,    TileGuilds ); //Arrow Right
-        create_tile(`t${zG}_006`,  Tile.Floor,    TileGuilds ); //Arrow Down
-        create_tile(`t${zG}_007`,  Tile.Wall,     TileGuilds ); //Shop Mini
-        create_tile(`t${zG}_008`,  Tile.Wall,     TileGuilds ); //Shop Upper Left
-        create_tile(`t${zG}_009`,  Tile.Wall,     TileGuilds ); //Shop Upper Right
-        create_tile(`t${zG}_010`,  Tile.Shop,     TileGuilds ); //Shop Lower Left (interactable tile)
-        create_tile(`t${zG}_011`,  Tile.Wall,     TileGuilds ); //Shop Lower Right 
+        create_tile(`t${zG}_000`,  Tile.Wall,     applicationEmojis ); //Black 
+        create_tile(`t${zG}_001`,  Tile.Floor,    applicationEmojis ); //Teleporter 
+        create_tile(`t${zG}_003`,  Tile.Floor,    applicationEmojis ); //Arrow Left
+        create_tile(`t${zG}_004`,  Tile.Floor,    applicationEmojis ); //Arrow Up
+        create_tile(`t${zG}_005`,  Tile.Floor,    applicationEmojis ); //Arrow Right
+        create_tile(`t${zG}_006`,  Tile.Floor,    applicationEmojis ); //Arrow Down
+        create_tile(`t${zG}_007`,  Tile.Wall,     applicationEmojis ); //Shop Mini
+        create_tile(`t${zG}_008`,  Tile.Wall,     applicationEmojis ); //Shop Upper Left
+        create_tile(`t${zG}_009`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
+        create_tile(`t${zG}_010`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
+        create_tile(`t${zG}_011`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
         
         // Fungal
-        create_tile(`t${zF}_000`,  Tile.Floor,    TileGuilds ); //Fungal Floor
-        create_tile(`t${zF}_001`,  Tile.Wall,     TileGuilds ); //Fungal Wall
-        create_tile(`t${zF}_002`,  Tile.Grass,    TileGuilds ); //Fungal Grass
-        create_tile(`t${zF}_003`,  Tile.Wall,     TileGuilds ); //Fungal Wall
-        create_tile(`t${zF}_004`,  Tile.Floor,    TileGuilds ); //Fungal Exit
-        create_tile(`t${zF}_005`,  Tile.Floor,    TileGuilds ); //Fungal Floor Entrance
-        create_tile(`t${zF}_006`,  Tile.Wall,     TileGuilds ); //Fungal Inaccessible Area
+        create_tile(`t${zF}_000`,  Tile.Floor,    applicationEmojis ); //Fungal Floor
+        create_tile(`t${zF}_001`,  Tile.Wall,     applicationEmojis ); //Fungal Wall
+        create_tile(`t${zF}_002`,  Tile.Grass,    applicationEmojis ); //Fungal Grass
+        create_tile(`t${zF}_003`,  Tile.Wall,     applicationEmojis ); //Fungal Wall
+        create_tile(`t${zF}_004`,  Tile.Floor,    applicationEmojis ); //Fungal Exit
+        create_tile(`t${zF}_005`,  Tile.Floor,    applicationEmojis ); //Fungal Floor Entrance
+        create_tile(`t${zF}_006`,  Tile.Wall,     applicationEmojis ); //Fungal Inaccessible Area
         
         // Sandy
-        create_tile(`t${zS}_000`,  Tile.Floor,    TileGuilds ); //Sandy Floor
-        create_tile(`t${zS}_001`,  Tile.Wall,     TileGuilds ); //Sandy Wall
-        create_tile(`t${zS}_002`,  Tile.Grass,    TileGuilds ); //Sandy Grass
-        create_tile(`t${zS}_003`,  Tile.Wall,     TileGuilds ); //HUB Wall Top
-        create_tile(`t${zS}_004`,  Tile.Wall,     TileGuilds ); //HUB Wall Middle
-        create_tile(`t${zS}_005`,  Tile.Wall,     TileGuilds ); //Hub Wall Bottom
-        create_tile(`t${zS}_006`,  Tile.Wall,     TileGuilds ); //Hub Gate Top
-        create_tile(`t${zS}_007`,  Tile.Wall,     TileGuilds ); //Hub Gate Bottom
-        create_tile(`t${zS}_008`,  Tile.Wall,     TileGuilds ); //Hub Tent
-        create_tile(`t${zS}_010`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Left
-        create_tile(`t${zS}_011`,  Tile.Wall,     TileGuilds ); //Hub Dropship Upper Right
-        create_tile(`t${zS}_012`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Left
-        create_tile(`t${zS}_013`,  Tile.Wall,     TileGuilds ); //Hub Dropship Lower Right
-        create_tile(`t${zS}_014`,  Tile.Wall,     TileGuilds ); //Desert Wall Lower
-        create_tile(`t${zS}_015`,  Tile.Wall,     TileGuilds ); //Desert Wall Upper
-        create_tile(`t${zS}_016`,  Tile.Floor,    TileGuilds ); //Desert Exit
-        create_tile(`t${zS}_017`,  Tile.Wall,     TileGuilds ); //Hub Barrel
-        create_tile(`t${zS}_018`,  Tile.Board,    TileGuilds ); //Job Board
-        create_tile(`t${zS}_019`,  Tile.Wall,     TileGuilds ); //Sandy Inaccessible Area
+        create_tile(`t${zS}_000`,  Tile.Floor,    applicationEmojis ); //Sandy Floor
+        create_tile(`t${zS}_001`,  Tile.Wall,     applicationEmojis ); //Sandy Wall
+        create_tile(`t${zS}_002`,  Tile.Grass,    applicationEmojis ); //Sandy Grass
+        create_tile(`t${zS}_003`,  Tile.Wall,     applicationEmojis ); //HUB Wall Top
+        create_tile(`t${zS}_004`,  Tile.Wall,     applicationEmojis ); //HUB Wall Middle
+        create_tile(`t${zS}_005`,  Tile.Wall,     applicationEmojis ); //Hub Wall Bottom
+        create_tile(`t${zS}_006`,  Tile.Wall,     applicationEmojis ); //Hub Gate Top
+        create_tile(`t${zS}_007`,  Tile.Wall,     applicationEmojis ); //Hub Gate Bottom
+        create_tile(`t${zS}_008`,  Tile.Wall,     applicationEmojis ); //Hub Tent
+        create_tile(`t${zS}_010`,  Tile.Wall,     applicationEmojis ); //Hub Dropship Upper Left
+        create_tile(`t${zS}_011`,  Tile.Wall,     applicationEmojis ); //Hub Dropship Upper Right
+        create_tile(`t${zS}_012`,  Tile.Wall,     applicationEmojis ); //Hub Dropship Lower Left
+        create_tile(`t${zS}_013`,  Tile.Wall,     applicationEmojis ); //Hub Dropship Lower Right
+        create_tile(`t${zS}_014`,  Tile.Wall,     applicationEmojis ); //Desert Wall Lower
+        create_tile(`t${zS}_015`,  Tile.Wall,     applicationEmojis ); //Desert Wall Upper
+        create_tile(`t${zS}_016`,  Tile.Floor,    applicationEmojis ); //Desert Exit
+        create_tile(`t${zS}_017`,  Tile.Wall,     applicationEmojis ); //Hub Barrel
+        create_tile(`t${zS}_018`,  Tile.Board,    applicationEmojis ); //Job Board
+        create_tile(`t${zS}_019`,  Tile.Wall,     applicationEmojis ); //Sandy Inaccessible Area
 
         // Cave
-        create_tile(`t${zC}_000`,  Tile.Grass,    TileGuilds ); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
-        create_tile(`t${zC}_001`,  Tile.Floor,    TileGuilds ); //Cave Floor Entrance
-        create_tile(`t${zC}_002`,  Tile.Wall,     TileGuilds ); //Cave Wall
-        create_tile(`t${zC}_003`,  Tile.Wall,     TileGuilds ); //Lava
-        create_tile(`t${zC}_004`,  Tile.Floor,    TileGuilds ); //Cave Exit
-        create_tile(`t${zC}_005`,  Tile.Wall,     TileGuilds ); //Cave Stalagtite
-        create_tile(`t${zC}_006`,  Tile.Wall,     TileGuilds ); //Cave Inaccessible Area
+        create_tile(`t${zC}_000`,  Tile.Grass,    applicationEmojis ); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
+        create_tile(`t${zC}_001`,  Tile.Floor,    applicationEmojis ); //Cave Floor Entrance
+        create_tile(`t${zC}_002`,  Tile.Wall,     applicationEmojis ); //Cave Wall
+        create_tile(`t${zC}_003`,  Tile.Wall,     applicationEmojis ); //Lava
+        create_tile(`t${zC}_004`,  Tile.Floor,    applicationEmojis ); //Cave Exit
+        create_tile(`t${zC}_005`,  Tile.Wall,     applicationEmojis ); //Cave Stalagtite
+        create_tile(`t${zC}_006`,  Tile.Wall,     applicationEmojis ); //Cave Inaccessible Area
 
         // Obsidian
-        create_tile(`t${zO}_000`,  Tile.Floor,    TileGuilds ); //Obsidian Floor
-        create_tile(`t${zO}_001`,  Tile.Wall,     TileGuilds ); //Obsidian Wall
-        create_tile(`t${zO}_002`,  Tile.Grass,    TileGuilds ); //Obsidian Grass
+        create_tile(`t${zO}_000`,  Tile.Floor,    applicationEmojis ); //Obsidian Floor
+        create_tile(`t${zO}_001`,  Tile.Wall,     applicationEmojis ); //Obsidian Wall
+        create_tile(`t${zO}_002`,  Tile.Grass,    applicationEmojis ); //Obsidian Grass
         
         // NPCs
-        create_tile(`c_000`,       Tile.Npc,      TileGuilds ); // Main Character
-        create_tile(`c_001`,       Tile.Npc,      TileGuilds ); // Basic NPC Obsidian
-        create_tile(`c_002`,       Tile.Npc,      TileGuilds ); // Basic NPC Desert Rags
-        create_tile(`c_003`,       Tile.Npc,      TileGuilds ); // Basic NPC Neon Blue
-        create_tile(`c_004`,       Tile.Npc,      TileGuilds ); // Basic NPC Fungal
-        create_tile(`c_005`,       Tile.Npc,      TileGuilds ); // Global Scientist
-        create_tile(`c_006`,       Tile.Npc,      TileGuilds ); // Global Elderly Researcher
-        create_tile(`c_007`,       Tile.Npc,      TileGuilds ); // Global Rival
-        create_tile(`c_008`,       Tile.Npc,      TileGuilds ); // Global Desert Raider
-        create_tile(`c_009`,       Tile.Npc,      TileGuilds ); // Global Department Head
-        create_tile(`c_010`,       Tile.Npc,      TileGuilds ); // Global Hollowed Scientist
-        create_tile(`c_011`,       Tile.Npc,      TileGuilds ); // Shopkeeper
-        create_tile(`c_012`,       Tile.Int,      TileGuilds ); // Crater
-        create_tile(`c_013`,       Tile.Int,      TileGuilds ); // Chest
+        create_tile(`c_000`,       Tile.Npc,      applicationEmojis ); // Main Character
+        create_tile(`c_001`,       Tile.Npc,      applicationEmojis ); // Basic NPC Obsidian
+        create_tile(`c_002`,       Tile.Npc,      applicationEmojis ); // Basic NPC Desert Rags
+        create_tile(`c_003`,       Tile.Npc,      applicationEmojis ); // Basic NPC Neon Blue
+        create_tile(`c_004`,       Tile.Npc,      applicationEmojis ); // Basic NPC Fungal
+        create_tile(`c_005`,       Tile.Npc,      applicationEmojis ); // Global Scientist
+        create_tile(`c_006`,       Tile.Npc,      applicationEmojis ); // Global Elderly Researcher
+        create_tile(`c_007`,       Tile.Npc,      applicationEmojis ); // Global Rival
+        create_tile(`c_008`,       Tile.Npc,      applicationEmojis ); // Global Desert Raider
+        create_tile(`c_009`,       Tile.Npc,      applicationEmojis ); // Global Department Head
+        create_tile(`c_010`,       Tile.Npc,      applicationEmojis ); // Global Hollowed Scientist
+        create_tile(`c_011`,       Tile.Npc,      applicationEmojis ); // Shopkeeper
+        create_tile(`c_012`,       Tile.Int,      applicationEmojis ); // Crater
+        create_tile(`c_013`,       Tile.Int,      applicationEmojis ); // Chest
         
         //#endregion
 
         //#region Item Data
         //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
-        create_item(0, 'Potion',         '<:item_potion:1023031022566260776>',         'heal_inv',  'potion',  40,     20,      'Used to quickly heal 20 HP')
-        create_item(1, 'Med-Potion',     '<:item_potion_hi:1023031023598047284>',      'heal_inv',  'potion',  100,    50,      'An advanced potion which heals 50 HP')
-        create_item(2, 'Hi-Potion',      '<:item_potion_magic:1023031024726327426>',   'heal_inv',  'potion',  250,    200,     'A high tier potion which heals 200 HP')
-        create_item(3, 'Prism',          '<:item_prism:1023031025716179076>',          'prism_inv', 'prism',   50,     1,       'A device used to capture Oochamon.')
-        create_item(4, 'Greater Prism',  '<:item_prism_greater:1023031027775578112>',  'prism_inv', 'prism',   150,    1.5,     'An improved prism with a higher capture rate.')
-        create_item(5, 'Grand Prism',    '<:item_prism_grand:1023031026626347028>',    'prism_inv', 'prism',   500,    2,       'A further modified prism with an even higher capture rate.')
-        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1023031028782211173>',  'prism_inv', 'prism',   10000,  1000,    'A prism with a shattered casing, nothing escapes its pull.')
-        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1023031021517672540>', 'other_inv', 'misc',    200,    1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
+        create_item(0, 'Potion',         '<:item_potion:1274937121370669118>',         'heal_inv',  'potion',  40,     20,      'Used to quickly heal 20 HP')
+        create_item(1, 'Med-Potion',     '<:item_potion_hi:1274937134935052328>',      'heal_inv',  'potion',  100,    50,      'An advanced potion which heals 50 HP')
+        create_item(2, 'Hi-Potion',      '<:item_potion_magic:1274937146423115922>',   'heal_inv',  'potion',  250,    200,     'A high tier potion which heals 200 HP')
+        create_item(3, 'Prism',          '<:item_prism:1274937161262698536>',          'prism_inv', 'prism',   50,     1,       'A device used to capture Oochamon.')
+        create_item(4, 'Greater Prism',  '<:item_prism_greater:1274937183710740510>',  'prism_inv', 'prism',   150,    1.5,     'An improved prism with a higher capture rate.')
+        create_item(5, 'Grand Prism',    '<:item_prism_grand:1274937171513442359>',    'prism_inv', 'prism',   500,    2,       'A further modified prism with an even higher capture rate.')
+        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1274937195970428928>',  'prism_inv', 'prism',   10000,  1000,    'A prism with a shattered casing, nothing escapes its pull.')
+        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1274936834883059774>', 'other_inv', 'misc',    200,    1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
         create_item(8, 'ID Card',        ':identification_card:',                      'other_inv', 'misc',    -1,     1,       'Your ID card. You look so fabulous!')
 
         //NEW ITEMS
-        create_item(9,  'Eyedrops',      '<:item_eyedrops:1176611226403475506>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
-        create_item(10, 'Shears',        '<:item_shears:1176611593044381707>',         'heal_inv',  'status',  200,   Status.Snare,     'Removes SNARED status effect.')
-        create_item(11, 'Daylilly',      '<:item_daylily:1176611228995555417>',        'heal_inv',  'status',  200,   Status.Doom,      'Removes DOOMED status effect.')
-        create_item(12, 'Antiparasite',  '<:item_antiparasite:1176611225166172290>',   'heal_inv',  'status',  200,   Status.Infect,    'Removes INFECTED status effect.')
-        create_item(13, 'Debug Chip',    '<:item_debugchip:1176611228127342622>',      'heal_inv',  'status',  200,   Status.Digitize,  'Removes DIGITIZED status effect.')
-        create_item(14, 'Nullifying Sphere', '<:item_null_sphere:1265063633780473876>','heal_inv',  'status',  1200,  Status.All,       'Removes all status effects.')
+        create_item(9,  'Eyedrops',      '<:item_eyedrops:1274937019994472459>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
+        create_item(10, 'Shears',        '<:item_shears:1274937209652514838>',         'heal_inv',  'status',  200,   Status.Snare,     'Removes SNARED status effect.')
+        create_item(11, 'Daylily',       '<:item_daylily:1274936962125402143>',        'heal_inv',  'status',  200,   Status.Doom,      'Removes DOOMED status effect.')
+        create_item(12, 'Antiparasite',  '<:item_antiparasite:1274936818823069789>',   'heal_inv',  'status',  200,   Status.Infect,    'Removes INFECTED status effect.')
+        create_item(13, 'Debug Chip',    '<:item_debugchip:1274936992462930001>',      'heal_inv',  'status',  200,   Status.Digitize,  'Removes DIGITIZED status effect.')
+        create_item(14, 'Cooling Balm',  '<:item_coolingbalm:1274936928625758269>',    'heal_inv',  'status',  200,   Status.Burn,      'Removes BURNED status effect.')
+        create_item(15, 'Nullifying Sphere', '<:item_null_sphere:1274937109995716648>','heal_inv',  'status',  1200,  Status.All,       'Removes all status effects.')
 
-        create_item(15, 'Greem Boostgem', '<:item_iv_hp:1265048909600915516>',         'other_inv', 'iv',     25000, 'hp',    'Permanently increases Health of an Oochamon.')
-        create_item(16, 'Red Boostgem',   '<:item_iv_atk:1265048907759489079>',        'other_inv', 'iv',     25000, 'atk',   'Permanently increases Attack of an Oochamon.')
-        create_item(17, 'Blue Boostgem',  '<:item_iv_def:1265048908728369202>',        'other_inv', 'iv',     25000, 'def',   'Permanently increases Defense of an Oochamon.')
-        create_item(18, 'Yellow Boostgem','<:item_iv_spd:1265048907143053455>',        'other_inv', 'iv',     25000, 'spd',   'Permanently increases Speed of an Oochamon.')
+        create_item(16, 'Greem Boostgem', '<:item_iv_hp:1274937089666056294>',         'other_inv', 'iv',     25000, 'hp',    'Permanently increases Health of an Oochamon.')
+        create_item(17, 'Red Boostgem',   '<:item_iv_atk:1274937039460237382>',        'other_inv', 'iv',     25000, 'atk',   'Permanently increases Attack of an Oochamon.')
+        create_item(18, 'Blue Boostgem',  '<:item_iv_def:1274937065317990486>',        'other_inv', 'iv',     25000, 'def',   'Permanently increases Defense of an Oochamon.')
+        create_item(19, 'Yellow Boostgem','<:item_iv_spd:1274937099984048138>',        'other_inv', 'iv',     25000, 'spd',   'Permanently increases Speed of an Oochamon.')
         
         //#endregion
 
@@ -327,15 +324,15 @@ module.exports = {
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Status Data
         //            ID,  NAME,        EMOTE                                       DESCRIPTION
-        create_status(0,   'Burned',    '<:status_burned:1023031032083128441>',     'Burns the Oochamon at the end of each turn, dealing damage.');
-        create_status(1,   'Infected',  '<:status_infected:1023031033744076930>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
-        create_status(2,   'Blinded',   '<:status_blinded:1023031030837416057>',    'Blinds the Oochamon, reducing its accuracy.');
-        create_status(3,   'Digitized', '<:status_digitized:1023031032934576178>',  'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
-        create_status(4,   'Snared',    '<:status_snared:1023031034733940798>',     'Ensnares the Oochamon, forcing it to go second in battle.');
-        create_status(5,   'Vanished',  '<:status_vanish:1023053679328231424>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
-        create_status(6,   'Doomed',    '<:status_doomed:1023053678179012648>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
-        create_status(7,   'Doubled',   '<:status_doubled:1170203311199240302>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-        create_status(8,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+        create_status(0,   'Burned',    '<:status_burned:1274938453569830997>',     'Burns the Oochamon at the end of each turn, dealing damage.');
+        create_status(1,   'Infected',  '<:status_infected:1274938506225123358>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
+        create_status(2,   'Blinded',   '<:status_blinded:1274938440940781590>',    'Blinds the Oochamon, reducing its accuracy.');
+        create_status(3,   'Digitized', '<:status_digitized:1274938471034654770>',  'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
+        create_status(4,   'Snared',    '<:status_snared:1274938520821305355>',     'Ensnares the Oochamon, forcing it to go second in battle.');
+        create_status(5,   'Vanished',  '<:status_vanish:1274938531864776735>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
+        create_status(6,   'Doomed',    '<:status_doomed:1274938483924009062>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
+        create_status(7,   'Doubled',   '<:status_doubled:1274938495953014845>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+        create_status(7,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
 
         
         //#endregion
@@ -351,7 +348,7 @@ module.exports = {
         // Sporbee
         create_monster({
             id: 0,
-            emote: get_emote_string(client, 'sporbee'),
+            emote: get_emote_string(applicationEmojis, 'sporbee'),
             name: 'Sporbee',
             oochive_entry: 'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.', 
             type: [OochType.Fungal],
@@ -366,7 +363,7 @@ module.exports = {
         // Stingrowth
         create_monster({
             id: 1,
-            emote: get_emote_string(client, 'stingrowth'),
+            emote: get_emote_string(applicationEmojis, 'stingrowth'),
             name: 'Stingrowth',
             oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', 
             type: [OochType.Fungal],
@@ -381,7 +378,7 @@ module.exports = {
         // Queenect
         create_monster({
             id: 2,
-            emote: get_emote_string(client, 'queenect'),
+            emote: get_emote_string(applicationEmojis, 'queenect'),
             name: 'Queenect',
             oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', 
             type: [OochType.Fungal],
@@ -396,7 +393,7 @@ module.exports = {
         // Roocky
         create_monster({
             id: 3,
-            emote: get_emote_string(client, 'roocky'),
+            emote: get_emote_string(applicationEmojis, 'roocky'),
             name: 'Roocky',
             oochive_entry: 'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.', 
             type: [OochType.Stone],
@@ -410,7 +407,7 @@ module.exports = {
         // Graknight
         create_monster({
             id: 4,
-            emote: get_emote_string(client, 'graknight'),
+            emote: get_emote_string(applicationEmojis, 'graknight'),
             name: 'Graknight',
             oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.', 
             type: [OochType.Stone],
@@ -424,7 +421,7 @@ module.exports = {
         // Kracking
         create_monster({
             id: 5,
-            emote: get_emote_string(client, 'kracking'),
+            emote: get_emote_string(applicationEmojis, 'kracking'),
             name: 'Kracking',
             oochive_entry: 'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.', 
             type: [OochType.Stone],
@@ -438,7 +435,7 @@ module.exports = {
         // Puppyre
         create_monster({
             id: 6,
-            emote: get_emote_string(client, 'puppyre'),
+            emote: get_emote_string(applicationEmojis, 'puppyre'),
             name: 'Puppyre',
             oochive_entry: 'A very good boy, empowered by the spiraling patterns on its body.', 
             type: [OochType.Flame],
@@ -453,7 +450,7 @@ module.exports = {
         // Dogglow
         create_monster({
             id: 7,
-            emote: get_emote_string(client, 'dogglow'),
+            emote: get_emote_string(applicationEmojis, 'dogglow'),
             name: 'Dogglow',
             oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', 
             type: [OochType.Flame],
@@ -468,7 +465,7 @@ module.exports = {
         // Hounuke
         create_monster({
             id: 8,
-            emote: get_emote_string(client, 'hounuke'),
+            emote: get_emote_string(applicationEmojis, 'hounuke'),
             name: 'Hounuke',
             oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 
             type: [OochType.Flame],
@@ -483,7 +480,7 @@ module.exports = {
         // Glither
         create_monster({
             id: 9,
-            emote: get_emote_string(client, 'glither'),
+            emote: get_emote_string(applicationEmojis, 'glither'),
             name: 'Glither',
             oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.', 
             type: [OochType.Stone],
@@ -498,7 +495,7 @@ module.exports = {
         // Sparafura
         create_monster({
             id: 10,
-            emote: get_emote_string(client, 'sparafura'),
+            emote: get_emote_string(applicationEmojis, 'sparafura'),
             name: 'Sparafura',
             oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 
             type: [OochType.Stone],
@@ -513,7 +510,7 @@ module.exports = {
         // Constone
         create_monster({
             id: 11,
-            emote: get_emote_string(client, 'constone'),
+            emote: get_emote_string(applicationEmojis, 'constone'),
             name: 'Constone',
             oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 
             type: [OochType.Stone],
@@ -527,7 +524,7 @@ module.exports = {
         // Amephyst
         create_monster({
             id: 12,
-            emote: get_emote_string(client, 'amephyst'),
+            emote: get_emote_string(applicationEmojis, 'amephyst'),
             name: 'Amephyst',
             oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
             type: [OochType.Stone, OochType.Magic],
@@ -542,7 +539,7 @@ module.exports = {
         // Widew
         create_monster({
             id: 13,
-            emote: get_emote_string(client, 'widew'),
+            emote: get_emote_string(applicationEmojis, 'widew'),
             name: 'Widew',
             oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.', 
             type: [OochType.Fungal],
@@ -556,7 +553,7 @@ module.exports = {
         // Tarotula
         create_monster({
             id: 14,
-            emote: get_emote_string(client, 'tarotula'),
+            emote: get_emote_string(applicationEmojis, 'tarotula'),
             name: 'Tarotula',
             oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 
             type: [OochType.Fungal],
@@ -572,7 +569,7 @@ module.exports = {
         //Moldot
         create_monster({
             id: 15,
-            emote: get_emote_string(client, 'moldot'),
+            emote: get_emote_string(applicationEmojis, 'moldot'),
             name: 'Moldot',
             oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
             type: [OochType.Fungal],
@@ -589,7 +586,7 @@ module.exports = {
         // Moldire
         create_monster({
             id: 16,
-            emote: get_emote_string(client, 'moldire'),
+            emote: get_emote_string(applicationEmojis, 'moldire'),
             name: 'Moldire',
             oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
             type: [OochType.Fungal],
@@ -606,7 +603,7 @@ module.exports = {
         // Charlite
         create_monster({
             id: 17,
-            emote: get_emote_string(client, 'charlite'),
+            emote: get_emote_string(applicationEmojis, 'charlite'),
             name: 'Charlite',
             oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
             type: [OochType.Flame],
@@ -623,7 +620,7 @@ module.exports = {
         // Darcoal
         create_monster({
             id: 18,
-            emote: get_emote_string(client, 'darcoal'),
+            emote: get_emote_string(applicationEmojis, 'darcoal'),
             name: 'Darcoal',
             oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
             type: [OochType.Flame],
@@ -640,7 +637,7 @@ module.exports = {
         // Torchoir
         create_monster({
             id: 19,
-            emote: get_emote_string(client, 'torchoir'),
+            emote: get_emote_string(applicationEmojis, 'torchoir'),
             name: 'Torchoir',
             oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
             type: [OochType.Flame],
@@ -658,7 +655,7 @@ module.exports = {
         // Chantern
         create_monster({
             id: 20,
-            emote: get_emote_string(client, 'chantern'),
+            emote: get_emote_string(applicationEmojis, 'chantern'),
             name: 'Chantern',
             oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 
             type: [OochType.Flame],
@@ -675,7 +672,7 @@ module.exports = {
         // Eluslug
         create_monster({
             id: 21,
-            emote: get_emote_string(client, 'eluslug'),
+            emote: get_emote_string(applicationEmojis, 'eluslug'),
             name: 'Eluslug',
             oochive_entry: 'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.', 
             type: [OochType.Tech],
@@ -691,7 +688,7 @@ module.exports = {
         // Jellime
         create_monster({
             id: 22,
-            emote: get_emote_string(client, 'jellime'),
+            emote: get_emote_string(applicationEmojis, 'jellime'),
             name: 'Jellime',
             oochive_entry: 'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.', 
             type: [OochType.Ooze],
@@ -707,7 +704,7 @@ module.exports = {
         // Meduslime
         create_monster({
             id: 23,
-            emote: get_emote_string(client, 'meduslime'),
+            emote: get_emote_string(applicationEmojis, 'meduslime'),
             name: 'Meduslime',
             oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 
             type: [OochType.Ooze],
@@ -723,7 +720,7 @@ module.exports = {
         // Tisparc
         create_monster({
             id: 24,
-            emote: get_emote_string(client, 'tisparc'),
+            emote: get_emote_string(applicationEmojis, 'tisparc'),
             name: 'Tisparc',
             oochive_entry: 'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', 
             type: [OochType.Magic],
@@ -740,7 +737,7 @@ module.exports = {
         // Wizzap
         create_monster({
             id: 25,
-            emote: get_emote_string(client, 'wizzap'),
+            emote: get_emote_string(applicationEmojis, 'wizzap'),
             name: 'Wizzap',
             oochive_entry: 'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', 
             type: [OochType.Magic],
@@ -757,7 +754,7 @@ module.exports = {
         // Blipoint
         create_monster({
             id: 26,
-            emote: get_emote_string(client, 'blipoint'),
+            emote: get_emote_string(applicationEmojis, 'blipoint'),
             name: 'Blipoint',
             oochive_entry: 'An eye peeks through a rift in space-time.', 
             type: [OochType.Magic], 
@@ -773,7 +770,7 @@ module.exports = {
         // Rerune
         create_monster({
             id: 27,
-            emote: get_emote_string(client, 'rerune'),
+            emote: get_emote_string(applicationEmojis, 'rerune'),
             name: 'Rerune',
             oochive_entry: 'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 
             type: [OochType.Magic], 
@@ -789,7 +786,7 @@ module.exports = {
         // Temporath
         create_monster({
             id: 28,
-            emote: get_emote_string(client, 'temporath'),
+            emote: get_emote_string(applicationEmojis, 'temporath'),
             name: 'Temporath',
             oochive_entry: 'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.', 
             type: [OochType.Magic], 
@@ -805,7 +802,7 @@ module.exports = {
         // Nucleorb
         create_monster({
             id: 29,
-            emote: get_emote_string(client, 'nucleorb'),
+            emote: get_emote_string(applicationEmojis, 'nucleorb'),
             name: 'Nucleorb',
             oochive_entry: 'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', 
             type: [OochType.Ooze], 
@@ -821,7 +818,7 @@ module.exports = {
         // Amebite
         create_monster({
             id: 30,
-            emote: get_emote_string(client, 'amebite'),
+            emote: get_emote_string(applicationEmojis, 'amebite'),
             name: 'Amebite',
             oochive_entry: 'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', 
             type: [OochType.Ooze], 
@@ -837,7 +834,7 @@ module.exports = {
         // Amalgrime
         create_monster({
             id: 31,
-            emote: get_emote_string(client, 'amalgrime'),
+            emote: get_emote_string(applicationEmojis, 'amalgrime'),
             name: 'Amalgrime',
             oochive_entry: 'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 
             type: [OochType.Ooze], 
@@ -853,7 +850,7 @@ module.exports = {
         // Drilline
         create_monster({
             id: 32,
-            emote: get_emote_string(client, 'drilline'),
+            emote: get_emote_string(applicationEmojis, 'drilline'),
             name: 'Drilline',
             oochive_entry: 'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.', 
             type: [OochType.Tech], 
@@ -869,7 +866,7 @@ module.exports = {
         // Erwrek
         create_monster({
             id: 33,
-            emote: get_emote_string(client, 'erwrek'),
+            emote: get_emote_string(applicationEmojis, 'erwrek'),
             name: 'Erwrek',
             oochive_entry: 'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', 
             type: [OochType.Tech], 
@@ -885,7 +882,7 @@ module.exports = {
         // Purif-i
         create_monster({
             id: 34,
-            emote: get_emote_string(client, 'purifi'),
+            emote: get_emote_string(applicationEmojis, 'purifi'),
             name: 'Purif-i',
             oochive_entry: 'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.', 
             type: [OochType.Void, OochType.Stone], 
@@ -902,7 +899,7 @@ module.exports = {
         // Cromet
         create_monster({
             id: 35,
-            emote: get_emote_string(client, 'cromet'),
+            emote: get_emote_string(applicationEmojis, 'cromet'),
             name: 'Cromet',
             oochive_entry: 'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.', 
             type: [OochType.Stone], 
@@ -918,7 +915,7 @@ module.exports = {
         // Lobstar
         create_monster({
             id: 36,
-            emote: get_emote_string(client, 'lobstar'),
+            emote: get_emote_string(applicationEmojis, 'lobstar'),
             name: 'Lobstar',
             oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 
             type: [OochType.Stone, OochType.Flame], 
@@ -935,7 +932,7 @@ module.exports = {
         // Spoolette
         create_monster({
             id: 37,
-            emote: get_emote_string(client, 'spoolette'),
+            emote: get_emote_string(applicationEmojis, 'spoolette'),
             name: 'Spoolette',
             oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', 
             type: [OochType.Magic], 
@@ -952,7 +949,7 @@ module.exports = {
         // Thimbite
         create_monster({
             id: 38,
-            emote: get_emote_string(client, 'thimbite'),
+            emote: get_emote_string(applicationEmojis, 'thimbite'),
             name: 'Thimbite',
             oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 
             type: [OochType.Magic], 
@@ -969,7 +966,7 @@ module.exports = {
         // Digityke
         create_monster({
             id: 39,
-            emote: get_emote_string(client, 'digityke'),
+            emote: get_emote_string(applicationEmojis, 'digityke'),
             name: 'Digityke',
             oochive_entry: 'An old-model of machine companion, its feeble body prevents it from being of much use.', 
             type: [OochType.Tech],
@@ -985,7 +982,7 @@ module.exports = {
         // Codet
         create_monster({
             id: 40,
-            emote: get_emote_string(client, 'codet'),
+            emote: get_emote_string(applicationEmojis, 'codet'),
             name: 'Codet',
             oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.', 
             type: [OochType.Tech, OochType.Magic],
@@ -1002,7 +999,7 @@ module.exports = {
         // Heatri
         create_monster({
             id: 41,
-            emote: get_emote_string(client, 'heatri'),
+            emote: get_emote_string(applicationEmojis, 'heatri'),
             name: 'Heatri',
             oochive_entry: 'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.', 
             type: [OochType.Flame],
@@ -1019,7 +1016,7 @@ module.exports = {
         // Moistri
         create_monster({
             id: 42,
-            emote: get_emote_string(client, 'moistri'),
+            emote: get_emote_string(applicationEmojis, 'moistri'),
             name: 'Moistri',
             oochive_entry: 'Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.', 
             type: [OochType.Ooze],
@@ -1036,7 +1033,7 @@ module.exports = {
         // Crystri
         create_monster({
             id: 43,
-            emote: get_emote_string(client, 'crystri'),
+            emote: get_emote_string(applicationEmojis, 'crystri'),
             name: 'Crystri',
             oochive_entry: 'While its crystals appear rigid they maintain some sort of fluidity.', 
             type: [OochType.Stone],
@@ -1053,7 +1050,7 @@ module.exports = {
         // Solidifyr
         create_monster({
             id: 44,
-            emote: get_emote_string(client, 'solidifyr'),
+            emote: get_emote_string(applicationEmojis, 'solidifyr'),
             name: 'Solidifyr',
             oochive_entry: 'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.', 
             type: [OochType.Flame],
@@ -1070,7 +1067,7 @@ module.exports = {
         // Obstaggard
         create_monster({
             id: 45,
-            emote: get_emote_string(client, 'obstaggard'),
+            emote: get_emote_string(applicationEmojis, 'obstaggard'),
             name: 'Obstaggard',
             oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 
             type: [OochType.Flame, OochType.Stone],
@@ -1087,7 +1084,7 @@ module.exports = {
         // Droplunk
         create_monster({
             id: 46,
-            emote: get_emote_string(client, 'droplunk'),
+            emote: get_emote_string(applicationEmojis, 'droplunk'),
             name: 'Droplunk',
             oochive_entry: 'Oops, don\'t let this one drop on your head!', 
             type: [OochType.Stone],
@@ -1104,7 +1101,7 @@ module.exports = {
         // Brykurse
         create_monster({
             id: 47,
-            emote: get_emote_string(client, 'brykurse'),
+            emote: get_emote_string(applicationEmojis, 'brykurse'),
             name: 'Brykurse',
             oochive_entry: 'Square meatball!', 
             type: [OochType.Stone, OochType.Magic],
@@ -1121,7 +1118,7 @@ module.exports = {
         // Polyplute
         create_monster({
             id: 48,
-            emote: get_emote_string(client, 'polyplute'),
+            emote: get_emote_string(applicationEmojis, 'polyplute'),
             name: 'Polyplute',
             oochive_entry: 'Blooms of Polyplute create beautiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.', 
             type: [OochType.Fungal],
@@ -1138,7 +1135,7 @@ module.exports = {
         // Reefest
         create_monster({
             id: 49,
-            emote: get_emote_string(client, 'reefest'),
+            emote: get_emote_string(applicationEmojis, 'reefest'),
             name: 'Reefest',
             oochive_entry: 'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', 
             type: [OochType.Fungal],
@@ -1155,7 +1152,7 @@ module.exports = {
         // Frigook
         create_monster({
             id: 50,
-            emote: get_emote_string(client, 'frigook'),
+            emote: get_emote_string(applicationEmojis, 'frigook'),
             name: 'Frigook',
             oochive_entry: 'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', 
             type: [OochType.Ooze],
@@ -1172,7 +1169,7 @@ module.exports = {
         // Boreyuc
         create_monster({
             id: 51,
-            emote: get_emote_string(client, 'boreyuc'),
+            emote: get_emote_string(applicationEmojis, 'boreyuc'),
             name: 'Boreyuc',
             oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 
             type: [OochType.Ooze],
@@ -1189,7 +1186,7 @@ module.exports = {
         // Vrumbox
         create_monster({
             id: 52,
-            emote: get_emote_string(client, 'vrumbox'),
+            emote: get_emote_string(applicationEmojis, 'vrumbox'),
             name: 'Vrumbox',
             oochive_entry: 'Monowheeled automata built for carrying various pieces of equipment.', 
             type: [OochType.Tech],
@@ -1205,7 +1202,7 @@ module.exports = {
         // Folduo
         create_monster({
             id: 53,
-            emote: get_emote_string(client, 'folduo'),
+            emote: get_emote_string(applicationEmojis, 'folduo'),
             name: 'Folduo',
             oochive_entry: 'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.', 
             type: [OochType.Tech],
@@ -1221,7 +1218,7 @@ module.exports = {
         // Hexyclone
         create_monster({
             id: 54,
-            emote: get_emote_string(client, 'hexyclone'),
+            emote: get_emote_string(applicationEmojis, 'hexyclone'),
             name: 'Hexyclone',
             oochive_entry: 'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.',
             type: [OochType.Tech],
@@ -1238,7 +1235,7 @@ module.exports = {
         // Oochabit
         create_monster({
             id: 55,
-            emote: get_emote_string(client, 'oochabit'),
+            emote: get_emote_string(applicationEmojis, 'oochabit'),
             name: 'Oochabit',
             oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
             type: [OochType.Void],
@@ -1253,7 +1250,7 @@ module.exports = {
         // Oochabound
         create_monster({
             id: 56,
-            emote: get_emote_string(client, 'oochabound'),
+            emote: get_emote_string(applicationEmojis, 'oochabound'),
             name: 'Oochabound',
             oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
             type: [OochType.Void],
@@ -1268,7 +1265,7 @@ module.exports = {
         // Kindeep
         create_monster({
             id: 57,
-            emote: get_emote_string(client, 'kindeep'),
+            emote: get_emote_string(applicationEmojis, 'kindeep'),
             name: 'Kindeep',
             oochive_entry: 'Schools of this fish-like oochamon are often found floating down in the caverns.',
             type: [OochType.Flame],
@@ -1285,7 +1282,7 @@ module.exports = {
         // Ablayzz
         create_monster({
             id: 58,
-            emote: get_emote_string(client, 'ablayzz'),
+            emote: get_emote_string(applicationEmojis, 'ablayzz'),
             name: 'Ablayzz',
             oochive_entry: 'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.',
             type: [OochType.Flame],
@@ -1302,7 +1299,7 @@ module.exports = {
         // Krakle
         create_monster({
             id: 59,
-            emote: get_emote_string(client, 'krakle'),
+            emote: get_emote_string(applicationEmojis, 'krakle'),
             name: 'Krakle',
             oochive_entry: 'This small \'mon has a superheated shell, don\'t touch it.',
             type: [OochType.Flame],
@@ -1318,7 +1315,7 @@ module.exports = {
         // Lightuft
         create_monster({
             id: 60,
-            emote: get_emote_string(client, 'lightuft'),
+            emote: get_emote_string(applicationEmojis, 'lightuft'),
             name: 'Lightuft',
             oochive_entry: 'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.',
             type: [OochType.Flame],
@@ -1335,7 +1332,7 @@ module.exports = {
         // Infernowl
         create_monster({
             id: 61,
-            emote: get_emote_string(client, 'infernowl'),
+            emote: get_emote_string(applicationEmojis, 'infernowl'),
             name: 'Infernowl',
             oochive_entry: 'These apex predators will find a single volcano and make its entirety their hunting ground.',
             type: [OochType.Flame],
@@ -1352,7 +1349,7 @@ module.exports = {
         // Fluffly
         create_monster({
             id: 62,
-            emote: get_emote_string(client, 'fluffly'),
+            emote: get_emote_string(applicationEmojis, 'fluffly'),
             name: 'Fluffly',
             oochive_entry: 'These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.',
             type: [OochType.Fungal],
@@ -1370,7 +1367,7 @@ module.exports = {
         // Decavian
         create_monster({
             id: 63,
-            emote: get_emote_string(client, 'decavian'),
+            emote: get_emote_string(applicationEmojis, 'decavian'),
             name: 'Decavian',
             oochive_entry: 'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.',
             type: [OochType.Fungal],
@@ -1388,7 +1385,7 @@ module.exports = {
         // Phaegrim
         create_monster({
             id: 64,
-            emote: get_emote_string(client, 'phaegrim'),
+            emote: get_emote_string(applicationEmojis, 'phaegrim'),
             name: 'Phaegrim',
             oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
             type: [OochType.Fungal, OochType.Ooze],
@@ -1406,7 +1403,7 @@ module.exports = {
         // Plaghast
         create_monster({
             id: 65,
-            emote: get_emote_string(client, 'plaghast'),
+            emote: get_emote_string(applicationEmojis, 'plaghast'),
             name: 'Plaghast',
             oochive_entry: 'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.',
             type: [OochType.Fungal, OochType.Ooze],
@@ -1424,7 +1421,7 @@ module.exports = {
         // Grubbit
         create_monster({
             id: 66,
-            emote: get_emote_string(client, 'grubbit'),
+            emote: get_emote_string(applicationEmojis, 'grubbit'),
             name: 'Grubbit',
             oochive_entry: 'These small bugs can be found munching on bits of crystal.',
             type: [OochType.Stone],
@@ -1442,7 +1439,7 @@ module.exports = {
         // Culcoon
         create_monster({
             id: 67,
-            emote: get_emote_string(client, 'culcoon'),
+            emote: get_emote_string(applicationEmojis, 'culcoon'),
             name: 'Culcoon',
             oochive_entry: 'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.',
             type: [OochType.Stone],
@@ -1460,7 +1457,7 @@ module.exports = {
         // Speculidae
         create_monster({
             id: 68,
-            emote: get_emote_string(client, 'speculidae'),
+            emote: get_emote_string(applicationEmojis, 'speculidae'),
             name: 'Speculidae',
             oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
             type: [OochType.Stone],
@@ -1478,7 +1475,7 @@ module.exports = {
         // Nisythe
         create_monster({
             id: 69,
-            emote: get_emote_string(client, 'nisythe'),
+            emote: get_emote_string(applicationEmojis, 'nisythe'),
             name: 'Nisythe',
             oochive_entry: 'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.',
             type: [OochType.Magic],
@@ -1496,7 +1493,7 @@ module.exports = {
         // Tidoll
         create_monster({
             id: 70,
-            emote: get_emote_string(client, 'tidoll'),
+            emote: get_emote_string(applicationEmojis, 'tidoll'),
             name: 'Tidoll',
             oochive_entry: 'These creatures are barely more than sacks of liquid with no bones supporting them.',
             type: [OochType.Ooze],
@@ -1513,7 +1510,7 @@ module.exports = {
         // Marinette
         create_monster({
             id: 71,
-            emote: get_emote_string(client, 'marinette'),
+            emote: get_emote_string(applicationEmojis, 'marinette'),
             name: 'Marinette',
             oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
             type: [OochType.Ooze],
@@ -1530,7 +1527,7 @@ module.exports = {
         // Durble
         create_monster({
             id: 72,
-            emote: get_emote_string(client, 'durble'),
+            emote: get_emote_string(applicationEmojis, 'durble'),
             name: 'Durble',
             oochive_entry: 'These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.',
             type: [OochType.Stone],
@@ -1547,7 +1544,7 @@ module.exports = {
         // Durubull
         create_monster({
             id: 73,
-            emote: get_emote_string(client, 'durubull'),
+            emote: get_emote_string(applicationEmojis, 'durubull'),
             name: 'Durubull',
             oochive_entry: 'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.',
             type: [OochType.Stone],
@@ -1564,7 +1561,7 @@ module.exports = {
         // Rustail
         create_monster({
             id: 74,
-            emote: get_emote_string(client, 'rustail'),
+            emote: get_emote_string(applicationEmojis, 'rustail'),
             name: 'Rustail',
             oochive_entry: 'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.',
             type: [OochType.Tech],
@@ -1581,7 +1578,7 @@ module.exports = {
         // Oxydrake
         create_monster({
             id: 75,
-            emote: get_emote_string(client, 'oxydrake'),
+            emote: get_emote_string(applicationEmojis, 'oxydrake'),
             name: 'Oxydrake',
             oochive_entry: 'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.',
             type: [OochType.Tech],
@@ -1598,7 +1595,7 @@ module.exports = {
         // Chakreye
         create_monster({
             id: 76,
-            emote: get_emote_string(client, 'chakreye'),
+            emote: get_emote_string(applicationEmojis, 'chakreye'),
             name: 'Chakreye',
             oochive_entry: 'Their body is surrounded by a rapidly spinning disc of plasma.',
             type: [OochType.Tech],
@@ -1615,7 +1612,7 @@ module.exports = {
         // Sabrink
         create_monster({
             id: 77,
-            emote: get_emote_string(client, 'sabrink'),
+            emote: get_emote_string(applicationEmojis, 'sabrink'),
             name: 'Sabrink',
             oochive_entry: 'A grinning energy blade that relentlessly pursues its enemies.',
             type: [OochType.Tech],
@@ -1632,7 +1629,7 @@ module.exports = {
         // Sapler
         create_monster({
             id: 78,
-            emote: get_emote_string(client, 'sapler'),
+            emote: get_emote_string(applicationEmojis, 'sapler'),
             name: 'Sapler',
             oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
             type: [OochType.Tech, OochType.Fungal],
@@ -1649,7 +1646,7 @@ module.exports = {
         // Radient
         create_monster({
             id: 79,
-            emote: get_emote_string(client, 'radient'),
+            emote: get_emote_string(applicationEmojis, 'radient'),
             name: 'Radient',
             oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
             type: [OochType.Tech, OochType.Fungal],
@@ -1666,7 +1663,7 @@ module.exports = {
         // Lasangato
         create_monster({
             id: 80,
-            emote: get_emote_string(client, 'lasangato'),
+            emote: get_emote_string(applicationEmojis, 'lasangato'),
             name: 'Lasangato',
             oochive_entry: 'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.',
             type: [OochType.Stone],
@@ -1683,7 +1680,7 @@ module.exports = {
         // Nullifly
         create_monster({
             id: 81,
-            emote: get_emote_string(client, 'nullifly'),
+            emote: get_emote_string(applicationEmojis, 'nullifly'),
             name: 'Nullifly',
             oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
             type: [OochType.Void],
@@ -1700,7 +1697,7 @@ module.exports = {
         // Crudoil
         create_monster({
             id: 82,
-            emote: get_emote_string(client, 'crudoil'),
+            emote: get_emote_string(applicationEmojis, 'crudoil'),
             name: 'Crudoil',
             oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
             type: [OochType.Ooze],
@@ -1717,7 +1714,7 @@ module.exports = {
         // Oilantern
         create_monster({
             id: 83,
-            emote: get_emote_string(client, 'oilantern'),
+            emote: get_emote_string(applicationEmojis, 'oilantern'),
             name: 'Oilantern',
             oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
             type: [OochType.Ooze, OochType.Flame],
@@ -1734,7 +1731,7 @@ module.exports = {
         // Saporite
         create_monster({
             id: 84,
-            emote: get_emote_string(client, 'saporite'),
+            emote: get_emote_string(applicationEmojis, 'saporite'),
             name: 'Saporite',
             oochive_entry: 'Also called mushroom fairies, these small creatures are very peaceful.',
             type: [OochType.Fungal],
@@ -1751,7 +1748,7 @@ module.exports = {
         // Faering
         create_monster({
             id: 85,
-            emote: get_emote_string(client, 'faering'),
+            emote: get_emote_string(applicationEmojis, 'faering'),
             name: 'Faering',
             oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
             type: [OochType.Fungal, OochType.Magic],
@@ -1768,7 +1765,7 @@ module.exports = {
         // Kerkobble
         create_monster({
             id: 86,
-            emote: get_emote_string(client, 'kercobble'),
+            emote: get_emote_string(applicationEmojis, 'kercobble'),
             name: 'Kerkobble',
             oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
             type: [OochType.Stone, OochType.Tech],
@@ -1785,7 +1782,7 @@ module.exports = {
         // Korkobble
         create_monster({
             id: 87,
-            emote: get_emote_string(client, 'korkobble'),
+            emote: get_emote_string(applicationEmojis, 'korkobble'),
             name: 'Korkobble',
             oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
             type: [OochType.Stone, OochType.Tech],
@@ -1802,7 +1799,7 @@ module.exports = {
         // Ilushand
         create_monster({
             id: 88,
-            emote: get_emote_string(client, 'ilushand'),
+            emote: get_emote_string(applicationEmojis, 'ilushand'),
             name: 'Ilushand',
             oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
             type: [OochType.Magic],
@@ -1819,7 +1816,7 @@ module.exports = {
         // Miroraj
         create_monster({
             id: 89,
-            emote: get_emote_string(client, 'miroraj'),
+            emote: get_emote_string(applicationEmojis, 'miroraj'),
             name: 'Miroraj',
             oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
             type: [OochType.Magic],
@@ -1836,7 +1833,7 @@ module.exports = {
         // Fritarge
         create_monster({
             id: 90,
-            emote: get_emote_string(client, 'fritarge'),
+            emote: get_emote_string(applicationEmojis, 'fritarge'),
             name: 'Fritarge',
             oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
             type: [OochType.Tech],
@@ -1854,7 +1851,7 @@ module.exports = {
         // Wardred
         create_monster({
             id: 91,
-            emote: get_emote_string(client, 'wardred'),
+            emote: get_emote_string(applicationEmojis, 'wardred'),
             name: 'Wardred',
             oochive_entry: 'The gaping maw on this creature\'s back echoes metallic whispers.',
             type: [OochType.Tech],
@@ -1872,7 +1869,7 @@ module.exports = {
         // Congsume
         create_monster({
             id: 92,
-            emote: get_emote_string(client, 'congsume'),
+            emote: get_emote_string(applicationEmojis, 'congsume'),
             name: 'Congsume',
             oochive_entry: 'It can\'t stop moving or the flames on its body will eventually catch up.',
             type: [OochType.Flame],
@@ -1889,7 +1886,7 @@ module.exports = {
         // Fevour
         create_monster({
             id: 93,
-            emote: get_emote_string(client, 'fevour'),
+            emote: get_emote_string(applicationEmojis, 'fevour'),
             name: 'Fevour',
             oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
             type: [OochType.Flame],
@@ -1906,7 +1903,7 @@ module.exports = {
         // Tryptid
         create_monster({
             id: 94,
-            emote: get_emote_string(client, 'tryptid'),
+            emote: get_emote_string(applicationEmojis, 'tryptid'),
             name: 'Tryptid',
             oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
             type: [OochType.Stone, OochType.Fungal],
@@ -1924,7 +1921,7 @@ module.exports = {
         // Roswier
         create_monster({
             id: 95,
-            emote: get_emote_string(client, 'roswier'),
+            emote: get_emote_string(applicationEmojis, 'roswier'),
             name: 'Roswier',
             oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
             type: [OochType.Tech, OochType.Ooze],
@@ -1942,7 +1939,7 @@ module.exports = {
         // Chemerai
         create_monster({
             id: 96,
-            emote: get_emote_string(client, 'chemerai'),
+            emote: get_emote_string(applicationEmojis, 'chemerai'),
             name: 'Chemerai',
             oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
             type: [OochType.Magic, OochType.Flame],
@@ -1960,7 +1957,7 @@ module.exports = {
         // Rosun
         create_monster({
             id: 97,
-            emote: get_emote_string(client, 'rosun'),
+            emote: get_emote_string(applicationEmojis, 'rosun'),
             name: 'Rosun',
             oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
             type: [OochType.Stone],
@@ -1975,7 +1972,7 @@ module.exports = {
         // Morgoun
         create_monster({
             id: 98,
-            emote: get_emote_string(client, 'morgoun'),
+            emote: get_emote_string(applicationEmojis, 'morgoun'),
             name: 'Morgoun',
             oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
             type: [OochType.Stone],
@@ -1990,7 +1987,7 @@ module.exports = {
         // Garnetie
         create_monster({
             id: 99,
-            emote: get_emote_string(client, 'garnetie'),
+            emote: get_emote_string(applicationEmojis, 'garnetie'),
             name: 'Garnetie',
             oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
             type: [OochType.Stone],
@@ -2005,7 +2002,7 @@ module.exports = {
         // Aventux
         create_monster({
             id: 100,
-            emote: get_emote_string(client, 'aventux'),
+            emote: get_emote_string(applicationEmojis, 'aventux'),
             name: 'Aventux',
             oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
             type: [OochType.Stone],
@@ -2020,7 +2017,7 @@ module.exports = {
         // Galagge
         create_monster({
             id: 101,
-            emote: get_emote_string(client, 'galagge'),
+            emote: get_emote_string(applicationEmojis, 'galagge'),
             name: 'Galagge',
             oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
             type: [OochType.Stone],
@@ -2039,7 +2036,7 @@ module.exports = {
         // i_
         create_monster({
             id: -1,
-            emote: get_emote_string(client, 'i_'),
+            emote: get_emote_string(applicationEmojis, 'i_'),
             name: 'i_',
             oochive_entry: 'ERROR: entry not found',
             type: [OochType.Void],

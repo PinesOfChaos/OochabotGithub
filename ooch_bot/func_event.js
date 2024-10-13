@@ -202,6 +202,8 @@ module.exports = {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
 
+                console.log(event_array[current_place]);
+
                 //Customize Embed
                 switch (event_mode) {
                     //Basic Text Event

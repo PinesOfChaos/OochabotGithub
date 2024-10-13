@@ -1,6 +1,6 @@
 // For functions that don't fit into the other categories
 const db = require("./db")
-const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, Collection } = require('discord.js');
 const { TypeEmote } = require('./types.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
@@ -17,8 +17,8 @@ module.exports = {
         const { get_ooch_art } = require('./func_other');
 
         let ooch_title = `${ooch.nickname}`;
-        ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${TypeEmote[_.capitalize(ooch.type)]}` 
-            : ooch_title += ` [Lv. ${ooch.level}] ${TypeEmote[_.capitalize(ooch.type)]}`;
+        ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[_.capitalize(v)]).join('')}` 
+            : ooch_title += ` [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[_.capitalize(v)]).join('')}`;
         let moveset_str = ``;
 
         let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
@@ -27,16 +27,15 @@ module.exports = {
             .setColor('#808080')
             .setTitle(ooch_title)
             .setThumbnail(`attachment://${_.toLower(ooch.name)}.png`)
-            .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${db.ability_data.get(ooch.ability, 'name')}**\nType: **${_.capitalize(ooch.type)}**`);
+            .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${db.ability_data.get(ooch.ability, 'name')}**\nType: **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**`);
 
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)
             move.accuracy = Math.abs(move.accuracy);
             if (move.damage !== 0) {
-                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
+                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
             } else {
-                let move_info = move.effect.split('_');
-                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move_info[0]}${move_info[2]}%** ${_.upperCase(move_info[1])}, **${move.accuracy}%** chance to work\n`;
+                moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
             }
         }
 
@@ -61,12 +60,11 @@ module.exports = {
 
     /**
      * Returns the emote text for a specified Oochamon.
-     * @param {Object} client Discord bot client.
+     * @param {Collection} applicationEmojis The collection of emojis
      * @param {String} ooch_name Name of the Oochamon to get emote from.
      */
-    get_emote_string: function(client, ooch_name) {
-        let emojiList = client.emojis.cache;
-        emojiList = emojiList.filter(v => v.name === _.toLower(ooch_name));
+    get_emote_string: function(applicationEmojis, ooch_name) {
+        emojiList = applicationEmojis.filter(v => v.name === _.toLower(ooch_name));
         emojiList = Array.from(emojiList.values());
         if (emojiList.length === 0) throw Error(`Unable to find Oochamon emote for the name ${ooch_name}!`);
         return `<:${emojiList[0].name}:${emojiList[0].id}>`;

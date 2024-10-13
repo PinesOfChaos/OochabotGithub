@@ -34,7 +34,7 @@ module.exports = {
         // Main Menu
         let settings_row_1 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1023031025716179076>'),
+                new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>'),
             ).addComponents(
                 new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'),
             )
@@ -120,7 +120,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('primary').setLabel('Set As Primary').setStyle(ButtonStyle.Success).setEmoji('👑'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1023031024726327426>').setDisabled(true),
+                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>').setDisabled(true),
             ).addComponents(
                 new ButtonBuilder().setCustomId('evolve').setLabel('Evolve').setStyle(ButtonStyle.Success).setDisabled(true).setEmoji('⬆️')
             )
@@ -134,9 +134,9 @@ module.exports = {
 
         let bag_buttons = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1023031024726327426>'),
+                new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji('<:item_prism:1023031025716179076>'),
+                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji('<:item_prism:1274937161262698536>'),
             ).addComponents(
                 new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑'),
             )
@@ -173,6 +173,11 @@ module.exports = {
                             label: 'Discord Move Buttons',
                             description: 'Add buttons you can click to move your character.',
                             value: 'discord_move_buttons',
+                        },
+                        {
+                            label: 'Objective Indicator',
+                            description: 'See a message displaying your current objective.',
+                            value: 'objective',
                         },
                     ),
             );
@@ -681,7 +686,7 @@ module.exports = {
                         bag_buttons.components[2].setStyle(ButtonStyle.Success)
                     } else {
                         display_inv = prism_inv;
-                        display_title = '<:item_prism:1023031025716179076> Prisms';
+                        display_title = '<:item_prism:1274937161262698536> Prisms';
                         bag_buttons.components[1].setStyle(ButtonStyle.Success)
                     }
                     bag_buttons.components[0].setStyle(ButtonStyle.Secondary)
@@ -726,7 +731,7 @@ module.exports = {
             } 
             // Prism Button
             else if (selected == 'prism_button') {
-                bagEmbed.setTitle('<:item_prism:1023031025716179076> Prisms')
+                bagEmbed.setTitle('<:item_prism:1274937161262698536> Prisms')
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[1].setStyle(ButtonStyle.Success)
                 bag_buttons.components[2].setStyle(ButtonStyle.Secondary)
@@ -921,7 +926,8 @@ module.exports = {
                 `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
                 `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
                 `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`,
-                `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`];
+                `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`,
+                `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`];
 
                 prefEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -980,6 +986,14 @@ module.exports = {
             else if (selected == 'discord_move_buttons') {
                 await db.profile.set(interaction.user.id, !(user_profile.settings.discord_move_buttons), 'settings.discord_move_buttons');
                 pref_desc[4] = `Discord Move Buttons: ${db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true ? `✅` : `❌`}`;
+                user_profile = db.profile.get(interaction.user.id);
+                await prefEmbed.setDescription(pref_desc.join('\n'));
+                await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+            }
+            // Objective Indicator
+            else if (selected == 'objective') {
+                await db.profile.set(interaction.user.id, !(user_profile.settings.objective), 'settings.objective');
+                pref_desc[5] = `Objective Indicator: ${db.profile.get(interaction.user.id, 'settings.objective') === true ? `✅` : `❌`}`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });

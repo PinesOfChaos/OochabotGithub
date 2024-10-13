@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
-const { type_to_emote, get_status_emote } = require('../func_battle');
+const { type_to_emote } = require('../func_battle');
 const { get_art_file } = require('../func_other.js');
 
 module.exports = {

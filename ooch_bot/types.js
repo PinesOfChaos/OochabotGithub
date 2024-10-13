@@ -13,22 +13,22 @@ const PlayerState = {
 }
 
 const TypeEmote = {
-    Flame: '<:icon_flame:1023031001611501648>',
-    FlameLabel: '<:icon_flame_txt:1023031002408439939>',
-    Fungal:  '<:icon_fungal:1023031003381514280>',
-    FungalLabel: '<:icon_fungal_txt:1023031004220362802>',
-    Magic: '<:icon_magic:1023031009966575686>',
-    MagicLabel: '<:icon_magic_txt:1023031010818015292>',
-    Neutral: '<:icon_neutral:1023031011703013376>',
-    NeutralLabel: '<:icon_neutral_txt:1023031012495732746>',
-    Ooze: '<:icon_ooze:1023031013355569262>',
-    OozeLabel: '<:icon_ooze_txt:1023031014735491082>',
-    Stone: '<:icon_stone:1023031015830204448>',
-    StoneLabel: '<:icon_stone_txt:1023031016845217832>',
-    Tech: '<:icon_tech:1023031017730224139>',
-    TechLabel: '<:icon_tech_txt:1023031018896240640>',
-    Void: '<:icon_void:1023031019466653738>',
-    VoidLabel: '<:icon_void_txt:1023031020804645005>'
+    Flame: '<:icon_flame:1274936249484050472>',
+    FlameLabel: '<:icon_flame_txt:1274936258811920414>',
+    Fungal:  '<:icon_fungal:1274936267884199947>',
+    FungalLabel: '<:icon_fungal_txt:1274936284497969203>',
+    Magic: '<:icon_magic:1274936558595866787>',
+    MagicLabel: '<:icon_magic_txt:1274936569790468096>',
+    Neutral: '<:icon_neutral:1274936582583091210>',
+    NeutralLabel: '<:icon_neutral_txt:1274936596155863080>',
+    Ooze: '<:icon_ooze:1274936607136288810>',
+    OozeLabel: '<:icon_ooze_txt:1274936617320316928>',
+    Stone: '<:icon_stone:1274936641433243781>',
+    StoneLabel: '<:icon_stone_txt:1274936655236563055>',
+    Tech: '<:icon_tech:1274936672022298624>',
+    TechLabel: '<:icon_tech_txt:1274936688589803613>',
+    Void: '<:icon_void:1274936702959485011>',
+    VoidLabel: '<:icon_void_txt:1274936717383569409>'
 }
 
 const GraphicsMode = {
@@ -48,6 +48,7 @@ const EventMode = {
     Flags: 2,
     OochamonPick: 3,
     Transition: 4,
+    Objective: 5,
 }
 
 const DialogueType = {
@@ -73,22 +74,15 @@ const Stats = {
 
 const Status = {
     All: 'all',
-    Burn: 'burned',
-    BurnEmote: '<:status_burned:1023031032083128441>',
-    Infect: 'infected',
-    InfectEmote: '<:status_infected:1023031033744076930>',
-    Blind: 'blinded',
-    BlindEmote: '<:status_blinded:1023031030837416057>',
-    Digitize: 'digitized',
-    DigitizeEmote: '<:status_digitized:1023031032934576178>',
-    Snare: 'snared',
-    SnareEmote: '<:status_snared:1023031034733940798>',
-    Vanish: 'vanished',
-    VanishEmote: '<:status_vanish:1023053679328231424>',
-    Doom: 'doomed',
-    DoomEmote: '<:status_doomed:1023053678179012648>',
-    Double: 'doubled',
-    DoubleEmote: '<:status_doubled:1170203311199240302>',
+    Burn: 0,
+    Infect: 1,
+    Blind: 2,
+    Digitize: 3,
+    Snare: 4,
+    Vanish: 5,
+    Doom: 6,
+    Double: 7,
+    Focus: 8,
 }
 
 const OochType = {

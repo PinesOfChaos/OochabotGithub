@@ -91,3 +91,4 @@
 90|Debug Bomb|tech|100|80|clear_status|undefined|Fire a high-damage bomb that clears any status effects from its target.
 91|Entrench|fungal|0|-100|+_def_3|snared|undefined|Becomes SNARED, but greatly boosts DEF.
 92|Null Sphere|void|60|100|-1|undefined|Fire a sphere of dark matter.
+93|Impact Blast|neutral|150|80|vanished|undefined|Hit the opponent so hard they get launched and VANISH.

@@ -1,19 +1,20 @@
-0|Potion|<:item_potion:1023031022566260776>|heal_inv|potion|0.25|Used to quickly heal 20 HP
-1|Med-Potion|<:item_potion_hi:1023031023598047284>|heal_inv|potion|0.5|An advanced potion which heals 50 HP
-2|Hi-Potion|<:item_potion_magic:1023031024726327426>|heal_inv|potion|1|A high tier potion which heals 200 HP
-3|Prism|<:item_prism:1023031025716179076>|prism_inv|prism|1|A device used to capture Oochamon.
-4|Greater Prism|<:item_prism_greater:1023031027775578112>|prism_inv|prism|1.5|An improved prism with a higher capture rate.
-5|Grand Prism|<:item_prism_grand:1023031026626347028>|prism_inv|prism|2|A further modified prism with an even higher capture rate.
-6|Perfect Prism|<:item_prism_perfect:1023031028782211173>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
-7|Attack Crystal|<:item_attack_crystal:1023031021517672540>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
+0|Potion|<:item_potion:1274937121370669118>|heal_inv|potion|0.25|Used to quickly heal 20 HP
+1|Med-Potion|<:item_potion_hi:1274937134935052328>|heal_inv|potion|0.5|An advanced potion which heals 50 HP
+2|Hi-Potion|<:item_potion_magic:1274937146423115922>|heal_inv|potion|1|A high tier potion which heals 200 HP
+3|Prism|<:item_prism:1274937161262698536>|prism_inv|prism|1|A device used to capture Oochamon.
+4|Greater Prism|<:item_prism_greater:1274937183710740510>|prism_inv|prism|1.5|An improved prism with a higher capture rate.
+5|Grand Prism|<:item_prism_grand:1274937171513442359>|prism_inv|prism|2|A further modified prism with an even higher capture rate.
+6|Perfect Prism|<:item_prism_perfect:1274937195970428928>|prism_inv|prism|1000|A prism with a shattered casing, nothing escapes its pull.
+7|Attack Crystal|<:item_attack_crystal:1274936834883059774>|other_inv|misc|1|Unlocks a hidden move for an Oochamon by releasing stored power.
 8|ID Card|:identification_card:|other_inv|misc|undefined|Your ID card. You look so fabulous!
-9|Eyedrops|<:item_eyedrops:1176611226403475506>|heal_inv|status|undefined|Removes BLIND status effect.
-10|Shears|<:item_shears:1176611593044381707>|heal_inv|status|undefined|Removes SNARED status effect.
-11|Daylilly|<:item_daylily:1176611228995555417>|heal_inv|status|undefined|Removes DOOMED status effect.
-12|Antiparasite|<:item_antiparasite:1176611225166172290>|heal_inv|status|undefined|Removes INFECTED status effect.
-13|Debug Chip|<:item_debugchip:1176611228127342622>|heal_inv|status|undefined|Removes DIGITIZED status effect.
-14|Nullifying Sphere|<:item_null_sphere:1265063633780473876>|heal_inv|status|undefined|Removes all status effects.
-15|Greem Boostgem|<:item_iv_hp:1265048909600915516>|other_inv|iv|undefined|Permanently increases Health of an Oochamon.
-16|Red Boostgem|<:item_iv_atk:1265048907759489079>|other_inv|iv|undefined|Permanently increases Attack of an Oochamon.
-17|Blue Boostgem|<:item_iv_def:1265048908728369202>|other_inv|iv|undefined|Permanently increases Defense of an Oochamon.
-18|Yellow Boostgem|<:item_iv_spd:1265048907143053455>|other_inv|iv|undefined|Permanently increases Speed of an Oochamon.
+9|Eyedrops|<:item_eyedrops:1274937019994472459>|heal_inv|status|undefined|Removes BLIND status effect.
+10|Shears|<:item_shears:1274937209652514838>|heal_inv|status|undefined|Removes SNARED status effect.
+11|Daylily|<:item_daylily:1274936962125402143>|heal_inv|status|undefined|Removes DOOMED status effect.
+12|Antiparasite|<:item_antiparasite:1274936818823069789>|heal_inv|status|undefined|Removes INFECTED status effect.
+13|Debug Chip|<:item_debugchip:1274936992462930001>|heal_inv|status|undefined|Removes DIGITIZED status effect.
+14|Cooling Balm|<:item_coolingbalm:1274936928625758269>|heal_inv|status|undefined|Removes BURNED status effect.
+15|Nullifying Sphere|<:item_null_sphere:1274937109995716648>|heal_inv|status|undefined|Removes all status effects.
+16|Greem Boostgem|<:item_iv_hp:1274937089666056294>|other_inv|iv|undefined|Permanently increases Health of an Oochamon.
+17|Red Boostgem|<:item_iv_atk:1274937039460237382>|other_inv|iv|undefined|Permanently increases Attack of an Oochamon.
+18|Blue Boostgem|<:item_iv_def:1274937065317990486>|other_inv|iv|undefined|Permanently increases Defense of an Oochamon.
+19|Yellow Boostgem|<:item_iv_spd:1274937099984048138>|other_inv|iv|undefined|Permanently increases Speed of an Oochamon.
