@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://by5tvhy1w6f1b"]
+
+[ext_resource type="Script" path="res://event_type_battle.gd" id="1_d27yg"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_d27yg")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 2

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpxor80sjq855"]
+
+[ext_resource type="Script" path="res://event_type_options.gd" id="1_tnh33"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_tnh33")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Text:"
+
+[node name="LineEditText" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonAddOption" type="Button" parent="."]
+layout_mode = 2
+text = "+ Add Option"
+
+[node name="VBoxContainerOptions" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[connection signal="pressed" from="ButtonAddOption" to="." method="_on_button_add_option_pressed"]

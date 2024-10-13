@@ -13,8 +13,10 @@ var EVENT_BATTLE = 		1
 var EVENT_FLAG = 		2
 var EVENT_OOCHPICK = 	3
 var EVENT_TRANSITION = 	4
+var EVENT_OBJECTIVE = 	5
+var EVENT_OPTIONS = 	6
 
-
+var DataEvents = {}
 var DataAbilities = []
 var DataItems = []
 var DataMoves = []

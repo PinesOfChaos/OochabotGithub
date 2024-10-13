@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://1ouw8vatv3cy"]
+
+[ext_resource type="Script" path="res://slot_event_option.gd" id="1_vs2o7"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_vs2o7")
+
+[node name="ButtonDelete" type="Button" parent="."]
+layout_mode = 2
+text = " - "
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Text:"
+
+[node name="LineEditText" type="LineEdit" parent="."]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Event To:"
+
+[node name="LineEditEventTo" type="LineEdit" parent="."]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="."]
+layout_mode = 2
+text = "Flag:"
+
+[node name="LineEditFlag" type="LineEdit" parent="."]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="."]
+layout_mode = 2
+text = "Price:"
+
+[node name="SpinBoxPrice" type="SpinBox" parent="."]
+layout_mode = 2
+max_value = 99999.0
+
+[connection signal="pressed" from="ButtonDelete" to="." method="_on_button_delete_pressed"]
+[connection signal="text_changed" from="LineEditText" to="." method="_on_line_edit_text_text_changed"]
+[connection signal="text_changed" from="LineEditEventTo" to="." method="_on_line_edit_event_to_text_changed"]
+[connection signal="text_changed" from="LineEditFlag" to="." method="_on_line_edit_flag_text_changed"]
+[connection signal="value_changed" from="SpinBoxPrice" to="." method="_on_spin_box_price_value_changed"]

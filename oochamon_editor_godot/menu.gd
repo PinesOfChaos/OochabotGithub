@@ -57,36 +57,6 @@ func _ready():
 	var image
 	var err
 	
-	#Load Oochamon Data
-	var ooch_id;
-	
-	path = "res://oochamon/"
-	dir = DirAccess.open(path)
-	dir.list_dir_begin()
-	
-	file_num;
-	file_name = dir.get_next()
-	while file_name != "":
-		if !file_name.begins_with("."):
-			file_num = int(file_name.split(".")[0])
-			for i in Global.DataOochamon.size():
-				ooch_id = Global.DataOochamon[i].ooch_index
-				if ooch_id == file_num:
-					image = Image.new()
-					err = image.load(path + file_name)
-					if !err:
-						Global.DataOochamon[i].ooch_sprite = load(path + file_name)	
-						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite
-						
-						box_child = val_button.new()
-						box_child.value = i
-						box_child.set_texture_normal(Global.DataOochamon[i].ooch_sprite)
-						box_child.tooltip_text = "[" + ("00" + str(ooch_id)).right(3) + "] " + Global.DataOochamon[i].ooch_name
-						grid_ooch.add_child(box_child)
-					
-		file_name = dir.get_next()
-	dir.list_dir_end()
-	
 	#Map Setup
 	for i in 100:
 		var arr = []
@@ -519,8 +489,6 @@ func _on_file_dialog_load_file_selected(path):
 		return
 		
 #endregion
-
-
 
 # Open the Save File Dialog
 func _on_button_save_pressed():

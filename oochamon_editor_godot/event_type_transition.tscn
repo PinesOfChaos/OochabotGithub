@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://hb8dhnopxg3i"]
+
+[ext_resource type="Script" path="res://event_type_transition.gd" id="1_j2ph2"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_j2ph2")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Map:"
+
+[node name="LineEditMap" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+placeholder_text = "Map"
+
+[node name="Label2" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "X:"
+
+[node name="SpinBoxX" type="SpinBox" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Y:"
+
+[node name="SpinBoxY" type="SpinBox" parent="HBoxContainer"]
+layout_mode = 2
+
+[connection signal="text_changed" from="HBoxContainer/LineEditMap" to="." method="_on_line_edit_map_text_changed"]

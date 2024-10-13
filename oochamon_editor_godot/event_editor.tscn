@@ -29,9 +29,16 @@ text = "New"
 layout_mode = 2
 text = "Save"
 
-[node name="ButtonLoad" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="ButtonLoad" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Load"
+
+[node name="LineEditEventName" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="CheckButtonRepeatable" type="CheckButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(1000, 600)
@@ -62,9 +69,26 @@ text = "+ Flag"
 layout_mode = 2
 text = "+ Select Oochamon"
 
-[node name="Transition" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+[node name="NewTransition" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
 layout_mode = 2
 text = "+ Transition"
 
+[node name="NewObjective" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Objective"
+
+[node name="NewOption" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Options"
+
 [connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonSave" to="." method="_on_button_save_pressed"]
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer/ButtonLoad" to="." method="_on_button_load_item_selected"]
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/CheckButtonRepeatable" to="." method="_on_check_button_repeatable_toggled"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewDialog" to="." method="_on_new_dialog_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBattle" to="." method="_on_new_battle_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewFlag" to="." method="_on_new_flag_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOochSelect" to="." method="_on_new_ooch_select_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewTransition" to="." method="_on_new_transition_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewObjective" to="." method="_on_new_objective_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOption" to="." method="_on_new_option_pressed"]

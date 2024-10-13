@@ -211,3 +211,27 @@ func refresh_data():
 			tile_texture = -1
 		})
 		ln = f_npcs.get_line()
+		
+	
+	#Load Oochamon Data
+	var ooch_id;
+	
+	var path = "res://oochamon/"
+	var dir = DirAccess.open(path)
+	dir.list_dir_begin()
+	
+	var file_num;
+	var file_name = dir.get_next()
+	while file_name != "":
+		if !file_name.begins_with("."):
+			file_num = int(file_name.split(".")[0])
+			for i in Global.DataOochamon.size():
+				ooch_id = Global.DataOochamon[i].ooch_index
+				if ooch_id == file_num:
+					var image = Image.new()
+					var err = image.load(path + file_name)
+					if !err:
+						Global.DataOochamon[i].ooch_sprite = load(path + file_name)	
+						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite			
+		file_name = dir.get_next()
+	dir.list_dir_end()

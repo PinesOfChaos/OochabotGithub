@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhshp3ax5h5fg"]
+
+[ext_resource type="Script" path="res://event_type_flag.gd" id="1_itauk"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_itauk")
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+placeholder_text = "Flag"
