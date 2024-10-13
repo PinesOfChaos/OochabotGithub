@@ -71,3 +71,9 @@ text = " + "
 
 [node name="VBoxContainerItems" type="VBoxContainer" parent="."]
 layout_mode = 2
+
+[connection signal="text_changed" from="HBoxContainer/Title" to="." method="_on_title_text_changed"]
+[connection signal="text_changed" from="HBoxContainer/LineEditImage" to="." method="_on_line_edit_image_text_changed"]
+[connection signal="text_changed" from="HBoxContainer/LineEditPortrait" to="." method="_on_line_edit_portrait_text_changed"]
+[connection signal="text_changed" from="TextEditDialog" to="." method="_on_text_edit_dialog_text_changed"]
+[connection signal="pressed" from="HBoxContainer3/ButtonAddItem" to="." method="_on_button_add_item_pressed"]

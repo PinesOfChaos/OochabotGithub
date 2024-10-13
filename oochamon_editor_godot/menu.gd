@@ -5,7 +5,7 @@ extends Control
 @onready var fd_path = $FileDialogSetFilePaths
 @onready var tileset = TileSet.new()
 @onready var grid_ooch = $GridOoch
-@onready var grid_tiles = $GridTiles
+@onready var grid_tiles = $TileSelect
 @onready var val_button = preload("res://ValueButton.gd")
 @onready var v_box_menu = $VBoxMenu
 @onready var tooltips_paint = $TooltipsPaint
@@ -26,7 +26,7 @@ extends Control
 @export var map_name = "testmap"
 @export var map_width = 64
 @export var map_height = 64
-@export var map_tiles = [[]]
+@export var map_tiles = []
 @export var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
@@ -42,17 +42,8 @@ var post_ready_complete = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
-	if(loaded):
-		return
-	
-	loaded = true
-	load_preferences()
-	map_reset()
-	
-	fd_path.current_dir = Global.DataPath
-	if Global.DataPath != "":
-		refresh_data()
+	fd_save.current_dir = Global.WorkingDir
+	fd_load.current_dir = Global.WorkingDir
 	
 	var box_img = Image.load_from_file("res://editor_assets/box_highlight1.png")
 	highlightbox_tex = ImageTexture.create_from_image(box_img)
@@ -86,7 +77,6 @@ func _ready():
 					if !err:
 						Global.DataOochamon[i].ooch_sprite = load(path + file_name)	
 						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite
-
 						
 						box_child = val_button.new()
 						box_child.value = i
@@ -97,36 +87,14 @@ func _ready():
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	
-	#Load Oochamon Data
-	var tile_id;
+	#Map Setup
+	for i in 100:
+		var arr = []
+		arr.resize(100)
+		arr.fill(0)
+		map_tiles.push_back(arr)
+	print(map_tiles)
 	
-	path = "res://tiles/"
-	dir = DirAccess.open(path)
-	dir.list_dir_begin()
-	
-	file_num;
-	file_name = dir.get_next()
-	while file_name != "":
-		if !file_name.begins_with("."):
-			file_num = int(file_name.split(".")[0])
-			
-			for i in Global.DataTiles.size():
-				tile_id = Global.DataTiles[i].tile_index
-				if tile_id + ".png" == file_name:
-					image = Image.new()
-					err = image.load(path + file_name)
-					if !err:
-						Global.DataTiles[i].tile_sprite = load(path + file_name)
-						Global.DataTiles[i].tile_texture = ImageTexture.new()
-						Global.DataTiles[i].tile_texture.create_from_image(Global.DataTiles[i].tile_sprite)
-						box_child = val_button.new()
-						box_child.value = i
-						box_child.set_texture_normal(Global.DataTiles[i].tile_sprite)
-						box_child.tooltip_text = Global.DataTiles[i].tile_emote
-						grid_tiles.add_child(box_child)
-					
-		file_name = dir.get_next()
-	dir.list_dir_end()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if not post_ready_complete:
@@ -138,9 +106,6 @@ func _process(delta):
 	step_end()		
 			
 func _draw():
-	if grid_tiles.get_child_count() == 0:
-		return
-	var tx_box = load("res://editor_assets/box_highlight1.png")
 	var x1 = 0
 	var y1 = 0
 	for i in map_width:
@@ -148,7 +113,7 @@ func _draw():
 			x1 = i * Global.TileSize
 			y1 = j * Global.TileSize
 			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 2000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 1200:
-				draw_texture(grid_tiles.get_child(map_tiles[i][j]).get_texture_normal(), Vector2((x1) - Global.CamX, (y1) - Global.CamY))
+				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
 				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
 
 func refresh_all_children():
@@ -307,40 +272,6 @@ func map_reset():
 			map_tiles[i].push_back([])
 			map_tiles[i][j] = 0
 
-#Load  default filepaths and values
-func load_preferences():
-	var config = ConfigFile.new()
-	var err = config.load("user://oochabot_config.cfg")
-	if err != OK:
-		return
-	else:
-		Global.DataPath = config.get_value("Preferences", "DataPath", "/")
-		Global.WorkingDir = config.get_value("Preferences", "WorkingDir", "/")
-		
-		fd_save.current_dir = Global.WorkingDir
-		fd_load.current_dir = Global.WorkingDir
-		
-#Save default filepaths and values
-func save_preferences():
-	var config = ConfigFile.new()
-	config.set_value("Preferences", "DataPath", Global.DataPath)
-	config.set_value("Preferences", "WorkingDir", Global.WorkingDir)
-	
-	config.save("user://oochabot_config.cfg")
-
-#Used to download sprite_textures
-func download_texture(url : String, file_name : String):
-	var http = HTTPRequest.new()
-	add_child(http)
-	http.set_download_file(file_name)
-	http.request(url)
-
-#Set the working directory for saving/loading
-func set_working_dir(path):
-	print(path)
-	Global.WorkingDir = path
-	fd_save.current_dir = Global.WorkingDir
-	fd_load.current_dir = Global.WorkingDir
 
 func set_node_owners_to_menu():
 	for n in o_menu.get_children():
@@ -362,9 +293,14 @@ func _on_file_dialog_save_file_selected(path):
 	set_node_owners_to_menu()
 	
 	if FileAccess.file_exists(path):
-		set_working_dir(path.left(path.rfindn("/"))+"/")
+		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		print(path.left(path.rfindn("/")))
-		save_preferences()
+		
+		var config = ConfigFile.new()
+		config.set_value("Preferences", "DataPath", Global.DataPath)
+		config.set_value("Preferences", "WorkingDir", Global.WorkingDir)
+		config.save("user://oochabot_config.cfg")
+		
 		file_known = true
 		file_last_path = path
 		
@@ -476,7 +412,7 @@ func _on_file_dialog_load_file_selected(path):
 	
 	if(FileAccess.file_exists(path)):
 		var f = FileAccess.open(path, FileAccess.READ)
-		set_working_dir(path.left(path.rfindn("/"))+"/")
+		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		var _main = get_parent()
 		var _menu = load("res://menu.tscn")
 		var _inst = _menu.instantiate()
@@ -584,15 +520,7 @@ func _on_file_dialog_load_file_selected(path):
 		
 #endregion
 
-func _on_file_dialog_set_file_paths_dir_selected(dir):
-	var data_path = DirAccess.open(dir)
-	
-	if DirAccess.dir_exists_absolute(dir):
-		Global.DataPath = dir
-		save_preferences()
-		print("DATA FILEPATH SET")
-	else:
-		print("DATA FILEPATH SET FAILED")
+
 
 # Open the Save File Dialog
 func _on_button_save_pressed():
@@ -628,162 +556,7 @@ func _on_button_new_pressed():
 		child.queue_free()
 	queue_redraw()
 
-func _on_button_refresh_data_pressed():
-	refresh_data()
 
-func refresh_data():
-	Global.DataAbilities = []
-	Global.DataItems = []
-	Global.DataMoves = []
-	Global.DataOochamon = []
-	Global.DataTiles = []
-	
-	var ln
-	var lnsplit
-	
-	#Abilities
-	var f_abilities = FileAccess.open(Global.DataPath + "/abilities_data.txt", FileAccess.READ)
-	if FileAccess.get_open_error():
-		return
-	
-	ln = f_abilities.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		Global.DataAbilities.push_back({
-			ability_index = int(lnsplit[0]),
-			ability_name = lnsplit[1],
-			ability_desc = lnsplit[2],
-		})
-		ln = f_abilities.get_line()
-	#print(Global.DataAbilities)
-	
-	#Items
-	var f_items = FileAccess.open(Global.DataPath + "/items_data.txt", FileAccess.READ)
-	ln = f_items.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		Global.DataItems.push_back({
-			item_index = int(lnsplit[0]),
-			item_name = lnsplit[1],
-			item_emote = lnsplit[2],
-			item_inv = lnsplit[3],
-			item_type = lnsplit[4],
-			item_power = float(lnsplit[5]),
-			item_desc = lnsplit[6],
-		})
-		ln = f_items.get_line()
-	#print(Global.DataItems)
-	
-	#Moves
-	var f_moves = FileAccess.open(Global.DataPath + "/moves_data.txt", FileAccess.READ)
-	ln = f_moves.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		Global.DataMoves.push_back({
-			move_index = int(lnsplit[0]),
-			move_name = lnsplit[1],
-			move_element = lnsplit[2],
-			move_power = int(lnsplit[3]),
-			move_acc = int(lnsplit[4]),
-			move_status = lnsplit[5],
-			move_chance = int(lnsplit[6]),
-			move_desc = lnsplit[7],
-		})
-		ln = f_moves.get_line()
-	#print(Global.DataMoves)
-	
-	#Oochamon
-	var f_oochamon = FileAccess.open(Global.DataPath + "/ooch_data.txt", FileAccess.READ)
-	ln = f_oochamon.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		var moves_list = lnsplit[10].split(",")
-		var len = moves_list.size()
-		var moves_arr = []
-		var mv_lv
-		var mv_id
-		for i in moves_list.size()/2:
-			mv_lv = int(moves_list[(i * 2)])
-			mv_id = int(moves_list[(i * 2) + 1])
-			moves_arr.push_back({
-				move_level = mv_lv,
-				move_index = mv_id
-			})
-			
-		var abi_list = lnsplit[11].split(",")
-		var abi_arr = []
-		
-		for i in abi_list.size():
-			abi_arr.push_back(int(abi_list[i]))
-		
-		var index = lnsplit[0]
-		var emote = lnsplit[1].split(":")[2]
-		emote = emote.replace(">","")
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","oochamon/" + ("00" + index).right(3) + ".png")
-		
-		Global.DataOochamon.push_back({
-			ooch_index = int(lnsplit[0]),
-			ooch_emote = lnsplit[1],
-			ooch_link_image = lnsplit[2],
-			ooch_name = lnsplit[3],
-			ooch_desc = lnsplit[4],
-			ooch_element = lnsplit[5],
-			ooch_hp = int(lnsplit[6]),
-			ooch_atk = int(lnsplit[7]),
-			ooch_def = int(lnsplit[8]),
-			ooch_spd = int(lnsplit[9]),
-			ooch_moves = moves_arr,
-			ooch_ability = abi_arr,
-			ooch_evo_to = int(lnsplit[12]),
-			ooch_evo_lv = int(lnsplit[13]),
-			ooch_sprite = -1,
-			ooch_texture = -1
-		})
-		ln = f_oochamon.get_line()
-	#print(Global.DataTiles)
-	
-	#Tiles
-	var f_tiles = FileAccess.open(Global.DataPath + "/tiles_data.txt", FileAccess.READ)
-	ln = f_tiles.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		
-		var index = lnsplit[1].split(":")[1]
-		var emote = lnsplit[1].split(":")[2]
-		emote = emote.replace(">","")
-		
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","tiles/" + index + ".png")
-		
-		Global.DataTiles.push_back({
-			tile_index = index,
-			tile_emote = lnsplit[1],
-			tile_emote_detailed = lnsplit[1],
-			tile_sprite = -1,
-			tile_texture = -1
-		})
-		ln = f_tiles.get_line()
-		
-		
-	#NPCs
-	var f_npcs = FileAccess.open(Global.DataPath + "/npc_data.txt", FileAccess.READ)
-	ln = f_npcs.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		
-		var index = lnsplit[1].split(":")[1]
-		var emote = lnsplit[1].split(":")[2]
-		emote = emote.replace(">","")
-		
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","npcs/" + index + ".png")
-		
-		Global.DataNPCs.push_back({
-			tile_index = index,
-			tile_emote = lnsplit[1],
-			tile_emote_detailed = lnsplit[1],
-			tile_sprite = -1,
-			tile_texture = -1
-		})
-		ln = f_npcs.get_line()
 	
 func _on_button_map_brush_pressed():
 	Global.TileSelected = -1

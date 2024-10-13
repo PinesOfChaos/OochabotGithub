@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
 [ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
 [ext_resource type="PackedScene" uid="uid://csa8cegur6sm6" path="res://file_dialog_set_file_paths.tscn" id="2_ukjgg"]
-[ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
+[ext_resource type="Script" path="res://GridTiles.gd" id="3_idg2d"]
 
 [node name="Menu" type="Control" groups=["MainMenu"]]
 layout_mode = 3
@@ -13,6 +13,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ift6h")
+map_name = null
+map_width = null
+map_height = null
+map_tiles = null
+map_battleback = null
+cam_x = null
+cam_y = null
+grid_alpha = null
+loaded = null
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save Map File"
@@ -199,18 +208,18 @@ theme_override_constants/v_separation = 4
 columns = 16
 script = ExtResource("2_c15v4")
 
-[node name="TileSelect" parent="." instance=ExtResource("4_5duw6")]
+[node name="GridTiles" type="GridContainer" parent="."]
 visible = false
+layout_direction = 2
 layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 421.0
-offset_top = 133.0
-offset_right = 741.0
-offset_bottom = 453.0
-grow_horizontal = 1
-grow_vertical = 1
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+script = ExtResource("3_idg2d")
 
 [node name="TooltipsPaint" type="RichTextLabel" parent="."]
 visible = false
