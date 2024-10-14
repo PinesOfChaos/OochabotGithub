@@ -38,8 +38,10 @@ module.exports = {
             .setColor('#808080')
             .setDescription(placeholder_desc)
 
-        // Switch state to dialogue
-        db.profile.set(user_id, PlayerState.Dialogue, 'player_state');
+        // Switch state to dialogue if coming from the playspace
+        if (db.profile.get(user_id, 'player_state') == PlayerState.Playspace) {
+            db.profile.set(user_id, PlayerState.Dialogue, 'player_state');
+        }
 
         // Using helper functions here because we have to essentially duplicate this across 2 different while loops,
         // and one for right when we start the event and one for after dialogue options are picked. Helper functions
@@ -83,18 +85,11 @@ module.exports = {
                 db.profile.math(user_id, '+', obj_content.money, 'oochabux');
             } 
 
-            if (obj_content.item != false) {
-                let item = db.item_data.get(obj_content.item.item_id);
-                info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
-                give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
+            if (obj_content.items != false) {
+                let item = db.item_data.get(obj_content.items.id);
+                info_data += `${item.emote} **${item.name}** x${obj_content.items.item_count}`;
+                give_item(user_id, obj_content.items.id, obj_content.items.item_count);
             } 
-
-            if (obj_content.flags.length != 0) {
-                let flags = db.profile.get(user_id, 'flags');
-                for (let flag of obj_content.flags) {
-                    if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
-                }
-            }
 
             if (info_data.length != 0) {
                 event_embed.addFields({name: 'You Received:', value: info_data });
@@ -123,14 +118,15 @@ module.exports = {
                 let oochData = db.monster_data.get(ooch.id)
                 oochamonPicks.addComponents(
                     new ButtonBuilder()
-                        .setCustomId(`ooch|${ooch.id}|${ooch.level}|${ooch.ability}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}|${ooch.hp_iv}|${ooch.moveset.join(',')}`)
-                        .setLabel(`${ooch.nickname == '' ? oochData.name : ooch.nickname}`)
+                        .setCustomId(`ooch|${ooch.id}|${ooch.level}|${ooch.moveset.join(',')}|${ooch.nickname}|${ooch.ability}|${ooch.hp_iv}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}`)
+                        .setLabel(`${oochData.name}`)
                         .setStyle(ButtonStyle.Secondary)
                         .setEmoji(`${oochData.emote}`),
                 );
             }
 
-            event_embed.setTitle('Select an Oochamon!');
+            event_embed.setTitle(obj_content.title);
+            event_embed.setDescription(obj_content.description);
         }
 
         function flagEvent(obj_content) {
@@ -155,7 +151,7 @@ module.exports = {
         }
 
         function objectiveEvent(obj_content) {
-            db.profile.set(user_id, obj_content.text, 'objective');
+            db.profile.set(user_id, obj_content, 'objective');
         }
 
         function optionsEvent(obj_content, initial=false) {
@@ -226,20 +222,19 @@ module.exports = {
 
             // If we collect an Oochamon data type, handle that first then move on
             if (sel.customId.includes('ooch')) {
-                let oochChoices = event_array[current_place][1].options.map(v => v = v.ooch_id);
-                let chosenOochId = sel.customId.split('|');
-                let chosenOochLevel = chosenOochId[2];
-                chosenOochId = chosenOochId[1];
+                let oochChoices = event_array[current_place][1].options.map(v => v = v.id);
+                let oochButtonData = sel.customId.split('|');
 
                 // Oochadex update
                 for (ooch_id of oochChoices) {
                     db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].seen`);
-                    if (ooch_id == chosenOochId) {
+                    if (ooch_id == oochButtonData[0]) {
                         db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].caught`);
                     }
                 }
 
-                let ooch = create_ooch(chosenOochId, chosenOochLevel);
+                let ooch = create_ooch(oochButtonData[1], oochButtonData[2], oochButtonData[3].split(','), oochButtonData[4], 0, oochButtonData[5],
+                                       oochButtonData[6], oochButtonData[7], oochButtonData[8], oochButtonData[9]);
                 // Have it check here if you want to send the Oochamon to your party or not
                 if (db.profile.get(user_id, 'ooch_party').length < 4) {
                     db.profile.push(user_id, ooch, `ooch_party`);
@@ -306,6 +301,7 @@ module.exports = {
                 }
 
                 if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
+                    console.log(event_mode);
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         await confirm_collector.stop();

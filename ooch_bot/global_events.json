@@ -1,5 +1,5 @@
 {
-	"ev_intro_new": [
+	"ev_intro": [
 		[
 			0,
 			{
@@ -78,7 +78,8 @@
 						"spd_iv": 5
 					}
 				],
-				"text": "Select a Starter Oochamon!"
+				"title": "Select a Starter Oochamon!",
+				"description": "Pick your starter to begin your adventure."
 			}
 		],
 		[

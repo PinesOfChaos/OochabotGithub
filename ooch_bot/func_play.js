@@ -650,7 +650,6 @@ module.exports = {
         def_iv = (def_iv/20) + 1;
         spd_iv = (spd_iv/20) + 1;
 
-
         // Setup ooch_id data
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
         let ability_list = db.monster_data.get(ooch_id, 'abilities');

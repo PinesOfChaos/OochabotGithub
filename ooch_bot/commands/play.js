@@ -47,12 +47,12 @@ module.exports = {
 
             await thread.setInvitable(false);
             
-            db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
-            db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
-            interaction.reply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
+            await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
+            await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
+            await interaction.reply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
         } else {
-            db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
-            db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
+            await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
+            await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
             await thread.bulkDelete(100);
         }
 

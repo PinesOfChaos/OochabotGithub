@@ -1370,8 +1370,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
                         let newStatValue = status_target.stats[`${status_split[1]}_mul`];
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!**\n` + 
-                            `--- **New ${_.upperCase(status_split[1])}: ${newStatValue >= 1 ? `+` : ``}${Math.round(newStatValue)}**`;;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!\n` + 
+                            `--- **New ${_.upperCase(status_split[1])}: ${newStatValue >= 1 ? `+` : ``}${Math.round(newStatValue)}**`;
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }

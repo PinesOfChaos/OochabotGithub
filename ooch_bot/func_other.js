@@ -1,7 +1,7 @@
 // For functions that don't fit into the other categories
 const db = require("./db")
 const { EmbedBuilder, AttachmentBuilder, Collection } = require('discord.js');
-const { TypeEmote } = require('./types.js');
+const { TypeEmote, PlayerState, Item } = require('./types.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
 
@@ -88,6 +88,55 @@ module.exports = {
     get_art_file: function(path) {
         let file = new AttachmentBuilder(path);
         return file;
+    },
+
+    reset_oochamon: async function(user_id) {
+        // Setup user data
+        db.profile.set(user_id, 'c_000', 'player_sprite');
+        db.profile.set(user_id, [], 'ooch_pc')
+        db.profile.set(user_id, 0, 'ooch_active_slot')
+        db.profile.set(user_id, {}, 'other_inv')
+        db.profile.set(user_id, {}, 'prism_inv')
+        db.profile.set(user_id, { [Item.Potion]: 3 }, 'heal_inv') // Start with 3 potions
+        db.profile.set(user_id, 0, 'oochabux')
+        await db.profile.set(user_id, PlayerState.Intro, 'player_state')
+        db.profile.set(user_id, {}, 'ooch_enemy')
+        db.profile.set(user_id, { area: 'hub', x: 20, y: 8 }, 'location_data')
+        db.profile.set(user_id, { area: 'hub', x: 15, y: 9 }, 'checkpoint_data');
+        db.profile.set(user_id, false, 'display_msg_id');
+        db.profile.set(user_id, false, 'play_thread_id');
+        db.profile.set(user_id, false, 'play_guild_id');
+        db.profile.set(user_id, false, 'rollback_profile');
+        db.profile.set(user_id, 0, 'battle_msg_counter');
+        db.profile.set(user_id, 0, 'battle_turn_counter');
+        db.profile.set(user_id, 0, 'turn_msg_counter');
+        db.profile.set(user_id, [], 'oochadex');
+        db.profile.set(user_id, [], 'flags');
+        db.profile.set(user_id, [], 'ooch_party');
+        db.profile.set(user_id, [Item.Potion, Item.Prism], 'global_shop_items');
+        db.profile.set(user_id, [], 'friends_list');
+        db.profile.set(user_id, 1, 'move_speed');
+        db.profile.set(user_id, 'Talk to the professor.', 'objective');
+        
+        // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
+        // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
+        db.profile.set(user_id, [], 'npc_event_data'); 
+        db.profile.set(user_id, 0, 'npc_event_pos');
+        
+        // Settings
+        db.profile.set(user_id, {
+            controls_msg: true,
+            battle_cleanup: true,
+            zoom: '9_7',
+            battle_speed: 1250,
+            discord_move_buttons: false,
+            objective: true,
+        }, 'settings');
+
+        // Setup Oochadex template
+        for (ooch_id in db.monster_data.keyArray()) {
+            db.profile.push(user_id, { id: ooch_id, seen: 0, caught: 0 }, 'oochadex')
+        }
     }
 
 }
