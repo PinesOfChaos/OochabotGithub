@@ -639,11 +639,18 @@ module.exports = {
      * @param {Number} held_item ID of the Item for the Oochamon to hold (default: no item) [UNUSED]
      * @returns The oochamon object
      */
-    create_ooch: function(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = _.random(0,10)/20+1, atk_iv = _.random(0,10)/20+1,
-                            def_iv = _.random(0,10)/20+1, spd_iv = _.random(0,10)/20+1, held_item = -1) {
+    create_ooch: function(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = _.random(0,10), atk_iv = _.random(0,10),
+                            def_iv = _.random(0,10), spd_iv = _.random(0,10), held_item = -1) {
 
         const { get_stats, level_up, exp_to_next_level } = require('./func_battle');
                             
+        //Fix IV math
+        hp_iv = (hp_iv/20) + 1;
+        atk_iv = (atk_iv/20) + 1;
+        def_iv = (def_iv/20) + 1;
+        spd_iv = (spd_iv/20) + 1;
+
+
         // Setup ooch_id data
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
         let ability_list = db.monster_data.get(ooch_id, 'abilities');
