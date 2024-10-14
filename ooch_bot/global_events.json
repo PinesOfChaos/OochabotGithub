@@ -1,94 +1,4 @@
 {
-	"ev_intro": [
-		[
-			0,
-			{
-				"description": "Welcome to Oochamon! Your journey starts here.",
-				"dialogue_file_name": false,
-				"dialogue_file_path": false,
-				"flags": [],
-				"image": "",
-				"item": false,
-				"money": 0,
-				"title": "Introduction"
-			}
-		],
-		[
-			0,
-			{
-				"description": "Please, feel free to pick an Oochamon to begin with. Any will do!\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
-				"dialogue_file_name": false,
-				"dialogue_file_path": false,
-				"flags": [],
-				"image": "starter.png",
-				"item": false,
-				"money": 0,
-				"title": "Introduction"
-			}
-		],
-		[
-			3,
-			{
-				"options": [
-					{
-						"id": 0,
-						"level": 5
-					},
-					{
-						"id": 3,
-						"level": 5
-					},
-					{
-						"id": 6,
-						"level": 5
-					}
-				]
-			}
-		],
-		[
-			0,
-			{
-				"description": "Great choice! Your Oochamon will love you, I'm sure.",
-				"dialogue_file_name": false,
-				"dialogue_file_path": false,
-				"flags": [],
-				"image": "",
-				"item": false,
-				"money": 0,
-				"title": "Introduction"
-			}
-		],
-		[
-			0,
-			{
-				"description": "Get out there and go have some fun. The head researcher would like to speak with you, so start there!",
-				"dialogue_file_name": false,
-				"dialogue_file_path": false,
-				"flags": [],
-				"image": "",
-				"item": false,
-				"money": 0,
-				"title": "Introduction"
-			}
-		],
-		[
-			0,
-			{
-				"description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `w` `a` `s` or `d` in the chat, and send it as a message. You can use a number after the direction, or something like \"www\" or \"ssss\" to jump up to 6 tiles in one direction.\nIf you want to chain together these, you can do something like this: `w4,d4` to do 2 movement actions at once.\nYou can type `/menu` as well to pull up the in game menu!\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table or the controls at any time!\n\nIf you have any questions, please ask Pines or Jeff!",
-				"dialogue_file_name": false,
-				"dialogue_file_path": false,
-				"flags": [],
-				"image": "",
-				"item": false,
-				"money": 0,
-				"title": "Quick Tutorial"
-			}
-		],
-		[
-			2,
-			"intro"
-		]
-	],
 	"ev_intro_new": [
 		[
 			0,
@@ -104,7 +14,7 @@
 		[
 			0,
 			{
-				"description": "Please, feel free to pick anOochamon to begin with. Any will do!\\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
+				"description": "Please, feel free to pick an Oochamon to begin with. Any will do!\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
 				"dialogue_portrait": "",
 				"image": "starter.png",
 				"items": [],
@@ -127,8 +37,7 @@
 						"moveset": [
 							1,
 							61,
-							2,
-							9999
+							2
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -145,8 +54,7 @@
 						"moveset": [
 							1,
 							63,
-							3,
-							9999
+							3
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -163,8 +71,7 @@
 						"moveset": [
 							1,
 							64,
-							4,
-							9999
+							4
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -199,12 +106,209 @@
 		[
 			0,
 			{
-				"description": "Here's a quick tutorial on how to play Oochamon!\\nTo move, type `w` `a` `s` or `d` in the chat, and send it as a message. You can use a number after the direction, or something like \\\"www\\\" or \\\"ssss\\\" to jump up to 6 tiles in one direction.\\nIf you want to chain together these, you can do something like this: `w4,d4` to do 2 movement actions at once.\\nYou can type `/menu` as well to pull up the in game menu!\\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table or the controls at any time!\\n\\nIf you have any questions, please ask Pines or Jeff!",
+				"description": "Here's a quick tutorial on how to play Oochamon!\nTo move, type `w` `a` `s` or `d` in the chat, and send it as a message. You can use a number after the direction, or something like \"www\" or \"ssss\" to jump up to 6 tiles in one direction.\\nIf you want to chain together these, you can do something like this: `w4,d4` to do 2 movement actions at once.\nYou can type `/menu` as well to pull up the in game menu!\nYou can use `/teleport` to teleport between the hub and your current checkpoint, to help you access the shop easier!\nLastly, you can use `/lookup` to get a description of what a move or ability does, or use it to view the type matchup table or the controls at any time!\nIf you have any questions, please ask Pines or Jeff!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
 				"money": 0,
 				"title": "Quick Tutorial"
+			}
+		],
+		[
+			5,
+			"Go speak with the Oochamon Professor."
+		]
+	],
+	"ev_testall": [
+		[
+			0,
+			{
+				"description": "You should recieve 100 Oochabux, 5 Prisms, 10 Potions, and 1 Daylily after this!",
+				"dialogue_portrait": "",
+				"image": "starter.png",
+				"items": [
+					{
+						"count": 5,
+						"id": 3
+					},
+					{
+						"count": 10,
+						"id": 0
+					},
+					{
+						"count": 1,
+						"id": 11
+					}
+				],
+				"money": 100,
+				"title": "Dialog Test"
+			}
+		],
+		[
+			2,
+			{
+				"text": "testflag"
+			}
+		],
+		[
+			5,
+			{
+				"text": "Blow up the Ocean"
+			}
+		],
+		[
+			4,
+			{
+				"map_to": "hub",
+				"xto": 10,
+				"yto": 10
+			}
+		],
+		[
+			3,
+			{
+				"options": [
+					{
+						"ability": 0,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 0,
+						"id": 0,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							61,
+							2,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0
+					},
+					{
+						"ability": 0,
+						"atk_iv": 1,
+						"def_iv": 1,
+						"hp_iv": 1,
+						"id": 3,
+						"item": -1,
+						"level": 10,
+						"moveset": [
+							1,
+							63,
+							3,
+							7
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 1
+					},
+					{
+						"ability": 0,
+						"atk_iv": 2,
+						"def_iv": 2,
+						"hp_iv": 2,
+						"id": 6,
+						"item": -1,
+						"level": 15,
+						"moveset": [
+							4,
+							1,
+							64,
+							8
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 2
+					},
+					{
+						"ability": 0,
+						"atk_iv": 3,
+						"def_iv": 3,
+						"hp_iv": 3,
+						"id": 21,
+						"item": -1,
+						"level": 20,
+						"moveset": [
+							1,
+							60,
+							58,
+							22
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 3
+					},
+					{
+						"ability": 0,
+						"atk_iv": 4,
+						"def_iv": 4,
+						"hp_iv": 4,
+						"id": 76,
+						"item": -1,
+						"level": 25,
+						"moveset": [
+							1,
+							61,
+							59,
+							30
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 4
+					}
+				],
+				"text": ""
+			}
+		],
+		[
+			1,
+			{
+				"name": "brain unhaver",
+				"party": [
+					{
+						"ability": 15,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 0,
+						"id": 11,
+						"item": -1,
+						"level": 1,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "knuckle sandwich",
+						"slot_enabled": true,
+						"spd_iv": 0
+					}
+				],
+				"sprite": 10,
+				"sprite_name": "c00_010",
+				"sprite_special": ""
+			}
+		],
+		[
+			6,
+			{
+				"options": [
+					{
+						"event": "ev_testall",
+						"flag": "testall",
+						"price": 500,
+						"text": "rerun"
+					},
+					{
+						"event": "ev_intro",
+						"flag": "introB",
+						"price": 0,
+						"text": "intro"
+					}
+				],
+				"text": "options!"
 			}
 		]
 	]

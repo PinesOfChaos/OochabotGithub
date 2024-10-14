@@ -104,7 +104,7 @@
 		[
 			0,
 			{
-				"description": "Please, feel free to pick anOochamon to begin with. Any will do!\\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
+				"description": "Please, feel free to pick an Oochamon to begin with. Any will do!\\nThis image of the Oochamon we found is a placeholder, by the way. We're still developing our actual picture!",
 				"dialogue_portrait": "",
 				"image": "starter.png",
 				"items": [],

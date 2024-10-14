@@ -35,15 +35,15 @@ module.exports = {
         // Global
         create_tile(`t${zG}_000`,  Tile.Wall,     applicationEmojis ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,    applicationEmojis ); //Teleporter 
-        create_tile(`t${zG}_003`,  Tile.Floor,    applicationEmojis ); //Arrow Left
-        create_tile(`t${zG}_004`,  Tile.Floor,    applicationEmojis ); //Arrow Up
-        create_tile(`t${zG}_005`,  Tile.Floor,    applicationEmojis ); //Arrow Right
-        create_tile(`t${zG}_006`,  Tile.Floor,    applicationEmojis ); //Arrow Down
-        create_tile(`t${zG}_007`,  Tile.Wall,     applicationEmojis ); //Shop Mini
-        create_tile(`t${zG}_008`,  Tile.Wall,     applicationEmojis ); //Shop Upper Left
-        create_tile(`t${zG}_009`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
-        create_tile(`t${zG}_010`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
-        create_tile(`t${zG}_011`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
+        create_tile(`t${zG}_002`,  Tile.Floor,    applicationEmojis ); //Arrow Left
+        create_tile(`t${zG}_003`,  Tile.Floor,    applicationEmojis ); //Arrow Up
+        create_tile(`t${zG}_004`,  Tile.Floor,    applicationEmojis ); //Arrow Right
+        create_tile(`t${zG}_005`,  Tile.Floor,    applicationEmojis ); //Arrow Down
+        create_tile(`t${zG}_006`,  Tile.Wall,     applicationEmojis ); //Shop Mini
+        create_tile(`t${zG}_007`,  Tile.Wall,     applicationEmojis ); //Shop Upper Left
+        create_tile(`t${zG}_008`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
+        create_tile(`t${zG}_009`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
+        create_tile(`t${zG}_010`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
         
         // Fungal
         create_tile(`t${zF}_000`,  Tile.Floor,    applicationEmojis ); //Fungal Floor

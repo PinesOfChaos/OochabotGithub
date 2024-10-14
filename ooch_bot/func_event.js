@@ -22,9 +22,6 @@ module.exports = {
                 new ButtonBuilder().setCustomId('next').setEmoji('▶').setStyle(ButtonStyle.Success),
             );
 
-        // Switch state to dialogue
-        db.profile.set(user_id, PlayerState.Dialogue, 'player_state');
-
         let current_place = start_pos;
         let event_mode = event_array[current_place][0];
         let obj_content = event_array[current_place][1];
@@ -34,10 +31,137 @@ module.exports = {
         let profile_data = db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
         let imageFiles = [];
-
+        let filter = i => i.user.id == user_id;
+        let oochamonPicks = new ActionRowBuilder();
+    
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
             .setDescription(placeholder_desc)
+
+        // Switch state to dialogue
+        db.profile.set(user_id, PlayerState.Dialogue, 'player_state');
+
+        // Using helper functions here because we have to essentially duplicate this across 2 different while loops,
+        // and one for right when we start the event and one for after dialogue options are picked. Helper functions
+        // make this easier to work with.
+        async function dialogueEvent(obj_content, initial=false) {
+            if (obj_content.description.includes('{')) {
+                let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
+                switch (dialogue_var) {
+                    case 'player':
+                        obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
+                    break;
+                }
+            }
+
+            event_embed.setDescription(obj_content.description);
+
+            if (obj_content.title != '') {
+                event_embed.setTitle(obj_content.title);
+            }
+
+            // Set NPC dialogue portrait
+            if (obj_content.dialogue_portrait != '') {
+                
+                if (obj_content.dialogue_portrait.includes('NPC|')) {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+                    imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+                } else {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                }
+            }
+
+            if (obj_content.image) {
+                event_embed.setImage(`attachment://${obj_content.image}`)
+                imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            }
+
+            info_data = '';
+            if (obj_content.money != 0) {
+                info_data += `**${obj_content.money}** Oochabux\n`;
+                db.profile.math(user_id, '+', obj_content.money, 'oochabux');
+            } 
+
+            if (obj_content.item != false) {
+                let item = db.item_data.get(obj_content.item.item_id);
+                info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
+                give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
+            } 
+
+            if (obj_content.flags.length != 0) {
+                let flags = db.profile.get(user_id, 'flags');
+                for (let flag of obj_content.flags) {
+                    if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
+                }
+            }
+
+            if (info_data.length != 0) {
+                event_embed.addFields({name: 'You Received:', value: info_data });
+            }
+        }
+
+        async function battleEvent(obj_content, initial=false) {
+            // Hold the data related to our current NPC event in our profile, so we can access it post battle.
+            db.profile.set(user_id, event_array, 'npc_event_data');
+            db.profile.set(user_id, current_place+1, 'npc_event_pos');
+
+            if (initial == false) {
+                // Delete the embed message to prep for battle, and kill the collector as well.
+                await msg.delete();
+                if (confirm_collector !== undefined) confirm_collector.stop();
+            }
+
+            // Setup the battle
+            await setup_battle(thread, user_id, obj_content, true);
+        }
+
+        async function oochPickEvent(obj_content, initial=false) {
+            oochamonPicks = new ActionRowBuilder();
+
+            for (let ooch of obj_content.options) {
+                let oochData = db.monster_data.get(ooch.id)
+                oochamonPicks.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`ooch|${ooch.id}|${ooch.level}|${ooch.ability}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}|${ooch.hp_iv}|${ooch.moveset.join(',')}`)
+                        .setLabel(`${ooch.nickname == '' ? oochData.name : ooch.nickname}`)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setEmoji(`${oochData.emote}`),
+                );
+            }
+
+            event_embed.setTitle('Select an Oochamon!');
+        }
+
+        function flagEvent(obj_content) {
+            let flags = db.profile.get(user_id, 'flags');
+            if (!flags.includes(obj_content)) {
+                db.profile.push(user_id, obj_content, 'flags');
+            }
+        }
+
+        async function transitionEvent(obj_content) {
+            //remove the player's info from the old biome and add it to the new one
+            let ogBiome = db.profile.get(user_id, 'location_data.area');
+            let mapData = db.maps.get(db.maps.get(obj_content.map_to));
+            db.player_positions.set(obj_content.map_to, { x: obj_content.xto, y: obj_content.yto }, user_id);
+            db.player_positions.delete(ogBiome, user_id);
+            db.profile.set(user_id, { area: obj_content.map_to, x: obj_content.xto, y: obj_content.yto }, 'location_data')
+
+            let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
+            (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
+                msg.edit({ content: map_emote_string(obj_content.map_to, mapData, obj_content.xto, obj_content.yto, user_id) });
+            });
+        }
+
+        function objectiveEvent(obj_content) {
+            db.profile.set(user_id, obj_content.text, 'objective');
+        }
+
+        function optionsEvent(obj_content, initial=false) {
+            // TODO: Make this work
+            console.log('Oops! Not working yet!')
+        }
 
         while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
@@ -46,106 +170,47 @@ module.exports = {
             switch (event_mode) {
                 //Basic Text Event
                 case EventMode.Dialogue: 
-                    if (obj_content.description == '') obj_content.description = ' ';
-                    if (obj_content.description.includes('{')) {
-                        let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
-                        switch (dialogue_var) {
-                            case 'player':
-                                obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
-                            break;
-                        }
-                    }
-
-                    // This is the actual dialogue
-                    event_embed.setDescription(obj_content.description);
-
-                    // Set name of NPC
-                    if (obj_content.title != '') {
-                        event_embed.setTitle(obj_content.title);
-                    }
-
-                    // Set NPC dialogue portrait
-                    if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
-                        event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                        imageFiles.push(get_art_file(`./art/${obj_content.dialogue_file_path}`));
-                    }
-
-                    if (obj_content.image) {
-                        event_embed.setImage(`attachment://${obj_content.image}`)
-                        imageFiles.push(get_art_file(`./art/EventImages/${obj_content.image}`));
-                    }
-
-                    info_data = '';
-                    if (obj_content.money != 0) {
-                        info_data += `**${obj_content.money}** Oochabux\n`;
-                        db.profile.math(user_id, '+', obj_content.money, 'oochabux');
-                    } 
-
-                    if (obj_content.item != false) {
-                        let item = db.item_data.get(obj_content.item.item_id);
-                        info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
-                        give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
-                    } 
-
-                    if (obj_content.flags.length != 0) {
-                        let flags = db.profile.get(user_id, 'flags');
-                        for (let flag of obj_content.flags) {
-                            if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
-                        }
-                    }
-
-                    if (info_data.length != 0) {
-                        event_embed.addFields({name: 'You Received:', value: info_data })
-                    }
+                    await dialogueEvent(obj_content, true);
                     quit_init_loop = true;
-
                 break;
+
                 case EventMode.BattleTrainer:
-                    // Hold the data related to our current NPC event in our profile, so we can access it post battle.
-                    db.profile.set(user_id, event_array, 'npc_event_data');
-                    db.profile.set(user_id, current_place+1, 'npc_event_pos');
-                    // Setup the battle
-                    await setup_battle(thread, user_id, obj_content, true);
+                    await battleEvent(obj_content, true);
                 return;
 
                 case EventMode.OochamonPick:
-                        let oochamonPicks = new ActionRowBuilder();
-
-                        for (let ooch of obj_content.options) {
-                            let oochData = db.monster_data.get(ooch.ooch_id)
-                            oochamonPicks.addComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`ooch|${ooch.ooch_id}|${ooch.level}`)
-                                    .setLabel(`${oochData.name}`)
-                                    .setStyle(ButtonStyle.Secondary)
-                                    .setEmoji(`${oochData.emote}`),
-                            );
-                        }
-
-                        let selOochEmbed = new EmbedBuilder()
-                            .setColor('#808080')
-                            .setTitle('Select an Oochamon!');
-
-                        await msg.edit({ embeds: [selOochEmbed], components: [oochamonPicks] });
-                        quit_init_loop = true;
-                    break;
-                
-                //No Visual representation, just gives appropriate flags in the player if they don't already have them
-                case EventMode.Flags: 
-                    let flags = db.profile.get(user_id, 'flags');
-                    if( !flags.includes(obj_content)) {
-                        db.profile.push(user_id, obj_content, 'flags');
-                    }
-                    // If we are at the end of the event_array, quit out entirely
-                    if (current_place + 1 == event_array.length) {
-                        db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                        let playspace_str = setup_playspace_str(user_id);
-                        await thread.messages.fetch(msg_to_edit).then((msg) => {
-                            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
-                        }).catch(() => {});
-                        return;
-                    }
+                    await oochPickEvent(obj_content, true);
+                    quit_init_loop = true;
                 break;
+                
+                case EventMode.Flags: 
+                    flagEvent(obj_content);
+                break;
+
+                case EventMode.Transition:
+                    await transitionEvent(obj_content);
+                break;
+
+                case EventMode.Objective:
+                    objectiveEvent(obj_content);
+                break;
+
+                case EventMode.Options:
+                    optionsEvent(obj_content);
+                    quit_init_loop = true;
+                break;
+            }
+
+            // If we are at the end of the event_array, quit out entirely
+            if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
+                if (current_place + 1 == event_array.length) {
+                    db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                    let playspace_str = setup_playspace_str(user_id);
+                    await thread.messages.fetch(msg_to_edit).then((msg) => {
+                        msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                    }).catch(() => {});
+                    return;
+                }
             }
 
             if (quit_init_loop == false) current_place++;
@@ -153,7 +218,6 @@ module.exports = {
 
         //Send Embed and Await user input before proceeding
         let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
-        let filter = i => i.user.id == user_id;
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
         await confirm_collector.on('collect', async sel => {
@@ -202,125 +266,62 @@ module.exports = {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
 
-                console.log(event_array[current_place]);
-
                 //Customize Embed
                 switch (event_mode) {
                     //Basic Text Event
                     case EventMode.Dialogue: 
                         quit = true;
-
-                        if (obj_content.description.includes('{')) {
-                            let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
-                            switch (dialogue_var) {
-                                case 'player':
-                                    obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
-                                break;
-                            }
-                        }
-
-                        event_embed.setDescription(obj_content.description);
-
-                        if (obj_content.title != '') {
-                            event_embed.setTitle(obj_content.title);
-                        }
-
-                        // Set NPC dialogue portrait
-                        if (obj_content.dialogue_file_name || obj_content.dialogue_file_path) {
-                            event_embed.setThumbnail(`attachment://${obj_content.dialogue_file_name}`)
-                            imageFiles.push(get_art_file(`./art/${obj_content.dialogue_file_path}`));
-                        }
-
-                        if (obj_content.image) {
-                            event_embed.setImage(`attachment://${obj_content.image}`)
-                            imageFiles.push(get_art_file(`./art/EventImages/${obj_content.image}`));
-                        }
-
-                        info_data = '';
-                        if (obj_content.money != 0) {
-                            info_data += `**${obj_content.money}** Oochabux\n`;
-                            db.profile.math(user_id, '+', obj_content.money, 'oochabux');
-                        } 
-    
-                        if (obj_content.item != false) {
-                            let item = db.item_data.get(obj_content.item.item_id);
-                            info_data += `${item.emote} **${item.name}** x${obj_content.item.item_count}`;
-                            give_item(user_id, obj_content.item.item_id, obj_content.item.item_count);
-                        } 
-
-                        if (obj_content.flags.length != 0) {
-                            let flags = db.profile.get(user_id, 'flags');
-                            for (let flag of obj_content.flags) {
-                                if( !flags.includes(flag)) db.profile.push(user_id, flag, 'flags');
-                            }
-                        }
-    
-                        if (info_data.length != 0) {
-                            event_embed.addFields({name: 'You Received:', value: info_data })
-                        }
-
-                        sel.update({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
-                
+                        await dialogueEvent(obj_content);
+                        await sel.update({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
                     break;
 
                     case EventMode.BattleTrainer:
                         quit = true;
-                        // Hold the data related to our current NPC event in our profile, so we can access it post battle.
-                        db.profile.set(user_id, event_array, 'npc_event_data');
-                        db.profile.set(user_id, current_place + 1, 'npc_event_pos'); // Store the position as the event AFTER this one, so we can start there when we restart the event process
-                        // Delete the embed message to prep for battle, and kill the collector as well.
-                        await msg.delete();
-                        confirm_collector.stop();
-                        // Setup the battle
-                        await setup_battle(thread, user_id, obj_content, true);
+                        await battleEvent(obj_content);
                     break;
 
                     case EventMode.OochamonPick:
                         quit = true;
-                        let oochamonPicks = new ActionRowBuilder();
-
-                        for (let ooch of obj_content.options) {
-                            let oochData = db.monster_data.get(ooch.ooch_id)
-                            oochamonPicks.addComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`ooch|${ooch.ooch_id}|${ooch.level}`)
-                                    .setLabel(`${oochData.name}`)
-                                    .setStyle(ButtonStyle.Secondary)
-                                    .setEmoji(`${oochData.emote}`),
-                            );
-                        }
-
-                        let selOochEmbed = new EmbedBuilder()
-                            .setColor('#808080')
-                            .setTitle('Select an Oochamon!');
-
-                        sel.update({embeds: [selOochEmbed], components: [oochamonPicks], files: imageFiles });
+                        await oochPickEvent(obj_content);
+                        sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
                     break;
 
                     //No Visual representation, just sets appropriate flags in the player
                     case EventMode.Flags: 
-                        let flags = db.profile.get(user_id, 'flags');
-                        if( !flags.includes(obj_content)) {
-                            db.profile.push(user_id, obj_content, 'flags');
-                        }
+                        flagEvent(obj_content);
+                    break;
 
-                        // If we are at the end of the event_array, quit out entirely
-                        if (current_place + 1 == event_array.length) {
-                            await confirm_collector.stop();
-                            await msg.delete();
-                            db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                            quit = true; 
-                            let playspace_str = setup_playspace_str(user_id);
-                            await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                msg.edit({ content: playspace_str[0], components: playspace_str[1] });
-                            }).catch(() => {});
-                            return;
-                        } else {
-                            current_place++;
-                            continue;
-                        }
+                    case EventMode.Transition:
+                        await transitionEvent(obj_content);
+                    break;
+
+                    case EventMode.Objective:
+                        objectiveEvent(obj_content);
+                    break;
+
+                    case EventMode.Options:
+                        quit = true;
+                        optionsEvent(obj_content);
                     break;
                 }
+
+                if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
+                    // If we are at the end of the event_array, quit out entirely
+                    if (current_place + 1 == event_array.length) {
+                        await confirm_collector.stop();
+                        await msg.delete();
+                        db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                        quit = true; 
+                        let playspace_str = setup_playspace_str(user_id);
+                        await thread.messages.fetch(msg_to_edit).then((msg) => {
+                            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                        }).catch(() => {});
+                        return;
+                    } else {
+                        current_place++;
+                    }
+                }
+            
             }
         });
     },
@@ -355,12 +356,10 @@ module.exports = {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
                     money: 0,
-                    // TODO: Make this (image) able to be set in the editor
                     image: false,
                     item: false,
                     flags: [],
-                    dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`
+                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
                 }])
             }
 
@@ -378,8 +377,7 @@ module.exports = {
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
                     item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     image: false,
-                    dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                    dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
                     flags : flags_to_give
                 }]);
             }
@@ -408,8 +406,7 @@ module.exports = {
                         money: 0,
                         item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         image: false,
-                        dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
                         flags : flags_to_give
                     }])
                 } else {
@@ -417,9 +414,9 @@ module.exports = {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
+                        image: false,
                         item: false,
-                        dialogue_file_name: npc_obj.sprite_dialogue === false ? `${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
-                        dialogue_file_path: npc_obj.sprite_dialogue === false ? `NPCs/${npc_obj.sprite_id}.png` : `DialoguePortraits/${npc_obj.sprite_dialogue}.png`,
+                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
                         flags: []
                     }])
                 }
