@@ -25,12 +25,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Nickname"
 
-[node name="element_lable" type="Label" parent="row_element"]
+[node name="element_lable" type="HBoxContainer" parent="row_element"]
 custom_minimum_size = Vector2(63, 0)
 layout_mode = 2
-text = "Element: "
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="element_texture" type="TextureRect" parent="row_element"]
 custom_minimum_size = Vector2(32, 32)

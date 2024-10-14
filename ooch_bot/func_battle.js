@@ -1195,8 +1195,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
     let dmg = 0;
     if (move_damage != 0) {
-        dmg = battle_calc_damage(move_damage * type_multiplier[0] * crit_multiplier * status_doubled * ability_dmg_multiplier, 
-                                move_type, attacker, defender, db.profile.get(user_id, 'battle_turn_counter'));
+        dmg = battle_calc_damage(move_damage * type_multiplier[0] * status_doubled * ability_dmg_multiplier, 
+                                move_type, attacker, defender, db.profile.get(user_id, 'battle_turn_counter')) * crit_multiplier;
     }
     vampire_heal = Math.round(vampire_heal * dmg); //used later
     

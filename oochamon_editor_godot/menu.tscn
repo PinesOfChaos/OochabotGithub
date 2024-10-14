@@ -99,7 +99,7 @@ ticks_on_borders = true
 
 [node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
 layout_mode = 2
-placeholder_text = "Battleback Link"
+placeholder_text = "Battle BG Sprite"
 expand_to_text_length = true
 
 [node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]

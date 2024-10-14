@@ -39,6 +39,7 @@ layout_mode = 2
 
 [node name="CheckButtonRepeatable" type="CheckButton" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+text = "Repeatable:"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(1000, 600)

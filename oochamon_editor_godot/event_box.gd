@@ -9,38 +9,39 @@ var child_node = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
+	print(event_slot_type == Global.EVENT_DIALOG)
+	print([event_slot_type, Global.EVENT_DIALOG])
 	var spawn_child = ""
 	
-	match(event_slot_type):
-		Global.EVENT_DIALOG:
-			label.text = "Dialog"
-			spawn_child = "res://event_type_dialog.tscn"
-		Global.EVENT_BATTLE:
-			label.text = "Battle"
-			spawn_child = "res://event_type_battle.tscn"
-		Global.EVENT_FLAG:
-			label.text = "Flag"
-			spawn_child = "res://event_type_flag.tscn"
-		Global.EVENT_OOCHPICK:
-			label.text = "Select Oochamon"
-			spawn_child = "res://event_type_selectooch.tscn"
-		Global.EVENT_TRANSITION:
-			label.text = "Transition"
-			spawn_child = "res://event_type_transition.tscn"
-		Global.EVENT_OBJECTIVE:
-			label.text = "Objective"
-			spawn_child = "res://event_type_objective.tscn"
-		Global.EVENT_OPTIONS:
-			label.text = "Options"
-			spawn_child = "res://event_type_options.tscn"
+
+	if event_slot_type == Global.EVENT_DIALOG:
+		label.text = "Dialog"
+		spawn_child = "res://event_type_dialog.tscn"
+	elif event_slot_type == Global.EVENT_BATTLE:
+		label.text = "Battle"
+		spawn_child = "res://event_type_battle.tscn"
+	elif event_slot_type == Global.EVENT_FLAG:
+		label.text = "Flag"
+		spawn_child = "res://event_type_flag.tscn"
+	elif event_slot_type == Global.EVENT_OOCHPICK:
+		label.text = "Select Oochamon"
+		spawn_child = "res://event_type_selectooch.tscn"
+	elif event_slot_type == Global.EVENT_TRANSITION:
+		label.text = "Transition"
+		spawn_child = "res://event_type_transition.tscn"
+	elif event_slot_type == Global.EVENT_OBJECTIVE:
+		label.text = "Objective"
+		spawn_child = "res://event_type_objective.tscn"
+	elif event_slot_type == Global.EVENT_OPTIONS:
+		label.text = "Options"
+		spawn_child = "res://event_type_options.tscn"
 	
-	
+	print(label.text)
 	if(spawn_child != ""):
 		var _load = load(spawn_child)
 		child_node = _load.instantiate()
-		child_node.owner = box_info
 		child_node.event_data.merge(event_data, true)
+		child_node.owner = box_info
 		box_info.add_child(child_node)
 	
 	box_container.queue_sort()

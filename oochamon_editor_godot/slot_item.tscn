@@ -26,8 +26,7 @@ prefix = "$"
 
 [node name="item_count" type="SpinBox" parent="."]
 layout_mode = 2
-tooltip_text = "Item Price"
-prefix = "$"
+tooltip_text = "Item Count"
 
 [connection signal="pressed" from="item_remove" to="." method="_on_item_remove_pressed"]
 [connection signal="item_selected" from="item_id" to="." method="_on_item_id_item_selected"]

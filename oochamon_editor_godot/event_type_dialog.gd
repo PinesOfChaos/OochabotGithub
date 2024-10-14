@@ -32,11 +32,12 @@ func _ready() -> void:
 		
 		_obj.item_id = item.id
 		_obj.item_count = item.count
-		_obj.o_item_price.visible = false
-		_obj.o_item_count.visible = true
+		
 		
 		v_box_container_items.add_child(_obj)
 		_obj.owner = v_box_container_items
+		_obj.o_item_price.visible = false
+		_obj.o_item_count.visible = true
 		
 
 func save():

@@ -68,10 +68,10 @@ func re_ready():
 	o_slot_ability.select(o_slot_ability.get_item_index(slot_data.ability))
 	o_slot_nickname.text = slot_data.nickname
 
-	#o_move_1.select(o_move_1.get_item_index(slot_data.moveset[0]))
-	#o_move_2.select(o_move_2.get_item_index(slot_data.moveset[1]))
-	#o_move_3.select(o_move_3.get_item_index(slot_data.moveset[2]))
-	#o_move_4.select(o_move_4.get_item_index(slot_data.moveset[3]))
+	o_move_1.select(o_move_1.get_item_index(slot_data.moveset[0]))
+	o_move_2.select(o_move_2.get_item_index(slot_data.moveset[1]))
+	o_move_3.select(o_move_3.get_item_index(slot_data.moveset[2]))
+	o_move_4.select(o_move_4.get_item_index(slot_data.moveset[3]))
 	
 	o_slot_hp.value = slot_data.hp_iv
 	o_slot_atk.value = slot_data.atk_iv
@@ -102,11 +102,22 @@ func _on_slot_species_item_selected(index):
 func refresh_abilities(index):
 	if index != -1:
 		var ooch_data = Global.DataOochamon[index]
-		var element = Global.element_info(ooch_data.ooch_element)
-		element_lable.text = element[0]
-		element_texture.texture = element[1]
-		#element_texture.Container Sizing
 		
+		#clear previously set elements
+		for child in element_lable.get_children():
+			child.queue_free()
+		
+		#add fresh elements
+		for element in ooch_data.ooch_element:
+			var el = Global.element_info(element)
+			var obj_text = Label.new()
+			obj_text.text = el[0]
+			element_lable.add_child(obj_text)
+			var obj_texture = TextureRect.new()
+			obj_texture.texture = el[1]
+			element_lable.add_child(obj_texture)			
+			
+		#clear abilities
 		o_slot_ability.clear()
 		var ability
 		for i in ooch_data.ooch_ability.size():
@@ -158,6 +169,8 @@ func refresh_moves(index, overwrite = true):
 					
 					if(slot_data.moveset[i] == move_id):
 						child.select(j + 1)
+						overwrite = false
+						print([slot_data.moveset[i], move_id])
 						print("selected " + move.move_name)
 					
 

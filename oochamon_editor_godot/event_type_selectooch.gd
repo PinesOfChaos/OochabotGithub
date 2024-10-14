@@ -6,7 +6,6 @@ extends VBoxContainer
 @onready var slot_2: VBoxContainer = $TabContainer/Slot2
 @onready var slot_3: VBoxContainer = $TabContainer/Slot3
 @onready var slot_4: VBoxContainer = $TabContainer/Slot4
-var slots = [slot_0, slot_1, slot_2, slot_3, slot_4]
 
 var event_data = {
 	"text" : "",
@@ -15,7 +14,8 @@ var event_data = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	line_edit_text = event_data.text
+	var slots = [slot_0, slot_1, slot_2, slot_3, slot_4]
+	line_edit_text.text = event_data.text
 	for i in event_data.options.size():
 		var _data = event_data.options[i]
 		var _slot = slots[i]
@@ -31,8 +31,9 @@ func _process(delta: float) -> void:
 	pass
 	
 func save():
+	var slots = [slot_0, slot_1, slot_2, slot_3, slot_4]
 	event_data.text = line_edit_text.text
 	event_data.options = []
-	for slot in slots:
-		if slot.slot_enabled:
+	for slot in slots:	
+		if slot.slot_data.slot_enabled:
 			event_data.options.push_back(slot.slot_data)

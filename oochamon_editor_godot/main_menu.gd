@@ -8,6 +8,12 @@ func _ready() -> void:
 	fd_path.current_dir = Global.DataPath
 	if Global.DataPath != "":
 		refresh_data()
+		
+		#Load Event Data
+		var path = Global.WorkingDir.split("Maps/")[0] + "global_events.json"
+		var f = FileAccess.open(path, FileAccess.READ)
+		var _text = f.get_as_text(true)
+		Global.DataEvents = JSON.parse_string(_text)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -154,7 +160,7 @@ func refresh_data():
 			ooch_link_image = lnsplit[2],
 			ooch_name = lnsplit[3],
 			ooch_desc = lnsplit[4],
-			ooch_element = lnsplit[5],
+			ooch_element = lnsplit[5].split(","),
 			ooch_hp = int(lnsplit[6]),
 			ooch_atk = int(lnsplit[7]),
 			ooch_def = int(lnsplit[8]),

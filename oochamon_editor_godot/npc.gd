@@ -150,10 +150,6 @@ func _process(delta):
 	if !refreshed:
 		refreshed = true
 		dragging = true
-		
-		
-	
-
 
 func _on_flag_required_text_changed(new_text):
 	npc_data.flag_required = new_text

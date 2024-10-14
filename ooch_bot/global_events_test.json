@@ -206,6 +206,205 @@
 				"money": 0,
 				"title": "Quick Tutorial"
 			}
+		],
+		[
+			2,
+			{
+				"text": "intro"
+			}
+		]
+	],
+	"ev_testall": [
+		[
+			0,
+			{
+				"description": "You should recieve 100 Oochabux, 5 Prisms, 10 Potions, and 1 Daylily after this!",
+				"dialogue_portrait": "",
+				"image": "starter.png",
+				"items": [
+					{
+						"count": 5,
+						"id": 3
+					},
+					{
+						"count": 10,
+						"id": 0
+					},
+					{
+						"count": 1,
+						"id": 11
+					}
+				],
+				"money": 100,
+				"title": "Dialog Test"
+			}
+		],
+		[
+			2,
+			{
+				"text": "testflag"
+			}
+		],
+		[
+			5,
+			{
+				"text": "Blow up the Ocean"
+			}
+		],
+		[
+			4,
+			{
+				"map_to": "hub",
+				"xto": 10,
+				"yto": 10
+			}
+		],
+		[
+			3,
+			{
+				"options": [
+					{
+						"ability": 0,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 0,
+						"id": 0,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							61,
+							2,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0
+					},
+					{
+						"ability": 0,
+						"atk_iv": 1,
+						"def_iv": 1,
+						"hp_iv": 1,
+						"id": 3,
+						"item": -1,
+						"level": 10,
+						"moveset": [
+							1,
+							63,
+							3,
+							7
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 1
+					},
+					{
+						"ability": 0,
+						"atk_iv": 2,
+						"def_iv": 2,
+						"hp_iv": 2,
+						"id": 6,
+						"item": -1,
+						"level": 15,
+						"moveset": [
+							4,
+							1,
+							64,
+							8
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 2
+					},
+					{
+						"ability": 0,
+						"atk_iv": 3,
+						"def_iv": 3,
+						"hp_iv": 3,
+						"id": 21,
+						"item": -1,
+						"level": 20,
+						"moveset": [
+							1,
+							60,
+							58,
+							22
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 3
+					},
+					{
+						"ability": 0,
+						"atk_iv": 4,
+						"def_iv": 4,
+						"hp_iv": 4,
+						"id": 76,
+						"item": -1,
+						"level": 25,
+						"moveset": [
+							1,
+							61,
+							59,
+							30
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 4
+					}
+				],
+				"text": ""
+			}
+		],
+		[
+			1,
+			{
+				"name": "brain unhaver",
+				"party": [
+					{
+						"ability": 15,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 0,
+						"id": 11,
+						"item": -1,
+						"level": 1,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "knuckle sandwich",
+						"slot_enabled": true,
+						"spd_iv": 0
+					}
+				],
+				"sprite": 10,
+				"sprite_name": "c00_010",
+				"sprite_special": ""
+			}
+		],
+		[
+			6,
+			{
+				"options": [
+					{
+						"event": "ev_testall",
+						"flag": "testall",
+						"price": 500,
+						"text": "rerun"
+					},
+					{
+						"event": "ev_intro",
+						"flag": "introB",
+						"price": 0,
+						"text": "intro"
+					}
+				],
+				"text": "options!"
+			}
 		]
 	]
 }

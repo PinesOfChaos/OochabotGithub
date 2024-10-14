@@ -14,9 +14,9 @@ func _ready() -> void:
 	for option in event_data.options:
 		var _load = load("res://slot_event_option.tscn")
 		var _obj = _load.instantiate()
-		v_box_container_options.add_child(_obj)
-		_obj.owner = v_box_container_options
 		_obj.data = option
+		_obj.owner = v_box_container_options
+		v_box_container_options.add_child(_obj)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
