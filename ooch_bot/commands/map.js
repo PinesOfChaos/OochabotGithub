@@ -10,6 +10,6 @@ module.exports = {
     .setName('map')
     .setDescription('View the map of your current area, if you have unlocked it.'),
     async execute(interaction) {
-        await interaction.reply({ content: 'This command is not finished yet.', ephemeral: true });
+        await interaction.reply({ content: 'This feature is currently unavailable in the current playtest. Stay tuned for this to be added in the future!', ephemeral: true });
     },
 };

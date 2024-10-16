@@ -184,7 +184,7 @@ module.exports = {
 
 
         let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder()
+        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
         let oochadex_sel_options_1 = [];
         let oochadex_sel_options_2 = [];
         let oochadex_sel_options_3 = [];
@@ -216,7 +216,7 @@ module.exports = {
                     value: `dex_${i}`,
                     emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
                 })
-            } else {
+            } else if (i >= 75 && i < 100) {
                 oochadex_sel_options_4.push({
                     label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
                     description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
@@ -245,6 +245,13 @@ module.exports = {
                 .setCustomId('oochadex_sel_3')
                 .setPlaceholder(`Oochadex #51-#75`)
                 .addOptions(oochadex_sel_options_3),
+        );
+
+        oochadex_sel_4.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('oochadex_sel_4')
+                .setPlaceholder(`Oochadex #76-#100`)
+                .addOptions(oochadex_sel_options_4),
         );
 
         //#endregion End of making action rows
@@ -787,10 +794,10 @@ module.exports = {
 
                 if (oochadex_data[0].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [ooch_img_file] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
                 }
             }
             // Oochadex Select Menus
@@ -814,10 +821,10 @@ module.exports = {
 
                 if (oochadex_data[selected].caught != 0) {
                     i.update({ content: `**Seen:** ${oochadex_data[selected].seen} | **Caught:** ${oochadex_data[selected].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [ooch_img_file] });
+                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
                 } else {
                     i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, back_button], files: [] });
+                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
                 }
             }
             //#endregion

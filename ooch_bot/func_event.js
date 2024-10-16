@@ -214,6 +214,12 @@ module.exports = {
 
         //Send Embed and Await user input before proceeding
         let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
+        if (msg_to_edit == false) {
+            db.profile.set(user_id, msg.id, 'display_msg_id');
+            profile_data = db.profile.get(user_id);
+            msg_to_edit = profile_data.display_msg_id;
+        }
+
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
 
         await confirm_collector.on('collect', async sel => {
@@ -248,11 +254,11 @@ module.exports = {
             // Check if we are at the end of the event array, and if we are, cut back to the normal player state.
             if (current_place >= event_array.length) {
                 await confirm_collector.stop();
-                await msg.delete();
+                if (msg.id !== msg_to_edit) await msg.delete();
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                 let playspace_str = setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                    msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
                 }).catch(() => {});
                 return;
             }
@@ -301,17 +307,16 @@ module.exports = {
                 }
 
                 if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
-                    console.log(event_mode);
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         await confirm_collector.stop();
-                        await msg.delete();
+                        if (msg.id != msg_to_edit) await msg.delete();
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                         quit = true; 
                         let playspace_str = setup_playspace_str(user_id);
-                        await thread.messages.fetch(msg_to_edit).then((msg) => {
-                            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
-                        }).catch(() => {});
+                        await thread.messages.fetch(msg_to_edit).then(async (msg) => {
+                            await msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
+                        }).catch((err) => { console.log(err) });
                         return;
                     } else {
                         current_place++;

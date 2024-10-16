@@ -293,29 +293,45 @@ client.on('messageCreate', async message => {
             case PlayerState.Playspace: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     // Do movement stuff
-
-                    let moveMsg = message.content.toLowerCase();
-                    moveMsg = moveMsg.replace(' ', '');
-                    for (let msg of moveMsg.split(',')) {
-                        // Check for wwwwww or aaaaaa or ssssss or dddddd
-                        let matches = msg.match(/^([wasd])\1{1,5}$/);
-                        let matchLength = matches ? matches[0].length : null;
-
-                        let args, dist;
-                        if (matchLength === null) { 
-                            args = msg.split(' ');
-                            if (args.length == 1) args = args[0].split('');
-                            dist = (args.length == 2) ? parseInt(args[1]) : 1;
-                            args[0] = args[0].toLowerCase();
-                            if (isNaN(dist)) dist = 1; // Ensure our input is always either some number or 1
-                        } else {
-                            args = [msg[0]];
-                            dist = matchLength;
+                    let moveMsg = message.content.toLowerCase().replace(/\s+/g, ''); // Remove spaces
+                    let splitMoves = moveMsg.split(','); // Split by comma first
+                
+                    let currentDirection = null;
+                    let totalDistance = 0;
+                
+                    for (let msg of splitMoves) {
+                        let moveSequence = msg.match(/([wasd])(\d{1,2})?/g); // Match 'w', 'a', 's', 'd' followed optionally by a number
+                
+                        if (!moveSequence) continue; // Skip invalid input
+                
+                        for (let moveSeq of moveSequence) {
+                            let direction = moveSeq[0]; // First character (direction)
+                            let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1; // Get distance if provided, otherwise default to 1
+                
+                            if (isNaN(dist)) dist = 1; // Safety check for NaN values
+                
+                            if (currentDirection === null) {
+                                currentDirection = direction;
+                                totalDistance = dist;
+                            } else if (currentDirection === direction) {
+                                totalDistance += dist; // Aggregate distance if the direction is the same
+                            } else {
+                                // Move in the previous direction with the total distance
+                                await move(message.channel, message.author.id, currentDirection, totalDistance);
+                
+                                // Start a new aggregation for the current direction
+                                currentDirection = direction;
+                                totalDistance = dist;
+                            }
                         }
-
-                        await move(message.channel, message.author.id, args[0], dist);
-                        await message.delete().catch(() => {});
                     }
+                
+                    // Call move for the last accumulated direction
+                    if (currentDirection !== null) {
+                        await move(message.channel, message.author.id, currentDirection, totalDistance);
+                    }
+                
+                    await message.delete().catch(() => {});
                 }
             break;
             default: 
