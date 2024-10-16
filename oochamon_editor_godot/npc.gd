@@ -6,6 +6,7 @@ extends Control
 @onready var o_npc_sprite_combat = $"npc_tab_container/Basic Info/general_info/npc_sprite_combat"
 @onready var o_npc_sprite_dialog = $"npc_tab_container/Basic Info/general_info/npc_sprite_dialog"
 @onready var o_npc_name = $"npc_tab_container/Basic Info/general_info/npc_name"
+@onready var line_edit_objective: LineEdit = $"npc_tab_container/Basic Info/LineEditObjective"
 
 @onready var o_flag_required = $"npc_tab_container/Basic Info/flag_required"
 @onready var o_flag_given = $"npc_tab_container/Basic Info/flag_given"
@@ -46,6 +47,7 @@ var npc_data = {
 	"coin" : 0,
 	"team" : [],
 	"aggro_range" : 3,
+	"objective" : "",
 	"is_wild" : false
 }
 
@@ -116,6 +118,7 @@ func _ready():
 	
 	o_aggro_range.value = npc_data.aggro_range
 	o_wild_encounter.button_pressed = npc_data.is_wild
+	line_edit_objective.text = npc_data.objective
 	
 	npc_slots = [slot_1, slot_2, slot_3, slot_4]
 	for i in npc_data.team.size():
@@ -210,3 +213,6 @@ func _on_aggro_range_value_changed(value):
 
 func _on_wild_encounter_toggled(toggled_on):
 	npc_data.is_wild = toggled_on
+
+func _on_line_edit_objective_text_changed(new_text: String) -> void:
+	npc_data.objective = new_text

@@ -6,8 +6,7 @@ extends VBoxContainer
 @onready var line_edit_portrait: LineEdit = $HBoxContainer/LineEditPortrait
 @onready var text_edit_dialog: TextEdit = $TextEditDialog
 @onready var spin_box_money: SpinBox = $HBoxContainer2/SpinBoxMoney
-
-
+@onready var line_edit_objective: LineEdit = $HBoxContainer2/LineEditObjective
 
 var event_data = {
 	"title" : "",
@@ -16,6 +15,7 @@ var event_data = {
 	"dialogue_portrait" : "",
 	"money" : 0,
 	"items" : [],
+	"objective" : ""
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -25,6 +25,7 @@ func _ready() -> void:
 	line_edit_image.text = event_data.image
 	line_edit_portrait.text = event_data.dialogue_portrait
 	spin_box_money.value = event_data.money
+	line_edit_objective.text = event_data.objective
 	
 	for item in event_data.items:
 		var _load = load("res://slot_item.tscn")
@@ -47,6 +48,7 @@ func save():
 	event_data.image = line_edit_image.text
 	event_data.dialogue_portrait = line_edit_portrait.text
 	event_data.money = spin_box_money.value
+	event_data.objective = line_edit_objective.text
 	
 	for child in v_box_container_items.get_children():
 		var item = {

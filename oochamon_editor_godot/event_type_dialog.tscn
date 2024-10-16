@@ -58,16 +58,22 @@ text = "Money"
 layout_mode = 2
 max_value = 999999.0
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer3"]
+[node name="Label2" type="Label" parent="HBoxContainer2"]
 layout_mode = 2
 text = "Items"
 
-[node name="ButtonAddItem" type="Button" parent="HBoxContainer3"]
+[node name="ButtonAddItem" type="Button" parent="HBoxContainer2"]
 layout_mode = 2
 text = " + "
+
+[node name="Label3" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Objective"
+
+[node name="LineEditObjective" type="LineEdit" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "Objective"
 
 [node name="VBoxContainerItems" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -76,4 +82,4 @@ layout_mode = 2
 [connection signal="text_changed" from="HBoxContainer/LineEditImage" to="." method="_on_line_edit_image_text_changed"]
 [connection signal="text_changed" from="HBoxContainer/LineEditPortrait" to="." method="_on_line_edit_portrait_text_changed"]
 [connection signal="text_changed" from="TextEditDialog" to="." method="_on_text_edit_dialog_text_changed"]
-[connection signal="pressed" from="HBoxContainer3/ButtonAddItem" to="." method="_on_button_add_item_pressed"]
+[connection signal="pressed" from="HBoxContainer2/ButtonAddItem" to="." method="_on_button_add_item_pressed"]
