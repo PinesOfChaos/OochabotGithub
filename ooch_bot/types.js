@@ -95,6 +95,10 @@ const OochType = {
     Stone: 'stone',
     Tech: 'tech',
     Void: 'void',
+    Sound: 'sound',
+    Crystal: 'crystal',
+    Cloth: 'cloth',
+    Martial: 'martial',
 }
 
 const Move = {

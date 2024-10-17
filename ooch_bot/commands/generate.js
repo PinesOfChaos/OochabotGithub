@@ -527,7 +527,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'amephyst'),
             name: 'Amephyst',
             oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
-            type: [OochType.Stone, OochType.Magic],
+            type: [OochType.Stone, OochType.Crystal],
             hp: 15, atk: 20, def: 15, spd: 30, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
              [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], 
@@ -572,7 +572,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'moldot'),
             name: 'Moldot',
             oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Magic],
             hp: 5, atk: 5, def: 25, spd: 5, //total 40
             move_list: [
                 [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],
@@ -589,7 +589,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'moldire'),
             name: 'Moldire',
             oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Magic],
             hp: 25, atk: 25, def: 30, spd: 5, //total 85
             move_list: [
                 [1, Move.Bash],[2, Move.Soften],[5, Move.SporeShot],[12, Move.TakeOver],
@@ -606,7 +606,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'charlite'),
             name: 'Charlite',
             oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
-            type: [OochType.Flame],
+            type: [OochType.Flame, OochType.Stone],
             hp: 5, atk: 15, def: 5, spd: 10, //total 35
             move_list: [
                 [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
@@ -623,7 +623,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'darcoal'),
             name: 'Darcoal',
             oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
-            type: [OochType.Flame],
+            type: [OochType.Flame, OochType.Stone],
             hp: 15, atk: 25, def: 13, spd: 12, //total 65
             move_list: [
                 [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
@@ -640,7 +640,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'torchoir'),
             name: 'Torchoir',
             oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
-            type: [OochType.Flame],
+            type: [OochType.Flame, OochType.Sound],
             hp: 12, atk: 13, def: 11, spd: 9, //total 45
             move_list: [
                 [1, Move.Bash],[3, Move.Fireball],[4, Move.Embolden],[7, Move.Impale],
@@ -658,7 +658,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'chantern'),
             name: 'Chantern',
             oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 
-            type: [OochType.Flame],
+            type: [OochType.Flame, OochType.Sound],
             hp: 21, atk: 20, def: 24, spd: 15, //total 80
             move_list: [
                 [1, Move.Bash], [3, Move.Fireball], [4, Move.Embolden], [7, Move.Impale],
@@ -707,7 +707,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'meduslime'),
             name: 'Meduslime',
             oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Magic],
             hp: 16, atk: 25, def: 19, spd: 15, //total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Soften], [3, Move.Glob], [7, Move.MagicBolt],
@@ -723,7 +723,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'tisparc'),
             name: 'Tisparc',
             oochive_entry: 'The hat-like crystal on its head grants it a magical energy which it cannot quite control.', 
-            type: [OochType.Magic],
+            type: [OochType.Magic, OochType.Flame],
             hp: 8, atk: 15, def: 7, spd: 10, //total 45
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [9, Move.Sparkler],
@@ -740,7 +740,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'wizzap'),
             name: 'Wizzap',
             oochive_entry: 'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.', 
-            type: [OochType.Magic],
+            type: [OochType.Magic, OochType.Flame],
             hp: 13, atk: 23, def: 12, spd: 12, //total 65
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [9, Move.Sparkler],
@@ -935,7 +935,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'spoolette'),
             name: 'Spoolette',
             oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', 
-            type: [OochType.Magic], 
+            type: [OochType.Magic, OochType.Cloth], 
             hp: 10, atk: 15, def: 15, spd: 10, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], 
@@ -952,7 +952,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'thimbite'),
             name: 'Thimbite',
             oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 
-            type: [OochType.Magic], 
+            type: [OochType.Magic, OochType.Cloth], 
             hp: 20, atk: 20, def: 20, spd: 10, // total 70
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], 
@@ -1036,7 +1036,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'crystri'),
             name: 'Crystri',
             oochive_entry: 'While its crystals appear rigid they maintain some sort of fluidity.', 
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 25, atk: 10, def: 20, spd: 10, // total 65
             move_list: [
                 [1, Move.Bash], [3, Move.MagicBolt], [5, Move.PebbleBlast], [10, Move.Threefold],
@@ -1155,7 +1155,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'frigook'),
             name: 'Frigook',
             oochive_entry: 'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.', 
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Crystal],
             hp: 15, atk: 5, def: 15, spd: 5, // total 40
             move_list: [
                 [1, Move.Hit], [2, Move.Soften], [3, Move.Glob], [6, Move.Fog],
@@ -1172,7 +1172,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'boreyuc'),
             name: 'Boreyuc',
             oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Crystal],
             hp: 15, atk: 7, def: 30, spd: 3, // total 65
             move_list: [
                 [1, Move.Hit], [2, Move.Soften], [3, Move.Glob], [6, Move.Fog],
@@ -1424,7 +1424,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'grubbit'),
             name: 'Grubbit',
             oochive_entry: 'These small bugs can be found munching on bits of crystal.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal, OochType.Cloth],
             hp: 15, atk: 12, def: 13, spd: 10, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
@@ -1442,7 +1442,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'culcoon'),
             name: 'Culcoon',
             oochive_entry: 'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal, OochType.Cloth],
             hp: 20, atk: 10, def: 30, spd: 5, // total 65
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
@@ -1460,7 +1460,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'speculidae'),
             name: 'Speculidae',
             oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 12, atk: 10, def: 35, spd: 23, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.PebbleBlast], [7, Move.Caltrops],
@@ -1478,7 +1478,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'nisythe'),
             name: 'Nisythe',
             oochive_entry: 'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.',
-            type: [OochType.Magic],
+            type: [OochType.Magic, OochType.Flame],
             hp: 17, atk: 25, def: 12, spd: 15, // total 69
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Embolden], [7, Move.CursedEye],
@@ -1496,7 +1496,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'tidoll'),
             name: 'Tidoll',
             oochive_entry: 'These creatures are barely more than sacks of liquid with no bones supporting them.',
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Cloth],
             hp: 15, atk: 10, def: 15, spd: 15, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob],
@@ -1513,7 +1513,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'marinette'),
             name: 'Marinette',
             oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
-            type: [OochType.Ooze],
+            type: [OochType.Ooze, OochType.Cloth],
             hp: 30, atk: 23, def: 17, spd: 10, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Soften], [7, Move.Glob],
@@ -1802,7 +1802,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'ilushand'),
             name: 'Ilushand',
             oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
-            type: [OochType.Magic],
+            type: [OochType.Magic, OochType.Crystal],
             hp: 8, atk: 10, def: 9, spd: 8, // total 35
             move_list: [
                 [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink],
@@ -1819,7 +1819,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'miroraj'),
             name: 'Miroraj',
             oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
-            type: [OochType.Magic],
+            type: [OochType.Magic, OochType.Crystal],
             hp: 18, atk: 22, def: 19, spd: 21, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Intimidate], [5, Move.MagicBolt], [10, Move.Blink],
@@ -1942,7 +1942,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'chemerai'),
             name: 'Chemerai',
             oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
-            type: [OochType.Magic, OochType.Flame],
+            type: [OochType.Crystal, OochType.Flame],
             hp: 18, atk: 29, def: 21, spd: 22, // total 90
             move_list: [
                 [1, Move.Bash], [3, Move.Fireball], [5, Move.Sparkler], [7, Move.Intimidate],
@@ -1960,7 +1960,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'rosun'),
             name: 'Rosun',
             oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 10, atk: 8, def: 12, spd: 10, //total 40
             move_list: [
                 [1, Move.Bash]
@@ -1975,7 +1975,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'morgoun'),
             name: 'Morgoun',
             oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 17, atk: 13, def: 26, spd: 14, //total 70
             move_list: [
                 [1, Move.Bash]
@@ -1990,7 +1990,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'garnetie'),
             name: 'Garnetie',
             oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 10, atk: 12, def: 8, spd: 10, //total 40
             move_list: [
                 [1, Move.Bash]
@@ -2005,7 +2005,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'aventux'),
             name: 'Aventux',
             oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 14, atk: 26, def: 13, spd: 17, //total 70
             move_list: [
                 [1, Move.Bash]
@@ -2020,7 +2020,7 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'galagge'),
             name: 'Galagge',
             oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
-            type: [OochType.Stone],
+            type: [OochType.Crystal],
             hp: 18, atk: 21, def: 21, spd: 15, //total 75
             move_list: [
                 [1, Move.Bash]

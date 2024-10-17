@@ -1109,6 +1109,10 @@ type_to_emote: function(type_array, text_emote = false) {
             case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1274936617320316928>'    : '<:icon_ooze:1274936607136288810>';    break;
             case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1274936688589803613>'    : '<:icon_tech:1274936672022298624>';    break;
             case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_void:1274936702959485011>';    break;
+            case OochType.Sound:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_sound:1296312531068911616>';   break;
+            case OochType.Crystal: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_crystal:1296312529126948894>'; break;
+            case OochType.Cloth:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_cloth:1296312526882996234>';   break;
+            case OochType.Martial: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_martial:1296312529949036575>'; break;
         }
     }
 
@@ -1511,6 +1515,8 @@ type_effectiveness: function(attack_type, target_type) {
                     case OochType.Fungal:  multiplier *= .5; break;
                     case OochType.Stone:   multiplier *= 2; break;
                     case OochType.Ooze:    multiplier *= 2; break;
+                    case OochType.Crystal: multiplier *= .5; break;
+                    case OochType.Sound:   multiplier *= 2; break;
                 }
             break;
             case OochType.Flame:
@@ -1520,6 +1526,8 @@ type_effectiveness: function(attack_type, target_type) {
                     case OochType.Stone:   multiplier *= .5; break;
                     case OochType.Void:    multiplier *= 2; break;
                     case OochType.Fungal:  multiplier *= 2; break;
+                    case OochType.Crystal: multiplier *= .5; break;
+                    case OochType.Cloth:   multiplier *= 2; break;
                 }
             break;
             case OochType.Stone:
@@ -1527,6 +1535,8 @@ type_effectiveness: function(attack_type, target_type) {
                     case OochType.Ooze:    multiplier *= .5; break;
                     case OochType.Tech:    multiplier *= 2; break;
                     case OochType.Flame:   multiplier *= 2; break;
+                    case OochType.Crystal: multiplier *= 2; break;
+                    case OochType.Sound:   multiplier *= .5; break;
                 }
             break;
             case OochType.Tech:
@@ -1550,6 +1560,38 @@ type_effectiveness: function(attack_type, target_type) {
                     case OochType.Flame:  multiplier *= .5; break;
                     case OochType.Tech:   multiplier *=  2; break;
                     case OochType.Stone:  multiplier *=  2; break;
+                    case OochType.Crystal: multiplier *= .5; break;
+                }
+            break;
+            case OochType.Sound:
+                switch(type_defender){
+                    case OochType.Fungal:  multiplier *= .5; break;
+                    case OochType.Crystal: multiplier *=  2; break;
+                    case OochType.Stone:   multiplier *=  2; break;
+                    case OochType.Cloth:   multiplier *= .5; break;
+                    case OochType.Martial: multiplier *= .5; break; 
+                }
+            break;
+            case OochType.Crystal:
+                switch(type_defender){
+                    case OochType.Cloth:    multiplier *=  2; break;
+                    case OochType.Magic:    multiplier *=  2; break;
+                    case OochType.Stone:    multiplier *= .5; break;
+                    case OochType.Martial:  multiplier *=  2; break;
+                }
+            break;
+            case OochType.Cloth:
+                switch(type_defender){
+                    case OochType.Sound:   multiplier *= 2; break;
+                    case OochType.Fungal:  multiplier *=  .5; break;
+                    case OochType.Crystal: multiplier *= .5; break;
+                }
+            break;
+            case OochType.Martial:
+                switch(type_defender){
+                    case OochType.Magic:  multiplier *= .5; break; 
+                    case OochType.Ooze:   multiplier *= .5; break; 
+                    case OochType.Stone:  multiplier *= 2; break; 
                 }
             break;
             case OochType.Void:
