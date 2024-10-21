@@ -58,10 +58,17 @@ func _ready():
 	var err
 	
 	#Map Setup
+	#Get tile t00_000
+	var tile_id_temp = 0
+	for k in Global.DataTiles.size():
+		if Global.DataTiles[k].tile_index == "t00_000":
+			tile_id_temp = k
+			break
+	#Set all tile ids to the black square
 	for i in 100:
 		var arr = []
 		arr.resize(100)
-		arr.fill(0)
+		arr.fill(tile_id_temp)
 		map_tiles.push_back(arr)
 	print(map_tiles)
 	
@@ -307,6 +314,8 @@ func _on_file_dialog_save_file_selected(path):
 			npc_data.team = []
 			var slots = [npc.slot_1, npc.slot_2, npc.slot_3, npc.slot_4]
 			for slot in slots:
+				slot.slot_data.moveset = slot.slot_data.moveset.filter(func(number):return number != 9999)
+				
 				if slot.slot_data.slot_enabled:
 					npc_data.team.push_back(slot.slot_data)
 			save_data.map_npcs.push_back(npc_data)
@@ -419,8 +428,14 @@ func _on_file_dialog_load_file_selected(path):
 			var _load = load("res://npc.tscn")
 			var _obj = _load.instantiate()
 			
+			for mon in _info.team:
+				while mon.moveset.size() < 4:
+					mon.moveset.push_back(9999)
+			
 			_obj.npc_data = _info
-			#_obj.npc_slots_data = _info.team #"npc_slots" is used to track the list of slots in the npc
+			
+			
+			
 			
 			_npcs.add_child(_obj)
 			_obj.owner = _npcs

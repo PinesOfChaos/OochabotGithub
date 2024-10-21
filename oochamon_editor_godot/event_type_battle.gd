@@ -2,7 +2,7 @@ extends VBoxContainer
 var event_data = {
 	"name" : "",
 	"sprite" : 2,
-	"sprite_name" : "",
+	"sprite_id" : "",
 	"sprite_special" : "",
 	"party" : []
 }
@@ -29,7 +29,7 @@ func _ready() -> void:
 		tile_data = Global.DataNPCs[i]
 		tile_string = "res://npcs/" + tile_data.tile_index + ".png"
 		option_button_sprite.add_icon_item(load(tile_string),tile_data.tile_index,i)
-		if event_data.sprite_name == tile_data.tile_index:
+		if event_data.sprite_id == tile_data.tile_index:
 			option_button_sprite.select(i)
 	
 	#create slots
@@ -49,7 +49,7 @@ func _process(delta: float) -> void:
 
 func _on_option_button_sprite_item_selected(index: int) -> void:
 	event_data.sprite = option_button_sprite.get_item_id(index)
-	event_data.sprite_name = option_button_sprite.get_item_text(index)
+	event_data.sprite_id = option_button_sprite.get_item_text(index)
 
 func save():
 	event_data.name = line_edit_name.text

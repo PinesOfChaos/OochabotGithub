@@ -47,6 +47,11 @@ func _ready():
 			i
 		)
 	
+	#while slot_data.moveset.size() < 4:
+		#slot_data.moveset.push_back(9999)
+		
+	print(slot_data.moveset)
+	
 	refresh_abilities(slot_data.id)
 	refresh_moves(slot_data.id)
 	refresh_summary(slot_data.id)
