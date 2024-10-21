@@ -32,10 +32,10 @@ var npc_data = {
 	"x" : 0,
 	"y" : 0,
 	"sprite" : 2,
-	"sprite_name" : "c00_000",
+	"sprite_id" : "c00_000",
 	"sprite_combat" : "",
 	"sprite_dialog" : "",
-	"name" : "",
+	"name" : "CHANGE THIS YA DINGUS",
 	"pre_combat_dialogue" : "",
 	"post_combat_dialogue" : "",
 	"flag_required" : "",
@@ -43,7 +43,7 @@ var npc_data = {
 	"flag_given" : "",
 	"remove_on_finish" : false,
 	"item_id" : -1,
-	"item_number" : 0,
+	"item_count" : 0,
 	"coin" : 0,
 	"team" : [],
 	"aggro_range" : 3,
@@ -62,7 +62,7 @@ var npc_flag_given = ""
 var npc_flag_kill = ""
 var npc_remove_on_finish = false
 var npc_item_id = -1
-var npc_item_number = 0
+var npc_item_count = 0
 var npc_coin = 0
 var npc_dialog_pre = ""
 var npc_dialog_post = ""
@@ -70,7 +70,7 @@ var npc_slots = []
 var npc_slots_data = []
 var refreshed = false
 var dragging = false
-var npc_sprite_name = "c00_000"
+var npc_sprite_id = "c00_000"
 
 var npc_aggro_range = 3
 var npc_is_wild = false
@@ -90,7 +90,7 @@ func _ready():
 		tile_data = Global.DataNPCs[i]
 		tile_string = "res://npcs/" + tile_data.tile_index + ".png"
 		o_npc_sprite.add_icon_item(load(tile_string),tile_data.tile_index,i)
-		if npc_data.sprite_name == tile_data.tile_index:
+		if npc_data.sprite_id == tile_data.tile_index:
 			o_npc_sprite.select(i)
 			o_npc_object.texture_normal = load(tile_string)
 			
@@ -106,7 +106,7 @@ func _ready():
 	
 	o_coin_count.value = npc_data.coin
 	o_item_select.select(o_item_select.get_item_index(npc_data.item_id))
-	o_item_count.value = npc_data.item_number
+	o_item_count.value = npc_data.item_count
 	
 	o_flag_required.text = npc_data.flag_required
 	o_flag_given.text = npc_data.flag_given
@@ -170,7 +170,7 @@ func _on_item_select_item_selected(index):
 	npc_data.item_id = o_item_select.get_item_id(index)
 
 func _on_item_count_value_changed(value):
-	npc_data.item_number = value
+	npc_data.item_count = value
 
 func _on_coin_count_value_changed(value):
 	npc_data.coin = value
@@ -183,8 +183,8 @@ func _on_text_post_combat_text_changed():
 
 func _on_npc_sprite_item_selected(index):
 	npc_data.sprite = o_npc_sprite.get_item_id(index)
-	npc_data.sprite_name = o_npc_sprite.get_item_text(index)
-	var tile_string = "res://npcs/" + npc_data.sprite_name + ".png"
+	npc_data.sprite_id = o_npc_sprite.get_item_text(index)
+	var tile_string = "res://npcs/" + npc_data.sprite_id + ".png"
 	o_npc_object.texture_normal = load(tile_string)
 	
 func _on_npc_object_button_down():
