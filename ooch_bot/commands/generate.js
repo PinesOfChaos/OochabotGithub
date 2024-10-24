@@ -20,30 +20,53 @@ module.exports = {
 
         //#region Tile Data
         // ZONES IDs
-        // 0: GLOBAL
-        // 1: FUNGAL
-        // 2: SANDY
-        // 3: CAVE
-        // 4: OBSIDIAN
+        // 00: GLOBAL
+        // 01: FUNGAL
+        // 02: SANDY
+        // 03: CAVE
+        // 04: OBSIDIAN
+        // 05: TRAINING FACILITY
+        // 06: BUILDING INTERIOR
+        // 07: LAVA TILE
+        // 08: FLOWER FIELD
+        // 10: THUNDER PEAK
+        // 11: TUNNEL
+        // 12: SCAFFOLDS
+        // 13: GOO LAKE
+        // 14: CRYSTAL CAVE
+        // 15: TUTORIAL
         let zG = Zone.Global < 10 ? `0${Zone.Global}` : Zone.Global;
         let zF = Zone.Fungal < 10 ? `0${Zone.Fungal}` : Zone.Fungal;
         let zS = Zone.Sandy < 10 ? `0${Zone.Sandy}` : Zone.Sandy;
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
+        let zT = Zone.Training < 10 ? `0${Zone.Training}` : Zone.Training;
+        let zB = Zone.BuildingInteror < 10 ? `0${Zone.BuildingInteror}` : Zone.BuildingInteror;
+        let zL = Zone.Lava < 10 ? `0${Zone.Lava}` : Zone.Lava;
+        let zFF = Zone.FlowerFields < 10 ? `0${Zone.FlowerFields}` : Zone.FlowerFields;
+        let zAB = Zone.AncientBridge < 10 ? `0${Zone.AncientBridge}` : Zone.AncientBridge;
+        let zTP = Zone.ThunderPeak < 10 ? `0${Zone.ThunderPeak}` : Zone.ThunderPeak;
+        let zTn = Zone.Tunnel < 10 ? `0${Zone.Tunnel}` : Zone.Tunnel;
+        let zSc = Zone.Scaffolds < 10 ? `0${Zone.Scaffolds}` : Zone.Scaffolds;
+        let zGL = Zone.GooLake < 10 ? `0${Zone.GooLake}` : Zone.GooLake;
+        let zCC = Zone.CrystalCave < 10 ? `0${Zone.CrystalCave}` : Zone.CrystalCave;
+        let zTu = Zone.Tutorial < 10 ? `0${Zone.Tutorial}` : Zone.Tutorial;
+        
 
         //           ID            Use            applicationEmojis
         // Global
         create_tile(`t${zG}_000`,  Tile.Wall,     applicationEmojis ); //Black 
         create_tile(`t${zG}_001`,  Tile.Floor,    applicationEmojis ); //Teleporter 
-        create_tile(`t${zG}_002`,  Tile.Floor,    applicationEmojis ); //Arrow Left
-        create_tile(`t${zG}_003`,  Tile.Floor,    applicationEmojis ); //Arrow Up
-        create_tile(`t${zG}_004`,  Tile.Floor,    applicationEmojis ); //Arrow Right
-        create_tile(`t${zG}_005`,  Tile.Floor,    applicationEmojis ); //Arrow Down
-        create_tile(`t${zG}_006`,  Tile.Wall,     applicationEmojis ); //Shop Mini
-        create_tile(`t${zG}_007`,  Tile.Wall,     applicationEmojis ); //Shop Upper Left
-        create_tile(`t${zG}_008`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
-        create_tile(`t${zG}_009`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
-        create_tile(`t${zG}_010`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
+        //002 was a chest, but this is an NPC now
+        create_tile(`t${zG}_003`,  Tile.Floor,    applicationEmojis ); //Arrow Left
+        create_tile(`t${zG}_004`,  Tile.Floor,    applicationEmojis ); //Arrow Up
+        create_tile(`t${zG}_005`,  Tile.Floor,    applicationEmojis ); //Arrow Right
+        create_tile(`t${zG}_006`,  Tile.Floor,    applicationEmojis ); //Arrow Down
+        create_tile(`t${zG}_007`,  Tile.Wall,     applicationEmojis ); //Shop Mini
+        create_tile(`t${zG}_008`,  Tile.Wall,     applicationEmojis ); //Shop Upper Left
+        create_tile(`t${zG}_009`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
+        create_tile(`t${zG}_010`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
+        create_tile(`t${zG}_011`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
         
         // Fungal
         create_tile(`t${zF}_000`,  Tile.Floor,    applicationEmojis ); //Fungal Floor
@@ -83,12 +106,205 @@ module.exports = {
         create_tile(`t${zC}_004`,  Tile.Floor,    applicationEmojis ); //Cave Exit
         create_tile(`t${zC}_005`,  Tile.Wall,     applicationEmojis ); //Cave Stalagtite
         create_tile(`t${zC}_006`,  Tile.Wall,     applicationEmojis ); //Cave Inaccessible Area
+        create_tile(`t${zC}_010`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_011`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_012`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_020`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_021`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_022`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_030`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_031`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        create_tile(`t${zC}_032`,  Tile.Wall,     applicationEmojis ); //Cave Big Machine
+        
 
         // Obsidian
         create_tile(`t${zO}_000`,  Tile.Floor,    applicationEmojis ); //Obsidian Floor
         create_tile(`t${zO}_001`,  Tile.Wall,     applicationEmojis ); //Obsidian Wall
         create_tile(`t${zO}_002`,  Tile.Grass,    applicationEmojis ); //Obsidian Grass
-        
+        create_tile(`t${zO}_003`,  Tile.Wall,     applicationEmojis ); //Obsidian Wall
+        create_tile(`t${zO}_004`,  Tile.Wall,     applicationEmojis ); //Obsidian Inaccessible Area
+        create_tile(`t${zO}_005`,  Tile.Floor,    applicationEmojis ); //Obsidian Cave Entrance
+        create_tile(`t${zO}_007`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_008`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_009`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_010`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_012`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_013`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_014`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_015`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_016`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_017`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_018`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_019`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_020`,  Tile.Floor,    applicationEmojis ); //Obsidian Building Entrance
+        create_tile(`t${zO}_021`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+
+        //Training Facility
+        create_tile(`t${zT}_000`,  Tile.Floor,    applicationEmojis ); //Training Floor
+        create_tile(`t${zT}_001`,  Tile.Wall,     applicationEmojis ); //Training Wall
+        create_tile(`t${zT}_002`,  Tile.Wall,     applicationEmojis ); //Training Inaccessible Area
+        create_tile(`t${zT}_003`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_004`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_005`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_006`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_007`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_010`,  Tile.Grass,    applicationEmojis ); //Obsidian Grass
+        create_tile(`t${zT}_011`,  Tile.Wall,     applicationEmojis ); //Training Wall
+        create_tile(`t${zT}_012`,  Tile.Floor,    applicationEmojis ); //Training Cave Entrance
+        create_tile(`t${zT}_013`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_014`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_015`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_016`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_017`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_020`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_021`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_022`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_023`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_024`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_025`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_026`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_027`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_030`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_031`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_032`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_033`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_034`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_035`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_036`,  Tile.Floor,    applicationEmojis ); //Training Building Entrance
+        create_tile(`t${zT}_037`,  Tile.Wall,     applicationEmojis ); //Training Building
+        create_tile(`t${zT}_040`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_041`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_042`,  Tile.Wall,     applicationEmojis ); //Training Fence
+        create_tile(`t${zT}_043`,  Tile.Wall,     applicationEmojis ); //Training Wall (crate)
+
+        //Building Interior
+        create_tile(`t${zB}_000`,  Tile.Floor,    applicationEmojis ); //Interior Floor
+        create_tile(`t${zB}_001`,  Tile.Wall,     applicationEmojis ); //Interior Barrel
+        create_tile(`t${zB}_002`,  Tile.Floor,    applicationEmojis ); //Interior Entrance (Bottom)
+        create_tile(`t${zB}_003`,  Tile.Floor,    applicationEmojis ); //Interior Entrance (Top)
+        create_tile(`t${zB}_004`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_005`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_006`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_010`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_011`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_012`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_013`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_014`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_015`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_016`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_020`,  Tile.Floor,    applicationEmojis ); //Interior Stairs Down
+        create_tile(`t${zB}_021`,  Tile.Floor,    applicationEmojis ); //Interior Stairs Down
+        create_tile(`t${zB}_022`,  Tile.Floor,    applicationEmojis ); //Interior Stairs Down
+        create_tile(`t${zB}_023`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_024`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_025`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_026`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_030`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_031`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_032`,  Tile.Floor,    applicationEmojis ); //Interior Floor
+        create_tile(`t${zB}_033`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_034`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_035`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_036`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+
+        //Lava
+        create_tile(`t${zL}_036`,  Tile.Lava,     applicationEmojis ); //Lava
+
+        //Flower Fields
+        create_tile(`t${zFF}_000`,  Tile.Floor,    applicationEmojis ); //Flower Field Floor
+        create_tile(`t${zFF}_001`,  Tile.Grass,    applicationEmojis ); //Flower Field Grass
+        create_tile(`t${zFF}_002`,  Tile.Grass,    applicationEmojis ); //Flower Field Grass
+        create_tile(`t${zFF}_003`,  Tile.Grass,    applicationEmojis ); //Flower Field Grass
+        create_tile(`t${zFF}_004`,  Tile.Grass,    applicationEmojis ); //Flower Field Grass
+        create_tile(`t${zFF}_010`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_011`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_012`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_013`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_020`,  Tile.Wall,     applicationEmojis ); //Flower Field Inaccessible
+        create_tile(`t${zFF}_021`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_023`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_024`,  Tile.Floor,    applicationEmojis ); //Flower Field Wall
+
+        //Ancient Bridge
+        create_tile(`t${zAB}_000`,  Tile.Floor,    applicationEmojis ); //Ancient Bridge Floor
+        create_tile(`t${zAB}_001`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_002`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_010`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_011`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_012`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_020`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_021`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_022`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_030`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+        create_tile(`t${zAB}_031`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
+
+        //Thunder Peak
+        create_tile(`t${zTP}_000`,  Tile.Floor,    applicationEmojis ); //Thunder Peak Floor
+        create_tile(`t${zTP}_001`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
+        create_tile(`t${zTP}_002`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
+        create_tile(`t${zTP}_003`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall (Ice)
+        create_tile(`t${zTP}_004`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
+        create_tile(`t${zTP}_010`,  Tile.Grass,    applicationEmojis ); //Thunder Peak Grass
+        create_tile(`t${zTP}_011`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
+        create_tile(`t${zTP}_012`,  Tile.Floor,    applicationEmojis ); //Thunder Peak Floor (Spiky Bits)
+        create_tile(`t${zTP}_013`,  Tile.Ice,      applicationEmojis ); //Thunder Peak Ice
+
+        //Tunnel
+        create_tile(`t${zTn}_000`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor
+        create_tile(`t${zTn}_001`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_002`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_003`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_004`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_005`,  Tile.Floor,    applicationEmojis ); //Tunnel Door Upper
+        create_tile(`t${zTn}_006`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_007`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_008`,  Tile.Floor,    applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_009`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_010`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor
+        create_tile(`t${zTn}_011`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_012`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_013`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_015`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_016`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_017`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_018`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_019`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_025`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_026`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_027`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_028`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_029`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+
+        //Scaffolds
+        create_tile(`t${zSc}_000`,  Tile.Floor,    applicationEmojis ); //Scaffolds Floor
+        create_tile(`t${zSc}_001`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_002`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_003`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_010`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_011`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_012`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_020`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_021`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_022`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+
+        //Goo Lake
+        create_tile(`t${zGL}_000`,  Tile.Floor,    applicationEmojis ); //Goo Lake Floor
+        create_tile(`t${zGL}_001`,  Tile.Grass,    applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_010`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_011`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_020`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_030`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_040`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+
+        //Tutorial
+        create_tile(`t${zTu}_000`,  Tile.Floor,    applicationEmojis ); //Tutorial Floor
+        create_tile(`t${zTu}_001`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_002`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_003`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_004`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_010`,  Tile.Wall,     applicationEmojis ); //Tutorial Door Closed
+        create_tile(`t${zTu}_011`,  Tile.Floor,    applicationEmojis ); //Tutorial Door Open
+
         // NPCs
         create_tile(`c_000`,       Tile.Npc,      applicationEmojis ); // Main Character
         create_tile(`c_001`,       Tile.Npc,      applicationEmojis ); // Basic NPC Obsidian
@@ -100,10 +316,13 @@ module.exports = {
         create_tile(`c_007`,       Tile.Npc,      applicationEmojis ); // Global Rival
         create_tile(`c_008`,       Tile.Npc,      applicationEmojis ); // Global Desert Raider
         create_tile(`c_009`,       Tile.Npc,      applicationEmojis ); // Global Department Head
-        create_tile(`c_010`,       Tile.Npc,      applicationEmojis ); // Global Hollowed Scientist
+        create_tile(`c_010`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Fungal)
         create_tile(`c_011`,       Tile.Npc,      applicationEmojis ); // Shopkeeper
         create_tile(`c_012`,       Tile.Int,      applicationEmojis ); // Crater
         create_tile(`c_013`,       Tile.Int,      applicationEmojis ); // Chest
+        create_tile(`c_014`,       Tile.Npc,      applicationEmojis ); // Basic NPC Construction Worker
+        create_tile(`c_015`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Tech)
+        create_tile(`c_016`,       Tile.Npc,      applicationEmojis ); // Global CFO
         
         //#endregion
 

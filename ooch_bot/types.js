@@ -298,7 +298,18 @@ const Zone = {
     Fungal: 1,
     Sandy: 2,
     Cave: 3,
-    Obsidian: 4
+    Obsidian: 4,
+    Training: 5,
+    BuildingInterior: 6,
+    Lava: 7,
+    FlowerFields: 8,
+    AncientBridge: 9,
+    ThunderPeak: 10,
+    Tunnel: 11,
+    Scaffolds: 12,
+    GooLake: 13,
+    CrystalCave: 14,
+    Tutorial: 15,
 }
 
 const MoveTag = {
