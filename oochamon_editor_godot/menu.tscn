@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4dhr42a1mqo6"]
+[gd_scene load_steps=4 format=3 uid="uid://d4dhr42a1mqo6"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
 [ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
-[ext_resource type="PackedScene" uid="uid://csa8cegur6sm6" path="res://file_dialog_set_file_paths.tscn" id="2_ukjgg"]
 [ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
 
 [node name="Menu" type="Control" groups=["MainMenu"]]
@@ -30,8 +29,6 @@ ok_button_text = "Open"
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
-
-[node name="FileDialogSetFilePaths" parent="." instance=ExtResource("2_ukjgg")]
 
 [node name="VBoxMenu" type="VBoxContainer" parent="."]
 z_index = 1

@@ -5,13 +5,17 @@ extends Control
 func _ready() -> void:
 	load_preferences()
 	
-	fd_path.current_dir = Global.DataPath
-	if Global.DataPath != "":
+	
+	if Global.DataPath != "/":
+		Global.WorkingDir = Global.DataPath
+		fd_path.current_dir = Global.DataPath
 		refresh_data()
 		
 		#Load Event Data
-		var path = Global.WorkingDir.split("Maps/")[0] + "global_events.json"
+		var path = Global.DataPath.split("Maps")[0] + "global_events.json"
+		print(path)
 		var f = FileAccess.open(path, FileAccess.READ)
+		print(f)
 		var _text = f.get_as_text(true)
 		Global.DataEvents = JSON.parse_string(_text)
 
@@ -76,9 +80,10 @@ func refresh_data():
 	
 	var ln
 	var lnsplit
+	var data_location = Global.DataPath.split("Maps")[0] + "/editor_data"
 	
 	#Abilities
-	var f_abilities = FileAccess.open(Global.DataPath + "/abilities_data.txt", FileAccess.READ)
+	var f_abilities = FileAccess.open(data_location + "/abilities_data.txt", FileAccess.READ)
 	if FileAccess.get_open_error():
 		return
 	
@@ -93,7 +98,7 @@ func refresh_data():
 		ln = f_abilities.get_line()
 	
 	#Items
-	var f_items = FileAccess.open(Global.DataPath + "/items_data.txt", FileAccess.READ)
+	var f_items = FileAccess.open(data_location + "/items_data.txt", FileAccess.READ)
 	ln = f_items.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -109,7 +114,7 @@ func refresh_data():
 		ln = f_items.get_line()
 	
 	#Moves
-	var f_moves = FileAccess.open(Global.DataPath + "/moves_data.txt", FileAccess.READ)
+	var f_moves = FileAccess.open(data_location + "/moves_data.txt", FileAccess.READ)
 	ln = f_moves.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -126,7 +131,7 @@ func refresh_data():
 		ln = f_moves.get_line()
 	
 	#Oochamon
-	var f_oochamon = FileAccess.open(Global.DataPath + "/ooch_data.txt", FileAccess.READ)
+	var f_oochamon = FileAccess.open(data_location + "/ooch_data.txt", FileAccess.READ)
 	ln = f_oochamon.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -176,7 +181,7 @@ func refresh_data():
 	#print(Global.DataTiles)
 	
 	#Tiles
-	var f_tiles = FileAccess.open(Global.DataPath + "/tiles_data.txt", FileAccess.READ)
+	var f_tiles = FileAccess.open(data_location + "/tiles_data.txt", FileAccess.READ)
 	ln = f_tiles.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -198,7 +203,7 @@ func refresh_data():
 		
 		
 	#NPCs
-	var f_npcs = FileAccess.open(Global.DataPath + "/npc_data.txt", FileAccess.READ)
+	var f_npcs = FileAccess.open(data_location + "/npc_data.txt", FileAccess.READ)
 	ln = f_npcs.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
@@ -241,3 +246,7 @@ func refresh_data():
 						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite			
 		file_name = dir.get_next()
 	dir.list_dir_end()
+
+
+func _on_button_set_file_paths_pressed() -> void:
+	fd_path.visible = true

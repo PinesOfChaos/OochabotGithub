@@ -41,6 +41,19 @@ text = "Set Filepaths"
 
 [node name="FileDialogSetFilePaths" parent="." instance=ExtResource("2_s3c41")]
 
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 232.0
+offset_top = 100.0
+offset_right = 272.0
+offset_bottom = 123.0
+text = "To set the filepath location properly, select the folder:
+ ooch_bot/Maps
+
+If the config is broken it can be accessed and then deleted at:
+%appdata%/Godot/app_userdata/oochamon_level_editor/oochabot_config.cfg"
+
 [connection signal="pressed" from="ButtonMapEditor" to="." method="_on_button_map_editor_pressed"]
 [connection signal="pressed" from="ButtonEventEditor" to="." method="_on_button_event_editor_pressed"]
-[connection signal="pressed" from="ButtonSetFilePaths" to="." method="_on_button_map_editor_pressed"]
+[connection signal="pressed" from="ButtonSetFilePaths" to="." method="_on_button_set_file_paths_pressed"]
+[connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected"]

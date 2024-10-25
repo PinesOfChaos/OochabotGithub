@@ -2,7 +2,6 @@ extends Control
 
 @onready var fd_save = $FileDialogSave
 @onready var fd_load = $FileDialogLoad
-@onready var fd_path = $FileDialogSetFilePaths
 @onready var tileset = TileSet.new()
 @onready var grid_ooch = $GridOoch
 @onready var grid_tiles = $TileSelect
@@ -512,10 +511,6 @@ func _on_button_save_pressed():
 # Open the Load File Dialog
 func _on_button_load_pressed():
 	fd_load.visible = true
-
-# Open the Filepath Setter
-func _on_button_set_filepaths_pressed():
-	fd_path.visible = true
 	
 # Clear the map
 func _on_button_new_pressed():
