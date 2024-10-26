@@ -41,7 +41,7 @@ module.exports = {
         let zC = Zone.Cave < 10 ? `0${Zone.Cave}` : Zone.Cave;
         let zO = Zone.Obsidian < 10 ? `0${Zone.Obsidian}` : Zone.Obsidian;
         let zT = Zone.Training < 10 ? `0${Zone.Training}` : Zone.Training;
-        let zB = Zone.BuildingInteror < 10 ? `0${Zone.BuildingInteror}` : Zone.BuildingInteror;
+        let zB = Zone.BuildingInterior < 10 ? `0${Zone.BuildingInterior}` : Zone.BuildingInterior;
         let zL = Zone.Lava < 10 ? `0${Zone.Lava}` : Zone.Lava;
         let zFF = Zone.FlowerFields < 10 ? `0${Zone.FlowerFields}` : Zone.FlowerFields;
         let zAB = Zone.AncientBridge < 10 ? `0${Zone.AncientBridge}` : Zone.AncientBridge;
@@ -208,7 +208,7 @@ module.exports = {
         create_tile(`t${zB}_036`,  Tile.Wall,     applicationEmojis ); //Interior Wall
 
         //Lava
-        create_tile(`t${zL}_036`,  Tile.Lava,     applicationEmojis ); //Lava
+        create_tile(`t${zL}_000`,  Tile.Lava,     applicationEmojis ); //Lava
 
         //Flower Fields
         create_tile(`t${zFF}_000`,  Tile.Floor,    applicationEmojis ); //Flower Field Floor
@@ -234,7 +234,6 @@ module.exports = {
         create_tile(`t${zAB}_012`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
         create_tile(`t${zAB}_020`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
         create_tile(`t${zAB}_021`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
-        create_tile(`t${zAB}_022`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
         create_tile(`t${zAB}_030`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
         create_tile(`t${zAB}_031`,  Tile.Wall,     applicationEmojis ); //Ancient Bridge Wall
 

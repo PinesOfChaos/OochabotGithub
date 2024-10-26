@@ -88,7 +88,7 @@ func _draw():
 		for j in map_height:
 			x1 = i * Global.TileSize
 			y1 = j * Global.TileSize
-			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 2000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 1200:
+			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 10000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 10000:
 				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
 				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
 
@@ -153,6 +153,22 @@ func step():
 	match Global.CurrentMapMode:
 		Global.MapMode.MAP_NONE:
 			v_box_menu.visible = true
+			if Input.is_action_just_pressed("quick_paint"):
+				_on_button_map_brush_pressed()
+			if Input.is_action_just_pressed("quick_event"):
+				_on_button_new_event_pressed()
+			if Input.is_action_just_pressed("quick_spawn"):
+				_on_button_new_spawn_region_pressed()
+			if Input.is_action_just_pressed("quick_transition"):
+				_on_button_new_transition_button_down()
+			if Input.is_action_just_pressed("quick_savepoint"):
+				_on_button_new_save_point_button_down()
+			if Input.is_action_just_pressed("quick_shop"):
+				_on_button_new_shop_button_down()
+			if Input.is_action_just_pressed("quick_npc"):
+				_on_button_new_npc_button_down()
+				
+				
 		Global.MapMode.MAP_OBJ_EDIT:
 			if Input.is_action_just_pressed("ui_cancel"):
 				Global.CurrentMapMode = Global.MapMode.MAP_NONE
@@ -165,6 +181,8 @@ func step():
 				v_box_menu.visible = false
 		Global.MapMode.MAP_PAINT_BRUSH_SELECT:
 			v_box_menu.visible = false
+			if typeof(Global.TileSelected) == TYPE_STRING:
+				Global.TileSelected = 0
 			if Global.TileSelected != -1:
 				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT_WAIT
 			elif Input.is_action_just_pressed("ui_cancel"):
@@ -658,3 +676,6 @@ func _on_timer_timeout():
 		_on_file_dialog_save_file_selected(file_last_path)
 	else:
 		print("Save the file to enable autosave")
+
+func _on_button_visible_tile_toggled(toggled_on: bool) -> void:
+	pass # Replace with function body.

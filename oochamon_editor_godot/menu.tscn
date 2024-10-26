@@ -51,10 +51,6 @@ text = "Load Level"
 layout_mode = 2
 text = "Save Level"
 
-[node name="ButtonSetFilepaths" type="Button" parent="VBoxMenu/HBoxFile"]
-layout_mode = 2
-text = "Set Data Filepaths"
-
 [node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
 
@@ -84,10 +80,6 @@ max_value = 200.0
 value = 100.0
 prefix = "H"
 
-[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxMapInfo"]
-layout_mode = 2
-text = "Paint"
-
 [node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -98,6 +90,20 @@ ticks_on_borders = true
 layout_mode = 2
 placeholder_text = "Battle BG Sprite"
 expand_to_text_length = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleTile" type="CheckBox" parent="VBoxMenu/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 1"
+text = "Paint Tiles"
 
 [node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
@@ -111,6 +117,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 2"
 text = "New Event Trigger"
 
 [node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu"]
@@ -125,6 +132,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 3"
 text = "New Spawn Area"
 
 [node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu"]
@@ -139,6 +147,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 4"
 text = "New Transition"
 
 [node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu"]
@@ -153,6 +162,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 5"
 text = "New Save Point"
 
 [node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu"]
@@ -167,6 +177,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 6"
 text = "New Shop"
 
 [node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu"]
@@ -181,6 +192,7 @@ button_pressed = true
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
 text = "New NPC"
 
 [node name="GridOoch" type="GridContainer" parent="."]
@@ -265,13 +277,13 @@ autostart = true
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonLoad" to="." method="_on_button_load_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
-[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed"]
 [connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed"]
 [connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapW" to="." method="_on_spin_box_map_w_value_changed"]
 [connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapH" to="." method="_on_spin_box_map_h_value_changed"]
-[connection signal="pressed" from="VBoxMenu/HBoxMapInfo/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
 [connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
 [connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapBattleBack" to="." method="_on_line_edit_map_battle_back_text_changed"]
+[connection signal="toggled" from="VBoxMenu/HBoxContainer/ButtonVisibleTile" to="." method="_on_button_visible_tile_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxContainer/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]
 [connection signal="pressed" from="VBoxMenu/HBoxEvent/ButtonNewEvent" to="." method="_on_button_new_event_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled"]

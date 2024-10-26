@@ -4,7 +4,8 @@ enum MapMode {
 	MAP_PAINT,
 	MAP_PAINT_BRUSH_SELECT,
 	MAP_PAINT_BRUSH_SELECT_WAIT,
-	MAP_OBJ_EDIT
+	MAP_OBJ_EDIT,
+	MAP_TYPING
 }
 
 #used for events, see "types" in javascript files
