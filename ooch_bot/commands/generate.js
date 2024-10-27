@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status, MoveTag } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status, MoveTag, MoveTarget } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 const globalEventsJSON = require('../global_events.json');
 
@@ -356,104 +356,578 @@ module.exports = {
         //#region Move Data
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //          ID, NAME,             TYPE,        DMG,ACCURACY, EFF,EFF_CHANCE,     DESCRIPTION
-        create_move(0, 'Hit',             OochType.Neutral,10,100,   -1,0,           'The user hits the target to deal damage.')
-        create_move(1, 'Bash',            OochType.Neutral,20,100,   -1,0,           'The target is dealt some blunt damage.')
-        create_move(2, 'Spore Shot',      OochType.Fungal,30,100,    -1,0,           'A puff of spore burst from the user\'s body.')
-        create_move(3, 'Pebble Blast',    OochType.Stone,30,100,     -1,0,           'Fires a barrage of small pebbles.')
-        create_move(4, 'Fireball',        OochType.Flame,30,100,     -1,0,           'Shoots a ball of fire at the target.')
-        create_move(5, 'Slash',           OochType.Neutral,50,95,    -1,0,           'The user slashes at the target with sharp appendages.')
-        create_move(6, 'Take Over',       OochType.Fungal,35,90,     'infected',100, 'Fungal spores are launched which INFECT the target.')
-        create_move(7, 'Dust Storm',      OochType.Stone,30,90,      'blinded',100,  'A storm is whipped up which leaves the target BLINDED.')
-        create_move(8, 'Engulf',          OochType.Flame,40,90,      'burned',100,   'The target is BURNED by red-hot flames.')
-        create_move(9, 'Impale',          OochType.Neutral,80,100,   -1,0,           'Impales the target with a spike.')
-        create_move(10,'Bloom',           OochType.Fungal,70,90,     -1,0,           'Explosive spores are launched at the target to deal damage.')
-        create_move(11,'Boulderdash',     OochType.Stone,70,90,      -1,0,           'Flings a massive boulder at the target.')
-        create_move(12,'Torch',           OochType.Flame,70,90,      -1,0,           'The user hits the target to deal damage')
-        create_move(13,'Blight',          OochType.Fungal,60,90,     'blinded',50,   'If the infection takes hold, the target is BLINDED.')
-        create_move(14,'Lava Lance',      OochType.Stone,65,95,      'burned',50,    'Red-hot stone is launched to BURN the target.')
-        create_move(15,'Tumorize',        OochType.Flame,50,95,      'infected',50,  'The user creates radiation in order to INFECT the target.')
-        create_move(16,'Glimmer',         OochType.Stone,20,90,      'blinded',100,  'Refracts light in an attempt to BLIND the target.')
-        create_move(17,'Gem Bash',        OochType.Stone,110,80,     -1,0,           'Crystallized stones are swung wildly to inflict damage.')
-        create_move(18,'Caustic Orb',     OochType.Ooze,60,100,      'burned',75,    'A ball of caustic goo is launched with a high chance of BURNING.')
-        create_move(19,'Pulverize',       OochType.Neutral,130,80,   -1,0,           'The target is slammed to deal massive damage.')
-        create_move(20,'Ash Blast',       OochType.Flame,50,95,      'blinded',75,   'Hot ashes are launched at the target with a high chance to BLIND.')
-        create_move(21,'Inferno',         OochType.Flame,100,70,     'burned',100,   'Anything caught by these wild flames is BURNED')
-        create_move(22,'Digitize',        OochType.Tech,50,100,      'digitized',100,'The target becomes DIGITIZED when hit by this strange beam.')
-        create_move(23,'Clamp Down',      OochType.Neutral,45,100,   'snared',30,    'Clamps down tight on the target to deal damage and SNARE them if you get lucky.')
-        create_move(24,'Magic Bolt',      OochType.Magic,30,100,     -1,0,           'Fires a bolt of magic energy.')
-        create_move(25,'Sparkler',        OochType.Flame,40,100,     'blinded',30,   'Shoots bright sparks with the potential to BLIND.')
-        create_move(26,'Arca Strike',     OochType.Magic,80,90,      -1,0,           'Fires a powerful burst of magic.')
-        create_move(27,'Call Thunder',    OochType.Magic,60,90,      'burned',50,    'Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.')
-        create_move(28,'Sticky Orb',      OochType.Ooze,80,90,       'snared',60,    'Fling a orb of goo that can SNARE the target.')
-        create_move(29,'Glob',            OochType.Ooze,30,100,      -1,0,           'Pelts the target with a viscous ooze.')
-        create_move(30,'Blink',           OochType.Magic,10,100,     'doubled',100,  'Travels to a different time to damage the target again, DOUBLING the next damage they take.')
-        create_move(31,'Time Warp',       OochType.Magic,50,80,      'doubled',50,   'Attempts to DOUBLE the next damage the opponent takes by damaging them in the future.')
-        create_move(32,'Mycelium Whip',   OochType.Fungal,50,90,     'snared',50,    'Shoots whips made of mycelium in an attempt to SNARE the opponent.')
-        create_move(33,'Parasitize',      OochType.Ooze,30,100,      'infected',50,  'Parasitic bodies are launched at the target potentially INFECTING them.')
-        create_move(34,'Corrode',         OochType.Ooze,70,80,       'doubled',30,   'Powerful acids are weaken the targets defenses, potentially DOUBLING the next damage they take.')
-        create_move(35,'Grind',           OochType.Stone,80,90,      -1,0,           'Grinds against the opponent with rough, jagged edges.')
-        create_move(36,'Metal Lance',     OochType.Tech,70,90,       -1,0,           'Stabs the opponent with a metallic object.')
-        create_move(37,'Iron Hammer',     OochType.Tech,50,100,      -1,0,           'A heavy, metal object is hammered against the target.')
-        create_move(38,'Laminate',        OochType.Tech,30,90,       'snared',100,   'Covers the target in a tough plastic substance to SNARE them.')
-        create_move(39,'Entomb',          OochType.Stone,60,80,      'snared',50,    'Causes stones to fall onto the target, leaving them SNARED if they get trapped.')
-        create_move(40,'undefined_int',   OochType.Void,100,100,     -1,0,           'TEST MOVE')
-        
-        ////NEW MOVES 
-        create_move(41,'Strike',          OochType.Neutral,20,100,  'critical',30,   'A targeted strike that is likely to land a Critical Hit.')
-        create_move(42,'Barrage',         OochType.Tech,100,80,     'recoil',30,     'Devastating blasts damage the target, the user is hit with Recoil.')
-        create_move(43,'Eruption',        OochType.Flame,70,100,    'recoil',20,     'Blazing heat erupts from the user, damaging itself and the opponent.')
-        create_move(44,'Self Destruct',   OochType.Tech,250,100,    'recoil',100,    'The user self destructs to inflict massive damage.')
-        create_move(45,'Siphon',          OochType.Fungal,20,100,   'vampire',10,    'The user damages the opponent, slightly Healing itself in the process.')
-        create_move(46,'Drain Life',      OochType.Magic,50,50,     'vampire',50,    'A horribly innacurate move with the potential to greatly heal the user.')
-        create_move(47,'Restruct',        OochType.Stone,0,-100,    'heal',25,       'Stones are reorganized in the user\'s body to restore some HP.')
-        create_move(48,'Flurry',          OochType.Tech,75,90,      'critical',50,   'A flurry of steel blades shred the target, with a high chance to land a Critical Hit.')
-        create_move(49,'Crash Landing',   OochType.Stone,90,90,     'recoil',20,     'The user falls down from the sky inflicting high damage, but injuring itself.')
-        create_move(50,'Solar Blast',     OochType.Flame,85,100,    'blinded',50,    'Lob a brilliant ball of flame, potentially BLINDING the target.')
-        create_move(51,'Tangled Threads', OochType.Neutral,70,100,  'snared',30,     'Threads are shot at the target dealing damage with a chance to SNARE them.')
-        create_move(52,'Fated Threads',   OochType.Magic,80,100,    'snared',50,     'Magical threads fly through the air in an attempt to SNARE the target.')
-        create_move(53,'Sync Strike',     OochType.Neutral,70,100,  'typematch',100, 'Launch a ball of energy synchronized with the user\'s type')
-        create_move(54,'Threefold',       OochType.Neutral,90,90,   'critical',30,   'The target is struck repeatedly, leaving it open to Critical Hits.')
-        create_move(55,'Glass Blades',    OochType.Stone,80,70,     'critical',50,   'Brittle blades are used to strike at the opponent\'s weak spots.')
-        create_move(56,'Gravitate',       OochType.Magic,60,100,     -1,0,            'The user manipulates gravity to fling itself at the target.')
-        create_move(57,'Tenderize',       OochType.Neutral,120,70,  'recoil',30,     'The user slams its body into the opponent, but is hit with recoil.')
-        
-        ////MORE NEW MOVES
-        create_move(58,'Byte Bite',       OochType.Tech,30,100,     -1,0,            'Form digital jaws that clamp down on the target.')
-        create_move(59,'Sawblade',        OochType.Tech,50,100,     -1,0,            'The user hits the target with a metal blade.')
-        create_move(60,'Soften',          OochType.Ooze,0,-100,     '+_def_1',100,  'Softens the body making it harder to damage, increasing its DEF.')
-        create_move(61,'Embolden',        OochType.Neutral,0,-100,  '+_atk_1',100,  'Prepares the user to fight with all its strength, increasing its ATK.')
-        create_move(62,'Hasten',          OochType.Neutral,0,-100,  '+_spd_1',100,  'The user readies itself to move quickly, increasing its SPD.')
-        create_move(63,'Brittle',         OochType.Stone,0,100,     '-_def_1',100,  'Makes the opponent\'s body brittle, lowering its DEF.')
-        create_move(64,'Intimidate',      OochType.Neutral,0,100,   '-_atk_1',100,  'Glare at the opponent, lowering its DEF.')
-        create_move(65,'Mud',             OochType.Ooze,0,100,      '-_spd_1',100,  'Throw mud on the opponent, lowering its SPD.')
-        create_move(66,'Hype-Up',         OochType.Neutral,0,-100,  '+_atk_1|+_spd_1',100, 'Hypes up the user, increasing its ATK and SPD.')
-        create_move(67,'Sharpen',         OochType.Tech,0,-100,     '+_atk_2',-100, 'Sharpens any edges the user has, greatly increasing its ATK.')
-        create_move(68,'Cursed Eye',      OochType.Magic,10,100,    'blinded|burned',100, 'Curses the opponent, applying BLINDED and BURNED.')
-        create_move(69,'Suplex',          OochType.Neutral,60,100,  '-_def_1',100,  'Suplex the opponent, damaging them and reducing DEF.')
-        create_move(70,'Enfeebling Spore',OochType.Fungal,30,100,   '-_atk_1|-_spd_1',100, 'Launch a damaging spore at the opponent which lowers ATK and SPD.')
-        create_move(71,'Torque',          OochType.Tech,0,-100,     '-_spd_2|+_atk_4',100, 'Reduce the user\'s SPD to massively increase ATK.')
-        create_move(72,'Slow Burn',       OochType.Flame,0,-100,    '-_spd_1|+_def_2',100, 'Cool the user\'s flame, greatly increasing DEF at the cost of some SPD.')
-        create_move(73,'Kaleidoscope',    OochType.Magic,50,100,    'blinded|snared',100, 'Disorient the opponent in a room that BLINDS and SNARES', [MoveTag.Light])
-        create_move(74,'Blinding Beam',   OochType.Flame,75,80,     'blinded',100,   'Fire a brilliant beam of light that BLINDS the opponent.', [MoveTag.Light])
-        create_move(75,'Overgrowth',      OochType.Fungal,0,-100,   '+_atk_1|+_def_1|+_spd_1',100,   'Rapid fungal growth increases ATK, DEF and SPD.')
-        create_move(76,'Myco-Burst',      OochType.Fungal,75,80,    'blinded',100,   'Fire a spore-filled bomb which BLINDS the opponent.')
-        create_move(77,'Thorn Shot',      OochType.Fungal,60,90,    'critical',50,   'Shoot a condensed fungal thorn with a high critical chance')
-        create_move(78,'Slurp Up',        OochType.Ooze,0,-100,     'heal',50,       'The user gathers missing parts of its body to restore half its HP.')
-        create_move(79,'Digital Gamble',  OochType.Tech,0,-100,     'random',100,    'The user randomly uses a move.')
-        create_move(80,'Sedimentation',   OochType.Stone,0,-100,    '+_def_2',100,  'Spend the turn gathering stone to greatly increase DEF.')
-        create_move(81,'Plasma Cannon',   OochType.Flame,120,70,    -1,0,            'A high damage blast of extreme heat.')
-        create_move(82,'Phantom Bullet',  OochType.Magic,30,100,    'critical',100,  'Fire a highly accurate ghost bullet that always crits.')
-        create_move(83,'Firey Horn',      OochType.Flame,75,100,    'burned',50,     'Attack with blazing horns that have a chance to BURN the target.')
-        create_move(84,'Radiate',         OochType.Flame,0,100,     '-_atk_2|burned',100, 'Release stored-up heat to BURN the target and reduce its ATK.')
-        create_move(85,'Caltrops',        OochType.Neutral,20,100,  '-_spd_1',100,  'Scatter damaging spikes that damage and reduce the target\'s SPD')
-        create_move(86,'Lurk',            OochType.Neutral,0,-100,  '+_atk_1|focused', 'Lurk in the shadows boosting ATK and makes the user FOCUSED.')
-        create_move(87,'Fog',             OochType.Neutral,0,100,   '-_acc_1',100,  'Spray thick fog which reduces accuracy.')
-        create_move(88,'Purify',          OochType.Neutral,0,-100,  'clear_status',100, 'Removes all status effects.')
-        create_move(89,'Reset',           OochType.Neutral,0,-100,  'clear_stat_stages',100, 'Clears all stat changes.')
-        create_move(90,'Debug Bomb',      OochType.Tech,100,80,     'clear_status',100, 'Fire a high-damage bomb that clears any status effects from its target.')
-        create_move(91,'Entrench',        OochType.Fungal,0,-100,   '+_def_3|snared',100, 'Becomes SNARED, but greatly boosts DEF.')
-        create_move(92,'Null Sphere',     OochType.Void,60,100,     -1,0,            'Fire a sphere of dark matter.')
-        create_move(93,'Impact Blast',    OochType.Neutral,150,80,  'vanished',100,  'Hit the opponent so hard they get launched and VANISH.')
+        create_move({
+            id : 0, name : 'Hit', type : OochType.Neutral,
+            damage : 10, accuracy: 100,
+            effect : [],
+            description : 'The user hits the target to deal damage.'
+        });
+        create_move({
+            id : 1, name : 'Bash', type : OochType.Neutral,
+            damage : 20, accuracy: 100,
+            effect : [],
+            description : 'The target is dealt some blunt damage.'
+        });
+        create_move({
+            id : 2, name : 'Spore Shot', type : OochType.Fungal,
+            damage : 30, accuracy: 100,
+            effect : [],
+            description : 'A puff of spore burst from the user\'s body.'
+        });
+        create_move({
+            id : 3, name : 'Pebble Blast', type : OochType.Stone,
+            damage : 30, accuracy: 100,
+            effect : [],
+            description : 'Fires a barrage of small pebbles.'
+        });
+        create_move({
+            id : 4, name : 'Fireball', type : OochType.Flame,
+            damage : 30, accuracy: 100,
+            effect : [],
+            description : 'Shoots a ball of fire at the target.'
+        });
+        create_move({
+            id : 5, name : 'Slash', type : OochType.Neutral,
+            damage : 50, accuracy: 95,
+            effect : [],
+            description : 'The user slashes at the target with sharp appendages.'
+        });
+        create_move({
+            id : 6, name : 'Take Over', type : OochType.Fungal,
+            damage : 30, accuracy: 90,
+            effect : [{status : 'infected', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Fungal spores are launched which INFECT the target.'
+        });
+        create_move({
+            id : 7, name : 'Dust Storm', type : OochType.Stone,
+            damage : 30, accuracy: 90,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            description : 'A storm is whipped up which leaves the target BLINDED.'
+        });
+        create_move({
+            id : 8, name : 'Engulf', type : OochType.Flame,
+            damage : 30, accuracy: 90,
+            effect : [{status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            description : 'The target is BURNED by red-hot flames.'
+        });
+        create_move({
+            id : 9, name : 'Impale', type : OochType.Neutral,
+            damage : 80, accuracy: 100,
+            effect : [],
+            description : 'Impales the target with a spike.'
+        });
+        create_move({
+            id : 10, name : 'Impale', type : OochType.Fungal,
+            damage : 70, accuracy: 90,
+            effect : [],
+            description : 'Explosive spores are launched at the target to deal damage.'
+        });
+        create_move({
+            id : 11, name : 'Impale', type : OochType.Stone,
+            damage : 70, accuracy: 90,
+            effect : [],
+            description : 'Flings a massive boulder at the target.'
+        });
+        create_move({
+            id : 12, name : 'Impale', type : OochType.Flame,
+            damage : 70, accuracy: 90,
+            effect : [],
+            description : 'The user stabs at the target to deal damage.'
+        });
+        create_move({
+            id : 13, name : 'Blight', type : OochType.Fungal,
+            damage : 60, accuracy: 90,
+            effect : [{status : 'blinded', chance : 50, target : MoveTarget.Enemy}],
+            description : 'If the infection takes hold, the target is BLINDED.'
+        });
+        create_move({
+            id : 14, name : 'Lava Lance', type : OochType.Stone,
+            damage : 60, accuracy: 90,
+            effect : [{status : 'burned', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Red-hot stone is launched to BURN the target.'
+        });
+        create_move({
+            id : 15, name : 'Tumorize', type : OochType.Flame,
+            damage : 60, accuracy: 90,
+            effect : [{status : 'infected', chance : 50, target : MoveTarget.Enemy}],
+            description : 'The user creates radiation in order to INFECT the target.'
+        });
+        create_move({
+            id : 16, name : 'Glimmer', type : OochType.Crystal,
+            damage : 20, accuracy: 90,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Refracts light in an attempt to BLIND the target.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 17, name : 'Gem Bash', type : OochType.Crystal,
+            damage : 110, accuracy: 70,
+            effect : [],
+            description : 'Massive crystals are swung wildly to inflict damage.',
+        });
+        create_move({
+            id : 18, name : 'Caustic Orb', type : OochType.Crystal,
+            damage : 60, accuracy: 100,
+            effect : [{status : 'burned', chance : 75, target : MoveTarget.Enemy}],
+            description : 'A ball of caustic goo is launched with a high chance of BURNING.',
+        });
+        create_move({
+            id : 19, name : 'Pulverize', type : OochType.Neutral,
+            damage : 150, accuracy: 80,
+            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Self}],
+            description : 'The target is slammed to deal massive damage, but the user exausts itself, losing ATK.',
+        });
+        create_move({
+            id : 20, name : 'Ash Blast', type : OochType.Flame,
+            damage : 50, accuracy: 95,
+            effect : [{status : 'blinded', chance : 75, target : MoveTarget.Enemy}],
+            description : 'Hot ashes are launched at the target with a high chance to BLIND.',
+        });
+        create_move({
+            id : 21, name : 'Inferno', type : OochType.Flame,
+            damage : 100, accuracy: 95,
+            effect : [{status : 'burned', chance : 100, target : MoveTarget.All}],
+            description : 'A blazing inferno afflicts all targets with a BURN.',
+        });
+        create_move({
+            id : 22, name : 'Digitize', type : OochType.Flame,
+            damage : 50, accuracy: 100,
+            effect : [{status : 'digitized', chance : 100, target : MoveTarget.Enemy}],
+            description : 'The target becomes DIGITIZED when hit by this strange beam.',
+        });
+        create_move({
+            id : 23, name : 'Clamp Down', type : OochType.Flame,
+            damage : 45, accuracy: 100,
+            effect : [{status : 'snared', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.',
+        });
+        create_move({
+            id : 24, name : 'Magic Bolt', type : OochType.Magic,
+            damage : 30, accuracy: 100,
+            effect : [],
+            description : 'Fires a bolt of magic energy.',
+        });
+        create_move({
+            id : 25, name : 'Sparkler', type : OochType.Flame,
+            damage : 40, accuracy: 100,
+            effect : [{status : 'blinded', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Shoots bright sparks with the potential to BLIND.',
+        });
+        create_move({
+            id : 26, name : 'Arca Strike', type : OochType.Magic,
+            damage : 80, accuracy: 100,
+            effect : [],
+            description : 'Fires a powerful burst of magic.',
+        });
+        create_move({
+            id : 27, name : 'Call Lightning', type : OochType.Magic,
+            damage : 80, accuracy: 90,
+            effect : [{status : 'burned', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.',
+            tags : [MoveTag.Electric]
+        });
+        create_move({
+            id : 28, name : 'Sticky Orb', type : OochType.Ooze,
+            damage : 80, accuracy: 90,
+            effect : [{status : 'snared', chance : 60, target : MoveTarget.Enemy}],
+            description : 'Fling a orb of goo that can SNARE the target.',
+        });
+        create_move({
+            id : 29, name : 'Glob', type : OochType.Ooze,
+            damage : 30, accuracy: 100,
+            effect : [],
+            description : 'Pelts the target with a viscous ooze.',
+        });
+        create_move({
+            id : 30, name : 'Blink', type : OochType.Magic,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'doubled', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Travels to a different time, ensuring the next damage the target takes is DOUBLED.',
+            tags : [MoveTag.Time]
+        });
+        create_move({
+            id : 31, name : 'Time Warp', type : OochType.Magic,
+            damage : 50, accuracy: 100,
+            effect : [{status : 'doubled', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Warps spacetime around the target, with a chance to DOUBLE the next damage they take.',
+            tags : [MoveTag.Time]
+        });
+        create_move({
+            id : 32, name : 'Mycelium Whip', type : OochType.Fungal,
+            damage : 50, accuracy: 100,
+            effect : [{status : 'snared', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Shoots whips made of mycelium in an attempt to SNARE the opponent.',
+        });
+        create_move({
+            id : 33, name : 'Parasitize', type : OochType.Ooze,
+            damage : 40, accuracy: 50,
+            effect : [{status : 'infected', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Parasitic bodies are launched at the target potentially INFECTING them.',
+        });
+        create_move({
+            id : 34, name : 'Corrode', type : OochType.Ooze,
+            damage : 40, accuracy: 50,
+            effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Powerful acids damage the target, lowering its DEF.',
+        });
+        create_move({
+            id : 35, name : 'Grind', type : OochType.Stone,
+            damage : 80, accuracy: 90,
+            effect : [],
+            description : 'Grinds against the opponent with rough, jagged edges.',
+        });
+        create_move({
+            id : 36, name : 'Metal Lance', type : OochType.Tech,
+            damage : 70, accuracy: 90,
+            effect : [],
+            description : 'Stabs the opponent with a metallic object.',
+        });
+        create_move({
+            id : 37, name : 'Iron Hammer', type : OochType.Tech,
+            damage : 50, accuracy: 100,
+            effect : [],
+            description : 'A heavy, metal object is hammered against the target.',
+        });
+        create_move({
+            id : 38, name : 'Laminate', type : OochType.Tech,
+            damage : 30, accuracy: 90,
+            effect : [{status : 'snared', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Covers the target in a tough plastic substance to SNARE them.',
+        });
+        create_move({
+            id : 39, name : 'Entomb', type : OochType.Tech,
+            damage : 60, accuracy: 80,
+            effect : [{status : 'snared', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Stones fall onto the target, leaving them SNARED if they get trapped.',
+        });
+        create_move({
+            id : 40, name : 'undefined_int', type : OochType.Void,
+            damage : 100, accuracy: 100,
+            effect : [],
+            description : 'TEST MOVE',
+        });
+        create_move({
+            id : 41, name : 'Precision Strike', type : OochType.Neutral,
+            damage : 20, accuracy: 100,
+            effect : [{status : 'critical', chance : 60, target : MoveTarget.None}],
+            description : 'A targeted strike that is likely to land a Critical Hit.',
+        });
+        create_move({
+            id : 42, name : 'Barrage', type : OochType.Neutral,
+            damage : 100, accuracy: 80,
+            effect : [{status : 'recoil', chance : 30, target : MoveTarget.Self}],
+            description : 'Devastating blasts damage the target, the user is hit with Recoil.',
+        });
+        create_move({
+            id : 43, name : 'Eruption', type : OochType.Flame,
+            damage : 100, accuracy: 80,
+            effect : [{status : 'recoil', chance : 30, target : MoveTarget.Self}],
+            description : 'Blazing heat erupts from the user, dealing high damage but also being hit with Recoil.',
+        });
+        create_move({
+            id : 44, name : 'Self Destruct', type : OochType.Tech,
+            damage : 250, accuracy: 100,
+            effect : [{status : 'recoil', chance : 100, target : MoveTarget.Self}],
+            description : 'The user self destructs to inflict massive damage.',
+        });
+        create_move({
+            id : 45, name : 'Siphon', type : OochType.Fungal,
+            damage : 20, accuracy: 100,
+            effect : [{status : 'vampire', chance : 10, target : MoveTarget.Self}],
+            description : 'The user damages the opponent, slightly Healing itself in the process.',
+        });
+        create_move({
+            id : 46, name : 'Drain Life', type : OochType.Magic,
+            damage : 50, accuracy: 50,
+            effect : [{status : 'vampire', chance : 50, target : MoveTarget.Self}],
+            description : 'A horribly innacurate move with the potential to greatly heal the user.',
+        });
+        create_move({
+            id : 47, name : 'Restruct', type : OochType.Stone,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'heal', chance : 25, target : MoveTarget.Self}],
+            description : 'Stones are reorganized in the user\'s body to restore some HP.',
+        });
+        create_move({
+            id : 48, name : 'Flurry', type : OochType.Tech,
+            damage : 75, accuracy: 90,
+            effect : [{status : 'critical', chance : 50, target : MoveTarget.None}],
+            description : 'A flurry of steel blades shred the target, with a high chance to land a Critical Hit.',
+        });
+        create_move({
+            id : 49, name : 'Crash Landing', type : OochType.Stone,
+            damage : 90, accuracy: 90,
+            effect : [{status : 'recoil', chance : 20, target : MoveTarget.Self}],
+            description : 'The user falls down from the sky inflicting high damage, but injuring itself.',
+        });
+        create_move({
+            id : 50, name : 'Solar Blast', type : OochType.Flame,
+            damage : 85, accuracy: 100,
+            effect : [{status : 'blinded', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Lob a brilliant ball of flame, potentially BLINDING the target.',
+        });
+        create_move({
+            id : 51, name : 'Tangled Threads', type : OochType.Cloth,
+            damage : 70, accuracy: 100,
+            effect : [{status : 'blinded', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Threads are shot at the target dealing damage with a chance to SNARE them.',
+        });
+        create_move({
+            id : 52, name : 'Fated Threads', type : OochType.Cloth,
+            damage : 70, accuracy: 100,
+            effect : [{status : 'doubled', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.',
+        });
+        create_move({
+            id : 53, name : 'Sync Strike', type : OochType.Neutral,
+            damage : 70, accuracy: 100,
+            effect : [{status : 'typematch', chance : 100, target : MoveTarget.Self}],
+            description : 'Launch a ball of energy synchronized with the user\'s type.',
+        });
+        create_move({
+            id : 54, name : 'Threefold', type : OochType.Tech,
+            damage : 90, accuracy: 90,
+            effect : [{status : 'critical', chance : 30, target : MoveTarget.None}],
+            description : 'The target is struck repeatedly, leaving it open to Critical Hits.',
+        });
+        create_move({
+            id : 55, name : 'Glass Blades', type : OochType.Crystal,
+            damage : 80, accuracy: 70,
+            effect : [{status : 'critical', chance : 50, target : MoveTarget.None}],
+            description : 'Brittle blades are used to strike at the opponent\'s weak spots with a high chance to Crit.',
+        });
+        create_move({
+            id : 56, name : 'Gravitate', type : OochType.Magic,
+            damage : 60, accuracy: 100,
+            effect : [],
+            description : 'The user manipulates gravity to fling itself at the target.',
+        });
+        create_move({
+            id : 57, name : 'Tenderize', type : OochType.Neutral,
+            damage : 120, accuracy: 70,
+            effect : [{status : 'recoil', chance : 30, target : MoveTarget.Self}],
+            description : 'The user slams its body into the opponent, but is hit with recoil.',
+        });
+        create_move({
+            id : 58, name : 'Byte Bite', type : OochType.Tech,
+            damage : 60, accuracy: 100,
+            effect : [],
+            description : 'Form digital jaws that clamp down on the target.',
+        });
+        create_move({
+            id : 59, name : 'Sawblade', type : OochType.Tech,
+            damage : 50, accuracy: 95,
+            effect : [],
+            description : 'The user hits the target with a metal blade.',
+        });
+        create_move({
+            id : 60, name : 'Limber', type : OochType.Ooze,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_def_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Softens the body making it harder to damage, increasing its DEF.',
+        });
+        create_move({
+            id : 61, name : 'Embolden', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Prepares the user to fight with all its strength, increasing its ATK.',
+        });
+        create_move({
+            id : 62, name : 'Hasten', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
+            description : 'The user readies itself to move quickly, increasing its SPD.',
+        });
+        create_move({
+            id : 63, name : 'Brittle', type : OochType.Stone,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Makes the opponent\'s body brittle, lowering its DEF.',
+        });
+        create_move({
+            id : 64, name : 'Intimidate', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Glare at the opponent, lowering its ATK.',
+        });
+        create_move({
+            id : 65, name : 'Mud', type : OochType.Ooze,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Throw mud on the opponent, lowering its SPD.',
+        });
+        create_move({
+            id : 66, name : 'Hype-Up', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Hypes up the user, increasing its ATK and SPD.',
+        });
+        create_move({
+            id : 67, name : 'Sharpen', type : OochType.Tech,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_2', chance : 100, target : MoveTarget.Self}],
+            description : 'Sharpens any edges the user has, greatly increasing its ATK.',
+        });
+        create_move({
+            id : 68, name : 'Cursed Eye', type : OochType.Magic,
+            damage : 10, accuracy: 100,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}, {status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Shoot a beam that curses the opponent, applying BLINDED and BURNED.',
+        });
+        create_move({
+            id : 69, name : 'Suplex', type : OochType.Tech,
+            damage : 60, accuracy: 90,
+            effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Suplex the opponent, damaging them and reducing DEF.',
+        });
+        create_move({
+            id : 70, name : 'Enfeebling Spore', type : OochType.Fungal,
+            damage : 30, accuracy: 90,
+            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : '-_spd_1', chance : 100, target : MoveTarget.Enemy},],
+            description : 'Launch a damaging spore at the opponent which lowers ATK and SPD.',
+        });
+        create_move({
+            id : 71, name : 'Torque', type : OochType.Tech,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Self}, {status : '+_atk_2', chance : 100, target : MoveTarget.Self},],
+            description : 'Reduce the user\'s SPD to massively increase ATK.',
+        });
+        create_move({
+            id : 72, name : 'Slow Burn', type : OochType.Flame,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Self}, {status : '+_def_2', chance : 100, target : MoveTarget.Self},],
+            description : 'Reduces the user\'s heat, greatly increasing DEF at the cost of some SPD.',
+        });
+        create_move({
+            id : 73, name : 'Kaleidoscope', type : OochType.Crystal,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}, {status : 'snared', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Disorient the opponent in a room that BLINDS and SNARES.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 74, name : 'Blinding Beam', type : OochType.Crystal,
+            damage : 75, accuracy: 80,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Fire a brilliant beam of light that BLINDS the opponent.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 75, name : 'Overgrowth', type : OochType.Fungal,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : '+_def_1', chance : 100, target : MoveTarget.Self}, {status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Rapid fungal growth increases ATK, DEF, and SPD.',
+        });
+        create_move({
+            id : 76, name : 'Myco-Burst', type : OochType.Fungal,
+            damage : 75, accuracy: 80,
+            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Fire a spore-filled bomb which BLINDS the opponent.',
+        });
+        create_move({
+            id : 77, name : 'Thorn Shot', type : OochType.Fungal,
+            damage : 60, accuracy: 90,
+            effect : [{status : 'critical', chance : 50, target : MoveTarget.None}],
+            description : 'Shoot a condensed fungal thorn with a high critical chance.',
+        });
+        create_move({
+            id : 78, name : 'Slurp Up', type : OochType.Ooze,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'heal', chance : 50, target : MoveTarget.Self}],
+            description : 'The user gathers missing parts of its body to restore half its HP.',
+        });
+        create_move({
+            id : 79, name : 'Digital Gamble', type : OochType.Tech,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'random', chance : 100, target : MoveTarget.None}],
+            description : 'The user randomly uses a move.',
+        });
+        create_move({
+            id : 80, name : 'Sedimentation', type : OochType.Stone,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_def_2', chance : 100, target : MoveTarget.Self}],
+            description : 'Spend the turn gathering stone to greatly increase DEF.',
+        });
+        create_move({
+            id : 81, name : 'Plasma Cannon', type : OochType.Flame,
+            damage : 120, accuracy: 100,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Self}],
+            description : 'A high damage blast of extreme heat, but lowers the user\'s SPD afterward.',
+        });
+        create_move({
+            id : 82, name : 'Phantom Bullet', type : OochType.Magic,
+            damage : 30, accuracy: 100,
+            effect : [{status : 'critical', chance : 100, target : MoveTarget.None}],
+            description : 'Fire a highly accurate ghost bullet that always Crits.',
+        });
+        create_move({
+            id : 83, name : 'Firey Bullet', type : OochType.Flame,
+            damage : 70, accuracy: 100,
+            effect : [{status : 'burned', chance : 50, target : MoveTarget.Enemy}],
+            description : 'Attack with blazing horns that have a chance to BURN the target.',
+        });
+        create_move({
+            id : 84, name : 'Radiate', type : OochType.Flame,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Release stored-up radiation to BURN the target and reduce its ATK.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 85, name : 'Caltrops', type : OochType.Stone,
+            damage : 20, accuracy: 100,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Scatter damaging spikes that damage and reduce the target\'s SPD.',
+        });
+        create_move({
+            id : 86, name : 'Lurk', type : OochType.Flame,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : 'focused', chance : 100, target : MoveTarget.Self}],
+            description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
+        });
+        create_move({
+            id : 87, name : 'Fog', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_acc_2', chance : 100, target : MoveTarget.Self}, {status : '-_acc_2', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Spray thick fog which heavily reduces Accuracy on both sides.',
+        });
+        create_move({
+            id : 88, name : 'Purify', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'clear_status', chance : 100, target : MoveTarget.Self}],
+            description : 'Removes all status effects from the user.',
+        });
+        create_move({
+            id : 89, name : 'Reset', type : OochType.Neutral,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'clear_stat_stages', chance : 100, target : MoveTarget.Self}],
+            description : 'Clears all stat changes from the user.',
+        });
+        create_move({
+            id : 90, name : 'Debug Bomb', type : OochType.Tech,
+            damage : 100, accuracy: 80,
+            effect : [{status : 'clear_status', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Fire a high-damage bomb that clears any status effects from its target.',
+        });
+        create_move({
+            id : 91, name : 'Entrench', type : OochType.Fungal,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_def_3', chance : 100, target : MoveTarget.Self},{status : 'snared', chance : 100, target : MoveTarget.Self}],
+            description : 'The user roots into the ground, becoming SNARED, but greatly boosting its DEF.',
+        });
+        create_move({
+            id : 92, name : 'Null Sphere', type : OochType.Void,
+            damage : 60, accuracy: 100,
+            effect : [],
+            description : 'Fire a sphere of dark matter.',
+        });
+        create_move({
+            id : 93, name : 'Entrench', type : OochType.Neutral,
+            damage : 170, accuracy: 80,
+            effect : [{status : 'vanished', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Hit the opponent so hard they get launched and VANISH.',
+        });
+
 
         //#endregion
 
@@ -550,7 +1024,7 @@ module.exports = {
         create_status(5,   'Vanished',  '<:status_vanish:1274938531864776735>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
         create_status(6,   'Doomed',    '<:status_doomed:1274938483924009062>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
         create_status(7,   'Doubled',   '<:status_doubled:1274938495953014845>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-        create_status(7,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+        create_status(8,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
 
         
         //#endregion

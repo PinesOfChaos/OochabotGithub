@@ -101,6 +101,8 @@ const OochType = {
     Martial: 'martial',
 }
 
+
+
 const Move = {
     Hit: 0,
     Bash: 1,
@@ -143,7 +145,7 @@ const Move = {
     Laminate: 38,
     Entomb: 39,
     UndefinedInt: 40,
-    Strike: 41,
+    PrecisionStrike: 41,
     Barrage: 42,
     Eruption: 43,
     SelfDestruct: 44,
@@ -162,7 +164,7 @@ const Move = {
     Tenderize: 57,
     ByteBite: 58,
     Sawblade: 59,
-    Soften: 60,
+    Limber: 60,
     Embolden: 61,
     Hasten: 62,
     Brittle: 63,
@@ -314,7 +316,15 @@ const Zone = {
 
 const MoveTag = {
     Light: 0,
-    Sound: 1,
+    Electric: 1,
+    Time : 2,
+}
+
+const MoveTarget = {
+    Self :  0,
+    Enemy : 1,
+    All :   2,
+    None :  3
 }
 
 const TileEmoteGuildsArray = [
