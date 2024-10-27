@@ -922,12 +922,98 @@ module.exports = {
             description : 'Fire a sphere of dark matter.',
         });
         create_move({
-            id : 93, name : 'Entrench', type : OochType.Neutral,
+            id : 93, name : 'High Impact', type : OochType.Neutral,
             damage : 170, accuracy: 80,
             effect : [{status : 'vanished', chance : 100, target : MoveTarget.Enemy}],
             description : 'Hit the opponent so hard they get launched and VANISH.',
         });
 
+        //New Moves Start Here
+        create_move({
+            id : 94, name : 'Shards', type : OochType.Crystal,
+            damage : 20, accuracy: 100,
+            effect : [],
+            description : 'Shoot several small shards of crystal at the enemy to deal damage.',
+        });
+        create_move({
+            id : 95, name : 'Rag Whip', type : OochType.Cloth,
+            damage : 20, accuracy: 100,
+            effect : [],
+            description : 'Pummel the opponent with cloth whips.',
+        });
+        create_move({
+            id : 96, name : 'Screech', type : OochType.Sound,
+            damage : 20, accuracy: 100,
+            effect : [],
+            description : 'Emit a high-pitched screech that shatters objects.',
+        });
+        create_move({
+            id : 97, name : 'Lense Flare', type : OochType.Crystal,
+            damage : 40, accuracy: 100,
+            effect : [{status : '-_acc_1', chance : 40, target : MoveTarget.Enemy}],
+            description : 'Fire an incredibly bright gem at the opponenet with a chance to reduce their Accuracy.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 98, name : 'Bind', type : OochType.Cloth,
+            damage : 40, accuracy: 95,
+            effect : [{status : '-_spd_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Tightly wraps the enemy with cloth reducing its SPD.',
+        });
+        create_move({
+            id : 99, name : 'Thunder', type : OochType.Sound,
+            damage : 30, accuracy: 100,
+            effect : [{status : '-_atk_1', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Fire a booming sound which has a chance to reduce the target\'s ATK.',
+        });
+        create_move({
+            id : 100, name : 'Rallying Cry', type : OochType.Sound,
+            damage : 0, accuracy: 100,
+            effect : [{status : '+_atk_1', chance : 50, target : MoveTarget.Self}, {status : '+_def_1', chance : 50, target : MoveTarget.Self}, {status : '+_spd_1', chance : 50, target : MoveTarget.Self}],
+            description : 'Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.',
+        });
+        create_move({
+            id : 101, name : 'Crystal Ball', type : OochType.Crystal,
+            damage : 50, accuracy: 90,
+            effect : [{status : 'doubled', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.',
+        });
+        create_move({
+            id : 102, name : 'Sonic Boom', type : OochType.Sound,
+            damage : 40, accuracy: 100,
+            effect : [{status : 'priority_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Quickly launch a blast of sound, this move always goes first.',
+        });
+        create_move({
+            id : 103, name : 'Ear Shatter', type : OochType.Sound,
+            damage : 80, accuracy: 95,
+            effect : [{status : '-_def_1', chance : 30, target : MoveTarget.Enemy}],
+            description : 'Shout so loud that it shatters eardrums, has a chance to reduce DEF.',
+        });
+        create_move({
+            id : 104, name : 'Healing Gems', type : OochType.Crystal,
+            damage : 0, accuracy: 90,
+            effect : [{status : 'heal', chance : 15, target : MoveTarget.Self},{status : '+_def_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Heals the user a little while slightly bolstering their DEF.',
+        });
+        create_move({
+            id : 105, name : 'Scary Sheet', type : OochType.Cloth,
+            damage : 0, accuracy: 100,
+            effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy},{status : '-_spd_1', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Catch the emeny off guard with a spooky cloth, dropping their DEF and SPD.',
+        });
+        create_move({
+            id : 106, name : 'Fiber Slicer', type : OochType.Cloth,
+            damage : 65, accuracy: 100,
+            effect : [{status : 'critical', chance : 30, target : MoveTarget.None}],
+            description : 'Slashes the target with highly compressed fibers, has a high chance to Crit.',
+        });
+        create_move({
+            id : 107, name : 'Mummify', type : OochType.Cloth,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'doomed', chance : 100, target : MoveTarget.Enemy}],
+            description : 'Wraps the target in cursed cloths, DOOMING the target.',
+        });
 
         //#endregion
 
@@ -1009,6 +1095,7 @@ module.exports = {
         create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
         create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.');
         create_ability(72, 'Neutralizer',      'No Oochamon are affected by status effects.');
+        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves.')
         */
 
         //#endregion

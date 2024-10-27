@@ -196,6 +196,22 @@ const Move = {
     DebugBomb: 90,
     Entrench: 91,
     NullSphere: 92,
+    HighImpact :93,
+    Shards: 94,
+    RagWhip: 95,
+    Screech: 96,
+    LenseFlare:97,
+    Bind: 98,
+    Thunder: 99,
+    RallyingCry: 100,
+    CrystalBall: 90,
+    SonicBoom: 102,
+    EarShatter: 103,
+    HealingGems: 104,
+    ScarySheet: 105,
+    FiberSlicer: 106,
+    Mummify: 107
+
 }
 
 const Ability = {
