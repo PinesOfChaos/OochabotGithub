@@ -281,6 +281,15 @@ const Ability = {
     Swaying: 63,
     Thrashing: 64,
     Union: 65,
+    Protector: 66,
+    Phantasmal: 67,
+    Matryoshka: 68,
+    Thorned: 69,
+    DownwardSpiral: 70,
+    Constructor: 71,
+    Neutralizer: 72,
+    BassBoost: 73,
+    Stealthy: 74
 }
 
 const Item = {

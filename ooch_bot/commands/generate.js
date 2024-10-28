@@ -1087,7 +1087,7 @@ module.exports = {
         create_ability(64, 'Thrashing',         'Increases ATK by 1 stage but lowers evasion by 1 stage.');
         create_ability(65, 'Union',             'Increases ATK and DEF by 1 stage.');
         
-        /* EVENTUAL ABILITIES DON'T WORRY ABOUT THEM UNTIL MAIN GAME IS DONE
+        // EVENTUAL ABILITIES DON'T WORRY ABOUT THEM UNTIL MAIN GAME IS DONE
         create_ability(66, 'Protector',        'Immune to inneffective damage during the turn it switches in.');
         create_ability(67, 'Phantasmal',       'Immune to Neutral-type moves.');
         create_ability(68, 'Matryoshka',       'The first time it would be KO\'d, restores its HP to half.');
@@ -1095,8 +1095,9 @@ module.exports = {
         create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
         create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.');
         create_ability(72, 'Neutralizer',      'No Oochamon are affected by status effects.');
-        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves.')
-        */
+        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves.') //Get this one working
+        create_ability(74, 'Stealthy',         'Gets FOCUSED if it hasn\'t dealt damage this turn.') //Get this one working
+        
 
         //#endregion
 
@@ -2011,33 +2012,33 @@ module.exports = {
             pre_evo_id: 53, evo_id: -1, evo_lvl: -1, evo_stage: 2
         })
 
-        // Oochabit
+        // Doubud
         create_monster({
             id: 55,
-            emote: get_emote_string(applicationEmojis, 'oochabit'),
-            name: 'Oochabit',
-            oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
-            type: [OochType.Void],
-            hp: 10, atk: 9, def: 5, spd: 6, // total 30
+            emote: get_emote_string(applicationEmojis, 'doubud'),
+            name: 'Doubud',
+            oochive_entry: 'Discovered when a researcher heard someone screaming. It turned out to be a pair of Doubud shouting back and forth at eachother.',
+            type: [OochType.Sound],
+            hp: 12, atk: 13, def: 8, spd: 7, // total 40
             move_list: [
                 [1, Move.Bash]
             ],
-            abilities: [ Ability.Nullify ],
+            abilities: [ Ability.BassBoost, Ability.Immobile ],
             pre_evo_id: -1, evo_id: 56, evo_lvl: 18, evo_stage: 0
         })
 
-        // Oochabound
+        // Hedfren
         create_monster({
             id: 56,
-            emote: get_emote_string(applicationEmojis, 'oochabound'),
-            name: 'Oochabound',
-            oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
-            type: [OochType.Void],
-            hp: 25, atk: 23, def: 17, spd: 20, // total 85
+            emote: get_emote_string(applicationEmojis, 'hedfren'),
+            name: 'Hedfren',
+            oochive_entry: 'It\'s still not certain whether Hedfren is a true evolution or if it\'s just Doubud after emerging from the ground.',
+            type: [OochType.Sound],
+            hp: 23, atk: 26, def: 19, spd: 17, // total 85
             move_list: [
                 [1, Move.Bash]
             ],
-            abilities: [ Ability.Duplicant ],
+            abilities: [ Ability.BassBoost, Ability.Ravenous ],
             pre_evo_id: 55, evo_id: -1, evo_lvl: -1, evo_stage: 1
         })
 
@@ -2456,26 +2457,9 @@ module.exports = {
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
 
-        // Nullifly
-        create_monster({
-            id: 81,
-            emote: get_emote_string(applicationEmojis, 'nullifly'),
-            name: 'Nullifly',
-            oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
-            type: [OochType.Void],
-            hp: 20, atk: 20, def: 20, spd: 20, // total 80
-            move_list: [
-                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],
-                [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode],
-                [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]
-            ],
-            abilities: [Ability.Nullify],
-            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
-        });
-
         // Crudoil
         create_monster({
-            id: 82,
+            id: 81,
             emote: get_emote_string(applicationEmojis, 'crudoil'),
             name: 'Crudoil',
             oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
@@ -2492,7 +2476,7 @@ module.exports = {
 
         // Oilantern
         create_monster({
-            id: 83,
+            id: 82,
             emote: get_emote_string(applicationEmojis, 'oilantern'),
             name: 'Oilantern',
             oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
@@ -2509,7 +2493,7 @@ module.exports = {
 
         // Saporite
         create_monster({
-            id: 84,
+            id: 83,
             emote: get_emote_string(applicationEmojis, 'saporite'),
             name: 'Saporite',
             oochive_entry: 'Also called mushroom fairies, these small creatures are very peaceful.',
@@ -2526,7 +2510,7 @@ module.exports = {
 
         // Faering
         create_monster({
-            id: 85,
+            id: 84,
             emote: get_emote_string(applicationEmojis, 'faering'),
             name: 'Faering',
             oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
@@ -2543,7 +2527,7 @@ module.exports = {
 
         // Kerkobble
         create_monster({
-            id: 86,
+            id: 85,
             emote: get_emote_string(applicationEmojis, 'kercobble'),
             name: 'Kerkobble',
             oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
@@ -2560,7 +2544,7 @@ module.exports = {
 
         // Korkobble
         create_monster({
-            id: 87,
+            id: 86,
             emote: get_emote_string(applicationEmojis, 'korkobble'),
             name: 'Korkobble',
             oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
@@ -2577,7 +2561,7 @@ module.exports = {
 
         // Ilushand
         create_monster({
-            id: 88,
+            id: 87,
             emote: get_emote_string(applicationEmojis, 'ilushand'),
             name: 'Ilushand',
             oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
@@ -2594,7 +2578,7 @@ module.exports = {
 
         // Miroraj
         create_monster({
-            id: 89,
+            id: 88,
             emote: get_emote_string(applicationEmojis, 'miroraj'),
             name: 'Miroraj',
             oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
@@ -2611,7 +2595,7 @@ module.exports = {
 
         // Fritarge
         create_monster({
-            id: 90,
+            id: 89,
             emote: get_emote_string(applicationEmojis, 'fritarge'),
             name: 'Fritarge',
             oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
@@ -2629,7 +2613,7 @@ module.exports = {
 
         // Wardred
         create_monster({
-            id: 91,
+            id: 90,
             emote: get_emote_string(applicationEmojis, 'wardred'),
             name: 'Wardred',
             oochive_entry: 'The gaping maw on this creature\'s back echoes metallic whispers.',
@@ -2647,7 +2631,7 @@ module.exports = {
 
         // Congsume
         create_monster({
-            id: 92,
+            id: 91,
             emote: get_emote_string(applicationEmojis, 'congsume'),
             name: 'Congsume',
             oochive_entry: 'It can\'t stop moving or the flames on its body will eventually catch up.',
@@ -2664,7 +2648,7 @@ module.exports = {
 
         // Fevour
         create_monster({
-            id: 93,
+            id: 92,
             emote: get_emote_string(applicationEmojis, 'fevour'),
             name: 'Fevour',
             oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
@@ -2679,9 +2663,54 @@ module.exports = {
             pre_evo_id: 92, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
 
-        // Tryptid
+        // Taditty
+        create_monster({
+            id: 93,
+            emote: get_emote_string(applicationEmojis, 'taditty'),
+            name: 'Taditty',
+            oochive_entry: 'They can often be found clustered in small circles, covered in blankets and humming tunes to eachother.',
+            type: [OochType.Sound, OochType.Cloth],
+            hp: 8, atk: 11, def: 10, spd: 11, //total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Miniscule, Ability.Gentle ],
+            pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
+        })
+        
+        // Silentoad
         create_monster({
             id: 94,
+            emote: get_emote_string(applicationEmojis, 'silentoad'),
+            name: 'Silentoad',
+            oochive_entry: 'Silentoad are quiet, watchful, and relentlessly protective of the Taditty that rest near them.',
+            type: [OochType.Sound, OochType.Cloth],
+            hp: 13, atk: 17, def: 12, spd: 18, //total 60
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.BassBoost, Ability.Stealthy ],
+            pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
+        })
+
+        // Bansheet
+        create_monster({
+            id: 95,
+            emote: get_emote_string(applicationEmojis, 'bansheet'),
+            name: 'Bansheet',
+            oochive_entry: 'Hidden beneath a tattered cloth, these creatures often catch unwary adventurers off guard with a head-splittingly loud screech.',
+            type: [OochType.Sound, OochType.Cloth],
+            hp: 23, atk: 25, def: 17, spd: 15, //total 80
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.BassBoost, Ability.Boisterous ],
+            pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
+        })
+
+        // Tryptid
+        create_monster({
+            id: 96,
             emote: get_emote_string(applicationEmojis, 'tryptid'),
             name: 'Tryptid',
             oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
@@ -2699,7 +2728,7 @@ module.exports = {
 
         // Roswier
         create_monster({
-            id: 95,
+            id: 97,
             emote: get_emote_string(applicationEmojis, 'roswier'),
             name: 'Roswier',
             oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
@@ -2715,9 +2744,10 @@ module.exports = {
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
 
+        
         // Chemerai
         create_monster({
-            id: 96,
+            id: 98,
             emote: get_emote_string(applicationEmojis, 'chemerai'),
             name: 'Chemerai',
             oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
@@ -2733,9 +2763,12 @@ module.exports = {
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
 
+        //#region LEGENDARY HERE
+        //#endregion
+
         // Rosun
         create_monster({
-            id: 97,
+            id: 100,
             emote: get_emote_string(applicationEmojis, 'rosun'),
             name: 'Rosun',
             oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
@@ -2750,7 +2783,7 @@ module.exports = {
 
         // Morgoun
         create_monster({
-            id: 98,
+            id: 101,
             emote: get_emote_string(applicationEmojis, 'morgoun'),
             name: 'Morgoun',
             oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
@@ -2765,7 +2798,7 @@ module.exports = {
 
         // Garnetie
         create_monster({
-            id: 99,
+            id: 102,
             emote: get_emote_string(applicationEmojis, 'garnetie'),
             name: 'Garnetie',
             oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
@@ -2780,7 +2813,7 @@ module.exports = {
 
         // Aventux
         create_monster({
-            id: 100,
+            id: 103,
             emote: get_emote_string(applicationEmojis, 'aventux'),
             name: 'Aventux',
             oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
@@ -2795,7 +2828,7 @@ module.exports = {
 
         // Galagge
         create_monster({
-            id: 101,
+            id: 104,
             emote: get_emote_string(applicationEmojis, 'galagge'),
             name: 'Galagge',
             oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
@@ -2807,6 +2840,23 @@ module.exports = {
             abilities: [ Ability.Union ],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 2
         })
+
+        // Nullifly
+        create_monster({
+            id: 105,
+            emote: get_emote_string(applicationEmojis, 'nullifly'),
+            name: 'Nullifly',
+            oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
+            type: [OochType.Void],
+            hp: 20, atk: 20, def: 20, spd: 20, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],
+                [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode],
+                [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]
+            ],
+            abilities: [Ability.Nullify],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
         //#endregion
 
@@ -2826,6 +2876,36 @@ module.exports = {
             abilities: [Ability.InvalidEntry],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
+
+        // Oochabit
+        create_monster({
+            id: -2,
+            emote: get_emote_string(applicationEmojis, 'oochabit'),
+            name: 'Oochabit',
+            oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
+            type: [OochType.Void],
+            hp: 10, atk: 9, def: 5, spd: 6, // total 30
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Nullify ],
+            pre_evo_id: -1, evo_id: -3, evo_lvl: 18, evo_stage: 0
+        })
+
+        // Oochabound
+        create_monster({
+            id: -3,
+            emote: get_emote_string(applicationEmojis, 'oochabound'),
+            name: 'Oochabound',
+            oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
+            type: [OochType.Void],
+            hp: 25, atk: 23, def: 17, spd: 20, // total 85
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [ Ability.Duplicant ],
+            pre_evo_id: -2, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        })
 
 
         //#endregion
