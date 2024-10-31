@@ -8,9 +8,9 @@
 7|Dust Storm|stone|30|90|[blinded, 100, 1]|A storm is whipped up which leaves the target BLINDED.|
 8|Engulf|flame|30|90|[burned, 100, 1]|The target is BURNED by red-hot flames.|
 9|Impale|neutral|80|100||Impales the target with a spike.|
-10|Impale|fungal|70|90||Explosive spores are launched at the target to deal damage.|
-11|Impale|stone|70|90||Flings a massive boulder at the target.|
-12|Impale|flame|70|90||The user stabs at the target to deal damage.|
+10|Bloom|fungal|70|90||Explosive spores are launched at the target to deal damage.|
+11|Boulder Dash|stone|70|90||Flings a massive boulder at the target.|
+12|Torch|flame|70|90||The user stabs at the target to deal damage.|
 13|Blight|fungal|60|90|[blinded, 50, 1]|If the infection takes hold, the target is BLINDED.|
 14|Lava Lance|stone|60|90|[burned, 50, 1]|Red-hot stone is launched to BURN the target.|
 15|Tumorize|flame|60|90|[infected, 50, 1]|The user creates radiation in order to INFECT the target.|

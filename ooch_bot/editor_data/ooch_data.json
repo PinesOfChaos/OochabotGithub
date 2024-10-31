@@ -1,0 +1,6669 @@
+[
+  {
+    "id": 0,
+    "emote": "<:sporbee:1274938431373316136>",
+    "name": "Sporbee",
+    "oochive_entry": "An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 8,
+    "atk": 12,
+    "def": 8,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        10,
+        45
+      ],
+      [
+        13,
+        6
+      ],
+      [
+        17,
+        10
+      ],
+      [
+        27,
+        13
+      ],
+      [
+        -1,
+        18
+      ]
+    ],
+    "abilities": [
+      0,
+      1
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 1,
+    "evo_lvl": 11,
+    "evo_stage": 0
+  },
+  {
+    "id": 1,
+    "emote": "<:stingrowth:1274938603490902127>",
+    "name": "Stingrowth",
+    "oochive_entry": "A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 15,
+    "atk": 20,
+    "def": 11,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        10,
+        45
+      ],
+      [
+        13,
+        6
+      ],
+      [
+        17,
+        10
+      ],
+      [
+        27,
+        13
+      ],
+      [
+        -1,
+        18
+      ]
+    ],
+    "abilities": [
+      2,
+      1
+    ],
+    "pre_evo_id": 0,
+    "evo_id": 2,
+    "evo_lvl": 25,
+    "evo_stage": 1
+  },
+  {
+    "id": 2,
+    "emote": "<:queenect:1274938164871565333>",
+    "name": "Queenect",
+    "oochive_entry": "A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 25,
+    "atk": 25,
+    "def": 16,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        10,
+        45
+      ],
+      [
+        13,
+        6
+      ],
+      [
+        17,
+        10
+      ],
+      [
+        27,
+        13
+      ],
+      [
+        -1,
+        18
+      ]
+    ],
+    "abilities": [
+      2,
+      3
+    ],
+    "pre_evo_id": 1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 3,
+    "emote": "<:roocky:1274938240251461687>",
+    "name": "Roocky",
+    "oochive_entry": "A ancient, crumbling pillar. The shadows beneath it are oddly comforting.",
+    "type": [
+      "stone"
+    ],
+    "hp": 12,
+    "atk": 8,
+    "def": 12,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        11,
+        67
+      ],
+      [
+        17,
+        11
+      ],
+      [
+        27,
+        14
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      4,
+      5
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 4,
+    "evo_lvl": 11,
+    "evo_stage": 0
+  },
+  {
+    "id": 4,
+    "emote": "<:graknight:1274936153598066742>",
+    "name": "Graknight",
+    "oochive_entry": "The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.",
+    "type": [
+      "stone"
+    ],
+    "hp": 18,
+    "atk": 15,
+    "def": 15,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        11,
+        67
+      ],
+      [
+        17,
+        7
+      ],
+      [
+        27,
+        14
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      6,
+      5
+    ],
+    "pre_evo_id": 3,
+    "evo_id": 5,
+    "evo_lvl": 25,
+    "evo_stage": 1
+  },
+  {
+    "id": 5,
+    "emote": "<:kracking:1274937352896381010>",
+    "name": "Kracking",
+    "oochive_entry": "Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.",
+    "type": [
+      "stone"
+    ],
+    "hp": 22,
+    "atk": 18,
+    "def": 22,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        11,
+        67
+      ],
+      [
+        17,
+        7
+      ],
+      [
+        27,
+        14
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      6,
+      7
+    ],
+    "pre_evo_id": 4,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 6,
+    "emote": "<:puppyre:1274938127751839805>",
+    "name": "Puppyre",
+    "oochive_entry": "A very good boy, empowered by the spiraling patterns on its body.",
+    "type": [
+      "flame"
+    ],
+    "hp": 10,
+    "atk": 12,
+    "def": 8,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        17,
+        23
+      ],
+      [
+        20,
+        72
+      ],
+      [
+        27,
+        15
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      8,
+      9
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 7,
+    "evo_lvl": 11,
+    "evo_stage": 0
+  },
+  {
+    "id": 7,
+    "emote": "<:dogglow:1274935740429631550>",
+    "name": "Dogglow",
+    "oochive_entry": "The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.",
+    "type": [
+      "flame"
+    ],
+    "hp": 13,
+    "atk": 18,
+    "def": 14,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        17,
+        23
+      ],
+      [
+        20,
+        72
+      ],
+      [
+        27,
+        15
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      8,
+      10
+    ],
+    "pre_evo_id": 6,
+    "evo_id": 8,
+    "evo_lvl": 25,
+    "evo_stage": 1
+  },
+  {
+    "id": 8,
+    "emote": "<:hounuke:1274936225836433460>",
+    "name": "Hounuke",
+    "oochive_entry": "Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.",
+    "type": [
+      "flame"
+    ],
+    "hp": 16,
+    "atk": 26,
+    "def": 18,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        17,
+        23
+      ],
+      [
+        20,
+        72
+      ],
+      [
+        27,
+        15
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      11,
+      10
+    ],
+    "pre_evo_id": 7,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 9,
+    "emote": "<:glither:1274936112619585567>",
+    "name": "Glither",
+    "oochive_entry": "Its diamond-hard skin protects it from the most brutal of sandstorms.",
+    "type": [
+      "stone"
+    ],
+    "hp": 15,
+    "atk": 9,
+    "def": 14,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        15,
+        80
+      ],
+      [
+        21,
+        9
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        34,
+        39
+      ],
+      [
+        -1,
+        17
+      ]
+    ],
+    "abilities": [
+      4,
+      13
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 10,
+    "evo_lvl": 12,
+    "evo_stage": 0
+  },
+  {
+    "id": 10,
+    "emote": "<:sparafura:1274938345331490826>",
+    "name": "Sparafura",
+    "oochive_entry": "These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.",
+    "type": [
+      "stone"
+    ],
+    "hp": 18,
+    "atk": 25,
+    "def": 16,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        15,
+        80
+      ],
+      [
+        21,
+        9
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        34,
+        39
+      ],
+      [
+        -1,
+        17
+      ]
+    ],
+    "abilities": [
+      12,
+      13
+    ],
+    "pre_evo_id": 9,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 11,
+    "emote": "<:constone:1274935651707392092>",
+    "name": "Constone",
+    "oochive_entry": "Found on salt flats, these strange beings move about on a single wheel rather than legs.",
+    "type": [
+      "stone"
+    ],
+    "hp": 10,
+    "atk": 10,
+    "def": 10,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        11,
+        47
+      ],
+      [
+        18,
+        11
+      ],
+      [
+        26,
+        35
+      ],
+      [
+        -1,
+        26
+      ]
+    ],
+    "abilities": [
+      14,
+      15
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 12,
+    "evo_lvl": 15,
+    "evo_stage": 0
+  },
+  {
+    "id": 12,
+    "emote": "<:amephyst:1274935564818317342>",
+    "name": "Amephyst",
+    "oochive_entry": "The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.",
+    "type": [
+      "stone",
+      "crystal"
+    ],
+    "hp": 15,
+    "atk": 20,
+    "def": 15,
+    "spd": 30,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        11,
+        47
+      ],
+      [
+        18,
+        11
+      ],
+      [
+        26,
+        35
+      ],
+      [
+        33,
+        17
+      ],
+      [
+        -1,
+        26
+      ]
+    ],
+    "abilities": [
+      14,
+      15
+    ],
+    "pre_evo_id": 11,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 13,
+    "emote": "<:widew:1274938716690841631>",
+    "name": "Widew",
+    "oochive_entry": "The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 14,
+    "atk": 10,
+    "def": 9,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        65
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        11,
+        28
+      ],
+      [
+        17,
+        77
+      ],
+      [
+        23,
+        76
+      ],
+      [
+        -1,
+        16
+      ]
+    ],
+    "abilities": [
+      16,
+      0
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 14,
+    "evo_lvl": 9,
+    "evo_stage": 0
+  },
+  {
+    "id": 14,
+    "emote": "<:tarotula:1274938615151202355>",
+    "name": "Tarotula",
+    "oochive_entry": "The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 21,
+    "atk": 17,
+    "def": 12,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        65
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        11,
+        28
+      ],
+      [
+        17,
+        6
+      ],
+      [
+        23,
+        76
+      ],
+      [
+        32,
+        10
+      ],
+      [
+        -1,
+        16
+      ]
+    ],
+    "abilities": [
+      16,
+      17
+    ],
+    "pre_evo_id": 13,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 15,
+    "emote": "<:moldot:1274937799564333107>",
+    "name": "Moldot",
+    "oochive_entry": "Novice explorers are often shocked by just how much of this creature is buried beneath the surface.",
+    "type": [
+      "fungal",
+      "magic"
+    ],
+    "hp": 5,
+    "atk": 5,
+    "def": 25,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        12,
+        6
+      ],
+      [
+        17,
+        23
+      ],
+      [
+        20,
+        78
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        40,
+        13
+      ],
+      [
+        -1,
+        39
+      ]
+    ],
+    "abilities": [
+      8,
+      12
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 16,
+    "evo_lvl": 26,
+    "evo_stage": 0
+  },
+  {
+    "id": 16,
+    "emote": "<:moldire:1274937779524079717>",
+    "name": "Moldire",
+    "oochive_entry": "Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.",
+    "type": [
+      "fungal",
+      "magic"
+    ],
+    "hp": 25,
+    "atk": 25,
+    "def": 30,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        12,
+        6
+      ],
+      [
+        17,
+        23
+      ],
+      [
+        20,
+        78
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        40,
+        13
+      ],
+      [
+        45,
+        34
+      ],
+      [
+        -1,
+        39
+      ]
+    ],
+    "abilities": [
+      8,
+      13
+    ],
+    "pre_evo_id": 15,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 17,
+    "emote": "<:charlite:1274935616353861663>",
+    "name": "Charlite",
+    "oochive_entry": "Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.",
+    "type": [
+      "flame",
+      "stone"
+    ],
+    "hp": 5,
+    "atk": 15,
+    "def": 5,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        16,
+        25
+      ],
+      [
+        22,
+        8
+      ],
+      [
+        27,
+        20
+      ],
+      [
+        37,
+        12
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      18,
+      9
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 18,
+    "evo_lvl": 10,
+    "evo_stage": 0
+  },
+  {
+    "id": 18,
+    "emote": "<:darcoal:1274935702936616980>",
+    "name": "Darcoal",
+    "oochive_entry": "This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.",
+    "type": [
+      "flame",
+      "stone"
+    ],
+    "hp": 15,
+    "atk": 25,
+    "def": 13,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        16,
+        25
+      ],
+      [
+        22,
+        8
+      ],
+      [
+        27,
+        20
+      ],
+      [
+        37,
+        12
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      19,
+      9
+    ],
+    "pre_evo_id": 17,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 19,
+    "emote": "<:torchoir:1274938666132967496>",
+    "name": "Torchoir",
+    "oochive_entry": "A sentient torch that hums a haunting tune. Its song fills people with dread.",
+    "type": [
+      "flame",
+      "sound"
+    ],
+    "hp": 12,
+    "atk": 13,
+    "def": 11,
+    "spd": 9,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        4,
+        61
+      ],
+      [
+        7,
+        96
+      ],
+      [
+        12,
+        102
+      ],
+      [
+        17,
+        12
+      ],
+      [
+        21,
+        23
+      ],
+      [
+        27,
+        103
+      ],
+      [
+        40,
+        46
+      ],
+      [
+        -1,
+        26
+      ]
+    ],
+    "abilities": [
+      20,
+      21
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 20,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 20,
+    "emote": "<:chantern:1274935604722798694>",
+    "name": "Chantern",
+    "oochive_entry": "It can mimic the human voice nearly perfectly, though it only speaks in random phrases.",
+    "type": [
+      "flame",
+      "sound"
+    ],
+    "hp": 21,
+    "atk": 20,
+    "def": 24,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        4,
+        61
+      ],
+      [
+        7,
+        96
+      ],
+      [
+        12,
+        102
+      ],
+      [
+        17,
+        12
+      ],
+      [
+        21,
+        23
+      ],
+      [
+        27,
+        103
+      ],
+      [
+        40,
+        46
+      ],
+      [
+        -1,
+        26
+      ]
+    ],
+    "abilities": [
+      20,
+      21
+    ],
+    "pre_evo_id": 19,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 21,
+    "emote": "<:eluslug:1274936015626309652>",
+    "name": "Eluslug",
+    "oochive_entry": "Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.",
+    "type": [
+      "tech"
+    ],
+    "hp": 11,
+    "atk": 12,
+    "def": 12,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        16,
+        53
+      ],
+      [
+        24,
+        74
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      22,
+      1
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 22,
+    "emote": "<:jellime:1274937244947582976>",
+    "name": "Jellime",
+    "oochive_entry": "A jellyfish-like creature, its probing tendrils ensnare whatever they touch.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 14,
+    "atk": 10,
+    "def": 16,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        29
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        11,
+        23
+      ],
+      [
+        18,
+        9
+      ],
+      [
+        25,
+        51
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      22,
+      1
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 23,
+    "evo_lvl": 15,
+    "evo_stage": 0
+  },
+  {
+    "id": 23,
+    "emote": "<:meduslime:1274937665833144361>",
+    "name": "Meduslime",
+    "oochive_entry": "With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.",
+    "type": [
+      "ooze",
+      "magic"
+    ],
+    "hp": 16,
+    "atk": 25,
+    "def": 19,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        29
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        11,
+        23
+      ],
+      [
+        18,
+        9
+      ],
+      [
+        25,
+        51
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      22,
+      1
+    ],
+    "pre_evo_id": 22,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 24,
+    "emote": "<:tisparc:1274938655760187512>",
+    "name": "Tisparc",
+    "oochive_entry": "The hat-like crystal on its head grants it a magical energy which it cannot quite control.",
+    "type": [
+      "magic",
+      "flame"
+    ],
+    "hp": 8,
+    "atk": 15,
+    "def": 7,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        14,
+        26
+      ],
+      [
+        16,
+        73
+      ],
+      [
+        21,
+        16
+      ],
+      [
+        26,
+        27
+      ],
+      [
+        35,
+        17
+      ],
+      [
+        -1,
+        12
+      ]
+    ],
+    "abilities": [
+      24,
+      25
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 25,
+    "evo_lvl": 13,
+    "evo_stage": 0
+  },
+  {
+    "id": 25,
+    "emote": "<:wizzap:1274938726593593395>",
+    "name": "Wizzap",
+    "oochive_entry": "It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.",
+    "type": [
+      "magic",
+      "flame"
+    ],
+    "hp": 13,
+    "atk": 23,
+    "def": 12,
+    "spd": 12,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        14,
+        26
+      ],
+      [
+        16,
+        73
+      ],
+      [
+        21,
+        16
+      ],
+      [
+        26,
+        27
+      ],
+      [
+        35,
+        17
+      ],
+      [
+        -1,
+        12
+      ]
+    ],
+    "abilities": [
+      26,
+      53
+    ],
+    "pre_evo_id": 24,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 26,
+    "emote": "<:blipoint:1274935573689405481>",
+    "name": "Blipoint",
+    "oochive_entry": "An eye peeks through a rift in space-time.",
+    "type": [
+      "magic"
+    ],
+    "hp": 10,
+    "atk": 7,
+    "def": 6,
+    "spd": 7,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        30
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        15,
+        5
+      ],
+      [
+        25,
+        9
+      ],
+      [
+        35,
+        31
+      ],
+      [
+        -1,
+        19
+      ]
+    ],
+    "abilities": [
+      18,
+      13
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 27,
+    "evo_lvl": 20,
+    "evo_stage": 0
+  },
+  {
+    "id": 27,
+    "emote": "<:rerune:1274938219716153344>",
+    "name": "Rerune",
+    "oochive_entry": "What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.",
+    "type": [
+      "magic"
+    ],
+    "hp": 10,
+    "atk": 15,
+    "def": 15,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        30
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        15,
+        5
+      ],
+      [
+        25,
+        9
+      ],
+      [
+        35,
+        31
+      ],
+      [
+        -1,
+        19
+      ]
+    ],
+    "abilities": [
+      18,
+      13
+    ],
+    "pre_evo_id": 26,
+    "evo_id": 28,
+    "evo_lvl": 40,
+    "evo_stage": 1
+  },
+  {
+    "id": 28,
+    "emote": "<:temporath:1274938626462978171>",
+    "name": "Temporath",
+    "oochive_entry": "It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.",
+    "type": [
+      "magic"
+    ],
+    "hp": 20,
+    "atk": 20,
+    "def": 20,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        30
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        15,
+        5
+      ],
+      [
+        25,
+        9
+      ],
+      [
+        35,
+        31
+      ],
+      [
+        -1,
+        19
+      ]
+    ],
+    "abilities": [
+      24,
+      6
+    ],
+    "pre_evo_id": 27,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 29,
+    "emote": "<:nucleorb:1274937847995957348>",
+    "name": "Nucleorb",
+    "oochive_entry": "The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 7,
+    "atk": 13,
+    "def": 9,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        11,
+        33
+      ],
+      [
+        14,
+        68
+      ],
+      [
+        18,
+        34
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        -1,
+        10
+      ]
+    ],
+    "abilities": [
+      0,
+      8
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 30,
+    "evo_lvl": 12,
+    "evo_stage": 0
+  },
+  {
+    "id": 30,
+    "emote": "<:amebite:1274935555221753917>",
+    "name": "Amebite",
+    "oochive_entry": "A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 11,
+    "atk": 18,
+    "def": 12,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        11,
+        33
+      ],
+      [
+        14,
+        68
+      ],
+      [
+        18,
+        34
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        -1,
+        10
+      ]
+    ],
+    "abilities": [
+      4,
+      27
+    ],
+    "pre_evo_id": 29,
+    "evo_id": 31,
+    "evo_lvl": 22,
+    "evo_stage": 1
+  },
+  {
+    "id": 31,
+    "emote": "<:amalgrime:1274935501505429547>",
+    "name": "Amalgrime",
+    "oochive_entry": "When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 25,
+    "atk": 20,
+    "def": 20,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        11,
+        33
+      ],
+      [
+        14,
+        68
+      ],
+      [
+        18,
+        34
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        30,
+        69
+      ],
+      [
+        -1,
+        10
+      ]
+    ],
+    "abilities": [
+      28,
+      8
+    ],
+    "pre_evo_id": 30,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 32,
+    "emote": "<:drilline:1274935761312944138>",
+    "name": "Drilline",
+    "oochive_entry": "Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.",
+    "type": [
+      "tech"
+    ],
+    "hp": 11,
+    "atk": 14,
+    "def": 15,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        37
+      ],
+      [
+        8,
+        80
+      ],
+      [
+        12,
+        39
+      ],
+      [
+        20,
+        36
+      ],
+      [
+        29,
+        35
+      ],
+      [
+        -1,
+        11
+      ]
+    ],
+    "abilities": [
+      29,
+      14
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 33,
+    "evo_lvl": 21,
+    "evo_stage": 0
+  },
+  {
+    "id": 33,
+    "emote": "<:erwrek:1274936025579262016>",
+    "name": "Erwrek",
+    "oochive_entry": "It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.",
+    "type": [
+      "tech"
+    ],
+    "hp": 15,
+    "atk": 19,
+    "def": 25,
+    "spd": 16,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        37
+      ],
+      [
+        8,
+        80
+      ],
+      [
+        12,
+        39
+      ],
+      [
+        20,
+        36
+      ],
+      [
+        29,
+        35
+      ],
+      [
+        -1,
+        11
+      ]
+    ],
+    "abilities": [
+      29,
+      22
+    ],
+    "pre_evo_id": 32,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 34,
+    "emote": "<:purifi:1274938146773143553>",
+    "name": "Purif-i",
+    "oochive_entry": "Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.",
+    "type": [
+      "void",
+      "stone"
+    ],
+    "hp": 10,
+    "atk": 10,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        5,
+        63
+      ],
+      [
+        7,
+        68
+      ],
+      [
+        10,
+        88
+      ],
+      [
+        15,
+        30
+      ],
+      [
+        17,
+        92
+      ],
+      [
+        20,
+        7
+      ],
+      [
+        24,
+        91
+      ],
+      [
+        31,
+        11
+      ],
+      [
+        40,
+        17
+      ],
+      [
+        -1,
+        73
+      ]
+    ],
+    "abilities": [
+      60
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 35,
+    "emote": "<:cromet:1274935660595384392>",
+    "name": "Cromet",
+    "oochive_entry": "Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.",
+    "type": [
+      "stone"
+    ],
+    "hp": 12,
+    "atk": 13,
+    "def": 10,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        9,
+        56
+      ],
+      [
+        12,
+        23
+      ],
+      [
+        15,
+        49
+      ],
+      [
+        18,
+        11
+      ],
+      [
+        -1,
+        53
+      ]
+    ],
+    "abilities": [
+      14,
+      30
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 36,
+    "evo_lvl": 20,
+    "evo_stage": 0
+  },
+  {
+    "id": 36,
+    "emote": "<:lobstar:1274937616739078194>",
+    "name": "Lobstar",
+    "oochive_entry": "From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.",
+    "type": [
+      "stone",
+      "flame"
+    ],
+    "hp": 10,
+    "atk": 35,
+    "def": 20,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        9,
+        56
+      ],
+      [
+        12,
+        23
+      ],
+      [
+        15,
+        49
+      ],
+      [
+        18,
+        11
+      ],
+      [
+        23,
+        50
+      ],
+      [
+        36,
+        7
+      ],
+      [
+        -1,
+        53
+      ]
+    ],
+    "abilities": [
+      28,
+      30
+    ],
+    "pre_evo_id": 35,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 37,
+    "emote": "<:spoolette:1274938418429825107>",
+    "name": "Spoolette",
+    "oochive_entry": "While Spoolette itself is magical in nature, the threads it creates are completely mundane.",
+    "type": [
+      "magic",
+      "cloth"
+    ],
+    "hp": 10,
+    "atk": 15,
+    "def": 15,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        24
+      ],
+      [
+        7,
+        86
+      ],
+      [
+        9,
+        95
+      ],
+      [
+        13,
+        51
+      ],
+      [
+        17,
+        46
+      ],
+      [
+        22,
+        42
+      ],
+      [
+        28,
+        52
+      ],
+      [
+        32,
+        107
+      ],
+      [
+        38,
+        9
+      ],
+      [
+        43,
+        106
+      ],
+      [
+        -1,
+        36
+      ]
+    ],
+    "abilities": [
+      31,
+      22
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 38,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 38,
+    "emote": "<:thimbite:1274938636105941064>",
+    "name": "Thimbite",
+    "oochive_entry": "Thimbite enchant a container when they evolve so that it can never be removed, touching one's container causes it to rage.",
+    "type": [
+      "magic",
+      "cloth"
+    ],
+    "hp": 20,
+    "atk": 20,
+    "def": 20,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        62
+      ],
+      [
+        4,
+        24
+      ],
+      [
+        7,
+        86
+      ],
+      [
+        9,
+        95
+      ],
+      [
+        13,
+        51
+      ],
+      [
+        17,
+        46
+      ],
+      [
+        22,
+        42
+      ],
+      [
+        28,
+        52
+      ],
+      [
+        32,
+        107
+      ],
+      [
+        38,
+        9
+      ],
+      [
+        43,
+        106
+      ],
+      [
+        -1,
+        36
+      ]
+    ],
+    "abilities": [
+      31,
+      22
+    ],
+    "pre_evo_id": 37,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 39,
+    "emote": "<:digityke:1274935731856347208>",
+    "name": "Digityke",
+    "oochive_entry": "An old-model of machine companion, its feeble body prevents it from being of much use.",
+    "type": [
+      "tech"
+    ],
+    "hp": 10,
+    "atk": 7,
+    "def": 8,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        58
+      ],
+      [
+        7,
+        79
+      ],
+      [
+        12,
+        69
+      ],
+      [
+        16,
+        53
+      ],
+      [
+        20,
+        44
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      8,
+      19
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 40,
+    "evo_lvl": 21,
+    "evo_stage": 0
+  },
+  {
+    "id": 40,
+    "emote": "<:codet:1274935633588125796>",
+    "name": "Codet",
+    "oochive_entry": "An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.",
+    "type": [
+      "tech",
+      "magic"
+    ],
+    "hp": 30,
+    "atk": 10,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        58
+      ],
+      [
+        7,
+        79
+      ],
+      [
+        12,
+        69
+      ],
+      [
+        16,
+        53
+      ],
+      [
+        20,
+        44
+      ],
+      [
+        26,
+        81
+      ],
+      [
+        32,
+        53
+      ],
+      [
+        35,
+        77
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      17,
+      33
+    ],
+    "pre_evo_id": 39,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 41,
+    "emote": "<:heatri:1274936199554793483>",
+    "name": "Heatri",
+    "oochive_entry": "A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.",
+    "type": [
+      "flame"
+    ],
+    "hp": 25,
+    "atk": 10,
+    "def": 10,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        62
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        10,
+        54
+      ],
+      [
+        15,
+        8
+      ],
+      [
+        25,
+        14
+      ],
+      [
+        30,
+        43
+      ],
+      [
+        36,
+        21
+      ],
+      [
+        -1,
+        72
+      ]
+    ],
+    "abilities": [
+      34
+    ],
+    "pre_evo_id": 43,
+    "evo_id": 42,
+    "evo_lvl": 33,
+    "evo_stage": 1
+  },
+  {
+    "id": 42,
+    "emote": "<:moistri:1274937725086072883>",
+    "name": "Moistri",
+    "oochive_entry": "Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 25,
+    "atk": 20,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        10,
+        54
+      ],
+      [
+        15,
+        9
+      ],
+      [
+        25,
+        77
+      ],
+      [
+        30,
+        78
+      ],
+      [
+        36,
+        73
+      ],
+      [
+        -1,
+        13
+      ]
+    ],
+    "abilities": [
+      34
+    ],
+    "pre_evo_id": 41,
+    "evo_id": 43,
+    "evo_lvl": 33,
+    "evo_stage": 1
+  },
+  {
+    "id": 43,
+    "emote": "<:crystri:1274935686805586002>",
+    "name": "Crystri",
+    "oochive_entry": "While its crystals appear rigid they maintain some sort of fluidity.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 25,
+    "atk": 10,
+    "def": 20,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        24
+      ],
+      [
+        5,
+        94
+      ],
+      [
+        10,
+        54
+      ],
+      [
+        15,
+        30
+      ],
+      [
+        25,
+        7
+      ],
+      [
+        30,
+        16
+      ],
+      [
+        40,
+        17
+      ],
+      [
+        -1,
+        55
+      ]
+    ],
+    "abilities": [
+      34
+    ],
+    "pre_evo_id": 42,
+    "evo_id": 41,
+    "evo_lvl": 33,
+    "evo_stage": 1
+  },
+  {
+    "id": 44,
+    "emote": "<:solidifyr:1274938332299919491>",
+    "name": "Solidifyr",
+    "oochive_entry": "Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.",
+    "type": [
+      "flame"
+    ],
+    "hp": 17,
+    "atk": 13,
+    "def": 11,
+    "spd": 9,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        47
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        7,
+        39
+      ],
+      [
+        13,
+        5
+      ],
+      [
+        17,
+        7
+      ],
+      [
+        23,
+        66
+      ],
+      [
+        28,
+        11
+      ],
+      [
+        32,
+        8
+      ],
+      [
+        38,
+        83
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      9,
+      30
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 45,
+    "evo_lvl": 38,
+    "evo_stage": 0
+  },
+  {
+    "id": 45,
+    "emote": "<:obstaggard:1274937888643092520>",
+    "name": "Obstaggard",
+    "oochive_entry": "While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.",
+    "type": [
+      "flame",
+      "stone"
+    ],
+    "hp": 19,
+    "atk": 23,
+    "def": 17,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        47
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        7,
+        39
+      ],
+      [
+        13,
+        5
+      ],
+      [
+        17,
+        7
+      ],
+      [
+        23,
+        66
+      ],
+      [
+        28,
+        11
+      ],
+      [
+        32,
+        8
+      ],
+      [
+        38,
+        83
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      6,
+      35
+    ],
+    "pre_evo_id": 44,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 46,
+    "emote": "<:droplunk:1274935768724537344>",
+    "name": "Droplunk",
+    "oochive_entry": "Oops, don't let this one drop on your head!",
+    "type": [
+      "stone"
+    ],
+    "hp": 7,
+    "atk": 10,
+    "def": 8,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        56
+      ],
+      [
+        12,
+        39
+      ],
+      [
+        13,
+        65
+      ],
+      [
+        20,
+        68
+      ],
+      [
+        27,
+        53
+      ],
+      [
+        37,
+        11
+      ],
+      [
+        43,
+        20
+      ],
+      [
+        -1,
+        58
+      ]
+    ],
+    "abilities": [
+      14,
+      36
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 45,
+    "evo_lvl": 28,
+    "evo_stage": 0
+  },
+  {
+    "id": 47,
+    "emote": "<:brykurse:1274935590101454939>",
+    "name": "Brykurse",
+    "oochive_entry": "Square meatball!",
+    "type": [
+      "stone",
+      "magic"
+    ],
+    "hp": 14,
+    "atk": 28,
+    "def": 8,
+    "spd": 25,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        7,
+        56
+      ],
+      [
+        12,
+        39
+      ],
+      [
+        13,
+        65
+      ],
+      [
+        20,
+        68
+      ],
+      [
+        27,
+        53
+      ],
+      [
+        37,
+        11
+      ],
+      [
+        43,
+        20
+      ],
+      [
+        -1,
+        58
+      ]
+    ],
+    "abilities": [
+      14,
+      36
+    ],
+    "pre_evo_id": 46,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 48,
+    "emote": "<:polyplute:1274938102594670643>",
+    "name": "Polyplute",
+    "oochive_entry": "Blooms of Polyplute create beautiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 12,
+    "atk": 13,
+    "def": 12,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        7,
+        34
+      ],
+      [
+        12,
+        23
+      ],
+      [
+        18,
+        87
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        37,
+        46
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      37,
+      22
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 49,
+    "evo_lvl": 29,
+    "evo_stage": 0
+  },
+  {
+    "id": 49,
+    "emote": "<:reefest:1274938201479577630>",
+    "name": "Reefest",
+    "oochive_entry": "When Polyplute blooms linger in an area, they often congeal into the massive Reefest.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 35,
+    "atk": 15,
+    "def": 15,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        7,
+        34
+      ],
+      [
+        12,
+        23
+      ],
+      [
+        18,
+        87
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        37,
+        46
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      37,
+      22
+    ],
+    "pre_evo_id": 48,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 50,
+    "emote": "<:frigook:1274936084664422421>",
+    "name": "Frigook",
+    "oochive_entry": "Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.",
+    "type": [
+      "ooze",
+      "crystal"
+    ],
+    "hp": 15,
+    "atk": 5,
+    "def": 15,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        29
+      ],
+      [
+        6,
+        87
+      ],
+      [
+        9,
+        63
+      ],
+      [
+        14,
+        45
+      ],
+      [
+        20,
+        9
+      ],
+      [
+        25,
+        68
+      ],
+      [
+        32,
+        26
+      ],
+      [
+        41,
+        17
+      ],
+      [
+        -1,
+        73
+      ]
+    ],
+    "abilities": [
+      16,
+      38
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 51,
+    "evo_lvl": 23,
+    "evo_stage": 0
+  },
+  {
+    "id": 51,
+    "emote": "<:boreyuc:1274935581595668533>",
+    "name": "Boreyuc",
+    "oochive_entry": "These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.",
+    "type": [
+      "ooze",
+      "crystal"
+    ],
+    "hp": 15,
+    "atk": 7,
+    "def": 30,
+    "spd": 3,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        29
+      ],
+      [
+        6,
+        87
+      ],
+      [
+        9,
+        63
+      ],
+      [
+        14,
+        45
+      ],
+      [
+        20,
+        9
+      ],
+      [
+        25,
+        68
+      ],
+      [
+        32,
+        26
+      ],
+      [
+        41,
+        17
+      ],
+      [
+        -1,
+        73
+      ]
+    ],
+    "abilities": [
+      39,
+      38
+    ],
+    "pre_evo_id": 50,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 52,
+    "emote": "<:vrumbox:1274938687708332067>",
+    "name": "Vrumbox",
+    "oochive_entry": "Monowheeled automata built for carrying various pieces of equipment.",
+    "type": [
+      "tech"
+    ],
+    "hp": 10,
+    "atk": 10,
+    "def": 10,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        59
+      ],
+      [
+        6,
+        62
+      ],
+      [
+        12,
+        44
+      ],
+      [
+        19,
+        42
+      ],
+      [
+        27,
+        35
+      ],
+      [
+        35,
+        79
+      ],
+      [
+        -1,
+        27
+      ]
+    ],
+    "abilities": [
+      14,
+      29
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 53,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 53,
+    "emote": "<:folduo:1274936068826861670>",
+    "name": "Folduo",
+    "oochive_entry": "Folduo's body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.",
+    "type": [
+      "tech"
+    ],
+    "hp": 15,
+    "atk": 12,
+    "def": 13,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        59
+      ],
+      [
+        6,
+        62
+      ],
+      [
+        12,
+        44
+      ],
+      [
+        19,
+        42
+      ],
+      [
+        27,
+        35
+      ],
+      [
+        35,
+        79
+      ],
+      [
+        -1,
+        27
+      ]
+    ],
+    "abilities": [
+      14,
+      29
+    ],
+    "pre_evo_id": 52,
+    "evo_id": 54,
+    "evo_lvl": 32,
+    "evo_stage": 1
+  },
+  {
+    "id": 54,
+    "emote": "<:hexyclone:1274936214381658113>",
+    "name": "Hexyclone",
+    "oochive_entry": "A Hexcyclone's entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.",
+    "type": [
+      "tech"
+    ],
+    "hp": 20,
+    "atk": 13,
+    "def": 17,
+    "spd": 25,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        59
+      ],
+      [
+        6,
+        62
+      ],
+      [
+        12,
+        44
+      ],
+      [
+        19,
+        42
+      ],
+      [
+        27,
+        35
+      ],
+      [
+        35,
+        79
+      ],
+      [
+        40,
+        35
+      ],
+      [
+        -1,
+        27
+      ]
+    ],
+    "abilities": [
+      40,
+      19
+    ],
+    "pre_evo_id": 53,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 55,
+    "emote": "<:doubud:1300291261076340798>",
+    "name": "Doubud",
+    "oochive_entry": "Discovered when a researcher heard someone screaming. It turned out to be a pair of Doubud shouting back and forth at eachother.",
+    "type": [
+      "sound"
+    ],
+    "hp": 12,
+    "atk": 13,
+    "def": 8,
+    "spd": 7,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        96
+      ],
+      [
+        6,
+        60
+      ],
+      [
+        12,
+        99
+      ],
+      [
+        18,
+        85
+      ],
+      [
+        23,
+        91
+      ],
+      [
+        29,
+        102
+      ],
+      [
+        34,
+        103
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        -1,
+        93
+      ]
+    ],
+    "abilities": [
+      73,
+      45
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 56,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 56,
+    "emote": "<:hedfren:1300291275685232700>",
+    "name": "Hedfren",
+    "oochive_entry": "It's still not certain whether Hedfren is a true evolution or if it's just Doubud after emerging from the ground.",
+    "type": [
+      "sound"
+    ],
+    "hp": 23,
+    "atk": 26,
+    "def": 19,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        96
+      ],
+      [
+        6,
+        60
+      ],
+      [
+        12,
+        99
+      ],
+      [
+        18,
+        85
+      ],
+      [
+        23,
+        91
+      ],
+      [
+        29,
+        102
+      ],
+      [
+        34,
+        103
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        -1,
+        93
+      ]
+    ],
+    "abilities": [
+      73,
+      27
+    ],
+    "pre_evo_id": 55,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 57,
+    "emote": "<:kindeep:1274937284881416242>",
+    "name": "Kindeep",
+    "oochive_entry": "Schools of this fish-like oochamon are often found floating down in the caverns.",
+    "type": [
+      "flame"
+    ],
+    "hp": 10,
+    "atk": 13,
+    "def": 12,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        62
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        16,
+        86
+      ],
+      [
+        22,
+        30
+      ],
+      [
+        27,
+        21
+      ],
+      [
+        33,
+        26
+      ],
+      [
+        40,
+        20
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      48,
+      8
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 58,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 58,
+    "emote": "<:ablayzz:1274935489513787485>",
+    "name": "Ablayzz",
+    "oochive_entry": "Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.",
+    "type": [
+      "flame"
+    ],
+    "hp": 20,
+    "atk": 18,
+    "def": 17,
+    "spd": 25,
+    "move_list": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        62
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        16,
+        86
+      ],
+      [
+        22,
+        30
+      ],
+      [
+        27,
+        21
+      ],
+      [
+        33,
+        26
+      ],
+      [
+        40,
+        20
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      48,
+      5
+    ],
+    "pre_evo_id": 57,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 59,
+    "emote": "<:krakle:1274937403387285514>",
+    "name": "Krakle",
+    "oochive_entry": "This small 'mon has a superheated shell, don't touch it.",
+    "type": [
+      "flame"
+    ],
+    "hp": 10,
+    "atk": 13,
+    "def": 12,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        7,
+        72
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        -1,
+        75
+      ]
+    ],
+    "abilities": [
+      9,
+      0
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 60,
+    "evo_lvl": 11,
+    "evo_stage": 0
+  },
+  {
+    "id": 60,
+    "emote": "<:lightuft:1274937593359892563>",
+    "name": "Lightuft",
+    "oochive_entry": "They don't quite fly well yet, but they're known for dropping on unsuspecting victims, burning them in the process.",
+    "type": [
+      "flame"
+    ],
+    "hp": 13,
+    "atk": 17,
+    "def": 13,
+    "spd": 22,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        7,
+        72
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        20,
+        12
+      ],
+      [
+        27,
+        21
+      ],
+      [
+        35,
+        74
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      9,
+      49
+    ],
+    "pre_evo_id": 59,
+    "evo_id": 61,
+    "evo_lvl": 25,
+    "evo_stage": 1
+  },
+  {
+    "id": 61,
+    "emote": "<:infernowl:1274936802037207040>",
+    "name": "Infernowl",
+    "oochive_entry": "These apex predators will find a single volcano and make its entirety their hunting ground.",
+    "type": [
+      "flame"
+    ],
+    "hp": 20,
+    "atk": 25,
+    "def": 17,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        7,
+        72
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        20,
+        12
+      ],
+      [
+        27,
+        21
+      ],
+      [
+        35,
+        74
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      30,
+      49
+    ],
+    "pre_evo_id": 60,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 62,
+    "emote": "<:fluffly:1274936057330139208>",
+    "name": "Fluffly",
+    "oochive_entry": "These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 13,
+    "atk": 13,
+    "def": 18,
+    "spd": 21,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        75
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        7,
+        13
+      ],
+      [
+        7,
+        72
+      ],
+      [
+        12,
+        70
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        19,
+        68
+      ],
+      [
+        23,
+        76
+      ],
+      [
+        29,
+        18
+      ],
+      [
+        35,
+        77
+      ],
+      [
+        -1,
+        75
+      ]
+    ],
+    "abilities": [
+      1,
+      37
+    ],
+    "pre_evo_id": 59,
+    "evo_id": 63,
+    "evo_lvl": 28,
+    "evo_stage": 1
+  },
+  {
+    "id": 63,
+    "emote": "<:decavian:1274935710792683623>",
+    "name": "Decavian",
+    "oochive_entry": "A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 18,
+    "atk": 20,
+    "def": 25,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        5,
+        75
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        7,
+        13
+      ],
+      [
+        7,
+        72
+      ],
+      [
+        12,
+        70
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        19,
+        68
+      ],
+      [
+        23,
+        76
+      ],
+      [
+        29,
+        18
+      ],
+      [
+        35,
+        77
+      ],
+      [
+        -1,
+        75
+      ]
+    ],
+    "abilities": [
+      10,
+      37
+    ],
+    "pre_evo_id": 62,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 64,
+    "emote": "<:phaegrim:1274938063197306891>",
+    "name": "Phaegrim",
+    "oochive_entry": "The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.",
+    "type": [
+      "fungal",
+      "ooze"
+    ],
+    "hp": 10,
+    "atk": 13,
+    "def": 12,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        7,
+        63
+      ],
+      [
+        9,
+        18
+      ],
+      [
+        14,
+        70
+      ],
+      [
+        20,
+        68
+      ],
+      [
+        26,
+        46
+      ],
+      [
+        31,
+        42
+      ],
+      [
+        36,
+        13
+      ],
+      [
+        43,
+        34
+      ],
+      [
+        -1,
+        15
+      ]
+    ],
+    "abilities": [
+      1,
+      21
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 65,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 65,
+    "emote": "<:plaghast:1274938079668600936>",
+    "name": "Plaghast",
+    "oochive_entry": "Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.",
+    "type": [
+      "fungal",
+      "ooze"
+    ],
+    "hp": 20,
+    "atk": 18,
+    "def": 17,
+    "spd": 25,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        7,
+        63
+      ],
+      [
+        9,
+        18
+      ],
+      [
+        14,
+        70
+      ],
+      [
+        20,
+        68
+      ],
+      [
+        26,
+        46
+      ],
+      [
+        31,
+        42
+      ],
+      [
+        36,
+        13
+      ],
+      [
+        43,
+        34
+      ],
+      [
+        -1,
+        15
+      ]
+    ],
+    "abilities": [
+      17,
+      22
+    ],
+    "pre_evo_id": 64,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 66,
+    "emote": "<:grubbit:1274936163773190298>",
+    "name": "Grubbit",
+    "oochive_entry": "These small bugs can be found munching on bits of crystal.",
+    "type": [
+      "crystal",
+      "cloth"
+    ],
+    "hp": 15,
+    "atk": 12,
+    "def": 13,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        5,
+        94
+      ],
+      [
+        7,
+        85
+      ],
+      [
+        9,
+        95
+      ],
+      [
+        11,
+        87
+      ],
+      [
+        18,
+        80
+      ],
+      [
+        19,
+        11
+      ],
+      [
+        23,
+        104
+      ],
+      [
+        27,
+        106
+      ],
+      [
+        33,
+        73
+      ],
+      [
+        40,
+        55
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      31,
+      0
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 67,
+    "evo_lvl": 8,
+    "evo_stage": 0
+  },
+  {
+    "id": 67,
+    "emote": "<:culcoon:1274935694996934706>",
+    "name": "Culcoon",
+    "oochive_entry": "It encases itself in threads and chunks of crystal, Culcoon's shells are incredibly tough.",
+    "type": [
+      "crystal",
+      "cloth"
+    ],
+    "hp": 20,
+    "atk": 10,
+    "def": 30,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        5,
+        94
+      ],
+      [
+        7,
+        85
+      ],
+      [
+        9,
+        95
+      ],
+      [
+        11,
+        87
+      ],
+      [
+        18,
+        80
+      ],
+      [
+        19,
+        11
+      ],
+      [
+        23,
+        104
+      ],
+      [
+        27,
+        106
+      ],
+      [
+        33,
+        73
+      ],
+      [
+        40,
+        55
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      15,
+      45
+    ],
+    "pre_evo_id": 66,
+    "evo_id": 68,
+    "evo_lvl": 20,
+    "evo_stage": 1
+  },
+  {
+    "id": 68,
+    "emote": "<:speculidae:1274938359629873282>",
+    "name": "Speculidae",
+    "oochive_entry": "Their thin bodies and stained glass-like wings belie their incredible rigidity.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 12,
+    "atk": 10,
+    "def": 35,
+    "spd": 23,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        5,
+        94
+      ],
+      [
+        7,
+        85
+      ],
+      [
+        9,
+        95
+      ],
+      [
+        11,
+        87
+      ],
+      [
+        18,
+        80
+      ],
+      [
+        19,
+        11
+      ],
+      [
+        23,
+        104
+      ],
+      [
+        27,
+        106
+      ],
+      [
+        33,
+        73
+      ],
+      [
+        40,
+        55
+      ],
+      [
+        -1,
+        74
+      ]
+    ],
+    "abilities": [
+      34,
+      35
+    ],
+    "pre_evo_id": 67,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 69,
+    "emote": "<:nisythe:1274937824138891344>",
+    "name": "Nisythe",
+    "oochive_entry": "A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.",
+    "type": [
+      "magic",
+      "flame"
+    ],
+    "hp": 17,
+    "atk": 25,
+    "def": 12,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        7,
+        68
+      ],
+      [
+        10,
+        30
+      ],
+      [
+        13,
+        35
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        21,
+        14
+      ],
+      [
+        24,
+        42
+      ],
+      [
+        29,
+        36
+      ],
+      [
+        35,
+        45
+      ],
+      [
+        41,
+        27
+      ],
+      [
+        -1,
+        51
+      ]
+    ],
+    "abilities": [
+      54
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 70,
+    "emote": "<:tidoll:1274938645652181034>",
+    "name": "Tidoll",
+    "oochive_entry": "These creatures are barely more than sacks of liquid with no bones supporting them.",
+    "type": [
+      "ooze",
+      "cloth"
+    ],
+    "hp": 15,
+    "atk": 10,
+    "def": 15,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        24
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        5,
+        95
+      ],
+      [
+        7,
+        29
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        16,
+        78
+      ],
+      [
+        23,
+        98
+      ],
+      [
+        26,
+        51
+      ],
+      [
+        34,
+        42
+      ],
+      [
+        43,
+        10
+      ],
+      [
+        -1,
+        52
+      ]
+    ],
+    "abilities": [
+      16,
+      50
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 71,
+    "evo_lvl": 24,
+    "evo_stage": 0
+  },
+  {
+    "id": 71,
+    "emote": "<:marinette:1274937647428669481>",
+    "name": "Marinette",
+    "oochive_entry": "The golden threads controlling it are the main body, the rest is just ice-cold water.",
+    "type": [
+      "ooze",
+      "cloth"
+    ],
+    "hp": 30,
+    "atk": 23,
+    "def": 17,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        24
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        5,
+        95
+      ],
+      [
+        7,
+        29
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        16,
+        78
+      ],
+      [
+        23,
+        98
+      ],
+      [
+        26,
+        51
+      ],
+      [
+        34,
+        42
+      ],
+      [
+        43,
+        10
+      ],
+      [
+        -1,
+        52
+      ]
+    ],
+    "abilities": [
+      38,
+      50
+    ],
+    "pre_evo_id": 70,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 72,
+    "emote": "<:durble:1274935780258746450>",
+    "name": "Durble",
+    "oochive_entry": "These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.",
+    "type": [
+      "stone"
+    ],
+    "hp": 15,
+    "atk": 15,
+    "def": 15,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        5,
+        85
+      ],
+      [
+        8,
+        42
+      ],
+      [
+        13,
+        11
+      ],
+      [
+        19,
+        7
+      ],
+      [
+        24,
+        63
+      ],
+      [
+        28,
+        36
+      ],
+      [
+        30,
+        14
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        -1,
+        83
+      ]
+    ],
+    "abilities": [
+      8,
+      4
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 73,
+    "evo_lvl": 24,
+    "evo_stage": 0
+  },
+  {
+    "id": 73,
+    "emote": "<:durubull:1274935790241054730>",
+    "name": "Durubull",
+    "oochive_entry": "Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.",
+    "type": [
+      "stone"
+    ],
+    "hp": 20,
+    "atk": 25,
+    "def": 25,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        5,
+        85
+      ],
+      [
+        8,
+        42
+      ],
+      [
+        13,
+        11
+      ],
+      [
+        19,
+        7
+      ],
+      [
+        24,
+        63
+      ],
+      [
+        28,
+        36
+      ],
+      [
+        30,
+        14
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        -1,
+        83
+      ]
+    ],
+    "abilities": [
+      24,
+      14
+    ],
+    "pre_evo_id": 72,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 74,
+    "emote": "<:rustail:1274938275588739185>",
+    "name": "Rustail",
+    "oochive_entry": "These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.",
+    "type": [
+      "tech"
+    ],
+    "hp": 15,
+    "atk": 15,
+    "def": 15,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        10,
+        23
+      ],
+      [
+        15,
+        4
+      ],
+      [
+        18,
+        66
+      ],
+      [
+        23,
+        35
+      ],
+      [
+        26,
+        34
+      ],
+      [
+        34,
+        48
+      ],
+      [
+        36,
+        66
+      ],
+      [
+        41,
+        27
+      ],
+      [
+        -1,
+        43
+      ]
+    ],
+    "abilities": [
+      31,
+      35
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 75,
+    "evo_lvl": 35,
+    "evo_stage": 0
+  },
+  {
+    "id": 75,
+    "emote": "<:oxydrake:1274938029743542282>",
+    "name": "Oxydrake",
+    "oochive_entry": "Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.",
+    "type": [
+      "tech"
+    ],
+    "hp": 20,
+    "atk": 25,
+    "def": 23,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        10,
+        23
+      ],
+      [
+        15,
+        4
+      ],
+      [
+        18,
+        66
+      ],
+      [
+        23,
+        35
+      ],
+      [
+        26,
+        34
+      ],
+      [
+        34,
+        48
+      ],
+      [
+        36,
+        66
+      ],
+      [
+        41,
+        27
+      ],
+      [
+        -1,
+        43
+      ]
+    ],
+    "abilities": [
+      51,
+      6
+    ],
+    "pre_evo_id": 74,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 76,
+    "emote": "<:chakreye:1274935597869305866>",
+    "name": "Chakreye",
+    "oochive_entry": "Their body is surrounded by a rapidly spinning disc of plasma.",
+    "type": [
+      "tech"
+    ],
+    "hp": 12,
+    "atk": 18,
+    "def": 10,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        8,
+        59
+      ],
+      [
+        10,
+        30
+      ],
+      [
+        17,
+        42
+      ],
+      [
+        21,
+        63
+      ],
+      [
+        26,
+        56
+      ],
+      [
+        29,
+        5
+      ],
+      [
+        34,
+        74
+      ],
+      [
+        42,
+        8
+      ],
+      [
+        -1,
+        55
+      ]
+    ],
+    "abilities": [
+      52,
+      26
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 77,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 77,
+    "emote": "<:sabrink:1274938298569068554>",
+    "name": "Sabrink",
+    "oochive_entry": "A grinning energy blade that relentlessly pursues its enemies.",
+    "type": [
+      "tech"
+    ],
+    "hp": 18,
+    "atk": 30,
+    "def": 17,
+    "spd": 30,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        8,
+        59
+      ],
+      [
+        10,
+        30
+      ],
+      [
+        17,
+        42
+      ],
+      [
+        21,
+        63
+      ],
+      [
+        26,
+        56
+      ],
+      [
+        29,
+        5
+      ],
+      [
+        34,
+        74
+      ],
+      [
+        42,
+        8
+      ],
+      [
+        -1,
+        55
+      ]
+    ],
+    "abilities": [
+      19,
+      61
+    ],
+    "pre_evo_id": 76,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 78,
+    "emote": "<:sapler:1274938309256282164>",
+    "name": "Sapler",
+    "oochive_entry": "These little guys are known to infest power stations and cables, slowly draining their energy.",
+    "type": [
+      "tech",
+      "fungal"
+    ],
+    "hp": 15,
+    "atk": 10,
+    "def": 20,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        58
+      ],
+      [
+        4,
+        87
+      ],
+      [
+        7,
+        45
+      ],
+      [
+        13,
+        4
+      ],
+      [
+        16,
+        51
+      ],
+      [
+        23,
+        37
+      ],
+      [
+        29,
+        13
+      ],
+      [
+        36,
+        90
+      ],
+      [
+        43,
+        89
+      ],
+      [
+        -1,
+        27
+      ]
+    ],
+    "abilities": [
+      55,
+      22
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 79,
+    "evo_lvl": 20,
+    "evo_stage": 0
+  },
+  {
+    "id": 79,
+    "emote": "<:radient:1274938180658790400>",
+    "name": "Radient",
+    "oochive_entry": "Radient spread their influence by chopping off their limbs, which eventually form new Saplers.",
+    "type": [
+      "tech",
+      "fungal"
+    ],
+    "hp": 25,
+    "atk": 20,
+    "def": 20,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        58
+      ],
+      [
+        4,
+        87
+      ],
+      [
+        7,
+        45
+      ],
+      [
+        13,
+        4
+      ],
+      [
+        16,
+        51
+      ],
+      [
+        23,
+        37
+      ],
+      [
+        29,
+        13
+      ],
+      [
+        36,
+        90
+      ],
+      [
+        43,
+        89
+      ],
+      [
+        -1,
+        27
+      ]
+    ],
+    "abilities": [
+      55,
+      52
+    ],
+    "pre_evo_id": 78,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 80,
+    "emote": "<:lasangato:1274937462350680064>",
+    "name": "Lasangato",
+    "oochive_entry": "A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.",
+    "type": [
+      "stone"
+    ],
+    "hp": 27,
+    "atk": 10,
+    "def": 23,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        5,
+        65
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        12,
+        23
+      ],
+      [
+        17,
+        66
+      ],
+      [
+        22,
+        80
+      ],
+      [
+        27,
+        56
+      ],
+      [
+        35,
+        78
+      ],
+      [
+        41,
+        69
+      ],
+      [
+        -1,
+        21
+      ]
+    ],
+    "abilities": [
+      2,
+      12
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 81,
+    "emote": "<:crudoil:1274935670032433162>",
+    "name": "Crudoil",
+    "oochive_entry": "A living mass of an oil-like substance. They're always seen carrying a heavy metal ring.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 7,
+    "atk": 12,
+    "def": 8,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        5,
+        60
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        11,
+        28
+      ],
+      [
+        18,
+        86
+      ],
+      [
+        22,
+        44
+      ],
+      [
+        26,
+        8
+      ],
+      [
+        31,
+        78
+      ],
+      [
+        35,
+        34
+      ],
+      [
+        43,
+        69
+      ],
+      [
+        -1,
+        15
+      ]
+    ],
+    "abilities": [
+      56,
+      9
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 82,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 82,
+    "emote": "<:oilantern:1274937911481208862>",
+    "name": "Oilantern",
+    "oochive_entry": "When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.",
+    "type": [
+      "ooze",
+      "flame"
+    ],
+    "hp": 15,
+    "atk": 25,
+    "def": 15,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        5,
+        60
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        11,
+        28
+      ],
+      [
+        18,
+        86
+      ],
+      [
+        22,
+        44
+      ],
+      [
+        26,
+        8
+      ],
+      [
+        31,
+        78
+      ],
+      [
+        35,
+        34
+      ],
+      [
+        43,
+        69
+      ],
+      [
+        -1,
+        15
+      ]
+    ],
+    "abilities": [
+      56,
+      50
+    ],
+    "pre_evo_id": 81,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 83,
+    "emote": "<:saporite:1274938319989379212>",
+    "name": "Saporite",
+    "oochive_entry": "Also called mushroom fairies, these small creatures are very peaceful.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 7,
+    "atk": 5,
+    "def": 13,
+    "spd": 5,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        5,
+        63
+      ],
+      [
+        7,
+        87
+      ],
+      [
+        11,
+        32
+      ],
+      [
+        15,
+        28
+      ],
+      [
+        21,
+        91
+      ],
+      [
+        26,
+        11
+      ],
+      [
+        32,
+        70
+      ],
+      [
+        37,
+        56
+      ],
+      [
+        44,
+        46
+      ],
+      [
+        -1,
+        51
+      ]
+    ],
+    "abilities": [
+      8,
+      53
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 84,
+    "evo_lvl": 32,
+    "evo_stage": 0
+  },
+  {
+    "id": 84,
+    "emote": "<:faering:1274936037680087080>",
+    "name": "Faering",
+    "oochive_entry": "When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.",
+    "type": [
+      "fungal",
+      "magic"
+    ],
+    "hp": 24,
+    "atk": 26,
+    "def": 16,
+    "spd": 9,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        5,
+        63
+      ],
+      [
+        7,
+        87
+      ],
+      [
+        11,
+        32
+      ],
+      [
+        15,
+        28
+      ],
+      [
+        21,
+        91
+      ],
+      [
+        26,
+        11
+      ],
+      [
+        32,
+        70
+      ],
+      [
+        37,
+        56
+      ],
+      [
+        44,
+        46
+      ],
+      [
+        -1,
+        51
+      ]
+    ],
+    "abilities": [
+      31,
+      28
+    ],
+    "pre_evo_id": 83,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 85,
+    "emote": "<:kercobble:1274937256590966806>",
+    "name": "Kerkobble",
+    "oochive_entry": "A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.",
+    "type": [
+      "stone",
+      "tech"
+    ],
+    "hp": 9,
+    "atk": 8,
+    "def": 6,
+    "spd": 7,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        12,
+        66
+      ],
+      [
+        18,
+        56
+      ],
+      [
+        21,
+        68
+      ],
+      [
+        26,
+        11
+      ],
+      [
+        33,
+        47
+      ],
+      [
+        40,
+        44
+      ],
+      [
+        -1,
+        42
+      ]
+    ],
+    "abilities": [
+      8,
+      53
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 86,
+    "evo_lvl": 42,
+    "evo_stage": 0
+  },
+  {
+    "id": 86,
+    "emote": "<:korkobble:1274937326774124607>",
+    "name": "Korkobble",
+    "oochive_entry": "If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn't very smart though.",
+    "type": [
+      "stone",
+      "tech"
+    ],
+    "hp": 31,
+    "atk": 19,
+    "def": 17,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        63
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        12,
+        66
+      ],
+      [
+        18,
+        56
+      ],
+      [
+        21,
+        68
+      ],
+      [
+        26,
+        11
+      ],
+      [
+        33,
+        47
+      ],
+      [
+        40,
+        44
+      ],
+      [
+        -1,
+        42
+      ]
+    ],
+    "abilities": [
+      31,
+      28
+    ],
+    "pre_evo_id": 85,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 87,
+    "emote": "<:ilushand:1274936740381069364>",
+    "name": "Ilushand",
+    "oochive_entry": "Its unknown whether Ilushand's main body is the creature in the mirror or the small orb constantly next to it.",
+    "type": [
+      "magic",
+      "crystal"
+    ],
+    "hp": 8,
+    "atk": 10,
+    "def": 9,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        10,
+        30
+      ],
+      [
+        12,
+        35
+      ],
+      [
+        17,
+        61
+      ],
+      [
+        22,
+        68
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        32,
+        73
+      ],
+      [
+        37,
+        74
+      ],
+      [
+        -1,
+        50
+      ]
+    ],
+    "abilities": [
+      13,
+      33
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 88,
+    "evo_lvl": 20,
+    "evo_stage": 0
+  },
+  {
+    "id": 88,
+    "emote": "<:miroraj:1274937687194861600>",
+    "name": "Miroraj",
+    "oochive_entry": "It endlessly reflects its inner core making it incredibly difficult to perceive.",
+    "type": [
+      "magic",
+      "crystal"
+    ],
+    "hp": 18,
+    "atk": 22,
+    "def": 19,
+    "spd": 21,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        64
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        10,
+        30
+      ],
+      [
+        12,
+        35
+      ],
+      [
+        17,
+        61
+      ],
+      [
+        22,
+        68
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        32,
+        73
+      ],
+      [
+        37,
+        74
+      ],
+      [
+        -1,
+        50
+      ]
+    ],
+    "abilities": [
+      13,
+      42
+    ],
+    "pre_evo_id": 87,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 89,
+    "emote": "<:fritarge:1274936101496291330>",
+    "name": "Fritarge",
+    "oochive_entry": "The empty husk of what appears to be a bronze turtle. It rarely moves.",
+    "type": [
+      "tech"
+    ],
+    "hp": 11,
+    "atk": 9,
+    "def": 13,
+    "spd": 7,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        58
+      ],
+      [
+        5,
+        64
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        13,
+        91
+      ],
+      [
+        16,
+        85
+      ],
+      [
+        21,
+        23
+      ],
+      [
+        24,
+        20
+      ],
+      [
+        29,
+        42
+      ],
+      [
+        33,
+        43
+      ],
+      [
+        39,
+        68
+      ],
+      [
+        43,
+        37
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      45,
+      29
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 90,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 90,
+    "emote": "<:wardred:1274938704250802247>",
+    "name": "Wardred",
+    "oochive_entry": "The gaping maw on this creature's back echoes metallic whispers.",
+    "type": [
+      "tech"
+    ],
+    "hp": 20,
+    "atk": 19,
+    "def": 22,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        58
+      ],
+      [
+        5,
+        64
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        13,
+        91
+      ],
+      [
+        16,
+        85
+      ],
+      [
+        21,
+        23
+      ],
+      [
+        24,
+        20
+      ],
+      [
+        29,
+        42
+      ],
+      [
+        33,
+        43
+      ],
+      [
+        39,
+        68
+      ],
+      [
+        43,
+        37
+      ],
+      [
+        -1,
+        20
+      ]
+    ],
+    "abilities": [
+      27,
+      32
+    ],
+    "pre_evo_id": 89,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 91,
+    "emote": "<:congsume:1274935642819788956>",
+    "name": "Congsume",
+    "oochive_entry": "It can't stop moving or the flames on its body will eventually catch up.",
+    "type": [
+      "flame"
+    ],
+    "hp": 8,
+    "atk": 12,
+    "def": 7,
+    "spd": 13,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        9,
+        23
+      ],
+      [
+        13,
+        66
+      ],
+      [
+        17,
+        12
+      ],
+      [
+        23,
+        62
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        34,
+        21
+      ],
+      [
+        40,
+        44
+      ],
+      [
+        -1,
+        88
+      ]
+    ],
+    "abilities": [
+      27,
+      54
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 92,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 92,
+    "emote": "<:fevour:1274936047423324183>",
+    "name": "Fevour",
+    "oochive_entry": "Whatever it eats is immediately burned to keep it alive.",
+    "type": [
+      "flame"
+    ],
+    "hp": 11,
+    "atk": 26,
+    "def": 14,
+    "spd": 24,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        9,
+        23
+      ],
+      [
+        13,
+        66
+      ],
+      [
+        17,
+        12
+      ],
+      [
+        23,
+        62
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        34,
+        21
+      ],
+      [
+        40,
+        44
+      ],
+      [
+        -1,
+        88
+      ]
+    ],
+    "abilities": [
+      27,
+      6
+    ],
+    "pre_evo_id": 91,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 93,
+    "emote": "<:taditty:1300291220987318282>",
+    "name": "Taditty",
+    "oochive_entry": "They can often be found clustered in small circles, covered in blankets and humming tunes to eachother.",
+    "type": [
+      "sound",
+      "cloth"
+    ],
+    "hp": 8,
+    "atk": 11,
+    "def": 10,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        96
+      ],
+      [
+        4,
+        95
+      ],
+      [
+        8,
+        62
+      ],
+      [
+        13,
+        103
+      ],
+      [
+        15,
+        98
+      ],
+      [
+        17,
+        100
+      ],
+      [
+        24,
+        102
+      ],
+      [
+        31,
+        105
+      ],
+      [
+        38,
+        106
+      ],
+      [
+        43,
+        107
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      0,
+      8
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 94,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 94,
+    "emote": "<:silentoad:1300291234748829706>",
+    "name": "Silentoad",
+    "oochive_entry": "Silentoad are quiet, watchful, and relentlessly protective of the Taditty that rest near them.",
+    "type": [
+      "sound",
+      "cloth"
+    ],
+    "hp": 13,
+    "atk": 17,
+    "def": 12,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        96
+      ],
+      [
+        4,
+        95
+      ],
+      [
+        8,
+        62
+      ],
+      [
+        13,
+        103
+      ],
+      [
+        15,
+        98
+      ],
+      [
+        17,
+        100
+      ],
+      [
+        24,
+        102
+      ],
+      [
+        31,
+        105
+      ],
+      [
+        38,
+        106
+      ],
+      [
+        43,
+        107
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      73,
+      74
+    ],
+    "pre_evo_id": 93,
+    "evo_id": 95,
+    "evo_lvl": 37,
+    "evo_stage": 1
+  },
+  {
+    "id": 95,
+    "emote": "<:bansheet:1300291246790672385>",
+    "name": "Bansheet",
+    "oochive_entry": "Hidden beneath a tattered cloth, these creatures often catch unwary adventurers off guard with a head-splittingly loud screech.",
+    "type": [
+      "sound",
+      "cloth"
+    ],
+    "hp": 23,
+    "atk": 25,
+    "def": 17,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        96
+      ],
+      [
+        4,
+        95
+      ],
+      [
+        8,
+        62
+      ],
+      [
+        13,
+        103
+      ],
+      [
+        15,
+        98
+      ],
+      [
+        17,
+        100
+      ],
+      [
+        24,
+        102
+      ],
+      [
+        31,
+        105
+      ],
+      [
+        38,
+        106
+      ],
+      [
+        43,
+        107
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      73,
+      20
+    ],
+    "pre_evo_id": 94,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 96,
+    "emote": "<:tryptid:1274938675922206752>",
+    "name": "Tryptid",
+    "oochive_entry": "It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.",
+    "type": [
+      "stone",
+      "fungal"
+    ],
+    "hp": 14,
+    "atk": 17,
+    "def": 23,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        5,
+        63
+      ],
+      [
+        8,
+        2
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        13,
+        86
+      ],
+      [
+        16,
+        35
+      ],
+      [
+        19,
+        68
+      ],
+      [
+        21,
+        11
+      ],
+      [
+        24,
+        77
+      ],
+      [
+        29,
+        47
+      ],
+      [
+        36,
+        7
+      ],
+      [
+        40,
+        23
+      ],
+      [
+        -1,
+        45
+      ]
+    ],
+    "abilities": [
+      57
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 97,
+    "emote": "<:roswier:1274938257288990880>",
+    "name": "Roswier",
+    "oochive_entry": "The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.",
+    "type": [
+      "tech",
+      "ooze"
+    ],
+    "hp": 26,
+    "atk": 24,
+    "def": 19,
+    "spd": 21,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        5,
+        29
+      ],
+      [
+        8,
+        58
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        34
+      ],
+      [
+        16,
+        9
+      ],
+      [
+        20,
+        36
+      ],
+      [
+        23,
+        51
+      ],
+      [
+        25,
+        84
+      ],
+      [
+        28,
+        48
+      ],
+      [
+        34,
+        91
+      ],
+      [
+        40,
+        49
+      ],
+      [
+        -1,
+        81
+      ]
+    ],
+    "abilities": [
+      59
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 98,
+    "emote": "<:chemerai:1274935624553467958>",
+    "name": "Chemerai",
+    "oochive_entry": "The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.",
+    "type": [
+      "crystal",
+      "flame"
+    ],
+    "hp": 18,
+    "atk": 29,
+    "def": 21,
+    "spd": 22,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        5,
+        25
+      ],
+      [
+        7,
+        64
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        14,
+        46
+      ],
+      [
+        17,
+        26
+      ],
+      [
+        22,
+        17
+      ],
+      [
+        27,
+        21
+      ],
+      [
+        33,
+        74
+      ],
+      [
+        37,
+        55
+      ],
+      [
+        43,
+        27
+      ],
+      [
+        -1,
+        73
+      ]
+    ],
+    "abilities": [
+      58
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 100,
+    "emote": "<:rosun:1294344724953567353>",
+    "name": "Rosun",
+    "oochive_entry": "It aimlessly drifts to and fro, and yet never seems to collide with anything.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 10,
+    "atk": 8,
+    "def": 12,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      63,
+      29
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 98,
+    "evo_lvl": 34,
+    "evo_stage": 0
+  },
+  {
+    "id": 101,
+    "emote": "<:morgoun:1294344866242760704>",
+    "name": "Morgoun",
+    "oochive_entry": "Morgoun's body is composed of several layers of crystal, making it incedibly difficult to damage.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 17,
+    "atk": 13,
+    "def": 26,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      63,
+      29
+    ],
+    "pre_evo_id": 97,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 102,
+    "emote": "<:garnetie:1294344896223903775>",
+    "name": "Garnetie",
+    "oochive_entry": "A strange construct, when angered the green crystals on its body thrash about almost fluidly.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 10,
+    "atk": 12,
+    "def": 8,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      64,
+      6
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 100,
+    "evo_lvl": 34,
+    "evo_stage": 0
+  },
+  {
+    "id": 103,
+    "emote": "<:aventux:1294344913416355890>",
+    "name": "Aventux",
+    "oochive_entry": "The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 14,
+    "atk": 26,
+    "def": 13,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      64,
+      6
+    ],
+    "pre_evo_id": 99,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 104,
+    "emote": "<:galagge:1294344931674030181>",
+    "name": "Galagge",
+    "oochive_entry": "The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother's weaknesses.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 18,
+    "atk": 21,
+    "def": 21,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      65
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 105,
+    "emote": "<:nullifly:1274937872524378112>",
+    "name": "Nullifly",
+    "oochive_entry": "Strange creatures which begin to swarm where pockets of Void appear.",
+    "type": [
+      "void"
+    ],
+    "hp": 20,
+    "atk": 20,
+    "def": 20,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        61
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        7,
+        64
+      ],
+      [
+        11,
+        26
+      ],
+      [
+        17,
+        92
+      ],
+      [
+        22,
+        86
+      ],
+      [
+        27,
+        34
+      ],
+      [
+        32,
+        90
+      ],
+      [
+        43,
+        53
+      ],
+      [
+        -1,
+        81
+      ]
+    ],
+    "abilities": [
+      41
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": -1,
+    "emote": "<:i_:1274936236548554763>",
+    "name": "i_",
+    "oochive_entry": "ERROR: entry not found",
+    "type": [
+      "void"
+    ],
+    "hp": 1,
+    "atk": 1,
+    "def": 1,
+    "spd": 1,
+    "move_list": [
+      [
+        1,
+        40
+      ]
+    ],
+    "abilities": [
+      44
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": -2,
+    "emote": "<:oochabit:1274937940514050109>",
+    "name": "Oochabit",
+    "oochive_entry": "These little guys'll consume space-time and do it with a smile on their faces.",
+    "type": [
+      "void"
+    ],
+    "hp": 10,
+    "atk": 9,
+    "def": 5,
+    "spd": 6,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      41
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -3,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": -3,
+    "emote": "<:oochabound:1274937954837463040>",
+    "name": "Oochabound",
+    "oochive_entry": "No thank you, I'd really rather not write a description for this one.",
+    "type": [
+      "void"
+    ],
+    "hp": 25,
+    "atk": 23,
+    "def": 17,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      42
+    ],
+    "pre_evo_id": -2,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  }
+]

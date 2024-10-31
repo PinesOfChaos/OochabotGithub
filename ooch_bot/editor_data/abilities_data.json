@@ -1,0 +1,377 @@
+[
+  {
+    "id": 0,
+    "name": "Miniscule",
+    "description": "Becomes super small and increases evasion against attacks by 1 stage."
+  },
+  {
+    "id": 1,
+    "name": "Icky",
+    "description": "Boosts the power of OOZE & FUNGAL type attacks by 20%."
+  },
+  {
+    "id": 2,
+    "name": "Burdened",
+    "description": "A large growth reduces SPD by 1 stage but raises DEF by 1 stage"
+  },
+  {
+    "id": 3,
+    "name": "Broodmother",
+    "description": "Gains 1 stage of ATK for each Oochamon with the same type in the party."
+  },
+  {
+    "id": 4,
+    "name": "Tough",
+    "description": "A durable body grants a 1 stage increase to DEF."
+  },
+  {
+    "id": 5,
+    "name": "Shadow",
+    "description": "Grants a 25% chance to VANISH after being attacked."
+  },
+  {
+    "id": 6,
+    "name": "Withering",
+    "description": "Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages."
+  },
+  {
+    "id": 7,
+    "name": "Darkbright",
+    "description": "Attacks that afflict BURN also BLIND and vice-versa."
+  },
+  {
+    "id": 8,
+    "name": "Gentle",
+    "description": "A kind heart reduces both your ATK and the enemy ATK by 1 stage."
+  },
+  {
+    "id": 9,
+    "name": "Warm",
+    "description": "Increases the damage of FLAME attacks by 10%."
+  },
+  {
+    "id": 10,
+    "name": "Radiant",
+    "description": "Dangerous energy causes attacks that BURN also INFECT."
+  },
+  {
+    "id": 11,
+    "name": "Conflicted",
+    "description": "Multiple minds increase ALL stats by 1 stage."
+  },
+  {
+    "id": 12,
+    "name": "Burrower",
+    "description": "Increases the damage of STONE attacks by 10%."
+  },
+  {
+    "id": 13,
+    "name": "Reactive",
+    "description": "When hit by an attack, reflects 10% of the attacker's HP as damage."
+  },
+  {
+    "id": 14,
+    "name": "Inertia",
+    "description": "Increases SPD by 1 stage each turn."
+  },
+  {
+    "id": 15,
+    "name": "Dense",
+    "description": "Increases ATK by 1 stage but reduces SPD by 1 stage."
+  },
+  {
+    "id": 16,
+    "name": "Moist",
+    "description": "Halves all incoming FLAME damage."
+  },
+  {
+    "id": 17,
+    "name": "Alert",
+    "description": "Increases ATK by 1 stage when an Oochamon switches in."
+  },
+  {
+    "id": 18,
+    "name": "Fleeting",
+    "description": "Increases SPD and ATK by 4 stages but also loses half of current HP each turn."
+  },
+  {
+    "id": 19,
+    "name": "Efficient",
+    "description": "Increases ATK by 1 stage each turn."
+  },
+  {
+    "id": 20,
+    "name": "Boisterous",
+    "description": "Shatters eardrums when it enters the field dealing 10% of the enemy's HP"
+  },
+  {
+    "id": 21,
+    "name": "Haunted",
+    "description": "Applies the DOOMED status to an enemy when the holder of the ability dies."
+  },
+  {
+    "id": 22,
+    "name": "Leech",
+    "description": "Restores HP equal to 10% of damage done to the enemy."
+  },
+  {
+    "id": 23,
+    "name": "Ensnare",
+    "description": "Grants a 30% chance to SNARE an enemy when attacking."
+  },
+  {
+    "id": 24,
+    "name": "Uncontrolled",
+    "description": "Increases ATK by 4 stages but randomly chooses an attack each turn"
+  },
+  {
+    "id": 25,
+    "name": "Apprentice",
+    "description": "Increases ATK by 2 stages if any other party members share a move with it."
+  },
+  {
+    "id": 26,
+    "name": "Focused",
+    "description": "Increases damage of attacks by 10% if unaffected by status effects."
+  },
+  {
+    "id": 27,
+    "name": "Ravenous",
+    "description": "Restores 20% of max HP upon defeating an enemy."
+  },
+  {
+    "id": 28,
+    "name": "Immense",
+    "description": "Increases DEF by 2 stages but also makes opponent's moves always hit."
+  },
+  {
+    "id": 29,
+    "name": "Armored",
+    "description": "Reduces STONE damage by 20%."
+  },
+  {
+    "id": 30,
+    "name": "Scorching",
+    "description": "Attacks that can BURN always BURN."
+  },
+  {
+    "id": 31,
+    "name": "Tangled",
+    "description": "Causes enemies that hit it to be SNARED."
+  },
+  {
+    "id": 32,
+    "name": "Mundane",
+    "description": "Cannot be affected by Status Effects."
+  },
+  {
+    "id": 33,
+    "name": "Rogue",
+    "description": "DOUBLES the damage dealt to full HP enemies."
+  },
+  {
+    "id": 34,
+    "name": "Crystallize",
+    "description": "Boosts the power of Ooze, Flame, and Stone attacks by 30%."
+  },
+  {
+    "id": 35,
+    "name": "Lacerating",
+    "description": "All attacks do an extra attack to an enemy, dealing 5% of their max HP."
+  },
+  {
+    "id": 36,
+    "name": "Gravity",
+    "description": "Attacks deal 1% more damage per number of turns in this battle."
+  },
+  {
+    "id": 37,
+    "name": "Sporespray",
+    "description": "INFECTS the enemy when defeated."
+  },
+  {
+    "id": 38,
+    "name": "Frostbite",
+    "description": "Attacks that strike an enemy reduce their SPD by 1 stage."
+  },
+  {
+    "id": 39,
+    "name": "Bipolar",
+    "description": "Use the DEF stat when dealing damage."
+  },
+  {
+    "id": 40,
+    "name": "Hexiply",
+    "description": "Attacks deal 6% more damage per sixth of HP remaining."
+  },
+  {
+    "id": 41,
+    "name": "Nullify",
+    "description": "Change an opponents ability to Null while out on the field."
+  },
+  {
+    "id": 42,
+    "name": "Duplicant",
+    "description": "Copy the opponent's ability."
+  },
+  {
+    "id": 43,
+    "name": "Null",
+    "description": "Does nothing."
+  },
+  {
+    "id": 44,
+    "name": "invalid_entry",
+    "description": "I̵͑n̵̤̚c̶̥̈r̴͛͜e̵̛̖a̴̺͗s̵̼̑e̶s̵̺̈ a̶͙͗l̶̖͆l̸̠͐ ̸̪̐b̴͎̋a̸̖̅s̶͖̚ë̴̫́ ̵̹̔ş̶̽t̶̟̎a̴̪̾t̴̥̂ş̵̈́ ̵̱̉ū̵͜p̸̗̆ô̶̰ņ̴̓ ̵̳͋d̵̹̑e̵͎̕a̷͔͐t̵͉͋h̷̰̋.̴̫͘ ̶͈́C̸͙̈a̶̰̔ṅ̵̯n̵̬̾o̶̒ͅt̷̪̎ ̵̆͜b̴͎̄ȩ̸͗ ̵̜͛c̴̰̈́o̴̢͒p̸̣͛i̷̗̍ê̸͈d̶̹͌.̵͍̈"
+  },
+  {
+    "id": 45,
+    "name": "Immobile",
+    "description": "Always go last when attacking."
+  },
+  {
+    "id": 46,
+    "name": "Strings Attached",
+    "description": "20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking."
+  },
+  {
+    "id": 47,
+    "name": "Corrosive",
+    "description": "Attacks deal more damage to enemies with high DEF."
+  },
+  {
+    "id": 48,
+    "name": "Spectral",
+    "description": "Changes type to Magic every other turn."
+  },
+  {
+    "id": 49,
+    "name": "Height Advantage",
+    "description": "Increases chance to do a critical hit by 10%."
+  },
+  {
+    "id": 50,
+    "name": "Hearty",
+    "description": "Increases damage done by 15% while above 50% HP."
+  },
+  {
+    "id": 51,
+    "name": "Radioactive",
+    "description": "Changes type to Flame every other turn."
+  },
+  {
+    "id": 52,
+    "name": "Energized",
+    "description": "Increases ATK and SPD by 1 stage on kill."
+  },
+  {
+    "id": 53,
+    "name": "Patient",
+    "description": "Increases DEF by 1 stage each turn."
+  },
+  {
+    "id": 54,
+    "name": "Easy Go",
+    "description": "Heals the rest of your party by 20% of their max HP when defeated."
+  },
+  {
+    "id": 55,
+    "name": "Bomber",
+    "description": "Halves the enemy HP on death."
+  },
+  {
+    "id": 56,
+    "name": "Flammable",
+    "description": "Gains 1 stage of ATK when hit with a FLAME type move."
+  },
+  {
+    "id": 57,
+    "name": "Hole Dweller",
+    "description": "Gets the Vanished status at the end of every other turn."
+  },
+  {
+    "id": 58,
+    "name": "Power Conduit",
+    "description": "Boosts the power of FLAME moves against OOZE and TECH types by 50%."
+  },
+  {
+    "id": 59,
+    "name": "Liquid Cooled",
+    "description": "Prevents BURN and boosts the power of TECH type moves by 25%."
+  },
+  {
+    "id": 60,
+    "name": "Increment",
+    "description": "Randomly boosts a stat by 1 stage at the end of each turn."
+  },
+  {
+    "id": 61,
+    "name": "Parry",
+    "description": "Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte."
+  },
+  {
+    "id": 62,
+    "name": "Riposte",
+    "description": "Increases damage dealt by 20%. After attacking or the turn ends, this ability becomes Parry."
+  },
+  {
+    "id": 63,
+    "name": "Swaying",
+    "description": "Increases DEF by 1 stage but lowers accuracy by 1 stage."
+  },
+  {
+    "id": 64,
+    "name": "Thrashing",
+    "description": "Increases ATK by 1 stage but lowers evasion by 1 stage."
+  },
+  {
+    "id": 65,
+    "name": "Union",
+    "description": "Increases ATK and DEF by 1 stage."
+  },
+  {
+    "id": 66,
+    "name": "Protector",
+    "description": "Immune to inneffective damage during the turn it switches in."
+  },
+  {
+    "id": 67,
+    "name": "Phantasmal",
+    "description": "Immune to Neutral-type moves."
+  },
+  {
+    "id": 68,
+    "name": "Matryoshka",
+    "description": "The first time it would be KO'd, restores its HP to half."
+  },
+  {
+    "id": 69,
+    "name": "Thorned",
+    "description": "Attacks deal extra damage based on DEF."
+  },
+  {
+    "id": 70,
+    "name": "Downward Spiral",
+    "description": "Randomly lowers one of its stats 1 stage at the end of each turn."
+  },
+  {
+    "id": 71,
+    "name": "Constructor",
+    "description": "Raises DEF by 1 stage each turn."
+  },
+  {
+    "id": 72,
+    "name": "Neutralizer",
+    "description": "No Oochamon are affected by status effects."
+  },
+  {
+    "id": 73,
+    "name": "Bass Boost",
+    "description": "Boosts the power of Sound moves."
+  },
+  {
+    "id": 74,
+    "name": "Stealthy",
+    "description": "Gets FOCUSED if it hasn't dealt damage this turn."
+  }
+]

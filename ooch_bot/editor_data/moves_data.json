@@ -1,0 +1,1676 @@
+[
+  {
+    "id": 0,
+    "name": "Hit",
+    "type": "neutral",
+    "damage": 10,
+    "accuracy": 100,
+    "effect": [],
+    "description": "The user hits the target to deal damage.",
+    "tags": []
+  },
+  {
+    "id": 1,
+    "name": "Bash",
+    "type": "neutral",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [],
+    "description": "The target is dealt some blunt damage.",
+    "tags": []
+  },
+  {
+    "id": 2,
+    "name": "Spore Shot",
+    "type": "fungal",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "A puff of spore burst from the user's body.",
+    "tags": []
+  },
+  {
+    "id": 3,
+    "name": "Pebble Blast",
+    "type": "stone",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Fires a barrage of small pebbles.",
+    "tags": []
+  },
+  {
+    "id": 4,
+    "name": "Fireball",
+    "type": "flame",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Shoots a ball of fire at the target.",
+    "tags": []
+  },
+  {
+    "id": 5,
+    "name": "Slash",
+    "type": "neutral",
+    "damage": 50,
+    "accuracy": 95,
+    "effect": [],
+    "description": "The user slashes at the target with sharp appendages.",
+    "tags": []
+  },
+  {
+    "id": 6,
+    "name": "Take Over",
+    "type": "fungal",
+    "damage": 30,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "infected",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Fungal spores are launched which INFECT the target.",
+    "tags": []
+  },
+  {
+    "id": 7,
+    "name": "Dust Storm",
+    "type": "stone",
+    "damage": 30,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "A storm is whipped up which leaves the target BLINDED.",
+    "tags": []
+  },
+  {
+    "id": 8,
+    "name": "Engulf",
+    "type": "flame",
+    "damage": 30,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "The target is BURNED by red-hot flames.",
+    "tags": []
+  },
+  {
+    "id": 9,
+    "name": "Impale",
+    "type": "neutral",
+    "damage": 80,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Impales the target with a spike.",
+    "tags": []
+  },
+  {
+    "id": 10,
+    "name": "Bloom",
+    "type": "fungal",
+    "damage": 70,
+    "accuracy": 90,
+    "effect": [],
+    "description": "Explosive spores are launched at the target to deal damage.",
+    "tags": []
+  },
+  {
+    "id": 11,
+    "name": "Boulder Dash",
+    "type": "stone",
+    "damage": 70,
+    "accuracy": 90,
+    "effect": [],
+    "description": "Flings a massive boulder at the target.",
+    "tags": []
+  },
+  {
+    "id": 12,
+    "name": "Torch",
+    "type": "flame",
+    "damage": 70,
+    "accuracy": 90,
+    "effect": [],
+    "description": "The user stabs at the target to deal damage.",
+    "tags": []
+  },
+  {
+    "id": 13,
+    "name": "Blight",
+    "type": "fungal",
+    "damage": 60,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "If the infection takes hold, the target is BLINDED.",
+    "tags": []
+  },
+  {
+    "id": 14,
+    "name": "Lava Lance",
+    "type": "stone",
+    "damage": 60,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Red-hot stone is launched to BURN the target.",
+    "tags": []
+  },
+  {
+    "id": 15,
+    "name": "Tumorize",
+    "type": "flame",
+    "damage": 60,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "infected",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "The user creates radiation in order to INFECT the target.",
+    "tags": []
+  },
+  {
+    "id": 16,
+    "name": "Glimmer",
+    "type": "crystal",
+    "damage": 20,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Refracts light in an attempt to BLIND the target.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Gem Bash",
+    "type": "crystal",
+    "damage": 110,
+    "accuracy": 70,
+    "effect": [],
+    "description": "Massive crystals are swung wildly to inflict damage.",
+    "tags": []
+  },
+  {
+    "id": 18,
+    "name": "Caustic Orb",
+    "type": "crystal",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 75,
+        "target": 1
+      }
+    ],
+    "description": "A ball of caustic goo is launched with a high chance of BURNING.",
+    "tags": []
+  },
+  {
+    "id": 19,
+    "name": "Pulverize",
+    "type": "neutral",
+    "damage": 150,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The target is slammed to deal massive damage, but the user exausts itself, losing ATK.",
+    "tags": []
+  },
+  {
+    "id": 20,
+    "name": "Ash Blast",
+    "type": "flame",
+    "damage": 50,
+    "accuracy": 95,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 75,
+        "target": 1
+      }
+    ],
+    "description": "Hot ashes are launched at the target with a high chance to BLIND.",
+    "tags": []
+  },
+  {
+    "id": 21,
+    "name": "Inferno",
+    "type": "flame",
+    "damage": 100,
+    "accuracy": 95,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 100,
+        "target": 2
+      }
+    ],
+    "description": "A blazing inferno afflicts all targets with a BURN.",
+    "tags": []
+  },
+  {
+    "id": 22,
+    "name": "Digitize",
+    "type": "flame",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "digitized",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "The target becomes DIGITIZED when hit by this strange beam.",
+    "tags": []
+  },
+  {
+    "id": 23,
+    "name": "Clamp Down",
+    "type": "flame",
+    "damage": 45,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "snared",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Clamps down tight on the target to deal damage and SNARE them if you get lucky.",
+    "tags": []
+  },
+  {
+    "id": 24,
+    "name": "Magic Bolt",
+    "type": "magic",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Fires a bolt of magic energy.",
+    "tags": []
+  },
+  {
+    "id": 25,
+    "name": "Sparkler",
+    "type": "flame",
+    "damage": 40,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Shoots bright sparks with the potential to BLIND.",
+    "tags": []
+  },
+  {
+    "id": 26,
+    "name": "Arca Strike",
+    "type": "magic",
+    "damage": 80,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Fires a powerful burst of magic.",
+    "tags": []
+  },
+  {
+    "id": 27,
+    "name": "Call Lightning",
+    "type": "magic",
+    "damage": 80,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.",
+    "tags": [
+      1
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Sticky Orb",
+    "type": "ooze",
+    "damage": 80,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "snared",
+        "chance": 60,
+        "target": 1
+      }
+    ],
+    "description": "Fling a orb of goo that can SNARE the target.",
+    "tags": []
+  },
+  {
+    "id": 29,
+    "name": "Glob",
+    "type": "ooze",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Pelts the target with a viscous ooze.",
+    "tags": []
+  },
+  {
+    "id": 30,
+    "name": "Blink",
+    "type": "magic",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "doubled",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Travels to a different time, ensuring the next damage the target takes is DOUBLED.",
+    "tags": [
+      2
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Time Warp",
+    "type": "magic",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "doubled",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Warps spacetime around the target, with a chance to DOUBLE the next damage they take.",
+    "tags": [
+      2
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Mycelium Whip",
+    "type": "fungal",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "snared",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Shoots whips made of mycelium in an attempt to SNARE the opponent.",
+    "tags": []
+  },
+  {
+    "id": 33,
+    "name": "Parasitize",
+    "type": "ooze",
+    "damage": 40,
+    "accuracy": 50,
+    "effect": [
+      {
+        "status": "infected",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Parasitic bodies are launched at the target potentially INFECTING them.",
+    "tags": []
+  },
+  {
+    "id": 34,
+    "name": "Corrode",
+    "type": "ooze",
+    "damage": 40,
+    "accuracy": 50,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Powerful acids damage the target, lowering its DEF.",
+    "tags": []
+  },
+  {
+    "id": 35,
+    "name": "Grind",
+    "type": "stone",
+    "damage": 80,
+    "accuracy": 90,
+    "effect": [],
+    "description": "Grinds against the opponent with rough, jagged edges.",
+    "tags": []
+  },
+  {
+    "id": 36,
+    "name": "Metal Lance",
+    "type": "tech",
+    "damage": 70,
+    "accuracy": 90,
+    "effect": [],
+    "description": "Stabs the opponent with a metallic object.",
+    "tags": []
+  },
+  {
+    "id": 37,
+    "name": "Iron Hammer",
+    "type": "tech",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [],
+    "description": "A heavy, metal object is hammered against the target.",
+    "tags": []
+  },
+  {
+    "id": 38,
+    "name": "Laminate",
+    "type": "tech",
+    "damage": 30,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "snared",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Covers the target in a tough plastic substance to SNARE them.",
+    "tags": []
+  },
+  {
+    "id": 39,
+    "name": "Entomb",
+    "type": "tech",
+    "damage": 60,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "snared",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Stones fall onto the target, leaving them SNARED if they get trapped.",
+    "tags": []
+  },
+  {
+    "id": 40,
+    "name": "undefined_int",
+    "type": "void",
+    "damage": 100,
+    "accuracy": 100,
+    "effect": [],
+    "description": "TEST MOVE",
+    "tags": []
+  },
+  {
+    "id": 41,
+    "name": "Precision Strike",
+    "type": "neutral",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 60,
+        "target": 3
+      }
+    ],
+    "description": "A targeted strike that is likely to land a Critical Hit.",
+    "tags": []
+  },
+  {
+    "id": 42,
+    "name": "Barrage",
+    "type": "neutral",
+    "damage": 100,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 30,
+        "target": 0
+      }
+    ],
+    "description": "Devastating blasts damage the target, the user is hit with Recoil.",
+    "tags": []
+  },
+  {
+    "id": 43,
+    "name": "Eruption",
+    "type": "flame",
+    "damage": 100,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 30,
+        "target": 0
+      }
+    ],
+    "description": "Blazing heat erupts from the user, dealing high damage but also being hit with Recoil.",
+    "tags": []
+  },
+  {
+    "id": 44,
+    "name": "Self Destruct",
+    "type": "tech",
+    "damage": 250,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user self destructs to inflict massive damage.",
+    "tags": []
+  },
+  {
+    "id": 45,
+    "name": "Siphon",
+    "type": "fungal",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "vampire",
+        "chance": 10,
+        "target": 0
+      }
+    ],
+    "description": "The user damages the opponent, slightly Healing itself in the process.",
+    "tags": []
+  },
+  {
+    "id": 46,
+    "name": "Drain Life",
+    "type": "magic",
+    "damage": 50,
+    "accuracy": 50,
+    "effect": [
+      {
+        "status": "vampire",
+        "chance": 50,
+        "target": 0
+      }
+    ],
+    "description": "A horribly innacurate move with the potential to greatly heal the user.",
+    "tags": []
+  },
+  {
+    "id": 47,
+    "name": "Restruct",
+    "type": "stone",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "heal",
+        "chance": 25,
+        "target": 0
+      }
+    ],
+    "description": "Stones are reorganized in the user's body to restore some HP.",
+    "tags": []
+  },
+  {
+    "id": 48,
+    "name": "Flurry",
+    "type": "tech",
+    "damage": 75,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 50,
+        "target": 3
+      }
+    ],
+    "description": "A flurry of steel blades shred the target, with a high chance to land a Critical Hit.",
+    "tags": []
+  },
+  {
+    "id": 49,
+    "name": "Crash Landing",
+    "type": "stone",
+    "damage": 90,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 20,
+        "target": 0
+      }
+    ],
+    "description": "The user falls down from the sky inflicting high damage, but injuring itself.",
+    "tags": []
+  },
+  {
+    "id": 50,
+    "name": "Solar Blast",
+    "type": "flame",
+    "damage": 85,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Lob a brilliant ball of flame, potentially BLINDING the target.",
+    "tags": []
+  },
+  {
+    "id": 51,
+    "name": "Tangled Threads",
+    "type": "cloth",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Threads are shot at the target dealing damage with a chance to SNARE them.",
+    "tags": []
+  },
+  {
+    "id": 52,
+    "name": "Fated Threads",
+    "type": "cloth",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "doubled",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.",
+    "tags": []
+  },
+  {
+    "id": 53,
+    "name": "Sync Strike",
+    "type": "neutral",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "typematch",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Launch a ball of energy synchronized with the user's type.",
+    "tags": []
+  },
+  {
+    "id": 54,
+    "name": "Threefold",
+    "type": "tech",
+    "damage": 90,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 30,
+        "target": 3
+      }
+    ],
+    "description": "The target is struck repeatedly, leaving it open to Critical Hits.",
+    "tags": []
+  },
+  {
+    "id": 55,
+    "name": "Glass Blades",
+    "type": "crystal",
+    "damage": 80,
+    "accuracy": 70,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 50,
+        "target": 3
+      }
+    ],
+    "description": "Brittle blades are used to strike at the opponent's weak spots with a high chance to Crit.",
+    "tags": []
+  },
+  {
+    "id": 56,
+    "name": "Gravitate",
+    "type": "magic",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [],
+    "description": "The user manipulates gravity to fling itself at the target.",
+    "tags": []
+  },
+  {
+    "id": 57,
+    "name": "Tenderize",
+    "type": "neutral",
+    "damage": 120,
+    "accuracy": 70,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 30,
+        "target": 0
+      }
+    ],
+    "description": "The user slams its body into the opponent, but is hit with recoil.",
+    "tags": []
+  },
+  {
+    "id": 58,
+    "name": "Byte Bite",
+    "type": "tech",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Form digital jaws that clamp down on the target.",
+    "tags": []
+  },
+  {
+    "id": 59,
+    "name": "Sawblade",
+    "type": "tech",
+    "damage": 50,
+    "accuracy": 95,
+    "effect": [],
+    "description": "The user hits the target with a metal blade.",
+    "tags": []
+  },
+  {
+    "id": 60,
+    "name": "Limber",
+    "type": "ooze",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_def_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Softens the body making it harder to damage, increasing its DEF.",
+    "tags": []
+  },
+  {
+    "id": 61,
+    "name": "Embolden",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Prepares the user to fight with all its strength, increasing its ATK.",
+    "tags": []
+  },
+  {
+    "id": 62,
+    "name": "Hasten",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_spd_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user readies itself to move quickly, increasing its SPD.",
+    "tags": []
+  },
+  {
+    "id": 63,
+    "name": "Brittle",
+    "type": "stone",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Makes the opponent's body brittle, lowering its DEF.",
+    "tags": []
+  },
+  {
+    "id": 64,
+    "name": "Intimidate",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Glare at the opponent, lowering its ATK.",
+    "tags": []
+  },
+  {
+    "id": 65,
+    "name": "Mud",
+    "type": "ooze",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Throw mud on the opponent, lowering its SPD.",
+    "tags": []
+  },
+  {
+    "id": 66,
+    "name": "Hype-Up",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_spd_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Hypes up the user, increasing its ATK and SPD.",
+    "tags": []
+  },
+  {
+    "id": 67,
+    "name": "Sharpen",
+    "type": "tech",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_2",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Sharpens any edges the user has, greatly increasing its ATK.",
+    "tags": []
+  },
+  {
+    "id": 68,
+    "name": "Cursed Eye",
+    "type": "magic",
+    "damage": 10,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "burned",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Shoot a beam that curses the opponent, applying BLINDED and BURNED.",
+    "tags": []
+  },
+  {
+    "id": 69,
+    "name": "Suplex",
+    "type": "tech",
+    "damage": 60,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Suplex the opponent, damaging them and reducing DEF.",
+    "tags": []
+  },
+  {
+    "id": 70,
+    "name": "Enfeebling Spore",
+    "type": "fungal",
+    "damage": 30,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Launch a damaging spore at the opponent which lowers ATK and SPD.",
+    "tags": []
+  },
+  {
+    "id": 71,
+    "name": "Torque",
+    "type": "tech",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_atk_2",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Reduce the user's SPD to massively increase ATK.",
+    "tags": []
+  },
+  {
+    "id": 72,
+    "name": "Slow Burn",
+    "type": "flame",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_def_2",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Reduces the user's heat, greatly increasing DEF at the cost of some SPD.",
+    "tags": []
+  },
+  {
+    "id": 73,
+    "name": "Kaleidoscope",
+    "type": "crystal",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "snared",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Disorient the opponent in a room that BLINDS and SNARES.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 74,
+    "name": "Blinding Beam",
+    "type": "crystal",
+    "damage": 75,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Fire a brilliant beam of light that BLINDS the opponent.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 75,
+    "name": "Overgrowth",
+    "type": "fungal",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_def_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_spd_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Rapid fungal growth increases ATK, DEF, and SPD.",
+    "tags": []
+  },
+  {
+    "id": 76,
+    "name": "Myco-Burst",
+    "type": "fungal",
+    "damage": 75,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "blinded",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Fire a spore-filled bomb which BLINDS the opponent.",
+    "tags": []
+  },
+  {
+    "id": 77,
+    "name": "Thorn Shot",
+    "type": "fungal",
+    "damage": 60,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 50,
+        "target": 3
+      }
+    ],
+    "description": "Shoot a condensed fungal thorn with a high critical chance.",
+    "tags": []
+  },
+  {
+    "id": 78,
+    "name": "Slurp Up",
+    "type": "ooze",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "heal",
+        "chance": 50,
+        "target": 0
+      }
+    ],
+    "description": "The user gathers missing parts of its body to restore half its HP.",
+    "tags": []
+  },
+  {
+    "id": 79,
+    "name": "Digital Gamble",
+    "type": "tech",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "random",
+        "chance": 100,
+        "target": 3
+      }
+    ],
+    "description": "The user randomly uses a move.",
+    "tags": []
+  },
+  {
+    "id": 80,
+    "name": "Sedimentation",
+    "type": "stone",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_def_2",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Spend the turn gathering stone to greatly increase DEF.",
+    "tags": []
+  },
+  {
+    "id": 81,
+    "name": "Plasma Cannon",
+    "type": "flame",
+    "damage": 120,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "A high damage blast of extreme heat, but lowers the user's SPD afterward.",
+    "tags": []
+  },
+  {
+    "id": 82,
+    "name": "Phantom Bullet",
+    "type": "magic",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 100,
+        "target": 3
+      }
+    ],
+    "description": "Fire a highly accurate ghost bullet that always Crits.",
+    "tags": []
+  },
+  {
+    "id": 83,
+    "name": "Firey Bullet",
+    "type": "flame",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "burned",
+        "chance": 50,
+        "target": 1
+      }
+    ],
+    "description": "Attack with blazing horns that have a chance to BURN the target.",
+    "tags": []
+  },
+  {
+    "id": 84,
+    "name": "Radiate",
+    "type": "flame",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "burned",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Release stored-up radiation to BURN the target and reduce its ATK.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 85,
+    "name": "Caltrops",
+    "type": "stone",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Scatter damaging spikes that damage and reduce the target's SPD.",
+    "tags": []
+  },
+  {
+    "id": 86,
+    "name": "Lurk",
+    "type": "flame",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "focused",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Lurk in the shadows boosting ATK and makes the user FOCUSED.",
+    "tags": []
+  },
+  {
+    "id": 87,
+    "name": "Fog",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_acc_2",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "-_acc_2",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Spray thick fog which heavily reduces Accuracy on both sides.",
+    "tags": []
+  },
+  {
+    "id": 88,
+    "name": "Purify",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "clear_status",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Removes all status effects from the user.",
+    "tags": []
+  },
+  {
+    "id": 89,
+    "name": "Reset",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "clear_stat_stages",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Clears all stat changes from the user.",
+    "tags": []
+  },
+  {
+    "id": 90,
+    "name": "Debug Bomb",
+    "type": "tech",
+    "damage": 100,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "clear_status",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Fire a high-damage bomb that clears any status effects from its target.",
+    "tags": []
+  },
+  {
+    "id": 91,
+    "name": "Entrench",
+    "type": "fungal",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_def_3",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "snared",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user roots into the ground, becoming SNARED, but greatly boosting its DEF.",
+    "tags": []
+  },
+  {
+    "id": 92,
+    "name": "Null Sphere",
+    "type": "void",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Fire a sphere of dark matter.",
+    "tags": []
+  },
+  {
+    "id": 93,
+    "name": "High Impact",
+    "type": "neutral",
+    "damage": 170,
+    "accuracy": 80,
+    "effect": [
+      {
+        "status": "vanished",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Hit the opponent so hard they get launched and VANISH.",
+    "tags": []
+  },
+  {
+    "id": 94,
+    "name": "Shards",
+    "type": "crystal",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Shoot several small shards of crystal at the enemy to deal damage.",
+    "tags": []
+  },
+  {
+    "id": 95,
+    "name": "Rag Whip",
+    "type": "cloth",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Pummel the opponent with cloth whips.",
+    "tags": []
+  },
+  {
+    "id": 96,
+    "name": "Screech",
+    "type": "sound",
+    "damage": 20,
+    "accuracy": 100,
+    "effect": [],
+    "description": "Emit a high-pitched screech that shatters objects.",
+    "tags": []
+  },
+  {
+    "id": 97,
+    "name": "Lense Flare",
+    "type": "crystal",
+    "damage": 40,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_acc_1",
+        "chance": 40,
+        "target": 1
+      }
+    ],
+    "description": "Fire an incredibly bright gem at the opponenet with a chance to reduce their Accuracy.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 98,
+    "name": "Bind",
+    "type": "cloth",
+    "damage": 40,
+    "accuracy": 95,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Tightly wraps the enemy with cloth reducing its SPD.",
+    "tags": []
+  },
+  {
+    "id": 99,
+    "name": "Thunder",
+    "type": "sound",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Fire a booming sound which has a chance to reduce the target's ATK.",
+    "tags": []
+  },
+  {
+    "id": 100,
+    "name": "Rallying Cry",
+    "type": "sound",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 50,
+        "target": 0
+      },
+      {
+        "status": "+_def_1",
+        "chance": 50,
+        "target": 0
+      },
+      {
+        "status": "+_spd_1",
+        "chance": 50,
+        "target": 0
+      }
+    ],
+    "description": "Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.",
+    "tags": []
+  },
+  {
+    "id": 101,
+    "name": "Crystal Ball",
+    "type": "crystal",
+    "damage": 50,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "doubled",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.",
+    "tags": []
+  },
+  {
+    "id": 102,
+    "name": "Sonic Boom",
+    "type": "sound",
+    "damage": 40,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "priority_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Quickly launch a blast of sound, this move always goes first.",
+    "tags": []
+  },
+  {
+    "id": 103,
+    "name": "Ear Shatter",
+    "type": "sound",
+    "damage": 80,
+    "accuracy": 95,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Shout so loud that it shatters eardrums, has a chance to reduce DEF.",
+    "tags": []
+  },
+  {
+    "id": 104,
+    "name": "Healing Gems",
+    "type": "crystal",
+    "damage": 0,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "heal",
+        "chance": 15,
+        "target": 0
+      },
+      {
+        "status": "+_def_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Heals the user a little while slightly bolstering their DEF.",
+    "tags": []
+  },
+  {
+    "id": 105,
+    "name": "Scary Sheet",
+    "type": "cloth",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Catch the emeny off guard with a spooky cloth, dropping their DEF and SPD.",
+    "tags": []
+  },
+  {
+    "id": 106,
+    "name": "Fiber Slicer",
+    "type": "cloth",
+    "damage": 65,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 30,
+        "target": 3
+      }
+    ],
+    "description": "Slashes the target with highly compressed fibers, has a high chance to Crit.",
+    "tags": []
+  },
+  {
+    "id": 107,
+    "name": "Mummify",
+    "type": "cloth",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "doomed",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Wraps the target in cursed cloths, DOOMING the target.",
+    "tags": []
+  }
+]

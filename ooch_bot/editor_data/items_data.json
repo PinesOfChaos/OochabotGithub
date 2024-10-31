@@ -1,0 +1,202 @@
+[
+  {
+    "id": 0,
+    "name": "Potion",
+    "emote": "<:item_potion:1274937121370669118>",
+    "category": "heal_inv",
+    "type": "potion",
+    "price": 40,
+    "potency": 20,
+    "description": "Used to quickly heal 20 HP"
+  },
+  {
+    "id": 1,
+    "name": "Med-Potion",
+    "emote": "<:item_potion_hi:1274937134935052328>",
+    "category": "heal_inv",
+    "type": "potion",
+    "price": 100,
+    "potency": 50,
+    "description": "An advanced potion which heals 50 HP"
+  },
+  {
+    "id": 2,
+    "name": "Hi-Potion",
+    "emote": "<:item_potion_magic:1274937146423115922>",
+    "category": "heal_inv",
+    "type": "potion",
+    "price": 250,
+    "potency": 200,
+    "description": "A high tier potion which heals 200 HP"
+  },
+  {
+    "id": 3,
+    "name": "Prism",
+    "emote": "<:item_prism:1274937161262698536>",
+    "category": "prism_inv",
+    "type": "prism",
+    "price": 50,
+    "potency": 1,
+    "description": "A device used to capture Oochamon."
+  },
+  {
+    "id": 4,
+    "name": "Greater Prism",
+    "emote": "<:item_prism_greater:1274937183710740510>",
+    "category": "prism_inv",
+    "type": "prism",
+    "price": 150,
+    "potency": 1.5,
+    "description": "An improved prism with a higher capture rate."
+  },
+  {
+    "id": 5,
+    "name": "Grand Prism",
+    "emote": "<:item_prism_grand:1274937171513442359>",
+    "category": "prism_inv",
+    "type": "prism",
+    "price": 500,
+    "potency": 2,
+    "description": "A further modified prism with an even higher capture rate."
+  },
+  {
+    "id": 6,
+    "name": "Perfect Prism",
+    "emote": "<:item_prism_perfect:1274937195970428928>",
+    "category": "prism_inv",
+    "type": "prism",
+    "price": 10000,
+    "potency": 1000,
+    "description": "A prism with a shattered casing, nothing escapes its pull."
+  },
+  {
+    "id": 7,
+    "name": "Attack Crystal",
+    "emote": "<:item_attack_crystal:1274936834883059774>",
+    "category": "other_inv",
+    "type": "misc",
+    "price": 200,
+    "potency": 1,
+    "description": "Unlocks a hidden move for an Oochamon by releasing stored power."
+  },
+  {
+    "id": 8,
+    "name": "ID Card",
+    "emote": ":identification_card:",
+    "category": "other_inv",
+    "type": "misc",
+    "price": -1,
+    "potency": 1,
+    "description": "Your ID card. You look so fabulous!"
+  },
+  {
+    "id": 9,
+    "name": "Eyedrops",
+    "emote": "<:item_eyedrops:1274937019994472459>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 2,
+    "description": "Removes BLIND status effect."
+  },
+  {
+    "id": 10,
+    "name": "Shears",
+    "emote": "<:item_shears:1274937209652514838>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 4,
+    "description": "Removes SNARED status effect."
+  },
+  {
+    "id": 11,
+    "name": "Daylily",
+    "emote": "<:item_daylily:1274936962125402143>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 6,
+    "description": "Removes DOOMED status effect."
+  },
+  {
+    "id": 12,
+    "name": "Antiparasite",
+    "emote": "<:item_antiparasite:1274936818823069789>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 1,
+    "description": "Removes INFECTED status effect."
+  },
+  {
+    "id": 13,
+    "name": "Debug Chip",
+    "emote": "<:item_debugchip:1274936992462930001>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 3,
+    "description": "Removes DIGITIZED status effect."
+  },
+  {
+    "id": 14,
+    "name": "Cooling Balm",
+    "emote": "<:item_coolingbalm:1274936928625758269>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 200,
+    "potency": 0,
+    "description": "Removes BURNED status effect."
+  },
+  {
+    "id": 15,
+    "name": "Nullifying Sphere",
+    "emote": "<:item_null_sphere:1274937109995716648>",
+    "category": "heal_inv",
+    "type": "status",
+    "price": 1200,
+    "potency": "all",
+    "description": "Removes all status effects."
+  },
+  {
+    "id": 16,
+    "name": "Greem Boostgem",
+    "emote": "<:item_iv_hp:1274937089666056294>",
+    "category": "other_inv",
+    "type": "iv",
+    "price": 25000,
+    "potency": "hp",
+    "description": "Permanently increases Health of an Oochamon."
+  },
+  {
+    "id": 17,
+    "name": "Red Boostgem",
+    "emote": "<:item_iv_atk:1274937039460237382>",
+    "category": "other_inv",
+    "type": "iv",
+    "price": 25000,
+    "potency": "atk",
+    "description": "Permanently increases Attack of an Oochamon."
+  },
+  {
+    "id": 18,
+    "name": "Blue Boostgem",
+    "emote": "<:item_iv_def:1274937065317990486>",
+    "category": "other_inv",
+    "type": "iv",
+    "price": 25000,
+    "potency": "def",
+    "description": "Permanently increases Defense of an Oochamon."
+  },
+  {
+    "id": 19,
+    "name": "Yellow Boostgem",
+    "emote": "<:item_iv_spd:1274937099984048138>",
+    "category": "other_inv",
+    "type": "iv",
+    "price": 25000,
+    "potency": "spd",
+    "description": "Permanently increases Speed of an Oochamon."
+  }
+]
