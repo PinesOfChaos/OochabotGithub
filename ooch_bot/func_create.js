@@ -116,27 +116,33 @@ module.exports = {
 
     /**
      * Creates a move data object and adds it to the database.
-     * @param {Number} id The ID of the move
-     * @param {String} name The name of the move
-     * @param {String} type The type of the move
-     * @param {Number} damage How much damage the move does
-     * @param {Number} accuracy The moves accuracy
-     * @param {String} effect The effect of the move
-     * @param {Number} effect_chance The % chance for the move to hit
-     * @param {String} description The moves description
-     * @param {String} tags Tags related to a move
+     * @param {Number} move The object for the move
      */
-    create_move: function(id, name, type, damage, accuracy, effect, effect_chance, description, tags = []){
-        let key_id = id.toString();
-        db.move_data.set(key_id, id, 'id')
-        db.move_data.set(key_id, name, 'name')
-        db.move_data.set(key_id, type, 'type')
-        db.move_data.set(key_id, damage, 'damage')
-        db.move_data.set(key_id, accuracy, 'accuracy')
-        db.move_data.set(key_id, effect, 'effect')
-        db.move_data.set(key_id, effect_chance, 'effect_chance')
-        db.move_data.set(key_id, description, 'description')
-        db.move_data.set(key_id, tags, 'tags')
+    create_move: function(move){
+        // Required attributes
+        const requiredAttributes = [
+            "id",
+            "name",
+            "type",
+            "damage",
+            "accuracy",
+            "effect",
+            "description"
+        ];
+
+        if (move.tags === undefined) move.tags = [];
+    
+        // Check if all required attributes are present
+        for (let attr of requiredAttributes) {
+            if (!move.hasOwnProperty(attr)) {
+                console.log(`DATA ERROR: Missing required attribute: ${attr} for ${move.name}`);
+                return;
+            }
+        }
+    
+        // Set the move data in the enmap database
+        let key_id = move.id.toString();
+        db.move_data.set(key_id, move);
     },
 
     /**

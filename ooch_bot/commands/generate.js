@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, TileEmoteGuildsArray, Status, MoveTag, MoveTarget } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 const globalEventsJSON = require('../global_events.json');
 
@@ -3136,7 +3136,7 @@ module.exports = {
         }
 
         for (let obj of db.move_data.array()) {
-            moves_output_str += `${obj.id}|${obj.name}|${obj.type}|${obj.damage}|${obj.accuracy}|${obj.effect}|${obj.chance}|${obj.description}\n`;
+            moves_output_str += `${obj.id}|${obj.name}|${obj.type}|${obj.damage}|${obj.accuracy}|${obj.effect.map(v => `[${v.status}, ${v.chance}, ${v.target}]`)}|${obj.description}|${obj.tags}\n`;
         }
 
         for (let obj of db.item_data.array()) {

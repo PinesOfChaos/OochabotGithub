@@ -1,94 +1,108 @@
-0|Hit|neutral|10|100|-1|0|The user hits the target to deal damage.
-1|Bash|neutral|20|100|-1|0|The target is dealt some blunt damage.
-2|Spore Shot|fungal|30|100|-1|0|A puff of spore burst from the user's body.
-3|Pebble Blast|stone|30|100|-1|0|Fires a barrage of small pebbles.
-4|Fireball|flame|30|100|-1|0|Shoots a ball of fire at the target.
-5|Slash|neutral|50|95|-1|0|The user slashes at the target with sharp appendages.
-6|Take Over|fungal|35|90|infected|100|Fungal spores are launched which INFECT the target.
-7|Dust Storm|stone|30|90|blinded|100|A storm is whipped up which leaves the target BLINDED.
-8|Engulf|flame|40|90|burned|100|The target is BURNED by red-hot flames.
-9|Impale|neutral|80|100|-1|0|Impales the target with a spike.
-10|Bloom|fungal|70|90|-1|0|Explosive spores are launched at the target to deal damage.
-11|Boulderdash|stone|70|90|-1|0|Flings a massive boulder at the target.
-12|Torch|flame|70|90|-1|0|The user hits the target to deal damage
-13|Blight|fungal|60|90|blinded|50|If the infection takes hold, the target is BLINDED.
-14|Lava Lance|stone|65|95|burned|50|Red-hot stone is launched to BURN the target.
-15|Tumorize|flame|50|95|infected|50|The user creates radiation in order to INFECT the target.
-16|Glimmer|stone|20|90|blinded|100|Refracts light in an attempt to BLIND the target.
-17|Gem Bash|stone|110|80|-1|0|Crystallized stones are swung wildly to inflict damage.
-18|Caustic Orb|ooze|60|100|burned|75|A ball of caustic goo is launched with a high chance of BURNING.
-19|Pulverize|neutral|130|80|-1|0|The target is slammed to deal massive damage.
-20|Ash Blast|flame|50|95|blinded|75|Hot ashes are launched at the target with a high chance to BLIND.
-21|Inferno|flame|100|70|burned|100|Anything caught by these wild flames is BURNED
-22|Digitize|tech|50|100|digitized|100|The target becomes DIGITIZED when hit by this strange beam.
-23|Clamp Down|neutral|45|100|snared|30|Clamps down tight on the target to deal damage and SNARE them if you get lucky.
-24|Magic Bolt|magic|30|100|-1|0|Fires a bolt of magic energy.
-25|Sparkler|flame|40|100|blinded|30|Shoots bright sparks with the potential to BLIND.
-26|Arca Strike|magic|80|90|-1|0|Fires a powerful burst of magic.
-27|Call Thunder|magic|60|90|burned|50|Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.
-28|Sticky Orb|ooze|80|90|snared|60|Fling a orb of goo that can SNARE the target.
-29|Glob|ooze|30|100|-1|0|Pelts the target with a viscous ooze.
-30|Blink|magic|10|100|doubled|100|Travels to a different time to damage the target again, DOUBLING the next damage they take.
-31|Time Warp|magic|50|80|doubled|50|Attempts to DOUBLE the next damage the opponent takes by damaging them in the future.
-32|Mycelium Whip|fungal|50|90|snared|50|Shoots whips made of mycelium in an attempt to SNARE the opponent.
-33|Parasitize|ooze|30|100|infected|50|Parasitic bodies are launched at the target potentially INFECTING them.
-34|Corrode|ooze|70|80|doubled|30|Powerful acids are weaken the targets defenses, potentially DOUBLING the next damage they take.
-35|Grind|stone|80|90|-1|0|Grinds against the opponent with rough, jagged edges.
-36|Metal Lance|tech|70|90|-1|0|Stabs the opponent with a metallic object.
-37|Iron Hammer|tech|50|100|-1|0|A heavy, metal object is hammered against the target.
-38|Laminate|tech|30|90|snared|100|Covers the target in a tough plastic substance to SNARE them.
-39|Entomb|stone|60|80|snared|50|Causes stones to fall onto the target, leaving them SNARED if they get trapped.
-40|undefined_int|void|100|100|-1|0|TEST MOVE
-41|Strike|neutral|20|100|critical|30|A targeted strike that is likely to land a Critical Hit.
-42|Barrage|tech|100|80|recoil|30|Devastating blasts damage the target, the user is hit with Recoil.
-43|Eruption|flame|70|100|recoil|20|Blazing heat erupts from the user, damaging itself and the opponent.
-44|Self Destruct|tech|250|100|recoil|100|The user self destructs to inflict massive damage.
-45|Siphon|fungal|20|100|vampire|10|The user damages the opponent, slightly Healing itself in the process.
-46|Drain Life|magic|50|50|vampire|50|A horribly innacurate move with the potential to greatly heal the user.
-47|Restruct|stone|0|-100|heal|25|Stones are reorganized in the user's body to restore some HP.
-48|Flurry|tech|75|90|critical|50|A flurry of steel blades shred the target, with a high chance to land a Critical Hit.
-49|Crash Landing|stone|90|90|recoil|20|The user falls down from the sky inflicting high damage, but injuring itself.
-50|Solar Blast|flame|85|100|blinded|50|Lob a brilliant ball of flame, potentially BLINDING the target.
-51|Tangled Threads|neutral|70|100|snared|30|Threads are shot at the target dealing damage with a chance to SNARE them.
-52|Fated Threads|magic|80|100|snared|50|Magical threads fly through the air in an attempt to SNARE the target.
-53|Sync Strike|neutral|70|100|typematch|100|Launch a ball of energy synchronized with the user's type
-54|Threefold|neutral|90|90|critical|30|The target is struck repeatedly, leaving it open to Critical Hits.
-55|Glass Blades|stone|80|70|critical|50|Brittle blades are used to strike at the opponent's weak spots.
-56|Gravitate|magic|60|100|-1|0|The user manipulates gravity to fling itself at the target.
-57|Tenderize|neutral|120|70|recoil|30|The user slams its body into the opponent, but is hit with recoil.
-58|Byte Bite|tech|30|100|-1|undefined|Form digital jaws that clamp down on the target.
-59|Sawblade|tech|50|100|-1|undefined|The user hits the target with a metal blade.
-60|Soften|ooze|0|-100|+_def_1|undefined|Softens the body making it harder to damage, increasing its DEF.
-61|Embolden|neutral|0|-100|+_atk_1|undefined|Prepares the user to fight with all its strength, increasing its ATK.
-62|Hasten|neutral|0|-100|+_spd_1|undefined|The user readies itself to move quickly, increasing its SPD.
-63|Brittle|stone|0|100|-_def_1|undefined|Makes the opponent's body brittle, lowering its DEF.
-64|Intimidate|neutral|0|100|-_atk_1|undefined|Glare at the opponent, lowering its DEF.
-65|Mud|ooze|0|100|-_spd_1|undefined|Throw mud on the opponent, lowering its SPD.
-66|Hype-Up|neutral|0|-100|+_atk_1|+_spd_1|undefined|Hypes up the user, increasing its ATK and SPD.
-67|Sharpen|tech|0|-100|+_atk_2|undefined|Sharpens any edges the user has, greatly increasing its ATK.
-68|Cursed Eye|magic|10|100|blinded|burned|undefined|Curses the opponent, applying BLINDED and BURNED.
-69|Suplex|neutral|60|100|-_def_1|undefined|Suplex the opponent, damaging them and reducing DEF.
-70|Enfeebling Spore|fungal|30|100|-_atk_1|-_spd_1|undefined|Launch a damaging spore at the opponent which lowers ATK and SPD.
-71|Torque|tech|0|-100|-_spd_2|+_atk_4|undefined|Reduce the user's SPD to massively increase ATK.
-72|Slow Burn|flame|0|-100|-_spd_1|+_def_2|undefined|Cool the user's flame, greatly increasing DEF at the cost of some SPD.
-73|Kaleidoscope|magic|50|100|blinded|snared|undefined|Disorient the opponent in a room that BLINDS and SNARES
-74|Blinding Beam|flame|75|80|blinded|undefined|Fire a brilliant beam of light that BLINDS the opponent.
-75|Overgrowth|fungal|0|-100|+_atk_1|+_def_1|+_spd_1|undefined|Rapid fungal growth increases ATK, DEF and SPD.
-76|Myco-Burst|fungal|75|80|blinded|undefined|Fire a spore-filled bomb which BLINDS the opponent.
-77|Thorn Shot|fungal|60|90|critical|undefined|Shoot a condensed fungal thorn with a high critical chance
-78|Slurp Up|ooze|0|-100|heal|undefined|The user gathers missing parts of its body to restore half its HP.
-79|Digital Gamble|tech|0|-100|random|undefined|The user randomly uses a move.
-80|Sedimentation|stone|0|-100|+_def_2|undefined|Spend the turn gathering stone to greatly increase DEF.
-81|Plasma Cannon|flame|120|70|-1|undefined|A high damage blast of extreme heat.
-82|Phantom Bullet|magic|30|100|critical|undefined|Fire a highly accurate ghost bullet that always crits.
-83|Firey Horn|flame|75|100|burned|undefined|Attack with blazing horns that have a chance to BURN the target.
-84|Radiate|flame|0|100|-_atk_2|burned|undefined|Release stored-up heat to BURN the target and reduce its ATK.
-85|Caltrops|neutral|20|100|-_spd_1|undefined|Scatter damaging spikes that damage and reduce the target's SPD
-86|Lurk|neutral|0|-100|+_atk_1|focused|undefined|undefined
-87|Fog|neutral|0|100|-_acc_1|undefined|Spray thick fog which reduces accuracy.
-88|Purify|neutral|0|-100|clear_status|undefined|Removes all status effects.
-89|Reset|neutral|0|-100|clear_stat_stages|undefined|Clears all stat changes.
-90|Debug Bomb|tech|100|80|clear_status|undefined|Fire a high-damage bomb that clears any status effects from its target.
-91|Entrench|fungal|0|-100|+_def_3|snared|undefined|Becomes SNARED, but greatly boosts DEF.
-92|Null Sphere|void|60|100|-1|undefined|Fire a sphere of dark matter.
-93|Impact Blast|neutral|150|80|vanished|undefined|Hit the opponent so hard they get launched and VANISH.
+0|Hit|neutral|10|100||The user hits the target to deal damage.|
+1|Bash|neutral|20|100||The target is dealt some blunt damage.|
+2|Spore Shot|fungal|30|100||A puff of spore burst from the user's body.|
+3|Pebble Blast|stone|30|100||Fires a barrage of small pebbles.|
+4|Fireball|flame|30|100||Shoots a ball of fire at the target.|
+5|Slash|neutral|50|95||The user slashes at the target with sharp appendages.|
+6|Take Over|fungal|30|90|[infected, 100, 1]|Fungal spores are launched which INFECT the target.|
+7|Dust Storm|stone|30|90|[blinded, 100, 1]|A storm is whipped up which leaves the target BLINDED.|
+8|Engulf|flame|30|90|[burned, 100, 1]|The target is BURNED by red-hot flames.|
+9|Impale|neutral|80|100||Impales the target with a spike.|
+10|Impale|fungal|70|90||Explosive spores are launched at the target to deal damage.|
+11|Impale|stone|70|90||Flings a massive boulder at the target.|
+12|Impale|flame|70|90||The user stabs at the target to deal damage.|
+13|Blight|fungal|60|90|[blinded, 50, 1]|If the infection takes hold, the target is BLINDED.|
+14|Lava Lance|stone|60|90|[burned, 50, 1]|Red-hot stone is launched to BURN the target.|
+15|Tumorize|flame|60|90|[infected, 50, 1]|The user creates radiation in order to INFECT the target.|
+16|Glimmer|crystal|20|90|[blinded, 100, 1]|Refracts light in an attempt to BLIND the target.|0
+17|Gem Bash|crystal|110|70||Massive crystals are swung wildly to inflict damage.|
+18|Caustic Orb|crystal|60|100|[burned, 75, 1]|A ball of caustic goo is launched with a high chance of BURNING.|
+19|Pulverize|neutral|150|80|[-_atk_1, 100, 0]|The target is slammed to deal massive damage, but the user exausts itself, losing ATK.|
+20|Ash Blast|flame|50|95|[blinded, 75, 1]|Hot ashes are launched at the target with a high chance to BLIND.|
+21|Inferno|flame|100|95|[burned, 100, 2]|A blazing inferno afflicts all targets with a BURN.|
+22|Digitize|flame|50|100|[digitized, 100, 1]|The target becomes DIGITIZED when hit by this strange beam.|
+23|Clamp Down|flame|45|100|[snared, 30, 1]|Clamps down tight on the target to deal damage and SNARE them if you get lucky.|
+24|Magic Bolt|magic|30|100||Fires a bolt of magic energy.|
+25|Sparkler|flame|40|100|[blinded, 30, 1]|Shoots bright sparks with the potential to BLIND.|
+26|Arca Strike|magic|80|100||Fires a powerful burst of magic.|
+27|Call Lightning|magic|80|90|[burned, 30, 1]|Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.|1
+28|Sticky Orb|ooze|80|90|[snared, 60, 1]|Fling a orb of goo that can SNARE the target.|
+29|Glob|ooze|30|100||Pelts the target with a viscous ooze.|
+30|Blink|magic|0|100|[doubled, 100, 1]|Travels to a different time, ensuring the next damage the target takes is DOUBLED.|2
+31|Time Warp|magic|50|100|[doubled, 50, 1]|Warps spacetime around the target, with a chance to DOUBLE the next damage they take.|2
+32|Mycelium Whip|fungal|50|100|[snared, 50, 1]|Shoots whips made of mycelium in an attempt to SNARE the opponent.|
+33|Parasitize|ooze|40|50|[infected, 50, 1]|Parasitic bodies are launched at the target potentially INFECTING them.|
+34|Corrode|ooze|40|50|[-_def_1, 100, 1]|Powerful acids damage the target, lowering its DEF.|
+35|Grind|stone|80|90||Grinds against the opponent with rough, jagged edges.|
+36|Metal Lance|tech|70|90||Stabs the opponent with a metallic object.|
+37|Iron Hammer|tech|50|100||A heavy, metal object is hammered against the target.|
+38|Laminate|tech|30|90|[snared, 100, 1]|Covers the target in a tough plastic substance to SNARE them.|
+39|Entomb|tech|60|80|[snared, 50, 1]|Stones fall onto the target, leaving them SNARED if they get trapped.|
+40|undefined_int|void|100|100||TEST MOVE|
+41|Precision Strike|neutral|20|100|[critical, 60, 3]|A targeted strike that is likely to land a Critical Hit.|
+42|Barrage|neutral|100|80|[recoil, 30, 0]|Devastating blasts damage the target, the user is hit with Recoil.|
+43|Eruption|flame|100|80|[recoil, 30, 0]|Blazing heat erupts from the user, dealing high damage but also being hit with Recoil.|
+44|Self Destruct|tech|250|100|[recoil, 100, 0]|The user self destructs to inflict massive damage.|
+45|Siphon|fungal|20|100|[vampire, 10, 0]|The user damages the opponent, slightly Healing itself in the process.|
+46|Drain Life|magic|50|50|[vampire, 50, 0]|A horribly innacurate move with the potential to greatly heal the user.|
+47|Restruct|stone|0|100|[heal, 25, 0]|Stones are reorganized in the user's body to restore some HP.|
+48|Flurry|tech|75|90|[critical, 50, 3]|A flurry of steel blades shred the target, with a high chance to land a Critical Hit.|
+49|Crash Landing|stone|90|90|[recoil, 20, 0]|The user falls down from the sky inflicting high damage, but injuring itself.|
+50|Solar Blast|flame|85|100|[blinded, 50, 1]|Lob a brilliant ball of flame, potentially BLINDING the target.|
+51|Tangled Threads|cloth|70|100|[blinded, 30, 1]|Threads are shot at the target dealing damage with a chance to SNARE them.|
+52|Fated Threads|cloth|70|100|[doubled, 50, 1]|Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.|
+53|Sync Strike|neutral|70|100|[typematch, 100, 0]|Launch a ball of energy synchronized with the user's type.|
+54|Threefold|tech|90|90|[critical, 30, 3]|The target is struck repeatedly, leaving it open to Critical Hits.|
+55|Glass Blades|crystal|80|70|[critical, 50, 3]|Brittle blades are used to strike at the opponent's weak spots with a high chance to Crit.|
+56|Gravitate|magic|60|100||The user manipulates gravity to fling itself at the target.|
+57|Tenderize|neutral|120|70|[recoil, 30, 0]|The user slams its body into the opponent, but is hit with recoil.|
+58|Byte Bite|tech|60|100||Form digital jaws that clamp down on the target.|
+59|Sawblade|tech|50|95||The user hits the target with a metal blade.|
+60|Limber|ooze|0|100|[+_def_1, 100, 0]|Softens the body making it harder to damage, increasing its DEF.|
+61|Embolden|neutral|0|100|[+_atk_1, 100, 0]|Prepares the user to fight with all its strength, increasing its ATK.|
+62|Hasten|neutral|0|100|[+_spd_1, 100, 0]|The user readies itself to move quickly, increasing its SPD.|
+63|Brittle|stone|0|100|[-_def_1, 100, 1]|Makes the opponent's body brittle, lowering its DEF.|
+64|Intimidate|neutral|0|100|[-_atk_1, 100, 1]|Glare at the opponent, lowering its ATK.|
+65|Mud|ooze|0|100|[-_spd_1, 100, 1]|Throw mud on the opponent, lowering its SPD.|
+66|Hype-Up|neutral|0|100|[+_atk_1, 100, 0],[+_spd_1, 100, 0]|Hypes up the user, increasing its ATK and SPD.|
+67|Sharpen|tech|0|100|[+_atk_2, 100, 0]|Sharpens any edges the user has, greatly increasing its ATK.|
+68|Cursed Eye|magic|10|100|[blinded, 100, 1],[burned, 100, 1]|Shoot a beam that curses the opponent, applying BLINDED and BURNED.|
+69|Suplex|tech|60|90|[-_def_1, 100, 1]|Suplex the opponent, damaging them and reducing DEF.|
+70|Enfeebling Spore|fungal|30|90|[-_atk_1, 100, 1],[-_spd_1, 100, 1]|Launch a damaging spore at the opponent which lowers ATK and SPD.|
+71|Torque|tech|0|100|[-_spd_1, 100, 0],[+_atk_2, 100, 0]|Reduce the user's SPD to massively increase ATK.|
+72|Slow Burn|flame|0|100|[-_spd_1, 100, 0],[+_def_2, 100, 0]|Reduces the user's heat, greatly increasing DEF at the cost of some SPD.|
+73|Kaleidoscope|crystal|0|100|[blinded, 100, 1],[snared, 100, 1]|Disorient the opponent in a room that BLINDS and SNARES.|0
+74|Blinding Beam|crystal|75|80|[blinded, 100, 1]|Fire a brilliant beam of light that BLINDS the opponent.|0
+75|Overgrowth|fungal|0|100|[+_atk_1, 100, 0],[+_def_1, 100, 0],[+_spd_1, 100, 0]|Rapid fungal growth increases ATK, DEF, and SPD.|
+76|Myco-Burst|fungal|75|80|[blinded, 100, 1]|Fire a spore-filled bomb which BLINDS the opponent.|
+77|Thorn Shot|fungal|60|90|[critical, 50, 3]|Shoot a condensed fungal thorn with a high critical chance.|
+78|Slurp Up|ooze|0|100|[heal, 50, 0]|The user gathers missing parts of its body to restore half its HP.|
+79|Digital Gamble|tech|0|100|[random, 100, 3]|The user randomly uses a move.|
+80|Sedimentation|stone|0|100|[+_def_2, 100, 0]|Spend the turn gathering stone to greatly increase DEF.|
+81|Plasma Cannon|flame|120|100|[-_spd_1, 100, 0]|A high damage blast of extreme heat, but lowers the user's SPD afterward.|
+82|Phantom Bullet|magic|30|100|[critical, 100, 3]|Fire a highly accurate ghost bullet that always Crits.|
+83|Firey Bullet|flame|70|100|[burned, 50, 1]|Attack with blazing horns that have a chance to BURN the target.|
+84|Radiate|flame|0|100|[-_atk_1, 100, 1],[burned, 100, 1]|Release stored-up radiation to BURN the target and reduce its ATK.|0
+85|Caltrops|stone|20|100|[-_spd_1, 100, 1]|Scatter damaging spikes that damage and reduce the target's SPD.|
+86|Lurk|flame|0|100|[+_atk_1, 100, 0],[focused, 100, 0]|Lurk in the shadows boosting ATK and makes the user FOCUSED.|
+87|Fog|neutral|0|100|[-_acc_2, 100, 0],[-_acc_2, 100, 1]|Spray thick fog which heavily reduces Accuracy on both sides.|
+88|Purify|neutral|0|100|[clear_status, 100, 0]|Removes all status effects from the user.|
+89|Reset|neutral|0|100|[clear_stat_stages, 100, 0]|Clears all stat changes from the user.|
+90|Debug Bomb|tech|100|80|[clear_status, 100, 1]|Fire a high-damage bomb that clears any status effects from its target.|
+91|Entrench|fungal|0|100|[+_def_3, 100, 0],[snared, 100, 0]|The user roots into the ground, becoming SNARED, but greatly boosting its DEF.|
+92|Null Sphere|void|60|100||Fire a sphere of dark matter.|
+93|High Impact|neutral|170|80|[vanished, 100, 1]|Hit the opponent so hard they get launched and VANISH.|
+94|Shards|crystal|20|100||Shoot several small shards of crystal at the enemy to deal damage.|
+95|Rag Whip|cloth|20|100||Pummel the opponent with cloth whips.|
+96|Screech|sound|20|100||Emit a high-pitched screech that shatters objects.|
+97|Lense Flare|crystal|40|100|[-_acc_1, 40, 1]|Fire an incredibly bright gem at the opponenet with a chance to reduce their Accuracy.|0
+98|Bind|cloth|40|95|[-_spd_1, 100, 1]|Tightly wraps the enemy with cloth reducing its SPD.|
+99|Thunder|sound|30|100|[-_atk_1, 30, 1]|Fire a booming sound which has a chance to reduce the target's ATK.|
+100|Rallying Cry|sound|0|100|[+_atk_1, 50, 0],[+_def_1, 50, 0],[+_spd_1, 50, 0]|Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.|
+101|Crystal Ball|crystal|50|90|[doubled, 30, 1]|Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.|
+102|Sonic Boom|sound|40|100|[priority_1, 100, 0]|Quickly launch a blast of sound, this move always goes first.|
+103|Ear Shatter|sound|80|95|[-_def_1, 30, 1]|Shout so loud that it shatters eardrums, has a chance to reduce DEF.|
+104|Healing Gems|crystal|0|90|[heal, 15, 0],[+_def_1, 100, 0]|Heals the user a little while slightly bolstering their DEF.|
+105|Scary Sheet|cloth|0|100|[-_def_1, 100, 1],[-_spd_1, 100, 1]|Catch the emeny off guard with a spooky cloth, dropping their DEF and SPD.|
+106|Fiber Slicer|cloth|65|100|[critical, 30, 3]|Slashes the target with highly compressed fibers, has a high chance to Crit.|
+107|Mummify|cloth|0|100|[doomed, 100, 1]|Wraps the target in cursed cloths, DOOMING the target.|

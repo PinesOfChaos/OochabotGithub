@@ -64,3 +64,12 @@
 63|Swaying|Increases DEF by 1 stage but lowers accuracy by 1 stage.
 64|Thrashing|Increases ATK by 1 stage but lowers evasion by 1 stage.
 65|Union|Increases ATK and DEF by 1 stage.
+66|Protector|Immune to inneffective damage during the turn it switches in.
+67|Phantasmal|Immune to Neutral-type moves.
+68|Matryoshka|The first time it would be KO'd, restores its HP to half.
+69|Thorned|Attacks deal extra damage based on DEF.
+70|Downward Spiral|Randomly lowers one of its stats 1 stage at the end of each turn.
+71|Constructor|Raises DEF by 1 stage each turn.
+72|Neutralizer|No Oochamon are affected by status effects.
+73|Bass Boost|Boosts the power of Sound moves.
+74|Stealthy|Gets FOCUSED if it hasn't dealt damage this turn.
