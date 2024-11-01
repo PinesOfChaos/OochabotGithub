@@ -33,6 +33,10 @@ var ElementIcons = {
 	icon_stone = preload("res://elements/icon_stone.png"),
 	icon_tech = preload("res://elements/icon_tech.png"),
 	icon_void = preload("res://elements/icon_void.png"),
+	icon_cloth = preload("res://elements/icon_cloth.png"),
+	icon_crystal = preload("res://elements/icon_crystal.png"),
+	icon_martial = preload("res://elements/icon_martial.png"),
+	icon_sound = preload("res://elements/icon_sound.png")
 }
 var DataPath = "/"
 var WorkingDir = "/"
@@ -83,6 +87,19 @@ func element_info(element):
 		"void":
 			string = "Void"
 			texture = Global.ElementIcons.icon_void
+		"crystal":
+			string = "Crystal"
+			texture = Global.ElementIcons.icon_crystal
+		"sound":
+			string = "Sound"
+			texture = Global.ElementIcons.icon_sound
+		"cloth":
+			string = "Cloth"
+			texture = Global.ElementIcons.icon_cloth
+		"martial":
+			string = "Martial"
+			texture = Global.ElementIcons.icon_martial
+		
 	
 	return([string, texture])
 	

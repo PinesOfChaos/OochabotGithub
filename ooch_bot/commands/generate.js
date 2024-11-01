@@ -475,7 +475,7 @@ module.exports = {
             description : 'Massive crystals are swung wildly to inflict damage.',
         });
         create_move({
-            id : 18, name : 'Caustic Orb', type : OochType.Crystal,
+            id : 18, name : 'Caustic Orb', type : OochType.Ooze,
             damage : 60, accuracy: 100,
             effect : [{status : 'burned', chance : 75, target : MoveTarget.Enemy}],
             description : 'A ball of caustic goo is launched with a high chance of BURNING.',

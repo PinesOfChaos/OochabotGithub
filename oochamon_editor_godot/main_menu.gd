@@ -83,102 +83,89 @@ func refresh_data():
 	var data_location = Global.DataPath.split("Maps")[0] + "/editor_data"
 	
 	#Abilities
-	var f_abilities = FileAccess.open(data_location + "/abilities_data.txt", FileAccess.READ)
-	if FileAccess.get_open_error():
-		return
+	var _f_abilities = FileAccess.open(data_location + "/abilities_data.json", FileAccess.READ)
+	var _text_abilities = _f_abilities.get_as_text()
+	var _data_abilities = JSON.parse_string(_text_abilities)
 	
-	ln = f_abilities.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
+	for ability in _data_abilities:
 		Global.DataAbilities.push_back({
-			ability_index = int(lnsplit[0]),
-			ability_name = lnsplit[1],
-			ability_desc = lnsplit[2],
+			ability_index = ability.id,
+			ability_name = ability.name,
+			ability_desc = ability.description	
 		})
-		ln = f_abilities.get_line()
 	
 	#Items
-	var f_items = FileAccess.open(data_location + "/items_data.txt", FileAccess.READ)
-	ln = f_items.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
+	var _f_items = FileAccess.open(data_location + "/items_data.json", FileAccess.READ)
+	var _text_items = _f_items.get_as_text()
+	var _data_items = JSON.parse_string(_text_items)
+	
+	for item in _data_items:
 		Global.DataItems.push_back({
-			item_index = int(lnsplit[0]),
-			item_name = lnsplit[1],
-			item_emote = lnsplit[2],
-			item_inv = lnsplit[3],
-			item_type = lnsplit[4],
-			item_power = float(lnsplit[5]),
-			item_desc = lnsplit[6],
+			item_index = item.id,
+			item_name = item.name,
+			item_emote = item.emote,
+			item_inv = item.category,
+			item_type = item.type,
+			item_power = item.potency,
+			item_desc = item.description,
 		})
-		ln = f_items.get_line()
 	
 	#Moves
-	var f_moves = FileAccess.open(data_location + "/moves_data.txt", FileAccess.READ)
-	ln = f_moves.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
+	var _f_moves = FileAccess.open(data_location + "/moves_data.json", FileAccess.READ)
+	var _text_moves = _f_moves.get_as_text()
+	var _data_moves = JSON.parse_string(_text_moves)
+	
+	for move in _data_moves:
 		Global.DataMoves.push_back({
-			move_index = int(lnsplit[0]),
-			move_name = lnsplit[1],
-			move_element = lnsplit[2],
-			move_power = int(lnsplit[3]),
-			move_acc = int(lnsplit[4]),
-			move_status = lnsplit[5],
-			move_chance = int(lnsplit[6]),
-			move_desc = lnsplit[7],
+			move_index = move.id,
+			move_name = move.name,
+			move_element = move.type,
+			move_power = move.damage,
+			move_acc = move.accuracy,
+			move_status = move.effect,
+			move_desc = move.description,
+			move_tags = move.tags
 		})
-		ln = f_moves.get_line()
 	
 	#Oochamon
-	var f_oochamon = FileAccess.open(data_location + "/ooch_data.txt", FileAccess.READ)
-	ln = f_oochamon.get_line()
-	while ln != "":
-		lnsplit = ln.split("|")
-		var moves_list = lnsplit[10].split(",")
-		var len = moves_list.size()
+	var _f_oochamon = FileAccess.open(data_location + "/ooch_data.json", FileAccess.READ)
+	var _text_oochamon = _f_oochamon.get_as_text()
+	var _data_oochamon = JSON.parse_string(_text_oochamon)
+	
+	for i in _data_oochamon.size():
+		var _mon = _data_oochamon[i]
+		
+		#Create move list
 		var moves_arr = []
-		var mv_lv
-		var mv_id
-		for i in moves_list.size()/2:
-			mv_lv = int(moves_list[(i * 2)])
-			mv_id = int(moves_list[(i * 2) + 1])
+		for _move in _mon.move_list:
 			moves_arr.push_back({
-				move_level = mv_lv,
-				move_index = mv_id
+				move_level = _move[0],
+				move_index = _move[1]
 			})
-			
-		var abi_list = lnsplit[11].split(",")
-		var abi_arr = []
 		
-		for i in abi_list.size():
-			abi_arr.push_back(int(abi_list[i]))
-		
-		var index = lnsplit[0]
-		var emote = lnsplit[1].split(":")[2]
-		emote = emote.replace(">","")
-		download_texture("https://cdn.discordapp.com/emojis/" + emote + ".png","oochamon/" + ("00" + index).right(3) + ".png")
+		#Download related image
+		var emoji_id = _mon.emote.split(":")[2].replace(">","")
+		var link = "https://cdn.discordapp.com/emojis/" + emoji_id + ".png?size=32&quality=lossless"
+		download_texture(link, "oochamon/" + ("00" + str(_mon.id)).right(3) + ".png")
 		
 		Global.DataOochamon.push_back({
-			ooch_index = int(lnsplit[0]),
-			ooch_emote = lnsplit[1],
-			ooch_link_image = lnsplit[2],
-			ooch_name = lnsplit[3],
-			ooch_desc = lnsplit[4],
-			ooch_element = lnsplit[5].split(","),
-			ooch_hp = int(lnsplit[6]),
-			ooch_atk = int(lnsplit[7]),
-			ooch_def = int(lnsplit[8]),
-			ooch_spd = int(lnsplit[9]),
+			ooch_index = _mon.id,
+			ooch_emote = _mon.emote,
+			ooch_link_image = link,
+			ooch_name = _mon.name,
+			ooch_desc = _mon.oochive_entry,
+			ooch_element = _mon.type,
+			ooch_hp = _mon.hp,
+			ooch_atk = _mon.atk,
+			ooch_def = _mon.def,
+			ooch_spd = _mon.spd,
 			ooch_moves = moves_arr,
-			ooch_ability = abi_arr,
-			ooch_evo_to = int(lnsplit[12]),
-			ooch_evo_lv = int(lnsplit[13]),
+			ooch_ability = _mon.abilities,
+			ooch_evo_to = _mon.evo_id,
+			ooch_evo_lv = _mon.evo_lvl,
 			ooch_sprite = -1,
 			ooch_texture = -1
 		})
-		ln = f_oochamon.get_line()
-	#print(Global.DataTiles)
 	
 	#Tiles
 	var f_tiles = FileAccess.open(data_location + "/tiles_data.txt", FileAccess.READ)

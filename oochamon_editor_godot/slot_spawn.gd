@@ -16,13 +16,15 @@ var spawn_slot_data = {
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for i in Global.DataOochamon.size():
-		o_button_slot_species.add_icon_item(
-			Global.DataOochamon[i].ooch_texture,
-			Global.DataOochamon[i].ooch_name,
-			i
-		)
-	
-	print([lv_min, lv_max, species])
+		var ooch = Global.DataOochamon[i]
+		
+		if ooch.ooch_index >= 0:
+			o_button_slot_species.add_icon_item(
+				ooch.ooch_texture,
+				ooch.ooch_name,
+				ooch.ooch_index
+			)
+		
 	
 	o_lv_min.value = spawn_slot_data.min_level
 	o_lv_max.value = spawn_slot_data.max_level

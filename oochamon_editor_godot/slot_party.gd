@@ -40,17 +40,15 @@ var slot_data = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in Global.DataOochamon.size():
-		o_slot_species.add_icon_item(
-			Global.DataOochamon[i].ooch_texture,
-			Global.DataOochamon[i].ooch_name,
-			i
-		)
 	
-	#while slot_data.moveset.size() < 4:
-		#slot_data.moveset.push_back(9999)
-		
-	print(slot_data.moveset)
+	for i in Global.DataOochamon.size():
+		var ooch = Global.DataOochamon[i]
+		if ooch.ooch_index >= 0:
+			o_slot_species.add_icon_item(
+				ooch.ooch_texture,
+				ooch.ooch_name,
+				ooch.ooch_index
+			)
 	
 	refresh_abilities(slot_data.id)
 	refresh_moves(slot_data.id)
@@ -147,9 +145,10 @@ func refresh_moves(index, overwrite = true):
 		var move_lv
 		var element
 		var element_texture
-		var step = 0
+		
 		var tip
 		for i in children.size():
+			var step = 0
 			child = children[i]
 			child.clear()
 			child.add_item("",9999)
@@ -163,11 +162,25 @@ func refresh_moves(index, overwrite = true):
 					element_texture = Global.element_info(move.move_element)[1]
 					tip = (move.move_desc + "\n" +
 						"Damage: " + str(move.move_power) + "\n" +
-						"Accuracy: " + str(move.move_acc) + "\n"
+						"Accuracy: " + str(move.move_acc) + "\n\n"
 					)
 					
-					if(move.move_status != "-1"):
-						tip += "(" + str(move.move_chance) + "%) " + move.move_status.capitalize()
+					#Status Effects
+					for effect in move.move_status:
+						var target_text = ""
+						match int(effect.target):
+							0: target_text = " Self "
+							1: target_text = " Enemy "
+							2: target_text = " All "
+							3: target_text = " " #none
+							_: print("n/a")
+								
+						tip += str(effect.chance) + "% " + target_text + effect.status.capitalize() 
+					
+					#Tags
+					if move.move_tags.size() > 0:
+						tip += "\n\nTags: " + str(move.move_tags)
+						
 					child.add_icon_item(element_texture, move.move_name, move_id)
 					child.set_item_tooltip(step + 1, tip)
 					step += 1
