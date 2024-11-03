@@ -1,11 +1,90 @@
 {
-	"map_events": [],
+	"map_events": [
+		{
+			"event_name": "ev_tutorial_8",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 6
+		},
+		{
+			"event_name": "ev_tutorial_7",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 15
+		},
+		{
+			"event_name": "ev_tutorial_6",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 22
+		},
+		{
+			"event_name": "ev_tutorial_5",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 29
+		},
+		{
+			"event_name": "ev_tutorial_4",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 36
+		},
+		{
+			"event_name": "ev_tutorial_3",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 43
+		},
+		{
+			"event_name": "ev_tutorial_2",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 50
+		},
+		{
+			"event_name": "ev_tutorial_1",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0,
+			"width": 0,
+			"x": 8,
+			"y": 53
+		}
+	],
 	"map_info": {
 		"map_battleback": "",
 		"map_name": "tutorial"
 	},
 	"map_npcs": [],
-	"map_savepoints": [],
+	"map_savepoints": [
+		{
+			"is_default": false,
+			"x": 8,
+			"y": 57
+		}
+	],
 	"map_shops": [],
 	"map_spawn_zones": [],
 	"map_tiles": [
