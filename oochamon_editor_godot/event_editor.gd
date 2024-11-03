@@ -42,7 +42,8 @@ func refresh_events_list():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if Input.is_action_just_pressed("quicksave"):
+		_on_button_save_pressed()
 
 func resize() -> void:
 	scroll_container.size.x = get_tree().get_root().get_size().x
@@ -99,7 +100,7 @@ func _on_button_save_pressed() -> void:
 			
 	Global.DataEvents[event_name] = data
 	
-	var path = Global.WorkingDir.split("Maps/")[0] + "global_events_test.json"
+	var path = Global.WorkingDir.split('/Maps')[0] + "/global_events.json"
 	var save_json = FileAccess.open(path, FileAccess.WRITE)
 	save_json.store_line(JSON.stringify(Global.DataEvents,"\t"))
 	refresh_events_list()
