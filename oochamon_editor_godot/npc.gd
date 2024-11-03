@@ -86,7 +86,7 @@ func _ready():
 			o_npc_object.texture_normal = load(tile_string)
 			
 	
-	print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
+	#print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
 	
 	
 	
@@ -146,7 +146,7 @@ func _process(delta):
 			
 			o_npc_object.set_position(Vector2(mx - Global.CamX, my - Global.CamY))
 			if Input.is_action_just_released("mouse_left"):
-				print([npc_x, npc_y])
+				#print([npc_x, npc_y])
 				dragging = false
 	else:
 		o_npc_tab_container.visible = false

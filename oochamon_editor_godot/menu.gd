@@ -70,7 +70,7 @@ func _ready():
 		arr.resize(100)
 		arr.fill(tile_id_temp)
 		map_tiles.push_back(arr)
-	print(map_tiles)
+	#print(map_tiles)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -317,7 +317,7 @@ func _on_file_dialog_save_file_selected(path):
 		
 		#Map Tiles
 		for i in map_width:
-			print(i)
+			#print(i)
 			save_data.map_tiles.push_back([])
 			#save_data.map_tiles[i] = []
 			
