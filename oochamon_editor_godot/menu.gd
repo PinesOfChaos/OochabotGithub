@@ -337,6 +337,15 @@ func _on_file_dialog_save_file_selected(path):
 				
 				if slot.slot_data.slot_enabled:
 					npc_data.team.push_back(slot.slot_data)
+			
+			npc_data.items = []
+			for child in npc.items_list.get_children():
+				var item = {
+					"id" : child.item_id,
+					"count" : child.item_count
+				}
+				npc_data.items.push_back(item)		
+			
 			save_data.map_npcs.push_back(npc_data)
 			
 		#Spawn Zones

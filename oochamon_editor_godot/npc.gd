@@ -16,8 +16,8 @@ extends Control
 @onready var o_text_post_combat = $"npc_tab_container/Basic Info/text_post_combat"
 
 @onready var o_coin_count = $"npc_tab_container/Basic Info/coin/coin_count"
-@onready var o_item_select = $"npc_tab_container/Basic Info/items/item_select"
-@onready var o_item_count = $"npc_tab_container/Basic Info/items/item_count"
+@onready var items_list: VBoxContainer = $"npc_tab_container/Basic Info/items/items_list"
+
 
 @onready var button_back = $button_back
 @onready var slot_1 = $"npc_tab_container/Slot 1"
@@ -42,8 +42,7 @@ var npc_data = {
 	"flag_kill" : "",
 	"flag_given" : "",
 	"remove_on_finish" : false,
-	"item_id" : -1,
-	"item_count" : 0,
+	"items" : [],
 	"coin" : 0,
 	"team" : [],
 	"aggro_range" : 3,
@@ -76,12 +75,6 @@ var npc_is_wild = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	o_item_select.add_item("No Item", -1)
-	o_item_select.set_item_id(-1, -1)
-	for item_data in Global.DataItems:
-		o_item_select.add_item(item_data.item_name, item_data.item_index)
-		o_item_select.set_item_tooltip(item_data.item_index, item_data.item_desc)
-	
 	var tile_data
 	var tile_string
 	for i in Global.DataNPCs.size():
@@ -103,8 +96,19 @@ func _ready():
 	o_npc_sprite_dialog.text = npc_data.sprite_dialog
 	
 	o_coin_count.value = npc_data.coin
-	o_item_select.select(o_item_select.get_item_index(npc_data.item_id))
-	o_item_count.value = npc_data.item_count
+	
+	for _info in npc_data.items:
+		var _load = load("res://slot_item.tscn")
+		var _obj = _load.instantiate()
+		
+		_obj.item_id = _info.id
+		_obj.item_count = _info.count
+		
+		
+		items_list.add_child(_obj)
+		_obj.owner = items_list
+		_obj.o_item_price.visible = false
+		_obj.o_item_count.visible = true
 	
 	o_flag_required.text = npc_data.flag_required
 	o_flag_given.text = npc_data.flag_given
@@ -164,12 +168,6 @@ func _on_flag_kill_text_changed(new_text):
 func _on_check_remove_finish_toggled(button_pressed):
 	npc_data.remove_on_finish = button_pressed
 
-func _on_item_select_item_selected(index):
-	npc_data.item_id = o_item_select.get_item_id(index)
-
-func _on_item_count_value_changed(value):
-	npc_data.item_count = value
-
 func _on_coin_count_value_changed(value):
 	npc_data.coin = value
 
@@ -214,3 +212,12 @@ func _on_wild_encounter_toggled(toggled_on):
 
 func _on_line_edit_objective_text_changed(new_text: String) -> void:
 	npc_data.objective = new_text
+
+
+func _on_button_new_item_pressed() -> void:
+	var _load = load("res://slot_item.tscn")
+	var _obj = _load.instantiate()
+	items_list.add_child(_obj)
+	_obj.owner = items_list
+	_obj.o_item_price.visible = false
+	_obj.o_item_count.visible = true
