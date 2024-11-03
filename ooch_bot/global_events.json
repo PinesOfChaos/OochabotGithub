@@ -1,5 +1,85 @@
 {
 	"ev_": [],
+	"ev_cromet_defeated": [
+		[
+			0,
+			{
+				"description": "*radio static*",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "If you're hearing this, that means your radio is working!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": "It's great to hear you've dealt with the Cromet situation! They're a rarely seen species, so I appreciate the extra effort!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": "...Oh, right, the caves!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Please investigate the cave system to the North-West! The researchers there seem to be having some trouble.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Investigate the Caves",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			2,
+			{
+				"text": "caves_quest_begin"
+			}
+		]
+	],
 	"ev_frasfsaf": [
 		[
 			0,

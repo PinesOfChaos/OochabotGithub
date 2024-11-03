@@ -9,6 +9,7 @@ offset_bottom = 40.0
 script = ExtResource("1_7pcir")
 
 [node name="HSeparator" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="BoxContainer" type="HBoxContainer" parent="."]
