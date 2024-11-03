@@ -16,7 +16,7 @@
 15|Tumorize|flame|60|90|[infected, 50, 1]|The user creates radiation in order to INFECT the target.|
 16|Glimmer|crystal|20|90|[blinded, 100, 1]|Refracts light in an attempt to BLIND the target.|0
 17|Gem Bash|crystal|110|70||Massive crystals are swung wildly to inflict damage.|
-18|Caustic Orb|crystal|60|100|[burned, 75, 1]|A ball of caustic goo is launched with a high chance of BURNING.|
+18|Caustic Orb|ooze|60|100|[burned, 75, 1]|A ball of caustic goo is launched with a high chance of BURNING.|
 19|Pulverize|neutral|150|80|[-_atk_1, 100, 0]|The target is slammed to deal massive damage, but the user exausts itself, losing ATK.|
 20|Ash Blast|flame|50|95|[blinded, 75, 1]|Hot ashes are launched at the target with a high chance to BLIND.|
 21|Inferno|flame|100|95|[burned, 100, 2]|A blazing inferno afflicts all targets with a BURN.|

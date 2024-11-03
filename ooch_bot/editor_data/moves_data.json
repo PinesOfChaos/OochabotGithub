@@ -226,7 +226,7 @@
   {
     "id": 18,
     "name": "Caustic Orb",
-    "type": "crystal",
+    "type": "ooze",
     "damage": 60,
     "accuracy": 100,
     "effect": [
