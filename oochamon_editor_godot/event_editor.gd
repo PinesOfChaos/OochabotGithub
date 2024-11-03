@@ -42,7 +42,8 @@ func refresh_events_list():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if Input.is_action_just_pressed("quicksave"):
+		_on_button_save_pressed()
 
 func resize() -> void:
 	scroll_container.size.x = get_tree().get_root().get_size().x

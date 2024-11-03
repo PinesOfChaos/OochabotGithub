@@ -1,11 +1,11 @@
-"Welcome to the world of Oochamon! I am a disembodied voice, I don't have a name, but you can call me the tutorial master!"
+"Welcome to the world of Oochamon! I am a disembodied voice, I don't have a name, but you can call me the Tutorial Master!"
 "To start, let's teach you how to move. Type in **w, a, s, or d** to move, and move up to the door!"
 
 (move up, trigger next event)
 
 "Let's also show you how to use *advanced movement tech!* (oooh, ahhh)"
 "You can **jump** ahead tiles by putting a number after a movement key, or by typing a letter multiple times."
-"For example, you can do `w2` to jump 2 spaces forward, or `ddd` to jump 3 spaces to the right. Give it a try, then move on to the next door!"
+"For example, you can do `w2` to jump 2 spaces forward, or `ddd` to jump 3 spaces to the right. Give it a try!"
 
 (move up, trigger next event)
 

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqcv8gwyak7r0"]
+[gd_scene load_steps=3 format=3 uid="uid://bqcv8gwyak7r0"]
 
 [ext_resource type="Script" path="res://slot_item.gd" id="1_tiuqs"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k5r3u"]
 
 [node name="slot_item" type="HBoxContainer"]
 anchors_preset = 15
@@ -10,10 +12,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tiuqs")
 
-[node name="item_remove" type="Button" parent="."]
+[node name="item_count" type="SpinBox" parent="."]
 layout_mode = 2
-tooltip_text = "Remove Slot"
-text = " - "
+tooltip_text = "Item Count"
+theme_override_icons/updown = SubResource("ViewportTexture_k5r3u")
 
 [node name="item_id" type="OptionButton" parent="."]
 layout_mode = 2
@@ -24,11 +26,12 @@ layout_mode = 2
 tooltip_text = "Item Price"
 prefix = "$"
 
-[node name="item_count" type="SpinBox" parent="."]
+[node name="item_remove" type="Button" parent="."]
 layout_mode = 2
-tooltip_text = "Item Count"
+tooltip_text = "Remove Slot"
+text = " - "
 
-[connection signal="pressed" from="item_remove" to="." method="_on_item_remove_pressed"]
+[connection signal="value_changed" from="item_count" to="." method="_on_item_count_value_changed"]
 [connection signal="item_selected" from="item_id" to="." method="_on_item_id_item_selected"]
 [connection signal="value_changed" from="item_price" to="." method="_on_item_price_value_changed"]
-[connection signal="value_changed" from="item_count" to="." method="_on_item_count_value_changed"]
+[connection signal="pressed" from="item_remove" to="." method="_on_item_remove_pressed"]

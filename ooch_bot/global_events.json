@@ -1,4 +1,5 @@
 {
+	"ev_": [],
 	"ev_frasfsaf": [
 		[
 			0,
@@ -10,6 +11,383 @@
 				"money": 0,
 				"objective": "",
 				"title": "asfasfasf"
+			}
+		]
+	],
+	"ev_tutorial_1": [
+		[
+			0,
+			{
+				"description": "Welcome to the world of Oochamon! I am a disembodied voice, I don't have a name, but you can call me the Tutorial Master!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0,
+			{
+				"description": "To start, let's teach you how to move. Type in **w, a, s, or d** as a message in the chat to move, and move up to the door!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Proceed to the next door.",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_2": [
+		[
+			0,
+			{
+				"description": "Let's also show you how to use *advanced movement tech!* (oooh, ahhh)",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "You can **jump** ahead tiles by putting a number after a movement key, or by typing a letter multiple times.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "For example, you can do `w2` to jump 2 spaces forward, or `ddd` to jump 3 spaces to the right. Give it a try!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_3": [
+		[
+			0,
+			{
+				"description": "You can also chain these movement commands together, to do some crazy movement!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "For example, you can do `w2d2` to move up 2 then right 2, or `aaaww` to move left 3 then up 2. Give it a try!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_4": [
+		[
+			0,
+			{
+				"description": "Great work!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Now, check out your menu with `/menu`. You have an Oochamon you picked out, right?",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Go check it out, and play around in the menu to learn about it a little bit. There's even a settings menu!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Head over to the next door upwards as soon as you are ready to move on.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Check out the menu, then move on.",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_5": [
+		[
+			0,
+			{
+				"description": "Let's get you a few items to start with. Here's a few Potions and a Prism.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [
+					{
+						"count": 3,
+						"id": 0
+					},
+					{
+						"count": 1,
+						"id": 6
+					}
+				],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Prisms are our way of capturing and taming the wild Oochamon of the world. It's very painless for them, I assure you.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Let's try out catching an Oochamon now. I've created a simulated Oochamon for you to learn catching with!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "You won't be able to keep this Oochamon after the tutorial, this is just to teach you how to capture things.\nYou will have ample opportunity to catch more on the planet.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Now go catch that Oochamon!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Catch the Oochamon, and move on to the next door.",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_6": [
+		[
+			0,
+			{
+				"description": "Great work! If you look at that new Oochamon in your menu, you'll notice it has special stats, called **Bonuses**.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Bonuses are a special power an Oochamon has, unique to itself, that increase its various stats based on random chance.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "We are researching a way to increase these to have an Oochamon reach it's ultimate power, but you may have to speak with the Researchers on that.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oochamon also have special abilities! You can view what your Oochamon ability does using `/lookup ability`.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "On that note, `/lookup` has a few other things to view as well, so keep the command in mind!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Move to the next door when you are ready.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Move to the next door.",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_7": [
+		[
+			0,
+			{
+				"description": "Let's learn about the bread and butter of Oochamon. Trainer fights!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I've created a simulated trainer for you to fight. It's not a real person, but it still has feelings.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Anyways, go beat him up! This will be a good way for you to learn how to fight.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Defeat the Oochamon SimTrainer!",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_8": [
+		[
+			0,
+			{
+				"description": "Great work. I knew you could do it! I'll give SimTrainer a cyber cookie later to make him feel better.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "That's basically how the game works. Catch Oochamon, beat up peoples teams of Oochamon, and save the world!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		]
+	],
+	"ev_tutorial_9": [
+		[
+			2,
+			{
+				"text": "tutorial"
+			}
+		],
+		[
+			4,
+			{
+				"map_to": "hub",
+				"xto": 47,
+				"yto": 49
 			}
 		]
 	]
