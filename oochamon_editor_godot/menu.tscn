@@ -268,6 +268,12 @@ offset_bottom = 22.0
 text = "File Saved"
 script = ExtResource("4_5s007")
 
+[node name="LabelMousePosition" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0, 0"
+
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed"]

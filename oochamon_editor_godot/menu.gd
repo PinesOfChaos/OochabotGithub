@@ -22,6 +22,7 @@ extends Control
 @onready var menu_shops = $MenuChildren/shops
 @onready var menu_npcs = $MenuChildren/npcs
 @onready var label_notification: Label = $LabelNotification
+@onready var label_mouse_position: Label = $LabelMousePosition
 
 @export var map_name = "testmap"
 @export var map_width = 64
@@ -101,6 +102,14 @@ func step_begin():
 	pass
 
 func step():
+	#Update tile position of the mouse
+	var tx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
+	var ty = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
+	label_mouse_position.text = str(tx) + ", " + str(ty)
+	label_mouse_position.modulate.a = .4
+	label_mouse_position.position = get_local_mouse_position() + Vector2(32, 16)
+	
+	#Redraw the map if the camera is moved
 	if Input.is_action_pressed("mouse_middle") or do_screen_refresh:
 		do_screen_refresh = false
 		Global.CamX -= get_local_mouse_position().x - mouse_x_prev
@@ -608,21 +617,25 @@ func _on_button_new_spawn_region_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
 	var scene = load("res://spawn_zone.tscn")
 	var instance = scene.instantiate()
+	instance.spawn_data.x = floor(Global.CamX/Global.TileSize) + 20
+	instance.spawn_data.y = floor(Global.CamY/Global.TileSize) + 10
 	menu_spawnzones.add_child(instance)
 	Global.ObjSelected = menu_spawnzones.get_child(menu_spawnzones.get_child_count() - 1).get_instance_id()
-	var x1 = Global.get_camera_center().x
-	var y1 = Global.get_camera_center().y
+	
 	refresh_all_children()
+	do_screen_refresh = true
 	
 func _on_button_new_event_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
 	var scene = load("res://event_trigger.tscn")
 	var instance = scene.instantiate()
+	instance.event_data.x = floor(Global.CamX/Global.TileSize) + 20
+	instance.event_data.y = floor(Global.CamY/Global.TileSize) + 10
 	menu_events.add_child(instance)
 	Global.ObjSelected = menu_events.get_child(menu_events.get_child_count() - 1).get_instance_id()
-	var x1 = Global.get_camera_center().x
-	var y1 = Global.get_camera_center().y
+
 	refresh_all_children()
+	do_screen_refresh = true
 	
 func _on_button_visible_event_toggled(button_pressed):
 	menu_events.visible = button_pressed

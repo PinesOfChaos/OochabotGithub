@@ -128,6 +128,10 @@ max_value = 10.0
 prefix = "SPD:"
 custom_arrow_step = 1.0
 
+[node name="slot_randomize_ivs" type="Button" parent="row_ivs"]
+layout_mode = 2
+text = "Randomize"
+
 [node name="summary" type="RichTextLabel" parent="."]
 visible = false
 custom_minimum_size = Vector2(400, 200)
@@ -148,3 +152,4 @@ tab_size = 20
 [connection signal="value_changed" from="row_ivs/slot_atk" to="." method="_on_slot_atk_value_changed"]
 [connection signal="value_changed" from="row_ivs/slot_def" to="." method="_on_slot_def_value_changed"]
 [connection signal="value_changed" from="row_ivs/slot_spd" to="." method="_on_slot_spd_value_changed"]
+[connection signal="pressed" from="row_ivs/slot_randomize_ivs" to="." method="_on_slot_randomize_ivs_pressed"]

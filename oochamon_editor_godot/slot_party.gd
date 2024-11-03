@@ -252,3 +252,14 @@ func _on_move_4_item_selected(index):
 
 func _on_nickname_text_changed(new_text: String) -> void:
 	slot_data.nickname = new_text
+
+func _on_slot_randomize_ivs_pressed() -> void:
+	var _hp = randi_range(0, 10)
+	var _atk = randi_range(0, 10)
+	var _def = randi_range(0, 10)
+	var _spd = randi_range(0, 10)
+	
+	o_slot_hp.value = _hp
+	o_slot_atk.value = _atk
+	o_slot_def.value = _def
+	o_slot_spd.value = _spd
