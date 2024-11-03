@@ -135,6 +135,9 @@ func refresh_abilities(index):
 			
 func refresh_moves(index, overwrite = true):
 	print(["move_refresh", index])
+	while(slot_data.moveset.size() < 4):
+		slot_data.moveset.push_back(9999)
+	
 	if index != -1:
 		var ooch_data = Global.DataOochamon[index]
 		var children = row_moves.get_children()
@@ -184,6 +187,8 @@ func refresh_moves(index, overwrite = true):
 					child.add_icon_item(element_texture, move.move_name, move_id)
 					child.set_item_tooltip(step + 1, tip)
 					step += 1
+					
+					print(slot_data.moveset)
 					
 					if(slot_data.moveset[i] == move_id):
 						child.select(j + 1)

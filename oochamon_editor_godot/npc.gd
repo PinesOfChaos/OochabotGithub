@@ -64,8 +64,6 @@ var npc_remove_on_finish = false
 var npc_item_id = -1
 var npc_item_count = 0
 var npc_coin = 0
-var npc_dialog_pre = ""
-var npc_dialog_post = ""
 var npc_slots = []
 var npc_slots_data = []
 var refreshed = false
@@ -176,10 +174,10 @@ func _on_coin_count_value_changed(value):
 	npc_data.coin = value
 
 func _on_text_pre_combat_text_changed():
-	npc_data.dialog_pre = o_text_pre_combat.text
+	npc_data.pre_combat_dialogue = o_text_pre_combat.text
 
 func _on_text_post_combat_text_changed():
-	npc_data.dialog_post = o_text_post_combat.text
+	npc_data.post_combat_dialogue = o_text_post_combat.text
 
 func _on_npc_sprite_item_selected(index):
 	npc_data.sprite = o_npc_sprite.get_item_id(index)

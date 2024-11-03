@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://d4dhr42a1mqo6"]
+[gd_scene load_steps=5 format=3 uid="uid://d4dhr42a1mqo6"]
 
 [ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
 [ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
 [ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
+[ext_resource type="Script" path="res://label_notification.gd" id="4_5s007"]
 
 [node name="Menu" type="Control" groups=["MainMenu"]]
 layout_mode = 3
@@ -51,10 +52,7 @@ text = "Load Level"
 layout_mode = 2
 text = "Save Level"
 
-[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
-layout_mode = 2
-
-[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxFile"]
 layout_mode = 2
 focus_mode = 1
 text = "Map Default Name"
@@ -62,34 +60,23 @@ placeholder_text = "Map Name"
 expand_to_text_length = true
 caret_blink = true
 
-[node name="SpinBoxMapW" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
+[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
-tooltip_text = "Map Width"
-focus_mode = 1
-min_value = 1.0
-max_value = 200.0
-value = 100.0
-prefix = "W"
 
-[node name="SpinBoxMapH" type="SpinBox" parent="VBoxMenu/HBoxMapInfo"]
+[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
 layout_mode = 2
-tooltip_text = "Map Height"
-focus_mode = 1
-min_value = 1.0
-max_value = 200.0
-value = 100.0
-prefix = "H"
+placeholder_text = "Battle BG Sprite"
+expand_to_text_length = true
+
+[node name="Label" type="Label" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+text = "Grid Opacity: "
 
 [node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 value = 10.0
 ticks_on_borders = true
-
-[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
-layout_mode = 2
-placeholder_text = "Battle BG Sprite"
-expand_to_text_length = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxMenu"]
 layout_mode = 2
@@ -272,16 +259,23 @@ offset_bottom = 40.0
 wait_time = 60.0
 autostart = true
 
+[node name="LabelNotification" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1074.0
+offset_top = -1.0
+offset_right = 1151.0
+offset_bottom = 22.0
+text = "File Saved"
+script = ExtResource("4_5s007")
+
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonLoad" to="." method="_on_button_load_pressed"]
 [connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
-[connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed"]
-[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapW" to="." method="_on_spin_box_map_w_value_changed"]
-[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/SpinBoxMapH" to="." method="_on_spin_box_map_h_value_changed"]
-[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
+[connection signal="text_changed" from="VBoxMenu/HBoxFile/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed"]
 [connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapBattleBack" to="." method="_on_line_edit_map_battle_back_text_changed"]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
 [connection signal="toggled" from="VBoxMenu/HBoxContainer/ButtonVisibleTile" to="." method="_on_button_visible_tile_toggled"]
 [connection signal="pressed" from="VBoxMenu/HBoxContainer/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
 [connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]

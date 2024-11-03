@@ -10,7 +10,7 @@ extends Control
 @onready var tooltips_paint = $TooltipsPaint
 @onready var h_slider_grid_alpha = $VBoxMenu/HBoxMapInfo/HSliderGridAlpha
 @onready var timer = $Timer
-@onready var line_edit_map_name = $VBoxMenu/HBoxMapInfo/LineEditMapName
+@onready var line_edit_map_name = $VBoxMenu/HBoxFile/LineEditMapName
 @onready var line_edit_map_battle_back = $VBoxMenu/HBoxMapInfo/LineEditMapBattleBack
 
 @onready var o_menu = $"."
@@ -21,6 +21,7 @@ extends Control
 @onready var menu_save_points = $MenuChildren/save_points
 @onready var menu_shops = $MenuChildren/shops
 @onready var menu_npcs = $MenuChildren/npcs
+@onready var label_notification: Label = $LabelNotification
 
 @export var map_name = "testmap"
 @export var map_width = 64
@@ -287,6 +288,7 @@ func _on_file_dialog_save_file_selected(path):
 	set_node_owners_to_menu()
 	
 	if FileAccess.file_exists(path):
+		label_notification.notify("File Saved")
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		print(path.left(path.rfindn("/")))
 		
@@ -407,6 +409,7 @@ func _on_file_dialog_save_file_selected(path):
 func _on_file_dialog_load_file_selected(path):
 	
 	if(FileAccess.file_exists(path)):
+		label_notification.notify("File Loaded")
 		var f = FileAccess.open(path, FileAccess.READ)
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		var _main = get_parent()
@@ -450,9 +453,6 @@ func _on_file_dialog_load_file_selected(path):
 					mon.moveset.push_back(9999)
 			
 			_obj.npc_data = _info
-			
-			
-			
 			
 			_npcs.add_child(_obj)
 			_obj.owner = _npcs
