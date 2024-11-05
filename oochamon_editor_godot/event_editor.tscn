@@ -21,6 +21,10 @@ offset_bottom = 648.0
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
+[node name="ButtonMainMenu" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+
 [node name="ButtonNew" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "New"
@@ -83,6 +87,8 @@ layout_mode = 2
 text = "+ Options"
 
 [connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonNew" to="." method="_on_button_new_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonSave" to="." method="_on_button_save_pressed"]
 [connection signal="item_selected" from="VBoxContainer/HBoxContainer/ButtonLoad" to="." method="_on_button_load_item_selected"]
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/CheckButtonRepeatable" to="." method="_on_check_button_repeatable_toggled"]

@@ -1,11 +1,72 @@
 {
 	"ev_": [],
+	"ev_corrupt_fungal_defeat": [
+		[
+			0,
+			{
+				"description": "*Radio Static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh, oh my, that's not good! Are you okay? ",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I'll see who we can contact about this. In the meantime, let's get you out of there.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			0,
+			{
+				"description": " If you head back down to the caves, you should be able to start making your way North to the settlement in the Lava Fields, there's some people that could really use your help.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Travel to the Lava Fields Settlement",
+				"title": "Head Researcher"
+			}
+		],
+		[
+			2,
+			{
+				"text": "caves_quest_end"
+			}
+		]
+	],
 	"ev_cromet_defeated": [
 		[
 			0,
 			{
 				"description": "*radio static*",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -18,6 +79,7 @@
 			{
 				"description": "If you're hearing this, that means your radio is working!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -30,6 +92,7 @@
 			{
 				"description": "It's great to hear you've dealt with the Cromet situation! They're a rarely seen species, so I appreciate the extra effort!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -42,6 +105,7 @@
 			{
 				"description": "...",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -54,6 +118,7 @@
 			{
 				"description": "...Oh, right, the caves!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -66,6 +131,7 @@
 			{
 				"description": "Please investigate the cave system to the North-West! The researchers there seem to be having some trouble.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
@@ -86,6 +152,7 @@
 			{
 				"description": "fasfasfasf",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
