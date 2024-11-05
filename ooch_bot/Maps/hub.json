@@ -512,7 +512,77 @@
 			"y": 47
 		}
 	],
-	"map_spawn_zones": [],
+	"map_spawn_zones": [
+		{
+			"height": 8,
+			"spawn_slots": [
+				{
+					"max_level": 3,
+					"min_level": 1,
+					"ooch_id": 9
+				},
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": 11
+				},
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": 78
+				}
+			],
+			"width": 7,
+			"x": 44,
+			"y": 35
+		},
+		{
+			"height": 8,
+			"spawn_slots": [
+				{
+					"max_level": 4,
+					"min_level": 1,
+					"ooch_id": 9
+				},
+				{
+					"max_level": 3,
+					"min_level": 1,
+					"ooch_id": 52
+				},
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": 55
+				}
+			],
+			"width": 14,
+			"x": 24,
+			"y": 41
+		},
+		{
+			"height": 13,
+			"spawn_slots": [
+				{
+					"max_level": 3,
+					"min_level": 1,
+					"ooch_id": 59
+				},
+				{
+					"max_level": 3,
+					"min_level": 1,
+					"ooch_id": 11
+				},
+				{
+					"max_level": 3,
+					"min_level": 1,
+					"ooch_id": 46
+				}
+			],
+			"width": 13,
+			"x": 18,
+			"y": 27
+		}
+	],
 	"map_tiles": [
 		[
 			"t02_019",
@@ -4767,6 +4837,13 @@
 			"connect_y": "46",
 			"x": 43,
 			"y": 43
+		},
+		{
+			"connect_map": "stone_tunnel",
+			"connect_x": "55",
+			"connect_y": "53",
+			"x": 29,
+			"y": 23
 		}
 	]
 }

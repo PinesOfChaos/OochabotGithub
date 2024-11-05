@@ -40,6 +40,7 @@ var do_screen_refresh = true
 var file_known = false
 var file_last_path = ""
 var post_ready_complete = false
+var tiles_visible = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -84,15 +85,16 @@ func _process(delta):
 	step_end()		
 			
 func _draw():
-	var x1 = 0
-	var y1 = 0
-	for i in map_width:
-		for j in map_height:
-			x1 = i * Global.TileSize
-			y1 = j * Global.TileSize
-			if x1 >= Global.CamX - 64 and x1 < Global.CamX + 10000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 10000:
-				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
-				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
+	if(tiles_visible):
+		var x1 = 0
+		var y1 = 0
+		for i in map_width:
+			for j in map_height:
+				x1 = i * Global.TileSize
+				y1 = j * Global.TileSize
+				if x1 >= Global.CamX - 64 and x1 < Global.CamX + 10000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 10000:
+					draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
+					draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
 
 func refresh_all_children():
 	for child in o_menu.get_children(true):
@@ -629,8 +631,8 @@ func _on_button_new_event_pressed():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
 	var scene = load("res://event_trigger.tscn")
 	var instance = scene.instantiate()
-	instance.event_data.x = floor(Global.CamX/Global.TileSize) + 20
-	instance.event_data.y = floor(Global.CamY/Global.TileSize) + 10
+	instance.event_info.x = floor(Global.CamX/Global.TileSize) + 20
+	instance.event_info.y = floor(Global.CamY/Global.TileSize) + 10
 	menu_events.add_child(instance)
 	Global.ObjSelected = menu_events.get_child(menu_events.get_child_count() - 1).get_instance_id()
 
@@ -700,4 +702,17 @@ func _on_timer_timeout():
 		print("Save the file to enable autosave")
 
 func _on_button_visible_tile_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.
+	tiles_visible = toggled_on
+	queue_redraw()
+
+
+func _on_button_main_menu_pressed() -> void:
+	if(file_known) and not(file_last_path == ""):
+		print("File Saved as: " + file_last_path)
+		_on_file_dialog_save_file_selected(file_last_path)
+	else:
+		print("Save the file to enable autosave")
+		
+	get_tree().change_scene_to_file("res://main_menu.tscn")
+	queue_free()
+	

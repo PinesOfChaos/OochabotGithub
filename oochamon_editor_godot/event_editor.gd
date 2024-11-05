@@ -116,3 +116,14 @@ func _on_button_load_item_selected(index: int) -> void:
 	_inst.event_name = button_load.get_item_text(index)
 	_main.add_child(_inst)
 	queue_free()
+
+
+func _on_button_main_menu_pressed() -> void:
+	_on_button_save_pressed()
+	get_tree().change_scene_to_file("res://main_menu.tscn")
+	queue_free()
+
+func _on_button_new_pressed() -> void:
+	_on_button_save_pressed()
+	get_tree().change_scene_to_file("res://event_editor.tscn")
+	queue_free()

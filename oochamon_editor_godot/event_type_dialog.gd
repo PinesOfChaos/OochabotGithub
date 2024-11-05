@@ -15,7 +15,8 @@ var event_data = {
 	"dialogue_portrait" : "",
 	"money" : 0,
 	"items" : [],
-	"objective" : ""
+	"objective" : "",
+	"flags" : []
 }
 
 # Called when the node enters the scene tree for the first time.
