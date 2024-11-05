@@ -62,6 +62,8 @@ module.exports = {
                 event_embed.setTitle(obj_content.title);
             }
 
+            console.log(obj_content);
+
             // Set NPC dialogue portrait
             if (obj_content.dialogue_portrait != '') {
                 
@@ -86,7 +88,7 @@ module.exports = {
             } 
 
             if (obj_content.items != false) {
-                let item = db.item_data.get(obj_content.items.id);
+                let item = db.item_data.get(obj_content.items.item_id);
                 info_data += `${item.emote} **${item.name}** x${obj_content.items.item_count}`;
                 give_item(user_id, obj_content.items.id, obj_content.items.item_count);
             } 
@@ -358,9 +360,10 @@ module.exports = {
                     description: npc_obj.pre_combat_dialogue[i],
                     money: 0,
                     image: false,
-                    item: false,
+                    items: false,
                     flags: [],
-                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    objective: false,
+                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
                 }])
             }
 
@@ -376,9 +379,10 @@ module.exports = {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
-                    item: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
+                    items: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     image: false,
-                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    objective: false,
+                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
                     flags : flags_to_give
                 }]);
             }
@@ -405,9 +409,10 @@ module.exports = {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
-                        item: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
+                        items: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         image: false,
-                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        objective: false,
+                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
                         flags : flags_to_give
                     }])
                 } else {
@@ -416,8 +421,9 @@ module.exports = {
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
                         image: false,
-                        item: false,
-                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        items: false,
+                        objective: false,
+                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
                         flags: []
                     }])
                 }

@@ -63,13 +63,13 @@ module.exports = {
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
-        let map_tiles =         map_obj.tiles; 
-        let map_npcs =          map_obj.npcs;
-        let map_spawns =        map_obj.spawn_zones;
-        let map_savepoints =    map_obj.savepoints;
-        let map_transitions =   map_obj.transitions;
-        let map_events =        map_obj.events;
-        let map_shops =         map_obj.shops;
+        let map_tiles =         map_obj.map_tiles; 
+        let map_npcs =          map_obj.map_npcs;
+        let map_spawns =        map_obj.map_spawn_zones;
+        let map_savepoints =    map_obj.map_savepoints;
+        let map_transitions =   map_obj.map_transitions;
+        let map_events =        map_obj.map_events;
+        let map_shops =         map_obj.map_shops;
         if (map_shops == undefined || map_shops == null) map_shops = [];        
         
         //set where the player is going to move
@@ -163,13 +163,13 @@ module.exports = {
                         
                         //Get the map array based on the player's current map
                         map_obj =   db.maps.get(map_name.toLowerCase());
-                        map_tiles =         map_obj.tiles; 
-                        map_npcs =          map_obj.npcs;
-                        map_spawns =        map_obj.spawn_zones;
-                        map_savepoints =    map_obj.savepoints;
-                        map_transitions =   map_obj.transitions;
-                        map_events =        map_obj.events;
-                        map_shops =         map_obj.shops;
+                        map_tiles =         map_obj.map_tiles; 
+                        map_npcs =          map_obj.map_npcs;
+                        map_spawns =        map_obj.map_spawn_zones;
+                        map_savepoints =    map_obj.map_savepoints;
+                        map_transitions =   map_obj.map_transitions;
+                        map_events =        map_obj.map_events;
+                        map_shops =         map_obj.map_shops;
                         if (map_shops == undefined || map_shops == null) map_shops = [];        
                     }
                 }
@@ -487,7 +487,7 @@ module.exports = {
 
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
-        let map_npcs = map_obj.npcs;
+        let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
@@ -497,8 +497,8 @@ module.exports = {
                 if (obj.flag_required == '' || obj.flag_required == false || player_flags.includes(obj.flag_required)) {
                     let plr_interacted = player_flags.includes(npc_flag); //check if the player has defeated this npc
                     let plain_tile = emote_map_array[xx][yy];
-                    let npcZoneId = parseInt(emote_map_array[xx][yy].split(':')[1].replace('t', ''));
-                    tile = db.tile_data.get(obj.sprite_id);
+                    let npcZoneId = parseInt(emote_map_array[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
+                    tile = db.tile_data.get(obj.sprite_id.slice(0, 1) + obj.sprite_id.slice(3));
                     if (tile.use === Tile.Int) npcZoneId = 0;
                     emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
 
@@ -511,7 +511,7 @@ module.exports = {
         }
 
         //Savepoint tiles
-        let map_savepoints = map_obj.savepoints;
+        let map_savepoints = map_obj.map_savepoints;
         for(let obj of map_savepoints){
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
@@ -560,7 +560,7 @@ module.exports = {
 
         //Get the map array based on the player's current biome
         let map_obj = db.maps.get(biome.toLowerCase());
-        let map_arr = map_obj.tiles; //this should be the actual map array
+        let map_arr = map_obj.map_tiles; //this should be the actual map array
 
         // Set player position data into the global multiplayer player position db
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);

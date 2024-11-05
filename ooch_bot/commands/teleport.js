@@ -32,8 +32,8 @@ module.exports = {
         }
 
         let map_obj = db.maps.get(biome_to);
-        let map_arr = map_obj.tiles;
-        let map_savepoints = map_obj.savepoints;
+        let map_arr = map_obj.map_tiles;
+        let map_savepoints = map_obj.map_savepoints;
         map_savepoints = map_savepoints.filter(v => v.is_default !== false);
 
         //remove the player's info from the old biome and add it to the new one
