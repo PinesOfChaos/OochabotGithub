@@ -14,6 +14,7 @@ module.exports = {
                 .setDescription('Where will we be going today?')
                 .setChoices(
                     { name: 'Hub', value: 'hub' },
+                    { name: 'Tutorial', value: 'tutorial' },
                     { name: 'Last Used Checkpoint', value: 'checkpoint' }
                 )
                 .setRequired(true)),
@@ -35,6 +36,9 @@ module.exports = {
         let map_arr = map_obj.map_tiles;
         let map_savepoints = map_obj.map_savepoints;
         map_savepoints = map_savepoints.filter(v => v.is_default !== false);
+        if (map_savepoints.length == 0) {
+            map_savepoints = [map_obj.map_savepoints[0]];
+        }
 
         //remove the player's info from the old biome and add it to the new one
         db.player_positions.set(biome_to, { x: map_savepoints[0].x, y: map_savepoints[0].y }, target);

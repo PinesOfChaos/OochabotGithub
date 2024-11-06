@@ -4,6 +4,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, A
 const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
+const globalEventsJSON = require('./global_events.json');
 
 
 module.exports = {
@@ -206,16 +207,16 @@ module.exports = {
             }
 
             //Events
-            if(!stop_moving){
+            if (!stop_moving) {
                 let x1,y1,x2,y2;
-                for(let obj of map_events){
+                for (let obj of map_events) {
                     x1 = (obj.x) <= playerx;
                     y1 = (obj.y) <= playery;
-                    x2 = (x1 + obj.width) > playerx;
-                    y2 = (y1 + obj.height) > playery;
-                    if(x1 && y1 && x2 && y2){
-                        //stop_moving = true;
-                        //trigger this event if the player hasn't triggered it already
+                    x2 = (obj.x + obj.width) >= playerx;
+                    y2 = (obj.y + obj.height) >= playery;
+                    if (x1 && y1 && x2 && y2) {
+                        if (obj.flag_required != false && player_flags.includes(obj.flag_required));
+                        await event_process(user_id, thread, globalEventsJSON[obj.event_name]);
                     }
                 }
             }
@@ -369,7 +370,7 @@ module.exports = {
                     playerx -= xmove;
                     playery -= ymove;
                 break;
-                case Tile.Wall:
+                case (Tile.Wall || Tile.Door):
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;

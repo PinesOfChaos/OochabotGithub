@@ -62,8 +62,6 @@ module.exports = {
                 event_embed.setTitle(obj_content.title);
             }
 
-            console.log(obj_content);
-
             // Set NPC dialogue portrait
             if (obj_content.dialogue_portrait != '') {
                 
@@ -92,6 +90,10 @@ module.exports = {
                 info_data += `${item.emote} **${item.name}** x${obj_content.items.item_count}`;
                 give_item(user_id, obj_content.items.id, obj_content.items.item_count);
             } 
+
+            if (obj_content.objective != false) {
+                event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
+            }
 
             if (info_data.length != 0) {
                 event_embed.addFields({name: 'You Received:', value: info_data });

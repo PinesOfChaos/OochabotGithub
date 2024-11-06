@@ -310,7 +310,7 @@ module.exports = {
         create_tile(`t${zTu}_002`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_003`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_004`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
-        create_tile(`t${zTu}_010`,  Tile.Wall,     applicationEmojis ); //Tutorial Door Closed
+        create_tile(`t${zTu}_010`,  Tile.Door,     applicationEmojis ); //Tutorial Door Closed
         create_tile(`t${zTu}_011`,  Tile.Floor,    applicationEmojis ); //Tutorial Door Open
 
         // NPCs
