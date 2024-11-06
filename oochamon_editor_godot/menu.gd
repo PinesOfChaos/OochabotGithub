@@ -105,11 +105,14 @@ func step_begin():
 
 func step():
 	#Update tile position of the mouse
-	var tx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
-	var ty = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
-	label_mouse_position.text = str(tx) + ", " + str(ty)
-	label_mouse_position.modulate.a = .4
-	label_mouse_position.position = get_local_mouse_position() + Vector2(32, 16)
+	if Input.is_action_pressed("show_coord"):
+		var tx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
+		var ty = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
+		label_mouse_position.text = str(tx) + ", " + str(ty)
+		label_mouse_position.modulate.a = .4
+		label_mouse_position.position = get_local_mouse_position() + Vector2(32, 16)
+	else:
+		label_mouse_position.text = ''
 	
 	#Redraw the map if the camera is moved
 	if Input.is_action_pressed("mouse_middle") or do_screen_refresh:
