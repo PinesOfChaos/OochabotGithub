@@ -144,7 +144,7 @@
     "damage": 70,
     "accuracy": 90,
     "effect": [],
-    "description": "The user stabs at the target to deal damage.",
+    "description": "The user bashes the target with a firey appendage.",
     "tags": []
   },
   {
@@ -532,7 +532,7 @@
   {
     "id": 39,
     "name": "Entomb",
-    "type": "tech",
+    "type": "stone",
     "damage": 60,
     "accuracy": 80,
     "effect": [

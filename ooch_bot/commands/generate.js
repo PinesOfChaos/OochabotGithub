@@ -312,7 +312,6 @@ module.exports = {
         create_tile(`t${zTu}_002`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_003`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_004`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
-        create_tile(`t${zTu}_010`,  Tile.Door,     applicationEmojis ); //Tutorial Door Closed
         create_tile(`t${zTu}_011`,  Tile.Floor,    applicationEmojis ); //Tutorial Door Open
 
         // NPCs
@@ -333,6 +332,7 @@ module.exports = {
         create_tile(`c_014`,       Tile.Npc,      applicationEmojis ); // Basic NPC Construction Worker
         create_tile(`c_015`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Tech)
         create_tile(`c_016`,       Tile.Npc,      applicationEmojis ); // Global CFO
+        create_tile(`c_017`,       Tile.Int,      applicationEmojis ); // Tutorial Door Closed
         
         //#endregion
 

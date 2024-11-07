@@ -215,8 +215,10 @@ module.exports = {
                     x2 = (obj.x + obj.width) >= playerx;
                     y2 = (obj.y + obj.height) >= playery;
                     if (x1 && y1 && x2 && y2) {
-                        if (obj.flag_required != false && player_flags.includes(obj.flag_required));
-                        await event_process(user_id, thread, globalEventsJSON[obj.event_name]);
+                        if (obj.flag_required != false && player_flags.includes(obj.flag_required)) {
+                            stop_moving = true;
+                            await event_process(user_id, thread, globalEventsJSON[obj.event_name]);
+                        }
                     }
                 }
             }

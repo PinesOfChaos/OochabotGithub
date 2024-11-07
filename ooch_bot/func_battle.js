@@ -40,7 +40,7 @@ generate_trainer_battle(trainer_obj){
     for(let i  = 0; i < party_base.length; i++){
         let ooch_base = party_base[i];
         let ooch = create_ooch(ooch_base.id, ooch_base.level, ooch_base.moveset, ooch_base.nickname, 0, ooch_base.ability,
-                               ooch_base.stats.hp_iv, ooch_base.stats.atk_iv, ooch_base.stats.def_iv, ooch_base.stats.spd_iv);
+                               ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv);
         party_generated.push(ooch); 
     }
     

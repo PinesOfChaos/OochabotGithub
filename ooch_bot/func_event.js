@@ -86,9 +86,13 @@ module.exports = {
             } 
 
             if (obj_content.items != false) {
-                let item = db.item_data.get(obj_content.items.item_id);
-                info_data += `${item.emote} **${item.name}** x${obj_content.items.item_count}`;
-                give_item(user_id, obj_content.items.id, obj_content.items.item_count);
+                if (obj_content.items.length != 0) {
+                    for (let item of obj_content.items) {
+                        let itemData = db.item_data.get(item.id);
+                        info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
+                        give_item(user_id, item.id, item.count);
+                    }
+                }
             } 
 
             if (obj_content.objective != false) {
@@ -97,6 +101,8 @@ module.exports = {
 
             if (info_data.length != 0) {
                 event_embed.addFields({name: 'You Received:', value: info_data });
+            } else if (event_embed.data.fields != undefined) {
+                event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'You Received:');
             }
         }
 
