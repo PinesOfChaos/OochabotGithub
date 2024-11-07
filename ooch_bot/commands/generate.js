@@ -133,10 +133,12 @@ module.exports = {
         create_tile(`t${zO}_003`,  Tile.Wall,     applicationEmojis ); //Obsidian Wall
         create_tile(`t${zO}_004`,  Tile.Wall,     applicationEmojis ); //Obsidian Inaccessible Area
         create_tile(`t${zO}_005`,  Tile.Floor,    applicationEmojis ); //Obsidian Cave Entrance
+        create_tile(`t${zO}_006`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_007`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_008`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_009`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_010`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_011`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_012`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_013`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_014`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
@@ -441,7 +443,7 @@ module.exports = {
             id : 12, name : 'Torch', type : OochType.Flame,
             damage : 70, accuracy: 90,
             effect : [],
-            description : 'The user stabs at the target to deal damage.'
+            description : 'The user bashes the target with a firey appendage.'
         });
         create_move({
             id : 13, name : 'Blight', type : OochType.Fungal,
@@ -604,7 +606,7 @@ module.exports = {
             description : 'Covers the target in a tough plastic substance to SNARE them.',
         });
         create_move({
-            id : 39, name : 'Entomb', type : OochType.Tech,
+            id : 39, name : 'Entomb', type : OochType.Stone,
             damage : 60, accuracy: 80,
             effect : [{status : 'snared', chance : 50, target : MoveTarget.Enemy}],
             description : 'Stones fall onto the target, leaving them SNARED if they get trapped.',

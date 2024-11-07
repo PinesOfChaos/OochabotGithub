@@ -53,6 +53,9 @@ func _ready():
 	refresh_abilities(slot_data.id)
 	refresh_moves(slot_data.id)
 	refresh_summary(slot_data.id)
+	
+	while slot_data.moveset.size() < 4:
+		slot_data.moveset.push_back(9999)
 
 #Called just after the ready function does its thing
 func re_ready():
