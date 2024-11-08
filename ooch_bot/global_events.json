@@ -176,9 +176,12 @@
 		[
 			3,
 			{
+				"description": "Let's begin with selecting an Oochamon. Go on, choose one!",
+				"dialogue_portrait": "",
+				"image": "starter.png",
 				"options": [
 					{
-						"ability": 0,
+						"ability": 2,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,
@@ -196,7 +199,7 @@
 						"spd_iv": 5
 					},
 					{
-						"ability": 0,
+						"ability": 2,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,
@@ -214,7 +217,7 @@
 						"spd_iv": 5
 					},
 					{
-						"ability": 0,
+						"ability": 2,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,
@@ -232,27 +235,34 @@
 						"spd_iv": 5
 					}
 				],
-				"text": "Let's begin with selecting an Oochamon. Go on, choose one!"
+				"title": "Intro"
 			}
 		],
 		[
 			6,
 			{
+				"description": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled.",
+				"dialogue_portrait": "",
+				"image": "",
 				"options": [
 					{
-						"event": "ev_begin_tutorial",
+						"event": "ev_tutorial_begin",
 						"flag": "",
 						"price": 0,
-						"text": "Do Tutorial"
+						"style": 2,
+						"text": "Do Tutorial",
+						"emote": ""
 					},
 					{
 						"event": "",
 						"flag": "",
 						"price": 0,
-						"text": "Continue To Game"
+						"style": 3,
+						"text": "Continue To Game",
+						"emote": ""
 					}
 				],
-				"text": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled."
+				"title": "Intro"
 			}
 		],
 		[
@@ -271,9 +281,10 @@
 		[
 			4,
 			{
+				"default_tp": true,
 				"map_to": "hub",
-				"xto": 45,
-				"yto": 47
+				"x_to": 0,
+				"y_to": 0
 			}
 		]
 	],
@@ -648,9 +659,10 @@
 		[
 			4,
 			{
+				"default_tp": true,
 				"map_to": "hub",
-				"xto": 47,
-				"yto": 49
+				"x_to": 0,
+				"y_to": 0
 			}
 		]
 	],
@@ -658,9 +670,10 @@
 		[
 			4,
 			{
+				"default_tp": true,
 				"map_to": "tutorial",
-				"xto": 8,
-				"yto": 0
+				"x_to": 0,
+				"y_to": 0
 			}
 		]
 	]

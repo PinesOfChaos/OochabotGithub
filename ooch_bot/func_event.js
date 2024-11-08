@@ -15,7 +15,8 @@ module.exports = {
     event_process: async function(user_id, thread, event_array, start_pos = 0) {
 
         const { setup_battle } = require('./func_battle.js');
-        const { give_item, setup_playspace_str, create_ooch } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
+        const { event_process } = require('./func_event.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -33,6 +34,7 @@ module.exports = {
         let imageFiles = [];
         let filter = i => i.user.id == user_id;
         let oochamonPicks = new ActionRowBuilder();
+        let optionsRow = new ActionRowBuilder();
     
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -137,6 +139,24 @@ module.exports = {
 
             event_embed.setTitle(obj_content.title);
             event_embed.setDescription(obj_content.description);
+
+            // Set NPC dialogue portrait
+            if (obj_content.dialogue_portrait != '') {
+                
+                if (obj_content.dialogue_portrait.includes('NPC|')) {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+                    imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+                } else {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                }
+            }
+
+            if (obj_content.image) {
+                event_embed.setImage(`attachment://${obj_content.image}`)
+                imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            }
+
         }
 
         function flagEvent(obj_content) {
@@ -149,14 +169,26 @@ module.exports = {
         async function transitionEvent(obj_content) {
             //remove the player's info from the old biome and add it to the new one
             let ogBiome = db.profile.get(user_id, 'location_data.area');
-            let mapData = db.maps.get(db.maps.get(obj_content.map_to));
-            db.player_positions.set(obj_content.map_to, { x: obj_content.xto, y: obj_content.yto }, user_id);
+            if (obj_content.map_to == false) obj_content.map_to = ogBiome;
+            let mapData = db.maps.get(obj_content.map_to);
+
+            if (obj_content.default_tp === true) {
+                let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
+                if (mapData.map_savepoints.length == 0) {
+                    map_default = [mapData.map_savepoints[0]];
+                }
+
+                obj_content.x_to = map_default[0].x;
+                obj_content.y_to = map_default[0].y;
+            }
+
+            db.player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
             db.player_positions.delete(ogBiome, user_id);
-            db.profile.set(user_id, { area: obj_content.map_to, x: obj_content.xto, y: obj_content.yto }, 'location_data')
+            db.profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
 
             let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
-            (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
-                msg.edit({ content: map_emote_string(obj_content.map_to, mapData, obj_content.xto, obj_content.yto, user_id) });
+            (thread.messages.fetch(msg_to_edit)).then((msg) => {
+                msg.edit({ content: map_emote_string(obj_content.map_to, mapData, obj_content.x_to, obj_content.y_to, user_id) });
             });
         }
 
@@ -165,8 +197,47 @@ module.exports = {
         }
 
         function optionsEvent(obj_content, initial=false) {
-            // TODO: Make this work
-            console.log('Oops! Not working yet!')
+            optionsRow = new ActionRowBuilder();
+
+            for (let option of obj_content.options) {
+                // Convert button style
+                switch (option.style) {
+                    case 0: option.style = ButtonStyle.Primary; break;
+                    case 1: option.style = ButtonStyle.Secondary; break;
+                    case 2: option.style = ButtonStyle.Success; break;
+                    case 3: option.style = ButtonStyle.Danger; break;
+                }
+
+                if (profile_data.flags.includes(option.flag) || option.flag == false) {
+                    optionsRow.addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`option|${option.event}|${option.price}`)
+                            .setLabel(`${option.text}`)
+                            .setStyle(option.style)
+                            //.setEmoji(`${option.emote == ""}`)
+                            .setDisabled(option.price > profile_data.oochabux),
+                    );
+                }
+            }
+
+            event_embed.setTitle(obj_content.title);
+            event_embed.setDescription(obj_content.description);
+
+            // Set NPC dialogue portrait
+            if (obj_content.dialogue_portrait != '') {
+                if (obj_content.dialogue_portrait.includes('NPC|')) {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+                    imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+                } else {
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                }
+            }
+
+            if (obj_content.image) {
+                event_embed.setImage(`attachment://${obj_content.image}`)
+                imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            }
         }
 
         while (!quit_init_loop) {
@@ -257,6 +328,21 @@ module.exports = {
                 } else {
                     db.profile.push(user_id, ooch, `ooch_pc`)
                 }
+            } else if (sel.customId.includes('option')) {
+                let optionButtonData = sel.customId.split('|');
+                
+                let eventName = optionButtonData[1];
+                let buttonPrice = optionButtonData[2];
+
+                // Remove price
+                db.profile.math(user_id, '-', buttonPrice, 'oochabux');
+                profile_data.oochabux -= buttonPrice;
+
+                if (eventName != false) {
+                    current_place = event_array.length;
+                    console.log(db.events_data.get(eventName));
+                    await event_process(user_id, thread, db.events_data.get(eventName));
+                }
             }
 
             current_place++;
@@ -313,6 +399,7 @@ module.exports = {
                     case EventMode.Options:
                         quit = true;
                         optionsEvent(obj_content);
+                        sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
                     break;
                 }
 
