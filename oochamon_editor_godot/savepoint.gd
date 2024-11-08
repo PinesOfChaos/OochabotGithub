@@ -38,7 +38,8 @@ func _process(delta):
 
 
 func _on_savepoint_initial_toggled(button_pressed):
-	savepoint_initial = button_pressed
+	savepoint_data.is_default = button_pressed
+	
 
 
 func _on_savepoint_object_button_down():
