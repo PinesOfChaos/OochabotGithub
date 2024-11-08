@@ -146,6 +146,137 @@
 			}
 		]
 	],
+	"ev_intro": [
+		[
+			0,
+			{
+				"description": "Welcome to the Oochamon Beta Test!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			0,
+			{
+				"description": "This game is currently VERY WIP, and many changes could and will be made, so we appreciate any and all feedback you may give!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			3,
+			{
+				"options": [
+					{
+						"ability": 0,
+						"atk_iv": 5,
+						"def_iv": 5,
+						"hp_iv": 5,
+						"id": 0,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5
+					},
+					{
+						"ability": 0,
+						"atk_iv": 5,
+						"def_iv": 5,
+						"hp_iv": 5,
+						"id": 3,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5
+					},
+					{
+						"ability": 0,
+						"atk_iv": 5,
+						"def_iv": 5,
+						"hp_iv": 5,
+						"id": 6,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5
+					}
+				],
+				"text": "Let's begin with selecting an Oochamon. Go on, choose one!"
+			}
+		],
+		[
+			6,
+			{
+				"options": [
+					{
+						"event": "ev_begin_tutorial",
+						"flag": "",
+						"price": 0,
+						"text": "Do Tutorial"
+					},
+					{
+						"event": "",
+						"flag": "",
+						"price": 0,
+						"text": "Continue To Game"
+					}
+				],
+				"text": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled."
+			}
+		],
+		[
+			0,
+			{
+				"description": "Perfect! With that, we shall continue onto the game! Enjoy the wonderful world of Oochamon!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			4,
+			{
+				"map_to": "hub",
+				"xto": 45,
+				"yto": 47
+			}
+		]
+	],
 	"ev_tutorial_1": [
 		[
 			0,
@@ -520,6 +651,16 @@
 				"map_to": "hub",
 				"xto": 47,
 				"yto": 49
+			}
+		]
+	],
+	"ev_tutorial_begin": [
+		[
+			4,
+			{
+				"map_to": "tutorial",
+				"xto": 8,
+				"yto": 0
 			}
 		]
 	]
