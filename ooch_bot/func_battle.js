@@ -48,7 +48,7 @@ generate_trainer_battle(trainer_obj){
     let trainer_return = {
         name: trainer_obj.name,
         ooch_active_slot: 0,
-        trainer_type: TrainerType.NPCTrainer,
+        trainer_type: (trainer_obj.is_wild ? TrainerType.Wild : TrainerType.NPCTrainer),
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
         trainer_battle_sprite: trainer_obj.sprite_combat === false ? trainer_obj.sprite_id : trainer_obj.sprite_combat,
@@ -238,7 +238,7 @@ prompt_battle_input: async function(thread, user_id) {
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji('<:item_prism:1274937161262698536>')
-                .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
+                .setDisabled(ooch_enemy_profile.type !== TrainerType.Wild),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('back')
@@ -635,9 +635,9 @@ prompt_battle_input: async function(thread, user_id) {
             break;
             case 'bag':
                 //#region
-                let heal_inv = db.profile.get(user_id, 'heal_inv')
+                let heal_inv = db.profile.get(user_id, 'heal_inv');
                 let heal_inv_keys = Object.keys(heal_inv);
-                let prism_inv = db.profile.get(user_id, 'prism_inv')
+                let prism_inv = db.profile.get(user_id, 'prism_inv');
                 let prism_inv_keys = Object.keys(prism_inv);
                 let bag_select = new ActionRowBuilder();
                 displayEmbed = new EmbedBuilder();
@@ -2401,7 +2401,7 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     const plrSprite = await loadImage('./art/NPCs/c_000.png')
     const oochPlr = await loadImage(`./art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
     let enemySprite = null;
-    if (enemy.trainer_battle_sprite != undefined) {
+    if (enemy.trainer_battle_sprite != false && enemy.trainer_battle_sprite != undefined) {
         enemySprite = await loadImage(`./art/NPCs/${enemy.trainer_battle_sprite}.png`)
     }
     const oochEnemy = await loadImage(`./art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
@@ -2442,8 +2442,10 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
             ctx.drawImage(prismIcon, 420 - (30 * i), 120);
         }
 
-        // Enemy Sprite
-        ctx.drawImage(enemySprite, 421, 75);
+        if (enemySprite != null) {
+            // Enemy Sprite
+            ctx.drawImage(enemySprite, 421, 75);
+        }
     }
 
     // Enemy Oochamon

@@ -290,7 +290,7 @@
   {
     "id": 22,
     "name": "Digitize",
-    "type": "flame",
+    "type": "tech",
     "damage": 50,
     "accuracy": 100,
     "effect": [
@@ -306,7 +306,7 @@
   {
     "id": 23,
     "name": "Clamp Down",
-    "type": "flame",
+    "type": "neutral",
     "damage": 45,
     "accuracy": 100,
     "effect": [

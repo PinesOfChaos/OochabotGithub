@@ -4,7 +4,6 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, A
 const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
-const globalEventsJSON = require('./global_events.json');
 
 
 module.exports = {
@@ -121,7 +120,7 @@ module.exports = {
                     }
                     else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                         let quarter_circle_radians = 90 * Math.PI / 180;
-                        let steps = 3;
+                        let steps = obj.aggro_range;
                         let stop_check = false;
                         let _vx, _vy, _xx, _yy, _t;
                         for(let i = 0; i < 4; i++){
@@ -215,9 +214,9 @@ module.exports = {
                     x2 = (obj.x + obj.width) >= playerx;
                     y2 = (obj.y + obj.height) >= playery;
                     if (x1 && y1 && x2 && y2) {
-                        if (obj.flag_required == false || player_flags.includes(obj.flag_required)) {
+                        if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
                             stop_moving = true;
-                            await event_process(user_id, thread, globalEventsJSON[obj.event_name]);
+                            await event_process(user_id, thread, db.events_data.get(obj.event_name));
                         }
                     }
                 }

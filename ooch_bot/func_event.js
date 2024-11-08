@@ -35,6 +35,8 @@ module.exports = {
         let filter = i => i.user.id == user_id;
         let oochamonPicks = new ActionRowBuilder();
         let optionsRow = new ActionRowBuilder();
+
+        console.log(event_array);
     
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -58,7 +60,9 @@ module.exports = {
                 }
             }
 
-            event_embed.setDescription(obj_content.description);
+            if (obj_content.description != '') {
+                event_embed.setDescription(obj_content.description);
+            }
 
             if (obj_content.title != '') {
                 event_embed.setTitle(obj_content.title);
@@ -90,6 +94,7 @@ module.exports = {
             if (obj_content.items != false) {
                 if (obj_content.items.length != 0) {
                     for (let item of obj_content.items) {
+                        console.log(item);
                         let itemData = db.item_data.get(item.id);
                         info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
                         give_item(user_id, item.id, item.count);
@@ -128,6 +133,7 @@ module.exports = {
 
             for (let ooch of obj_content.options) {
                 let oochData = db.monster_data.get(ooch.id)
+                ooch.moveset = ooch.moveset.filter(v => v != 9999);
                 oochamonPicks.addComponents(
                     new ButtonBuilder()
                         .setCustomId(`ooch|${ooch.id}|${ooch.level}|${ooch.moveset.join(',')}|${ooch.nickname}|${ooch.ability}|${ooch.hp_iv}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}`)
@@ -141,8 +147,7 @@ module.exports = {
             event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != '') {
-                
+            if (obj_content.dialogue_portrait != false) {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -161,8 +166,8 @@ module.exports = {
 
         function flagEvent(obj_content) {
             let flags = db.profile.get(user_id, 'flags');
-            if (!flags.includes(obj_content)) {
-                db.profile.push(user_id, obj_content, 'flags');
+            if (!flags.includes(obj_content.text)) {
+                db.profile.push(user_id, obj_content.text, 'flags');
             }
         }
 
@@ -174,7 +179,7 @@ module.exports = {
 
             if (obj_content.default_tp === true) {
                 let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
-                if (mapData.map_savepoints.length == 0) {
+                if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
                     map_default = [mapData.map_savepoints[0]];
                 }
 
@@ -224,7 +229,7 @@ module.exports = {
             event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != '') {
+            if (obj_content.dialogue_portrait != false) {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -251,7 +256,7 @@ module.exports = {
                     quit_init_loop = true;
                 break;
 
-                case EventMode.BattleTrainer:
+                case EventMode.Battle:
                     await battleEvent(obj_content, true);
                 return;
 
@@ -372,7 +377,7 @@ module.exports = {
                         await sel.update({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
                     break;
 
-                    case EventMode.BattleTrainer:
+                    case EventMode.Battle:
                         quit = true;
                         await battleEvent(obj_content);
                     break;
@@ -445,11 +450,16 @@ module.exports = {
 
         //Set any post-combat_flags
         flags_to_give.push(npc_flag)
+
+        // Set the dialogue to be properly formatted
+        npc_obj.pre_combat_dialogue = npc_obj.pre_combat_dialogue.split('\n');
+        npc_obj.post_combat_dialogue = npc_obj.post_combat_dialogue.split('\n');
         
         // If we don't have the NPCs flag, it means they haven't been beaten yet.
         if (!user_flags.includes(npc_flag) && battle_npc == true) {
             //Pre-combat dialogue
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
+                if (npc_obj.pre_combat_dialogue[i] == '') continue;
                 return_array.push([EventMode.Dialogue, {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
@@ -458,18 +468,19 @@ module.exports = {
                     items: false,
                     flags: [],
                     objective: false,
-                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
                 }])
             }
 
             //Setup a battle
-            return_array.push([EventMode.BattleTrainer, generate_trainer_battle(npc_obj)])
+            return_array.push([EventMode.Battle, generate_trainer_battle(npc_obj)])
 
         } else if (battle_npc == false && !user_flags.includes(npc_flag)) {
             // If this NPC isn't a battle NPC and the user doesn't yet have their flag (meaning they haven't interacted with them yet)
             // we should throw their pre interaction dialogue into the event_array. Otherwise, we don't include it.
             // Also put their designated items and money at the end of their dialogue.
             for (let i = 0; i < npc_obj.pre_combat_dialogue.length; i++) {
+                if (npc_obj.pre_combat_dialogue[i] == '') continue;
                 return_array.push([EventMode.Dialogue, {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
@@ -477,7 +488,7 @@ module.exports = {
                     items: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
                     image: false,
                     objective: false,
-                    dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
+                    dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
                     flags : flags_to_give
                 }]);
             }
@@ -485,11 +496,11 @@ module.exports = {
 
         //Set any post-default dialogue flags
         if (npc_obj.flag_given != false) {
-            return_array.push([EventMode.Flags, npc_obj.flag_given]);
+            return_array.push([EventMode.Flags, { text: npc_obj.flag_given }]);
         }
 
         //Set any post-combat_flags
-        return_array.push([EventMode.Flags, npc_flag]);
+        return_array.push([EventMode.Flags, { text: npc_flag }]);
 
         //Post-combat (or post interaction) text.
         // If we are not a battle NPC and the user DOES have this NPCs flag, we should include
@@ -500,6 +511,7 @@ module.exports = {
                 // If we are on the last dialogue, and the user has not interacted with this NPC, and the NPC is a battle NPC,
                 // put their designated items at the end of their dialogue.
                 if (i+1 == npc_obj.post_combat_dialogue.length && !user_flags.includes(npc_flag) && battle_npc == true) {
+                    if (npc_obj.post_combat_dialogue[i] == '') continue;
                     return_array.push([EventMode.Dialogue, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
@@ -507,10 +519,11 @@ module.exports = {
                         items: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
                         image: false,
                         objective: false,
-                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
                         flags : flags_to_give
                     }])
                 } else {
+                    if (npc_obj.post_combat_dialogue[i] == '') continue;
                     return_array.push([EventMode.Dialogue, {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
@@ -518,7 +531,7 @@ module.exports = {
                         image: false,
                         items: false,
                         objective: false,
-                        dialogue_portrait: npc_obj.sprite_dialogue === false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialogue}.png`,
+                        dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
                         flags: []
                     }])
                 }

@@ -2973,6 +2973,12 @@ module.exports = {
 
         // Generate the global events
         for (let event of Object.entries(globalEventsJSON)) {
+            event[1].push([
+                2,
+                {
+                    "text": event[0]
+                }
+            ])
             db.events_data.set(event[0], event[1]);
         }
         
