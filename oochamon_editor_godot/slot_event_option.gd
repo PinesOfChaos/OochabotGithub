@@ -3,12 +3,14 @@ extends HBoxContainer
 @onready var line_edit_event_to: LineEdit = $LineEditEventTo
 @onready var line_edit_flag: LineEdit = $LineEditFlag
 @onready var spin_box_price: SpinBox = $SpinBoxPrice
+@onready var option_button: OptionButton = $OptionButton
 
 var data = {
 	"text" : "",
 	"event" : "",
 	"flag" : "",
-	"price" : 0
+	"price" : 0,
+	"style": 0
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -36,3 +38,6 @@ func _on_line_edit_flag_text_changed(new_text: String) -> void:
 
 func _on_spin_box_price_value_changed(value: float) -> void:
 	data.price = value
+
+func _on_option_button_item_selected(index: int) -> void:
+	data.style = option_button.get_item_id(index)

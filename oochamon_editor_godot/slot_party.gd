@@ -28,7 +28,7 @@ var slot_data = {
 	"slot_enabled" : false,
 	"id" : 0,
 	"nickname" : "",
-	"level" : 1,
+	"level" : 5,
 	"ability" : -1,
 	"item" : -1,
 	"hp_iv" : 0,
@@ -126,6 +126,9 @@ func refresh_abilities(index):
 		#clear abilities
 		o_slot_ability.clear()
 		var ability
+		var already_set = false
+		
+		#add abilities
 		for i in ooch_data.ooch_ability.size():
 			ability = ooch_data.ooch_ability[i]
 			o_slot_ability.add_item(Global.DataAbilities[ability].ability_name, ability)
@@ -134,6 +137,13 @@ func refresh_abilities(index):
 				o_slot_ability.select(i)
 			elif i == 0 and slot_data.ability == -1:
 				slot_data.ability = ability
+				already_set = true
+		
+		#set the default ability to be randomized by default
+		if(!already_set):
+			var rand_id = o_slot_ability.item_count
+			o_slot_ability.add_item("Random", -1)
+			o_slot_ability.select(o_slot_ability.item_count - 1)
 				
 			
 func refresh_moves(index, overwrite = true):

@@ -79,10 +79,6 @@ size_flags_horizontal = 2
 focus_mode = 1
 placeholder_text = "Flag Kill"
 
-[node name="LineEditObjective" type="LineEdit" parent="npc_tab_container/Basic Info"]
-layout_mode = 2
-placeholder_text = "Objective"
-
 [node name="remove_on_finish" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
 layout_mode = 2
 
@@ -178,7 +174,6 @@ metadata/_tab_index = 4
 [connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_given" to="." method="_on_flag_given_text_submitted"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_changed"]
 [connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_submitted"]
-[connection signal="text_changed" from="npc_tab_container/Basic Info/LineEditObjective" to="." method="_on_line_edit_objective_text_changed"]
 [connection signal="toggled" from="npc_tab_container/Basic Info/remove_on_finish/check_remove_finish" to="." method="_on_check_remove_finish_toggled"]
 [connection signal="value_changed" from="npc_tab_container/Basic Info/addt_settings/aggro_range" to="." method="_on_aggro_range_value_changed"]
 [connection signal="toggled" from="npc_tab_container/Basic Info/addt_settings/wild_encounter" to="." method="_on_wild_encounter_toggled"]

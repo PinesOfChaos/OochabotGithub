@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://1ouw8vatv3cy"]
+[gd_scene load_steps=6 format=3 uid="uid://1ouw8vatv3cy"]
 
 [ext_resource type="Script" path="res://slot_event_option.gd" id="1_vs2o7"]
+[ext_resource type="Texture2D" uid="uid://bdv0vynu0nt0w" path="res://editor_assets/color_primary.png" id="2_3ipo0"]
+[ext_resource type="Texture2D" uid="uid://dnxykwlctb558" path="res://editor_assets/color_secondary.png" id="3_dkb0q"]
+[ext_resource type="Texture2D" uid="uid://rr2b257a2rvv" path="res://editor_assets/color_success.png" id="4_201a1"]
+[ext_resource type="Texture2D" uid="uid://bc1ubfy3c3c1p" path="res://editor_assets/color_danger.png" id="5_sofx4"]
 
 [node name="HBoxContainer" type="HBoxContainer"]
 offset_right = 40.0
@@ -46,8 +50,29 @@ text = "Price:"
 layout_mode = 2
 max_value = 99999.0
 
+[node name="Label5" type="Label" parent="."]
+layout_mode = 2
+text = "Color:"
+
+[node name="OptionButton" type="OptionButton" parent="."]
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Primary"
+popup/item_0/icon = ExtResource("2_3ipo0")
+popup/item_1/text = "Secondary"
+popup/item_1/icon = ExtResource("3_dkb0q")
+popup/item_1/id = 1
+popup/item_2/text = "Success"
+popup/item_2/icon = ExtResource("4_201a1")
+popup/item_2/id = 2
+popup/item_3/text = "Danger"
+popup/item_3/icon = ExtResource("5_sofx4")
+popup/item_3/id = 3
+
 [connection signal="pressed" from="ButtonDelete" to="." method="_on_button_delete_pressed"]
 [connection signal="text_changed" from="LineEditText" to="." method="_on_line_edit_text_text_changed"]
 [connection signal="text_changed" from="LineEditEventTo" to="." method="_on_line_edit_event_to_text_changed"]
 [connection signal="text_changed" from="LineEditFlag" to="." method="_on_line_edit_flag_text_changed"]
 [connection signal="value_changed" from="SpinBoxPrice" to="." method="_on_spin_box_price_value_changed"]
+[connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]

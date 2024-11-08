@@ -3,21 +3,30 @@
 [ext_resource type="Script" path="res://event_type_options.gd" id="1_tnh33"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
+custom_minimum_size = Vector2(800, 0)
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_tnh33")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="HBoxContainer"]
-layout_mode = 2
-text = "Text:"
-
-[node name="LineEditText" type="LineEdit" parent="HBoxContainer"]
+[node name="LineEditTitle" type="LineEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "Title"
+
+[node name="LineEditDesc" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Description"
+
+[node name="LineEditImage" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Image"
+
+[node name="LineEditPortrait" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Dialog Portrait"
 
 [node name="ButtonAddOption" type="Button" parent="."]
 layout_mode = 2

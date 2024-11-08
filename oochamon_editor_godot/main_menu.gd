@@ -77,6 +77,7 @@ func refresh_data():
 	Global.DataMoves = []
 	Global.DataOochamon = []
 	Global.DataTiles = []
+	Global.DataNPCs = []
 	
 	var ln
 	var lnsplit

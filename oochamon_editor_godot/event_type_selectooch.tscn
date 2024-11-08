@@ -11,14 +11,34 @@ script = ExtResource("1_7t2st")
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
-layout_mode = 2
-text = "Text: "
-
-[node name="LineEditText" type="LineEdit" parent="HBoxContainer"]
+[node name="LineEditTitle" type="LineEdit" parent="HBoxContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-placeholder_text = "PromptText"
+placeholder_text = "Title"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LineEditDesc" type="LineEdit" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "Description"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LineEditImage" type="LineEdit" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "Image"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LineEditPortrait" type="LineEdit" parent="HBoxContainer4"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "DialogPortrait"
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 2

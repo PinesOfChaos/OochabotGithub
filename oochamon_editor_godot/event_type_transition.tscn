@@ -32,4 +32,8 @@ text = "Y:"
 [node name="SpinBoxY" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
 
+[node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+text = "Use Default TP?"
+
 [connection signal="text_changed" from="HBoxContainer/LineEditMap" to="." method="_on_line_edit_map_text_changed"]
