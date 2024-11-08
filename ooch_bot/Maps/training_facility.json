@@ -28,7 +28,7 @@
 		},
 		{
 			"aggro_range": 3,
-			"coin": 0,
+			"coin": 2600,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -38,12 +38,67 @@
 			"objective": "",
 			"post_combat_dialogue": "01110100 01101000 01100001 01101110 01101011 00100000 01111001 01101111 01110101",
 			"pre_combat_dialogue": "01101110 01101111\n01110000 01101100 01100101 01100001 01110011 01100101\n01110011 01100001 01110110 01100101 00100000 01101101 01100101",
-			"remove_on_finish": false,
+			"remove_on_finish": true,
 			"sprite": 15,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_015",
-			"team": [],
+			"team": [
+				{
+					"ability": 26,
+					"atk_iv": 3,
+					"def_iv": 10,
+					"hp_iv": 3,
+					"id": 76,
+					"item": -1,
+					"level": 17,
+					"moveset": [
+						61,
+						59,
+						30,
+						42
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5
+				},
+				{
+					"ability": 1,
+					"atk_iv": 5,
+					"def_iv": 6,
+					"hp_iv": 5,
+					"id": 21,
+					"item": -1,
+					"level": 19,
+					"moveset": [
+						53,
+						60,
+						58,
+						22
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 3
+				},
+				{
+					"ability": 52,
+					"atk_iv": 8,
+					"def_iv": 1,
+					"hp_iv": 9,
+					"id": 79,
+					"item": -1,
+					"level": 20,
+					"moveset": [
+						58,
+						45,
+						4,
+						51
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				}
+			],
 			"x": 35,
 			"y": 32
 		},
@@ -98,6 +153,485 @@
 			"team": [],
 			"x": 3,
 			"y": 32
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Scavenger Gale",
+			"post_combat_dialogue": "Uhh... go away?",
+			"pre_combat_dialogue": "Shh, shh, you didn't see me here.",
+			"remove_on_finish": false,
+			"sprite": 1,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_001",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 1,
+					"def_iv": 5,
+					"hp_iv": 2,
+					"id": 19,
+					"item": -1,
+					"level": 18,
+					"moveset": [
+						96,
+						4,
+						102,
+						12
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 6
+				}
+			],
+			"x": 13,
+			"y": 60
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"post_combat_dialogue": "Great, only 99% more to go.",
+			"pre_combat_dialogue": "This download is taking forever. Wanna battle?",
+			"remove_on_finish": false,
+			"sprite": 5,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_005",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 1,
+					"def_iv": 3,
+					"hp_iv": 7,
+					"id": 22,
+					"item": -1,
+					"level": 15,
+					"moveset": [
+						60,
+						29,
+						24,
+						23
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 6
+				},
+				{
+					"ability": 0,
+					"atk_iv": 1,
+					"def_iv": 5,
+					"hp_iv": 8,
+					"id": 26,
+					"item": -1,
+					"level": 16,
+					"moveset": [
+						5,
+						30,
+						66
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 7
+				}
+			],
+			"x": 22,
+			"y": 35
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Spooked Researcher",
+			"post_combat_dialogue": "No, leave...",
+			"pre_combat_dialogue": "What are you...?\nGET OUT OF HERE!",
+			"remove_on_finish": true,
+			"sprite": 5,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_005",
+			"team": [
+				{
+					"ability": 29,
+					"atk_iv": 3,
+					"def_iv": 1,
+					"hp_iv": 3,
+					"id": 32,
+					"item": -1,
+					"level": 19,
+					"moveset": [
+						39,
+						80,
+						61,
+						37
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10
+				}
+			],
+			"x": 30,
+			"y": 44
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Quitting Crew",
+			"post_combat_dialogue": "I'm outta here!",
+			"pre_combat_dialogue": "This is *not* what I signed up for...",
+			"remove_on_finish": false,
+			"sprite": 14,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_014",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 6,
+					"def_iv": 7,
+					"hp_iv": 9,
+					"id": 39,
+					"item": -1,
+					"level": 14,
+					"moveset": [
+						5,
+						58,
+						79,
+						69
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 1
+				},
+				{
+					"ability": 0,
+					"atk_iv": 8,
+					"def_iv": 6,
+					"hp_iv": 10,
+					"id": 74,
+					"item": -1,
+					"level": 16,
+					"moveset": [
+						58,
+						61,
+						23,
+						4
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				}
+			],
+			"x": 35,
+			"y": 40
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Guard Lan",
+			"post_combat_dialogue": "Oh, so you do have authorization?\nWell, why didn't you say so sooner?",
+			"pre_combat_dialogue": "Hey, you're not authorized to be here!",
+			"remove_on_finish": false,
+			"sprite": 3,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_003",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 3,
+					"def_iv": 6,
+					"hp_iv": 3,
+					"id": 89,
+					"item": -1,
+					"level": 13,
+					"moveset": [
+						58,
+						64,
+						4,
+						91
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				},
+				{
+					"ability": 0,
+					"atk_iv": 2,
+					"def_iv": 6,
+					"hp_iv": 8,
+					"id": 17,
+					"item": -1,
+					"level": 15,
+					"moveset": [
+						0,
+						61,
+						4,
+						7
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				}
+			],
+			"x": 26,
+			"y": 11
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 19
+				}
+			],
+			"name": "Chest",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": true,
+			"sprite": 13,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 31,
+			"y": 6
+		},
+		{
+			"aggro_range": 3,
+			"coin": 172,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Scavenger Chris",
+			"post_combat_dialogue": "Uh, you didn't see me, right?",
+			"pre_combat_dialogue": "The guard's not looking anymore right?\nWait, who're you?!",
+			"remove_on_finish": false,
+			"sprite": 1,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_001",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 2,
+					"def_iv": 7,
+					"hp_iv": 3,
+					"id": 24,
+					"item": -1,
+					"level": 16,
+					"moveset": [
+						73,
+						24,
+						25,
+						26
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 9
+				}
+			],
+			"x": 39,
+			"y": 11
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 0
+				}
+			],
+			"name": "Chest",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": true,
+			"sprite": 13,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 36,
+			"y": 17
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 16
+				}
+			],
+			"name": "Chest",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": true,
+			"sprite": 13,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 51,
+			"y": 4
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Scavenger Lyle",
+			"post_combat_dialogue": "So, uh, crates, am I right?",
+			"pre_combat_dialogue": "You, me, battle?",
+			"remove_on_finish": false,
+			"sprite": 1,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_001",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 3,
+					"def_iv": 3,
+					"hp_iv": 5,
+					"id": 17,
+					"item": -1,
+					"level": 15,
+					"moveset": [
+						0,
+						61,
+						4,
+						7
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5
+				}
+			],
+			"x": 51,
+			"y": 12
+		},
+		{
+			"aggro_range": 0,
+			"coin": 0,
+			"flag_given": "seer_heatri",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Seer Anna",
+			"post_combat_dialogue": "My other sisters are out there somewhere. \nOne's high above, and the other's deep below.",
+			"pre_combat_dialogue": "I'm one of the 3 Seer Sisters.\nBattle us all to do something cool.",
+			"remove_on_finish": false,
+			"sprite": 4,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_004",
+			"team": [
+				{
+					"ability": 34,
+					"atk_iv": 5,
+					"def_iv": 3,
+					"hp_iv": 7,
+					"id": 41,
+					"item": -1,
+					"level": 19,
+					"moveset": [
+						62,
+						4,
+						54,
+						8
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 9
+				}
+			],
+			"x": 43,
+			"y": 17
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Crew Joe",
+			"post_combat_dialogue": "Oh, I guess it's more stable than I thought...",
+			"pre_combat_dialogue": "This building is NOT structurally sound, get out!",
+			"remove_on_finish": false,
+			"sprite": 14,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_014",
+			"team": [
+				{
+					"ability": 2,
+					"atk_iv": 5,
+					"def_iv": 6,
+					"hp_iv": 8,
+					"id": 32,
+					"item": -1,
+					"level": 17,
+					"moveset": [
+						80,
+						39,
+						37,
+						61
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 6
+				}
+			],
+			"x": 11,
+			"y": 46
 		}
 	],
 	"map_savepoints": [
@@ -4350,5 +4884,118 @@
 			"t00_000"
 		]
 	],
-	"map_transitions": []
+	"map_transitions": [
+		{
+			"connect_map": "",
+			"connect_x": "28",
+			"connect_y": "4",
+			"x": 14,
+			"y": 13
+		},
+		{
+			"connect_map": "",
+			"connect_x": "14",
+			"connect_y": "12",
+			"x": 28,
+			"y": 3
+		},
+		{
+			"connect_map": "",
+			"connect_x": "8",
+			"connect_y": "36",
+			"x": 47,
+			"y": 10
+		},
+		{
+			"connect_map": "",
+			"connect_x": "47",
+			"connect_y": "11",
+			"x": 8,
+			"y": 37
+		},
+		{
+			"connect_map": "",
+			"connect_x": "9",
+			"connect_y": "46",
+			"x": 10,
+			"y": 32
+		},
+		{
+			"connect_map": "",
+			"connect_x": "10",
+			"connect_y": "33",
+			"x": 9,
+			"y": 45
+		},
+		{
+			"connect_map": "",
+			"connect_x": "12",
+			"connect_y": "46",
+			"x": 18,
+			"y": 32
+		},
+		{
+			"connect_map": "",
+			"connect_x": "18",
+			"connect_y": "33",
+			"x": 12,
+			"y": 45
+		},
+		{
+			"connect_map": "",
+			"connect_x": "53",
+			"connect_y": "11",
+			"x": 18,
+			"y": 37
+		},
+		{
+			"connect_map": "",
+			"connect_x": "18",
+			"connect_y": "36",
+			"x": 53,
+			"y": 10
+		},
+		{
+			"connect_map": "",
+			"connect_x": "20",
+			"connect_y": "47",
+			"x": 54,
+			"y": 18
+		},
+		{
+			"connect_map": "",
+			"connect_x": "54",
+			"connect_y": "19",
+			"x": 20,
+			"y": 48
+		},
+		{
+			"connect_map": "",
+			"connect_x": "9",
+			"connect_y": "57",
+			"x": 21,
+			"y": 45
+		},
+		{
+			"connect_map": "",
+			"connect_x": "21",
+			"connect_y": "46",
+			"x": 9,
+			"y": 56
+		},
+		{
+			"connect_map": "",
+			"connect_x": "31",
+			"connect_y": "56",
+			"x": 16,
+			"y": 56
+		},
+		{
+			"connect_map": "",
+			"connect_x": "16",
+			"connect_y": "57",
+			"x": 31,
+			"y": 55
+		}
+	]
 }

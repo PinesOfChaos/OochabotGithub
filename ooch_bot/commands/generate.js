@@ -501,13 +501,13 @@ module.exports = {
             description : 'A blazing inferno afflicts all targets with a BURN.',
         });
         create_move({
-            id : 22, name : 'Digitize', type : OochType.Flame,
+            id : 22, name : 'Digitize', type : OochType.Tech,
             damage : 50, accuracy: 100,
             effect : [{status : 'digitized', chance : 100, target : MoveTarget.Enemy}],
             description : 'The target becomes DIGITIZED when hit by this strange beam.',
         });
         create_move({
-            id : 23, name : 'Clamp Down', type : OochType.Flame,
+            id : 23, name : 'Clamp Down', type : OochType.Neutral,
             damage : 45, accuracy: 100,
             effect : [{status : 'snared', chance : 30, target : MoveTarget.Enemy}],
             description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.',
