@@ -82,7 +82,7 @@
   {
     "id": 8,
     "name": "ID Card",
-    "emote": ":identification_card:",
+    "emote": "<:item_id_card:1304609783474552842>",
     "category": "other_inv",
     "type": "misc",
     "price": -1,
@@ -198,5 +198,25 @@
     "price": 25000,
     "potency": "spd",
     "description": "Permanently increases Speed of an Oochamon."
+  },
+  {
+    "id": 20,
+    "name": "Spore Feather",
+    "emote": "<:item_sporefeather:1304609799245266964>",
+    "category": "other_inv",
+    "type": "misc",
+    "price": -1,
+    "potency": 1,
+    "description": "Feathers covered in Fungal spores. They may evolve a certain Oochamon."
+  },
+  {
+    "id": 21,
+    "name": "Lavaboard",
+    "emote": "<:item_lavaboard:1304609819201900575>",
+    "category": "other_inv",
+    "type": "misc",
+    "price": -1,
+    "potency": 1,
+    "description": "A high-tech board that uses extreme heat to levitate."
   }
 ]
