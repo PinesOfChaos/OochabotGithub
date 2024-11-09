@@ -1126,7 +1126,7 @@ module.exports = {
         create_status(5,   'Vanished',  '<:status_vanish:1274938531864776735>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
         create_status(6,   'Doomed',    '<:status_doomed:1274938483924009062>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
         create_status(7,   'Doubled',   '<:status_doubled:1274938495953014845>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-        create_status(8,   'Focused',   '🔎',                                       'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+        create_status(8,   'Focused',   '<:status_focused:1304616656915533855>',    'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
 
         
         //#endregion

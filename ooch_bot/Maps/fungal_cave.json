@@ -379,7 +379,12 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"is_wild": false,
-			"items": [],
+			"items": [
+				{
+					"count": 1,
+					"id": 20
+				}
+			],
 			"name": "Chest",
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",

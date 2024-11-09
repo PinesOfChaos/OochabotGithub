@@ -666,7 +666,12 @@
 			"flag_kill": "",
 			"flag_required": "lavaboard_quest_end",
 			"is_wild": false,
-			"items": [],
+			"items": [
+				{
+					"count": 1,
+					"id": 21
+				}
+			],
 			"name": "Head Engineer",
 			"post_combat_dialogue": "Great, you'll do just fine on our next request! Here's your completed Lavaboard!\nNow, as for our next request...\nThere's a rather rare material further North of here.\nIf you hop on your Lavaboard and ride to the West, you'll get where you need to go.\n{objective:Ride the Lava River West}",
 			"pre_combat_dialogue": "Ah, perfect, you're back!\nIf you'll pass me the Lavaboard Prototype...\nHmm... I'll hand this off to another Engineer to tune it.\nIn the meantime, I'd like to test your strength!\nGet ready for another battle!",
