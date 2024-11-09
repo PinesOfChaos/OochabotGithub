@@ -11,8 +11,8 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "",
-		"map_name": "testmap"
+		"map_battleback": "battle_bg_facility",
+		"map_name": "Abandoned Facility"
 	},
 	"map_npcs": [
 		{
@@ -671,7 +671,7 @@
 	],
 	"map_savepoints": [
 		{
-			"is_default": false,
+			"is_default": true,
 			"x": 27,
 			"y": 6
 		},

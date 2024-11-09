@@ -1,8 +1,8 @@
 {
 	"map_events": [],
 	"map_info": {
-		"map_battleback": "",
-		"map_name": "testmap"
+		"map_battleback": "battle_bg_lava_fields",
+		"map_name": "Lava Fields"
 	},
 	"map_npcs": [
 		{
@@ -154,9 +154,9 @@
 					"hp_iv": 4,
 					"id": 44,
 					"item": -1,
-					"level": 14,
+					"level": 15,
 					"moveset": [
-						5,
+						1,
 						47,
 						4,
 						39
@@ -172,9 +172,9 @@
 					"hp_iv": 7,
 					"id": 9,
 					"item": -1,
-					"level": 15,
+					"level": 16,
 					"moveset": [
-						7,
+						1,
 						80,
 						3,
 						5
@@ -767,7 +767,7 @@
 			"y": 54
 		},
 		{
-			"is_default": false,
+			"is_default": true,
 			"x": 42,
 			"y": 29
 		}
@@ -782,7 +782,82 @@
 			"y": 30
 		}
 	],
-	"map_spawn_zones": [],
+	"map_spawn_zones": [
+		{
+			"height": 22,
+			"spawn_slots": [
+				{
+					"max_level": 10,
+					"min_level": 8,
+					"ooch_id": 66
+				},
+				{
+					"max_level": 10,
+					"min_level": 8,
+					"ooch_id": 17
+				},
+				{
+					"max_level": 1,
+					"min_level": 8,
+					"ooch_id": 19
+				}
+			],
+			"width": 12,
+			"x": 17,
+			"y": 34
+		},
+		{
+			"height": 13,
+			"spawn_slots": [
+				{
+					"max_level": 13,
+					"min_level": 11,
+					"ooch_id": 17
+				},
+				{
+					"max_level": 13,
+					"min_level": 11,
+					"ooch_id": 91
+				},
+				{
+					"max_level": 1,
+					"min_level": 11,
+					"ooch_id": 19
+				}
+			],
+			"width": 17,
+			"x": 22,
+			"y": 10
+		},
+		{
+			"height": 2,
+			"spawn_slots": [
+				{
+					"max_level": 15,
+					"min_level": 12,
+					"ooch_id": 19
+				},
+				{
+					"max_level": 15,
+					"min_level": 12,
+					"ooch_id": 17
+				},
+				{
+					"max_level": 15,
+					"min_level": 12,
+					"ooch_id": 44
+				},
+				{
+					"max_level": 1,
+					"min_level": 12,
+					"ooch_id": 66
+				}
+			],
+			"width": 2,
+			"x": 54,
+			"y": 25
+		}
+	],
 	"map_tiles": [
 		[
 			"t04_004",

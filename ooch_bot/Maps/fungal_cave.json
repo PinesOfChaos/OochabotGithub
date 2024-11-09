@@ -11,8 +11,8 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "",
-		"map_name": "testmap"
+		"map_battleback": "battle_bg_fungal_cave",
+		"map_name": "Fungal Caves"
 	},
 	"map_npcs": [
 		{
@@ -400,8 +400,8 @@
 	],
 	"map_savepoints": [
 		{
-			"is_default": false,
-			"x": 32,
+			"is_default": true,
+			"x": 31,
 			"y": 39
 		}
 	],

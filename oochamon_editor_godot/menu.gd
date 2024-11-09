@@ -24,11 +24,11 @@ extends Control
 @onready var label_notification: Label = $LabelNotification
 @onready var label_mouse_position: Label = $LabelMousePosition
 
-@export var map_name = "testmap"
+@export var map_name = ""
+@export var map_battle_bg = ""
 @export var map_width = 64
 @export var map_height = 64
 @export var map_tiles = []
-@export var map_battleback = ""
 var mouse_x_prev = 0
 var mouse_y_prev = 0
 @export var cam_x = 0
@@ -44,6 +44,10 @@ var tiles_visible = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	line_edit_map_name.text = map_name
+	line_edit_map_battle_back.text = map_battle_bg
+	
+	
 	fd_save.current_dir = Global.WorkingDir
 	fd_load.current_dir = Global.WorkingDir
 	
@@ -79,7 +83,7 @@ func _process(delta):
 	if not post_ready_complete:
 		post_ready_complete = true
 		line_edit_map_name.text = map_name
-		line_edit_map_battle_back.text = map_battleback
+		line_edit_map_battle_back.text = map_battle_bg
 	
 	step()	
 	step_end()		
@@ -317,8 +321,8 @@ func _on_file_dialog_save_file_selected(path):
 		#Save the .TXT file to be loaded into Oochabot
 		var save_data = {
 			"map_info" : {
-				"map_name" : map_name,
-				"map_battleback" : map_battleback
+				"map_name" : line_edit_map_name.text,
+				"map_battleback" : line_edit_map_battle_back.text
 			},
 			"map_tiles" : [],
 			"map_npcs" : [],
@@ -432,19 +436,26 @@ func _on_file_dialog_save_file_selected(path):
 func _on_file_dialog_load_file_selected(path):
 	
 	if(FileAccess.file_exists(path)):
-		label_notification.notify("File Loaded")
+		
 		var f = FileAccess.open(path, FileAccess.READ)
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
+		var _text = f.get_as_text(true)
+		var _json = JSON.parse_string(_text)
+		
 		var _main = get_parent()
 		var _menu = load("res://menu.tscn")
 		var _inst = _menu.instantiate()
+		
+		#Map General Info
+		_inst.map_name = _json.map_info.map_name
+		_inst.map_battle_bg = _json.map_info.map_battleback
+		
 		_main.add_child(_inst)
 		_inst.owner = _main
 		_inst.file_known = true
 		_inst.file_last_path = path
+		_inst.label_notification.notify("File Loaded")
 		
-		var _text = f.get_as_text(true)
-		var _json = JSON.parse_string(_text)
 		
 		var _events = _inst.menu_events
 		var _spawnzones = _inst.menu_spawnzones
@@ -453,9 +464,8 @@ func _on_file_dialog_load_file_selected(path):
 		var _shops = _inst.menu_shops
 		var _npcs = _inst.menu_npcs
 		
-		#Map General Info
-		_inst.map_name = _json.map_info.map_name
-		_inst.map_battleback = _json.map_info.map_battleback
+		
+		
 		
 		#Tiles
 		var _tiles = _json.map_tiles
@@ -690,12 +700,6 @@ func resize_map(prev_w, prev_h):
 	map_tiles = new_map_tiles
 	
 	queue_redraw()
-	
-func _on_line_edit_map_name_text_changed(new_text):
-	map_name = new_text
-	
-func _on_line_edit_map_battle_back_text_changed(new_text):
-	line_edit_map_battle_back = new_text
 
 func _on_timer_timeout():
 	if(file_known) and not(file_last_path == ""):
@@ -719,3 +723,11 @@ func _on_button_main_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://main_menu.tscn")
 	queue_free()
 	
+
+
+func _on_line_edit_map_name_text_changed(new_text: String) -> void:
+	map_name = new_text
+
+
+func _on_line_edit_map_battle_back_text_changed(new_text: String) -> void:
+	map_battle_bg = new_text

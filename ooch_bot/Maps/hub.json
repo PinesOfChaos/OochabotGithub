@@ -11,8 +11,8 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "",
-		"map_name": "testmap"
+		"map_battleback": "battle_bg_valley",
+		"map_name": "Hub"
 	},
 	"map_npcs": [
 		{
@@ -497,7 +497,7 @@
 	],
 	"map_savepoints": [
 		{
-			"is_default": false,
+			"is_default": true,
 			"x": 45,
 			"y": 50
 		}
