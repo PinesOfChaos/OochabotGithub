@@ -371,6 +371,26 @@
 			],
 			"x": 46,
 			"y": 26
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_wild": false,
+			"items": [],
+			"name": "Chest",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": true,
+			"sprite": 13,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 16,
+			"y": 18
 		}
 	],
 	"map_savepoints": [
@@ -473,6 +493,34 @@
 			"width": 4,
 			"x": 40,
 			"y": 24
+		},
+		{
+			"height": 16,
+			"spawn_slots": [
+				{
+					"max_level": 20,
+					"min_level": 15,
+					"ooch_id": 15
+				},
+				{
+					"max_level": 20,
+					"min_level": 15,
+					"ooch_id": 13
+				},
+				{
+					"max_level": 20,
+					"min_level": 15,
+					"ooch_id": 59
+				},
+				{
+					"max_level": 20,
+					"min_level": 15,
+					"ooch_id": 93
+				}
+			],
+			"width": 6,
+			"x": 12,
+			"y": 27
 		}
 	],
 	"map_tiles": [

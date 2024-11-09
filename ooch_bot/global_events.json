@@ -59,6 +59,92 @@
 			}
 		]
 	],
+	"ev_corrupt_tech_defeat": [
+		[
+			0,
+			{
+				"description": "*Radio Static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Ah, hello there! It sounds like you've retrived the Lavaboard Prototype.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Engineer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Bring it back here and we'll see about getting it functional for you!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Return the Lavaboard Prototype to the Head Engineer",
+				"title": "Head Engineer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Wait, what's that? The one who took it was all covered in Tech? We'll send someone out to investigate right away!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Engineer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "You get back here safe now!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Head Engineer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "*Click*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			2,
+			{
+				"text": "lavaboard_quest_end"
+			}
+		]
+	],
 	"ev_cromet_defeated": [
 		[
 			0,
@@ -245,20 +331,20 @@
 				"image": "",
 				"options": [
 					{
+						"emote": "",
 						"event": "ev_tutorial_begin",
 						"flag": "",
 						"price": 0,
 						"style": 2,
-						"text": "Do Tutorial",
-						"emote": ""
+						"text": "Do Tutorial"
 					},
 					{
+						"emote": "",
 						"event": "",
 						"flag": "",
 						"price": 0,
 						"style": 3,
-						"text": "Continue To Game",
-						"emote": ""
+						"text": "Continue To Game"
 					}
 				],
 				"title": "Intro"

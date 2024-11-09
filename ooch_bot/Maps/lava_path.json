@@ -60,7 +60,7 @@
 			"aggro_range": 3,
 			"coin": 0,
 			"flag_given": "lavaboard_quest_begin",
-			"flag_kill": "",
+			"flag_kill": "lavaboard_quest_end",
 			"flag_required": "",
 			"is_wild": false,
 			"items": [],
@@ -658,6 +658,101 @@
 			"team": [],
 			"x": 40,
 			"y": 25
+		},
+		{
+			"aggro_range": 0,
+			"coin": 1800,
+			"flag_given": "lavaboard_get",
+			"flag_kill": "",
+			"flag_required": "lavaboard_quest_end",
+			"is_wild": false,
+			"items": [],
+			"name": "Head Engineer",
+			"post_combat_dialogue": "Great, you'll do just fine on our next request! Here's your completed Lavaboard!\nNow, as for our next request...\nThere's a rather rare material further North of here.\nIf you hop on your Lavaboard and ride to the West, you'll get where you need to go.\n{objective:Ride the Lava River West}",
+			"pre_combat_dialogue": "Ah, perfect, you're back!\nIf you'll pass me the Lavaboard Prototype...\nHmm... I'll hand this off to another Engineer to tune it.\nIn the meantime, I'd like to test your strength!\nGet ready for another battle!",
+			"remove_on_finish": true,
+			"sprite": 9,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_009",
+			"team": [
+				{
+					"ability": 12,
+					"atk_iv": 2,
+					"def_iv": 10,
+					"hp_iv": 9,
+					"id": 10,
+					"item": -1,
+					"level": 20,
+					"moveset": [
+						80,
+						3,
+						5,
+						7
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				},
+				{
+					"ability": 14,
+					"atk_iv": 6,
+					"def_iv": 10,
+					"hp_iv": 5,
+					"id": 12,
+					"item": -1,
+					"level": 21,
+					"moveset": [
+						11,
+						62,
+						24,
+						47
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5
+				},
+				{
+					"ability": 53,
+					"atk_iv": 3,
+					"def_iv": 10,
+					"hp_iv": 10,
+					"id": 85,
+					"item": -1,
+					"level": 22,
+					"moveset": [
+						3,
+						56,
+						68,
+						66
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 4
+				}
+			],
+			"x": 46,
+			"y": 26
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "lavaboard_get",
+			"is_wild": false,
+			"items": [],
+			"name": "Head Engineer",
+			"post_combat_dialogue": "The settlement's a bit of a work in progress.\nBut we're still hard at work!",
+			"pre_combat_dialogue": "Having any luck out there? You can return here any time!",
+			"remove_on_finish": false,
+			"sprite": 9,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_009",
+			"team": [],
+			"x": 46,
+			"y": 26
 		}
 	],
 	"map_savepoints": [
@@ -4937,6 +5032,20 @@
 			"connect_y": "25",
 			"x": 51,
 			"y": 60
+		},
+		{
+			"connect_map": "training_facility",
+			"connect_x": "5",
+			"connect_y": "12",
+			"x": 53,
+			"y": 24
+		},
+		{
+			"connect_map": "stone_tunnel",
+			"connect_x": "",
+			"connect_y": "",
+			"x": 14,
+			"y": 58
 		}
 	]
 }

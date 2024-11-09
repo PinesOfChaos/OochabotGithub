@@ -346,7 +346,7 @@ module.exports = {
         create_item(5, 'Grand Prism',    '<:item_prism_grand:1274937171513442359>',    'prism_inv', 'prism',   500,    2,       'A further modified prism with an even higher capture rate.')
         create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1274937195970428928>',  'prism_inv', 'prism',   10000,  1000,    'A prism with a shattered casing, nothing escapes its pull.')
         create_item(7, 'Attack Crystal', '<:item_attack_crystal:1274936834883059774>', 'other_inv', 'misc',    200,    1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
-        create_item(8, 'ID Card',        ':identification_card:',                      'other_inv', 'misc',    -1,     1,       'Your ID card. You look so fabulous!')
+        create_item(8, 'ID Card',        '<:item_id_card:1304609783474552842>',        'other_inv', 'misc',    -1,     1,       'Your ID card. You look so fabulous!')
 
         //NEW ITEMS
         create_item(9,  'Eyedrops',      '<:item_eyedrops:1274937019994472459>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
@@ -361,7 +361,10 @@ module.exports = {
         create_item(17, 'Red Boostgem',   '<:item_iv_atk:1274937039460237382>',        'other_inv', 'iv',     25000, 'atk',   'Permanently increases Attack of an Oochamon.')
         create_item(18, 'Blue Boostgem',  '<:item_iv_def:1274937065317990486>',        'other_inv', 'iv',     25000, 'def',   'Permanently increases Defense of an Oochamon.')
         create_item(19, 'Yellow Boostgem','<:item_iv_spd:1274937099984048138>',        'other_inv', 'iv',     25000, 'spd',   'Permanently increases Speed of an Oochamon.')
-        
+
+        create_item(20, 'Spore Feather', '<:item_sporefeather:1304609799245266964>',  'other_inv', 'misc',   -1,     1,       'Feathers covered in Fungal spores. They may evolve a certain Oochamon.')
+        create_item(21, 'Lavaboard',     '<:item_lavaboard:1304609819201900575>',     'other_inv', 'misc',   -1,     1,       'A high-tech board that uses extreme heat to levitate.')
+
         //#endregion
 
         //#region Move Data
