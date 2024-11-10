@@ -600,6 +600,21 @@ func _on_button_new_npc_button_down():
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
 	instance.owner = o_menu
 	refresh_all_children()
+
+func _on_button_new_chest_button_down() -> void:
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://npc.tscn")
+	var instance = scene.instantiate()
+	instance.npc_data = {
+		"name" : "Chest",
+		"sprite_id" : "c00_013",
+		"pre_combat_dialogue" : "You opened the chest...",
+		"remove_on_finish" : true
+	}
+	menu_npcs.add_child(instance)
+	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
+	instance.owner = o_menu
+	refresh_all_children()
 	
 func _on_button_new_transition_button_down():
 	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT

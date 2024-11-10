@@ -186,6 +186,13 @@ size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New NPC"
 
+[node name="ButtonNewChest" type="Button" parent="VBoxMenu/HBoxNPC"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Chest"
+
 [node name="GridOoch" type="GridContainer" parent="."]
 visible = false
 layout_direction = 2
@@ -303,4 +310,5 @@ text = "0, 0"
 [connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled"]
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
 [connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewChest" to="." method="_on_button_new_chest_button_down"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

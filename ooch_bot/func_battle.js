@@ -826,7 +826,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
                                         ooch_data = level_up(ooch_data);
                                         string_to_send += `\n${ooch_data[1]}`;
-                                        await 1(user_id, ooch_data[0], `ooch_party[${i}]`)
+                                        await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
                                     }
                                 }
 
