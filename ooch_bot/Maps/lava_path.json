@@ -5107,43 +5107,43 @@
 	"map_transitions": [
 		{
 			"connect_map": "lava_path",
-			"connect_x": "51",
-			"connect_y": "50",
+			"connect_x": 51,
+			"connect_y": 50,
 			"x": 41,
 			"y": 24
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": "51",
-			"connect_y": "59",
+			"connect_x": 51,
+			"connect_y": 59,
 			"x": 48,
 			"y": 24
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": "41",
-			"connect_y": "25",
+			"connect_x": 41,
+			"connect_y": 25,
 			"x": 51,
 			"y": 51
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": "48",
-			"connect_y": "25",
+			"connect_x": 48,
+			"connect_y": 25,
 			"x": 51,
 			"y": 60
 		},
 		{
 			"connect_map": "training_facility",
-			"connect_x": "5",
-			"connect_y": "12",
+			"connect_x": 5,
+			"connect_y": 12,
 			"x": 53,
 			"y": 24
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": "",
-			"connect_y": "",
+			"connect_x": 0,
+			"connect_y": 0,
 			"x": 14,
 			"y": 58
 		}

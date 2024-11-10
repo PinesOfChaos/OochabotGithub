@@ -4766,36 +4766,36 @@
 	"map_transitions": [
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": "29",
-			"connect_y": "51",
+			"connect_x": 29,
+			"connect_y": 51,
 			"x": 21,
 			"y": 45
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": "40",
-			"connect_y": "47",
+			"connect_x": 40,
+			"connect_y": 47,
 			"x": 32,
 			"y": 41
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": "49",
-			"connect_y": "40",
+			"connect_x": 49,
+			"connect_y": 40,
 			"x": 41,
 			"y": 33
 		},
 		{
 			"connect_map": "fungal_cave",
-			"connect_x": "31",
-			"connect_y": "14",
+			"connect_x": 31,
+			"connect_y": 14,
 			"x": 31,
 			"y": 21
 		},
 		{
 			"connect_map": "fungal_cave",
-			"connect_x": "31",
-			"connect_y": "22",
+			"connect_x": 31,
+			"connect_y": 22,
 			"x": 31,
 			"y": 15
 		}

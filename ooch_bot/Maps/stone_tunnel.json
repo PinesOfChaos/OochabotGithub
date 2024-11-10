@@ -4454,36 +4454,36 @@
 	"map_transitions": [
 		{
 			"connect_map": "fungal_cave",
-			"connect_x": "21",
-			"connect_y": "45",
+			"connect_x": 21,
+			"connect_y": 45,
 			"x": 29,
 			"y": 50
 		},
 		{
 			"connect_map": "fungal_cave",
-			"connect_x": "32",
-			"connect_y": "40",
+			"connect_x": 32,
+			"connect_y": 40,
 			"x": 40,
 			"y": 46
 		},
 		{
 			"connect_map": "fungal_cave",
-			"connect_x": "41",
-			"connect_y": "32",
+			"connect_x": 41,
+			"connect_y": 32,
 			"x": 49,
 			"y": 39
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": "14",
-			"connect_y": "57",
+			"connect_x": 14,
+			"connect_y": 57,
 			"x": 57,
 			"y": 38
 		},
 		{
 			"connect_map": "hub",
-			"connect_x": "29",
-			"connect_y": "24",
+			"connect_x": 29,
+			"connect_y": 24,
 			"x": 55,
 			"y": 54
 		}

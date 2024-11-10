@@ -4828,36 +4828,36 @@
 	"map_transitions": [
 		{
 			"connect_map": "hub",
-			"connect_x": "42",
-			"connect_y": "43",
+			"connect_x": 42,
+			"connect_y": 43,
 			"x": 42,
 			"y": 46
 		},
 		{
 			"connect_map": "hub",
-			"connect_x": "43",
-			"connect_y": "43",
+			"connect_x": 43,
+			"connect_y": 43,
 			"x": 43,
 			"y": 46
 		},
 		{
 			"connect_map": "hub",
-			"connect_x": "42",
-			"connect_y": "46",
+			"connect_x": 42,
+			"connect_y": 46,
 			"x": 42,
 			"y": 43
 		},
 		{
 			"connect_map": "hub",
-			"connect_x": "43",
-			"connect_y": "46",
+			"connect_x": 43,
+			"connect_y": 46,
 			"x": 43,
 			"y": 43
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": "55",
-			"connect_y": "53",
+			"connect_x": 55,
+			"connect_y": 53,
 			"x": 29,
 			"y": 23
 		}

@@ -5037,120 +5037,120 @@
 	"map_transitions": [
 		{
 			"connect_map": "",
-			"connect_x": "28",
-			"connect_y": "4",
+			"connect_x": 28,
+			"connect_y": 4,
 			"x": 14,
 			"y": 13
 		},
 		{
 			"connect_map": "",
-			"connect_x": "14",
-			"connect_y": "12",
+			"connect_x": 14,
+			"connect_y": 12,
 			"x": 28,
 			"y": 3
 		},
 		{
 			"connect_map": "",
-			"connect_x": "8",
-			"connect_y": "36",
+			"connect_x": 8,
+			"connect_y": 36,
 			"x": 47,
 			"y": 10
 		},
 		{
 			"connect_map": "",
-			"connect_x": "47",
-			"connect_y": "11",
+			"connect_x": 47,
+			"connect_y": 11,
 			"x": 8,
 			"y": 37
 		},
 		{
 			"connect_map": "",
-			"connect_x": "9",
-			"connect_y": "46",
+			"connect_x": 9,
+			"connect_y": 46,
 			"x": 10,
 			"y": 32
 		},
 		{
 			"connect_map": "",
-			"connect_x": "10",
-			"connect_y": "33",
+			"connect_x": 10,
+			"connect_y": 33,
 			"x": 9,
 			"y": 45
 		},
 		{
 			"connect_map": "",
-			"connect_x": "12",
-			"connect_y": "46",
+			"connect_x": 12,
+			"connect_y": 46,
 			"x": 18,
 			"y": 32
 		},
 		{
 			"connect_map": "",
-			"connect_x": "18",
-			"connect_y": "33",
+			"connect_x": 18,
+			"connect_y": 33,
 			"x": 12,
 			"y": 45
 		},
 		{
 			"connect_map": "",
-			"connect_x": "53",
-			"connect_y": "11",
+			"connect_x": 53,
+			"connect_y": 11,
 			"x": 18,
 			"y": 37
 		},
 		{
 			"connect_map": "",
-			"connect_x": "18",
-			"connect_y": "36",
+			"connect_x": 18,
+			"connect_y": 36,
 			"x": 53,
 			"y": 10
 		},
 		{
 			"connect_map": "",
-			"connect_x": "20",
-			"connect_y": "47",
+			"connect_x": 20,
+			"connect_y": 47,
 			"x": 54,
 			"y": 18
 		},
 		{
 			"connect_map": "",
-			"connect_x": "54",
-			"connect_y": "19",
+			"connect_x": 54,
+			"connect_y": 19,
 			"x": 20,
 			"y": 48
 		},
 		{
 			"connect_map": "",
-			"connect_x": "9",
-			"connect_y": "57",
+			"connect_x": 9,
+			"connect_y": 57,
 			"x": 21,
 			"y": 45
 		},
 		{
 			"connect_map": "",
-			"connect_x": "21",
-			"connect_y": "46",
+			"connect_x": 21,
+			"connect_y": 46,
 			"x": 9,
 			"y": 56
 		},
 		{
 			"connect_map": "",
-			"connect_x": "31",
-			"connect_y": "56",
+			"connect_x": 31,
+			"connect_y": 56,
 			"x": 16,
 			"y": 56
 		},
 		{
 			"connect_map": "",
-			"connect_x": "16",
-			"connect_y": "57",
+			"connect_x": 16,
+			"connect_y": 57,
 			"x": 31,
 			"y": 55
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": "53",
-			"connect_y": "25",
+			"connect_x": 53,
+			"connect_y": 25,
 			"x": 5,
 			"y": 13
 		}

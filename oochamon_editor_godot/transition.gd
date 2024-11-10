@@ -22,8 +22,13 @@ var dragging = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	o_transition_xto.text = str(transition_data.connect_x)
-	o_transition_yto.text = str(transition_data.connect_y)
+	
+	if(typeof(transition_data.connect_x) == TYPE_STRING):
+		transition_data.connect_x = int(transition_data.connect_x)
+		transition_data.connect_y = int(transition_data.connect_y)
+	
+	o_transition_xto.value = transition_data.connect_x
+	o_transition_yto.value = transition_data.connect_y
 	o_transition_map_to.text = transition_data.connect_map
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -49,12 +54,7 @@ func _process(delta):
 
 func _on_transition_map_to_text_changed(new_text):
 	transition_data.connect_map = new_text
-	
-func _on_transition_x_text_changed(new_text):
-	transition_data.connect_x = new_text
 
-func _on_transition_y_text_changed(new_text):
-	transition_data.connect_y = new_text
 
 func _on_transition_object_button_down():
 	if typeof(Global.ObjSelected) == typeof(get_instance_id()) and Global.ObjSelected == get_instance_id():
@@ -62,3 +62,10 @@ func _on_transition_object_button_down():
 	else:
 		Global.ObjSelected = get_instance_id()
 		Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+
+
+func _on_transition_x_value_changed(value: float) -> void:
+	transition_data.connect_x = value
+
+func _on_transition_y_value_changed(value: float) -> void:
+	transition_data.connect_y = value
