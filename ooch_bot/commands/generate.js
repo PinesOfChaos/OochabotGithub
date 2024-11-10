@@ -385,56 +385,69 @@ module.exports = {
 
         create_item({
             id : 9, name : 'Eyedrops', emote : '<:item_eyedrops:1274937019994472459>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Blind, 
+            description : 'Removes BLIND status effect.'
         })
         create_item({
-            id : 10, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 10, name : 'Shears', emote : '<:item_shears:1274937209652514838>',
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Snare, 
+            description : 'Removes SNARED status effect.'
         })
         create_item({
-            id : 11, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 11, name : 'Daylily', emote : '<:item_daylily:1274936962125402143>',
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Doom, 
+            description : 'Removes DOOMED status effect.'
         })
         create_item({
-            id : 12, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 12, name : 'Antiparasite', emote : '<:item_antiparasite:1274936818823069789>',
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Infect, 
+            description : 'Removes INFECTED status effect.'
         })
         create_item({
-            id : 13, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 13, name : 'Debug Chip', emote : '<:item_debugchip:1274936992462930001>',
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Digitize, 
+            description : 'Removes DIGITIZED status effect.'
         })
         create_item({
-            id : 14, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 14, name : 'Cooling Balm', emote : '<:item_coolingbalm:1274936928625758269>',
+            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Burn, 
+            description : 'Removes BURNED status effect.'
         })
         create_item({
-            id : 15, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            id : 15, name : 'Nullifying Sphere', emote : '<:item_null_sphere:1274937109995716648>',
+            category : 'other_inv', type : 'heal_inv', price : 1200, potency : Status.All, 
+            description : 'Removes all status effects.'
         })
-
-        //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
-        create_item(9,  'Eyedrops',      '<:item_eyedrops:1274937019994472459>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
-        create_item(10, 'Shears',        '<:item_shears:1274937209652514838>',         'heal_inv',  'status',  200,   Status.Snare,     'Removes SNARED status effect.')
-        create_item(11, 'Daylily',       '<:item_daylily:1274936962125402143>',        'heal_inv',  'status',  200,   Status.Doom,      'Removes DOOMED status effect.')
-        create_item(12, 'Antiparasite',  '<:item_antiparasite:1274936818823069789>',   'heal_inv',  'status',  200,   Status.Infect,    'Removes INFECTED status effect.')
-        create_item(13, 'Debug Chip',    '<:item_debugchip:1274936992462930001>',      'heal_inv',  'status',  200,   Status.Digitize,  'Removes DIGITIZED status effect.')
-        create_item(14, 'Cooling Balm',  '<:item_coolingbalm:1274936928625758269>',    'heal_inv',  'status',  200,   Status.Burn,      'Removes BURNED status effect.')
-        create_item(15, 'Nullifying Sphere', '<:item_null_sphere:1274937109995716648>','heal_inv',  'status',  1200,  Status.All,       'Removes all status effects.')
-
-        create_item(16, 'Greem Boostgem', '<:item_iv_hp:1274937089666056294>',         'other_inv', 'iv',     25000, 'hp',    'Permanently increases Health of an Oochamon.')
-        create_item(17, 'Red Boostgem',   '<:item_iv_atk:1274937039460237382>',        'other_inv', 'iv',     25000, 'atk',   'Permanently increases Attack of an Oochamon.')
-        create_item(18, 'Blue Boostgem',  '<:item_iv_def:1274937065317990486>',        'other_inv', 'iv',     25000, 'def',   'Permanently increases Defense of an Oochamon.')
-        create_item(19, 'Yellow Boostgem','<:item_iv_spd:1274937099984048138>',        'other_inv', 'iv',     25000, 'spd',   'Permanently increases Speed of an Oochamon.')
-
-        create_item(20, 'Spore Feather', '<:item_sporefeather:1304609799245266964>',  'other_inv', 'misc',   -1,     1,       'Feathers covered in Fungal spores. They may evolve a certain Oochamon.')
-        create_item(21, 'Lavaboard',     '<:item_lavaboard:1304609819201900575>',     'other_inv', 'misc',   -1,     1,       'A high-tech board that uses extreme heat to levitate.')
+        create_item({
+            id : 16, name : 'Green Boostgem', emote : '<:item_iv_hp:1274937089666056294>',
+            category : 'other_inv', type : 'iv', price : 25000, potency : 'hp', 
+            description : 'Permanently increases Health of an Oochamon.'
+        })
+        create_item({
+            id : 17, name : 'Red Boostgem', emote : '<:item_iv_atk:1274937039460237382>',
+            category : 'other_inv', type : 'iv', price : 25000, potency : 'atk', 
+            description : 'Permanently increases Attack of an Oochamon.'
+        })
+        create_item({
+            id : 18, name : 'Blue Boostgem', emote : '<:item_iv_def:1274937065317990486>',
+            category : 'other_inv', type : 'iv', price : 25000, potency : 'def', 
+            description : 'Permanently increases Defense of an Oochamon.'
+        })
+        create_item({
+            id : 19, name : 'Yellow Boostgem', emote : '<:item_iv_spd:1274937099984048138>',
+            category : 'other_inv', type : 'iv', price : 25000, potency : 'spd', 
+            description : 'Permanently increases Speed of an Oochamon.'
+        })
+        create_item({
+            id : 20, name : 'Spore Feather', emote : '<:item_sporefeather:1304609799245266964>',
+            category : 'other_inv', type : 'misc', price : 8000, potency : 1, 
+            description : 'Feathers covered in Fungal spores. They may evolve a certain Oochamon.'
+        })
+        create_item({
+            id : 21, name : 'Lavaboard', emote : '<:item_lavaboard:1304609819201900575>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'A high-tech board that uses extreme heat to levitate.'
+        })
 
         //#endregion
 
