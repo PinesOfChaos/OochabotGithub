@@ -27,7 +27,7 @@ extends Control
 @onready var o_aggro_range = $"npc_tab_container/Basic Info/addt_settings/aggro_range"
 @onready var o_wild_encounter = $"npc_tab_container/Basic Info/addt_settings/wild_encounter"
 
-var npc_data = {
+var npc_data_base = {
 	"x" : 0,
 	"y" : 0,
 	"sprite" : 2,
@@ -45,8 +45,11 @@ var npc_data = {
 	"coin" : 0,
 	"team" : [],
 	"aggro_range" : 3,
-	"is_catchable" : false
+	"is_catchable" : false,
+	"npc_id" : generate_npc_id()
 }
+
+var npc_data = {}
 
 var npc_x = 0
 var npc_y = 0
@@ -70,8 +73,15 @@ var npc_sprite_id = "c00_000"
 var npc_aggro_range = 3
 var npc_is_wild = false
 
+func generate_npc_id():
+	var pt1 = ("000000" + str(randi_range(0, 999999))).right(6)
+	var pt2 = ("000000" + str(randi_range(0, 999999))).right(6)
+	var pt3 = ("000000" + str(randi_range(0, 999999))).right(6)
+	return(pt1 + pt2 + pt3)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	npc_data.merge(npc_data_base)
 	
 	var tile_data
 	var tile_string
