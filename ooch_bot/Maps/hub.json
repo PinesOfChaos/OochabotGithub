@@ -11,7 +11,7 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "battle_bg_valley",
+		"map_battleback": "battle_bg_hub",
 		"map_name": "Hub"
 	},
 	"map_npcs": [
@@ -3417,9 +3417,9 @@
 			"t02_000",
 			"t02_000",
 			"t02_000",
-			"t02_006",
-			"t02_007",
-			"t00_004",
+			"t02_000",
+			"t02_000",
+			"t02_000",
 			"t02_000",
 			"t02_000",
 			"t02_000",
@@ -3483,9 +3483,9 @@
 			"t02_000",
 			"t02_000",
 			"t02_000",
-			"t02_006",
-			"t02_007",
-			"t00_004",
+			"t02_000",
+			"t02_000",
+			"t02_000",
 			"t02_000",
 			"t02_000",
 			"t02_000",
@@ -4826,34 +4826,6 @@
 		]
 	],
 	"map_transitions": [
-		{
-			"connect_map": "hub",
-			"connect_x": 42,
-			"connect_y": 43,
-			"x": 42,
-			"y": 46
-		},
-		{
-			"connect_map": "hub",
-			"connect_x": 43,
-			"connect_y": 43,
-			"x": 43,
-			"y": 46
-		},
-		{
-			"connect_map": "hub",
-			"connect_x": 42,
-			"connect_y": 46,
-			"x": 42,
-			"y": 43
-		},
-		{
-			"connect_map": "hub",
-			"connect_x": 43,
-			"connect_y": 46,
-			"x": 43,
-			"y": 43
-		},
 		{
 			"connect_map": "stone_tunnel",
 			"connect_x": 55,
