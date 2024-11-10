@@ -2,7 +2,7 @@ const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote } = require("./types");
+const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget } = require("./types");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -53,7 +53,7 @@ generate_trainer_battle(trainer_obj){
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
         is_catchable: trainer_obj.is_catchable,
-        trainer_battle_sprite: trainer_obj.sprite_combat === false ? trainer_obj.sprite_id : trainer_obj.sprite_combat,
+        trainer_battle_sprite: trainer_obj.sprite_combat == false ? trainer_obj.sprite_id.slice(0, 1) + trainer_obj.sprite_id.slice(3) : trainer_obj.sprite_combat,
     }
     return trainer_return;
 },
@@ -1292,7 +1292,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             string_to_send += `\n🎲 **${db.move_data.get(ogMoveId, 'name')}** changed into **${move_name}**!\n`;
         }
 
-        if (move_effect == 'typematch') {
+        if (move_effects.some(effect => effect.status === 'typematch')) {
             string_to_send += `\n✨ **${move_name}** changed into the ${defender_emote} **${defOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
         }
 
@@ -1329,8 +1329,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
-                let status_target = eff.target == MoveTarget.Enemy ? attacker : defender;
-                let status_target_emote = selfTarget ? attacker_emote : defender_emote;
+                let status_target = eff.target == MoveTarget.Self ? attacker : defender;
+                let status_target_emote = eff.target == MoveTarget.Self ? attacker_emote : defender_emote;
                 let statStatus = false;
                 statStatus = eff.status.includes('+') || eff.status.includes('-');
 
@@ -1402,14 +1402,14 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         // Remove duplicates
                         status_adds = status_adds.filter((item, index) => status_adds.indexOf(item) === index);     
 
-                        defender_field_text += `\n--- The opposing ${status_target_emote} **${status_target.nickname}** was **${eff.toUpperCase()}!**`
+                        defender_field_text += `\n--- The opposing ${status_target_emote} **${status_target.nickname}** was **${eff.status.toUpperCase()}!**`
                         status_target.status_effects.push(status_adds);
                         status_target.status_effects = status_target.status_effects.flat(1);
                         status_target.status_effects = status_target.status_effects.filter((item, index) => status_target.status_effects.indexOf(item) === index);     
-                    } else if (eff == 'clear_status') {
+                    } else if (eff.status == 'clear_status') {
                         status_target.status_effects = [];
                         defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its status effects cleared!`;
-                    } else if (eff == 'clear_stat_stages') {
+                    } else if (eff.status == 'clear_stat_stages') {
                         status_target.stats.atk_mul = 0;
                         status_target.stats.def_mul = 0;
                         status_target.stats.spd_mul = 0;

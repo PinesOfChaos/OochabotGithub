@@ -53,10 +53,14 @@ module.exports = {
         async function dialogueEvent(obj_content, initial=false) {
             if (obj_content.description.includes('{')) {
                 let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
-                switch (dialogue_var) {
-                    case 'player':
-                        obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
-                    break;
+                if (dialogue_var.includes('player')) {
+                    obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(user_id).displayName);
+                } else if (dialogue_var.includes('objective')) {
+                    let match = obj_content.description.match(/\{objective:([^}]+)\}/);
+                    obj_content.objective = match ? match[1] : null;
+
+                    // Remove the `{...}` part from the original string
+                    obj_content.description = obj_content.description.replace(/\{[^}]+\}/, '').trim();
                 }
             }
 
@@ -94,7 +98,6 @@ module.exports = {
             if (obj_content.items != false) {
                 if (obj_content.items.length != 0) {
                     for (let item of obj_content.items) {
-                        console.log(item);
                         let itemData = db.item_data.get(item.id);
                         info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
                         give_item(user_id, item.id, item.count);
@@ -104,6 +107,8 @@ module.exports = {
 
             if (obj_content.objective != false) {
                 event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
+            } else if (event_embed.data.fields != undefined) {
+                event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'New Objective');
             }
 
             if (info_data.length != 0) {
@@ -485,7 +490,7 @@ module.exports = {
                     title: npc_obj.name,
                     description: npc_obj.pre_combat_dialogue[i],
                     money: (i+1 == npc_obj.pre_combat_dialogue.length) ? npc_obj.coin : 0,
-                    items: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false) : false,
+                    items: (i+1 == npc_obj.pre_combat_dialogue.length) ? (npc_obj.items.length > 0 ? npc_obj.items : false) : false,
                     image: false,
                     objective: false,
                     dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
@@ -516,7 +521,7 @@ module.exports = {
                         title: npc_obj.name,
                         description: npc_obj.post_combat_dialogue[i],
                         money: 0,
-                        items: (npc_obj.item_count > 0 ? { item_id: npc_obj.item_id, item_count: npc_obj.item_count } : false),
+                        items: (npc_obj.items.length > 0 ? npc_obj.items : false),
                         image: false,
                         objective: false,
                         dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,

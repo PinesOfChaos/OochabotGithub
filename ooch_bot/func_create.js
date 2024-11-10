@@ -146,26 +146,35 @@ module.exports = {
     },
 
     /**
-     * Creates an item and puts it into the database.
-     * @param {Number} id The ID of the item
-     * @param {String} name The name of the item
-     * @param {String} emote The emote of the item (in Discord)
-     * @param {String} category The inventory category this item goes into (heal_inv, prism_inv, other_inv)
-     * @param {String} type The type of the item (potion, prism, misc)
-     * @param {String} price The price of the item
-     * @param {Number} potency The amountss of whatever the items effect is (like amount of HP healed, or chance to catch with prism)
-     * @param {String} description A description of the item
+     * Creates a item data object and adds it to the database.
+     * @param {Number} item The object for the item
      */
-    create_item: function(id, name, emote, category, type, price, potency, description) {
-        let key_id = id.toString();
-        db.item_data.set(key_id, id, 'id');
-        db.item_data.set(key_id, name, 'name');
-        db.item_data.set(key_id, emote, 'emote');
-        db.item_data.set(key_id, category, 'category');
-        db.item_data.set(key_id, type, 'type');
-        db.item_data.set(key_id, price, 'price');
-        db.item_data.set(key_id, potency, 'potency');
-        db.item_data.set(key_id, description, 'description');
+    create_item: function(item) {
+        // Required attributes
+        const requiredAttributes = [
+            "id",
+            "name",
+            "emote",
+            "category",
+            "type",
+            "price",
+            "potency",
+            "description"
+        ];
+
+        if (item.tags === undefined) item.tags = [];
+    
+        // Check if all required attributes are present
+        for (let attr of requiredAttributes) {
+            if (!item.hasOwnProperty(attr)) {
+                console.log(`DATA ERROR: Missing required attribute: ${attr} for ${item.name}`);
+                return;
+            }
+        }
+    
+        // Set the move data in the enmap database
+        let key_id = item.id.toString();
+        db.item_data.set(key_id, item);
     },
 
     /**

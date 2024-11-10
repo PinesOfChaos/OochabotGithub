@@ -475,7 +475,7 @@ module.exports = {
                 //add emote based on tile data to position
                 xx = i + x_pos;
                 yy = j + y_pos;
-                if(xx >= 0 && yy >= 0 && xx < map_tiles.length && yy < map_tiles[0].length){
+                if (xx >= 0 && yy >= 0 && xx < map_tiles.length && yy < map_tiles[0].length) {
                     tile = db.tile_data.get(map_tiles[xx][yy].toString());
                 }
                 else {

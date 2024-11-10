@@ -81,7 +81,7 @@
 			"flag_required": "id_card_get",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Head Researcher",
 			"npc_id": "690081199254876605",
 			"objective": "",
 			"post_combat_dialogue": "Have you had any luck investigating that sound?\nPlease let me know once you've investigated thoroughly!",
@@ -496,7 +496,7 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Impatient Researcher",
 			"npc_id": "907681158122818077",
 			"objective": "",
 			"post_combat_dialogue": "Hey, wait your turn, I was here first!",
@@ -4829,28 +4829,28 @@
 		{
 			"connect_map": "hub",
 			"connect_x": 42,
-			"connect_y": 43,
+			"connect_y": 42,
 			"x": 42,
 			"y": 46
 		},
 		{
 			"connect_map": "hub",
 			"connect_x": 43,
-			"connect_y": 43,
+			"connect_y": 42,
 			"x": 43,
 			"y": 46
 		},
 		{
 			"connect_map": "hub",
 			"connect_x": 42,
-			"connect_y": 46,
+			"connect_y": 47,
 			"x": 42,
 			"y": 43
 		},
 		{
 			"connect_map": "hub",
 			"connect_x": 43,
-			"connect_y": 46,
+			"connect_y": 47,
 			"x": 43,
 			"y": 43
 		},

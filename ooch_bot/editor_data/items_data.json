@@ -7,7 +7,8 @@
     "type": "potion",
     "price": 40,
     "potency": 20,
-    "description": "Used to quickly heal 20 HP"
+    "description": "Used to quickly heal 20 HP.",
+    "tags": []
   },
   {
     "id": 1,
@@ -15,9 +16,10 @@
     "emote": "<:item_potion_hi:1274937134935052328>",
     "category": "heal_inv",
     "type": "potion",
-    "price": 100,
+    "price": 200,
     "potency": 50,
-    "description": "An advanced potion which heals 50 HP"
+    "description": "An advanced potion which heals 50 HP.",
+    "tags": []
   },
   {
     "id": 2,
@@ -25,9 +27,10 @@
     "emote": "<:item_potion_magic:1274937146423115922>",
     "category": "heal_inv",
     "type": "potion",
-    "price": 250,
+    "price": 800,
     "potency": 200,
-    "description": "A high tier potion which heals 200 HP"
+    "description": "A high tier potion which heals 200 HP.",
+    "tags": []
   },
   {
     "id": 3,
@@ -37,17 +40,19 @@
     "type": "prism",
     "price": 50,
     "potency": 1,
-    "description": "A device used to capture Oochamon."
+    "description": "A device used to capture Oochamon.",
+    "tags": []
   },
   {
     "id": 4,
     "name": "Greater Prism",
-    "emote": "<:item_prism_greater:1274937183710740510>",
+    "emote": "<:item_prism_greater:1274937183710740510",
     "category": "prism_inv",
     "type": "prism",
     "price": 150,
     "potency": 1.5,
-    "description": "An improved prism with a higher capture rate."
+    "description": "An improved prism with a higher capture rate.",
+    "tags": []
   },
   {
     "id": 5,
@@ -57,7 +62,8 @@
     "type": "prism",
     "price": 500,
     "potency": 2,
-    "description": "A further modified prism with an even higher capture rate."
+    "description": "A further modified prism with an even higher capture rate.",
+    "tags": []
   },
   {
     "id": 6,
@@ -67,7 +73,8 @@
     "type": "prism",
     "price": 10000,
     "potency": 1000,
-    "description": "A prism with a shattered casing, nothing escapes its pull."
+    "description": "A prism with a shattered casing, nothing escapes its pull.",
+    "tags": []
   },
   {
     "id": 7,
@@ -75,9 +82,10 @@
     "emote": "<:item_attack_crystal:1274936834883059774>",
     "category": "other_inv",
     "type": "misc",
-    "price": 200,
+    "price": 2000,
     "potency": 1,
-    "description": "Unlocks a hidden move for an Oochamon by releasing stored power."
+    "description": "Unlocks a hidden move for an Oochamon by releasing stored power.",
+    "tags": []
   },
   {
     "id": 8,
@@ -87,87 +95,96 @@
     "type": "misc",
     "price": -1,
     "potency": 1,
-    "description": "Your ID card. You look so fabulous!"
+    "description": "Your ID card. You look so fabulous!",
+    "tags": []
   },
   {
     "id": 9,
     "name": "Eyedrops",
     "emote": "<:item_eyedrops:1274937019994472459>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 2,
-    "description": "Removes BLIND status effect."
+    "description": "Removes BLIND status effect.",
+    "tags": []
   },
   {
     "id": 10,
     "name": "Shears",
     "emote": "<:item_shears:1274937209652514838>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 4,
-    "description": "Removes SNARED status effect."
+    "description": "Removes SNARED status effect.",
+    "tags": []
   },
   {
     "id": 11,
     "name": "Daylily",
     "emote": "<:item_daylily:1274936962125402143>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 6,
-    "description": "Removes DOOMED status effect."
+    "description": "Removes DOOMED status effect.",
+    "tags": []
   },
   {
     "id": 12,
     "name": "Antiparasite",
     "emote": "<:item_antiparasite:1274936818823069789>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 1,
-    "description": "Removes INFECTED status effect."
+    "description": "Removes INFECTED status effect.",
+    "tags": []
   },
   {
     "id": 13,
     "name": "Debug Chip",
     "emote": "<:item_debugchip:1274936992462930001>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 3,
-    "description": "Removes DIGITIZED status effect."
+    "description": "Removes DIGITIZED status effect.",
+    "tags": []
   },
   {
     "id": 14,
     "name": "Cooling Balm",
     "emote": "<:item_coolingbalm:1274936928625758269>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 200,
     "potency": 0,
-    "description": "Removes BURNED status effect."
+    "description": "Removes BURNED status effect.",
+    "tags": []
   },
   {
     "id": 15,
     "name": "Nullifying Sphere",
     "emote": "<:item_null_sphere:1274937109995716648>",
-    "category": "heal_inv",
-    "type": "status",
+    "category": "other_inv",
+    "type": "heal_inv",
     "price": 1200,
     "potency": "all",
-    "description": "Removes all status effects."
+    "description": "Removes all status effects.",
+    "tags": []
   },
   {
     "id": 16,
-    "name": "Greem Boostgem",
+    "name": "Green Boostgem",
     "emote": "<:item_iv_hp:1274937089666056294>",
     "category": "other_inv",
     "type": "iv",
     "price": 25000,
     "potency": "hp",
-    "description": "Permanently increases Health of an Oochamon."
+    "description": "Permanently increases Health of an Oochamon.",
+    "tags": []
   },
   {
     "id": 17,
@@ -177,7 +194,8 @@
     "type": "iv",
     "price": 25000,
     "potency": "atk",
-    "description": "Permanently increases Attack of an Oochamon."
+    "description": "Permanently increases Attack of an Oochamon.",
+    "tags": []
   },
   {
     "id": 18,
@@ -187,7 +205,8 @@
     "type": "iv",
     "price": 25000,
     "potency": "def",
-    "description": "Permanently increases Defense of an Oochamon."
+    "description": "Permanently increases Defense of an Oochamon.",
+    "tags": []
   },
   {
     "id": 19,
@@ -197,7 +216,8 @@
     "type": "iv",
     "price": 25000,
     "potency": "spd",
-    "description": "Permanently increases Speed of an Oochamon."
+    "description": "Permanently increases Speed of an Oochamon.",
+    "tags": []
   },
   {
     "id": 20,
@@ -205,9 +225,10 @@
     "emote": "<:item_sporefeather:1304609799245266964>",
     "category": "other_inv",
     "type": "misc",
-    "price": -1,
+    "price": 8000,
     "potency": 1,
-    "description": "Feathers covered in Fungal spores. They may evolve a certain Oochamon."
+    "description": "Feathers covered in Fungal spores. They may evolve a certain Oochamon.",
+    "tags": []
   },
   {
     "id": 21,
@@ -217,6 +238,7 @@
     "type": "misc",
     "price": -1,
     "potency": 1,
-    "description": "A high-tech board that uses extreme heat to levitate."
+    "description": "A high-tech board that uses extreme heat to levitate.",
+    "tags": []
   }
 ]
