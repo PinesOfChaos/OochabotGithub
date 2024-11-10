@@ -11,7 +11,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 1,
@@ -41,7 +41,7 @@
 			"flag_given": "",
 			"flag_kill": "lavaboard_quest_begin",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Cave Guard",
 			"objective": "",
@@ -62,7 +62,7 @@
 			"flag_given": "lavaboard_quest_begin",
 			"flag_kill": "lavaboard_quest_end",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Head Engineer",
 			"objective": "",
@@ -83,7 +83,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 2,
@@ -109,7 +109,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 5,
@@ -135,7 +135,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Raider Zara",
 			"objective": "",
@@ -193,7 +193,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "???",
 			"objective": "",
@@ -251,7 +251,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 1,
@@ -277,7 +277,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Crew Denny",
 			"objective": "",
@@ -334,7 +334,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Crew Dustin",
 			"objective": "",
@@ -392,7 +392,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 1,
@@ -418,7 +418,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Researcher Charles",
 			"objective": "",
@@ -492,7 +492,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 5,
@@ -518,7 +518,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "lavaboard_quest_begin",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Cave Guard",
 			"objective": "",
@@ -539,7 +539,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Distracted Researcher",
 			"objective": "",
@@ -560,7 +560,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Busy Crew",
 			"objective": "",
@@ -581,7 +581,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Crew Jim",
 			"objective": "",
@@ -639,7 +639,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 3,
@@ -665,7 +665,7 @@
 			"flag_given": "lavaboard_get",
 			"flag_kill": "",
 			"flag_required": "lavaboard_quest_end",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [
 				{
 					"count": 1,
@@ -745,7 +745,7 @@
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "lavaboard_get",
-			"is_wild": false,
+			"is_catchable": false,
 			"items": [],
 			"name": "Head Engineer",
 			"post_combat_dialogue": "The settlement's a bit of a work in progress.\nBut we're still hard at work!",

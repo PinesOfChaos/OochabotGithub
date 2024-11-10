@@ -45,7 +45,7 @@ var npc_data = {
 	"coin" : 0,
 	"team" : [],
 	"aggro_range" : 3,
-	"is_wild" : false
+	"is_catchable" : false
 }
 
 var npc_x = 0
@@ -117,7 +117,7 @@ func _ready():
 	o_text_post_combat.text = npc_data.post_combat_dialogue
 	
 	o_aggro_range.value = npc_data.aggro_range
-	o_wild_encounter.button_pressed = npc_data.is_wild
+	o_wild_encounter.button_pressed = npc_data.is_catchable
 	
 	npc_slots = [slot_1, slot_2, slot_3, slot_4]
 	for i in npc_data.team.size():
@@ -205,7 +205,7 @@ func _on_aggro_range_value_changed(value):
 
 
 func _on_wild_encounter_toggled(toggled_on):
-	npc_data.is_wild = toggled_on
+	npc_data.is_catchable = toggled_on
 
 func _on_button_new_item_pressed() -> void:
 	var _load = load("res://slot_item.tscn")
