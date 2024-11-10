@@ -22,6 +22,7 @@ generate_wild_battle: function(ooch_id, ooch_level) {
         name: 'Wild Oochamon',
         ooch_active_slot: 0,
         trainer_type: TrainerType.Wild, 
+        is_catchable: true,
         ooch_party:[ooch]
     }
     return ooch_enemy
@@ -48,9 +49,10 @@ generate_trainer_battle(trainer_obj){
     let trainer_return = {
         name: trainer_obj.name,
         ooch_active_slot: 0,
-        trainer_type: (trainer_obj.is_wild ? TrainerType.Wild : TrainerType.NPCTrainer),
+        trainer_type: TrainerType.NPCTrainer,
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
+        is_catchable: trainer_obj.is_catchable,
         trainer_battle_sprite: trainer_obj.sprite_combat === false ? trainer_obj.sprite_id : trainer_obj.sprite_combat,
     }
     return trainer_return;
@@ -238,7 +240,7 @@ prompt_battle_input: async function(thread, user_id) {
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji('<:item_prism:1274937161262698536>')
-                .setDisabled(ooch_enemy_profile.type !== TrainerType.Wild),
+                .setDisabled(ooch_enemy_profile.is_catchable === false),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('back')
@@ -638,6 +640,7 @@ prompt_battle_input: async function(thread, user_id) {
                 let heal_inv = db.profile.get(user_id, 'heal_inv');
                 let heal_inv_keys = Object.keys(heal_inv);
                 let prism_inv = db.profile.get(user_id, 'prism_inv');
+                console.log(prism_inv);
                 let prism_inv_keys = Object.keys(prism_inv);
                 let bag_select = new ActionRowBuilder();
                 displayEmbed = new EmbedBuilder();
@@ -774,7 +777,7 @@ prompt_battle_input: async function(thread, user_id) {
                             
                             db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`)
 
-                            if(db.profile.get(user_id, `prism_inv.${item_id}`) <= 0){
+                            if (db.profile.get(user_id, `prism_inv.${item_id}`) <= 0){
                                 db.profile.delete(user_id, `prism_inv.${item_id}`);
                             }
 
@@ -1145,27 +1148,27 @@ type_to_string: function(type, do_capitalize = true) {
  */
 attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     const { type_effectiveness, battle_calc_damage, modify_stat, add_status_effect, type_to_emote, get_stat_multiplier } = require('./func_battle.js');
-    let move_effect =   db.move_data.get(atk_id, 'effect');
+    let move_effects =   db.move_data.get(atk_id, 'effect');
     let ogMoveId = atk_id;
-    if (move_effect == 'random') {
+    if (move_effects.some(effect => effect.status === 'random')) {
         atk_id = _.sample(db.move_data.keyArray());
-        move_effect =   db.move_data.get(atk_id, 'effect');
+        move_effects =   db.move_data.get(atk_id, 'effect');
     }
     let move_name =     db.move_data.get(atk_id, 'name');
     let move_type =     db.move_data.get(atk_id, 'type');
     let move_damage =   db.move_data.get(atk_id, 'damage');
     let move_accuracy = db.move_data.get(atk_id, 'accuracy');
-    let move_effect_chance =   db.move_data.get(atk_id, 'effect_chance');
-    if (move_effect == 'typematch') move_type = _.sample(defender.type);
+    if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
     let move_type_emote =      type_to_emote(move_type);
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-    let crit_multiplier = (Math.random() > (0.95 - (move_effect == 'critical' ? move_effect_chance/100 : 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
+    let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
+    
     if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
     let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
-    let recoil_damage = Math.round((move_effect == 'recoil' ? move_effect_chance/100 : 0) * attacker.stats.hp);
-    let vampire_heal = (move_effect == 'vampire' ? move_effect_chance/100 : 0);
-    let move_heal = (move_effect == 'heal' ? move_effect_chance / 100 : 0);
+    let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
+    let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
+    let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
     let reflect_dmg = 0;
     let attacker_emote = db.monster_data.get(attacker.id, 'emote');
     let defender_emote = db.monster_data.get(defender.id, 'emote');
@@ -1324,38 +1327,37 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         //Type effectiveness
         string_to_send += type_multiplier[1];
 
-        if (move_effect !== -1) {
-            let status_effect_arr = move_effect.split('|')
-            for (let eff of status_effect_arr) {
-                let status_target = selfTarget ? attacker : defender;
+        if (move_effects.length != 0) {
+            for (let eff of move_effects) {
+                let status_target = eff.target == MoveTarget.Enemy ? attacker : defender;
                 let status_target_emote = selfTarget ? attacker_emote : defender_emote;
                 let statStatus = false;
-                statStatus = eff.includes('+') || eff.includes('-');
+                statStatus = eff.status.includes('+') || eff.status.includes('-');
 
                 if (selfTarget !== false) {
                     // Change move_effect_chance based on abilities
                     switch (attacker.ability) {
                         case Ability.Scorching:
-                            if (eff == Status.Burn) move_effect_chance = 100;
+                            if (eff.status == Status.Burn) eff.chance = 100;
                         break;
                         case Ability.LiquidCooled:
-                            if (eff == Status.Burn) move_effect_chance = 0;
+                            if (eff.status == Status.Burn) eff.chance = 0;
                         break;
                     }
 
                     if (statStatus === false) {
                         switch (defender.ability) {
                             case Ability.Mundane:
-                                move_effect_chance = 0;
+                                eff.chance = 0;
                             break;
                         }
                     }
                 }
 
                 // Apply move effects
-                if (Math.random() < move_effect_chance/100 && move_effect_chance > 0) { 
-                    let status_split = eff.split('_')
-                    let status_adds = [eff];
+                if (Math.random() < eff.chance/100 && eff.chance > 0) { 
+                    let status_split = eff.status.split('_')
+                    let status_adds = [eff.status];
 
                     // +_def_1 is the format
                     if (status_split[0] == '+'){
@@ -1380,17 +1382,17 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }
                     }
-                    else if (db.status_data.keyArray().includes(eff)) {
+                    else if (db.status_data.keyArray().includes(eff.status)) {
                         // Setup list of status effects to add
                         switch (status_target.ability) {
                             case Ability.Darkbright:
-                                switch (eff) {
+                                switch (eff.status) {
                                     case Status.Burn: status_adds.push(Status.Blind);
                                     case Status.Blind: status_adds.push(Status.Burn);
                                 }
                             break;
                             case Ability.Radiant:
-                                switch (eff) {
+                                switch (eff.status) {
                                     case Status.Infect: status_adds.push(Status.Burn);
                                     case Status.Burn: status_adds.push(Status.Infect);
                                 }

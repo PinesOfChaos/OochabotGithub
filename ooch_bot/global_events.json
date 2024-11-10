@@ -722,6 +722,7 @@
 			}
 		],
 		[
+			
 			0,
 			{
 				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
@@ -731,6 +732,16 @@
 				"money": 0,
 				"objective": "",
 				"title": "Tutorial Master"
+			}
+		],
+		[
+			
+			4,
+			{
+				"default_tp": true,
+				"map_to": "hub",
+				"x_to": 0,
+				"y_to": 0
 			}
 		]
 	],

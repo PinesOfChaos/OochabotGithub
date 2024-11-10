@@ -337,18 +337,89 @@ module.exports = {
         //#endregion
 
         //#region Item Data
-        //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
-        create_item(0, 'Potion',         '<:item_potion:1274937121370669118>',         'heal_inv',  'potion',  40,     20,      'Used to quickly heal 20 HP')
-        create_item(1, 'Med-Potion',     '<:item_potion_hi:1274937134935052328>',      'heal_inv',  'potion',  100,    50,      'An advanced potion which heals 50 HP')
-        create_item(2, 'Hi-Potion',      '<:item_potion_magic:1274937146423115922>',   'heal_inv',  'potion',  250,    200,     'A high tier potion which heals 200 HP')
-        create_item(3, 'Prism',          '<:item_prism:1274937161262698536>',          'prism_inv', 'prism',   50,     1,       'A device used to capture Oochamon.')
-        create_item(4, 'Greater Prism',  '<:item_prism_greater:1274937183710740510>',  'prism_inv', 'prism',   150,    1.5,     'An improved prism with a higher capture rate.')
-        create_item(5, 'Grand Prism',    '<:item_prism_grand:1274937171513442359>',    'prism_inv', 'prism',   500,    2,       'A further modified prism with an even higher capture rate.')
-        create_item(6, 'Perfect Prism',  '<:item_prism_perfect:1274937195970428928>',  'prism_inv', 'prism',   10000,  1000,    'A prism with a shattered casing, nothing escapes its pull.')
-        create_item(7, 'Attack Crystal', '<:item_attack_crystal:1274936834883059774>', 'other_inv', 'misc',    200,    1,       'Unlocks a hidden move for an Oochamon by releasing stored power.')
-        create_item(8, 'ID Card',        '<:item_id_card:1304609783474552842>',        'other_inv', 'misc',    -1,     1,       'Your ID card. You look so fabulous!')
+        create_item({
+            id : 0, name : 'Potion', emote : '<:item_potion:1274937121370669118>',
+            category : 'heal_inv', type : 'potion', price : 40, potency : 20, 
+            description : 'Used to quickly heal 20 HP.'
+        })
+        create_item({
+            id : 1, name : 'Med-Potion', emote : '<:item_potion_hi:1274937134935052328>',
+            category : 'heal_inv', type : 'potion', price : 200, potency : 50, 
+            description : 'An advanced potion which heals 50 HP.'
+        })
+        create_item({
+            id : 2, name : 'Hi-Potion', emote : '<:item_potion_magic:1274937146423115922>',
+            category : 'heal_inv', type : 'potion', price : 800, potency : 200, 
+            description : 'A high tier potion which heals 200 HP.'
+        })
+        create_item({
+            id : 3, name : 'Prism', emote : '<:item_prism:1274937161262698536>',
+            category : 'prism_inv', type : 'prism', price : 50, potency : 1, 
+            description : 'A device used to capture Oochamon.'
+        })
+        create_item({
+            id : 4, name : 'Greater Prism', emote : '<:item_prism_greater:1274937183710740510',
+            category : 'prism_inv', type : 'prism', price : 150, potency : 1.5, 
+            description : 'An improved prism with a higher capture rate.'
+        })
+        create_item({
+            id : 5, name : 'Grand Prism', emote : '<:item_prism_grand:1274937171513442359>',
+            category : 'prism_inv', type : 'prism', price : 500, potency : 2, 
+            description : 'A further modified prism with an even higher capture rate.'
+        })
+        create_item({
+            id : 6, name : 'Perfect Prism', emote : '<:item_prism_perfect:1274937195970428928>',
+            category : 'prism_inv', type : 'prism', price : 10000, potency : 1000, 
+            description : 'A prism with a shattered casing, nothing escapes its pull.'
+        })
+        create_item({
+            id : 7, name : 'Attack Crystal', emote : '<:item_attack_crystal:1274936834883059774>',
+            category : 'other_inv', type : 'misc', price : 2000, potency : 1, 
+            description : 'Unlocks a hidden move for an Oochamon by releasing stored power.'
+        })
+        create_item({
+            id : 8, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
 
-        //NEW ITEMS
+        create_item({
+            id : 9, name : 'Eyedrops', emote : '<:item_eyedrops:1274937019994472459>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 10, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 11, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 12, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 13, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 14, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+        create_item({
+            id : 15, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
+            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            description : 'Your ID card. You look so fabulous!'
+        })
+
+        //          ID   Name             Emote                                        Category     Type       Price   Potency  Description
         create_item(9,  'Eyedrops',      '<:item_eyedrops:1274937019994472459>',       'heal_inv',  'status',  200,   Status.Blind,     'Removes BLIND status effect.')
         create_item(10, 'Shears',        '<:item_shears:1274937209652514838>',         'heal_inv',  'status',  200,   Status.Snare,     'Removes SNARED status effect.')
         create_item(11, 'Daylily',       '<:item_daylily:1274936962125402143>',        'heal_inv',  'status',  200,   Status.Doom,      'Removes DOOMED status effect.')
