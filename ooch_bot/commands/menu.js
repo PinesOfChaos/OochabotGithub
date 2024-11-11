@@ -932,7 +932,7 @@ module.exports = {
                 pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
                 `Battle Text Cleanup: **${pref_data.battle_cleanup === true ? `✅` : `❌`}**`,
                 `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
-                `Battle Speed: **\`${pref_data.battle_speed === 500 ? `Fast` : `Normal`}\`**`,
+                `Battle Speed: **\`${pref_data.battle_speed === 1250 ? `Fast` : `Normal`}\`**`,
                 `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`,
                 `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`];
 
@@ -977,14 +977,14 @@ module.exports = {
             }
             // Battle Speed Option
             else if (selected == 'battle_speed') {
-                if (user_profile.settings.battle_speed == 500) {
-                    user_profile.settings.battle_speed = 1250;
+                if (user_profile.settings.battle_speed == 1250) {
+                    user_profile.settings.battle_speed = 2500;
                 } else {
-                    user_profile.settings.battle_speed = 500;
+                    user_profile.settings.battle_speed = 1250;
                 }
 
                 await db.profile.set(interaction.user.id, user_profile.settings.battle_speed, 'settings.battle_speed');
-                pref_desc[3] = `Battle Speed: **\`${user_profile.settings.battle_speed == 500 ? `Fast` : `Normal`}\`**`;
+                pref_desc[3] = `Battle Speed: **\`${user_profile.settings.battle_speed == 1250 ? `Fast` : `Normal`}\`**`;
                 user_profile = db.profile.get(interaction.user.id);
                 await prefEmbed.setDescription(pref_desc.join('\n'));
                 await i.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });

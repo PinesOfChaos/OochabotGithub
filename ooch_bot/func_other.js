@@ -125,11 +125,11 @@ module.exports = {
         
         // Settings
         db.profile.set(user_id, {
-            controls_msg: true,
+            controls_msg: false,
             battle_cleanup: true,
             zoom: '9_7',
-            battle_speed: 1250,
-            discord_move_buttons: false,
+            battle_speed: 2500,
+            discord_move_buttons: true,
             objective: true,
         }, 'settings');
 

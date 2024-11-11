@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { PlayerState, EventMode, Flags } = require('./types.js');
 const { get_art_file } = require('./func_other.js');
 
-module.exports = {
+let functions = {
     /**
      * Runs an event based on event array
      * @param {String} user_id The ID of the user who called the event.
@@ -16,7 +16,6 @@ module.exports = {
 
         const { setup_battle } = require('./func_battle.js');
         const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
-        const { event_process } = require('./func_event.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -35,8 +34,6 @@ module.exports = {
         let filter = i => i.user.id == user_id;
         let oochamonPicks = new ActionRowBuilder();
         let optionsRow = new ActionRowBuilder();
-
-        console.log(event_array);
     
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -350,8 +347,7 @@ module.exports = {
 
                 if (eventName != false) {
                     current_place = event_array.length;
-                    console.log(db.events_data.get(eventName));
-                    await event_process(user_id, thread, db.events_data.get(eventName));
+                    await functions.event_process(user_id, thread, db.events_data.get(eventName));
                 }
             }
 
@@ -442,7 +438,7 @@ module.exports = {
     event_from_npc: function(npc_obj, user_id) {
 
         const { generate_trainer_battle } = require('./func_battle.js');
-        let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.x}${npc_obj.y}`; //Flag generated for this npc at this position
+        let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.npc_id}`; //Flag generated for this npc at this position
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
         let battle_npc = npc_obj.team.length != 0;
@@ -547,3 +543,5 @@ module.exports = {
     }
 
 }
+
+module.exports = functions;

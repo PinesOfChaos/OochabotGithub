@@ -394,12 +394,17 @@ prompt_battle_input: async function(thread, user_id) {
                     move_id = move_list[i];
                     move_name = db.move_data.get(`${move_id}`, 'name')
                     move_type = db.move_data.get(`${move_id}`, 'type')
+                    move_damage = db.move_data.get(`${move_id}`, 'damage')
                     move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
                     if (move_effective_emote[0] > 1) {
                         move_effective_emote = ' ⏫';
                     } else if (move_effective_emote[0] < 1) {
                         move_effective_emote = ' ⏬';
                     } else {
+                        move_effective_emote = '';
+                    }
+
+                    if (move_damage == 0) {
                         move_effective_emote = '';
                     }
 
@@ -640,7 +645,6 @@ prompt_battle_input: async function(thread, user_id) {
                 let heal_inv = db.profile.get(user_id, 'heal_inv');
                 let heal_inv_keys = Object.keys(heal_inv);
                 let prism_inv = db.profile.get(user_id, 'prism_inv');
-                console.log(prism_inv);
                 let prism_inv_keys = Object.keys(prism_inv);
                 let bag_select = new ActionRowBuilder();
                 displayEmbed = new EmbedBuilder();
@@ -686,7 +690,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                             heal_select_options.push({ 
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description'),
+                                description: db.item_data.get(id, 'description').slice(0, 100),
                                 value: `${id}`,
                                 emoji: db.item_data.get(id, 'emote'),
                             })
@@ -714,7 +718,7 @@ prompt_battle_input: async function(thread, user_id) {
                             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
                             displayEmbed.setColor('#02ff2c');
                             displayEmbed.setTitle(`❤️ Healing ❤️`)
-                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed **${Math.ceil(ooch_plr.stats.hp * item_data.potency)}** HP!`)
+                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed **${Math.ceil(item_data.potency)}** HP!`)
                             item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             
                             db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
@@ -751,7 +755,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                             prism_select_options.push({ 
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description').slice(0,25),
+                                description: db.item_data.get(id, 'description').slice(0,100),
                                 value: `${id}`,
                                 emoji: db.item_data.get(id, 'emote'),
                             })
@@ -795,9 +799,9 @@ prompt_battle_input: async function(thread, user_id) {
                                 string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.nickname}!**`;
 
                                 if (db.profile.get(user_id, 'ooch_party').length < 4) {
-                                    string_to_send += `\nIt's been added to your party!\nYour playspace will appear momentarily.`;
+                                    string_to_send += `\nIt's been added to your party.`;
                                 } else {
-                                    string_to_send += `\nIt's been added to your box.\nYour playspace will appear momentarily.`;
+                                    string_to_send += `\nIt's been added to your box.`;
                                 }
 
                                 let user_profile = db.profile.get(user_id);
@@ -810,7 +814,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
                                                         ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
                                 }
-                                if (ooch_party.length !== 0) {
+                                if (ooch_party.length > 1) {
                                     string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
                                 }
 
@@ -849,7 +853,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
 
                                 // Wait a bit after finishing a battle to allow viewing info about Oochamon
-                                await wait(10000);
+                                await wait(20000);
                                 await thread.send({ embeds: [infoEmbed], files: [oochPng] });
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
@@ -1205,8 +1209,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         dmg = battle_calc_damage(move_damage * type_multiplier[0] * status_doubled * ability_dmg_multiplier, 
                                 move_type, attacker, defender, db.profile.get(user_id, 'battle_turn_counter')) * crit_multiplier;
     }
-    vampire_heal = Math.round(vampire_heal * dmg); //used later
-    
+    vampire_heal = Math.ceil(vampire_heal * dmg); //used later
     // Remove doubled status effect
     if (status_doubled != 1) {
         defender.status_effects = defender.status_effects.filter(v => v !== Status.Double);
@@ -1219,7 +1222,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         defender.current_hp -= dmg
         defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
 
-        attacker.current_hp += Math.round(vampire_heal * attacker.current_hp);
+        attacker.current_hp += Math.round(vampire_heal);
         attacker.current_hp += Math.round(attacker.stats.hp * move_heal);
         attacker.current_hp -= recoil_damage;
         attacker.current_hp = _.clamp(attacker.current_hp, 0, attacker.stats.hp)
@@ -1228,7 +1231,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         if (selfTarget === false && dmg !== 0) {
             switch (attacker.ability) {
                 case Ability.Leech:
-                    attacker.current_hp = _.clamp(attacker.current_hp + Math.round(dmg * 0.1), 0, attacker.stats.hp); 
+                    attacker.current_hp = _.clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
                     defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
                 break;
                 case Ability.Ensnare:
@@ -1297,7 +1300,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         }
 
         string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
-        if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**!`;
+        if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
         
         //If a crit lands
         if (crit_multiplier >= 2) {
@@ -1323,9 +1326,6 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         if (reflect_dmg > 0) {
             string_to_send += `\n--- 🪞 ${attacker_emote} **${atkOochName}** took **${reflect_dmg}** reflect damage from ${defender_emote} **${defOochName}**'s ability **Reactive**!`
         }
-
-        //Type effectiveness
-        string_to_send += type_multiplier[1];
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
@@ -1365,8 +1365,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
                         let newStatValue = status_target.stats[`${status_split[1]}_mul`];
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** raised its **${_.upperCase(status_split[1])}**\n` + 
-                            `--- **New ${_.upperCase(status_split[1])}: ${newStatValue >= 1 ? `+` : ``}${newStatValue}**`;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** raised its **${_.upperCase(status_split[1])}**\n`;
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
                         }
@@ -1376,8 +1375,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
                         let newStatValue = status_target.stats[`${status_split[1]}_mul`];
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!\n` + 
-                            `--- **New ${_.upperCase(status_split[1])}: ${newStatValue >= 1 ? `+` : ``}${Math.round(newStatValue)}**`;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!\n`
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }
@@ -1605,12 +1603,12 @@ type_effectiveness: function(attack_type, target_type) {
     multiplier = Math.min(8, Math.max(.125,multiplier))
 
     switch(multiplier){
-        case(0.125):    string = '\n--- 🛡️ **It\'s barely effective...**';        break;
-        case(0.25):     string = '\n--- 🛡️ **It\'s very ineffective...**';        break;
-        case(0.5):      string = '\n--- 🛡️ **It\'s not very effective...**';      break;
-        case(2):        string = '\n--- 🗡️ **It\'s super effective!**';           break;
-        case(4):        string = '\n--- 🗡️ **It\'s incredibly effective!**';      break;
-        case(8):        string = '\n--- 🗡️ **It\'s devastatingly effective!**';   break;
+        case(0.125):    string = '*Barely effective...*';        break;
+        case(0.25):     string = '*Very ineffective...*';        break;
+        case(0.5):      string = '*Not very effective...*';      break;
+        case(2):        string = '*Super effective!*';           break;
+        case(4):        string = '*Incredibly effective!*';      break;
+        case(8):        string = '*Devastatingly effective!*';   break;
     }
 
     return([multiplier,string])
@@ -1663,7 +1661,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
                 string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
                                     ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
             }
-            if (ooch_party.length !== 0) {
+            if (ooch_party.length > 1) {
                 string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
             }
 
@@ -1836,7 +1834,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
         string_to_send += `\n\n${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
                                                         ` (EXP: **${_.clamp(ooch_plr.current_exp + Math.round(exp_earned * 1.25), 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**` + 
-                                                        `\n${ooch_party.length !== 0 ? `The rest of your team earned **${exp_earned} exp** as well.` : ``}`
+                                                        `\n${ooch_party.length > 1 ? `The rest of your team earned **${exp_earned} exp** as well.` : ``}`
 
         for (let i = 0; i < ooch_party.length; i++) {
             let isMainOoch = (i == user_profile.ooch_active_slot);

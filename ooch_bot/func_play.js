@@ -103,7 +103,7 @@ module.exports = {
             //NPCs
             if(!stop_moving){
                 for(let obj of map_npcs){
-                    let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
+                    let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
                     //Skip NPCs if they meet any of these conditions
                     if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
                         (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
@@ -288,18 +288,12 @@ module.exports = {
                             const qty_filter = async m => {
                                 if (m.author.id != user_id) return false;
                                 if (!isNaN(parseInt(m.content))) {
-                                    if (parseInt(m.content) != 0) {
-                                        if (oochabux < item.price * parseInt(m.content)) {
-                                            sel.followUp({ content: `You do not have enough money to buy ${m.content}x ${item.emote} **${item.name}**.`, ephemeral: true });
-                                            m.delete().catch(() => {});
-                                            return false;
-                                        }
-                                        return true;
-                                    } else {
-                                        sel.followUp({ content: `You cannot buy 0 of an item.`, ephemeral: true });
+                                    if (oochabux < item.price * parseInt(m.content)) {
+                                        sel.followUp({ content: `You do not have enough money to buy ${m.content}x ${item.emote} **${item.name}**.`, ephemeral: true });
                                         m.delete().catch(() => {});
                                         return false;
                                     }
+                                    return true;
                                 } else {
                                     sel.followUp({ content: `You must type in a number quantity of items you want to buy!`, ephemeral: true });
                                     m.delete().catch(() => {});
@@ -307,7 +301,7 @@ module.exports = {
                                 }
                             }
 
-                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.` });
+                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
@@ -329,7 +323,12 @@ module.exports = {
                                 
                                 await purchaseReqMsg.delete().catch(() => {});
                                 await m.delete().catch(() => {});
-                                let followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
+                                let followUpMsg;
+                                if (buyAmount != 0) {
+                                    followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
+                                } else {
+                                    followUpMsg = await sel.followUp({ content: `Nothing was purchased.` });
+                                }
                                 await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] }).catch(() => {});
                                 await wait(7000);
                                 await followUpMsg.delete().catch(() => {});
@@ -490,7 +489,7 @@ module.exports = {
         let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {
-            let npc_flag = `${Flags.NPC}${obj.name}${obj.x}${obj.y}`
+            let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
             if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {

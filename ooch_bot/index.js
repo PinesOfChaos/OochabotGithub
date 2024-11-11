@@ -95,17 +95,19 @@ client.on('ready', async () => {
         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace) ||
             (user_profile.player_state === PlayerState.Playspace && user_profile.settings.discord_move_buttons === true)) {
 
-            await userThread.bulkDelete(100);
             db.profile.set(user, [], 'npc_event_data');
             db.profile.set(user, 0, 'npc_event_pos')
+            if (userThread !== undefined) {
+                await userThread.bulkDelete(100)
 
-            // Setup playspace
-            let playspace_str = await setup_playspace_str(user);
-            await db.profile.set(user, PlayerState.Playspace, 'player_state');
+                // Setup playspace
+                let playspace_str = await setup_playspace_str(user);
+                await db.profile.set(user, PlayerState.Playspace, 'player_state');
 
-            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-                db.profile.set(user, msg.id, 'display_msg_id');
-            });
+                await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                    db.profile.set(user, msg.id, 'display_msg_id');
+                });
+            }
 
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
 
@@ -295,20 +297,24 @@ client.on('messageCreate', async message => {
                     // Do movement stuff
                     let moveMsg = message.content.toLowerCase().replace(/\s+/g, ''); // Remove spaces
                     let splitMoves = moveMsg.split(','); // Split by comma first
+                    let moveCount = 0;
                 
                     let currentDirection = null;
                     let totalDistance = 0;
                 
                     for (let msg of splitMoves) {
+                        if (moveCount >= 3) break; // Stop processing after 3 moves
                         let moveSequence = msg.match(/([wasd])(\d{1,2})?/g); // Match 'w', 'a', 's', 'd' followed optionally by a number
                 
                         if (!moveSequence) continue; // Skip invalid input
                 
                         for (let moveSeq of moveSequence) {
+                            if (moveCount >= 3) break; // Stop further moves if limit reached
                             let direction = moveSeq[0]; // First character (direction)
                             let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1; // Get distance if provided, otherwise default to 1
                 
                             if (isNaN(dist)) dist = 1; // Safety check for NaN values
+                            if (dist > 4) dist = 4;
                 
                             if (currentDirection === null) {
                                 currentDirection = direction;
@@ -318,6 +324,9 @@ client.on('messageCreate', async message => {
                             } else {
                                 // Move in the previous direction with the total distance
                                 await move(message.channel, message.author.id, currentDirection, totalDistance);
+                                moveCount++;
+
+                                if (moveCount >= 3) break; // Stop further moves if limit reached                    
                 
                                 // Start a new aggregation for the current direction
                                 currentDirection = direction;
@@ -327,7 +336,7 @@ client.on('messageCreate', async message => {
                     }
                 
                     // Call move for the last accumulated direction
-                    if (currentDirection !== null) {
+                    if (currentDirection !== null && moveCount < 3) {
                         await move(message.channel, message.author.id, currentDirection, totalDistance);
                     }
                 
