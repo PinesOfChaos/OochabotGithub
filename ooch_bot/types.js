@@ -205,7 +205,7 @@ const Move = {
     Bind: 98,
     Thunder: 99,
     RallyingCry: 100,
-    CrystalBall: 90,
+    CrystalBall: 101,
     SonicBoom: 102,
     EarShatter: 103,
     HealingGems: 104,

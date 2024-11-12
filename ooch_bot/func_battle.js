@@ -1054,7 +1054,8 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
  * @returns A number of the amount of EXP earned
  */
 battle_calc_exp: function(enemy_level, enemy_evo_stage, bonus_multiplier = 1) {
-    return Math.round((bonus_multiplier * (1.015 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 5);
+    let exp_multiplier = .75 //-25% seems to be a good balance, use this to shift the exp given
+    return Math.round(((bonus_multiplier * (1.015 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 5) * exp_multiplier);
 },
 
 /**

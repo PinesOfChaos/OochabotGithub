@@ -120,6 +120,9 @@ module.exports = {
             if(test_move[0] == -1){
                 has_hidden_move = true;
             }
+            if(test_move[1] == null){
+                console.log(`MOVE ERROR: ${monster.name} has invalid Move`);
+            }
         }
         if(has_hidden_move == false){ console.log(`MOVE ERROR: ${monster.name} does not have a Hidden Move`); }
     },

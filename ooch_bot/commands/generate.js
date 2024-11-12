@@ -1237,8 +1237,8 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 8, atk: 12, def: 8, spd: 12, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], 
-             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight],
-             [-1, Move.CausticOrb] ],
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [24, Move.TangledThreads], 
+             [27, Move.ThornShot], [33, Move.FiberSlicer], [41, Move.Blight], [-1, Move.CausticOrb] ],
             abilities: [ Ability.Miniscule, Ability.Icky ],
             pre_evo_id: -1, evo_id: 1, evo_lvl: 11, evo_stage: 0
         });
@@ -1251,9 +1251,9 @@ module.exports = {
             oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', 
             type: [OochType.Fungal],
             hp: 15, atk: 20, def: 11, spd: 14, //total 60
-            move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash],
-             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight], 
-             [-1, Move.CausticOrb] ],
+            move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], 
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [24, Move.TangledThreads], 
+             [27, Move.ThornShot], [33, Move.FiberSlicer], [41, Move.Blight], [-1, Move.CausticOrb] ],
             abilities: [ Ability.Burdened, Ability.Icky ],
             pre_evo_id: 0, evo_id: 2, evo_lvl: 25, evo_stage: 1
         });
@@ -1264,11 +1264,11 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'queenect'),
             name: 'Queenect',
             oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', 
-            type: [OochType.Fungal],
+            type: [OochType.Fungal, OochType.Cloth],
             hp: 25, atk: 25, def: 16, spd: 14, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], 
-             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [27, Move.Blight], 
-             [-1, Move.CausticOrb] ],
+             [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [24, Move.TangledThreads], 
+             [27, Move.ThornShot], [33, Move.FiberSlicer], [41, Move.Blight], [-1, Move.CausticOrb] ],
             abilities: [ Ability.Burdened, Ability.Broodmother ],
             pre_evo_id: 1, evo_id: -1, evo_lvl: -1, evo_stage: 2
         });
@@ -1282,7 +1282,8 @@ module.exports = {
             type: [OochType.Stone],
             hp: 12, atk: 8, def: 12, spd: 8, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm],
-             [11, Move.Sharpen], [17, Move.Boulderdash], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+             [11, Move.Sharpen], [17, Move.Boulderdash], [24, Move.ArcaStrike], [27, Move.LavaLance], 
+             [34, Move.Gravitate], [41, Move.CallThunder], [-1, Move.AshBlast] ],
             abilities: [ Ability.Tough, Ability.Shadow ],
             pre_evo_id: -1, evo_id: 4, evo_lvl: 11, evo_stage: 0
         });
@@ -1295,8 +1296,9 @@ module.exports = {
             oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.', 
             type: [OochType.Stone],
             hp: 18, atk: 15, def: 15, spd: 12, //total 60
-            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm], 
-             [11, Move.Sharpen], [17, Move.DustStorm], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm],
+             [11, Move.Sharpen], [17, Move.Boulderdash], [24, Move.ArcaStrike], [27, Move.LavaLance], 
+             [34, Move.Gravitate], [41, Move.CallThunder], [-1, Move.AshBlast] ],
             abilities: [ Ability.Withering, Ability.Shadow ],
             pre_evo_id: 3, evo_id: 5, evo_lvl: 25, evo_stage: 1
         });
@@ -1307,10 +1309,11 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'kracking'),
             name: 'Kracking',
             oochive_entry: 'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.', 
-            type: [OochType.Stone],
+            type: [OochType.Stone, OochType.Magic],
             hp: 22, atk: 18, def: 22, spd: 18, //total 80
-            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm], 
-             [11, Move.Sharpen], [17, Move.DustStorm], [27, Move.LavaLance], [-1, Move.AshBlast] ],
+            move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm],
+             [11, Move.Sharpen], [17, Move.Boulderdash], [24, Move.ArcaStrike], [27, Move.LavaLance], 
+             [34, Move.Gravitate], [41, Move.CallThunder], [-1, Move.AshBlast] ],
             abilities: [ Ability.Withering, Ability.Darkbright ],
             pre_evo_id: 4, evo_id: -1, evo_lvl: -1, evo_stage: 2
         });
@@ -1324,8 +1327,8 @@ module.exports = {
             type: [OochType.Flame],
             hp: 10, atk: 12, def: 8, spd: 10, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf],
-             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
-             [-1, Move.Inferno] ],
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [24, Move.StickyOrb],
+             [27, Move.Tumorize], [34, Move.SlurpUp], [41, Move.PlasmaCannon], [-1, Move.Inferno] ],
             abilities: [ Ability.Gentle, Ability.Warm ],
             pre_evo_id: -1, evo_id: 7, evo_lvl: 11, evo_stage: 0
         });
@@ -1339,8 +1342,8 @@ module.exports = {
             type: [OochType.Flame],
             hp: 13, atk: 18, def: 14, spd: 15, //total 60
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf],
-             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
-             [-1, Move.Inferno] ],
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [24, Move.StickyOrb],
+             [27, Move.Tumorize], [34, Move.SlurpUp], [41, Move.PlasmaCannon], [-1, Move.Inferno] ],
             abilities: [ Ability.Gentle, Ability.Radiant ],
             pre_evo_id: 6, evo_id: 8, evo_lvl: 25, evo_stage: 1
         });
@@ -1351,11 +1354,11 @@ module.exports = {
             emote: get_emote_string(applicationEmojis, 'hounuke'),
             name: 'Hounuke',
             oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 
-            type: [OochType.Flame],
+            type: [OochType.Flame, OochType.Ooze],
             hp: 16, atk: 26, def: 18, spd: 20, //total 80
-            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], 
-             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [27, Move.Tumorize], 
-             [-1, Move.Inferno] ],
+            move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf],
+             [11, Move.Torch], [17, Move.ClampDown], [20, Move.SlowBurn], [24, Move.StickyOrb],
+             [27, Move.Tumorize], [34, Move.SlurpUp], [41, Move.PlasmaCannon], [-1, Move.Inferno] ],
             abilities: [ Ability.Conflicted, Ability.Radiant ],
             pre_evo_id: 7, evo_id: -1, evo_lvl: -1, evo_stage: 2
         });
@@ -1581,7 +1584,9 @@ module.exports = {
             hp: 14, atk: 10, def: 16, spd: 10, //total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [3, Move.Glob], [7, Move.MagicBolt],
-                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], [-1, Move.Laminate]
+                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], 
+                [32, Move.ArcaStrike], [36, Move.Gravitate], [42, Move.Overgrowth],
+                [-1, Move.Laminate]
             ],
             abilities: [Ability.Leech, Ability.Icky],
             pre_evo_id: -1, evo_id: 23, evo_lvl: 15, evo_stage: 0
@@ -1597,7 +1602,9 @@ module.exports = {
             hp: 16, atk: 25, def: 19, spd: 15, //total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [3, Move.Glob], [7, Move.MagicBolt],
-                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], [-1, Move.Laminate]
+                [11, Move.ClampDown], [18, Move.Impale], [25, Move.TangledThreads], 
+                [32, Move.ArcaStrike], [36, Move.Gravitate], [42, Move.Overgrowth],
+                [-1, Move.Laminate]
             ],
             abilities: [Ability.Leech, Ability.Icky],
             pre_evo_id: 22, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1647,7 +1654,8 @@ module.exports = {
             hp: 10, atk: 7, def: 6, spd: 7, // total 30
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp], 
-                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+                [15, Move.Slash], [18, Move.PrecisionStrike], [25, Move.Impale], [35, Move.TimeWarp], 
+                [42, Move.PlasmaCannon], [-1, Move.Pulverize]
             ],
             abilities: [Ability.Fleeting, Ability.Reactive], 
             pre_evo_id: -1, evo_id: 27, evo_lvl: 20, evo_stage: 0
@@ -1663,7 +1671,8 @@ module.exports = {
             hp: 10, atk: 15, def: 15, spd: 15, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp], 
-                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+                [15, Move.Slash], [18, Move.PrecisionStrike], [25, Move.Impale], [35, Move.TimeWarp], 
+                [42, Move.PlasmaCannon], [-1, Move.Pulverize]
             ],
             abilities: [Ability.Fleeting, Ability.Reactive], 
             pre_evo_id: 26, evo_id: 28, evo_lvl: 40, evo_stage: 1
@@ -1679,7 +1688,8 @@ module.exports = {
             hp: 20, atk: 20, def: 20, spd: 20, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp], 
-                [15, Move.Slash], [25, Move.Impale], [35, Move.TimeWarp], [-1, Move.Pulverize]
+                [15, Move.Slash], [18, Move.PrecisionStrike], [25, Move.Impale], [35, Move.TimeWarp], 
+                [42, Move.PlasmaCannon], [-1, Move.Pulverize]
             ],
             abilities: [Ability.Uncontrolled, Ability.Withering], 
             pre_evo_id: 27, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -1695,7 +1705,8 @@ module.exports = {
             hp: 7, atk: 13, def: 9, spd: 11, // total 40
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [11, Move.Parasitize], 
-                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [-1, Move.Bloom]
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], 
+                [27, Move.EarShatter], [30, Move.Suplex], [45, Move.SlurpUp], [-1, Move.Bloom]
             ],
             abilities: [Ability.Miniscule, Ability.Gentle], 
             pre_evo_id: -1, evo_id: 30, evo_lvl: 12, evo_stage: 0
@@ -1711,7 +1722,8 @@ module.exports = {
             hp: 11, atk: 18, def: 12, spd: 14, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [11, Move.Parasitize], 
-                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [-1, Move.Bloom]
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], 
+                [27, Move.EarShatter], [30, Move.Suplex], [45, Move.SlurpUp], [-1, Move.Bloom]
             ],
             abilities: [Ability.Tough, Ability.Ravenous], 
             pre_evo_id: 29, evo_id: 31, evo_lvl: 22, evo_stage: 1
@@ -1727,7 +1739,8 @@ module.exports = {
             hp: 25, atk: 20, def: 20, spd: 20, // total 85
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [11, Move.Parasitize], 
-                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], [30, Move.Suplex], [-1, Move.Bloom]
+                [14, Move.CursedEye], [18, Move.Corrode], [24, Move.Pulverize], 
+                [27, Move.EarShatter], [30, Move.Suplex], [45, Move.SlurpUp], [-1, Move.Bloom]
             ],
             abilities: [Ability.Immense, Ability.Gentle], 
             pre_evo_id: 30, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -1743,7 +1756,8 @@ module.exports = {
             hp: 11, atk: 14, def: 15, spd: 5, // total 45
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], 
-                [8, Move.Sedimentation], [12, Move.Entomb], [20, Move.MetalLance], [29, Move.Grind], [-1, Move.Boulderdash]
+                [8, Move.Sedimentation], [12, Move.Entomb], [16, Move.SelfDestruct], [20, Move.MetalLance],
+                [29, Move.Grind], [35, Move.Torque], [44, Move.IronHammer], [-1, Move.Boulderdash]
             ],
             abilities: [Ability.Armored, Ability.Inertia], 
             pre_evo_id: -1, evo_id: 33, evo_lvl: 21, evo_stage: 0
@@ -1759,7 +1773,8 @@ module.exports = {
             hp: 15, atk: 19, def: 25, spd: 16, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], 
-                [8, Move.Sedimentation], [12, Move.Entomb], [20, Move.MetalLance], [29, Move.Grind], [-1, Move.Boulderdash]
+                [8, Move.Sedimentation], [12, Move.Entomb], [16, Move.SelfDestruct], [20, Move.MetalLance],
+                [29, Move.Grind], [35, Move.Torque], [44, Move.IronHammer], [-1, Move.Boulderdash]
             ],
             abilities: [Ability.Armored, Ability.Leech], 
             pre_evo_id: 32, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1792,7 +1807,8 @@ module.exports = {
             hp: 12, atk: 13, def: 10, spd: 15, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], 
-                [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [-1, Move.SyncStrike]
+                [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [23, Move.SolarBlast], 
+                [36, Move.DustStorm], [42, Move.PlasmaCannon],  [-1, Move.SyncStrike]
             ],
             abilities: [Ability.Inertia, Ability.Scorching], 
             pre_evo_id: -1, evo_id: 36, evo_lvl: 20, evo_stage: 0
@@ -1809,7 +1825,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [9, Move.Gravitate], 
                 [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [23, Move.SolarBlast], 
-                [36, Move.DustStorm], [-1, Move.SyncStrike]
+                [36, Move.DustStorm], [42, Move.PlasmaCannon],  [-1, Move.SyncStrike]
             ],
             abilities: [Ability.Immense, Ability.Scorching], 
             pre_evo_id: 35, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1859,7 +1875,8 @@ module.exports = {
             hp: 10, atk: 7, def: 8, spd: 5, // total 30
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.ByteBite], [7, Move.DigitalGamble],
-                [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [-1, Move.BlindingBeam]
+                [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [32, Move.SyncStrike],
+                [40, Move.Thunder], [-1, Move.BlindingBeam]
             ],
             abilities: [Ability.Gentle, Ability.Efficient],
             pre_evo_id: -1, evo_id: 40, evo_lvl: 21, evo_stage: 0
@@ -1876,7 +1893,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.ByteBite], [7, Move.DigitalGamble],
                 [12, Move.Suplex], [16, Move.SyncStrike], [20, Move.SelfDestruct], [26, Move.PhantomBullet],
-                [32, Move.SyncStrike], [35, Move.ThornShot], [-1, Move.BlindingBeam]
+                [32, Move.SyncStrike], [35, Move.ThornShot], [40, Move.Thunder], [-1, Move.BlindingBeam]
             ],
             abilities: [Ability.Alert, Ability.Rogue],
             pre_evo_id: 39, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1893,7 +1910,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [3, Move.Hasten], [5, Move.Fireball], [10, Move.Threefold],
                 [15, Move.Engulf], [25, Move.LavaLance], [30, Move.Eruption], [36, Move.Inferno],
-                [-1, Move.SlowBurn]
+                [40, Move.SolarBlast], [-1, Move.SlowBurn]
             ],
             abilities: [Ability.Crystallize],
             pre_evo_id: 43, evo_id: 42, evo_lvl: 33, evo_stage: 1
@@ -1910,7 +1927,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [3, Move.Limber], [5, Move.Glob], [10, Move.Threefold],
                 [15, Move.Impale], [25, Move.ThornShot], [30, Move.SlurpUp], [36, Move.Kaleidoscope],
-                [-1, Move.Blight]
+                [40, Move.BlindingBeam], [-1, Move.Blight]
             ],
             abilities: [Ability.Crystallize],
             pre_evo_id: 41, evo_id: 43, evo_lvl: 33, evo_stage: 1
@@ -1926,8 +1943,8 @@ module.exports = {
             hp: 25, atk: 10, def: 20, spd: 10, // total 65
             move_list: [
                 [1, Move.Bash], [3, Move.MagicBolt], [5, Move.Shards], [10, Move.Threefold],
-                [15, Move.Blink], [25, Move.DustStorm], [30, Move.Glimmer], [40, Move.GemBash],
-                [-1, Move.GlassBlades]
+                [15, Move.Blink], [25, Move.DustStorm], [30, Move.Glimmer], [36, Move.ArcaStrike],
+                [40, Move.GemBash], [-1, Move.GlassBlades]
             ],
             abilities: [Ability.Crystallize],
             pre_evo_id: 42, evo_id: 41, evo_lvl: 33, evo_stage: 1
@@ -2012,7 +2029,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode],
                 [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom],
-                [37, Move.DrainLife], [-1, Move.Laminate]
+                [37, Move.DrainLife], [46, Move.Overgrowth], [-1, Move.Laminate]
             ],
             abilities: [Ability.Sporespray, Ability.Leech],
             pre_evo_id: -1, evo_id: 49, evo_lvl: 29, evo_stage: 0
@@ -2029,7 +2046,7 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode],
                 [12, Move.ClampDown], [18, Move.Fog], [22, Move.CausticOrb], [28, Move.Bloom],
-                [37, Move.DrainLife], [-1, Move.Laminate]
+                [37, Move.DrainLife], [46, Move.Overgrowth], [-1, Move.Laminate]
             ],
             abilities: [Ability.Sporespray, Ability.Leech],
             pre_evo_id: 48, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -2078,8 +2095,9 @@ module.exports = {
             type: [OochType.Tech],
             hp: 10, atk: 10, def: 10, spd: 15, // total 45
             move_list: [
-                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
-                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder]
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.Sharpen],
+                [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [35, Move.DigitalGamble], 
+                [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
             ],
             abilities: [Ability.Inertia, Ability.Armored],
             pre_evo_id: -1, evo_id: 53, evo_lvl: 18, evo_stage: 0
@@ -2094,8 +2112,9 @@ module.exports = {
             type: [OochType.Tech],
             hp: 15, atk: 12, def: 13, spd: 20, // total 60
             move_list: [
-                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
-                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [-1, Move.CallThunder]
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.Sharpen],
+                [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [35, Move.DigitalGamble], 
+                [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
             ],
             abilities: [Ability.Inertia, Ability.Armored],
             pre_evo_id: 52, evo_id: 54, evo_lvl: 32, evo_stage: 1
@@ -2110,9 +2129,9 @@ module.exports = {
             type: [OochType.Tech],
             hp: 20, atk: 13, def: 17, spd: 25, // total 75
             move_list: [
-                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.SelfDestruct],
-                [19, Move.Barrage], [27, Move.Grind], [35, Move.DigitalGamble], [40, Move.Grind],
-                [-1, Move.CallThunder]
+                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.Sharpen],
+                [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [35, Move.DigitalGamble], 
+                [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
             ],
             abilities: [ Ability.Hexiply, Ability.Efficient ],
             pre_evo_id: 53, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -2211,9 +2230,9 @@ module.exports = {
             type: [OochType.Flame],
             hp: 13, atk: 17, def: 13, spd: 22, // total 65
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn],
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn], [11, Move.Screech],
                 [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam],
-                [-1, Move.AshBlast]
+                [43, Move.Radiate], [-1, Move.AshBlast]
             ],
             abilities: [ Ability.Warm, Ability.HeightAdvantage ],
             pre_evo_id: 59, evo_id: 61, evo_lvl: 25, evo_stage: 1
@@ -2228,9 +2247,9 @@ module.exports = {
             type: [OochType.Flame],
             hp: 20, atk: 25, def: 17, spd: 18, // total 80
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn],
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn], [11, Move.Screech],
                 [14, Move.Engulf], [20, Move.Torch], [27, Move.Inferno], [35, Move.BlindingBeam],
-                [-1, Move.AshBlast]
+                [43, Move.Radiate], [-1, Move.AshBlast]
             ],
             abilities: [ Ability.Scorching, Ability.HeightAdvantage ],
             pre_evo_id: 60, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -2373,8 +2392,8 @@ module.exports = {
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Embolden], [7, Move.CursedEye],
                 [10, Move.Blink], [13, Move.Grind], [17, Move.Lurk], [21, Move.LavaLance],
-                [24, Move.Barrage], [29, Move.MetalLance], [35, Move.Siphon], [41, Move.CallThunder],
-                [-1, Move.TangledThreads]
+                [24, Move.Barrage], [29, Move.SolarBlast], [35, Move.DrainLife], [41, Move.CallThunder],
+                [50, Move.CrystalBall], [-1, Move.TangledThreads]
             ],
             abilities: [ Ability.EasyGo ],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -3030,7 +3049,7 @@ module.exports = {
         //#region Check if all Moves are being utilized somehow
         let test_mons = JSON.parse(db.monster_data.export()).keys.map(v => v.value);
         let test_moves = JSON.parse(db.move_data.export()).keys.map(v => v.value);
-        
+
         for(let tmove1 of test_moves) {
             let move_found = false;
             for(let tmon of test_mons){
