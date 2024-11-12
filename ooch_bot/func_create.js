@@ -73,6 +73,10 @@ module.exports = {
      * @param {Number} evo_stage What stage the Oochamon is at evolution wise
      */
     create_monster: function(monster) {
+
+        // ADD OOCHAMON THAT SHOULDN'T HAVE THEIR MOVES CHECKED HERE BY ID!
+        const oochMoveErrorExceptionList = [59]
+
         // Required attributes
         const requiredAttributes = [
             "id",
@@ -111,20 +115,22 @@ module.exports = {
             }
         });
 
-        //Check if the mon's movelist is short
-        if(monster.move_list.length < 10){ console.log(`MOVE NOTE: ${monster.name} only has ${monster.move_list.length} learnable moves.`); }
+        if (!oochMoveErrorExceptionList.includes(monster.id) && monster.id >= 0) {
+            //Check if the mon's movelist is short
+            if(monster.move_list.length < 10){ console.log(`MOVE NOTE: ${monster.name} only has ${monster.move_list.length} learnable moves.`); }
 
-        //Check if the mon has a hidden move it can learn
-        let has_hidden_move = false
-        for(let test_move of monster.move_list){
-            if(test_move[0] == -1){
-                has_hidden_move = true;
+            //Check if the mon has a hidden move it can learn
+            let has_hidden_move = false
+            for (let test_move of monster.move_list) {
+                if(test_move[0] == -1){
+                    has_hidden_move = true;
+                }
+                if(test_move[1] == null){
+                    console.log(`MOVE ERROR: ${monster.name} has invalid Move`);
+                }
             }
-            if(test_move[1] == null){
-                console.log(`MOVE ERROR: ${monster.name} has invalid Move`);
-            }
+            if(has_hidden_move == false){ console.log(`MOVE ERROR: ${monster.name} does not have a Hidden Move`); }
         }
-        if(has_hidden_move == false){ console.log(`MOVE ERROR: ${monster.name} does not have a Hidden Move`); }
     },
     
 

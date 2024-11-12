@@ -19,7 +19,7 @@ let functions = {
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('next').setEmoji('▶').setStyle(ButtonStyle.Success),
+                new ButtonBuilder().setCustomId('next').setLabel('▶').setStyle(ButtonStyle.Success),
             );
 
         let current_place = start_pos;
@@ -288,6 +288,14 @@ let functions = {
             // If we are at the end of the event_array, quit out entirely
             if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
                 if (current_place + 1 == event_array.length) {
+                    // Manual flag check just to help reset us back for the tutorial
+                    if (event_array[current_place].text == 'ev_tutorial_9') {
+                        let ooch_party = db.profile.get(user_id, 'ooch_party');
+                        // Remove Vrumbox
+                        ooch_party = ooch_party.filter(v => v.id == 52)
+                        db.profile.set(user_id, ooch_party, 'ooch_party')
+                    }
+
                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                     let playspace_str = setup_playspace_str(user_id);
                     await thread.messages.fetch(msg_to_edit).then((msg) => {

@@ -92,8 +92,7 @@ client.on('ready', async () => {
 
             // await wait(2000);
             // await warningMsg.delete();
-        } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace) ||
-            (user_profile.player_state === PlayerState.Playspace && user_profile.settings.discord_move_buttons === true)) {
+        } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
 
             db.profile.set(user, [], 'npc_event_data');
             db.profile.set(user, 0, 'npc_event_pos')
@@ -251,7 +250,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.update({ embeds: [] });
                 await move(interaction.channel, interaction.user.id, interaction.customId, curSpeed);
             } else if (interaction.customId === 'play_dist') {
-                db.profile.set(interaction.user.id, (curSpeed % 5) + 1, 'move_speed');
+                db.profile.set(interaction.user.id, (curSpeed % 4) + 1, 'move_speed');
                 let playspace_str = setup_playspace_str(interaction.user.id);
                 await interaction.update({ components: playspace_str[1] });
             } else if (interaction.customId === 'play_menu') {
@@ -294,53 +293,66 @@ client.on('messageCreate', async message => {
         switch (player_state) {
             case PlayerState.Playspace: 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
-                    // Do movement stuff
-                    let moveMsg = message.content.toLowerCase().replace(/\s+/g, ''); // Remove spaces
-                    let splitMoves = moveMsg.split(','); // Split by comma first
-                    let moveCount = 0;
-                
-                    let currentDirection = null;
-                    let totalDistance = 0;
-                
-                    for (let msg of splitMoves) {
-                        if (moveCount >= 3) break; // Stop processing after 3 moves
-                        let moveSequence = msg.match(/([wasd])(\d{1,2})?/g); // Match 'w', 'a', 's', 'd' followed optionally by a number
-                
-                        if (!moveSequence) continue; // Skip invalid input
-                
-                        for (let moveSeq of moveSequence) {
-                            if (moveCount >= 3) break; // Stop further moves if limit reached
-                            let direction = moveSeq[0]; // First character (direction)
-                            let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1; // Get distance if provided, otherwise default to 1
-                
-                            if (isNaN(dist)) dist = 1; // Safety check for NaN values
-                            if (dist > 4) dist = 4;
-                
-                            if (currentDirection === null) {
-                                currentDirection = direction;
-                                totalDistance = dist;
-                            } else if (currentDirection === direction) {
-                                totalDistance += dist; // Aggregate distance if the direction is the same
-                            } else {
-                                // Move in the previous direction with the total distance
-                                await move(message.channel, message.author.id, currentDirection, totalDistance);
-                                moveCount++;
+                    let speedMatch = message.content.toLowerCase().match(/^([1-4])$/);
 
-                                if (moveCount >= 3) break; // Stop further moves if limit reached                    
-                
-                                // Start a new aggregation for the current direction
-                                currentDirection = direction;
-                                totalDistance = dist;
+                    if (speedMatch && db.profile.get(message.author.id, 'settings.discord_move_buttons') === true) {
+                        const speedMultiplier = parseInt(speedMatch[1]) - 1;
+                        db.profile.set(message.author.id, (speedMultiplier % 4) + 1, 'move_speed');
+                        let playspace_str = setup_playspace_str(message.author.id);
+
+                        let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id')).catch(() => {});
+                        await playspace_msg.edit({ components: playspace_str[1] });
+                        
+                        await message.delete().catch(() => {});
+                    } else {
+                        // Do movement stuff
+                        let moveMsg = message.content.toLowerCase().replace(/\s+/g, ''); // Remove spaces
+                        let splitMoves = moveMsg.split(','); // Split by comma first
+                        let moveCount = 0;
+                    
+                        let currentDirection = null;
+                        let totalDistance = 0;
+                    
+                        for (let msg of splitMoves) {
+                            if (moveCount >= 3) break; // Stop processing after 3 moves
+                            let moveSequence = msg.match(/([wasd])(\d{1,2})?/g); // Match 'w', 'a', 's', 'd' followed optionally by a number
+                    
+                            if (!moveSequence) continue; // Skip invalid input
+                    
+                            for (let moveSeq of moveSequence) {
+                                if (moveCount >= 3) break; // Stop further moves if limit reached
+                                let direction = moveSeq[0]; // First character (direction)
+                                let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1; // Get distance if provided, otherwise default to 1
+                    
+                                if (isNaN(dist)) dist = 1; // Safety check for NaN values
+                                if (dist > 4) dist = 4;
+                    
+                                if (currentDirection === null) {
+                                    currentDirection = direction;
+                                    totalDistance = dist;
+                                } else if (currentDirection === direction) {
+                                    totalDistance += dist; // Aggregate distance if the direction is the same
+                                } else {
+                                    // Move in the previous direction with the total distance
+                                    await move(message.channel, message.author.id, currentDirection, totalDistance);
+                                    moveCount++;
+
+                                    if (moveCount >= 3) break; // Stop further moves if limit reached                    
+                    
+                                    // Start a new aggregation for the current direction
+                                    currentDirection = direction;
+                                    totalDistance = dist;
+                                }
                             }
                         }
-                    }
                 
-                    // Call move for the last accumulated direction
-                    if (currentDirection !== null && moveCount < 3) {
-                        await move(message.channel, message.author.id, currentDirection, totalDistance);
+                        // Call move for the last accumulated direction
+                        if (currentDirection !== null && moveCount < 3) {
+                            await move(message.channel, message.author.id, currentDirection, totalDistance);
+                        }
+                    
+                        await message.delete().catch(() => {});
                     }
-                
-                    await message.delete().catch(() => {});
                 }
             break;
             default: 
