@@ -4,7 +4,6 @@ const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
-const globalEventsJSON = require('../global_events.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -2901,80 +2900,80 @@ module.exports = {
         //#region LEGENDARY HERE
         //#endregion
 
-        // Rosun
-        create_monster({
-            id: 100,
-            emote: get_emote_string(applicationEmojis, 'rosun'),
-            name: 'Rosun',
-            oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
-            type: [OochType.Crystal],
-            hp: 10, atk: 8, def: 12, spd: 10, //total 40
-            move_list: [
-                [1, Move.Bash]
-            ],
-            abilities: [ Ability.Swaying, Ability.Armored ],
-            pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
-        })
+        // // Rosun
+        // create_monster({
+        //     id: 100,
+        //     emote: get_emote_string(applicationEmojis, 'rosun'),
+        //     name: 'Rosun',
+        //     oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
+        //     type: [OochType.Crystal],
+        //     hp: 10, atk: 8, def: 12, spd: 10, //total 40
+        //     move_list: [
+        //         [1, Move.Bash]
+        //     ],
+        //     abilities: [ Ability.Swaying, Ability.Armored ],
+        //     pre_evo_id: -1, evo_id: 98, evo_lvl: 34, evo_stage: 0
+        // })
 
-        // Morgoun
-        create_monster({
-            id: 101,
-            emote: get_emote_string(applicationEmojis, 'morgoun'),
-            name: 'Morgoun',
-            oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
-            type: [OochType.Crystal],
-            hp: 17, atk: 13, def: 26, spd: 14, //total 70
-            move_list: [
-                [1, Move.Bash]
-            ],
-            abilities: [ Ability.Swaying, Ability.Armored ],
-            pre_evo_id: 97, evo_id: -1, evo_lvl: -1, evo_stage: 1
-        })
+        // // Morgoun
+        // create_monster({
+        //     id: 101,
+        //     emote: get_emote_string(applicationEmojis, 'morgoun'),
+        //     name: 'Morgoun',
+        //     oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
+        //     type: [OochType.Crystal],
+        //     hp: 17, atk: 13, def: 26, spd: 14, //total 70
+        //     move_list: [
+        //         [1, Move.Bash]
+        //     ],
+        //     abilities: [ Ability.Swaying, Ability.Armored ],
+        //     pre_evo_id: 97, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        // })
 
-        // Garnetie
-        create_monster({
-            id: 102,
-            emote: get_emote_string(applicationEmojis, 'garnetie'),
-            name: 'Garnetie',
-            oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
-            type: [OochType.Crystal],
-            hp: 10, atk: 12, def: 8, spd: 10, //total 40
-            move_list: [
-                [1, Move.Bash]
-            ],
-            abilities: [ Ability.Thrashing, Ability.Withering ],
-            pre_evo_id: -1, evo_id: 100, evo_lvl: 34, evo_stage: 0
-        })
+        // // Garnetie
+        // create_monster({
+        //     id: 102,
+        //     emote: get_emote_string(applicationEmojis, 'garnetie'),
+        //     name: 'Garnetie',
+        //     oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
+        //     type: [OochType.Crystal],
+        //     hp: 10, atk: 12, def: 8, spd: 10, //total 40
+        //     move_list: [
+        //         [1, Move.Bash]
+        //     ],
+        //     abilities: [ Ability.Thrashing, Ability.Withering ],
+        //     pre_evo_id: -1, evo_id: 100, evo_lvl: 34, evo_stage: 0
+        // })
 
-        // Aventux
-        create_monster({
-            id: 103,
-            emote: get_emote_string(applicationEmojis, 'aventux'),
-            name: 'Aventux',
-            oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
-            type: [OochType.Crystal],
-            hp: 14, atk: 26, def: 13, spd: 17, //total 70
-            move_list: [
-                [1, Move.Bash]
-            ],
-            abilities: [ Ability.Thrashing, Ability.Withering ],
-            pre_evo_id: 99, evo_id: -1, evo_lvl: -1, evo_stage: 1
-        })
+        // // Aventux
+        // create_monster({
+        //     id: 103,
+        //     emote: get_emote_string(applicationEmojis, 'aventux'),
+        //     name: 'Aventux',
+        //     oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
+        //     type: [OochType.Crystal],
+        //     hp: 14, atk: 26, def: 13, spd: 17, //total 70
+        //     move_list: [
+        //         [1, Move.Bash]
+        //     ],
+        //     abilities: [ Ability.Thrashing, Ability.Withering ],
+        //     pre_evo_id: 99, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        // })
 
-        // Galagge
-        create_monster({
-            id: 104,
-            emote: get_emote_string(applicationEmojis, 'galagge'),
-            name: 'Galagge',
-            oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
-            type: [OochType.Crystal],
-            hp: 18, atk: 21, def: 21, spd: 15, //total 75
-            move_list: [
-                [1, Move.Bash]
-            ],
-            abilities: [ Ability.Union ],
-            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 2
-        })
+        // // Galagge
+        // create_monster({
+        //     id: 104,
+        //     emote: get_emote_string(applicationEmojis, 'galagge'),
+        //     name: 'Galagge',
+        //     oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
+        //     type: [OochType.Crystal],
+        //     hp: 18, atk: 21, def: 21, spd: 15, //total 75
+        //     move_list: [
+        //         [1, Move.Bash]
+        //     ],
+        //     abilities: [ Ability.Union ],
+        //     pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        // })
 
         // Nullifly
         create_monster({
@@ -3109,16 +3108,25 @@ module.exports = {
         fs.writeFile('./editor_data/items_data.json', JSON.stringify(JSON.parse(db.item_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
         fs.writeFile('./editor_data/abilities_data.json', JSON.stringify(JSON.parse(db.ability_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
 
-        // Generate the global events
-        for (let event of Object.entries(globalEventsJSON)) {
-            event[1].push([
-                2,
-                {
-                    "text": event[0]
-                }
-            ])
-            db.events_data.set(event[0], event[1]);
-        }
+        // Read users.json file 
+        fs.readFile("./global_events.json", function(err, data) { 
+            
+            // Check for errors 
+            if (err) throw err; 
+
+            // Converting to JSON 
+            const events = JSON.parse(data); 
+            // Generate the global events
+            for (let event of Object.entries(events)) {
+                event[1].push([
+                    2,
+                    {
+                        "text": event[0]
+                    }
+                ])
+                db.events_data.set(event[0], event[1]);
+            }
+        }); 
         
         await interaction.editReply('Generated game data.');
     },

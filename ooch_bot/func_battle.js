@@ -853,10 +853,11 @@ prompt_battle_input: async function(thread, user_id) {
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
 
                                 // Wait a bit after finishing a battle to allow viewing info about Oochamon
-                                await wait(20000);
                                 await thread.send({ embeds: [infoEmbed], files: [oochPng] });
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
+
+                                await wait(20000);
                                 await finish_battle(thread, user_id);
 
                                 return;
@@ -1650,6 +1651,10 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
                 is_wild = true;
             } else {
                 oochabux = user_profile.ooch_enemy.oochabux;
+                if (oochabux == 0) {
+                    let enemyLevels = ooch_enemy_party.map(v => v.level);
+                    oochabux = _.sum(enemyLevels) * 20;
+                } 
             }
             string_to_send += `\n💵 You gained **${oochabux}** oochabux!`;
 
