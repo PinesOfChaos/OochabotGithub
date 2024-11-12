@@ -333,6 +333,11 @@ module.exports = {
         create_tile(`c_015`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Tech)
         create_tile(`c_016`,       Tile.Npc,      applicationEmojis ); // Global CFO
         create_tile(`c_017`,       Tile.Int,      applicationEmojis ); // Tutorial Door Closed
+        create_tile(`c_018`,       Tile.Int,      applicationEmojis ); // Mr. Nice
+        create_tile(`c_019`,       Tile.Int,      applicationEmojis ); // Tutorial Spikes
+        create_tile(`c_020`,       Tile.Int,      applicationEmojis ); // Thunder Peak Lightning Ball
+        create_tile(`c_021`,       Tile.Int,      applicationEmojis ); // Mechanical Wall
+        
         
         //#endregion
 
@@ -1365,7 +1370,7 @@ module.exports = {
             hp: 15, atk: 9, def: 14, spd: 12, //total 50
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], 
              [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
-             [34, Move.Entomb], [-1, Move.GemBash] ],
+             [34, Move.Entomb], [41, Move.PrecisionStrike], [-1, Move.GemBash] ],
             abilities: [ Ability.Tough, Ability.Reactive ],
             pre_evo_id: -1, evo_id: 10, evo_lvl: 12, evo_stage: 0
         });
@@ -1379,8 +1384,8 @@ module.exports = {
             type: [OochType.Stone],
             hp: 18, atk: 25, def: 16, spd: 11, //total 70
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash],
-             [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
-             [34, Move.Entomb], [-1, Move.GemBash] ],
+             [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale],  [27, Move.Glimmer], 
+             [34, Move.Entomb], [41, Move.PrecisionStrike], [-1, Move.GemBash] ],
             abilities: [ Ability.Burrower, Ability.Reactive ],
             pre_evo_id: 9, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
@@ -1394,7 +1399,8 @@ module.exports = {
             type: [OochType.Stone],
             hp: 10, atk: 10, def: 10, spd: 20, //total 50
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
-             [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [-1, Move.ArcaStrike] ],
+            [11, Move.Restruct], [18, Move.Boulderdash], [24, Move.Torque], [26, Move.Grind], 
+            [33, Move.GemBash], [-1, Move.ArcaStrike] ],
             abilities: [ Ability.Inertia, Ability.Dense ],
             pre_evo_id: -1, evo_id: 12, evo_lvl: 15, evo_stage: 0
         });
@@ -1408,8 +1414,8 @@ module.exports = {
             type: [OochType.Stone, OochType.Crystal],
             hp: 15, atk: 20, def: 15, spd: 30, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], 
-             [11, Move.Restruct], [18, Move.Boulderdash], [26, Move.Grind], [33, Move.GemBash], 
-             [-1, Move.ArcaStrike] ],
+             [11, Move.Restruct], [18, Move.Boulderdash], [24, Move.Torque], [26, Move.Grind], 
+             [33, Move.GemBash], [40, Move.CrystalBall], [-1, Move.ArcaStrike] ],
             abilities: [ Ability.Inertia, Ability.Dense ],
             pre_evo_id: 11, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
@@ -1423,7 +1429,8 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 14, atk: 10, def: 9, spd: 12, //total 35
             move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale],
-             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [-1, Move.Glimmer] ],
+             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
+             [36, Move.ThornShot], [41, Move.FiberSlicer], [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Miniscule ],
             pre_evo_id: -1, evo_id: 14, evo_lvl: 9, evo_stage: 0
         });
@@ -1436,9 +1443,9 @@ module.exports = {
             oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 
             type: [OochType.Fungal],
             hp: 21, atk: 17, def: 12, spd: 15, //total 65
-            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale], 
-             [11, Move.StickyOrb], [17, Move.TakeOver], [23, Move.MycoBurst], [32, Move.Bloom], 
-             [-1, Move.Glimmer] ],
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale],
+             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
+             [36, Move.ThornShot], [41, Move.FiberSlicer], [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Alert ],
             pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
@@ -1453,9 +1460,9 @@ module.exports = {
             type: [OochType.Fungal, OochType.Magic],
             hp: 5, atk: 5, def: 25, spd: 5, //total 40
             move_list: [
-                [1, Move.Bash],[2, Move.Limber],[5, Move.SporeShot],[12, Move.TakeOver],
-                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],
-                [-1, Move.Entomb]
+                [1, Move.Bash],[2, Move.Limber],[5, Move.SporeShot], [8, Move.MagicBolt], [12, Move.TakeOver],
+                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize], [31, Move.Tenderize], 
+                [36, Move.ArcaStrike],[40, Move.Blight],[45, Move.Corrode],[-1, Move.Entomb]
             ],
             abilities: [ Ability.Gentle, Ability.Burrower ],
             pre_evo_id: -1, evo_id: 16, evo_lvl: 26, evo_stage: 0
@@ -1470,9 +1477,9 @@ module.exports = {
             type: [OochType.Fungal, OochType.Magic],
             hp: 25, atk: 25, def: 30, spd: 5, //total 85
             move_list: [
-                [1, Move.Bash],[2, Move.Limber],[5, Move.SporeShot],[12, Move.TakeOver],
-                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize],[40, Move.Blight],
-                [45, Move.Corrode],[-1, Move.Entomb]
+                [1, Move.Bash],[2, Move.Limber],[5, Move.SporeShot], [8, Move.MagicBolt], [12, Move.TakeOver],
+                [17, Move.ClampDown],[20, Move.SlurpUp],[24, Move.Pulverize], [31, Move.Tenderize], 
+                [36, Move.ArcaStrike],[40, Move.Blight],[45, Move.Corrode],[-1, Move.Entomb]
             ],
             abilities: [ Ability.Gentle, Ability.Reactive ],
             pre_evo_id: 15, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1487,9 +1494,9 @@ module.exports = {
             type: [OochType.Flame, OochType.Stone],
             hp: 5, atk: 15, def: 5, spd: 10, //total 35
             move_list: [
-                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
-                [16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],
-                [-1, Move.Inferno]
+                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[8, Move.Intimidate],
+                [10, Move.DustStorm], [16, Move.Sparkler], [22, Move.Engulf], [27, Move.AshBlast],
+                [37, Move.Torch], [42, Move.LenseFlare], [-1, Move.Inferno]
             ],
             abilities: [ Ability.Fleeting, Ability.Warm ],
             pre_evo_id: -1, evo_id: 18, evo_lvl: 10, evo_stage: 0
@@ -1504,9 +1511,9 @@ module.exports = {
             type: [OochType.Flame, OochType.Stone],
             hp: 15, atk: 25, def: 13, spd: 12, //total 65
             move_list: [
-                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[10, Move.DustStorm],
-                [16, Move.Sparkler],[22, Move.Engulf],[27, Move.AshBlast],[37, Move.Torch],
-                [-1, Move.Inferno]
+                [1, Move.Hit],[2, Move.Embolden],[4, Move.Fireball],[8, Move.Intimidate],
+                [10, Move.DustStorm], [16, Move.Sparkler], [22, Move.Engulf], [27, Move.AshBlast],
+                [37, Move.Torch], [42, Move.LenseFlare], [-1, Move.Inferno]
             ],
             abilities: [ Ability.Efficient, Ability.Warm ],
             pre_evo_id: 17, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -1557,7 +1564,8 @@ module.exports = {
             hp: 11, atk: 12, def: 12, spd: 14, //total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [3, Move.ByteBite], [10, Move.Digitize],
-                [16, Move.SyncStrike], [24, Move.BlindingBeam], [-1, Move.Laminate]
+                [16, Move.SyncStrike], [24, Move.BlindingBeam], [28, Move.HighImpact], 
+                [34, Move.Bind], [43, Move.PlasmaCannon], [-1, Move.Laminate]
             ],
             abilities: [Ability.Leech, Ability.Icky],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -2843,7 +2851,7 @@ module.exports = {
             type: [OochType.Tech, OochType.Ooze],
             hp: 26, atk: 24, def: 19, spd: 21, // total 90
             move_list: [
-                [1, Move.Bash], [5, Move.Glob], [8, Move.ByteBite], [10, Move.Digitize],
+                [1, Move.Bash], [5, Move.Glob], [8, Move.ByteBite], [10, Move.Bind],
                 [12, Move.Corrode], [16, Move.Impale], [20, Move.MetalLance], [23, Move.TangledThreads],
                 [25, Move.Radiate], [28, Move.Flurry], [34, Move.Entrench], [40, Move.CrashLanding],
                 [-1, Move.PhantomBullet]
@@ -3018,6 +3026,30 @@ module.exports = {
 
         //#endregion
 
+
+        //#region Check if all Moves are being utilized somehow
+        let test_mons = JSON.parse(db.monster_data.export()).keys.map(v => v.value);
+        let test_moves = JSON.parse(db.move_data.export()).keys.map(v => v.value);
+        
+        for(let tmove1 of test_moves) {
+            let move_found = false;
+            for(let tmon of test_mons){
+                for(let tmove2 of tmon.move_list){
+                    if(tmove1.id == tmove2[1]){
+                        move_found = true;
+                        break;
+                    }
+                }
+                if(move_found){
+                    break;
+                }
+            }
+            if(move_found == false){
+                console.log(`MOVE UNUSED: id[${tmove1.id}] ${tmove1.name} `)
+            }
+        }
+
+        //#endregion
 
         //#region Create Maps
         await db.maps.clear();
