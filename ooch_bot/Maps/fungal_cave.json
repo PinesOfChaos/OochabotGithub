@@ -17,60 +17,6 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 2,
-					"id": 1
-				}
-			],
-			"name": "Chest",
-			"npc_id": "803278181943596698",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 32,
-			"y": 31
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 17
-				}
-			],
-			"name": "Chest",
-			"npc_id": "275035680198641634",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": false,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 31,
-			"y": 11
-		},
-		{
-			"aggro_range": 3,
 			"coin": 320,
 			"flag_given": "",
 			"flag_kill": "",
@@ -389,16 +335,68 @@
 			"is_catchable": false,
 			"items": [
 				{
+					"count": 2,
+					"id": 1
+				}
+			],
+			"name": "Chest",
+			"npc_id": "372207491951733533",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 32,
+			"y": 31
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 17
+				}
+			],
+			"name": "Chest",
+			"npc_id": "381469848277338020",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 31,
+			"y": 11
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "obtained_sporefeather",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
 					"count": 1,
 					"id": 20
 				}
 			],
 			"name": "Chest",
-			"npc_id": "217678848130312888",
+			"npc_id": "879210756640618654",
 			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 13,
+			"sprite": 2,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",

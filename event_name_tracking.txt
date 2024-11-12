@@ -1,0 +1,12 @@
+met_head_researcher
+get_id_card
+save_station_tutorial
+rival_intro_complete
+cromet_quest_begin
+cromet_quest_end
+caves_quest_begin
+corrupt_fungal_defeat
+caves_quest_end
+spawn_nice1
+talk_nice1
+obtained_sporefeather

@@ -373,6 +373,160 @@
 			}
 		]
 	],
+	"ev_rival_intro": [
+		[
+			0,
+			{
+				"description": "Hey, you! Yeah, you {player}!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Thought you could get ahead of me, didn't you?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0,
+			{
+				"description": "It's me, Cade, I knew you couldn't forget about me!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "What do you say we have a little battle here? I hear you've got your first Oochamon, and I've been wanting to battle!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			1,
+			{
+				"name": "Rival Cade",
+				"party": [
+					{
+						"ability": 13,
+						"atk_iv": 2,
+						"def_iv": 2,
+						"hp_iv": 2,
+						"id": 26,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							5,
+							30,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 2
+					}
+				],
+				"sprite": 7,
+				"sprite_id": "c00_007",
+				"sprite_special": "portrait_rival"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I was uh... Just going easy on you, yeah. There's no way you'd win if we battled it out for real!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Anyway, I've got some business to take care of, see ya around!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "*Cade rushes off...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh my, isn't he a little bundle of energy? I'm sure he'll do quite well.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Now, as for yourself, would you come speak to me once more? I have your first task ready for you!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "Return to Professor Lyra",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2,
+			{
+				"text": "rival_intro_complete"
+			}
+		]
+	],
 	"ev_tutorial_1": [
 		[
 			0,
@@ -722,7 +876,6 @@
 			}
 		],
 		[
-			
 			0,
 			{
 				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
@@ -735,7 +888,6 @@
 			}
 		],
 		[
-			
 			4,
 			{
 				"default_tp": true,
