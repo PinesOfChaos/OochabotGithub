@@ -362,7 +362,7 @@ module.exports = {
             description : 'A device used to capture Oochamon.'
         })
         create_item({
-            id : 4, name : 'Greater Prism', emote : '<:item_prism_greater:1274937183710740510',
+            id : 4, name : 'Greater Prism', emote : '<:item_prism_greater:1274937183710740510>',
             category : 'prism_inv', type : 'prism', price : 150, potency : 1.5, 
             description : 'An improved prism with a higher capture rate.'
         })
@@ -1140,13 +1140,13 @@ module.exports = {
         create_ability(15, 'Dense',             'Increases ATK by 1 stage but reduces SPD by 1 stage.');  
         create_ability(16, 'Moist',             'Halves all incoming FLAME damage.'); 
         create_ability(17, 'Alert',             'Increases ATK by 1 stage when an Oochamon switches in.');  
-        create_ability(18, 'Fleeting',          'Increases SPD and ATK by 4 stages but also loses half of current HP each turn.'); 
+        create_ability(18, 'Fleeting',          'Increases SPD and ATK by 2 stages but also loses half of current HP each turn.'); 
         create_ability(19, 'Efficient',         'Increases ATK by 1 stage each turn.'); 
         create_ability(20, 'Boisterous',        'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP');
         create_ability(21, 'Haunted',           'Applies the DOOMED status to an enemy when the holder of the ability dies.'); 
         create_ability(22, 'Leech',             'Restores HP equal to 10% of damage done to the enemy.'); 
         create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.');  
-        create_ability(24, 'Uncontrolled',      'Increases ATK by 4 stages but randomly chooses an attack each turn');  
+        create_ability(24, 'Uncontrolled',      'Increases ATK by 3 stages and reduces DEF by 1 stages but randomly chooses an attack each turn');  
         create_ability(25, 'Apprentice',        'Increases ATK by 2 stages if any other party members share a move with it.');  
         create_ability(26, 'Focused',           'Increases damage of attacks by 10% if unaffected by status effects.'); 
         create_ability(27, 'Ravenous',          'Restores 20% of max HP upon defeating an enemy.'); 
@@ -1197,7 +1197,7 @@ module.exports = {
         create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
         create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.');
         create_ability(72, 'Neutralizer',      'No Oochamon are affected by status effects.');
-        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves.') //Get this one working
+        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.')
         create_ability(74, 'Stealthy',         'Gets FOCUSED if it hasn\'t dealt damage this turn.') //Get this one working
         
 
@@ -1369,7 +1369,7 @@ module.exports = {
             name: 'Glither',
             oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.', 
             type: [OochType.Stone],
-            hp: 15, atk: 9, def: 14, spd: 12, //total 50
+            hp: 12, atk: 7, def: 12, spd: 9, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], 
              [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
              [34, Move.Entomb], [41, Move.PrecisionStrike], [-1, Move.GemBash] ],

@@ -3,6 +3,7 @@ const db = require('../db.js');
 const _ = require('lodash');
 const { type_to_emote } = require('../func_battle');
 const { get_art_file } = require('../func_other.js');
+const { Status, MoveTarget } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -65,27 +66,64 @@ module.exports = {
                 let info_move = db.move_data.get(selected_id);
 
                 let eff_str = ``
-                if(info_move.effect != -1){
-                    let effect_arr = info_move.effect.split('|')
-                    for(let i = 0; i < effect_arr.length; i++){
-                        let eff = effect_arr[i]
-                        if(eff.charAt(0) == '+'){
-                            let eff_split = eff.split('_')
-                            eff_str += `+${eff_split[2]}% ${eff_split[1].toUpperCase()}`
-                        }
-                        else if(eff.charAt(0) == '-'){
-                            let eff_split = eff.split('_')
-                            eff_str += `-${eff_split[2]}% ${eff_split[1].toUpperCase()}`
-                        }
-                        else{
-                            eff_str += `${eff.charAt(0).toUpperCase() + eff.slice(1)}`
-                        }
-                        
-                        if(i < effect_arr.length - 1){
-                            eff_str += `, `
-                        }
+                for(eff of info_move.effect){
+                    eff_str += `${eff.chance}% Chance to `
+                    switch (eff.status) {
+                        case Status.Blind:
+                            eff_str += `Blind`
+                        break;
+                        case Status.Burn:
+                            eff_str += `Burn`
+                        break;
+                        case Status.Digitize:
+                            eff_str += `Digitize`
+                        break;
+                        case Status.Doom:
+                            eff_str += `Doom`
+                        break;
+                        case Status.Double:
+                            eff_str += `Double`
+                        break;
+                        case Status.Focus:
+                            eff_str += `Focus`
+                        break;
+                        case Status.Infect:
+                            eff_str += `Infect`
+                        break; 
+                        case Status.Snare:
+                            eff_str += `Snare`
+                        break; 
+                        case Status.Vanish:
+                            eff_str += `Vanish`
+                        break; 
+                        case 'critical':
+                            eff_str += `Critically Hit`
+                        break;
+                        default:
+                            eff_str += `${eff.status}`
+                        break; 
                     }
+                    
+                    switch(eff.target){
+                        case MoveTarget.Self:
+                            eff_str += ` the User.`
+                        break;
+                        case MoveTarget.Enemy:
+                            eff_str += ` the Target.`
+                        break;
+                        case MoveTarget.All:
+                            eff_str += ` both Oochamon.`
+                        break;
+                        case MoveTarget.None:
+                            eff_str += `.`
+                        break;
+                    }
+                    
+                    eff_str += `\n`
+                
+                    
                 }
+
 
                 let embed_move = new EmbedBuilder()
                     .setColor('#808080')

@@ -5,7 +5,7 @@ const { PlayerState } = require('../types.js');
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('get_coords')
-    .setDescription('Get your current position in the map.'),
+    .setDescription('Get your current position in the area.'),
     async execute(interaction) {
         if (!db.profile.has(interaction.user.id)) {
             return interaction.reply({ content: `You must be playing the Oochamon to use this command!`, ephemeral: true })
@@ -18,6 +18,6 @@ module.exports = {
 
         let locationData = db.profile.get(interaction.user.id, 'location_data');
 
-        interaction.reply({ content: `Current Biome: **${locationData.area}**\n(X, Y): **(${locationData.x}, ${locationData.y})**`, ephemeral: true });
+        interaction.reply({ content: `Current Area: **${locationData.area}**\n[X: ${locationData.x}, Y: ${locationData.y}]`, ephemeral: true });
     },
 };

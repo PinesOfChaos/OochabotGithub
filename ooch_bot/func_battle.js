@@ -32,7 +32,7 @@ generate_wild_battle: function(ooch_id, ooch_level) {
  * Takes a trainer object and converts it for battle
  * @param {Object} trainer_obj The base trainer object to convert
  */
-generate_trainer_battle(trainer_obj){
+generate_trainer_battle(trainer_obj) {
 
     let party_base = trainer_obj.team;
     let party_generated = [];
@@ -40,6 +40,8 @@ generate_trainer_battle(trainer_obj){
     //Loop through the party_base and convert to the required format for battles
     for(let i  = 0; i < party_base.length; i++){
         let ooch_base = party_base[i];
+        // Filter out 9999 which is "no move"
+        ooch_base.moveset = ooch_base.moveset.filter(v => v != 9999);
         let ooch = create_ooch(ooch_base.id, ooch_base.level, ooch_base.moveset, ooch_base.nickname, 0, ooch_base.ability,
                                ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv);
         party_generated.push(ooch); 
@@ -519,7 +521,7 @@ prompt_battle_input: async function(thread, user_id) {
                 for (let i = 0; i < ooch_inv.length; i++) {
                     ooch_check = ooch_inv[i];
                     ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                    ooch_name = ooch_check.nickname;``
+                    ooch_name = ooch_check.nickname;
                     ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                     ooch_button_color = ButtonStyle.Primary;
                     ooch_disable = false;
@@ -536,7 +538,7 @@ prompt_battle_input: async function(thread, user_id) {
                     ((i <= 1) ? switch_buttons_1 : switch_buttons_2).addComponents(
                         new ButtonBuilder()
                             .setCustomId(`${i}`)
-                            .setLabel(`${ooch_name} (${ooch_hp})`)
+                            .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
                             .setStyle(ooch_button_color)
                             .setEmoji(ooch_emote)
                             .setDisabled(ooch_disable),
@@ -857,7 +859,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
 
-                                await wait(20000);
+                                await wait(15000);
                                 await finish_battle(thread, user_id);
 
                                 return;
@@ -930,7 +932,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                 let oochInfoFields = [];
                 const formatStatBar = (stat) => {
-                    return `${stat > 0 ? '▲' : '▼'}`.repeat(stat) + '○'.repeat(8 - stat);
+                    return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
                 };
 
                 // Setup field info for the embed about both oochamon
@@ -1041,6 +1043,8 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
             if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; break;
         case OochType.Tech:
             if (ooch_attacker.ability == Ability.LiquidCooled) damage *= 1.25; break;
+        case OochType.Sound:
+            if (ooch_attacker.ability == Ability.BassBoost) damage *= 1.2; break;
     }
 
     damage = Math.round(damage);
@@ -1055,7 +1059,7 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
  * @returns A number of the amount of EXP earned
  */
 battle_calc_exp: function(enemy_level, enemy_evo_stage, bonus_multiplier = 1) {
-    let exp_multiplier = .75 //-25% seems to be a good balance, use this to shift the exp given
+    let exp_multiplier = .8 //-20% seems to be a good balance, use this to shift the exp given
     return Math.round(((bonus_multiplier * (1.015 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 5) * exp_multiplier);
 },
 
@@ -1484,10 +1488,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     
     displayEmbed.setDescription(`${string_to_send}${defender_field_text}`);
 
-    await wait(battleSpeed);
     await thread.send({ content: header, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'turn_msg_counter');
     db.profile.inc(user_id, 'battle_msg_counter');
+    await wait(battleSpeed);
 
     return [attacker, defender];
 
@@ -2107,13 +2111,14 @@ ability_stat_change: function(ooch, ooch_inv) {
             output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its SPD from its ability **Withering**!`;
         break;
         case Ability.Fleeting:
-            ooch = modify_stat(ooch, Stats.Speed, 4);
-            ooch = modify_stat(ooch, Stats.Attack, 4); 
-            output_msg = `${ooch.emote} **${ooch.nickname}** dramatically increased its SPD and ATK from its ability **Fleeting**!`;
+            ooch = modify_stat(ooch, Stats.Speed, 2);
+            ooch = modify_stat(ooch, Stats.Attack, 2); 
+            output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its SPD and ATK from its ability **Fleeting**!`;
         break;
         case Ability.Uncontrolled:
-            ooch = modify_stat(ooch, Stats.Attack, 4); 
-            output_msg = `${ooch.emote} **${ooch.nickname}** dramatically increased its ATK from its ability **Uncontrolled**!`;
+            ooch = modify_stat(ooch, Stats.Attack, 3); 
+            ooch = modify_stat(ooch, Stats.Defense, -1);
+            output_msg = `${ooch.emote} **${ooch.nickname}** dramatically increased its ATK and reduced its DEF from its ability **Uncontrolled**!`;
         break;
         case Ability.Immense:
             ooch = modify_stat(ooch, Stats.Defense, 2); 

@@ -15,8 +15,10 @@ let functions = {
      */
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
 
-        const { setup_battle } = require('./func_battle.js');
+        const { setup_battle, generate_trainer_battle } = require('./func_battle.js');
         const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
+
+        console.log(event_array);
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -73,13 +75,12 @@ let functions = {
 
             // Set NPC dialogue portrait
             if (obj_content.dialogue_portrait != '') {
-                
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
-                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
+                    imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }
             }
 
@@ -128,8 +129,15 @@ let functions = {
                 if (confirm_collector !== undefined) confirm_collector.stop();
             }
 
+            let trainer_obj;
+            if (obj_content.ooch_party == undefined) {
+                trainer_obj = generate_trainer_battle(obj_content);
+            } else {
+                trainer_obj = obj_content;
+            }
+
             // Setup the battle
-            await setup_battle(thread, user_id, obj_content, true);
+            await setup_battle(thread, user_id, trainer_obj, true);
         }
 
         async function oochPickEvent(obj_content, initial=false) {
@@ -156,8 +164,8 @@ let functions = {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
-                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
+                    imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }
             }
 
@@ -168,25 +176,34 @@ let functions = {
 
         }
 
-        function flagEvent(obj_content) {
+        async function flagEvent(obj_content) {
             let flags = db.profile.get(user_id, 'flags');
             if (!flags.includes(obj_content.text)) {
                 db.profile.push(user_id, obj_content.text, 'flags');
+                if (!obj_content.text.includes('NPC|')) {
+                    let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
+                    let playspace_str = setup_playspace_str(user_id);
+                    await thread.messages.fetch(msg_to_edit).then((msg) => {
+                        msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                    }).catch(() => {});
+                }
             }
         }
 
         async function transitionEvent(obj_content) {
             //remove the player's info from the old biome and add it to the new one
             let ogBiome = db.profile.get(user_id, 'location_data.area');
+            if (ogBiome == undefined) ogBiome = 'hub';
             if (obj_content.map_to == false) obj_content.map_to = ogBiome;
             let mapData = db.maps.get(obj_content.map_to);
+            let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
+            if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
+                map_default = [mapData.map_savepoints[0]];
+            }
+
+            db.profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
 
             if (obj_content.default_tp === true) {
-                let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
-                if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-                    map_default = [mapData.map_savepoints[0]];
-                }
-
                 obj_content.x_to = map_default[0].x;
                 obj_content.y_to = map_default[0].y;
             }
@@ -196,9 +213,10 @@ let functions = {
             db.profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
 
             let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
-            (thread.messages.fetch(msg_to_edit)).then((msg) => {
-                msg.edit({ content: map_emote_string(obj_content.map_to, mapData, obj_content.x_to, obj_content.y_to, user_id) });
-            });
+            let playspace_str = setup_playspace_str(user_id);
+            await thread.messages.fetch(msg_to_edit).then((msg) => {
+                msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+            }).catch(() => {});
         }
 
         function objectiveEvent(obj_content) {
@@ -238,8 +256,8 @@ let functions = {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
-                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                    imageFiles.push(get_art_file(`./Art/EventImages/Portraits/${obj_content.dialogue_portrait}`));
+                    event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
+                    imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }
             }
 
@@ -270,7 +288,7 @@ let functions = {
                 break;
                 
                 case EventMode.Flags: 
-                    flagEvent(obj_content);
+                    await flagEvent(obj_content);
                 break;
 
                 case EventMode.Transition:
@@ -304,11 +322,28 @@ let functions = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles })
+        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
         if (msg_to_edit == false) {
             db.profile.set(user_id, msg.id, 'display_msg_id');
             profile_data = db.profile.get(user_id);
             msg_to_edit = profile_data.display_msg_id;
+        }
+
+        // Disable movement buttons
+        if (event_name !== 'ev_intro') {
+            await thread.messages.fetch(msg_to_edit).then((msg) => {
+                const newComponents = msg.components.map((row) => {
+                    const newRow = row.toJSON(); 
+                    newRow.components = newRow.components.map((button) => {
+                        button.disabled = true; 
+                        return button;
+                    });
+                    return newRow;
+                });
+
+                msg.edit({ components: newComponents });
+
+            }).catch(() => {});
         }
 
         const confirm_collector = await msg.createMessageComponentCollector({ filter });
@@ -394,7 +429,7 @@ let functions = {
 
                     //No Visual representation, just sets appropriate flags in the player
                     case EventMode.Flags: 
-                        flagEvent(obj_content);
+                        await flagEvent(obj_content);
                     break;
 
                     case EventMode.Transition:
@@ -420,9 +455,13 @@ let functions = {
                             let ooch_party = db.profile.get(user_id, 'ooch_party');
                             // Remove Vrumbox
                             ooch_party = ooch_party.filter(v => v.id !== 52)
-                            console.log(ooch_party);
                             db.profile.set(user_id, ooch_party, 'ooch_party')
+
+                            // Reset other values upon tutorial completion
                             db.profile.set(user_id, 0, 'oochabux');
+                            db.profile.set(user_id, {}, 'other_inv')
+                            db.profile.set(user_id, {}, 'prism_inv')
+                            db.profile.set(user_id, {}, 'heal_inv')
                         }
 
                         await confirm_collector.stop();

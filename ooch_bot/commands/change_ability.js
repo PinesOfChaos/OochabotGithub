@@ -10,7 +10,6 @@ module.exports = {
     .addStringOption(option => 
             option.setName('ability')
                 .setDescription('Ability to change to')
-                .setAutocomplete(true)
                 .setRequired(true)),
     async execute(interaction) {
         

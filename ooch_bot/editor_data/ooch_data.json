@@ -637,10 +637,10 @@
     "type": [
       "stone"
     ],
-    "hp": 15,
-    "atk": 9,
-    "def": 14,
-    "spd": 12,
+    "hp": 12,
+    "atk": 7,
+    "def": 12,
+    "spd": 9,
     "move_list": [
       [
         1,

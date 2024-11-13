@@ -19,7 +19,7 @@ module.exports = {
                 .setRequired(false)),
     async execute(interaction) {
 
-        if (interaction.user.id != 145342159724347393 && interaction.user.id != 122568101995872256) return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+        if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         let ooch_id = interaction.options.getString('oochamon');
         if (isNaN(ooch_id)) return interaction.reply('You must input an oochamon ID here.');
         ooch_id = parseInt(ooch_id);

@@ -465,7 +465,7 @@
 				"is_catchable": false,
 				"name": "Rival Cade",
 				"sprite": 7,
-				"sprite_combat": "portrait_rival",
+				"sprite_combat": "",
 				"sprite_id": "c00_007",
 				"team": [
 					{
@@ -475,11 +475,11 @@
 						"hp_iv": 2,
 						"id": 26,
 						"item": -1,
-						"level": 5,
+						"level": 4,
 						"moveset": [
 							1,
-							5,
 							30,
+							9999,
 							9999
 						],
 						"nickname": "",
@@ -677,7 +677,7 @@
 		[
 			0,
 			{
-				"description": "Try out some things, then move on. If you'd like more information on controls, run `/lookup controls` for a detailed explanation of text based movement!",
+				"description": "Try out some things, then move on. If you'd like more information on controls, run `/lookup controls` for a detailed explanation of text based movement!\n\n**Note: This may be a bit laggier than using the buttons. This is not a bug, just an unavoidable Discord problem.**",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],

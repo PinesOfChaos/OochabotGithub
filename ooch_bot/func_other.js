@@ -97,12 +97,12 @@ module.exports = {
         db.profile.set(user_id, 0, 'ooch_active_slot')
         db.profile.set(user_id, {}, 'other_inv')
         db.profile.set(user_id, {}, 'prism_inv')
-        db.profile.set(user_id, { [Item.Potion]: 3 }, 'heal_inv') // Start with 3 potions
+        db.profile.set(user_id, {}, 'heal_inv')
         db.profile.set(user_id, 0, 'oochabux')
         await db.profile.set(user_id, PlayerState.Intro, 'player_state')
         db.profile.set(user_id, {}, 'ooch_enemy')
-        db.profile.set(user_id, { area: 'hub', x: 20, y: 8 }, 'location_data')
-        db.profile.set(user_id, { area: 'hub', x: 15, y: 9 }, 'checkpoint_data');
+        db.profile.set(user_id, false, 'location_data')
+        db.profile.set(user_id, false, 'checkpoint_data');
         db.profile.set(user_id, false, 'display_msg_id');
         db.profile.set(user_id, false, 'play_thread_id');
         db.profile.set(user_id, false, 'play_guild_id');

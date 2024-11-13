@@ -83,7 +83,7 @@ client.on('ready', async () => {
             // await wait(2000);
             // await warningMsg.delete();
         } else if (user_profile.player_state === PlayerState.Intro) {
-            await userThread.bulkDelete(100);
+            await userThread.bulkDelete(100).catch(() => {});
             await reset_oochamon(user);
             await db.profile.set(user, userThread.id, 'play_thread_id');
             await db.profile.set(user, userGuild.id, 'play_guild_id');
@@ -93,7 +93,16 @@ client.on('ready', async () => {
             // await wait(2000);
             // await warningMsg.delete();
         } else if (user_profile.player_state === PlayerState.Dialogue && user_profile.cur_event_name !== false) {
-            await userThread.bulkDelete(1);
+            await userThread.bulkDelete(100).catch(() => {});
+
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user);
+            await db.profile.set(user, PlayerState.Playspace, 'player_state');
+
+            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                db.profile.set(user, msg.id, 'display_msg_id');
+            });
+
             await event_process(user, userThread, db.events_data.get(user_profile.cur_event_name), 0, user_profile.cur_event_name);
 
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has restarted. No progress has been lost.' });
@@ -105,7 +114,7 @@ client.on('ready', async () => {
             db.profile.set(user, [], 'npc_event_data');
             db.profile.set(user, 0, 'npc_event_pos')
             if (userThread !== undefined) {
-                await userThread.bulkDelete(100)
+                await userThread.bulkDelete(100).catch(() => {});
 
                 // Setup playspace
                 let playspace_str = await setup_playspace_str(user);
@@ -149,7 +158,6 @@ client.on('interactionCreate', async interaction => {
         }
 
         let commandName = interaction.commandName;
-        if (commandName == 'lookup') commandName = 'change_ability';
 
         switch (commandName) {
             case 'oochadex':
@@ -199,7 +207,7 @@ client.on('interactionCreate', async interaction => {
                 item_names = item_names.map(v => v = { name: v, value: v.split(':')[0] });
                 interaction.respond(item_names);
             break;
-            case 'change_ability':
+            case 'lookup':
                 if (interaction.options.getSubcommand() == 'move') {
                     move_names = move_ids.map(v => {
                         return `${v.id}: ${_.startCase(v.name)}`

@@ -97,8 +97,8 @@ module.exports = {
 
             let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());
-            // 25% chance on cave, 40% chance on other places
-            let encounter_chance = tile.zone_id == Zone.Cave ? .25 : .40;
+            // 10% chance on cave, 40% chance on other places
+            let encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
 
             //NPCs
             if(!stop_moving){
@@ -181,18 +181,26 @@ module.exports = {
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
                         stop_moving = true;
-                        thread.send({ content: 'Would you like to heal your Oochamon and set a checkpoint here?', components: [confirm_buttons] }).then(async msg => {
+                        let map_savepoints = db.maps.get('hub', 'map_savepoints');
+                        let noCheckpoint = false;
+                        map_savepoints = map_savepoints.filter(v => v.is_default !== false);
+                        if (map_savepoints.length == 0) {
+                            map_savepoints = [db.maps.get('hub', 'map_savepoints[0]')];
+                        }
+                        if (obj.x == map_savepoints[0].x && obj.y == map_savepoints[0].y && map_name == 'hub') noCheckpoint = true;
+
+                        thread.send({ content: (noCheckpoint ? 'Would you like to heal your Oochamon?' : `Would you like to heal your Oochamon and set a checkpoint here?`), components: [confirm_buttons] }).then(async msg => {
                             db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                             confirm_collector.on('collect', async sel => {
                                 if (sel.customId == 'yes') {
-                                    db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
+                                    if (noCheckpoint == false) db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
                                     for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
                                         db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                         db.profile.set(user_id, true, `ooch_party[${i}].alive`);
                                     }
                                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                    await sel.update({ content: 'Checkpoint set, and healed your Oochamon!', components: [] });
+                                    await sel.update({ content: (noCheckpoint ? 'Healed all your Oochamon.' : 'Set a checkpoint and healed all your Oochamon.'), components: [] });
                                     await wait(5000);
                                     await msg.delete().catch(() => {});
                                 } else {
