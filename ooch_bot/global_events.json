@@ -575,7 +575,7 @@
 		[
 			0,
 			{
-				"description": "To start, let's teach you how to move. Type in **w, a, s, or d** as a message in the chat to move, and move up to the door!",
+				"description": "To start, let's teach you how to move. Use the arrow buttons to move, and move up to the door!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -601,7 +601,7 @@
 		[
 			0,
 			{
-				"description": "You can **jump** ahead tiles by putting a number after a movement key, or by typing a letter multiple times.",
+				"description": "You can **jump** ahead tiles by clicking the number on the top left of the buttons to change your speed.\nYou can also type a number in chat to quickly change this number!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -613,7 +613,7 @@
 		[
 			0,
 			{
-				"description": "For example, you can do `w2` to jump 2 spaces forward, or `ddd` to jump 3 spaces to the right. Give it a try!",
+				"description": "For example, if you type in \"3\" in the chat, it will change your tile jump to 3!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -627,7 +627,7 @@
 		[
 			0,
 			{
-				"description": "You can also chain these movement commands together, to do some crazy movement!",
+				"description": "On top of discord buttons for movement, you also have the option to do **message based movement!**",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -639,7 +639,43 @@
 		[
 			0,
 			{
-				"description": "For example, you can do `w2d2` to move up 2 then right 2, or `aaaww` to move left 3 then up 2. Give it a try!",
+				"description": "To do this, you can type `w`, `a`, `s` or `d` in the chat to move in one of the 4 directions.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "You can also jump ahead tiles by putting a number after the direction, something like `w2` or `d4`.",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Finally, you can chain these together to move lots of spaces at once. For example, you can do `w2d4` to move up 2 then right 4\nOr you could do something like `wwwdd` to move up 3 then right 2. There's a lot of possibility with it!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Try out some things, then move on. If you'd like more information on controls, run `/lookup controls` for a detailed explanation of text based movement!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -665,7 +701,7 @@
 		[
 			0,
 			{
-				"description": "Now, check out your menu with `/menu`. You have an Oochamon you picked out, right?",
+				"description": "Now, check out your menu with `/menu`, or by clicking the 3 horizontal lines on the top left of the discord buttons.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -677,7 +713,7 @@
 		[
 			0,
 			{
-				"description": "Go check it out, and play around in the menu to learn about it a little bit. There's even a settings menu!",
+				"description": "Go check it out, and play around in the menu to learn about it a little bit. There's even a settings menu where you can disable discord move buttons, text popups, and more!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -919,17 +955,6 @@
 				"title": "Tutorial Master"
 			}
 		],
-		[
-			4,
-			{
-				"default_tp": true,
-				"map_to": "hub",
-				"x_to": 0,
-				"y_to": 0
-			}
-		]
-	],
-	"ev_tutorial_9": [
 		[
 			2,
 			{

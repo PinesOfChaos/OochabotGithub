@@ -117,6 +117,7 @@ module.exports = {
         db.profile.set(user_id, [], 'friends_list');
         db.profile.set(user_id, 1, 'move_speed');
         db.profile.set(user_id, 'Talk to the professor.', 'objective');
+        db.profile.set(user_id, false, 'cur_event_name');
         
         // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
         // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.

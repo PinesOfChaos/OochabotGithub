@@ -11,8 +11,9 @@ let functions = {
      * @param {Object} thread The main thread that Oochamon is being played in.
      * @param {Array} event_array The event array.
      * @param {Number} start_pos The position to start in the event array (defaults to 0)
+     * @param {String} event_name The name of the global event (defaults to false if not needed)
      */
-    event_process: async function(user_id, thread, event_array, start_pos = 0) {
+    event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
 
         const { setup_battle } = require('./func_battle.js');
         const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
@@ -22,6 +23,7 @@ let functions = {
                 new ButtonBuilder().setCustomId('next').setLabel('▶').setStyle(ButtonStyle.Success),
             );
 
+        db.profile.set(user_id, event_name, 'cur_event_name');
         let current_place = start_pos;
         let event_mode = event_array[current_place][0];
         let obj_content = event_array[current_place][1];
@@ -288,15 +290,8 @@ let functions = {
             // If we are at the end of the event_array, quit out entirely
             if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
                 if (current_place + 1 == event_array.length) {
-                    // Manual flag check just to help reset us back for the tutorial
-                    if (event_array[current_place].text == 'ev_tutorial_9') {
-                        let ooch_party = db.profile.get(user_id, 'ooch_party');
-                        // Remove Vrumbox
-                        ooch_party = ooch_party.filter(v => v.id == 52)
-                        db.profile.set(user_id, ooch_party, 'ooch_party')
-                    }
-
                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                    db.profile.set(user_id, false, 'cur_event_name');
                     let playspace_str = setup_playspace_str(user_id);
                     await thread.messages.fetch(msg_to_edit).then((msg) => {
                         msg.edit({ content: playspace_str[0], components: playspace_str[1] });
@@ -355,7 +350,7 @@ let functions = {
 
                 if (eventName != false) {
                     current_place = event_array.length;
-                    await functions.event_process(user_id, thread, db.events_data.get(eventName));
+                    await functions.event_process(user_id, thread, db.events_data.get(eventName), 0, eventName);
                 }
             }
 
@@ -420,9 +415,20 @@ let functions = {
                 if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
+                        // Manual event check just to help reset us back for the tutorial
+                        if (event_name == 'ev_tutorial_8') {
+                            let ooch_party = db.profile.get(user_id, 'ooch_party');
+                            // Remove Vrumbox
+                            ooch_party = ooch_party.filter(v => v.id !== 52)
+                            console.log(ooch_party);
+                            db.profile.set(user_id, ooch_party, 'ooch_party')
+                            db.profile.set(user_id, 0, 'oochabux');
+                        }
+
                         await confirm_collector.stop();
                         if (msg.id != msg_to_edit) await msg.delete();
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                        db.profile.set(user_id, false, 'cur_event_name');
                         quit = true; 
                         let playspace_str = setup_playspace_str(user_id);
                         await thread.messages.fetch(msg_to_edit).then(async (msg) => {
