@@ -3,8 +3,10 @@ var event_data = {
 	"name" : "",
 	"sprite" : 2,
 	"sprite_id" : "",
-	"sprite_special" : "",
-	"party" : []
+	"sprite_combat" : "", #previously sprite_special
+	"team" : [], #previously party
+	"coin" : 0,
+	"is_catchable" : false
 }
 
 @onready var line_edit_name: LineEdit = $HBoxContainer/LineEditName
@@ -19,9 +21,17 @@ var event_data = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if(event_data.has("party")):
+		event_data.team = event_data.party
+		event_data.erase("party")
+	
+	if(event_data.has("sprite_special")):
+		event_data.sprite_combat = event_data.sprite_special
+		event_data.erase("sprite_special")
+	
 	var slots = [slot_0, slot_1, slot_2, slot_3]
 	line_edit_name.text = event_data.name
-	line_edit_sprite_special.text = event_data.sprite_special
+	line_edit_sprite_special.text = event_data.sprite_combat
 	
 	var tile_data
 	var tile_string
@@ -33,8 +43,8 @@ func _ready() -> void:
 			option_button_sprite.select(i)
 	
 	#create slots
-	for i in event_data.party.size():
-		var _data = event_data.party[i]
+	for i in event_data.team.size():
+		var _data = event_data.team[i]
 		var _slot = slots[i]
 		
 		_slot.slot_data = _data
@@ -53,11 +63,11 @@ func _on_option_button_sprite_item_selected(index: int) -> void:
 
 func save():
 	event_data.name = line_edit_name.text
-	event_data.sprite_special = line_edit_sprite_special.text
+	event_data.sprite_combat = line_edit_sprite_special.text
 	
-	event_data.party = []
+	event_data.team = []
 	var slots = [slot_0, slot_1, slot_2, slot_3]
 	for slot in slots:	
 		if slot.slot_data.slot_enabled:
-			event_data.party.push_back(slot.slot_data)
+			event_data.team.push_back(slot.slot_data)
 		

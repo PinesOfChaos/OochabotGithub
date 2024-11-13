@@ -461,8 +461,13 @@
 		[
 			1,
 			{
+				"coin": 0,
+				"is_catchable": false,
 				"name": "Rival Cade",
-				"party": [
+				"sprite": 7,
+				"sprite_combat": "portrait_rival",
+				"sprite_id": "c00_007",
+				"team": [
 					{
 						"ability": 13,
 						"atk_iv": 2,
@@ -481,10 +486,7 @@
 						"slot_enabled": true,
 						"spd_iv": 2
 					}
-				],
-				"sprite": 7,
-				"sprite_id": "c00_007",
-				"sprite_special": "portrait_rival"
+				]
 			}
 		],
 		[
