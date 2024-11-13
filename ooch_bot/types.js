@@ -14,21 +14,16 @@ const PlayerState = {
 
 const TypeEmote = {
     Flame: '<:icon_flame:1274936249484050472>',
-    FlameLabel: '<:icon_flame_txt:1274936258811920414>',
     Fungal:  '<:icon_fungal:1274936267884199947>',
-    FungalLabel: '<:icon_fungal_txt:1274936284497969203>',
     Magic: '<:icon_magic:1274936558595866787>',
-    MagicLabel: '<:icon_magic_txt:1274936569790468096>',
     Neutral: '<:icon_neutral:1274936582583091210>',
-    NeutralLabel: '<:icon_neutral_txt:1274936596155863080>',
     Ooze: '<:icon_ooze:1274936607136288810>',
-    OozeLabel: '<:icon_ooze_txt:1274936617320316928>',
     Stone: '<:icon_stone:1274936641433243781>',
-    StoneLabel: '<:icon_stone_txt:1274936655236563055>',
     Tech: '<:icon_tech:1274936672022298624>',
-    TechLabel: '<:icon_tech_txt:1274936688589803613>',
     Void: '<:icon_void:1274936702959485011>',
-    VoidLabel: '<:icon_void_txt:1274936717383569409>'
+    Crystal: '',
+    Cloth: '',
+    Sound: ''
 }
 
 const GraphicsMode = {
@@ -318,7 +313,8 @@ const Tile = {
     Shop: 4,
     Int: 5, // Interactible
     Board: 6,
-    Ice: 7
+    Ice: 7,
+    Lava: 8
 }
 
 const Zone = {

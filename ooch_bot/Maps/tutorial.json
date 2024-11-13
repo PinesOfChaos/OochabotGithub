@@ -79,7 +79,7 @@
 	},
 	"map_npcs": [
 		{
-			"aggro_range": 0,
+			"aggro_range": 2,
 			"coin": 0,
 			"flag_given": "",
 			"flag_kill": "",

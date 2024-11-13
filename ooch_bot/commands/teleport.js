@@ -52,7 +52,7 @@ module.exports = {
 
         let msg_to_edit = db.profile.get(target, 'display_msg_id');
         (interaction.channel.messages.fetch(msg_to_edit)).then((msg) => {
-            msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) });
+            msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) }).catch(() => {});
         });
 
         let travelMsg = await interaction.reply({ content: `Successfully teleported to ${biome_to} and healed all your Oochamon!` });

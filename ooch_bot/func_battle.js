@@ -301,7 +301,7 @@ prompt_battle_input: async function(thread, user_id) {
                 ooch_disable = true;
             }
 
-            ((i <= 2) ? switch_buttons_1_die : switch_buttons_2_die).addComponents(
+            ((i <= 1) ? switch_buttons_1_die : switch_buttons_2_die).addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${i}`)
                     .setLabel(`${ooch_check.nickname} (${ooch_hp})`)
@@ -398,24 +398,28 @@ prompt_battle_input: async function(thread, user_id) {
                     move_type = db.move_data.get(`${move_id}`, 'type')
                     move_damage = db.move_data.get(`${move_id}`, 'damage')
                     move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
+                    let buttonStyle = ButtonStyle.Primary
                     if (move_effective_emote[0] > 1) {
-                        move_effective_emote = ' ⏫';
+                        move_effective_emote = ' △';
+                        buttonStyle = ButtonStyle.Success
                     } else if (move_effective_emote[0] < 1) {
-                        move_effective_emote = ' ⏬';
+                        move_effective_emote = ' ▽';
+                        buttonStyle = ButtonStyle.Danger
                     } else {
                         move_effective_emote = '';
                     }
 
                     if (move_damage == 0) {
                         move_effective_emote = '';
+                        buttonStyle = ButtonStyle.Secondary
                     }
 
                     move_buttons.addComponents(
                         new ButtonBuilder()
                             .setCustomId(`${move_id}`)
-                            .setLabel(`${move_name}${move_effective_emote}`)
-                            .setStyle(ButtonStyle.Primary)
-                            .setEmoji(type_to_emote(move_type))
+                            .setLabel(`${move_name} ${move_effective_emote}`)
+                            .setStyle(buttonStyle)
+                            .setEmoji(`${type_to_emote(move_type)}`)
                     )
                 }
 
@@ -1223,7 +1227,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
     // If the defender has Vanish AND the attack is not self targeting, it should fail
     let chance_to_hit = move_accuracy/100 * get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 3)
-    if (((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false)) {
+    if ((((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false))) {
         // Take damage and heal from move effects
         defender.current_hp -= dmg
         defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
@@ -1335,10 +1339,13 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
+                console.log(eff);
                 let status_target = eff.target == MoveTarget.Self ? attacker : defender;
                 let status_target_emote = eff.target == MoveTarget.Self ? attacker_emote : defender_emote;
                 let statStatus = false;
-                statStatus = eff.status.includes('+') || eff.status.includes('-');
+                if (isNaN(eff.status)) {
+                    statStatus = eff.status.includes('+') || eff.status.includes('-');
+                }
 
                 if (selfTarget !== false) {
                     // Change move_effect_chance based on abilities
@@ -1362,31 +1369,12 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
                 // Apply move effects
                 if (Math.random() < eff.chance/100 && eff.chance > 0) { 
-                    let status_split = eff.status.split('_')
+                    let status_split = []
+                    if (isNaN(eff.status)) status_split = eff.status.split('_')
                     let status_adds = [eff.status];
 
-                    // +_def_1 is the format
-                    if (status_split[0] == '+'){
-                        let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
-                        status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
-                        let newStatValue = status_target.stats[`${status_split[1]}_mul`];
-                        if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** raised its **${_.upperCase(status_split[1])}**\n`;
-                        } else {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
-                        }
-                    }
-                    else if (status_split[0] == '-'){
-                        let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
-                        status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
-                        let newStatValue = status_target.stats[`${status_split[1]}_mul`];
-                        if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!\n`
-                        } else {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
-                        }
-                    }
-                    else if (db.status_data.keyArray().includes(eff.status)) {
+                    if (db.status_data.keyArray().includes(`${eff.status}`)) {
+                        let statusData = db.status_data.get(eff.status);
                         // Setup list of status effects to add
                         switch (status_target.ability) {
                             case Ability.Darkbright:
@@ -1406,10 +1394,31 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         // Remove duplicates
                         status_adds = status_adds.filter((item, index) => status_adds.indexOf(item) === index);     
 
-                        defender_field_text += `\n--- The opposing ${status_target_emote} **${status_target.nickname}** was **${eff.status.toUpperCase()}!**`
+                        defender_field_text += `\n--- The opposing ${status_target_emote} **${status_target.nickname}** was **${statusData.name.toUpperCase()}!**`
                         status_target.status_effects.push(status_adds);
                         status_target.status_effects = status_target.status_effects.flat(1);
                         status_target.status_effects = status_target.status_effects.filter((item, index) => status_target.status_effects.indexOf(item) === index);     
+                    }
+                    // +_def_1 is the format
+                    else if (status_split[0] == '+'){
+                        let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
+                        status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
+                        let newStatValue = status_target.stats[`${status_split[1]}_mul`];
+                        if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** raised its **${_.upperCase(status_split[1])}**!\n`;
+                        } else {
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
+                        }
+                    }
+                    else if (status_split[0] == '-'){
+                        let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
+                        status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
+                        let newStatValue = status_target.stats[`${status_split[1]}_mul`];
+                        if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** lowered!\n`
+                        } else {
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
+                        }
                     } else if (eff.status == 'clear_status') {
                         status_target.status_effects = [];
                         defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its status effects cleared!`;
@@ -1452,6 +1461,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 db.monster_data.set('34', 1, 'spd');
                 db.monster_data.set('34', 1, 'hp');
             break;
+            case Ability.Ravenous:
+                attacker.current_hp += _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
+                defender_field_text += `\n${attacker_emote} **${atkOochName}** healed 20% HP back from its ability **Ravenous**!`;
+            break;
         }
 
         // Opposing oochamon death ability triggers
@@ -1459,10 +1472,6 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
             case Ability.Haunted:
                 attacker = add_status_effect(attacker, Status.Doom);
                 defender_field_text += `\n${attacker_emote} **${atkOochName}** was **DOOMED** from ${defender_emote} **${defOochName}**'s ability **Haunted**!`;
-            break;
-            case Ability.Ravenous:
-                attacker.current_hp += _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
-                defender_field_text += `\n${attacker_emote} **${atkOochName}** healed 20% HP back from its ability **Ravenous**!`;
             break;
             case Ability.Sporespray:
                 attacker = add_status_effect(attacker, Status.Infect);
@@ -1589,7 +1598,7 @@ type_effectiveness: function(attack_type, target_type) {
             case OochType.Cloth:
                 switch(type_defender){
                     case OochType.Sound:   multiplier *= 2; break;
-                    case OochType.Fungal:  multiplier *=  .5; break;
+                    case OochType.Fungal:  multiplier *= .5; break;
                     case OochType.Crystal: multiplier *= .5; break;
                 }
             break;
@@ -1717,7 +1726,8 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
         }
 
         if (slot_to_send == -1) { //if there is no slot to send in
-            oochabux = _.random(5, 10)
+            // First random is the percent to take from our oochabux, 10% of oochabux lost capped at 500
+            oochabux = _.clamp(user_profile.oochabux * 0.1, 0, 500);
             oochabux = _.clamp(oochabux, 0, user_profile.oochabux);
             await wait(battleSpeed);
             await thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);

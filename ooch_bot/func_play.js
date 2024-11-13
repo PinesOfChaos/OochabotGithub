@@ -285,7 +285,7 @@ module.exports = {
                             if (item_qty_collector) item_qty_collector.stop();
                             return;
                         } else if (sel.customId == 'quantity_back') {
-                            await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] });
+                            await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] }).catch(() => {});
                             if (item_qty_collector) item_qty_collector.stop();
                         }
                         
@@ -309,7 +309,9 @@ module.exports = {
                                 }
                             }
 
-                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)` });
+                            let maxAmt = Math.floor(oochabux / item.price);
+                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
+                                `**You have enough Oochabux to buy ${maxAmt} of this item.**` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
@@ -348,7 +350,7 @@ module.exports = {
                                 await m.delete().catch(() => {});
                             }
                             let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
-                            msg.edit({ components: [shopSelectMenu, back_button] });
+                            msg.edit({ components: [shopSelectMenu, back_button] }).catch(() => {});
                             await wait(5000);
                             await followUpMsg.delete().catch(() => {});
                         }
@@ -376,10 +378,13 @@ module.exports = {
                     playerx -= xmove;
                     playery -= ymove;
                 break;
-                case (Tile.Wall || Tile.Door):
-                    stop_moving = true;
-                    playerx -= xmove;
-                    playery -= ymove;
+                case Tile.Wall:
+                case Tile.Lava:
+                    if ((tile.use == Tile.Lava && !player_flags.includes('get_lavaboard')) || tile.use != Tile.Lava) { 
+                        stop_moving = true;
+                        playerx -= xmove;
+                        playery -= ymove;
+                    }
                 break;
                 case Tile.Ice:
                     if(!stop_moving && (xmove != 0 || ymove != 0)){ //This check prevents infinite loops
@@ -455,7 +460,13 @@ module.exports = {
 
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
-            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) });
+            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) }).catch(() => {});
+        }).catch(async () => {
+            let playspace_str = setup_playspace_str(user_id);
+            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
+                await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                await db.profile.set(user_id, newMsg.id, 'display_msg_id');
+            }).catch(() => {});
         });
 
     },

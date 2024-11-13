@@ -92,7 +92,7 @@
   {
     "id": 18,
     "name": "Fleeting",
-    "description": "Increases SPD and ATK by 4 stages but also loses half of current HP each turn."
+    "description": "Increases SPD and ATK by 2 stages but also loses half of current HP each turn."
   },
   {
     "id": 19,
@@ -122,7 +122,7 @@
   {
     "id": 24,
     "name": "Uncontrolled",
-    "description": "Increases ATK by 4 stages but randomly chooses an attack each turn"
+    "description": "Increases ATK by 3 stages and reduces DEF by 1 stages but randomly chooses an attack each turn"
   },
   {
     "id": 25,

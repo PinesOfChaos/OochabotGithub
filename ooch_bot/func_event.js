@@ -324,14 +324,14 @@ let functions = {
         //Send Embed and Await user input before proceeding
         let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
         if (msg_to_edit == false) {
-            db.profile.set(user_id, msg.id, 'display_msg_id');
-            profile_data = db.profile.get(user_id);
+            await db.profile.set(user_id, msg.id, 'display_msg_id');
+            profile_data = await db.profile.get(user_id);
             msg_to_edit = profile_data.display_msg_id;
         }
 
         // Disable movement buttons
         if (event_name !== 'ev_intro') {
-            await thread.messages.fetch(msg_to_edit).then((msg) => {
+            await thread.messages.fetch(msg_to_edit).then(async (msg) => {
                 const newComponents = msg.components.map((row) => {
                     const newRow = row.toJSON(); 
                     newRow.components = newRow.components.map((button) => {
@@ -341,7 +341,7 @@ let functions = {
                     return newRow;
                 });
 
-                msg.edit({ components: newComponents });
+                await msg.edit({ components: newComponents }).catch(() => {});
 
             }).catch(() => {});
         }
@@ -455,6 +455,7 @@ let functions = {
                             let ooch_party = db.profile.get(user_id, 'ooch_party');
                             // Remove Vrumbox
                             ooch_party = ooch_party.filter(v => v.id !== 52)
+                            ooch_party = ooch_party.map(v => v.current_hp = v.stats.hp);
                             db.profile.set(user_id, ooch_party, 'ooch_party')
 
                             // Reset other values upon tutorial completion

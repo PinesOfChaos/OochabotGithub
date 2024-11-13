@@ -67,7 +67,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "infected",
+        "status": 1,
         "chance": 100,
         "target": 1
       }
@@ -83,7 +83,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       }
@@ -99,7 +99,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 100,
         "target": 1
       }
@@ -155,7 +155,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 50,
         "target": 1
       }
@@ -171,7 +171,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 50,
         "target": 1
       }
@@ -187,7 +187,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "infected",
+        "status": 1,
         "chance": 50,
         "target": 1
       }
@@ -203,7 +203,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       }
@@ -231,7 +231,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 75,
         "target": 1
       }
@@ -263,7 +263,7 @@
     "accuracy": 95,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 75,
         "target": 1
       }
@@ -279,7 +279,7 @@
     "accuracy": 95,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 100,
         "target": 2
       }
@@ -295,7 +295,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "digitized",
+        "status": 3,
         "chance": 100,
         "target": 1
       }
@@ -311,7 +311,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "snared",
+        "status": 4,
         "chance": 30,
         "target": 1
       }
@@ -337,7 +337,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 30,
         "target": 1
       }
@@ -363,7 +363,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 30,
         "target": 1
       }
@@ -381,7 +381,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "snared",
+        "status": 4,
         "chance": 60,
         "target": 1
       }
@@ -407,7 +407,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "doubled",
+        "status": 7,
         "chance": 100,
         "target": 1
       }
@@ -425,7 +425,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "doubled",
+        "status": 7,
         "chance": 50,
         "target": 1
       }
@@ -443,7 +443,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "snared",
+        "status": 4,
         "chance": 50,
         "target": 1
       }
@@ -459,7 +459,7 @@
     "accuracy": 50,
     "effect": [
       {
-        "status": "infected",
+        "status": 1,
         "chance": 50,
         "target": 1
       }
@@ -521,7 +521,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "snared",
+        "status": 4,
         "chance": 100,
         "target": 1
       }
@@ -537,7 +537,7 @@
     "accuracy": 80,
     "effect": [
       {
-        "status": "snared",
+        "status": 4,
         "chance": 50,
         "target": 1
       }
@@ -707,7 +707,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 50,
         "target": 1
       }
@@ -723,7 +723,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 30,
         "target": 1
       }
@@ -739,7 +739,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "doubled",
+        "status": 7,
         "chance": 50,
         "target": 1
       }
@@ -982,12 +982,12 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       },
       {
-        "status": "burned",
+        "status": 0,
         "chance": 100,
         "target": 1
       }
@@ -1082,12 +1082,12 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       },
       {
-        "status": "snared",
+        "status": 4,
         "chance": 100,
         "target": 1
       }
@@ -1105,7 +1105,7 @@
     "accuracy": 80,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       }
@@ -1149,7 +1149,7 @@
     "accuracy": 80,
     "effect": [
       {
-        "status": "blinded",
+        "status": 2,
         "chance": 100,
         "target": 1
       }
@@ -1261,7 +1261,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "burned",
+        "status": 0,
         "chance": 50,
         "target": 1
       }
@@ -1282,7 +1282,7 @@
         "target": 1
       },
       {
-        "status": "burned",
+        "status": 0,
         "chance": 100,
         "target": 1
       }
@@ -1321,7 +1321,7 @@
         "target": 0
       },
       {
-        "status": "focused",
+        "status": 8,
         "chance": 100,
         "target": 0
       }
@@ -1411,7 +1411,7 @@
         "target": 0
       },
       {
-        "status": "snared",
+        "status": 4,
         "chance": 100,
         "target": 0
       }
@@ -1437,7 +1437,7 @@
     "accuracy": 80,
     "effect": [
       {
-        "status": "vanished",
+        "status": 5,
         "chance": 100,
         "target": 1
       }
@@ -1559,7 +1559,7 @@
     "accuracy": 90,
     "effect": [
       {
-        "status": "doubled",
+        "status": 7,
         "chance": 30,
         "target": 1
       }
@@ -1665,7 +1665,7 @@
     "accuracy": 100,
     "effect": [
       {
-        "status": "doomed",
+        "status": 6,
         "chance": 100,
         "target": 1
       }

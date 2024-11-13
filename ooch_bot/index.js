@@ -109,20 +109,33 @@ client.on('ready', async () => {
 
             // await wait(2000);
             // await warningMsg.delete();
+        } else if (user_profile.player_state === PlayerState.Dialogue) {
+            await userThread.bulkDelete(100).catch(() => {});
+
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user);
+            await db.profile.set(user, PlayerState.Playspace, 'player_state');
+
+            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                db.profile.set(user, msg.id, 'display_msg_id');
+            });
+
+            if (user_profile.npc_event_data.length != 0) {
+                await event_process(user, userThread, user_profile.npc_event_data, user_profile.npc_event_pos);
+            }
+
+            // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has rebooted. No progress has been lost.' });
+
+            // await wait(2000);
+            // await warningMsg.delete();
+
         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
 
             db.profile.set(user, [], 'npc_event_data');
             db.profile.set(user, 0, 'npc_event_pos')
             if (userThread !== undefined) {
                 await userThread.bulkDelete(100).catch(() => {});
-
-                // Setup playspace
-                let playspace_str = await setup_playspace_str(user);
-                await db.profile.set(user, PlayerState.Playspace, 'player_state');
-
-                await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-                    db.profile.set(user, msg.id, 'display_msg_id');
-                });
+                await move(userThread, user, '', 1);
             }
 
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
@@ -317,7 +330,7 @@ client.on('messageCreate', async message => {
                         let playspace_str = setup_playspace_str(message.author.id);
 
                         let playspace_msg = await message.channel.messages.fetch(db.profile.get(message.author.id, 'display_msg_id')).catch(() => {});
-                        await playspace_msg.edit({ components: playspace_str[1] });
+                        await playspace_msg.edit({ components: playspace_str[1] }).catch(() => {});
                         
                         await message.delete().catch(() => {});
                     } else {

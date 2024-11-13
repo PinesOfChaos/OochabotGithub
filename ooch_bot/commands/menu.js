@@ -258,7 +258,8 @@ module.exports = {
         let user_profile = db.profile.get(interaction.user.id);
 
         let menuMsg;
-        await interaction.reply({ content: `**Menu**`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        let userProfile = db.profile.get(interaction.user.id);
+        await interaction.reply({ content:  `## Menu${userProfile.settings.objective ? `\n**Current Objective:** ***${userProfile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
             menuMsg = msg;
         });
@@ -336,12 +337,14 @@ module.exports = {
         let healItems = Object.entries(user_profile.heal_inv);
         if (healItems.length != 0) {
             for (let item of healItems) {
-                if (item[1] != 0) ooch_back_button.components[1].setDisabled(false); 
+                ooch_back_button.components[1].setDisabled(item[1] == 0); 
             }
         }
+
         // Disable the party healing button if all Oochamon are at full HP
         let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
         oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
+        console.log(oochHpCheck);
         if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
         
 
@@ -359,7 +362,8 @@ module.exports = {
             //#region Back Buttons
             // Back to Main Menu
             if (selected == 'back_to_menu') {
-                i.update({ content: `**Menu**`, embeds: [], files: [], components: [settings_row_1, settings_row_2, settings_row_3] });
+                let userProfile = db.profile.get(interaction.user.id);
+                await i.update({ content:  `## Menu${userProfile.settings.objective ? `\n**Current Objective:** ***${userProfile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
             } 
             // Back to Party Select
             else if (selected == 'back_to_party') {

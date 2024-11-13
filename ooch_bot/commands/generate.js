@@ -497,19 +497,19 @@ module.exports = {
         create_move({
             id : 6, name : 'Take Over', type : OochType.Fungal,
             damage : 30, accuracy: 90,
-            effect : [{status : 'infected', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Infect, chance : 100, target : MoveTarget.Enemy}],
             description : 'Fungal spores are launched which INFECT the target.'
         });
         create_move({
             id : 7, name : 'Dust Storm', type : OochType.Stone,
             damage : 30, accuracy: 90,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}],
             description : 'A storm is whipped up which leaves the target BLINDED.'
         });
         create_move({
             id : 8, name : 'Engulf', type : OochType.Flame,
             damage : 30, accuracy: 90,
-            effect : [{status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
             description : 'The target is BURNED by red-hot flames.'
         });
         create_move({
@@ -539,25 +539,25 @@ module.exports = {
         create_move({
             id : 13, name : 'Blight', type : OochType.Fungal,
             damage : 60, accuracy: 90,
-            effect : [{status : 'blinded', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 50, target : MoveTarget.Enemy}],
             description : 'If the infection takes hold, the target is BLINDED.'
         });
         create_move({
             id : 14, name : 'Lava Lance', type : OochType.Stone,
             damage : 60, accuracy: 90,
-            effect : [{status : 'burned', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Burn, chance : 50, target : MoveTarget.Enemy}],
             description : 'Red-hot stone is launched to BURN the target.'
         });
         create_move({
             id : 15, name : 'Tumorize', type : OochType.Flame,
             damage : 60, accuracy: 90,
-            effect : [{status : 'infected', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Infect, chance : 50, target : MoveTarget.Enemy}],
             description : 'The user creates radiation in order to INFECT the target.'
         });
         create_move({
             id : 16, name : 'Glimmer', type : OochType.Crystal,
             damage : 20, accuracy: 90,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}],
             description : 'Refracts light in an attempt to BLIND the target.',
             tags : [MoveTag.Light]
         });
@@ -570,7 +570,7 @@ module.exports = {
         create_move({
             id : 18, name : 'Caustic Orb', type : OochType.Ooze,
             damage : 60, accuracy: 100,
-            effect : [{status : 'burned', chance : 75, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Burn, chance : 75, target : MoveTarget.Enemy}],
             description : 'A ball of caustic goo is launched with a high chance of BURNING.',
         });
         create_move({
@@ -582,25 +582,25 @@ module.exports = {
         create_move({
             id : 20, name : 'Ash Blast', type : OochType.Flame,
             damage : 50, accuracy: 95,
-            effect : [{status : 'blinded', chance : 75, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 75, target : MoveTarget.Enemy}],
             description : 'Hot ashes are launched at the target with a high chance to BLIND.',
         });
         create_move({
             id : 21, name : 'Inferno', type : OochType.Flame,
             damage : 100, accuracy: 95,
-            effect : [{status : 'burned', chance : 100, target : MoveTarget.All}],
+            effect : [{status : Status.Burn, chance : 100, target : MoveTarget.All}],
             description : 'A blazing inferno afflicts all targets with a BURN.',
         });
         create_move({
             id : 22, name : 'Digitize', type : OochType.Tech,
             damage : 50, accuracy: 100,
-            effect : [{status : 'digitized', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Digitize, chance : 100, target : MoveTarget.Enemy}],
             description : 'The target becomes DIGITIZED when hit by this strange beam.',
         });
         create_move({
             id : 23, name : 'Clamp Down', type : OochType.Neutral,
             damage : 45, accuracy: 100,
-            effect : [{status : 'snared', chance : 30, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Snare, chance : 30, target : MoveTarget.Enemy}],
             description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.',
         });
         create_move({
@@ -612,7 +612,7 @@ module.exports = {
         create_move({
             id : 25, name : 'Sparkler', type : OochType.Flame,
             damage : 40, accuracy: 100,
-            effect : [{status : 'blinded', chance : 30, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 30, target : MoveTarget.Enemy}],
             description : 'Shoots bright sparks with the potential to BLIND.',
         });
         create_move({
@@ -624,14 +624,14 @@ module.exports = {
         create_move({
             id : 27, name : 'Call Lightning', type : OochType.Magic,
             damage : 80, accuracy: 90,
-            effect : [{status : 'burned', chance : 30, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Burn, chance : 30, target : MoveTarget.Enemy}],
             description : 'Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.',
             tags : [MoveTag.Electric]
         });
         create_move({
             id : 28, name : 'Sticky Orb', type : OochType.Ooze,
             damage : 80, accuracy: 90,
-            effect : [{status : 'snared', chance : 60, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Snare, chance : 60, target : MoveTarget.Enemy}],
             description : 'Fling a orb of goo that can SNARE the target.',
         });
         create_move({
@@ -643,27 +643,27 @@ module.exports = {
         create_move({
             id : 30, name : 'Blink', type : OochType.Magic,
             damage : 0, accuracy: 100,
-            effect : [{status : 'doubled', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Double, chance : 100, target : MoveTarget.Enemy}],
             description : 'Travels to a different time, ensuring the next damage the target takes is DOUBLED.',
             tags : [MoveTag.Time]
         });
         create_move({
             id : 31, name : 'Time Warp', type : OochType.Magic,
             damage : 50, accuracy: 100,
-            effect : [{status : 'doubled', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Double, chance : 50, target : MoveTarget.Enemy}],
             description : 'Warps spacetime around the target, with a chance to DOUBLE the next damage they take.',
             tags : [MoveTag.Time]
         });
         create_move({
             id : 32, name : 'Mycelium Whip', type : OochType.Fungal,
             damage : 50, accuracy: 100,
-            effect : [{status : 'snared', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Snare, chance : 50, target : MoveTarget.Enemy}],
             description : 'Shoots whips made of mycelium in an attempt to SNARE the opponent.',
         });
         create_move({
             id : 33, name : 'Parasitize', type : OochType.Ooze,
             damage : 40, accuracy: 50,
-            effect : [{status : 'infected', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Infect, chance : 50, target : MoveTarget.Enemy}],
             description : 'Parasitic bodies are launched at the target potentially INFECTING them.',
         });
         create_move({
@@ -693,13 +693,13 @@ module.exports = {
         create_move({
             id : 38, name : 'Laminate', type : OochType.Tech,
             damage : 30, accuracy: 90,
-            effect : [{status : 'snared', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Snare, chance : 100, target : MoveTarget.Enemy}],
             description : 'Covers the target in a tough plastic substance to SNARE them.',
         });
         create_move({
             id : 39, name : 'Entomb', type : OochType.Stone,
             damage : 60, accuracy: 80,
-            effect : [{status : 'snared', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Snare, chance : 50, target : MoveTarget.Enemy}],
             description : 'Stones fall onto the target, leaving them SNARED if they get trapped.',
         });
         create_move({
@@ -765,19 +765,19 @@ module.exports = {
         create_move({
             id : 50, name : 'Solar Blast', type : OochType.Flame,
             damage : 85, accuracy: 100,
-            effect : [{status : 'blinded', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 50, target : MoveTarget.Enemy}],
             description : 'Lob a brilliant ball of flame, potentially BLINDING the target.',
         });
         create_move({
             id : 51, name : 'Tangled Threads', type : OochType.Cloth,
             damage : 70, accuracy: 100,
-            effect : [{status : 'blinded', chance : 30, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 30, target : MoveTarget.Enemy}],
             description : 'Threads are shot at the target dealing damage with a chance to SNARE them.',
         });
         create_move({
             id : 52, name : 'Fated Threads', type : OochType.Cloth,
             damage : 70, accuracy: 100,
-            effect : [{status : 'doubled', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Double, chance : 50, target : MoveTarget.Enemy}],
             description : 'Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.',
         });
         create_move({
@@ -873,7 +873,7 @@ module.exports = {
         create_move({
             id : 68, name : 'Cursed Eye', type : OochType.Magic,
             damage : 10, accuracy: 100,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}, {status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}, {status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
             description : 'Shoot a beam that curses the opponent, applying BLINDED and BURNED.',
         });
         create_move({
@@ -903,14 +903,14 @@ module.exports = {
         create_move({
             id : 73, name : 'Kaleidoscope', type : OochType.Crystal,
             damage : 0, accuracy: 100,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}, {status : 'snared', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}, {status : Status.Snare, chance : 100, target : MoveTarget.Enemy}],
             description : 'Disorient the opponent in a room that BLINDS and SNARES.',
             tags : [MoveTag.Light]
         });
         create_move({
             id : 74, name : 'Blinding Beam', type : OochType.Crystal,
             damage : 75, accuracy: 80,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}],
             description : 'Fire a brilliant beam of light that BLINDS the opponent.',
             tags : [MoveTag.Light]
         });
@@ -923,7 +923,7 @@ module.exports = {
         create_move({
             id : 76, name : 'Myco-Burst', type : OochType.Fungal,
             damage : 75, accuracy: 80,
-            effect : [{status : 'blinded', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Blind, chance : 100, target : MoveTarget.Enemy}],
             description : 'Fire a spore-filled bomb which BLINDS the opponent.',
         });
         create_move({
@@ -965,13 +965,13 @@ module.exports = {
         create_move({
             id : 83, name : 'Firey Bullet', type : OochType.Flame,
             damage : 70, accuracy: 100,
-            effect : [{status : 'burned', chance : 50, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Burn, chance : 50, target : MoveTarget.Enemy}],
             description : 'Attack with blazing horns that have a chance to BURN the target.',
         });
         create_move({
             id : 84, name : 'Radiate', type : OochType.Flame,
             damage : 0, accuracy: 100,
-            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : 'burned', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
             description : 'Release stored-up radiation to BURN the target and reduce its ATK.',
             tags : [MoveTag.Light]
         });
@@ -984,7 +984,7 @@ module.exports = {
         create_move({
             id : 86, name : 'Lurk', type : OochType.Flame,
             damage : 0, accuracy: 100,
-            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : 'focused', chance : 100, target : MoveTarget.Self}],
+            effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : Status.Focus, chance : 100, target : MoveTarget.Self}],
             description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
         });
         create_move({
@@ -1014,7 +1014,7 @@ module.exports = {
         create_move({
             id : 91, name : 'Entrench', type : OochType.Fungal,
             damage : 0, accuracy: 100,
-            effect : [{status : '+_def_3', chance : 100, target : MoveTarget.Self},{status : 'snared', chance : 100, target : MoveTarget.Self}],
+            effect : [{status : '+_def_3', chance : 100, target : MoveTarget.Self},{status : Status.Snare, chance : 100, target : MoveTarget.Self}],
             description : 'The user roots into the ground, becoming SNARED, but greatly boosting its DEF.',
         });
         create_move({
@@ -1026,7 +1026,7 @@ module.exports = {
         create_move({
             id : 93, name : 'High Impact', type : OochType.Neutral,
             damage : 170, accuracy: 80,
-            effect : [{status : 'vanished', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Vanish, chance : 100, target : MoveTarget.Enemy}],
             description : 'Hit the opponent so hard they get launched and VANISH.',
         });
 
@@ -1077,7 +1077,7 @@ module.exports = {
         create_move({
             id : 101, name : 'Crystal Ball', type : OochType.Crystal,
             damage : 50, accuracy: 90,
-            effect : [{status : 'doubled', chance : 30, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Double, chance : 30, target : MoveTarget.Enemy}],
             description : 'Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.',
         });
         create_move({
@@ -1113,7 +1113,7 @@ module.exports = {
         create_move({
             id : 107, name : 'Mummify', type : OochType.Cloth,
             damage : 0, accuracy: 100,
-            effect : [{status : 'doomed', chance : 100, target : MoveTarget.Enemy}],
+            effect : [{status : Status.Doom, chance : 100, target : MoveTarget.Enemy}],
             description : 'Wraps the target in cursed cloths, DOOMING the target.',
         });
 
@@ -1373,7 +1373,7 @@ module.exports = {
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [8, Move.Slash], 
              [13, Move.DustStorm], [15, Move.Sedimentation], [21, Move.Impale], [27, Move.Glimmer], 
              [34, Move.Entomb], [41, Move.PrecisionStrike], [-1, Move.GemBash] ],
-            abilities: [ Ability.Tough, Ability.Reactive ],
+            abilities: [ Ability.Tough, Ability.Hearty ],
             pre_evo_id: -1, evo_id: 10, evo_lvl: 12, evo_stage: 0
         });
         
