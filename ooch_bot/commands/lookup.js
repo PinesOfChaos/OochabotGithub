@@ -133,13 +133,15 @@ module.exports = {
                 let controls_embed = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle('Controls')
-                    .setDescription('To move, type `w` `a` `s` or `d` in the chat (or click the buttons, if using the discord button setting), and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n' +
-                        'If you want to chain together movement actions, you can do movement actions split by a comma (example: `w4,d4,s2`) to do multiple movement directions at once!\n' +  
-                        '`/lookup` lets you look up what a move, ability, or status effect does, as well as the type chart\n' + 
-                        '`/teleport` lets you teleport to the hub or your last used teleporter\n' + 
-                        '`/menu` pulls up the menu\n' + 
-                        '`/play` to play the game\n' +
-                        '`/quit` to quit and close your thread\n' + 
+                    .setDescription('To move, type `w` `a` `s` or `d` in the chat (or click the buttons, if using the discord button setting), and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n\n' +
+                        'If you want to chain together movement actions, you can chain together movement in a variety of ways to do multiple movement directions at once!\n' +  
+                        '(As an example, you can do `w2d2` to move up then right, or `wwwaa` to move up 3 then left 2, and you can chain these however you want!)\n\n' +  
+                        '**Extra commands:**\n' +
+                        '- `/lookup` lets you look up what a move, ability, or status effect does, as well as the type chart\n' + 
+                        '- `/teleport` lets you teleport to the hub or your last used teleporter\n' + 
+                        '- `/menu` pulls up the menu\n' + 
+                        '- `/play` to play the game, `/reset` will reset your game\n' +
+                        '- `/quit` to quit and close your thread\n' + 
                         'If you using the discord buttons, the top left button changes your jump speed, and the top right button opens the menu.')
                 return interaction.reply({
                     embeds: [controls_embed],

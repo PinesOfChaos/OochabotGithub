@@ -87,8 +87,16 @@ client.on('ready', async () => {
             await reset_oochamon(user);
             await db.profile.set(user, userThread.id, 'play_thread_id');
             await db.profile.set(user, userGuild.id, 'play_guild_id');
-            await event_process(user, userThread, db.events_data.get('ev_intro'));
-             // let warningMsg = await userThread.send({ content: '## The bot has crashed, so you have been brought back to the start of the Intro.' });
+            await event_process(user, userThread, db.events_data.get('ev_intro'), 0, 'ev_intro');
+             // let warningMsg = await userThread.send({ content: '## The bot has crashed, so you have been brought back to the start of the Intro event.' });
+
+            // await wait(2000);
+            // await warningMsg.delete();
+        } else if (user_profile.player_state === PlayerState.Dialogue && user_profile.cur_event_name !== false) {
+            await userThread.bulkDelete(1);
+            await event_process(user, userThread, db.events_data.get(user_profile.cur_event_name), 0, user_profile.cur_event_name);
+
+            // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has restarted. No progress has been lost.' });
 
             // await wait(2000);
             // await warningMsg.delete();
@@ -111,7 +119,7 @@ client.on('ready', async () => {
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
 
             // await wait(2000);
-            // await warningMsg.delete();
+            // await warningMsg.delete();# DO
         }
     }
     console.log('Bot Ready')
