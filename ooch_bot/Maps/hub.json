@@ -512,7 +512,7 @@
 			"sprite_id": "c00_003",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 14,
 					"atk_iv": 0,
 					"def_iv": 0,
 					"hp_iv": 0,

@@ -419,7 +419,7 @@
 			"spawn_slots": [
 				{
 					"max_level": 6,
-					"min_level": 3,
+					"min_level": 4,
 					"ooch_id": 13
 				},
 				{
@@ -428,8 +428,8 @@
 					"ooch_id": 29
 				},
 				{
-					"max_level": 5,
-					"min_level": 3,
+					"max_level": 7,
+					"min_level": 4,
 					"ooch_id": 46
 				}
 			],
@@ -442,7 +442,7 @@
 			"spawn_slots": [
 				{
 					"max_level": 7,
-					"min_level": 3,
+					"min_level": 4,
 					"ooch_id": 13
 				},
 				{
@@ -451,8 +451,8 @@
 					"ooch_id": 15
 				},
 				{
-					"max_level": 1,
-					"min_level": 3,
+					"max_level": 7,
+					"min_level": 4,
 					"ooch_id": 37
 				}
 			],
@@ -469,12 +469,12 @@
 					"ooch_id": 48
 				},
 				{
-					"max_level": 7,
-					"min_level": 2,
+					"max_level": 8,
+					"min_level": 5,
 					"ooch_id": 13
 				},
 				{
-					"max_level": 1,
+					"max_level": 8,
 					"min_level": 2,
 					"ooch_id": 15
 				}
@@ -487,13 +487,13 @@
 			"height": 7,
 			"spawn_slots": [
 				{
-					"max_level": 7,
-					"min_level": 3,
+					"max_level": 8,
+					"min_level": 7,
 					"ooch_id": 13
 				},
 				{
-					"max_level": 7,
-					"min_level": 3,
+					"max_level": 8,
+					"min_level": 4,
 					"ooch_id": 15
 				},
 				{
