@@ -118,6 +118,17 @@ func step():
 	else:
 		label_mouse_position.text = ''
 	
+	
+	#Update the Z-Index of objects
+	if typeof(Global.ObjSelected) == TYPE_INT:
+		if(Global.ObjSelected != Global.ObjSelectedPrev):
+			if((Global.ObjSelectedPrev != -1) and (instance_from_id(Global.ObjSelectedPrev) != null)):
+				instance_from_id(Global.ObjSelectedPrev).z_index = 0
+			Global.ObjSelectedPrev = Global.ObjSelected
+		elif(Global.ObjSelected != -1):
+			instance_from_id(Global.ObjSelected).z_index = 10
+		
+	
 	#Redraw the map if the camera is moved
 	if Input.is_action_pressed("mouse_middle") or do_screen_refresh:
 		do_screen_refresh = false
@@ -186,7 +197,6 @@ func step():
 				_on_button_new_shop_button_down()
 			if Input.is_action_just_pressed("quick_npc"):
 				_on_button_new_npc_button_down()
-				
 				
 		Global.MapMode.MAP_OBJ_EDIT:
 			if Input.is_action_just_pressed("ui_cancel"):

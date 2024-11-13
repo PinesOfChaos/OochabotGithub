@@ -44,13 +44,12 @@ var LastFileName = "/"
 var OochSelected = -1
 var TileSelected = -1
 var TileSize = 32
-var ObjSelected = load("")
+var ObjSelected = -1
+var ObjSelectedPrev = ObjSelected
 var CurrentMapMode = MapMode.MAP_NONE
 
 var CamX = 0
 var CamY = 0
-
-
 
 func get_camera_center():
 	var view_size = get_viewport().size

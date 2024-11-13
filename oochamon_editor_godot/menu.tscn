@@ -32,7 +32,7 @@ access = 2
 filters = PackedStringArray("*.json")
 
 [node name="VBoxMenu" type="VBoxContainer" parent="."]
-z_index = 1
+z_index = 3
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -232,6 +232,8 @@ RMB + Ctrl			- Select Tile
 Escape				- Return"
 
 [node name="MenuChildren" type="Control" parent="."]
+z_index = 2
+z_as_relative = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -242,26 +244,31 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="shops" type="Control" parent="MenuChildren"]
+z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="events" type="Control" parent="MenuChildren"]
+z_index = -2
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="transitions" type="Control" parent="MenuChildren"]
+z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="save_points" type="Control" parent="MenuChildren"]
+z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="spawn_zones" type="Control" parent="MenuChildren"]
+z_index = -2
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

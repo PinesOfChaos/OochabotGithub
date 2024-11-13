@@ -87,60 +87,6 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
-			"items": [
-				{
-					"count": 2,
-					"id": 16
-				}
-			],
-			"name": "Chest",
-			"npc_id": "145724264479341295",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 23,
-			"y": 40
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 5,
-					"id": 4
-				}
-			],
-			"name": "Chest",
-			"npc_id": "768315075494191102",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 42,
-			"y": 12
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
 			"items": [],
 			"name": "Raider Zara",
 			"npc_id": "085862614597946714",
@@ -206,42 +152,42 @@
 			"objective": "",
 			"post_combat_dialogue": "Hmmm, I suppose you'll suffice.\nI'm sure we'll be seeing eachother soon.",
 			"pre_combat_dialogue": "My, my, you must be {player}.\nI've heard of your work so far, but I'd like to propose a small test of your skills.",
-			"remove_on_finish": false,
+			"remove_on_finish": true,
 			"sprite": 16,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 13,
 					"atk_iv": 7,
 					"def_iv": 5,
 					"hp_iv": 5,
 					"id": 87,
 					"item": -1,
-					"level": 15,
+					"level": 13,
 					"moveset": [
-						50,
+						64,
 						24,
 						30,
-						50
+						35
 					],
 					"nickname": "",
 					"slot_enabled": true,
 					"spd_iv": 2
 				},
 				{
-					"ability": 0,
+					"ability": 24,
 					"atk_iv": 7,
 					"def_iv": 0,
 					"hp_iv": 5,
 					"id": 24,
 					"item": -1,
-					"level": 15,
+					"level": 14,
 					"moveset": [
-						61,
+						25,
 						24,
-						12,
+						61,
 						26
 					],
 					"nickname": "",
@@ -251,33 +197,6 @@
 			],
 			"x": 23,
 			"y": 26
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 1
-				}
-			],
-			"name": "Chest",
-			"npc_id": "528999917919191288",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 19,
-			"y": 15
 		},
 		{
 			"aggro_range": 3,
@@ -403,33 +322,6 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 14
-				}
-			],
-			"name": "Chest",
-			"npc_id": "206859730914342542",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 27,
-			"y": 16
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
 			"items": [],
 			"name": "Researcher Charles",
 			"npc_id": "768010784506205412",
@@ -497,33 +389,6 @@
 			],
 			"x": 35,
 			"y": 19
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 5,
-					"id": 14
-				}
-			],
-			"name": "Stranded Researcher",
-			"npc_id": "966115265320417548",
-			"objective": "",
-			"post_combat_dialogue": "Oh me? Don't worry too much, I stocked up on like 200 Cooling Balms.",
-			"pre_combat_dialogue": "Ha, ha, funny prank guys, leave me out here in the middle of the lava.\nGood thing I have so many Cooling Balms.\nYou look like you could use some yourself!",
-			"remove_on_finish": false,
-			"sprite": 5,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_005",
-			"team": [],
-			"x": 13,
-			"y": 27
 		},
 		{
 			"aggro_range": 3,
@@ -778,6 +643,242 @@
 			"team": [],
 			"x": 45,
 			"y": 26
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "spawn_nice2",
+			"flag_kill": "",
+			"flag_required": "talk_nice1",
+			"is_catchable": false,
+			"items": [],
+			"name": "Chest",
+			"npc_id": "392523486689162375",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 13,
+			"y": 27
+		},
+		{
+			"aggro_range": 3,
+			"coin": 777,
+			"flag_given": "talk_nice2",
+			"flag_kill": "",
+			"flag_required": "spawn_nice2",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 7
+				}
+			],
+			"name": "Mr. Nice",
+			"npc_id": "238524484386362453",
+			"post_combat_dialogue": "Ohoho? It appears you have bested me, friend. Please take this!\nMay we meet further down this road of destiny!",
+			"pre_combat_dialogue": "Oh, hello there my good friend, it would seem you've rescued me from my vaguely cuboidal prison once again!\nWithout further ado, let us begin our promised battle!",
+			"remove_on_finish": true,
+			"sprite": 18,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_018",
+			"team": [
+				{
+					"ability": 54,
+					"atk_iv": 7,
+					"def_iv": 7,
+					"hp_iv": 7,
+					"id": 69,
+					"item": -1,
+					"level": 20,
+					"moveset": [
+						35,
+						5,
+						68,
+						30
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 7
+				}
+			],
+			"x": 13,
+			"y": 27
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 1
+				}
+			],
+			"name": "Chest",
+			"npc_id": "306279652581918328",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 19,
+			"y": 15
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 3,
+					"id": 14
+				}
+			],
+			"name": "Chest",
+			"npc_id": "061843635742228456",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 27,
+			"y": 16
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 16
+				}
+			],
+			"name": "Chest",
+			"npc_id": "424663062826287254",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 23,
+			"y": 40
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 5,
+					"id": 4
+				}
+			],
+			"name": "Chest",
+			"npc_id": "762562039830086352",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 42,
+			"y": 12
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Shopkeep Cait",
+			"npc_id": "663488479139209643",
+			"post_combat_dialogue": "*Sigh* Back to work for me I guess...",
+			"pre_combat_dialogue": "Welcome to my store, would you like to buy anything?\nWait, I'm not on the clock right now...\nWanna battle?",
+			"remove_on_finish": false,
+			"sprite": 11,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_011",
+			"team": [
+				{
+					"ability": 0,
+					"atk_iv": 0,
+					"def_iv": 0,
+					"hp_iv": 0,
+					"id": 37,
+					"item": -1,
+					"level": 12,
+					"moveset": [
+						95,
+						62,
+						24,
+						86
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 0
+				}
+			],
+			"x": 24,
+			"y": 51
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 10
+				}
+			],
+			"name": "Chest",
+			"npc_id": "396693523018043423",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 53,
+			"y": 49
 		}
 	],
 	"map_savepoints": [

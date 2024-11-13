@@ -13,9 +13,18 @@
 			"event_name": "ev_rival_intro",
 			"flag_kill": "rival_intro_complete",
 			"flag_required": "save_station_tutorial",
-			"height": 0,
+			"height": 2,
 			"width": 0,
 			"x": 45,
+			"y": 49
+		},
+		{
+			"event_name": "ev_rival_intro",
+			"flag_kill": "rival_intro_complete",
+			"flag_required": "save_station_tutorial",
+			"height": 0,
+			"width": 2,
+			"x": 44,
 			"y": 50
 		}
 	],
@@ -364,7 +373,7 @@
 			"aggro_range": 3,
 			"coin": 0,
 			"flag_given": "cromet_quest_begin",
-			"flag_kill": "",
+			"flag_kill": "caves_quest_end",
 			"flag_required": "rival_intro_complete",
 			"is_catchable": false,
 			"items": [
@@ -387,7 +396,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_006",
 			"team": [],
-			"x": 47,
+			"x": 48,
 			"y": 49
 		},
 		{
@@ -542,6 +551,53 @@
 			"team": [],
 			"x": 44,
 			"y": 47
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "WHY_DO_YOU_HAVE_THIS",
+			"flag_kill": "rival_intro_complete",
+			"flag_required": "spawn_rival_intro",
+			"is_catchable": false,
+			"items": [],
+			"name": "Cade",
+			"npc_id": "146108816908923649",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Hey, so Jeff, if the player ever sees this NPC, just know that they shouldn't.\n[Please report my existence to the devs!]",
+			"remove_on_finish": false,
+			"sprite": 7,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_007",
+			"team": [],
+			"x": 47,
+			"y": 49
+		},
+		{
+			"aggro_range": 3,
+			"coin": 600,
+			"flag_given": "to_lava_town_begin",
+			"flag_kill": "",
+			"flag_required": "caves_quest_end",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 5,
+					"id": 0
+				}
+			],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "682557230892395174",
+			"post_combat_dialogue": "Please stay safe out there!",
+			"pre_combat_dialogue": "Ah, I'm glad you've made it back safely.\nSome of our top researchers are investigating the happenings in the caves you just explored.\nRest assured, we will get to the bottom of this.\nNow, once you're all rested up, head up through the caves once more.\nThe team working at the Lava Settlement could really use a hand as well.{objective:Re-enter the caves and travel north to the Lava Settlement}\nOh, and please take these.",
+			"remove_on_finish": false,
+			"sprite": 6,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"team": [],
+			"x": 48,
+			"y": 49
 		}
 	],
 	"map_savepoints": [

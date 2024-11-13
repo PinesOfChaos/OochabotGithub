@@ -16,40 +16,53 @@
 		[
 			0,
 			{
-				"description": "Oh, oh my, that's not good! Are you okay? ",
+				"description": "Hello? Can you hear me? It's Professor Lyra.",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": ""
 			}
 		],
 		[
 			0,
 			{
-				"description": "I'll see who we can contact about this. In the meantime, let's get you out of there.",
-				"dialogue_portrait": "",
+				"description": "Oh, oh my, so that's what happened to him... ",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[
 			0,
 			{
-				"description": " If you head back down to the caves, you should be able to start making your way North to the settlement in the Lava Fields, there's some people that could really use your help.",
-				"dialogue_portrait": "",
+				"description": "I'll see who I can get in contact with, in the meantime lets get you out of there.",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
-				"objective": "Travel to the Lava Fields Settlement",
-				"title": "Head Researcher"
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Please come back to the Hub and get some rest. I'll see you when you arrive.",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Professor Lyra"
 			}
 		],
 		[
@@ -77,65 +90,65 @@
 			0,
 			{
 				"description": "Ah, hello there! It sounds like you've retrived the Lavaboard Prototype.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Engineer"
+				"title": "Engineer Al"
 			}
 		],
 		[
 			0,
 			{
 				"description": "Bring it back here and we'll see about getting it functional for you!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
-				"objective": "Return the Lavaboard Prototype to the Head Engineer",
-				"title": "Head Engineer"
+				"objective": "Return the Lavaboard Prototype to Al",
+				"title": "Engineer Al"
 			}
 		],
 		[
 			0,
 			{
-				"description": "Wait, what's that? The one who took it was all covered in Tech? We'll send someone out to investigate right away!",
-				"dialogue_portrait": "",
+				"description": "Wait, what's that? The one who took it was all covered in Tech? And there was another like this in the fungal caves?",
+				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Engineer"
+				"title": "Engineer Al"
 			}
 		],
 		[
 			0,
 			{
-				"description": "You get back here safe now!",
-				"dialogue_portrait": "",
+				"description": "I'll contact Professor Lyra, hopefully she'll have some insight on this matter.",
+				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Engineer"
+				"title": "Engineer Al"
 			}
 		],
 		[
 			0,
 			{
-				"description": "*Click*",
-				"dialogue_portrait": "",
+				"description": "Get back here safe now!",
+				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": ""
+				"title": "Engineer Al"
 			}
 		],
 		[
@@ -377,6 +390,25 @@
 		[
 			0,
 			{
+				"description": "Very good, that's the Save Station. Interacting with it will restore your party's HP to full as well as serve as a checkpoint should your party ever-",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2,
+			{
+				"text": "spawn_rival_intro"
+			}
+		],
+		[
+			0,
+			{
 				"description": "Hey, you! Yeah, you {player}!",
 				"dialogue_portrait": "portrait_rival",
 				"flags": [],
@@ -511,7 +543,7 @@
 			0,
 			{
 				"description": "Now, as for yourself, would you come speak to me once more? I have your first task ready for you!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
 				"items": [],

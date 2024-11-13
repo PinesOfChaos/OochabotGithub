@@ -423,32 +423,6 @@
 		},
 		{
 			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 19
-				}
-			],
-			"name": "Chest",
-			"npc_id": "743667416125309295",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 31,
-			"y": 6
-		},
-		{
-			"aggro_range": 3,
 			"coin": 172,
 			"flag_given": "",
 			"flag_kill": "",
@@ -486,58 +460,6 @@
 			],
 			"x": 39,
 			"y": 11
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 0
-				}
-			],
-			"name": "Chest",
-			"npc_id": "243110489677798986",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 36,
-			"y": 17
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 16
-				}
-			],
-			"name": "Chest",
-			"npc_id": "402383247565819087",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 51,
-			"y": 4
 		},
 		{
 			"aggro_range": 3,
@@ -668,22 +590,100 @@
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
+					"count": 3,
 					"id": 0
 				}
 			],
 			"name": "Chest",
-			"npc_id": "525305775451050973",
+			"npc_id": "484405083216153125",
 			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 13,
+			"sprite": 2,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
 			"x": 12,
 			"y": 5
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 19
+				}
+			],
+			"name": "Chest",
+			"npc_id": "226080824236907557",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 31,
+			"y": 6
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 13
+				}
+			],
+			"name": "Chest",
+			"npc_id": "733710103700153991",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 36,
+			"y": 18
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1,
+					"id": 18
+				}
+			],
+			"name": "Chest",
+			"npc_id": "390636695495885682",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 51,
+			"y": 4
 		}
 	],
 	"map_savepoints": [
@@ -694,7 +694,7 @@
 		},
 		{
 			"is_default": false,
-			"x": 8,
+			"x": 7,
 			"y": 58
 		}
 	],

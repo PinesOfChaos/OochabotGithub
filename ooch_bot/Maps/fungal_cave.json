@@ -94,7 +94,7 @@
 			"aggro_range": 3,
 			"coin": 0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "caves_quest_end",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
