@@ -57,6 +57,20 @@ func get_camera_center():
 	var yy =  floor((Global.CamY/2 + view_size.y/4)/Global.TileSize) * Global.TileSize
 	return(Vector2(xx,yy))
 
+
+func status_to_string(status_id):
+	match(status_id):
+		0: return("Burn")
+		1: return("Infect")
+		2: return("Blind")
+		3: return("Digitize")
+		4: return("Snare")
+		5: return("Vanish")
+		6: return("Doom")
+		7: return("Double")
+		8: return("Focus")
+		_: return(str(status_id)) #Default string to return
+
 func element_info(element):
 	var texture
 	var string

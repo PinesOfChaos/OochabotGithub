@@ -311,9 +311,9 @@
 					"hp_iv": 7,
 					"id": 14,
 					"item": -1,
-					"level": 11,
+					"level": 10,
 					"moveset": [
-						28,
+						0,
 						65,
 						2,
 						9
@@ -423,12 +423,12 @@
 					"ooch_id": 13
 				},
 				{
-					"max_level": 7,
+					"max_level": 6,
 					"min_level": 4,
 					"ooch_id": 29
 				},
 				{
-					"max_level": 7,
+					"max_level": 6,
 					"min_level": 4,
 					"ooch_id": 46
 				}
@@ -441,7 +441,7 @@
 			"height": 15,
 			"spawn_slots": [
 				{
-					"max_level": 7,
+					"max_level": 6,
 					"min_level": 4,
 					"ooch_id": 13
 				},
@@ -451,7 +451,7 @@
 					"ooch_id": 15
 				},
 				{
-					"max_level": 7,
+					"max_level": 6,
 					"min_level": 4,
 					"ooch_id": 37
 				}
@@ -487,17 +487,17 @@
 			"height": 7,
 			"spawn_slots": [
 				{
-					"max_level": 8,
-					"min_level": 7,
+					"max_level": 7,
+					"min_level": 5,
 					"ooch_id": 13
 				},
 				{
-					"max_level": 8,
+					"max_level": 7,
 					"min_level": 4,
 					"ooch_id": 15
 				},
 				{
-					"max_level": 8,
+					"max_level": 7,
 					"min_level": 4,
 					"ooch_id": 37
 				}

@@ -191,7 +191,7 @@ func refresh_moves(index, overwrite = true):
 							3: target_text = " " #none
 							_: print("n/a")
 								
-						tip += str(effect.chance) + "% " + target_text + effect.status.capitalize() 
+						tip += str(effect.chance) + "% " + target_text + Global.status_to_string(effect.status) 
 					
 					#Tags
 					if move.move_tags.size() > 0:

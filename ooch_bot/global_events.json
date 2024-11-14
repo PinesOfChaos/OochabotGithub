@@ -17,13 +17,13 @@
 			0,
 			{
 				"description": "Hello? Can you hear me? It's Professor Lyra.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": ""
+				"title": "Professor Lyra"
 			}
 		],
 		[
@@ -175,66 +175,66 @@
 		[
 			0,
 			{
-				"description": "If you're hearing this, that means your radio is working!",
-				"dialogue_portrait": "",
+				"description": "Ah, hello, seems like your comms are working!",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[
 			0,
 			{
 				"description": "It's great to hear you've dealt with the Cromet situation! They're a rarely seen species, so I appreciate the extra effort!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[
 			0,
 			{
 				"description": "...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[
 			0,
 			{
 				"description": "...Oh, right, the caves!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[
 			0,
 			{
 				"description": "Please investigate the cave system to the North-West! The researchers there seem to be having some trouble.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
 				"objective": "Investigate the Caves",
-				"title": "Head Researcher"
+				"title": "Professor Lyra"
 			}
 		],
 		[

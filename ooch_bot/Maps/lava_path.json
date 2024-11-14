@@ -106,7 +106,7 @@
 					"hp_iv": 4,
 					"id": 44,
 					"item": -1,
-					"level": 15,
+					"level": 11,
 					"moveset": [
 						1,
 						47,
@@ -124,12 +124,12 @@
 					"hp_iv": 7,
 					"id": 9,
 					"item": -1,
-					"level": 16,
+					"level": 12,
 					"moveset": [
 						1,
-						80,
+						5,
 						3,
-						5
+						64
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -159,36 +159,36 @@
 			"sprite_id": "c00_016",
 			"team": [
 				{
-					"ability": 13,
+					"ability": 24,
 					"atk_iv": 7,
 					"def_iv": 5,
 					"hp_iv": 5,
-					"id": 87,
+					"id": 24,
 					"item": -1,
-					"level": 13,
+					"level": 10,
 					"moveset": [
-						64,
+						1,
 						24,
-						30,
-						35
+						25,
+						61
 					],
 					"nickname": "",
 					"slot_enabled": true,
 					"spd_iv": 2
 				},
 				{
-					"ability": 24,
+					"ability": 13,
 					"atk_iv": 7,
 					"def_iv": 0,
 					"hp_iv": 5,
-					"id": 24,
+					"id": 87,
 					"item": -1,
-					"level": 14,
+					"level": 12,
 					"moveset": [
-						25,
+						64,
 						24,
-						61,
-						26
+						30,
+						35
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -224,7 +224,7 @@
 					"hp_iv": 8,
 					"id": 32,
 					"item": -1,
-					"level": 12,
+					"level": 8,
 					"moveset": [
 						80,
 						61,
@@ -294,15 +294,15 @@
 					"spd_iv": 7
 				},
 				{
-					"ability": 0,
+					"ability": 9,
 					"atk_iv": 7,
 					"def_iv": 3,
 					"hp_iv": 4,
 					"id": 18,
 					"item": -1,
-					"level": 16,
+					"level": 11,
 					"moveset": [
-						25,
+						0,
 						61,
 						4,
 						7
@@ -335,7 +335,7 @@
 			"sprite_id": "c00_005",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 20,
 					"atk_iv": 0,
 					"def_iv": 10,
 					"hp_iv": 7,
@@ -352,7 +352,7 @@
 					"spd_iv": 10
 				},
 				{
-					"ability": 0,
+					"ability": 27,
 					"atk_iv": 1,
 					"def_iv": 2,
 					"hp_iv": 4,
@@ -482,9 +482,9 @@
 					"hp_iv": 2,
 					"id": 72,
 					"item": -1,
-					"level": 15,
+					"level": 12,
 					"moveset": [
-						11,
+						1,
 						3,
 						85,
 						42
@@ -566,15 +566,15 @@
 			"sprite_id": "c00_009",
 			"team": [
 				{
-					"ability": 12,
+					"ability": 13,
 					"atk_iv": 2,
 					"def_iv": 10,
 					"hp_iv": 9,
 					"id": 10,
 					"item": -1,
-					"level": 20,
+					"level": 15,
 					"moveset": [
-						80,
+						1,
 						3,
 						5,
 						7
@@ -590,9 +590,9 @@
 					"hp_iv": 5,
 					"id": 12,
 					"item": -1,
-					"level": 21,
+					"level": 16,
 					"moveset": [
-						11,
+						1,
 						62,
 						24,
 						47
@@ -608,12 +608,12 @@
 					"hp_iv": 10,
 					"id": 85,
 					"item": -1,
-					"level": 22,
+					"level": 18,
 					"moveset": [
-						3,
+						1,
 						56,
-						68,
-						66
+						66,
+						56
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -846,14 +846,14 @@
 			"team": [
 				{
 					"ability": 0,
-					"atk_iv": 0,
-					"def_iv": 0,
-					"hp_iv": 0,
+					"atk_iv": 3,
+					"def_iv": 1,
+					"hp_iv": 2,
 					"id": 37,
 					"item": -1,
-					"level": 12,
+					"level": 10,
 					"moveset": [
-						95,
+						1,
 						62,
 						24,
 						86
@@ -891,6 +891,32 @@
 			"team": [],
 			"x": 53,
 			"y": 49
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 3,
+					"id": 4
+				}
+			],
+			"name": "Chest",
+			"npc_id": "401150089465378476",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 29,
+			"y": 55
 		}
 	],
 	"map_savepoints": [
@@ -920,18 +946,18 @@
 			"height": 22,
 			"spawn_slots": [
 				{
-					"max_level": 10,
-					"min_level": 8,
+					"max_level": 9,
+					"min_level": 6,
 					"ooch_id": 66
 				},
 				{
-					"max_level": 10,
-					"min_level": 8,
+					"max_level": 9,
+					"min_level": 6,
 					"ooch_id": 17
 				},
 				{
-					"max_level": 1,
-					"min_level": 8,
+					"max_level": 9,
+					"min_level": 6,
 					"ooch_id": 19
 				}
 			],
@@ -943,18 +969,18 @@
 			"height": 13,
 			"spawn_slots": [
 				{
-					"max_level": 13,
-					"min_level": 11,
+					"max_level": 11,
+					"min_level": 8,
 					"ooch_id": 17
 				},
 				{
-					"max_level": 13,
-					"min_level": 11,
+					"max_level": 11,
+					"min_level": 8,
 					"ooch_id": 91
 				},
 				{
-					"max_level": 1,
-					"min_level": 11,
+					"max_level": 11,
+					"min_level": 8,
 					"ooch_id": 19
 				}
 			],
@@ -966,23 +992,23 @@
 			"height": 2,
 			"spawn_slots": [
 				{
-					"max_level": 15,
-					"min_level": 12,
+					"max_level": 12,
+					"min_level": 8,
 					"ooch_id": 19
 				},
 				{
-					"max_level": 15,
-					"min_level": 12,
+					"max_level": 12,
+					"min_level": 8,
 					"ooch_id": 17
 				},
 				{
-					"max_level": 15,
-					"min_level": 12,
+					"max_level": 12,
+					"min_level": 8,
 					"ooch_id": 44
 				},
 				{
-					"max_level": 1,
-					"min_level": 12,
+					"max_level": 12,
+					"min_level": 8,
 					"ooch_id": 66
 				}
 			],
@@ -2763,8 +2789,8 @@
 			"t04_004",
 			"t04_004",
 			"t04_004",
-			"t04_004",
-			"t04_004",
+			"t04_003",
+			"t04_000",
 			"t04_004",
 			"t04_004",
 			"t04_004",
@@ -2829,8 +2855,8 @@
 			"t04_004",
 			"t04_004",
 			"t04_004",
-			"t04_004",
-			"t04_004",
+			"t04_003",
+			"t04_000",
 			"t04_004",
 			"t04_004",
 			"t04_004",
@@ -2895,8 +2921,8 @@
 			"t04_004",
 			"t04_004",
 			"t04_004",
-			"t04_004",
-			"t04_004",
+			"t04_003",
+			"t04_000",
 			"t04_004",
 			"t04_004",
 			"t04_004",
@@ -2961,8 +2987,8 @@
 			"t04_004",
 			"t04_004",
 			"t04_004",
-			"t04_004",
-			"t04_004",
+			"t04_003",
+			"t04_000",
 			"t04_004",
 			"t04_004",
 			"t04_004",
