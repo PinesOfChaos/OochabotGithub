@@ -274,7 +274,7 @@
 		[
 			3,
 			{
-				"description": "Let's begin with selecting an Oochamon. Go on, choose one!",
+				"description": "Let's begin with selecting an Oochamon.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
 				"dialogue_portrait": "",
 				"image": "starter.png",
 				"options": [

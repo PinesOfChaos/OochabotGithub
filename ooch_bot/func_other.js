@@ -45,7 +45,9 @@ module.exports = {
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
         infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(Bonus: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(Bonus: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(Bonus: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(Bonus: ${iv_spd})\``, inline: true }]);
-        infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
+        if (ooch.level == 50) {
+            infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
+        }
 
         return [infoEmbed, get_ooch_art(ooch.name)];
     },
@@ -121,8 +123,8 @@ module.exports = {
         
         // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
         // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
-        db.profile.set(user_id, [], 'npc_event_data'); 
-        db.profile.set(user_id, 0, 'npc_event_pos');
+        db.profile.set(user_id, [], 'cur_event_array'); 
+        db.profile.set(user_id, 0, 'cur_event_pos');
         
         // Settings
         db.profile.set(user_id, {

@@ -120,8 +120,8 @@ client.on('ready', async () => {
                 db.profile.set(user, msg.id, 'display_msg_id');
             });
 
-            if (user_profile.npc_event_data.length != 0) {
-                await event_process(user, userThread, user_profile.npc_event_data, user_profile.npc_event_pos);
+            if (user_profile.cur_event_array.length != 0) {
+                await event_process(user, userThread, user_profile.cur_event_array, user_profile.cur_event_pos);
             }
 
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has rebooted. No progress has been lost.' });
@@ -130,9 +130,6 @@ client.on('ready', async () => {
             // await warningMsg.delete();
 
         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
-
-            db.profile.set(user, [], 'npc_event_data');
-            db.profile.set(user, 0, 'npc_event_pos')
             if (userThread !== undefined) {
                 await userThread.bulkDelete(100).catch(() => {});
                 await move(userThread, user, '', 1);

@@ -639,7 +639,7 @@ module.exports = {
                                 new StringSelectMenuOptionBuilder()
                                     .setLabel(`${db_move_data.name} [${db_move_data.damage} power, ${db_move_data.accuracy}% hit chance]`)
                                     .setValue(`move_sel_${db_move_data.id}`)
-                                    .setDescription(`${db_move_data.description.substring(0, 25)}`)
+                                    .setDescription(`${db_move_data.description.substring(0, 100)}`)
                                     .setEmoji(`${type_to_emote(db_move_data.type)}`)
                             );
                         }

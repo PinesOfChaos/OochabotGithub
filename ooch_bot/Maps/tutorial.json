@@ -67,8 +67,8 @@
 			"event_name": "ev_tutorial_1",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
+			"height": 4,
+			"width": 4,
 			"x": 8,
 			"y": 53
 		}
@@ -118,7 +118,7 @@
 			"y": 13
 		},
 		{
-			"aggro_range": 0,
+			"aggro_range": 2,
 			"coin": 0,
 			"flag_given": "",
 			"flag_kill": "",

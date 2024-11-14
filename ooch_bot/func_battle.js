@@ -863,7 +863,6 @@ prompt_battle_input: async function(thread, user_id) {
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
 
-                                await wait(15000);
                                 await finish_battle(thread, user_id);
 
                                 return;
@@ -2259,7 +2258,7 @@ finish_battle: async function(thread, user_id, battle_won) {
     const { event_process } = require('./func_event');
 
     db.profile.set(user_id, {}, 'ooch_enemy');
-    await wait(5000);
+    await wait(10000);
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
@@ -2285,24 +2284,13 @@ finish_battle: async function(thread, user_id, battle_won) {
 
         db.profile.set(user_id, ooch, `ooch_party[${i}]`);
     }
-    
+
     // If we lost, go back to the teleporter location.
     if (battle_won === false) {
         db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
-        db.profile.set(user_id, [], 'npc_event_data');
-        db.profile.set(user_id, 0, 'npc_event_pos')
-    } else {
-        // If we won the battle
-        let npc_event_data = db.profile.get(user_id, 'npc_event_data');
-        let npc_event_pos = parseInt(db.profile.get(user_id, 'npc_event_pos'));
-
-        if (npc_event_data.length != 0 ) {
-            // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
-            event_process(user_id, thread, npc_event_data, npc_event_pos);
-            db.profile.set(user_id, [], 'npc_event_data');
-            db.profile.set(user_id, 0, 'npc_event_pos');
-        }
-    }
+        db.profile.set(user_id, [], 'cur_event_array');
+        db.profile.set(user_id, 0, 'cur_event_pos')
+    } 
 
     // Setup playspace
     let playspace_str = await setup_playspace_str(user_id);
@@ -2312,6 +2300,17 @@ finish_battle: async function(thread, user_id, battle_won) {
     await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
         db.profile.set(user_id, msg.id, 'display_msg_id');
     });
+    
+    if (battle_won === true) {
+        // If we won the battle
+        let cur_event_array = db.profile.get(user_id, 'cur_event_array');
+        let cur_event_pos = parseInt(db.profile.get(user_id, 'cur_event_pos'));
+
+        if (cur_event_array.length != 0 ) {
+            // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
+            await event_process(user_id, thread, cur_event_array, cur_event_pos);
+        }
+    }
 },
 
 /**
@@ -2371,7 +2370,7 @@ level_up: function(ooch) {
 
         output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
         `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**` : ``}` +
-        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}\n${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `You can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
+        `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `\nYou can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
     }
     return [ooch, output];
 },

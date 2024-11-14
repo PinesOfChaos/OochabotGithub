@@ -18,14 +18,14 @@ let functions = {
         const { setup_battle, generate_trainer_battle } = require('./func_battle.js');
         const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
 
-        console.log(event_array);
-
         let next_buttons = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('next').setLabel('▶').setStyle(ButtonStyle.Success),
             );
 
         db.profile.set(user_id, event_name, 'cur_event_name');
+        db.profile.set(user_id, event_array, 'cur_event_array');
+        db.profile.set(user_id, start_pos, 'cur_event_pos');
         let current_place = start_pos;
         let event_mode = event_array[current_place][0];
         let obj_content = event_array[current_place][1];
@@ -59,6 +59,7 @@ let functions = {
                 } else if (dialogue_var.includes('objective')) {
                     let match = obj_content.description.match(/\{objective:([^}]+)\}/);
                     obj_content.objective = match ? match[1] : null;
+                    db.profile.set(user_id, obj_content.objective, 'objective');
 
                     // Remove the `{...}` part from the original string
                     obj_content.description = obj_content.description.replace(/\{[^}]+\}/, '').trim();
@@ -119,9 +120,9 @@ let functions = {
         }
 
         async function battleEvent(obj_content, initial=false) {
-            // Hold the data related to our current NPC event in our profile, so we can access it post battle.
-            db.profile.set(user_id, event_array, 'npc_event_data');
-            db.profile.set(user_id, current_place+1, 'npc_event_pos');
+
+            // Increment by one so that after the battle we end up in the next part of the event.
+            db.profile.set(user_id, current_place+1, 'cur_event_pos');    
 
             if (initial == false) {
                 // Delete the embed message to prep for battle, and kill the collector as well.
@@ -220,7 +221,7 @@ let functions = {
         }
 
         function objectiveEvent(obj_content) {
-            db.profile.set(user_id, obj_content, 'objective');
+            db.profile.set(user_id, obj_content.objective, 'objective');
         }
 
         function optionsEvent(obj_content, initial=false) {
@@ -318,7 +319,10 @@ let functions = {
                 }
             }
 
-            if (quit_init_loop == false) current_place++;
+            if (quit_init_loop == false) {
+                current_place++;
+                db.profile.set(user_id, current_place, 'cur_event_pos');
+            }
         }
 
         //Send Embed and Await user input before proceeding
@@ -390,6 +394,7 @@ let functions = {
             }
 
             current_place++;
+            db.profile.set(user_id, current_place, 'cur_event_pos');
 
             // Check if we are at the end of the event array, and if we are, cut back to the normal player state.
             if (current_place >= event_array.length) {
@@ -477,6 +482,7 @@ let functions = {
                         return;
                     } else {
                         current_place++;
+                        db.profile.set(user_id, current_place, 'cur_event_pos');
                     }
                 }
             

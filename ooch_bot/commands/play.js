@@ -77,11 +77,11 @@ module.exports = {
         }
         db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
         db.profile.set(interaction.user.id, {}, 'ooch_enemy');
-        db.profile.set(interaction.user.id, [], 'npc_event_data'); 
+        db.profile.set(interaction.user.id, [], 'cur_event_array'); 
         db.profile.set(interaction.user.id, false, 'cur_event_name');
         db.profile.set(interaction.user.id, 0, 'battle_msg_counter'); 
         db.profile.set(interaction.user.id, 0, 'turn_msg_counter'); 
-        db.profile.set(interaction.user.id, 0, 'npc_event_pos');
+        db.profile.set(interaction.user.id, 0, 'cur_event_pos');
 
         let outputMsg = false;
         if (db.profile.get(interaction.user.id, 'settings.controls_msg') == true) {

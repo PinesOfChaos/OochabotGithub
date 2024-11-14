@@ -100,6 +100,23 @@ module.exports = {
             // 10% chance on cave, 40% chance on other places
             let encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
 
+            //Events
+            if (!stop_moving) {
+                let x1,y1,x2,y2;
+                for (let obj of map_events) {
+                    x1 = (obj.x) <= playerx;
+                    y1 = (obj.y) <= playery;
+                    x2 = (obj.x + obj.width) >= playerx;
+                    y2 = (obj.y + obj.height) >= playery;
+                    if (x1 && y1 && x2 && y2) {
+                        if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
+                            stop_moving = true;
+                            await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
+                        }
+                    }
+                }
+            }
+
             //NPCs
             if(!stop_moving){
                 for(let obj of map_npcs){
@@ -209,23 +226,6 @@ module.exports = {
                                 }
                             });
                         });
-                    }
-                }
-            }
-
-            //Events
-            if (!stop_moving) {
-                let x1,y1,x2,y2;
-                for (let obj of map_events) {
-                    x1 = (obj.x) <= playerx;
-                    y1 = (obj.y) <= playery;
-                    x2 = (obj.x + obj.width) >= playerx;
-                    y2 = (obj.y + obj.height) >= playery;
-                    if (x1 && y1 && x2 && y2) {
-                        if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
-                            stop_moving = true;
-                            await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
-                        }
                     }
                 }
             }

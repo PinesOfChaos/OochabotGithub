@@ -14,7 +14,6 @@ module.exports = {
                 .setDescription('Where will we be going today?')
                 .setChoices(
                     { name: 'Hub', value: 'hub' },
-                    { name: 'Tutorial', value: 'tutorial' },
                     { name: 'Last Used Checkpoint', value: 'checkpoint' }
                 )
                 .setRequired(true)),
