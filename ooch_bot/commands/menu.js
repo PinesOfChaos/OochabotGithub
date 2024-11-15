@@ -785,8 +785,60 @@ module.exports = {
                     item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
                 }
 
+                let other_inv_keys = Object.keys(display_inv);
+                displayEmbed = new EmbedBuilder();
+
+                bag_select = new ActionRowBuilder();
+                let other_select_options = [];
+                for (let i = 0; i < other_inv_keys.length; i++) {
+                    let id = other_inv_keys[i];
+                    let amount = db.profile.get(interaction.user.id, `other_inv.${other_inv_keys[i]}`)
+
+                    if (amount != 0) {
+                        if (db.item_data.get(id, 'type') != 'key') {
+                            other_select_options.push({ 
+                                label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                description: db.item_data.get(id, 'description'),
+                                value: `${id}`,
+                                emoji: db.item_data.get(id, 'emote'),
+                            });
+                        }
+                    }
+                }
+
+                bag_select.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('other_select')
+                    .setPlaceholder('Select an item to use in your inventory.')
+                    .addOptions(other_select_options),
+                );
+
                 bagEmbed.setDescription(item_list_str);
-                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, bag_select, back_button] });
+            }
+            else if (collectorId == 'other_select') {
+                let item_data = db.item_data.get(selected);
+                selected_ooch = item_use(selected_ooch, selected);
+                db.profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
+                let amountHealed = _.clamp(item_data.potency, 0, selected_ooch.stats.hp);
+                await db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
+
+                if (db.profile.get(interaction.user.id, `other_inv.${selected}`) <= 0) {
+                    await db.profile.delete(interaction.user.id, `other_inv.${selected}`);
+                }
+
+                // Disable the heal Oochamon button if its enabled, if we are out of healing items
+                party_extra_buttons.components[1].setDisabled((Object.keys(db.profile.get(interaction.user.id, 'heal_inv')).length == 0) ? true : false);
+                
+                if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
+                let dexEmbed = ooch_info_embed(selected_ooch);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
+                await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+
+                let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**` });
+                await wait(2500);
+                await followUpMsg.delete().catch(() => {});
             }
             //#endregion
         

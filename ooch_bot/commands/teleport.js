@@ -2,13 +2,13 @@ const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
 const { map_emote_string } = require('../func_play.js');
 const wait = require('wait');
-const { PlayerState } = require('../types.js');
+const { PlayerState, Item } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
 
     .setName('teleport')
-    .setDescription('Use a portable teleporter.'),
+    .setDescription('Use an emergency teleporter from your inventory.'),
     async execute(interaction) {
         let target = interaction.user.id;
         let biome_from = db.profile.get(target, 'location_data.area');
@@ -17,6 +17,16 @@ module.exports = {
             return interaction.reply({ content: 'You can\'t teleport right now.', ephemeral: true })
         }
 
+        db.profile.ensure(target, 0, `other_inv.${Item.Teleporter}`);
+        let teleItemAmt = db.profile.get(target, `other_inv.${Item.Teleporter}`);
+        if (teleItemAmt <= 0 && teleItemAmt != undefined) {
+            let failMsg = await interaction.reply({ content: 'You can\'t teleport because you do not have any **Emergency Teleporters**. Buy more before trying to use this!' });
+            await wait(5000);
+            await failMsg.delete().catch(() => {});
+            return;
+        } 
+
+        db.profile.math(target, '-', 1, `other_inv.${Item.Teleporter}`);
         let checkpoint = db.profile.get(target, 'checkpoint_data');
         let biome_to = checkpoint.area;
 
@@ -43,7 +53,7 @@ module.exports = {
             msg.edit({ content: map_emote_string(biome_to, map_arr, map_savepoints[0].x, map_savepoints[0].y, target) }).catch(() => {});
         });
 
-        let travelMsg = await interaction.reply({ content: `Successfully teleported to ${biome_to} and healed all your Oochamon!` });
+        let travelMsg = await interaction.reply({ content: `You used an **Emergency Teleporter**, succesfully teleporting back to your checkpoint teleporter and healing all your Oochamon.\n**${teleItemAmt - 1}** Emergency Teleporters left to use.` });
         await wait(5000);
         await travelMsg.delete();
         

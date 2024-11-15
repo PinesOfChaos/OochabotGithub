@@ -297,6 +297,23 @@ const Item = {
     GrandPrism: 5,
     PerfectPrism: 6,
     AttackCrystal: 7,
+    IDCard: 8,
+    Eyedrops: 9,
+    Shears: 10,
+    Daylily: 11,
+    Antiparasite: 12,
+    DebugChip: 13,
+    CoolingBalm: 14,
+    NullSphere: 15,
+    GreenBoostgem: 16,
+    RedBoostgem: 17,
+    BlueBoostgem: 18,
+    YellowBoostgem: 19,
+    SporeFeather: 20,
+    Lavaboard: 21,
+    Repulsor: 22,
+    Teleporter: 23
+
 }
 
 const ItemType = {

@@ -256,7 +256,7 @@ client.on('interactionCreate', async interaction => {
                     ability_names = ability_names.slice(0, 25);
                     ability_names = ability_names.map(v => v = { name: v, value: v.split(':')[0] });
                     interaction.respond(ability_names);
-                } else {
+                } else if (interaction.options.getSubcommand() == 'status') {
                     status_names = status_ids.map(v => {
                         return `${v.id}: ${_.startCase(v.name)}`
                     })
@@ -271,6 +271,21 @@ client.on('interactionCreate', async interaction => {
                     status_names = status_names.slice(0, 25);
                     status_names = status_names.map(v => v = { name: v, value: v.split(':')[0] });
                     interaction.respond(status_names);
+                } else {
+                    item_names = item_ids.map(v => {
+                        return `${v.id}: ${_.startCase(v.name)}`
+                    })
+    
+                    if (interaction.options.getString('item') != '') {
+                        if (!isNaN(interaction.options.getString('item'))) {
+                            item_names = item_names.filter(v => id_filter(v, 'item'));
+                        } else {
+                            item_names = item_names.filter(v => filter(v, 'item'));
+                        }
+                    } 
+                    item_names = item_names.slice(0, 25);
+                    item_names = item_names.map(v => v = { name: v, value: v.split(':')[0] });
+                    interaction.respond(item_names);
                 }
             break;
         }

@@ -81,7 +81,7 @@
     "name": "Attack Crystal",
     "emote": "<:item_attack_crystal:1274936834883059774>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "move_unlock",
     "price": 2000,
     "potency": 1,
     "description": "Unlocks a hidden move for an Oochamon by releasing stored power.",
@@ -92,7 +92,7 @@
     "name": "ID Card",
     "emote": "<:item_id_card:1304609783474552842>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "key",
     "price": -1,
     "potency": 1,
     "description": "Your ID card. You look so fabulous!",
@@ -183,7 +183,7 @@
     "type": "iv",
     "price": 25000,
     "potency": "hp",
-    "description": "Permanently increases Health of an Oochamon.",
+    "description": "Permanently increases Health bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -194,7 +194,7 @@
     "type": "iv",
     "price": 25000,
     "potency": "atk",
-    "description": "Permanently increases Attack of an Oochamon.",
+    "description": "Permanently increases Attack bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -205,7 +205,7 @@
     "type": "iv",
     "price": 25000,
     "potency": "def",
-    "description": "Permanently increases Defense of an Oochamon.",
+    "description": "Permanently increases Defense bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -216,7 +216,7 @@
     "type": "iv",
     "price": 25000,
     "potency": "spd",
-    "description": "Permanently increases Speed of an Oochamon.",
+    "description": "Permanently increases Speed bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -224,10 +224,10 @@
     "name": "Spore Feather",
     "emote": "<:item_sporefeather:1304609799245266964>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "evolve",
     "price": 8000,
     "potency": 1,
-    "description": "Feathers covered in Fungal spores. They may evolve a certain Oochamon.",
+    "description": "Used to evolve a certain Oochamon. The feathers are covered in Fungal spores.",
     "tags": []
   },
   {
@@ -235,7 +235,7 @@
     "name": "Lavaboard",
     "emote": "<:item_lavaboard:1304609819201900575>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "key",
     "price": -1,
     "potency": 1,
     "description": "A high-tech board that uses extreme heat to levitate.",
@@ -246,10 +246,10 @@
     "name": "Repulsor",
     "emote": "<:item_repulsor:1306488213908488212>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "repel",
     "price": 100,
     "potency": 50,
-    "description": "Prevents Oochamon from spawning for 50 Steps.",
+    "description": "Prevents Oochamon from spawning for 50 steps.",
     "tags": []
   },
   {
@@ -257,10 +257,10 @@
     "name": "Emergency Teleporter",
     "emote": "<:item_tp_device:1306488228383031296>",
     "category": "other_inv",
-    "type": "misc",
+    "type": "teleport",
     "price": 300,
     "potency": 1,
-    "description": "Returns your most recently used Save Station.",
+    "description": "Brings you to your last used Save Station.",
     "tags": []
   }
 ]

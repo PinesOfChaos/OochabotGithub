@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 
 module.exports = {
@@ -385,12 +385,12 @@ module.exports = {
         })
         create_item({
             id : 7, name : 'Attack Crystal', emote : '<:item_attack_crystal:1274936834883059774>',
-            category : 'other_inv', type : 'misc', price : 2000, potency : 1, 
+            category : 'other_inv', type : 'move_unlock', price : 2000, potency : 1, 
             description : 'Unlocks a hidden move for an Oochamon by releasing stored power.'
         })
         create_item({
             id : 8, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            category : 'other_inv', type : 'key', price : -1, potency : 1, 
             description : 'Your ID card. You look so fabulous!'
         })
 
@@ -431,43 +431,43 @@ module.exports = {
         })
         create_item({
             id : 16, name : 'Green Boostgem', emote : '<:item_iv_hp:1274937089666056294>',
-            category : 'other_inv', type : 'iv', price : 25000, potency : 'hp', 
-            description : 'Permanently increases Health of an Oochamon.'
+            category : 'other_inv', type : 'iv', price : 25000, potency : Stats.HP, 
+            description : 'Permanently increases Health bonus of an Oochamon.'
         })
         create_item({
             id : 17, name : 'Red Boostgem', emote : '<:item_iv_atk:1274937039460237382>',
-            category : 'other_inv', type : 'iv', price : 25000, potency : 'atk', 
-            description : 'Permanently increases Attack of an Oochamon.'
+            category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Attack, 
+            description : 'Permanently increases Attack bonus of an Oochamon.'
         })
         create_item({
             id : 18, name : 'Blue Boostgem', emote : '<:item_iv_def:1274937065317990486>',
-            category : 'other_inv', type : 'iv', price : 25000, potency : 'def', 
-            description : 'Permanently increases Defense of an Oochamon.'
+            category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Defense, 
+            description : 'Permanently increases Defense bonus of an Oochamon.'
         })
         create_item({
             id : 19, name : 'Yellow Boostgem', emote : '<:item_iv_spd:1274937099984048138>',
-            category : 'other_inv', type : 'iv', price : 25000, potency : 'spd', 
-            description : 'Permanently increases Speed of an Oochamon.'
+            category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Speed, 
+            description : 'Permanently increases Speed bonus of an Oochamon.'
         })
         create_item({
             id : 20, name : 'Spore Feather', emote : '<:item_sporefeather:1304609799245266964>',
-            category : 'other_inv', type : 'misc', price : 8000, potency : 1, 
-            description : 'Feathers covered in Fungal spores. They may evolve a certain Oochamon.'
+            category : 'other_inv', type : 'evolve', price : 8000, potency : 1, 
+            description : 'Used to evolve a certain Oochamon. The feathers are covered in Fungal spores.'
         })
         create_item({
             id : 21, name : 'Lavaboard', emote : '<:item_lavaboard:1304609819201900575>',
-            category : 'other_inv', type : 'misc', price : -1, potency : 1, 
+            category : 'other_inv', type : 'key', price : -1, potency : 1, 
             description : 'A high-tech board that uses extreme heat to levitate.'
         })
         create_item({
             id : 22, name : 'Repulsor', emote : '<:item_repulsor:1306488213908488212>',
-            category : 'other_inv', type : 'misc', price : 100, potency : 50, 
-            description : 'Prevents Oochamon from spawning for 50 Steps.'
+            category : 'other_inv', type : 'repel', price : 100, potency : 50, 
+            description : 'Prevents Oochamon from spawning for 50 steps.'
         })
         create_item({
             id : 23, name : 'Emergency Teleporter', emote : '<:item_tp_device:1306488228383031296>',
-            category : 'other_inv', type : 'misc', price : 300, potency : 1, 
-            description : 'Returns your most recently used Save Station.'
+            category : 'other_inv', type : 'teleport', price : 300, potency : 1, 
+            description : 'Brings you to your last used Save Station.'
         })
 
         //#endregion

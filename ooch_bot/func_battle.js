@@ -717,13 +717,17 @@ prompt_battle_input: async function(thread, user_id) {
                             let item_data = db.item_data.get(item_id);
 
                             if (db.profile.get(user_id, `heal_inv.${item_id}`) == undefined) return;
-
                             
                             ooch_plr = item_use(ooch_plr, item_id)
                             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
+                            let item_usage_text = '';
+                            switch (item_data.type) {
+                                case 'potion': item_usage_text = ` and healed **${item_data.potency}** HP!`; break;
+                                case 'status': item_usage_text = ` and recovered from **${db.status_data.get(item_data.potency, 'name').toUpperCase()}**!`; break;
+                            }
                             displayEmbed.setColor('#02ff2c');
                             displayEmbed.setTitle(`❤️ Healing ❤️`)
-                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}** and healed **${Math.ceil(item_data.potency)}** HP!`)
+                            displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}**${item_usage_text}`)
                             item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             
                             db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
@@ -1956,7 +1960,6 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
     let displayEmbed = new EmbedBuilder()
     .setColor('#ffffff')
     .setDescription(`${string_to_send}`);
-    await wait(battleSpeed);
     await thread.send({ content: `**------------ End of Round ------------**`, embeds: [displayEmbed] });
     db.profile.inc(user_id, 'turn_msg_counter');
     db.profile.inc(user_id, 'battle_msg_counter');
@@ -2033,6 +2036,13 @@ item_use: function(ooch, item_id) {
         } else {
             return false;
         }
+    } else if (item_data.type == 'status') {
+        if (item_data.potency !== 'All') {
+            ooch.status_effects = ooch.status_effects.filter(v => v != item_data.potency);
+        } else {
+            ooch.status_effects = [];
+        }
+        return ooch;
     }
     
 },

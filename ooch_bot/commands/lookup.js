@@ -46,6 +46,16 @@ module.exports = {
 
         .addSubcommand(subcommand =>
             subcommand
+                .setName('item')
+                .setDescription('Get info about an item.')
+                .addStringOption(option => 
+                    option.setName('item')
+                        .setDescription('The name of the item')
+                        .setAutocomplete(true)
+                        .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('controls')
                 .setDescription('View the controls!')),
 
@@ -53,8 +63,9 @@ module.exports = {
 
         let selected_db = interaction.options.getSubcommand();
         let selected_id = selected_db == 'move' ? interaction.options.getString('move') : (selected_db == 'status' ? interaction.options.getString('status') : interaction.options.getString('ability'));
+        if (selected_db == 'item') selected_id = interaction.options.getString('item');
 
-        if (selected_db === 'move' || selected_db === 'ability' || selected_db == 'status') {
+        if (selected_db === 'move' || selected_db === 'ability' || selected_db == 'status' || selected_db == 'item') {
             if (isNaN(selected_id)) {
                 // TODO: Just have this try to find it in the database rather than saying this
                 return interaction.reply('Make sure you select from one of the drop down options, don\'t type this in manually!')
@@ -179,6 +190,17 @@ module.exports = {
                     .setDescription(info_status.description);
                 return interaction.reply({
                     embeds: [ embed_status ],
+                    ephemeral: true
+                })
+            break;
+            case 'item':
+                let info_item = db.item_data.get(selected_id);
+                let embed_item = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(`${info_item.name} ${info_item.emote}`)
+                    .setDescription(info_item.description);
+                return interaction.reply({
+                    embeds: [ embed_item ],
                     ephemeral: true
                 })
             break;
