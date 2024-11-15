@@ -105,6 +105,11 @@ module.exports = {
         create_tile(`t${zS}_017`,  Tile.Wall,     applicationEmojis ); //Hub Barrel
         create_tile(`t${zS}_018`,  Tile.Board,    applicationEmojis ); //Job Board
         create_tile(`t${zS}_019`,  Tile.Wall,     applicationEmojis ); //Sandy Inaccessible Area
+        create_tile(`t${zS}_020`,  Tile.Floor,    applicationEmojis ); //Crater
+        create_tile(`t${zS}_021`,  Tile.Floor,    applicationEmojis ); //Crater
+        create_tile(`t${zS}_022`,  Tile.Board,    applicationEmojis ); //Crater (Center)
+        create_tile(`t${zS}_023`,  Tile.Floor,    applicationEmojis ); //Crater
+        
 
         // Cave
         create_tile(`t${zC}_000`,  Tile.Grass,    applicationEmojis ); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
@@ -148,6 +153,7 @@ module.exports = {
         create_tile(`t${zO}_019`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
         create_tile(`t${zO}_020`,  Tile.Floor,    applicationEmojis ); //Obsidian Building Entrance
         create_tile(`t${zO}_021`,  Tile.Wall,     applicationEmojis ); //Obsidian Building
+        create_tile(`t${zO}_022`,  Tile.Wall,     applicationEmojis ); //Obsidian Wall Torch
 
         //Training Facility
         create_tile(`t${zT}_000`,  Tile.Floor,    applicationEmojis ); //Training Floor
@@ -336,7 +342,8 @@ module.exports = {
         create_tile(`c_019`,       Tile.Int,      applicationEmojis ); // Tutorial Spikes
         create_tile(`c_020`,       Tile.Int,      applicationEmojis ); // Thunder Peak Lightning Ball
         create_tile(`c_021`,       Tile.Int,      applicationEmojis ); // Mechanical Wall
-        
+        create_tile(`c_022`,       Tile.Int,      applicationEmojis ); // Character on Lavaboard
+        create_tile(`c_023`,       Tile.Int,      applicationEmojis ); // Character on Teleporter
         
         //#endregion
 

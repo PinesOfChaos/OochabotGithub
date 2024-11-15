@@ -61,6 +61,11 @@ module.exports = {
         let playery = player_location.y;
         let player_flags = profile_data.flags;
 
+        let player_sprite_default =     db.profile.get(user_id, 'player_sprite');
+        let player_sprite_lava =        'c_022'
+        let player_sprite_teleporter =  'c_023'
+        let player_sprite_current = player_sprite_default
+
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
         let map_tiles =         map_obj.map_tiles; 
@@ -88,12 +93,15 @@ module.exports = {
             break;
         }
 
+        
+
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
             if(stop_moving){ break; }
             playerx += xmove;
             playery += ymove;
+            player_sprite_current = player_sprite_default
 
             let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());
@@ -197,6 +205,7 @@ module.exports = {
                 for(let obj of map_savepoints){
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
+                        player_sprite_current = player_sprite_teleporter
                         stop_moving = true;
                         let map_savepoints = db.maps.get('hub', 'map_savepoints');
                         let noCheckpoint = false;
@@ -385,6 +394,9 @@ module.exports = {
                         playerx -= xmove;
                         playery -= ymove;
                     }
+                    else{
+                        player_sprite_current = player_sprite_lava
+                    }
                 break;
                 case Tile.Ice:
                     if(!stop_moving && (xmove != 0 || ymove != 0)){ //This check prevents infinite loops
@@ -460,7 +472,7 @@ module.exports = {
 
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
-            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id) }).catch(() => {});
+            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id, player_sprite_current) }).catch(() => {});
         }).catch(async () => {
             let playspace_str = setup_playspace_str(user_id);
             await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
@@ -471,7 +483,11 @@ module.exports = {
 
     },
 
-    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id) {
+    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id, player_sprite_id = '') {
+
+        if(player_sprite_id === ''){
+            player_sprite_id = db.profile.get(user_id, 'player_sprite');
+        }
 
         // Window size can either be 5x5 or 7x7 or 7x9
         let window_size = db.profile.get(user_id, 'settings.zoom');
@@ -484,7 +500,6 @@ module.exports = {
         //if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
         let map_obj = db.maps.get(map_name);
         let emote_map_array = [];
-        let player_sprite_id = db.profile.get(user_id, 'player_sprite');
 
         //Plain map tiles
         for (let i = -x_center; i < x_center + 1; i++) {
