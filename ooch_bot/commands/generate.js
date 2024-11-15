@@ -461,8 +461,8 @@ module.exports = {
         })
         create_item({
             id : 22, name : 'Repulsor', emote : '<:item_repulsor:1306488213908488212>',
-            category : 'other_inv', type : 'repel', price : 100, potency : 50, 
-            description : 'Prevents Oochamon from spawning for 50 steps.'
+            category : 'other_inv', type : 'repel', price : 200, potency : 100, 
+            description : 'Prevents Oochamon from spawning for 100 steps.'
         })
         create_item({
             id : 23, name : 'Emergency Teleporter', emote : '<:item_tp_device:1306488228383031296>',

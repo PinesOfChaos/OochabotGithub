@@ -133,11 +133,17 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id'));
     await playspace_msg.delete();
 
+    let battleStartText = is_npc_battle ? `# ${trainer_obj.name} wants to battle!`
+                : `# You encounter a wild **${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`;
+
+    if (db.profile.get(user_id, `oochadex[${trainer_obj.ooch_party[0].id}].caught`) == 0 && trainer_obj.is_catchable == true) {
+        battleStartText += `\n<:item_prism:1274937161262698536> ***Uncaught Oochamon!***`
+    }
+
     // Generate intro to battle image
     let battle_image = await generate_battle_image(thread, user_id, db.profile.get(user_id), trainer_obj, is_npc_battle);
     thread.send({ 
-        content: is_npc_battle ? `# ${trainer_obj.name} wants to battle!`
-                : `# You encounter a wild **${db.monster_data.get(trainer_obj.ooch_party[0].id, 'name')}!**`,
+        content: battleStartText,
         files: [battle_image]
     });
 
@@ -718,13 +724,16 @@ prompt_battle_input: async function(thread, user_id) {
 
                             if (db.profile.get(user_id, `heal_inv.${item_id}`) == undefined) return;
                             
-                            ooch_plr = item_use(ooch_plr, item_id)
+                            ooch_plr = item_use(user_id, ooch_plr, item_id)
                             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
                             let item_usage_text = '';
                             switch (item_data.type) {
                                 case 'potion': item_usage_text = ` and healed **${item_data.potency}** HP!`; break;
                                 case 'status': item_usage_text = ` and recovered from **${db.status_data.get(item_data.potency, 'name').toUpperCase()}**!`; break;
                             }
+
+                            if (ooch_plr.alive == false) item_usage_text = ', but it failed, because the Oochamon has fainted.'
+
                             displayEmbed.setColor('#02ff2c');
                             displayEmbed.setTitle(`❤️ Healing ❤️`)
                             displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}**${item_usage_text}`)
@@ -794,7 +803,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 db.profile.delete(user_id, `prism_inv.${item_id}`);
                             }
 
-                            let prism_result = item_use(ooch_enemy, item_id)
+                            let prism_result = item_use(user_id, ooch_enemy, item_id)
                             b_collector.stop();
                             prism_collector.stop();
                             if (heal_collector != undefined) heal_collector.stop();
@@ -1905,17 +1914,17 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             switch (ooch_plr.ability) {
                 case Ability.Alert:
                     ooch_plr = modify_stat(ooch_plr, Stats.Attack, 1);
-                    string_to_send += `${ooch_plr.emote} **${ooch_plr.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
+                    enemy_send_string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
                 break;
                 case Ability.Duplicant:
                     if (ooch_enemy_party[slot_to_send].ability !== Ability.InvalidEntry) {
                         ooch_plr.ability = ooch_enemy_party[slot_to_send].ability;
-                        string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}**'s copied its ability to **${_.startCase(db.ability_data.get(ooch_enemy_party[slot_to_send].ability, 'nickname'))}** through it's **Duplicant** ability!`;
+                        enemy_send_string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}**'s copied its ability to **${_.startCase(db.ability_data.get(ooch_enemy_party[slot_to_send].ability, 'nickname'))}** through it's **Duplicant** ability!`;
                     }
                 break;
                 case Ability.Nullify:
                     ooch_enemy.ability = Ability.Null;
-                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability changed to **Null** from the ability **Nullify** from ${ooch_plr.emote} **${ooch_plr.nickname}**!`
+                    enemy_send_string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability changed to **Null** from the ability **Nullify** from ${ooch_plr.emote} **${ooch_plr.nickname}**!`
                 break;
             }
 
@@ -1923,7 +1932,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             switch (ooch_enemy.ability) {
                 case Ability.Boisterous:
                     ooch_plr.current_hp = _.clamp(Math.floor(ooch_plr.current_hp - ooch_plr.stats.hp * 0.1), 1, ooch_plr.stats.hp);
-                    string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}** lost 10% of it's hp from the switch in ability **Boisterous**!`;
+                    enemy_send_string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}** lost 10% of it's hp from the switch in ability **Boisterous**!`;
                 break;
                 case Ability.Gentle:
                     ooch_plr = modify_stat(ooch_plr, Stats.Attack, -0.1);
@@ -2014,17 +2023,23 @@ generate_hp_bar: function(ooch, style) {
 /**
  * A helper function to handle using an item such as a healing or prism item
  * in an Oochamon battle.
+ * @param {String} user_id The user id of the user using an item
  * @param {Object} ooch The oochamon data object
  * @param {String} item_id The item id that is to be used
  * @returns A true or false for prisms if they caught or didn't catch, otherwise the oochamon object.
  */
-item_use: function(ooch, item_id) {
+item_use: function(user_id, ooch, item_id) {
     let item_data = db.item_data.get(item_id);
 
     if (item_data.type == 'potion') {
-        ooch.alive = true;
-        ooch.current_hp += item_data.potency;
-        ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+        if (db.profile.get(user_id, 'player_state') == PlayerState.Combat && ooch.alive == true) {
+            ooch.current_hp += item_data.potency;
+            ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+        } else if (db.profile.get(user_id, 'player_state') != PlayerState.Combat) {
+            ooch.alive = true;
+            ooch.current_hp += item_data.potency;
+            ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+        } 
         return ooch;
     } else if (item_data.type == 'prism') {
         let status_bonus = 1;
@@ -2043,6 +2058,8 @@ item_use: function(ooch, item_id) {
             ooch.status_effects = [];
         }
         return ooch;
+    } else if (item_data.type == 'repel') {
+        db.profile.set(user_id, item_data.potency, 'repel_steps'); 
     }
     
 },
