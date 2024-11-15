@@ -394,7 +394,7 @@ let functions = {
                 // Oochadex update
                 for (ooch_id of oochChoices) {
                     db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].seen`);
-                    if (ooch_id == oochButtonData[0]) {
+                    if (ooch_id == parseInt(oochButtonData[1])) {
                         db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].caught`);
                     }
                 }

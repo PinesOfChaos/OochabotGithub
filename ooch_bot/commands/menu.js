@@ -36,7 +36,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒').setDisabled(true),
+                new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'),
             )
 
         let settings_row_2 = new ActionRowBuilder()
@@ -256,10 +256,9 @@ module.exports = {
 
         //#endregion End of making action rows
         let user_profile = db.profile.get(interaction.user.id);
-
+        if (user_profile.ooch_pc.length == 0) settings_row_2.components[1].setDisabled(true);
         let menuMsg;
-        let userProfile = db.profile.get(interaction.user.id);
-        await interaction.reply({ content:  `## Menu${userProfile.settings.objective ? `\n**Current Objective:** ***${userProfile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        await interaction.reply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
             menuMsg = msg;
         });
@@ -322,6 +321,12 @@ module.exports = {
             }
 
             if (ooch_party.length > 2) pa_components.push(party_2);
+            
+            // Disable the party healing button if all Oochamon are at full HP
+            let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
+            oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
+            if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
+
             pa_components.push(ooch_back_button);
             return pa_components;
         }
@@ -361,8 +366,8 @@ module.exports = {
             //#region Back Buttons
             // Back to Main Menu
             if (selected == 'back_to_menu') {
-                let userProfile = db.profile.get(interaction.user.id);
-                await i.update({ content:  `## Menu${userProfile.settings.objective ? `\n**Current Objective:** ***${userProfile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+                let user_profile = db.profile.get(interaction.user.id);
+                await i.update({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, embeds: [], components: [settings_row_1, settings_row_2, settings_row_3], files: [] });
             } 
             // Back to Party Select
             else if (selected == 'back_to_party') {
@@ -372,7 +377,10 @@ module.exports = {
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
-                i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button], files: [] });
+                let dexEmbed = ooch_info_embed(selected_ooch);
+                dexPng = dexEmbed[1];
+                dexEmbed = dexEmbed[0];
+                await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
             }
             // Back to Box Select
             else if (selected == 'back_to_box') {
@@ -397,7 +405,9 @@ module.exports = {
                 for (let item of healInv) {
                     if (item[1] !== 0) {
                         let itemData = db.item_data.get(item[0]);
-                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
+                        if (itemData.type == 'potion') {
+                            healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
+                        }
                     }
                 }
 
@@ -515,12 +525,14 @@ module.exports = {
                     let amount = db.profile.get(interaction.user.id, `heal_inv.${heal_inv_keys[i]}`)
 
                     if (amount != 0) {
-                        heal_select_options.push({ 
-                            label: `${db.item_data.get(id, 'name')} (${amount})`,
-                            description: db.item_data.get(id, 'description'),
-                            value: `${id}`,
-                            emoji: db.item_data.get(id, 'emote'),
-                        });
+                        if (db.item_data.get(id, 'type') == 'potion') {
+                            heal_select_options.push({ 
+                                label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                description: db.item_data.get(id, 'description'),
+                                value: `${id}`,
+                                emoji: db.item_data.get(id, 'emote'),
+                            });
+                        }
                     }
                 }
 
@@ -538,7 +550,7 @@ module.exports = {
                 let item_data = db.item_data.get(selected);
                 selected_ooch = item_use(selected_ooch, selected);
                 db.profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
-                let amountHealed = _.clamp(Math.ceil(selected_ooch.stats.hp * item_data.potency), 0, selected_ooch.stats.hp);
+                let amountHealed = _.clamp(item_data.potency, 0, selected_ooch.stats.hp);
                 await db.profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
 
                 if (db.profile.get(interaction.user.id, `heal_inv.${selected}`) <= 0) {
@@ -659,7 +671,7 @@ module.exports = {
                         displayContent = `Selected Move: ${type_to_emote(db.move_data.get(move_sel_id, 'type'))} **${db.move_data.get(move_sel_id, 'name')}**`;
                     }
 
-                    i.update({ content: displayContent, components: [move_list_select] });
+                    i.update({ content: displayContent, components: [move_list_select, moves_back_button] });
                 } else { // if a select menu move is selected
                     selected = parseInt(selected.replace('move_sel_', ''));
                     db.profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].moveset[${move_sel_idx}]`);

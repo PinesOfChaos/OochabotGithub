@@ -1871,7 +1871,7 @@ module.exports = {
             name: 'Thimbite',
             oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 
             type: [OochType.Magic, OochType.Cloth], 
-            hp: 20, atk: 20, def: 20, spd: 10, // total 70
+            hp: 20, atk: 20, def: 20, spd: 10, // total 70wor
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip], 
                 [13, Move.TangledThreads], [17, Move.DrainLife], [22, Move.Barrage], [28, Move.FatedThreads], 

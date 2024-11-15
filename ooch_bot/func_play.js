@@ -325,13 +325,8 @@ module.exports = {
                             }
 
                             let maxAmt = Math.floor(oochabux / item.price);
-                            let amtHeld;
-                            switch (item.type) {
-                                case 'heal': amtHeld = db.profile.get(user_id, `heal_inv.${item_id}`); break;
-                                case 'prism': amtHeld = db.profile.get(user_id, `prism_inv.${item_id}`); break;
-                                case 'other': amtHeld = db.profile.get(user_id, `other_inv.${item_id}`); break;
-                                default: amtHeld = 0;
-                            }
+                            let amtHeld = db.profile.get(user_id, `${item.category}.${item_id}`); 
+                            msg.edit({ components: [] });
                             let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
                                 `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item**.` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
