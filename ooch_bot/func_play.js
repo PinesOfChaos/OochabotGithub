@@ -319,8 +319,9 @@ module.exports = {
                             }
 
                             let maxAmt = Math.floor(oochabux / item.price);
+                            let amtHeld = item_id;
                             let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
-                                `**You have enough Oochabux to buy ${maxAmt} of this item.**` });
+                                `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item**.` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {

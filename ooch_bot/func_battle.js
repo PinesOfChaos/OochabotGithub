@@ -1851,9 +1851,11 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
         // Distribute XP for a defeated Oochamon
         // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
         exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'));
+        if (ooch_plr.level != 50) {
         string_to_send += `\n\n${ooch_plr.emote} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
-                                                        ` (EXP: **${_.clamp(ooch_plr.current_exp + Math.round(exp_earned * 1.25), 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**` + 
-                                                        `\n${ooch_party.length > 1 ? `The rest of your team earned **${exp_earned} exp** as well.` : ``}`
+                                                ` (EXP: **${_.clamp(ooch_plr.current_exp + Math.round(exp_earned * 1.25), 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`;
+        }
+        string_to_send += `\n${ooch_party.length > 1 ? `The rest of your team earned **${exp_earned} exp** as well.` : ``}`;
 
         for (let i = 0; i < ooch_party.length; i++) {
             let isMainOoch = (i == user_profile.ooch_active_slot);
