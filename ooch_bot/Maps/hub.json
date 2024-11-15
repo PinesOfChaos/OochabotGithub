@@ -12,19 +12,19 @@
 		{
 			"event_name": "ev_rival_intro",
 			"flag_kill": "rival_intro_complete",
-			"flag_required": "save_station_tutorial",
-			"height": 2,
-			"width": 0,
-			"x": 45,
-			"y": 49
+			"flag_required": "save_tutorial",
+			"height": 0,
+			"width": 1,
+			"x": 42,
+			"y": 45
 		},
 		{
-			"event_name": "ev_rival_intro",
-			"flag_kill": "rival_intro_complete",
-			"flag_required": "save_station_tutorial",
+			"event_name": "ev_save_tutorial",
+			"flag_kill": "save_tutorial_complete",
+			"flag_required": "save_tutorial",
 			"height": 0,
-			"width": 2,
-			"x": 44,
+			"width": 0,
+			"x": 45,
 			"y": 50
 		}
 	],
@@ -351,8 +351,8 @@
 		{
 			"aggro_range": 3,
 			"coin": 0,
-			"flag_given": "save_station_tutorial",
-			"flag_kill": "rival_intro_complete",
+			"flag_given": "save_tutorial",
+			"flag_kill": "save_tutorial_complete",
 			"flag_required": "get_id_card",
 			"is_catchable": false,
 			"items": [],
@@ -374,7 +374,7 @@
 			"coin": 0,
 			"flag_given": "cromet_quest_begin",
 			"flag_kill": "caves_quest_end",
-			"flag_required": "rival_intro_complete",
+			"flag_required": "save_tutorial_complete",
 			"is_catchable": false,
 			"items": [
 				{
@@ -510,24 +510,7 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
-			"team": [
-				{
-					"ability": 14,
-					"atk_iv": 0,
-					"def_iv": 0,
-					"hp_iv": 0,
-					"id": 52,
-					"item": -1,
-					"level": 4,
-					"moveset": [
-						1,
-						59
-					],
-					"nickname": "",
-					"slot_enabled": true,
-					"spd_iv": 0
-				}
-			],
+			"team": [],
 			"x": 46,
 			"y": 42
 		},
@@ -570,8 +553,8 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"team": [],
-			"x": 47,
-			"y": 49
+			"x": 43,
+			"y": 46
 		},
 		{
 			"aggro_range": 3,
@@ -2580,7 +2563,7 @@
 			"t02_014",
 			"t02_000",
 			"t02_000",
-			"t02_000",
+			"t02_020",
 			"t02_000",
 			"t02_000",
 			"t02_019",
@@ -2646,7 +2629,7 @@
 			"t02_000",
 			"t02_000",
 			"t02_000",
-			"t02_000",
+			"t02_021",
 			"t02_000",
 			"t02_000",
 			"t02_001",
@@ -2778,7 +2761,7 @@
 			"t02_001",
 			"t02_000",
 			"t02_000",
-			"t02_000",
+			"t02_023",
 			"t02_000",
 			"t02_000",
 			"t02_000",

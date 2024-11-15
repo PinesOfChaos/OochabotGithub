@@ -390,25 +390,6 @@
 		[
 			0,
 			{
-				"description": "Very good, that's the Save Station. Interacting with it will restore your party's HP to full as well as serve as a checkpoint should your party ever-",
-				"dialogue_portrait": "portrait_prof",
-				"flags": [],
-				"image": "",
-				"items": [],
-				"money": 0,
-				"objective": "",
-				"title": "Professor Lyra"
-			}
-		],
-		[
-			2,
-			{
-				"text": "spawn_rival_intro"
-			}
-		],
-		[
-			0,
-			{
 				"description": "Hey, you! Yeah, you {player}!",
 				"dialogue_portrait": "portrait_rival",
 				"flags": [],
@@ -469,13 +450,13 @@
 				"sprite_id": "c00_007",
 				"team": [
 					{
-						"ability": 13,
+						"ability": 18,
 						"atk_iv": 2,
 						"def_iv": 2,
 						"hp_iv": 2,
 						"id": 26,
 						"item": -1,
-						"level": 4,
+						"level": 5,
 						"moveset": [
 							1,
 							30,
@@ -516,22 +497,17 @@
 			}
 		],
 		[
-			0,
+			2,
 			{
-				"description": "*Cade rushes off...*",
-				"dialogue_portrait": "",
-				"flags": [],
-				"image": "",
-				"items": [],
-				"money": 0,
-				"objective": "",
-				"title": ""
+				"text": "rival_intro_complete"
 			}
-		],
+		]
+	],
+	"ev_save_tutorial": [
 		[
 			0,
 			{
-				"description": "Oh my, isn't he a little bundle of energy? I'm sure he'll do quite well.",
+				"description": "Very good! These save stations will digitally scan you and your team of Oochamon and fully heal them.",
 				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
@@ -544,20 +520,33 @@
 		[
 			0,
 			{
-				"description": "Now, as for yourself, would you come speak to me once more? I have your first task ready for you!",
+				"description": "They can also be used to set a checkpoint to return to should your party be defeated.",
 				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0,
-				"objective": "Return to Professor Lyra",
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "When you're ready, come speak to me again!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
 			2,
 			{
-				"text": "rival_intro_complete"
+				"text": "save_tutorial_complete"
 			}
 		]
 	],

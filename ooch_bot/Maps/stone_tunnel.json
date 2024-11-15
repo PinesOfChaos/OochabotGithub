@@ -230,7 +230,13 @@
 			"y": 44
 		}
 	],
-	"map_savepoints": [],
+	"map_savepoints": [
+		{
+			"is_default": true,
+			"x": 54,
+			"y": 51
+		}
+	],
 	"map_shops": [],
 	"map_spawn_zones": [
 		{
