@@ -396,37 +396,37 @@ module.exports = {
 
         create_item({
             id : 9, name : 'Eyedrops', emote : '<:item_eyedrops:1274937019994472459>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Blind, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Blind, 
             description : 'Removes BLIND status effect.'
         })
         create_item({
             id : 10, name : 'Shears', emote : '<:item_shears:1274937209652514838>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Snare, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Snare, 
             description : 'Removes SNARED status effect.'
         })
         create_item({
             id : 11, name : 'Daylily', emote : '<:item_daylily:1274936962125402143>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Doom, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Doom, 
             description : 'Removes DOOMED status effect.'
         })
         create_item({
             id : 12, name : 'Antiparasite', emote : '<:item_antiparasite:1274936818823069789>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Infect, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Infect, 
             description : 'Removes INFECTED status effect.'
         })
         create_item({
             id : 13, name : 'Debug Chip', emote : '<:item_debugchip:1274936992462930001>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Digitize, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Digitize, 
             description : 'Removes DIGITIZED status effect.'
         })
         create_item({
             id : 14, name : 'Cooling Balm', emote : '<:item_coolingbalm:1274936928625758269>',
-            category : 'other_inv', type : 'heal_inv', price : 200, potency : Status.Burn, 
+            category : 'heal_inv', type : 'status', price : 100, potency : Status.Burn, 
             description : 'Removes BURNED status effect.'
         })
         create_item({
             id : 15, name : 'Nullifying Sphere', emote : '<:item_null_sphere:1274937109995716648>',
-            category : 'other_inv', type : 'heal_inv', price : 1200, potency : Status.All, 
+            category : 'heal_inv', type : 'status', price : 1000, potency : Status.All, 
             description : 'Removes all status effects.'
         })
         create_item({
@@ -458,6 +458,16 @@ module.exports = {
             id : 21, name : 'Lavaboard', emote : '<:item_lavaboard:1304609819201900575>',
             category : 'other_inv', type : 'misc', price : -1, potency : 1, 
             description : 'A high-tech board that uses extreme heat to levitate.'
+        })
+        create_item({
+            id : 22, name : 'Repulsor', emote : '<:item_repulsor:1306488213908488212>',
+            category : 'other_inv', type : 'misc', price : 100, potency : 50, 
+            description : 'Prevents Oochamon from spawning for 50 Steps.'
+        })
+        create_item({
+            id : 23, name : 'Emergency Teleporter', emote : '<:item_tp_device:1306488228383031296>',
+            category : 'other_inv', type : 'misc', price : 300, potency : 1, 
+            description : 'Returns your most recently used Save Station.'
         })
 
         //#endregion
@@ -884,7 +894,7 @@ module.exports = {
             description : 'Shoot a beam that curses the opponent, applying BLINDED and BURNED.',
         });
         create_move({
-            id : 69, name : 'Suplex', type : OochType.Tech,
+            id : 69, name : 'Suplex', type : OochType.Neutral,
             damage : 60, accuracy: 90,
             effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy}],
             description : 'Suplex the opponent, damaging them and reducing DEF.',
@@ -989,7 +999,7 @@ module.exports = {
             description : 'Scatter damaging spikes that damage and reduce the target\'s SPD.',
         });
         create_move({
-            id : 86, name : 'Lurk', type : OochType.Flame,
+            id : 86, name : 'Lurk', type : OochType.Magic,
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : Status.Focus, chance : 100, target : MoveTarget.Self}],
             description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
@@ -1174,7 +1184,7 @@ module.exports = {
         create_ability(42, 'Duplicant',         'Copy the opponent\'s ability.'); 
         create_ability(43, 'Null',              'Does nothing.');
         create_ability(44, 'invalid_entry',     'I̵͑n̵̤̚c̶̥̈r̴͛͜e̵̛̖a̴̺͗s̵̼̑e̶s̵̺̈ a̶͙͗l̶̖͆l̸̠͐ ̸̪̐b̴͎̋a̸̖̅s̶͖̚ë̴̫́ ̵̹̔ş̶̽t̶̟̎a̴̪̾t̴̥̂ş̵̈́ ̵̱̉ū̵͜p̸̗̆ô̶̰ņ̴̓ ̵̳͋d̵̹̑e̵͎̕a̷͔͐t̵͉͋h̷̰̋.̴̫͘ ̶͈́C̸͙̈a̶̰̔ṅ̵̯n̵̬̾o̶̒ͅt̷̪̎ ̵̆͜b̴͎̄ȩ̸͗ ̵̜͛c̴̰̈́o̴̢͒p̸̣͛i̷̗̍ê̸͈d̶̹͌.̵͍̈'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
-        create_ability(45, 'Immobile',          'Always go last when attacking.');
+        create_ability(45, 'Immobile',          'Always go last when attacking, but gain a DEF increase.');
         create_ability(46, 'Strings Attached',  '20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking.');
         create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.');
         create_ability(48, 'Spectral',          'Changes type to Magic every other turn.');
@@ -1851,7 +1861,7 @@ module.exports = {
                 [32, Move.Mummify], [38, Move.Impale], [43, Move.FiberSlicer], [-1, Move.MetalLance]
             ],
             abilities: [Ability.Tangled, Ability.Leech], 
-            pre_evo_id: -1, evo_id: 38, evo_lvl: 18, evo_stage: 0
+            pre_evo_id: -1, evo_id: 38, evo_lvl: 13, evo_stage: 0
         });
 
         // Thimbite
@@ -2157,7 +2167,7 @@ module.exports = {
                 [40, Move.Sedimentation], [-1, Move.HighImpact]
             ],
             abilities: [ Ability.BassBoost, Ability.Immobile ],
-            pre_evo_id: -1, evo_id: 56, evo_lvl: 18, evo_stage: 0
+            pre_evo_id: -1, evo_id: 56, evo_lvl: 17, evo_stage: 0
         })
 
         // Hedfren
@@ -2167,7 +2177,7 @@ module.exports = {
             name: 'Hedfren',
             oochive_entry: 'It\'s still not certain whether Hedfren is a true evolution or if it\'s just Doubud after emerging from the ground.',
             type: [OochType.Sound],
-            hp: 23, atk: 26, def: 19, spd: 17, // total 85
+            hp: 23, atk: 21, def: 19, spd: 17, // total 80
             move_list: [
                 [1, Move.Bash], [3, Move.Screech], [6, Move.Limber], [12, Move.Thunder],
                 [18, Move.Caltrops], [23, Move.Entrench], [29, Move.SonicBoom], [34, Move.EarShatter], 
@@ -2743,7 +2753,7 @@ module.exports = {
                 [-1, Move.AshBlast]
             ],
             abilities: [Ability.Immobile, Ability.Armored],
-            pre_evo_id: -1, evo_id: 90, evo_lvl: 18, evo_stage: 0
+            pre_evo_id: -1, evo_id: 90, evo_lvl: 20, evo_stage: 0
         });
 
         // Wardred

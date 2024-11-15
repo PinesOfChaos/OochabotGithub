@@ -2581,7 +2581,7 @@
     ],
     "pre_evo_id": -1,
     "evo_id": 38,
-    "evo_lvl": 18,
+    "evo_lvl": 13,
     "evo_stage": 0
   },
   {
@@ -3782,7 +3782,7 @@
     ],
     "pre_evo_id": -1,
     "evo_id": 56,
-    "evo_lvl": 18,
+    "evo_lvl": 17,
     "evo_stage": 0
   },
   {
@@ -3794,7 +3794,7 @@
       "sound"
     ],
     "hp": 23,
-    "atk": 26,
+    "atk": 21,
     "def": 19,
     "spd": 17,
     "move_list": [
@@ -6150,7 +6150,7 @@
     ],
     "pre_evo_id": -1,
     "evo_id": 90,
-    "evo_lvl": 18,
+    "evo_lvl": 20,
     "evo_stage": 0
   },
   {

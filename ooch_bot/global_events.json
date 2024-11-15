@@ -401,6 +401,12 @@
 			}
 		],
 		[
+			2,
+			{
+				"text": "spawn_rival_intro"
+			}
+		],
+		[
 			0,
 			{
 				"description": "Thought you could get ahead of me, didn't you?",

@@ -5281,8 +5281,8 @@
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": 0,
-			"connect_y": 0,
+			"connect_x": 57,
+			"connect_y": 39,
 			"x": 14,
 			"y": 58
 		}

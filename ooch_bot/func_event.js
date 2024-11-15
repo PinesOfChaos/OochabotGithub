@@ -181,6 +181,34 @@ let functions = {
             let flags = db.profile.get(user_id, 'flags');
             if (!flags.includes(obj_content.text)) {
                 db.profile.push(user_id, obj_content.text, 'flags');
+                let globalShopItems = db.profile.get(user_id, 'global_shop_items');
+
+                // Add global shop items
+                switch(obj_content.text) {
+                    case 'cromet_quest_end':
+                        globalShopItems.push(
+                            9,  //Eyedrops
+                            10, //Shears
+                            11, //Daylily
+                            12, //Antiparasite
+                            13, //Debug Chip
+                            14, //Cooling Balm
+                        )
+                    break;
+                    case 'to_lava_town_begin':
+                        globalShopItems.push(
+                            1, //Med-Potion
+                            4  //Greater Prism
+                        )
+                    break;
+                    case 'obtained_sporefeather':
+                        globalShopItems.push(
+                            20  //Sporefeather
+                        )
+                    break;
+                }
+                db.profile.set(user_id, globalShopItems, 'global_shop_items');
+
                 if (!obj_content.text.includes('NPC|')) {
                     let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
                     let playspace_str = setup_playspace_str(user_id);
@@ -311,6 +339,8 @@ let functions = {
                 if (current_place + 1 == event_array.length) {
                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                     db.profile.set(user_id, false, 'cur_event_name');
+                    db.profile.set(user_id, [], 'cur_event_array');
+                    db.profile.set(user_id, 0, 'cur_event_pos');
                     let playspace_str = setup_playspace_str(user_id);
                     await thread.messages.fetch(msg_to_edit).then((msg) => {
                         msg.edit({ content: playspace_str[0], components: playspace_str[1] });
@@ -401,6 +431,9 @@ let functions = {
                 await confirm_collector.stop();
                 if (msg.id !== msg_to_edit) await msg.delete();
                 db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                db.profile.set(user_id, false, 'cur_event_name');
+                db.profile.set(user_id, [], 'cur_event_array');
+                db.profile.set(user_id, 0, 'cur_event_pos');
                 let playspace_str = setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
                     msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
@@ -474,6 +507,8 @@ let functions = {
                         if (msg.id != msg_to_edit) await msg.delete();
                         db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                         db.profile.set(user_id, false, 'cur_event_name');
+                        db.profile.set(user_id, [], 'cur_event_array');
+                        db.profile.set(user_id, 0, 'cur_event_pos');
                         quit = true; 
                         let playspace_str = setup_playspace_str(user_id);
                         await thread.messages.fetch(msg_to_edit).then(async (msg) => {

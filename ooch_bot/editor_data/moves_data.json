@@ -998,7 +998,7 @@
   {
     "id": 69,
     "name": "Suplex",
-    "type": "tech",
+    "type": "neutral",
     "damage": 60,
     "accuracy": 90,
     "effect": [
@@ -1311,7 +1311,7 @@
   {
     "id": 86,
     "name": "Lurk",
-    "type": "flame",
+    "type": "magic",
     "damage": 0,
     "accuracy": 100,
     "effect": [

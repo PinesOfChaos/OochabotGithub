@@ -132,13 +132,21 @@ client.on('ready', async () => {
         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
             if (userThread !== undefined) {
                 await userThread.bulkDelete(100).catch(() => {});
+                // Setup playspace
+                let playspace_str = await setup_playspace_str(user);
+                await db.profile.set(user, PlayerState.Playspace, 'player_state');
+
+                await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                    db.profile.set(user, msg.id, 'display_msg_id');
+                });
+
                 await move(userThread, user, '', 1);
             }
 
             // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
 
             // await wait(2000);
-            // await warningMsg.delete();# DO
+            // await warningMsg.delete();
         }
     }
     console.log('Bot Ready')

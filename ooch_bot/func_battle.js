@@ -148,7 +148,6 @@ setup_battle: async function(thread, user_id, trainer_obj, is_npc_battle = false
     await db.profile.set(user_id, 1, 'battle_turn_counter');
 
     if (abilityMsg.replaceAll('\n','') != '') {
-        console.log(`Sent Ability Message: ${abilityMsg}`)
         await thread.send(abilityMsg);
         db.profile.math(user_id, '+', 1, 'battle_msg_counter');
     }
@@ -863,6 +862,8 @@ prompt_battle_input: async function(thread, user_id) {
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
 
+                                await wait(5000);
+
                                 await finish_battle(thread, user_id);
 
                                 return;
@@ -1062,8 +1063,8 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
  * @returns A number of the amount of EXP earned
  */
 battle_calc_exp: function(enemy_level, enemy_evo_stage, bonus_multiplier = 1) {
-    let exp_multiplier = .8 //-20% seems to be a good balance, use this to shift the exp given
-    return Math.round(((bonus_multiplier * (1.015 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 5) * exp_multiplier);
+    let exp_multiplier = 1
+    return Math.round(((bonus_multiplier * (1.025 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 20) * exp_multiplier);
 },
 
 /**
@@ -1225,8 +1226,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     }
 
     // If the defender has Vanish AND the attack is not self targeting, it should fail
-    let chance_to_hit = move_accuracy/100 * get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 3)
-    if ((((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false))) {
+    let chance_to_hit = move_accuracy/100 * get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4)
+    if ((((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false)) || (selfTarget == true)) {
         // Take damage and heal from move effects
         defender.current_hp -= dmg
         defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
@@ -1338,7 +1339,6 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
-                console.log(eff);
                 let status_target = eff.target == MoveTarget.Self ? attacker : defender;
                 let status_target_emote = eff.target == MoveTarget.Self ? attacker_emote : defender_emote;
                 let statStatus = false;
@@ -1726,7 +1726,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
 
         if (slot_to_send == -1) { //if there is no slot to send in
             // First random is the percent to take from our oochabux, 10% of oochabux lost capped at 500
-            oochabux = _.clamp(user_profile.oochabux * 0.1, 0, 500);
+            oochabux = Math.floor(user_profile.oochabux * 0.05);
             oochabux = _.clamp(oochabux, 0, user_profile.oochabux);
             await wait(battleSpeed);
             await thread.send(`**------------ You lose... ------------**${oochabux != 0 ? `\nYou lose **${oochabux}** Oochabux.` : ``}`);
@@ -2020,7 +2020,7 @@ item_use: function(ooch, item_id) {
     } else if (item_data.type == 'prism') {
         let status_bonus = 1;
         let prism_multiplier = item_data.potency;
-        let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus;
+        let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
 
         if (Math.random() < prism_chance) {
             return true;
@@ -2099,6 +2099,10 @@ ability_stat_change: function(ooch, ooch_inv) {
         case Ability.Tough:
             ooch = modify_stat(ooch, Stats.Defense, 1); 
             output_msg = `${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Tough**!`;
+        break;
+        case Ability.Immobile:
+            ooch = modify_stat(ooch, Stats.Defense, 1); 
+            output_msg = `${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Immobile**!`;
         break;
         case Ability.Gentle:
             ooch = modify_stat(ooch, Stats.Attack, -1); 
@@ -2260,7 +2264,7 @@ finish_battle: async function(thread, user_id, battle_won) {
     const { event_process } = require('./func_event');
 
     db.profile.set(user_id, {}, 'ooch_enemy');
-    await wait(10000);
+    await wait(5000);
 
     let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
     if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
@@ -2308,7 +2312,7 @@ finish_battle: async function(thread, user_id, battle_won) {
         let cur_event_array = db.profile.get(user_id, 'cur_event_array');
         let cur_event_pos = parseInt(db.profile.get(user_id, 'cur_event_pos'));
 
-        if (cur_event_array.length != 0 ) {
+        if (cur_event_array.length != 0) {
             // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
             await event_process(user_id, thread, cur_event_array, cur_event_pos);
         }

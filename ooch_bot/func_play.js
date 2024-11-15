@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState, Tile, Zone } = require('./types.js');
+const { Flags, PlayerState, Tile, Zone, ItemType } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -15,6 +15,11 @@ module.exports = {
 
         const { map_emote_string, setup_playspace_str } = require('./func_play.js');
         const { generate_wild_battle, setup_battle, level_up, exp_to_next_level } = require("./func_battle");
+
+        let checkPlrState = db.profile.get(user_id, 'player_state')
+        if (checkPlrState !== PlayerState.Playspace) {
+            return;
+        }
 
         let xmove = 0;
         let ymove = 0;
@@ -48,11 +53,11 @@ module.exports = {
                 new ButtonBuilder().setCustomId('quantity_back').setLabel('Back').setStyle(ButtonStyle.Danger),
             );
         let item_qty_collector;
-            
+        
         profile_arr = profile_arr.filter(val => val != user_id);
         
-        // Max limit of 6 tiles that you can move at once
-        dist = _.clamp(dist, 0, 6);
+        // Max limit of 4 tiles that you can move at once
+        dist = _.clamp(dist, 0, 4);
         
         //Get the player's location
         let player_location = profile_data.location_data;
@@ -60,11 +65,7 @@ module.exports = {
         let playerx = player_location.x;
         let playery = player_location.y;
         let player_flags = profile_data.flags;
-
-        let player_sprite_default =     db.profile.get(user_id, 'player_sprite');
-        let player_sprite_lava =        'c_022'
-        let player_sprite_teleporter =  'c_023'
-        let player_sprite_current = player_sprite_default
+        let moveDisable = false;
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
@@ -93,20 +94,23 @@ module.exports = {
             break;
         }
 
-        
-
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
             if(stop_moving){ break; }
             playerx += xmove;
             playery += ymove;
-            player_sprite_current = player_sprite_default
+            if (profile_data.repel_steps != 0) {
+                db.profile.math(user_id, '-', 1, 'repel_steps');
+                profile_data.repel_steps -= 1;
+            }
+            
 
             let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());
             // 10% chance on cave, 40% chance on other places
             let encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
+            if (profile_data.repel_steps != 0) encounter_chance = 0;
 
             //Events
             if (!stop_moving) {
@@ -184,7 +188,9 @@ module.exports = {
                         stop_moving = true;
                         playerx = obj.connect_x;
                         playery = obj.connect_y;
-                        map_name = obj.connect_map;
+                        if (obj.connect_map != '') {
+                            map_name = obj.connect_map;
+                        }
                         
                         //Get the map array based on the player's current map
                         map_obj =   db.maps.get(map_name.toLowerCase());
@@ -205,40 +211,40 @@ module.exports = {
                 for(let obj of map_savepoints){
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
-                        player_sprite_current = player_sprite_teleporter
                         stop_moving = true;
-                        let map_savepoints = db.maps.get('hub', 'map_savepoints');
-                        let noCheckpoint = false;
-                        map_savepoints = map_savepoints.filter(v => v.is_default !== false);
-                        if (map_savepoints.length == 0) {
-                            map_savepoints = [db.maps.get('hub', 'map_savepoints[0]')];
-                        }
-                        if (obj.x == map_savepoints[0].x && obj.y == map_savepoints[0].y && map_name == 'hub') noCheckpoint = true;
+                        moveDisable = true;
 
-                        thread.send({ content: (noCheckpoint ? 'Would you like to heal your Oochamon?' : `Would you like to heal your Oochamon and set a checkpoint here?`), components: [confirm_buttons] }).then(async msg => {
+                        thread.send({ content: `Would you like to heal your Oochamon and set a checkpoint here?`, components: [confirm_buttons] }).then(async msg => {
                             db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                             confirm_collector.on('collect', async sel => {
                                 if (sel.customId == 'yes') {
-                                    if (noCheckpoint == false) db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
+                                    db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
                                     for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
                                         db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                         db.profile.set(user_id, true, `ooch_party[${i}].alive`);
                                     }
                                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                    await sel.update({ content: (noCheckpoint ? 'Healed all your Oochamon.' : 'Set a checkpoint and healed all your Oochamon.'), components: [] });
+                                    let playspace_str = setup_playspace_str(user_id);
+                                    await thread.messages.fetch(msg_to_edit).then((msg) => {
+                                        msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                                    });
+                                    await sel.update({ content: 'Set a checkpoint and healed all your Oochamon.', components: [] });
                                     await wait(5000);
                                     await msg.delete().catch(() => {});
                                 } else {
                                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                                     msg.delete();
+                                    let playspace_str = setup_playspace_str(user_id);
+                                    await thread.messages.fetch(msg_to_edit).then((msg) => {
+                                        msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                                    });
                                 }
                             });
                         });
                     }
                 }
             }
-
             //Shops
             for(let obj of map_shops){
                 //Check if player collides with this shop's position
@@ -251,7 +257,7 @@ module.exports = {
                     if (obj.type == 'default' || obj.type == null) {
                         shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
                     }
-                    shopSelectOptions.push(obj.special_items);
+                    if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = shopSelectOptions.map(id => {
                         return { 
@@ -319,7 +325,13 @@ module.exports = {
                             }
 
                             let maxAmt = Math.floor(oochabux / item.price);
-                            let amtHeld = item_id;
+                            let amtHeld;
+                            switch (item.type) {
+                                case 'heal': amtHeld = db.profile.get(user_id, `heal_inv.${item_id}`); break;
+                                case 'prism': amtHeld = db.profile.get(user_id, `prism_inv.${item_id}`); break;
+                                case 'other': amtHeld = db.profile.get(user_id, `other_inv.${item_id}`); break;
+                                default: amtHeld = 0;
+                            }
                             let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
                                 `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item**.` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
@@ -390,13 +402,10 @@ module.exports = {
                 break;
                 case Tile.Wall:
                 case Tile.Lava:
-                    if ((tile.use == Tile.Lava && !player_flags.includes('get_lavaboard')) || tile.use != Tile.Lava) { 
+                    if ((tile.use == Tile.Lava && !player_flags.includes('lavaboard_get')) || tile.use != Tile.Lava) { 
                         stop_moving = true;
                         playerx -= xmove;
                         playery -= ymove;
-                    }
-                    else{
-                        player_sprite_current = player_sprite_lava
                     }
                 break;
                 case Tile.Ice:
@@ -471,24 +480,35 @@ module.exports = {
         // Update player position
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
+        let playspace_str = setup_playspace_str(user_id);
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
-            msg.edit({ content: map_emote_string(map_name, map_tiles, playerx, playery, user_id, player_sprite_current) }).catch(() => {});
+            msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch((err) => { console.log(`Err: ${err}`)});
         }).catch(async () => {
-            let playspace_str = setup_playspace_str(user_id);
             await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
-                await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                 await db.profile.set(user_id, newMsg.id, 'display_msg_id');
-            }).catch(() => {});
+            }).catch((err) => { console.log(`Err 2: ${err}`) });
         });
+
+        if (moveDisable == true) {
+            await thread.messages.fetch(msg_to_edit).then(async (msg) => {
+                const newComponents = msg.components.map((row) => {
+                    const newRow = row.toJSON(); 
+                    newRow.components = newRow.components.map((button) => {
+                        button.disabled = true; 
+                        return button;
+                    });
+                    return newRow;
+                });
+
+                await msg.edit({ components: newComponents }).catch(() => {});
+
+            }).catch((err) => { console.log(err) });
+        }
 
     },
 
-    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id, player_sprite_id = '') {
-
-        if(player_sprite_id === ''){
-            player_sprite_id = db.profile.get(user_id, 'player_sprite');
-        }
+    map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id) {
 
         // Window size can either be 5x5 or 7x7 or 7x9
         let window_size = db.profile.get(user_id, 'settings.zoom');
@@ -501,6 +521,7 @@ module.exports = {
         //if (window_size === 7) emote_map = `**${map_name}**: ${x_pos}, ${y_pos}\n`;
         let map_obj = db.maps.get(map_name);
         let emote_map_array = [];
+        let player_sprite_id = db.profile.get(user_id, 'player_sprite');
 
         //Plain map tiles
         for (let i = -x_center; i < x_center + 1; i++) {
@@ -556,7 +577,11 @@ module.exports = {
 
         //Put player sprite in center and change it based on the zone ID
         let zoneId = parseInt(emote_map_array[x_center][y_center].split(':')[1].replace('t', ''));
-        emote_map_array[x_center][y_center] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
+        switch (zoneId) {
+            case Zone.Global: emote_map_array[x_center][y_center] = db.tile_data.get('c_023', `zone_emote_ids.0.emote`); break;
+            case Zone.Lava: emote_map_array[x_center][y_center] = db.tile_data.get('c_022', `zone_emote_ids.0.emote`); break;
+            default: emote_map_array[x_center][y_center] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
+        }
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)
         let transpose = [];

@@ -67,61 +67,48 @@ module.exports = {
 
                 let eff_str = ``
                 for(eff of info_move.effect){
-                    eff_str += `${eff.chance}% Chance to `
+                    eff_str += `• ${eff.chance}% `
                     switch (eff.status) {
-                        case Status.Blind:
-                            eff_str += `Blind`
-                        break;
-                        case Status.Burn:
-                            eff_str += `Burn`
-                        break;
-                        case Status.Digitize:
-                            eff_str += `Digitize`
-                        break;
-                        case Status.Doom:
-                            eff_str += `Doom`
-                        break;
-                        case Status.Double:
-                            eff_str += `Double`
-                        break;
-                        case Status.Focus:
-                            eff_str += `Focus`
-                        break;
-                        case Status.Infect:
-                            eff_str += `Infect`
-                        break; 
-                        case Status.Snare:
-                            eff_str += `Snare`
-                        break; 
-                        case Status.Vanish:
-                            eff_str += `Vanish`
-                        break; 
-                        case 'critical':
-                            eff_str += `Critically Hit`
-                        break;
+                        case Status.Blind:          eff_str += `chance to Blind`;  break;
+                        case Status.Burn:           eff_str += `chance to Burn`; break;
+                        case Status.Digitize:       eff_str += `chance to Digitize`; break;
+                        case Status.Doom:           eff_str += `chance to Doom`; break;
+                        case Status.Double:         eff_str += `chance to Double`; break;
+                        case Status.Focus:          eff_str += `chance to Focus`; break;
+                        case Status.Infect:         eff_str += `chance to Infect`; break; 
+                        case Status.Snare:          eff_str += `chance to Snare`; break; 
+                        case Status.Vanish:         eff_str += `chance to Vanish`; break; 
+                        case 'critical':            eff_str += `chance to Critically Hit`; break;
+                        case 'random':              eff_str += `chance to Select a Random Move`; break;
+                        case 'heal':                eff_str += `of Max HP Healing to`; break;
+                        case 'typematch':           eff_str += `chance to match types with`; break;
+                        case 'recoil':              eff_str += `HP taken as Recoil Damage to`; break;
+                        case 'vampire':             eff_str += `of Damage done as Health Stolen`; break;
+                        case 'clear_stat_stages':   eff_str += `chance to Remove all Stat Changes from`; break;
+                        case 'clear_status':        eff_str += `chance to Remove all Status Effects from`; break;
                         default:
-                            eff_str += `${eff.status}`
+                            let eff_split = eff.status.split('_')
+                            switch(eff_split[0]){
+                                case '-':
+                                case '+':
+                                    eff_str += `${eff_split[0]}${eff_split[2]} ${eff_split[1].toUpperCase()} stages to`
+                                break;
+                                default:
+                                    eff_str += `${eff.status}`;
+                                break;
+                            }
+
                         break; 
                     }
                     
                     switch(eff.target){
-                        case MoveTarget.Self:
-                            eff_str += ` the User.`
-                        break;
-                        case MoveTarget.Enemy:
-                            eff_str += ` the Target.`
-                        break;
-                        case MoveTarget.All:
-                            eff_str += ` both Oochamon.`
-                        break;
-                        case MoveTarget.None:
-                            eff_str += `.`
-                        break;
+                        case MoveTarget.Self:   eff_str += ` User.`; break;
+                        case MoveTarget.Enemy:  eff_str += ` Target.`; break;
+                        case MoveTarget.All:    eff_str += ` both Oochamon.`; break;
+                        case MoveTarget.None:   eff_str += `.`; break;
                     }
                     
                     eff_str += `\n`
-                
-                    
                 }
 
 
@@ -131,12 +118,10 @@ module.exports = {
                     .setDescription(info_move.description)
                     .addFields(
                         {name: 'Type:',     value: `${info_move.type.charAt(0).toUpperCase() + info_move.type.slice(1)}`, inline: true},
-                        {name: 'Power:',    value: `${(info_move.damage == 0) ? '-' : info_move.damage}`, inline: true},
-                        {name: 'Effect:',   value: `${(info_move.effect == -1) ? '-' : eff_str}`, inline: true},
-
-                        {name: 'Target',    value: `${(info_move.accuracy > 0) ? 'Enemy' : 'Self'}`, inline: true},
+                        {name: 'Power:',    value: `${(info_move.damage == 0) ? '--' : info_move.damage}`, inline: true},
                         {name: 'Accuracy:', value: `${Math.abs(info_move.accuracy)}%`, inline: true},
-                        {name: 'Chance:',   value: `${(info_move.effect == -1) ? '-' : `${info_move.effect_chance}%`}`, inline: true},
+
+                        {name: 'Effect(s):',   value: `${(info_move.effect == false) ? '--' : eff_str}`, inline: true}
                     );
 
                 return interaction.reply({

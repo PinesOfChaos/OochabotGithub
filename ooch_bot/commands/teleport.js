@@ -8,17 +8,8 @@ module.exports = {
     data: new SlashCommandBuilder()
 
     .setName('teleport')
-    .setDescription('Use a portable teleporter.')
-    .addStringOption(option => 
-            option.setName('location')
-                .setDescription('Where will we be going today?')
-                .setChoices(
-                    { name: 'Hub', value: 'hub' },
-                    { name: 'Last Used Checkpoint', value: 'checkpoint' }
-                )
-                .setRequired(true)),
+    .setDescription('Use a portable teleporter.'),
     async execute(interaction) {
-        let biome_to = interaction.options.getString('location');
         let target = interaction.user.id;
         let biome_from = db.profile.get(target, 'location_data.area');
 
@@ -27,9 +18,7 @@ module.exports = {
         }
 
         let checkpoint = db.profile.get(target, 'checkpoint_data');
-        if (biome_to == 'checkpoint') {
-            biome_to = checkpoint.area;
-        }
+        let biome_to = checkpoint.area;
 
         let map_obj = db.maps.get(biome_to);
         let map_arr = map_obj.map_tiles;

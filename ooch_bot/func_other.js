@@ -101,6 +101,7 @@ module.exports = {
         db.profile.set(user_id, {}, 'prism_inv')
         db.profile.set(user_id, {}, 'heal_inv')
         db.profile.set(user_id, 0, 'oochabux')
+        db.profile.set(user_id, 0, 'repel_steps')
         await db.profile.set(user_id, PlayerState.Intro, 'player_state')
         db.profile.set(user_id, {}, 'ooch_enemy')
         db.profile.set(user_id, false, 'location_data')

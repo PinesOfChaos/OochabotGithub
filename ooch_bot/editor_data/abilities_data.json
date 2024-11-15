@@ -227,7 +227,7 @@
   {
     "id": 45,
     "name": "Immobile",
-    "description": "Always go last when attacking."
+    "description": "Always go last when attacking, but gain a DEF increase."
   },
   {
     "id": 46,

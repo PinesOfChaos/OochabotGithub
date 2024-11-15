@@ -344,7 +344,6 @@ module.exports = {
         // Disable the party healing button if all Oochamon are at full HP
         let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
         oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
-        console.log(oochHpCheck);
         if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
         
 
@@ -566,7 +565,10 @@ module.exports = {
                 let nickname = selected_ooch.nickname == selected_ooch.name ? false : selected_ooch.nickname;
 
                 let newEvoOoch = create_ooch(oochData.evo_id, selected_ooch.level, selected_ooch.moveset, nickname, selected_ooch.current_exp, false, 
-                                          selected_ooch.stats.hp_iv, selected_ooch.stats.atk_iv, selected_ooch.stats.def_iv, selected_ooch.stats.spd_iv);
+                                          (selected_ooch.stats.hp_iv - 1) * 20, 
+                                          (selected_ooch.stats.atk_iv - 1) * 20, 
+                                          (selected_ooch.stats.def_iv - 1) * 20, 
+                                          (selected_ooch.stats.spd_iv - 1) * 20);
                 let dexEmbed = ooch_info_embed(newEvoOoch);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
@@ -583,8 +585,8 @@ module.exports = {
                 selected_ooch = newEvoOoch;
                 db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
 
-                db.profile.math(user_id, '+', 1, `oochadex[${newEvoOoch.id}].seen`);
-                db.profile.math(user_id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
+                db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].seen`);
+                db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
 
                 let followUpMsg = await interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
                 await wait(2500);
