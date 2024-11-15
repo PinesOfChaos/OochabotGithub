@@ -66,18 +66,18 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "Head Engineer",
+			"name": "Engineer Al",
 			"npc_id": "985119006267368423",
 			"objective": "",
 			"post_combat_dialogue": "Any luck with the Lavaboard Prototype?\nThey took off through that there cave just to the East.",
-			"pre_combat_dialogue": "Oh, you must be the new guy, yeah? \nDid the Head Researcher send you my way?\nYa see, we have a bit of a problem. \nSomeone's run off with our Lavaboard Prototype.\nThey took of sprinting through the cave to the East, if you can retrieve it that'd be a huge help!\n{objective:Retrieve the stolen Lavaboard Prototype}",
+			"pre_combat_dialogue": "Oh, you must be the new guy, yeah? \nDid the Professor Lyra send you my way?\nYa see, we have a bit of a problem. \nSomeone's run off with our Lavaboard Prototype.\nThey took of sprinting through the cave to the East, if you can retrieve it that'd be a huge help!{objective:Retrieve the stolen Lavaboard Prototype}",
 			"remove_on_finish": false,
 			"sprite": 9,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
 			"team": [],
-			"x": 47,
+			"x": 48,
 			"y": 26
 		},
 		{
@@ -555,9 +555,9 @@
 					"id": 21
 				}
 			],
-			"name": "Head Engineer",
+			"name": "Engineer Al",
 			"npc_id": "760410597130905528",
-			"post_combat_dialogue": "Great, you'll do just fine on our next request! Here's your completed Lavaboard!\nNow, as for our next request...\nThere's a rather rare material further North of here.\nIf you hop on your Lavaboard and ride to the West, you'll get where you need to go.\n{objective:Ride the Lava River West}",
+			"post_combat_dialogue": "Great, you'll do just fine on our next request! Here's your completed Lavaboard!\nNow, as for our next request...\nThere's a rather rare material further North of here.\nIf you hop on your Lavaboard and ride to the West, you'll get where you need to go.{objective:Ride the Lava River West}",
 			"pre_combat_dialogue": "Ah, perfect, you're back!\nIf you'll pass me the Lavaboard Prototype...\nHmm... I'll hand this off to another Engineer to tune it.\nIn the meantime, I'd like to test your strength!\nGet ready for another battle!",
 			"remove_on_finish": true,
 			"sprite": 9,
@@ -620,7 +620,7 @@
 					"spd_iv": 4
 				}
 			],
-			"x": 47,
+			"x": 48,
 			"y": 26
 		},
 		{
@@ -631,7 +631,7 @@
 			"flag_required": "lavaboard_get",
 			"is_catchable": false,
 			"items": [],
-			"name": "Head Engineer",
+			"name": "Engineer Al",
 			"npc_id": "449651191693918709",
 			"post_combat_dialogue": "The settlement's a bit of a work in progress.\nBut we're still hard at work!",
 			"pre_combat_dialogue": "Having any luck out there? You can return here any time!",
@@ -641,7 +641,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
 			"team": [],
-			"x": 47,
+			"x": 48,
 			"y": 26
 		},
 		{

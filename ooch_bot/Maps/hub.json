@@ -408,7 +408,7 @@
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
+					"count": 2,
 					"id": 3
 				}
 			],
@@ -434,7 +434,7 @@
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
+					"count": 2,
 					"id": 0
 				}
 			],
@@ -581,6 +581,70 @@
 			"team": [],
 			"x": 48,
 			"y": 49
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Researcher Eric",
+			"npc_id": "162692316844237515",
+			"post_combat_dialogue": "Guess I'll go back to the Shop to buy some more...",
+			"pre_combat_dialogue": "Hey, you have any Prisms left? I just ran out!",
+			"remove_on_finish": false,
+			"sprite": 5,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_005",
+			"team": [
+				{
+					"ability": 22,
+					"atk_iv": 5,
+					"def_iv": 3,
+					"hp_iv": 5,
+					"id": 78,
+					"item": -1,
+					"level": 3,
+					"moveset": [
+						1,
+						58
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 2
+				}
+			],
+			"x": 35,
+			"y": 41
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 9
+				}
+			],
+			"name": "Chest",
+			"npc_id": "294097688081342410",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 23,
+			"y": 38
 		}
 	],
 	"map_savepoints": [

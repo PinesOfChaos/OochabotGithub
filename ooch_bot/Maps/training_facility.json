@@ -121,60 +121,6 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
-			"items": [
-				{
-					"count": 4,
-					"id": 1
-				}
-			],
-			"name": "Chest",
-			"npc_id": "172475243628730388",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 38,
-			"y": 52
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [
-				{
-					"count": 1,
-					"id": 13
-				}
-			],
-			"name": "Chest",
-			"npc_id": "517498783576447768",
-			"objective": "",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": true,
-			"sprite": 13,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_013",
-			"team": [],
-			"x": 3,
-			"y": 32
-		},
-		{
-			"aggro_range": 3,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
 			"items": [],
 			"name": "Scavenger Gale",
 			"npc_id": "293774352884031078",
@@ -685,6 +631,84 @@
 			"team": [],
 			"x": 51,
 			"y": 4
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 23
+				}
+			],
+			"name": "Chest",
+			"npc_id": "373149780077785586",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 38,
+			"y": 52
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 13
+				}
+			],
+			"name": "Chest",
+			"npc_id": "247005265814290697",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 3,
+			"y": 32
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 3,
+					"id": 1
+				}
+			],
+			"name": "Chest",
+			"npc_id": "996131845696612199",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 23,
+			"y": 33
 		}
 	],
 	"map_savepoints": [

@@ -403,6 +403,71 @@
 			"team": [],
 			"x": 16,
 			"y": 18
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Scout Jan",
+			"npc_id": "680501540337156496",
+			"post_combat_dialogue": "And here I thought I was supposed to be stealthy.",
+			"pre_combat_dialogue": "Ah! How'd you sneak up on me like that?",
+			"remove_on_finish": false,
+			"sprite": 1,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_001",
+			"team": [
+				{
+					"ability": 8,
+					"atk_iv": 2,
+					"def_iv": 3,
+					"hp_iv": 2,
+					"id": 29,
+					"item": -1,
+					"level": 5,
+					"moveset": [
+						1,
+						60,
+						29
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 7
+				}
+			],
+			"x": 29,
+			"y": 35
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2,
+					"id": 23
+				}
+			],
+			"name": "Chest",
+			"npc_id": "665332184740606509",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"team": [],
+			"x": 46,
+			"y": 31
 		}
 	],
 	"map_savepoints": [
@@ -412,7 +477,17 @@
 			"y": 39
 		}
 	],
-	"map_shops": [],
+	"map_shops": [
+		{
+			"greeting_dialog": "Please insert Oochabux to despense product!",
+			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
+			"image": "",
+			"special_items": [],
+			"type": "default",
+			"x": 33,
+			"y": 38
+		}
+	],
 	"map_spawn_zones": [
 		{
 			"height": 8,
@@ -2753,7 +2828,7 @@
 			"t01_006",
 			"t01_006",
 			"t01_003",
-			"t01_000",
+			"t00_007",
 			"t01_000",
 			"t01_000",
 			"t01_006",
