@@ -862,9 +862,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
 
-                                await wait(5000);
-
-                                await finish_battle(thread, user_id);
+                                await finish_battle(thread, user_id, true);
 
                                 return;
                             } else {

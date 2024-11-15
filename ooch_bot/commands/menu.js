@@ -36,7 +36,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>'),
             ).addComponents(
-                new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'),
+                new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒').setDisabled(true),
             )
 
         let settings_row_2 = new ActionRowBuilder()
