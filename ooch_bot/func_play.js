@@ -335,7 +335,7 @@ module.exports = {
 
                             item_qty_collector.on('collect', async m => {
                                 let new_inv_qty = 0;
-                                let buyAmount = parseInt(m.content);
+                                let buyAmount = Math.abs(parseInt(m.content));
                                 oochabux -= item.price * buyAmount;
                                 switch (item.type) {
                                     case 'potion': 

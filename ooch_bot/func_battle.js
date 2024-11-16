@@ -1497,7 +1497,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 db.monster_data.set('34', 1, 'hp');
             break;
             case Ability.Ravenous:
-                attacker.current_hp += _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
+                attacker.current_hp = _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
                 defender_field_text += `\n${attacker_emote} **${atkOochName}** healed 20% HP back from its ability **Ravenous**!`;
             break;
         }

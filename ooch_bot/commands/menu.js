@@ -261,7 +261,12 @@ module.exports = {
 
         //#endregion End of making action rows
         let user_profile = db.profile.get(interaction.user.id);
-        if (user_profile.ooch_pc.length == 0) settings_row_2.components[1].setDisabled(true);
+        let areaTeleporters = db.maps.get(user_profile.location_data.area, 'map_savepoints');
+        let onTeleporter = areaTeleporters.filter(v => {
+            return user_profile.location_data.x == v.x && user_profile.location_data.y == v.y;
+        })
+
+        if (onTeleporter == false) settings_row_2.components[1].setDisabled(true);
         let menuMsg;
         await interaction.reply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
@@ -375,6 +380,14 @@ module.exports = {
                             emoji: db.item_data.get(id, 'emote'),
                         });
                     }
+                }
+
+                if (other_select_options.length == 0) {
+                    other_select_options.push({ 
+                        label: `No Usable Items.`,
+                        description: 'Can\'t use anything!',
+                        value: `n/a`
+                    });
                 }
             }
 
@@ -844,6 +857,12 @@ module.exports = {
                 await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
             }
             else if (collectorId == 'other_select') {
+                if (selected == 'n/a') {
+                    let keyData = await buildItemData();
+                    bagEmbed.setDescription(keyData[0]);
+                    i.update({ content: `Can\'t use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                    return;
+                }
                 let item_data = db.item_data.get(selected);
 
                 let item_usage_text = '';

@@ -852,7 +852,7 @@ module.exports = {
         });
         create_move({
             id : 58, name : 'Byte Bite', type : OochType.Tech,
-            damage : 60, accuracy: 100,
+            damage : 30, accuracy: 100,
             effect : [],
             description : 'Form digital jaws that clamp down on the target.',
         });
@@ -1163,7 +1163,7 @@ module.exports = {
             description : 'You hit the jackpot!!!',
         });
 
-        //#endregion
+        //#endregionF
 
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Ability Data
@@ -2140,7 +2140,7 @@ module.exports = {
             type: [OochType.Tech],
             hp: 10, atk: 10, def: 10, spd: 15, // total 45
             move_list: [
-                [1, Move.Bash], [2, Move.Sawblade], [6, Move.Hasten], [12, Move.Sharpen],
+                [1, Move.Bash], [2, Move.Hasten], [6, Move.Sawblade], [12, Move.Sharpen],
                 [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [35, Move.DigitalGamble], 
                 [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
             ],

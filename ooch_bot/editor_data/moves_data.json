@@ -825,7 +825,7 @@
     "id": 58,
     "name": "Byte Bite",
     "type": "tech",
-    "damage": 60,
+    "damage": 30,
     "accuracy": 100,
     "effect": [],
     "description": "Form digital jaws that clamp down on the target.",
