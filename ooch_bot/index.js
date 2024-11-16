@@ -64,14 +64,14 @@ client.on('ready', async () => {
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
         let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
 
-        if (user_profile.player_state === PlayerState.Combat) {
+        if (user_profile.player_state == PlayerState.Combat) {
             // Delete turn messages
             let msgDeleteCount = db.profile.get(user, 'turn_msg_counter');
             if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
                 await userThread.bulkDelete(msgDeleteCount);
             }
 
-            //let warningMsg = await userThread.send({ content: '## The bot has crashed, the current battle turn has been undone to avoid corruption.' });
+            let warningMsg = await userThread.send({ content: '## The bot has crashed, the current battle turn has been undone to avoid corruption.' }).catch(() => {});;
 
             // Rollback profile to previous turn.
             if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
@@ -80,19 +80,18 @@ client.on('ready', async () => {
             }
 
             await prompt_battle_input(userThread, user);
-            // await wait(2000);
-            // await warningMsg.delete();
-        } else if (user_profile.player_state === PlayerState.Intro) {
+            await wait(5000);
+            await warningMsg.delete();
+
+        } else if (user_profile.player_state == PlayerState.Intro) {
+
             await userThread.bulkDelete(100).catch(() => {});
             await reset_oochamon(user);
             await db.profile.set(user, userThread.id, 'play_thread_id');
             await db.profile.set(user, userGuild.id, 'play_guild_id');
             await event_process(user, userThread, db.events_data.get('ev_intro'), 0, 'ev_intro');
-             // let warningMsg = await userThread.send({ content: '## The bot has crashed, so you have been brought back to the start of the Intro event.' });
 
-            // await wait(2000);
-            // await warningMsg.delete();
-        } else if (user_profile.player_state === PlayerState.Dialogue && user_profile.cur_event_name !== false) {
+        } else if (user_profile.player_state == PlayerState.Dialogue && user_profile.cur_event_name !== false) {
             await userThread.bulkDelete(100).catch(() => {});
 
             // Setup playspace
@@ -104,12 +103,7 @@ client.on('ready', async () => {
             });
 
             await event_process(user, userThread, db.events_data.get(user_profile.cur_event_name), 0, user_profile.cur_event_name);
-
-            // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has restarted. No progress has been lost.' });
-
-            // await wait(2000);
-            // await warningMsg.delete();
-        } else if (user_profile.player_state === PlayerState.Dialogue) {
+        } else if (user_profile.player_state == PlayerState.Dialogue) {
             await userThread.bulkDelete(100).catch(() => {});
 
             // Setup playspace
@@ -123,11 +117,6 @@ client.on('ready', async () => {
             if (user_profile.cur_event_array.length != 0) {
                 await event_process(user, userThread, user_profile.cur_event_array, user_profile.cur_event_pos);
             }
-
-            // let warningMsg = await userThread.send({ content: '## The bot has crashed, so the dialogue has rebooted. No progress has been lost.' });
-
-            // await wait(2000);
-            // await warningMsg.delete();
 
         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
             if (userThread !== undefined) {
@@ -143,10 +132,7 @@ client.on('ready', async () => {
                 await move(userThread, user, '', 1);
             }
 
-            // let warningMsg = await userThread.send({ content: '## The bot has crashed, and your game has soft rebooted to avoid corruption and button issues. No progress has been lost.' });
-
-            // await wait(2000);
-            // await warningMsg.delete();
+           
         }
     }
     console.log('Bot Ready')

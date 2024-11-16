@@ -335,7 +335,7 @@ prompt_battle_input: async function(thread, user_id) {
             ooch_plr.ability = ooch_plr.og_ability;
             ooch_plr.type = ooch_plr.og_type;
             ooch_plr.status_effects = [];
-            ooch_plr.doom_timer = 3;
+            ooch_plr.doom_timer = 4;
             db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
 
             // Check for on switch in abilities, player switching in, enemy ability activated
@@ -449,10 +449,18 @@ prompt_battle_input: async function(thread, user_id) {
                     db.profile.dec(user_id, 'turn_msg_counter');
                     db.profile.dec(user_id, 'battle_msg_counter');
 
+                    function calculate_speed(ooch_obj) {
+                        let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
+                        if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
+                        if (ooch_obj.ability == Ability.Immobile) speed /= 100; 
+                    
+                        return speed;
+                    }
+
                     //Get the speed values for the oochamons in the fighterino
                     let enemy_speed = calculate_speed(ooch_enemy);
                     let plr_speed = calculate_speed(ooch_plr);
-                   
+
                     //Turn Order
                     if (enemy_speed > plr_speed) { // Enemy goes first
                         turn_order = ['e', 'p'];
@@ -592,7 +600,7 @@ prompt_battle_input: async function(thread, user_id) {
                     ooch_prev.stats.eva_mul = 0;
                     ooch_prev.ability = ooch_prev.og_ability;
                     ooch_prev.type = ooch_prev.og_type;
-                    ooch_prev.doom_timer = 3;
+                    ooch_prev.doom_timer = 4;
                     db.profile.set(user_id, ooch_prev, `ooch_party[${active_slot}]`);
 
                     // Check for on switch in abilities, player switching in, enemy ability activated
@@ -826,9 +834,13 @@ prompt_battle_input: async function(thread, user_id) {
 
                                 let user_profile = db.profile.get(user_id);
                                 let ooch_party = user_profile.ooch_party;
+                                let is_first_catch = (db.profile.get(user_id, `oochadex[${ooch_enemy.id}].caught`) == 0);
+                                
                                 // Distribute XP for a caught Oochamon
                                 // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
                                 exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), 1); //catching mons will always give 1x EXP
+                                if(is_first_catch) exp_earned *= 2;
+
                                 let exp_earned_main = Math.round(exp_earned * 1.25);
                                 if (ooch_plr.level != 50) {
                                     string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
@@ -837,6 +849,7 @@ prompt_battle_input: async function(thread, user_id) {
                                 if (ooch_party.length > 1) {
                                     string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
                                 }
+                                if(is_first_catch) string_to_send += `\n✨ *Gained 2x Experience from catching a New Oochamon!*`;
 
                                 for (let i = 0; i < ooch_party.length; i++) {
                                     if (i == user_profile.ooch_active_slot) { 
@@ -876,6 +889,8 @@ prompt_battle_input: async function(thread, user_id) {
                                 await thread.send({ embeds: [infoEmbed], files: [oochPng] });
                                 await db.profile.inc(user_id, 'turn_msg_counter');
                                 await db.profile.inc(user_id, 'battle_msg_counter');
+
+                                await wait(5000);
 
                                 await finish_battle(thread, user_id, true);
 
@@ -1076,7 +1091,7 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
  * @returns A number of the amount of EXP earned
  */
 battle_calc_exp: function(enemy_level, enemy_evo_stage, bonus_multiplier = 1) {
-    let exp_multiplier = 1
+    let exp_multiplier = 0.90
     return Math.round(((bonus_multiplier * (1.025 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 20) * exp_multiplier);
 },
 
@@ -1193,9 +1208,13 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let move_type_emote =      type_to_emote(move_type);
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
     let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
+    if (attacker.status_effects.includes(Status.Focus)) {
+        crit_multiplier = 2;
+        attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
+    }
     
     if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
-    let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
+    let status_blind = (attacker.status_effects.includes(Status.Blind) ? .75 : 1);
     let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
     let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
     let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
@@ -1239,7 +1258,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     vampire_heal = Math.ceil(vampire_heal * dmg); //used later
     // Remove doubled status effect
     if (status_doubled != 1) {
-        defender.status_effects = defender.status_effects.filter(v => v !== Status.Double);
+        defender.status_effects = defender.status_effects.filter(v => v != Status.Double);
     }
 
     // If the defender has Vanish AND the attack is not self targeting, it should fail
@@ -1820,8 +1839,10 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             let infect_val = Math.round(ooch.stats.hp/20)
             ooch.current_hp -= infect_val;
             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-            opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-            string_to_send += `\n${ooch.emote} **${ooch.nickname}** has **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}**.`;
+            if (opposing_ooch != undefined) {
+                opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
+                string_to_send += `\n${ooch.emote} **${ooch.nickname}** has **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from **INFECTED!**`;
+            }
         }
 
         if (ooch_digitized && ooch.type != [OochType.Tech]) {
@@ -1833,12 +1854,16 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             ooch.doom_timer -= 1;
             if (ooch.doom_timer == 0) {
                 ooch.current_hp = 0;
+                ooch.alive = false;
                 string_to_send += `\n${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0! It dies unceremoniously.`
             } else {
-                string_to_send += `\n${ooch.emote} **${ooch.nickname}**'s **DOOM** timer went down by 1 due to its status effect.\n**${ooch.doom_timer} turns left!**.`
+                string_to_send += `\n${ooch.emote} **${ooch.nickname}**'s **DOOM** timer went down by 1 due to its status effect.\n**${ooch.doom_timer} turns left!**`
             }
         }
     }
+
+    user_profile.ooch_party[user_profile.ooch_active_slot] = ooch_plr;
+    enemy_profile.ooch_party[enemy_profile.ooch_active_slot] = ooch_enemy;
 
     let plr_hp_string = generate_hp_bar(ooch_plr, 'plr');
     let en_hp_string = generate_hp_bar(ooch_enemy, 'enemy');
@@ -1950,7 +1975,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             ooch_enemy.ability = ooch_enemy.og_ability;
             ooch_enemy.type = ooch_enemy.og_type;
             ooch_enemy.status_effects = [];
-            ooch_enemy.doom_timer = 3;
+            ooch_enemy.doom_timer = 4;
             db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${enemy_profile.ooch_active_slot}]`);
 
             // Switch in stats
@@ -2062,7 +2087,7 @@ item_use: function(user_id, ooch, item_id) {
         return ooch;
     } else if (item_data.type == 'repel') {
         db.profile.set(user_id, item_data.potency, 'repel_steps'); 
-    }
+    } 
     
 },
 
@@ -2318,7 +2343,7 @@ finish_battle: async function(thread, user_id, battle_won) {
         ooch.stats.eva_mul = 0;
         ooch.ability = ooch.og_ability;
         ooch.type = ooch.og_type;
-        ooch.doom_timer = 3;
+        ooch.doom_timer = 4;
         ooch.status_effects = [];
         if (battle_won === false) {
             ooch.current_hp = ooch.stats.hp;
@@ -2411,8 +2436,8 @@ level_up: function(ooch) {
             evoData = db.monster_data.get(db.monster_data.get(ooch.id, 'evo_id'));
         }
 
-        output =  `\n\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
-        `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**` : ``}` +
+        output =  `\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
+        `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**\n` : ``}` +
         `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `\nYou can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
     }
     return [ooch, output];
@@ -2474,13 +2499,13 @@ generate_battle_image: async function(thread, user_id, plr, enemy, is_npc_battle
     let counter = 0;
     for (let type of plr.ooch_party[plr.ooch_active_slot].type) {
         let typeImage = await loadImage(`./art/ArtFiles/icon_${type}.png`);
-        ctx.drawImage(typeImage, 150 + (20 * counter), 240, 16, 16);
-        counter++;
+        ctx.drawImage(typeImage, 125 + (18 * counter), 225, 16, 16);
+        counter++; 
     }
     counter = 0;
     for (let type of enemy.ooch_party[enemy.ooch_active_slot].type) {
         let typeImage = await loadImage(`./art/ArtFiles/icon_${type}.png`);
-        ctx.drawImage(typeImage, 340 + (20 * counter), 95, 16, 16);
+        ctx.drawImage(typeImage, 340 + (18 * counter), 95, 16, 16);
         counter++;
     }
     let playerMemberObj = thread.guild.members.cache.get(user_id);
@@ -2562,20 +2587,6 @@ add_status_effect: function(ooch, status) {
 get_stat_multiplier: function(stage, scalar=2) {
     if (scalar < 1) scalar = 1;
     return (stage >= 0) ? (stage / scalar) + 1 : scalar / (Math.abs(stage) + scalar)
-},
-
-/**
- * Get the current speed from the stat stage system.
- * @param {Object} ooch_obj The oochamon whom'st'd've's speed to calculate
- * @returns Current speed after multipliers, abilites, and status effects
- */
-calculate_speed(ooch_obj){
-    let speed = ooch_obj.stats.spd * ooch_obj.stats.spd_mul
-    if(ooch_obj.status_effects.includes(Status.Snare)){ speed /= 100; }
-    if (ooch_obj.ability == Ability.Immobile){ speed /= 100; }
-
-    return(speed)
 }
-
 
 }

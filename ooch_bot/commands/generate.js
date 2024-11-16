@@ -351,123 +351,146 @@ module.exports = {
         create_item({
             id : 0, name : 'Potion', emote : '<:item_potion:1274937121370669118>',
             category : 'heal_inv', type : 'potion', price : 40, potency : 20, 
-            description : 'Used to quickly heal 20 HP.'
+            description : 'A potion filled with a mysterious mix of chemicals. Slightly heals an injured Oochamon.',
+            description_short : 'Used to heal an Oochamon for 20 HP.'
         })
         create_item({
             id : 1, name : 'Med-Potion', emote : '<:item_potion_hi:1274937134935052328>',
             category : 'heal_inv', type : 'potion', price : 200, potency : 50, 
-            description : 'An advanced potion which heals 50 HP.'
+            description : 'After further development a slightly stronger potion has been developed. Heals an injured Oochamon.',
+            description_short : 'Used to heal an Oochamon for 50 HP.'
         })
         create_item({
             id : 2, name : 'Hi-Potion', emote : '<:item_potion_magic:1274937146423115922>',
             category : 'heal_inv', type : 'potion', price : 800, potency : 200, 
-            description : 'A high tier potion which heals 200 HP.'
+            description : 'A high-tier potion created after several iterations. Greatly restores health to an oochamon.',
+            description_short : 'Used to heal an Oochamon for 200 HP.'
         })
         create_item({
             id : 3, name : 'Prism', emote : '<:item_prism:1274937161262698536>',
             category : 'prism_inv', type : 'prism', price : 50, potency : 1, 
-            description : 'A device used to capture Oochamon.'
+            description : 'A device developed using ancient technology found on the planet. It\'s used to capture Oochamon.',
+            description_short : 'Has a chance to capture an Oochamon.'
         })
         create_item({
             id : 4, name : 'Greater Prism', emote : '<:item_prism_greater:1274937183710740510>',
-            category : 'prism_inv', type : 'prism', price : 150, potency : 1.5, 
-            description : 'An improved prism with a higher capture rate.'
+            category : 'prism_inv', type : 'prism', price : 150, potency : 1.6, 
+            description : 'Developments in prism technology have created this improved prism with a higher capture rate.',
+            description_short : 'Has an increased chance to capture an Oochamon.'
         })
         create_item({
             id : 5, name : 'Grand Prism', emote : '<:item_prism_grand:1274937171513442359>',
-            category : 'prism_inv', type : 'prism', price : 500, potency : 2, 
-            description : 'A further modified prism with an even higher capture rate.'
+            category : 'prism_inv', type : 'prism', price : 500, potency : 2.5, 
+            description : 'A further modified prism with an even higher capture rate, thought to be the upper limits of capture technology.',
+            description_short : 'Has a high chance to capture an Oochamon.'
         })
         create_item({
             id : 6, name : 'Perfect Prism', emote : '<:item_prism_perfect:1274937195970428928>',
             category : 'prism_inv', type : 'prism', price : 10000, potency : 1000, 
-            description : 'A prism with a shattered casing, nothing escapes its pull.'
+            description : 'A prism created in what was certainly an accident, with a black core and shattered casing, nothing escapes its pull.',
+            description_short : 'Has a 100% chance to capture an Oochamon.'
         })
         create_item({
             id : 7, name : 'Attack Crystal', emote : '<:item_attack_crystal:1274936834883059774>',
             category : 'other_inv', type : 'move_unlock', price : 2000, potency : 1, 
-            description : 'Unlocks a hidden move for an Oochamon by releasing stored power.'
+            description : 'Glimmering crystals from deep within the planets core. They have the potential to unlock a hidden move for an Oochamon by releasing stored power.',
+            description_short : 'Unlocks a hidden move for an Oochamon.'
         })
         create_item({
             id : 8, name : 'ID Card', emote : '<:item_id_card:1304609783474552842>',
             category : 'other_inv', type : 'key', price : -1, potency : 1, 
-            description : 'Your ID card. You look so fabulous!'
+            description : 'Your ID card. You look so fabulous!',
+            description_short : 'Grants access to various Oochcorp facilities.'
         })
-
         create_item({
             id : 9, name : 'Eyedrops', emote : '<:item_eyedrops:1274937019994472459>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Blind, 
-            description : 'Removes BLIND status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Blind, 
+            description : 'A small vial of very powerful eyedrops. It burns to touch, but seems fine for Oochamon to use.',
+            description_short : 'Removes BLIND status effect.'
         })
         create_item({
             id : 10, name : 'Shears', emote : '<:item_shears:1274937209652514838>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Snare, 
-            description : 'Removes SNARED status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Snare, 
+            description : 'Titanium reinforced shears, they\'ll cut through anything holding your Oochamon down.',
+            description_short : 'Removes SNARED status effect.'
         })
         create_item({
             id : 11, name : 'Daylily', emote : '<:item_daylily:1274936962125402143>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Doom, 
-            description : 'Removes DOOMED status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Doom, 
+            description : 'A small white flower said to be found on a plateau above the clouds, it has the ability to change the fate of an Oochamon.',
+            description_short : 'Removes DOOMED status effect.'
         })
         create_item({
             id : 12, name : 'Antiparasite', emote : '<:item_antiparasite:1274936818823069789>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Infect, 
-            description : 'Removes INFECTED status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Infect, 
+            description : 'A small, wrigling creature. It enters the host\'s body and hunts down any infestations within an Oochamon.',
+            description_short : 'Removes INFECTED status effect.'
         })
         create_item({
             id : 13, name : 'Debug Chip', emote : '<:item_debugchip:1274936992462930001>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Digitize, 
-            description : 'Removes DIGITIZED status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Digitize, 
+            description : 'A small computer chip from an odd machine. It seems to break down any tech that finds itself attached to an Oochamon.',
+            description_short : 'Removes DIGITIZED status effect.'
         })
         create_item({
             id : 14, name : 'Cooling Balm', emote : '<:item_coolingbalm:1274936928625758269>',
-            category : 'heal_inv', type : 'status', price : 100, potency : Status.Burn, 
-            description : 'Removes BURNED status effect.'
+            category : 'heal_inv', type : 'status', price : 80, potency : Status.Burn, 
+            description : 'A container of glowing blue gel found deep below the planet\'s surface. Its supercooling properties will relieve a burn from an Oochamon.',
+            description_short : 'Removes BURNED status effect.'
         })
         create_item({
             id : 15, name : 'Nullifying Sphere', emote : '<:item_null_sphere:1274937109995716648>',
-            category : 'heal_inv', type : 'status', price : 1000, potency : Status.All, 
-            description : 'Removes all status effects.'
+            category : 'heal_inv', type : 'status', price : 500, potency : Status.All, 
+            description : 'A white crystal sphere with various colours mixed within. All things that may pain an Oochamon are removed by the void inside.',
+            description_short : 'Removes all status effects.'
         })
         create_item({
             id : 16, name : 'Green Boostgem', emote : '<:item_iv_hp:1274937089666056294>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.HP, 
-            description : 'Permanently increases Health bonus of an Oochamon.'
+            description : 'A viridian crystal from the planet\'s core glowing with vitality. Your Oochamon seem strangely drawn to it.',
+            description_short : 'Permanently increases Health bonus of an Oochamon.'
         })
         create_item({
             id : 17, name : 'Red Boostgem', emote : '<:item_iv_atk:1274937039460237382>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Attack, 
-            description : 'Permanently increases Attack bonus of an Oochamon.'
+            description : 'A crimson crystal from the planet\'s core glowing with power. Your Oochamon seem strangely drawn to it.',
+            description_short : 'Permanently increases Attack bonus of an Oochamon.'
         })
         create_item({
             id : 18, name : 'Blue Boostgem', emote : '<:item_iv_def:1274937065317990486>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Defense, 
-            description : 'Permanently increases Defense bonus of an Oochamon.'
+            description : 'An azure crystal from the planet\'s core glowing with protection. Your Oochamon seem strangely drawn to it.',
+            description_short : 'Permanently increases Defense bonus of an Oochamon.'
         })
         create_item({
             id : 19, name : 'Yellow Boostgem', emote : '<:item_iv_spd:1274937099984048138>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Speed, 
-            description : 'Permanently increases Speed bonus of an Oochamon.'
+            description : 'An amber crystal from the planet\'s core glowing with energy. Your Oochamon seem strangely drawn to it.',
+            description_short : 'Permanently increases Speed bonus of an Oochamon.'
         })
         create_item({
             id : 20, name : 'Spore Feather', emote : '<:item_sporefeather:1304609799245266964>',
-            category : 'other_inv', type : 'evolve', price : 8000, potency : 1, 
-            description : 'Used to evolve a certain Oochamon. The feathers are covered in Fungal spores.'
+            category : 'other_inv', type : 'evolve', price : 8000, potency : [59, 62], 
+            description : 'An old feather covered in fungal spores. Oochamon are particulary susceptible to corrupting forces, and it seems like this one was no different.',
+            description_short : 'Used to evolve a certain Oochamon.'
         })
         create_item({
             id : 21, name : 'Lavaboard', emote : '<:item_lavaboard:1304609819201900575>',
             category : 'other_inv', type : 'key', price : -1, potency : 1, 
-            description : 'A high-tech board that uses extreme heat to levitate.'
+            description : 'A high-tech board that uses extreme heat to to float. It even comes with a cool heat-proof suit.',
+            description_short : 'Used to ride over Lava tiles.'
         })
         create_item({
             id : 22, name : 'Repulsor', emote : '<:item_repulsor:1306488213908488212>',
-            category : 'other_inv', type : 'repel', price : 200, potency : 100, 
-            description : 'Prevents Oochamon from spawning for 100 steps.'
+            category : 'other_inv', type : 'repel', price : 150, potency : 75, 
+            description : 'A battery-powered repulsion device that keeps Oochamon away.',
+            description_short : 'Repels Oochamon for 75 steps.'
         })
         create_item({
             id : 23, name : 'Emergency Teleporter', emote : '<:item_tp_device:1306488228383031296>',
             category : 'other_inv', type : 'teleport', price : 300, potency : 1, 
-            description : 'Brings you to your last used Save Station.'
+            description : 'An emergency button that uses unknown systems to relocate the user. It\'s mildly painful to use, but it gets you where you\'re going quick!',
+            description_short : 'Brings you to your last used Save Station.'
         })
 
         //#endregion
@@ -1132,6 +1155,12 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : Status.Doom, chance : 100, target : MoveTarget.Enemy}],
             description : 'Wraps the target in cursed cloths, DOOMING the target.',
+        });
+        create_move({
+            id : 108, name : 'Jackpot', type : OochType.Tech,
+            damage : 9999, accuracy: 1000,
+            effect : [],
+            description : 'You hit the jackpot!!!',
         });
 
         //#endregion

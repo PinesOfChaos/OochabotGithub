@@ -179,7 +179,8 @@ module.exports = {
             "type",
             "price",
             "potency",
-            "description"
+            "description",
+            "description_short"
         ];
 
         if (item.tags === undefined) item.tags = [];

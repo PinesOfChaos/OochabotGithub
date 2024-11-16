@@ -492,8 +492,10 @@ let functions = {
                         if (event_name == 'ev_tutorial_8') {
                             let ooch_party = db.profile.get(user_id, 'ooch_party');
                             // Remove Vrumbox
-                            ooch_party = ooch_party.filter(v => v.id !== 52)
-                            ooch_party = ooch_party.map(v => v.current_hp = v.stats.hp);
+                            ooch_party = ooch_party.filter(v => v.id !== 52);
+                            let mainOoch = ooch_party[0];
+                            let mainOochFixed = create_ooch(mainOoch.id, 5, [], mainOoch.nickname, 0, mainOoch.ability, 1.25, 1.25, 1.25, 1.25);
+                            ooch_party[0] = mainOochFixed;
                             db.profile.set(user_id, ooch_party, 'ooch_party')
 
                             // Reset other values upon tutorial completion
@@ -501,6 +503,7 @@ let functions = {
                             db.profile.set(user_id, {}, 'other_inv')
                             db.profile.set(user_id, {}, 'prism_inv')
                             db.profile.set(user_id, {}, 'heal_inv')
+                            db.profile.set(user_id, 0, `oochadex[52].caught`);
                         }
 
                         await confirm_collector.stop();

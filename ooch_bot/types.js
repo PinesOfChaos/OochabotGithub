@@ -96,8 +96,6 @@ const OochType = {
     Martial: 'martial',
 }
 
-
-
 const Move = {
     Hit: 0,
     Bash: 1,
@@ -206,7 +204,8 @@ const Move = {
     HealingGems: 104,
     ScarySheet: 105,
     FiberSlicer: 106,
-    Mummify: 107
+    Mummify: 107,
+    Jackpot: 108
 
 }
 

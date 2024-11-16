@@ -195,13 +195,15 @@ module.exports = {
             break;
             case 'item':
                 let info_item = db.item_data.get(selected_id);
+                let amtOwned = db.profile.get(interaction.user.id, `${info_item.category}.${selected_id}`);
+                if (amtOwned == undefined) amtOwned = 0;
                 let embed_item = new EmbedBuilder()
                     .setColor('#808080')
                     .setTitle(`${info_item.emote} ${info_item.name}`)
-                    .setDescription(info_item.description)
+                    .setDescription(`*${info_item.description}\n\n${info_item.description_short}*`)
                     .addFields(
-                        {name: 'Owned:',     value: `${info_item.price > 0 ? info_item.price : '--'}`, inline: false},
-                        {name: 'Price:',     value: `${info_item.price > 0 ? info_item.price : '--'}`, inline: false}
+                        {name: 'Owned:',     value: `${amtOwned}x`, inline: true},
+                        {name: 'Price:',     value: `${info_item.price > 0 ? info_item.price : '--'}`, inline: true}
                     );
                 return interaction.reply({
                     embeds: [ embed_item ],

@@ -38,7 +38,7 @@
 			"y": 58
 		},
 		{
-			"aggro_range": 3,
+			"aggro_range": 0,
 			"coin": 2600,
 			"flag_given": "defeat_corrupted_tech",
 			"flag_kill": "",
@@ -81,7 +81,7 @@
 					"hp_iv": 0,
 					"id": 76,
 					"item": -1,
-					"level": 16,
+					"level": 15,
 					"moveset": [
 						61,
 						59,
@@ -99,7 +99,7 @@
 					"hp_iv": 10,
 					"id": 74,
 					"item": -1,
-					"level": 18,
+					"level": 17,
 					"moveset": [
 						1,
 						58,

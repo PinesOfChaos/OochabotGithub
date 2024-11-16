@@ -359,7 +359,7 @@
 			"name": "Professor Lyra",
 			"npc_id": "056028154066537078",
 			"post_combat_dialogue": "Please go interact with the Safe Save Station. I'll be here when you're done!",
-			"pre_combat_dialogue": "Oh, perfect, you have your ID, a couple last things before you're ready to be on your way!\nTry standing on the blue glowing square! It's an Oochcorp patented Save Station and provides many useful features!\nLet me know once you've done so!{objective:Interact with the Save Station.}",
+			"pre_combat_dialogue": "Oh, perfect, you have your ID, a couple last things before you're ready to be on your way!\nTry standing on the blue glowing square! It's an Oochcorp patented Save Station and provides many useful features, such as the ability to use the Oochabox!\nThe Oochabox is handy storage system that allows you to store and grab more than your standard team of 4 Oochamon, and you can access it while standing on a teleporter and using the menu.!\nLet me know once you've done so!{objective:Interact with the Save Station.}",
 			"remove_on_finish": false,
 			"sprite": 6,
 			"sprite_combat": "",
@@ -567,9 +567,13 @@
 				{
 					"count": 5,
 					"id": 0
+				},
+				{
+					"count": 2,
+					"id": 22
 				}
 			],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Professor Lyra",
 			"npc_id": "682557230892395174",
 			"post_combat_dialogue": "Please stay safe out there!",
 			"pre_combat_dialogue": "Ah, I'm glad you've made it back safely.\nSome of our top researchers are investigating the happenings in the caves you just explored.\nRest assured, we will get to the bottom of this.\nNow, once you're all rested up, head up through the caves once more.\nThe team working at the Lava Settlement could really use a hand as well.{objective:Re-enter the caves and travel north to the Lava Settlement}\nOh, and please take these.",

@@ -77,6 +77,11 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_ooch').setLabel('Back').setStyle(ButtonStyle.Danger)
             );
+        
+        let item_back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('back_to_item').setLabel('Back').setStyle(ButtonStyle.Danger)
+            );
 
         // Extra buttons for box
         let box_buttons = new ActionRowBuilder()
@@ -303,7 +308,7 @@ module.exports = {
             return move_buttons;
         }
 
-        function buildPartyData(ooch_party) {
+        function buildPartyData(ooch_party, for_item=false, item=false) {
             let party = new ActionRowBuilder();
             let party_2 = new ActionRowBuilder();
             let pa_components = [party];
@@ -311,24 +316,76 @@ module.exports = {
                 // If i is 0 or 1, add components to party`
                 // If i is 2 or 3, add components to party_2
                 // This is to make a 2x2 table of buttons, lol
-                ((i <= 1) ? party : party_2).addComponents(
-                    new ButtonBuilder()
-                    .setCustomId(`par_ooch_id_${i}`)
-                    .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})`)
-                    .setStyle((ooch_party[i].alive) ? ((i == 0) ? ButtonStyle.Success : ButtonStyle.Secondary) : ButtonStyle.Danger)
-                    .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
-                )
+                if (for_item == false) {
+                    ((i <= 1) ? party : party_2).addComponents(
+                        new ButtonBuilder()
+                        .setCustomId(`par_ooch_id_${i}`)
+                        .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})`)
+                        .setStyle((ooch_party[i].alive) ? ((i == 0) ? ButtonStyle.Success : ButtonStyle.Secondary) : ButtonStyle.Danger)
+                        .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
+                    )
+                } else {
+                    ((i <= 1) ? party : party_2).addComponents(
+                        new ButtonBuilder()
+                        .setCustomId(`item_ooch_id_${i}_${item.id}`)
+                        .setLabel(`${ooch_party[i].nickname}${item.type == 'iv' ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
+                        .setStyle(ButtonStyle.Primary)
+                        .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
+                        .setDisabled((item.type == 'iv' ? Boolean(ooch_party[i].stats[`${item.potency}_iv`] == 1.5) : Boolean(item.potency[0] != ooch_party[i].id)))
+                    )
+                }
             }
 
             if (ooch_party.length > 2) pa_components.push(party_2);
             
             // Disable the party healing button if all Oochamon are at full HP
-            let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
-            oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
-            if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
+            if (for_item == false) {
+                let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
+                oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
+                if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
 
-            pa_components.push(ooch_back_button);
+                pa_components.push(ooch_back_button);
+            } else {
+                pa_components.push(item_back_button);
+            }
             return pa_components;
+        }
+
+        async function buildItemData() {
+            let item_list_str = ``;
+            for (const [item_id, quantity] of Object.entries(db.profile.get(interaction.user.id, 'other_inv'))) {
+                let item_obj = await db.item_data.get(item_id);
+                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
+            }
+                    
+            let other_inv_keys = Object.keys(db.profile.get(interaction.user.id, 'other_inv'));
+
+            bag_select = new ActionRowBuilder();
+            let other_select_options = [];
+            for (let i = 0; i < other_inv_keys.length; i++) {
+                let id = other_inv_keys[i];
+                let amount = db.profile.get(interaction.user.id, `other_inv.${other_inv_keys[i]}`)
+
+                if (amount != 0) {
+                    if (db.item_data.get(id, 'type') != 'key') {
+                        other_select_options.push({ 
+                            label: `${db.item_data.get(id, 'name')} (${amount})`,
+                            description: db.item_data.get(id, 'description_short'),
+                            value: `${id}`,
+                            emoji: db.item_data.get(id, 'emote'),
+                        });
+                    }
+                }
+            }
+
+            bag_select.addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('other_select')
+                .setPlaceholder('Select an item to use in your inventory.')
+                .addOptions(other_select_options),
+            );
+
+            return [item_list_str, bag_select];
         }
 
         // Initialize all variables used across multiple sub menus here
@@ -350,7 +407,6 @@ module.exports = {
         let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
         oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
         if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
-        
 
         // Menu operation is handled in this collector
         await collector.on('collect', async i => {
@@ -387,6 +443,12 @@ module.exports = {
                 box_row = buildBoxData(interaction.user, page_num);
                 i.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
+             // Back to Box Select
+             else if (selected == 'back_to_item') {
+                box_row = await buildItemData();
+                bagEmbed.setDescription(box_row[0]);
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
+            } 
             //#endregion
 
             //#region Party / Party Submenu
@@ -418,9 +480,8 @@ module.exports = {
                     let tier_max = healOptions.length - 1
                     let tier_current = tier_max;
                     let backwards = false;
-
                     while (hp_dif - hp_restored > 0) {
-                        if ((healOptions[tier_current].owned - healOptions[tier_current].used) == 0) {
+                        if ((tier_current == -1) || (healOptions[tier_current].owned - healOptions[tier_current].used) == 0) {
                             tier_current += backwards ? 1 : -1;
                             if (tier_current > tier_max) { break; } //end while loop if we've run out of options
                             else if (tier_current <= 0) { backwards = true; } //start working backwards if we're out of the minimum potion
@@ -450,6 +511,7 @@ module.exports = {
 
                     hp_restored = _.clamp(oochParty[i].current_hp + hp_restored, 0, oochParty[i].stats.hp);
                     oochParty[i].current_hp = hp_restored;
+                    oochParty[i].alive = true;
                 }
                 
                 db.profile.set(interaction.user.id, oochParty, 'ooch_party');
@@ -593,14 +655,14 @@ module.exports = {
                 i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
 
                 // Finalize putting the ooch into the database and in our menu
-                selected_ooch = newEvoOoch;
                 db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
 
                 db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].seen`);
                 db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
 
-                let followUpMsg = await interaction.followUp({ content: `You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
-                await wait(2500);
+                let followUpMsg = await interaction.followUp({ content: `# You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
+                selected_ooch = newEvoOoch;
+                await wait(5000);
                 await followUpMsg.delete().catch(() => {});
             }   
             // Set a nickname button
@@ -776,98 +838,114 @@ module.exports = {
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[1].setStyle(ButtonStyle.Secondary)
                 bag_buttons.components[2].setStyle(ButtonStyle.Success)
-                display_inv = key_inv;
-                let item_list_str = ``;
 
-                for (const [item_id, quantity] of Object.entries(display_inv)) {
-                    let item_obj = db.item_data.get(item_id);
-                    item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
-                }
-
-                let other_inv_keys = Object.keys(display_inv);
-
-                bag_select = new ActionRowBuilder();
-                let other_select_options = [];
-                for (let i = 0; i < other_inv_keys.length; i++) {
-                    let id = other_inv_keys[i];
-                    let amount = db.profile.get(interaction.user.id, `other_inv.${other_inv_keys[i]}`)
-
-                    if (amount != 0) {
-                        if (db.item_data.get(id, 'type') != 'key') {
-                            other_select_options.push({ 
-                                label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description'),
-                                value: `${id}`,
-                                emoji: db.item_data.get(id, 'emote'),
-                            });
-                        }
-                    }
-                }
-
-                bag_select.addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId('other_select')
-                    .setPlaceholder('Select an item to use in your inventory.')
-                    .addOptions(other_select_options),
-                );
-
-                bagEmbed.setDescription(item_list_str);
-                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, bag_select, back_button] });
+                let keyData = await buildItemData();
+                bagEmbed.setDescription(keyData[0]);
+                await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
             }
             else if (collectorId == 'other_select') {
                 let item_data = db.item_data.get(selected);
-                selected_ooch = await item_use(interaction.user.id, selected_ooch, selected);
-                db.profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
-
-                await db.profile.math(interaction.user.id, '-', 1, `other_inv.${selected}`);
-
-                if (db.profile.get(interaction.user.id, `other_inv.${selected}`) <= 0) {
-                    await db.profile.delete(interaction.user.id, `other_inv.${selected}`);
-                }
 
                 let item_usage_text = '';
                 switch (item_data.type) {
-                    case 'repel': item_usage_text = `Used a **Repulsor**, you will no longer have wild encounters for ${item_data.potency} more steps.`; break;
+                    case 'repel': item_usage_text = `Used a **${item_data.name}**, you will no longer have wild encounters for ${item_data.potency} more steps.`; break;
+                    case 'teleport': item_usage_text = `Used a **${item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
                 }
-                
-                let item_list_str = ``;
-                for (const [item_id, quantity] of Object.entries(db.profile.get(interaction.user.id, 'other_inv'))) {
-                    let item_obj = await db.item_data.get(item_id);
-                    item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`
-                }
-                await bagEmbed.setDescription(item_list_str);
-                let other_inv_keys = Object.keys(display_inv);
 
-                bag_select = new ActionRowBuilder();
-                let other_select_options = [];
-                for (let i = 0; i < other_inv_keys.length; i++) {
-                    let id = other_inv_keys[i];
-                    let amount = db.profile.get(interaction.user.id, `other_inv.${other_inv_keys[i]}`)
+                if (item_data.type == 'repel' || item_data.type == 'teleport') {
+                    switch (item_data.type) {
+                        case 'repel':
+                            await item_use(interaction.user.id, selected_ooch, selected);
+                        break;
+                        case 'teleport':
+                            let biome_from = db.profile.get(interaction.user.id, 'location_data.area');
+                            let checkpoint = db.profile.get(interaction.user.id, 'checkpoint_data');
+                            let biome_to = checkpoint.area;
 
-                    if (amount != 0) {
-                        if (db.item_data.get(id, 'type') != 'key') {
-                            other_select_options.push({ 
-                                label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description'),
-                                value: `${id}`,
-                                emoji: db.item_data.get(id, 'emote'),
+                            let map_obj = db.maps.get(biome_to);
+                            let map_savepoints = map_obj.map_savepoints;
+                            map_savepoints = map_savepoints.filter(v => v.is_default !== false);
+                            if (map_savepoints.length == 0) {
+                                map_savepoints = [map_obj.map_savepoints[0]];
+                            }
+
+                            //remove the player's info from the old biome and add it to the new one
+                            db.player_positions.set(biome_to, { x: map_savepoints[0].x, y: map_savepoints[0].y }, interaction.user.id);
+                            db.player_positions.delete(biome_from, interaction.user.id);
+                            db.profile.set(interaction.user.id, { area: biome_to, x: map_savepoints[0].x, y: map_savepoints[0].y }, 'location_data')
+
+                            for (let i = 0; i < db.profile.get(interaction.user.id, 'ooch_party').length; i++) {
+                                db.profile.set(interaction.user.id, db.profile.get(interaction.user.id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+                                db.profile.set(interaction.user.id, true, `ooch_party[${i}].alive`);
+                            }
+
+                            db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+                            let playspace_str = setup_playspace_str(interaction.user.id);
+                            await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                                db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
                             });
-                        }
+
+                            await i.update({ content: 'Loading playspace' });
+                            await i.deleteReply();
+                        break;
                     }
+                    
+                    await db.profile.math(interaction.user.id, '-', 1, `other_inv.${selected}`);
+                    if (db.profile.get(interaction.user.id, `other_inv.${selected}`) <= 0) {
+                        await db.profile.delete(interaction.user.id, `other_inv.${selected}`);
+                    }
+
+                    if (item_data.type != 'teleport') {
+                        let keyData = await buildItemData();
+                        bagEmbed.setDescription(keyData[0]);
+                        i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                    }
+
+                    let followUpMsg = await interaction.followUp({ content: item_usage_text });
+                    await wait(5000);
+                    await followUpMsg.delete().catch(() => {});
+                } else {
+                    let pa_components = buildPartyData(user_profile.ooch_party, true, item_data);
+                    i.update({ content: `Which Oochamon would you like to use the ${item_data.emote} **${item_data.name}** on?`, embeds: [], components: pa_components });
+                }
+            } else if (selected.includes('item_ooch_id_')) {
+                let selData = selected.replace('item_ooch_id_', '');
+                selData = selData.split('_');
+                let selItem = db.item_data.get(selData[1]);
+                let item_usage_text = '';
+
+                switch (selItem.type) {
+                    case 'iv':
+                        user_profile.ooch_party[selData[0]].stats[`${selItem.potency}_iv`] += 0.05;
+                        item_usage_text = `Used a **${selItem.name}**, and raised the ${selItem.potency.toUpperCase()} Bonus for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}** by 1.`;
+                    break;
+                    case 'evolve':
+                        let oldOoch = user_profile.ooch_party[selData[0]];
+                        let newOoch = create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, oldOoch.nickname, oldOoch.current_exp, oldOoch.abilities,
+                            (oldOoch.stats.hp_iv - 1) * 20, 
+                            (oldOoch.stats.atk_iv - 1) * 20, 
+                            (oldOoch.stats.def_iv - 1) * 20, 
+                            (oldOoch.stats.spd_iv - 1) * 20 );
+                        user_profile.ooch_party[selData[0]] = newOoch;
+                        item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.nickname}** into ${newOoch.emote} **${newOoch.name}**!`;
+                    break;
                 }
 
-                bag_select.addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId('other_select')
-                    .setPlaceholder('Select an item to use in your inventory.')
-                    .addOptions(other_select_options),
-                );
+                db.profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
 
-                await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, bag_select, back_button] });
+                await db.profile.math(interaction.user.id, '-', 1, `other_inv.${selData[1]}`);
+                if (db.profile.get(interaction.user.id, `other_inv.${selData[1]}`) <= 0) {
+                    await db.profile.delete(interaction.user.id, `other_inv.${selData[1]}`);
+                }
+
+                let keyData = await buildItemData();
+                bagEmbed.setDescription(keyData[0]);
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
 
                 let followUpMsg = await interaction.followUp({ content: item_usage_text });
                 await wait(5000);
                 await followUpMsg.delete().catch(() => {});
+
             }
             //#endregion
         

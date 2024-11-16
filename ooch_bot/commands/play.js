@@ -72,7 +72,7 @@ module.exports = {
             ooch_party[i].stats.spd_mul = 0;
             ooch_party[i].ability = ooch_party[i].og_ability;
             ooch_party[i].type = ooch_party[i].og_type;
-            ooch_party[i].doom_timer = 3;
+            ooch_party[i].doom_timer = 4;
             ooch_party[i].status_effects = [];
         }
         db.profile.set(interaction.user.id, ooch_party, 'ooch_party');

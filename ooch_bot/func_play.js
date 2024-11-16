@@ -66,6 +66,7 @@ module.exports = {
         let playery = player_location.y;
         let player_flags = profile_data.flags;
         let moveDisable = false;
+        let repel_ran_out = false;
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
@@ -103,7 +104,8 @@ module.exports = {
             if (profile_data.repel_steps != 0) {
                 db.profile.math(user_id, '-', 1, 'repel_steps');
                 profile_data.repel_steps -= 1;
-            }
+                if (profile_data.repel_steps == 0) repel_ran_out = true;
+            } 
             
 
             let tile_id = map_tiles[playerx][playery]
@@ -262,7 +264,7 @@ module.exports = {
                     shopSelectOptions = shopSelectOptions.map(id => {
                         return { 
                             label: `${db.item_data.get(id, 'name')} ($${db.item_data.get(id, 'price')})`,
-                            description: db.item_data.get(id, 'description'),
+                            description: db.item_data.get(id, 'description_short'),
                             value: `${id}`,
                             emoji: db.item_data.get(id, 'emote'),
                         }
@@ -476,6 +478,7 @@ module.exports = {
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
         let playspace_str = setup_playspace_str(user_id);
+        playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
             msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch((err) => { console.log(`Err: ${err}`)});
@@ -694,10 +697,10 @@ module.exports = {
      * @returns The oochamon object
      */
     create_ooch: function(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = _.random(0,10), atk_iv = _.random(0,10),
-                            def_iv = _.random(0,10), spd_iv = _.random(0,10), held_item = -1) {
+                            def_iv = _.random(0,10), spd_iv = _.random(0,10), held_item = false) {
 
         const { get_stats, level_up, exp_to_next_level } = require('./func_battle');
-                            
+                        
         //Fix IV math
         hp_iv = (hp_iv/20) + 1;
         atk_iv = (atk_iv/20) + 1;
@@ -751,7 +754,7 @@ module.exports = {
             evo_stage: db.monster_data.get(ooch_id, 'evo_stage'),
             type: db.monster_data.get(ooch_id, 'type'),
             og_type: db.monster_data.get(ooch_id, 'type'),
-            doom_timer: 3, // Used for the doomed status effect
+            doom_timer: 4, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote')
         }
 
