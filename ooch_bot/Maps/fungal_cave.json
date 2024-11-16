@@ -132,13 +132,13 @@
 			"sprite_id": "c00_005",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 38,
 					"atk_iv": 9,
 					"def_iv": 7,
 					"hp_iv": 4,
 					"id": 50,
 					"item": -1,
-					"level": 8,
+					"level": 7,
 					"moveset": [
 						0,
 						60,

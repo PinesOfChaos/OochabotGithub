@@ -212,8 +212,7 @@ func _on_npc_sprite_dialog_text_changed(new_text):
 
 func _on_aggro_range_value_changed(value):
 	npc_data.aggro_range = value
-
-
+	
 func _on_wild_encounter_toggled(toggled_on):
 	npc_data.is_catchable = toggled_on
 
