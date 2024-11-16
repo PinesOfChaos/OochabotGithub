@@ -448,20 +448,22 @@ prompt_battle_input: async function(thread, user_id) {
                     await atk_msg.delete();
                     db.profile.dec(user_id, 'turn_msg_counter');
                     db.profile.dec(user_id, 'battle_msg_counter');
-                    let enemy_snare = ooch_enemy.status_effects.includes(Status.Snare);
-                    let enemy_speed = enemy_snare ? ooch_enemy.stats.spd / 100 : ooch_enemy.stats.spd;
 
-                    let plr_snare = ooch_plr.status_effects.includes(Status.Snare);
-                    let plr_speed = plr_snare ? ooch_plr.stats.spd / 100 : ooch_plr.stats.spd;
-
-                    if (ooch_enemy.ability == Ability.Immobile) {
-                        turn_order = ['p', 'e'];
-                    } else if (ooch_plr.ability == Ability.Immobile) {
+                    //Get the speed values for the oochamons in the fighterino
+                    let enemy_speed = calculate_speed(ooch_enemy);
+                    let plr_speed = calculate_speed(ooch_plr);
+                   
+                    //Turn Order
+                    if (enemy_speed > plr_speed) { // Enemy goes first
                         turn_order = ['e', 'p'];
-                    } else if (enemy_speed > plr_speed) { // Enemy goes first
-                        turn_order = ['e', 'p']
-                    } else { // Player goes first
+                    } else if (plr_speed > enemy_speed){ // Player goes first
                         turn_order = ['p', 'e'];
+                    } else if (ooch_enemy.stats.spd > ooch_plr.stats.spd){ // (Speed tie use base stats) Enemy goes first
+                        turn_order = ['e', 'p'];
+                    } else if (ooch_plr.stats.spd > ooch_enemy.stats.spd){ // (Speed tie use base stats) Player goes first
+                        turn_order = ['p', 'e'];
+                    } else{ //Do a coinflip in the case of a speed tie
+                        turn_order = Math.random() < .5 ? turn_order = ['e', 'p'] : turn_order = ['p', 'e'];
                     }
 
                     await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
@@ -2560,6 +2562,19 @@ add_status_effect: function(ooch, status) {
 get_stat_multiplier: function(stage, scalar=2) {
     if (scalar < 1) scalar = 1;
     return (stage >= 0) ? (stage / scalar) + 1 : scalar / (Math.abs(stage) + scalar)
+},
+
+/**
+ * Get the current speed from the stat stage system.
+ * @param {Object} ooch_obj The oochamon whom'st'd've's speed to calculate
+ * @returns Current speed after multipliers, abilites, and status effects
+ */
+calculate_speed(ooch_obj){
+    let speed = ooch_obj.stats.spd * ooch_obj.stats.spd_mul
+    if(ooch_obj.status_effects.includes(Status.Snare)){ speed /= 100; }
+    if (ooch_obj.ability == Ability.Immobile){ speed /= 100; }
+
+    return(speed)
 }
 
 

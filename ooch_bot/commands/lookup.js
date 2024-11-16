@@ -197,8 +197,12 @@ module.exports = {
                 let info_item = db.item_data.get(selected_id);
                 let embed_item = new EmbedBuilder()
                     .setColor('#808080')
-                    .setTitle(`${info_item.name} ${info_item.emote}`)
-                    .setDescription(info_item.description);
+                    .setTitle(`${info_item.emote} ${info_item.name}`)
+                    .setDescription(info_item.description)
+                    .addFields(
+                        {name: 'Owned:',     value: `${info_item.price > 0 ? info_item.price : '--'}`, inline: false},
+                        {name: 'Price:',     value: `${info_item.price > 0 ? info_item.price : '--'}`, inline: false}
+                    );
                 return interaction.reply({
                     embeds: [ embed_item ],
                     ephemeral: true
