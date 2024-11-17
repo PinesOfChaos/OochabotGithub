@@ -710,12 +710,14 @@ prompt_battle_input: async function(thread, user_id) {
                             let id = heal_inv_keys[i];
                             let amount = db.profile.get(user_id, `heal_inv.${heal_inv_keys[i]}`)
 
-                            heal_select_options.push({ 
-                                label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description').slice(0, 100),
-                                value: `${id}`,
-                                emoji: db.item_data.get(id, 'emote'),
-                            })
+                            if (amount > 0 && amount != undefined) {
+                                heal_select_options.push({ 
+                                    label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                    description: db.item_data.get(id, 'description').slice(0, 100),
+                                    value: `${id}`,
+                                    emoji: db.item_data.get(id, 'emote'),
+                                })
+                            }
                         }
 
                         bag_select.addComponents(
