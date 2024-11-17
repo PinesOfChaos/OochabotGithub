@@ -67,6 +67,7 @@ client.on('ready', async () => {
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
         let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
+        if (userThread == undefined) continue;
 
         if (user_profile.player_state == PlayerState.Combat) {
             // Delete turn messages
