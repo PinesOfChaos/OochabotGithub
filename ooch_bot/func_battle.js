@@ -44,6 +44,7 @@ generate_trainer_battle(trainer_obj) {
         ooch_base.moveset = ooch_base.moveset.filter(v => v != 9999);
         let ooch = create_ooch(ooch_base.id, ooch_base.level, ooch_base.moveset, ooch_base.nickname, 0, ooch_base.ability,
                                ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv);
+        console.log(ooch);
         party_generated.push(ooch); 
     }
     
@@ -749,10 +750,7 @@ prompt_battle_input: async function(thread, user_id) {
                             displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}**${item_usage_text}`)
                             item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
                             
-                            db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`)
-                            if(db.profile.get(user_id, `heal_inv.${item_id}`) <= 0){
-                                db.profile.delete(user_id, `heal_inv.${item_id}`);
-                            }
+                            db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`);
 
                             b_collector.stop();
                             if (prism_collector != undefined) prism_collector.stop();
@@ -807,11 +805,7 @@ prompt_battle_input: async function(thread, user_id) {
 
                             let string_to_send = `${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.nickname}**`;
                             
-                            db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`)
-
-                            if (db.profile.get(user_id, `prism_inv.${item_id}`) <= 0){
-                                db.profile.delete(user_id, `prism_inv.${item_id}`);
-                            }
+                            db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`);
 
                             let prism_result = item_use(user_id, ooch_enemy, item_id)
                             b_collector.stop();
@@ -880,7 +874,7 @@ prompt_battle_input: async function(thread, user_id) {
                                     db.profile.push(user_id, ooch_enemy, `ooch_pc`)
                                 }
                                 db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.id}].caught`)
-                                let infoEmbed = ooch_info_embed(ooch_enemy)
+                                let infoEmbed = ooch_info_embed(ooch_enemy);
                                 let oochPng = infoEmbed[1];
                                 infoEmbed = infoEmbed[0];
                                 infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
@@ -1350,6 +1344,11 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
         if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
         
+        //If the target has the Doubled status effect
+        if(status_doubled > 0 && move_damage > 0) {
+            string_to_send += `\n--- <:status_doubled:1274938495953014845> **The damage was DOUBLED!**`
+        }
+
         //If a crit lands
         if (crit_multiplier >= 2) {
             string_to_send += `\n--- 💢 **A critical hit!**`
@@ -1440,17 +1439,21 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                     else if (status_split[0] == '+'){
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
+                        let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
+                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])}**!`;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])} to ${signValue}${currentValue}**!`;
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
                         }
                     }
-                    else if (status_split[0] == '-'){
+                    else if (status_split[0] == '-') {
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
+                        let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
+                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered!`
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to ${signValue}${currentValue}!`
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }

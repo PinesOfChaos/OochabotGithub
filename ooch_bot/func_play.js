@@ -176,12 +176,8 @@ module.exports = {
                             }
                         }
                     }
-                    
-                    
-                    
                 }
             }
-
 
             //Transitions
             if(!stop_moving){
@@ -216,7 +212,7 @@ module.exports = {
                         stop_moving = true;
                         moveDisable = true;
 
-                        thread.send({ content: `Would you like to heal your Oochamon and set a checkpoint here?`, components: [confirm_buttons] }).then(async msg => {
+                        thread.send({ content: `Would you like to heal your Oochamon and set a checkpoint here?\n*You can access your box here as well by opening the menu and selecting Oochabox.*`, components: [confirm_buttons] }).then(async msg => {
                             db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector({ max: 1 });
                             confirm_collector.on('collect', async sel => {
@@ -326,27 +322,36 @@ module.exports = {
                                 }
                             }
 
-                            let maxAmt = Math.floor(oochabux / item.price);
+                            db.profile.ensure(user_id, 0, `${item.category}.${item_id}`);
                             let amtHeld = db.profile.get(user_id, `${item.category}.${item_id}`); 
+                            let maxAmt = Math.floor(oochabux / item.price);
+                            if (maxAmt > 50) maxAmt = 50;
                             msg.edit({ components: [] });
                             let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
-                                `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item**.` });
+                                `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item, and can hold ${maxAmt - amtHeld} more of it.**` });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
                                 let new_inv_qty = 0;
                                 let buyAmount = Math.abs(parseInt(m.content));
+                                if (buyAmount > 50) buyAmount = 50;
+                                if (amtHeld >= 50) buyAmount = 0;
                                 oochabux -= item.price * buyAmount;
-                                switch (item.type) {
-                                    case 'potion': 
+                                switch (item.category) {
+                                    case 'heal_inv': 
                                         db.profile.ensure(user_id, 0, `heal_inv.${item_id}`)
                                         db.profile.math(user_id, '+', buyAmount, `heal_inv.${item_id}`);
                                         new_inv_qty = db.profile.get(user_id, `heal_inv.${item_id}`);
                                     break;
-                                    case 'prism': 
+                                    case 'prism_inv': 
                                         db.profile.ensure(user_id, 0, `prism_inv.${item_id}`)
                                         db.profile.math(user_id, '+', buyAmount, `prism_inv.${item_id}`);
                                         new_inv_qty = db.profile.get(user_id, `prism_inv.${item_id}`);
+                                    break;
+                                    case 'other_inv': 
+                                        db.profile.ensure(user_id, 0, `other_inv.${item_id}`)
+                                        db.profile.math(user_id, '+', buyAmount, `other_inv.${item_id}`);
+                                        new_inv_qty = db.profile.get(user_id, `other_inv.${item_id}`);
                                     break;
                                 }
                                 

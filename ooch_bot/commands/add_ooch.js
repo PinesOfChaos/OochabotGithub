@@ -36,6 +36,8 @@ module.exports = {
         }
 
         db.profile.push(interaction.user.id, ooch, dest)
+        db.profile.math(interaction.user.id, '+', 1, `oochadex[${ooch_id}].seen`);
+        db.profile.math(interaction.user.id, '+', 1, `oochadex[${ooch_id}].caught`);
         
         return interaction.reply(`Added **${ooch_id}**: ${db.monster_data.get(ooch_id, 'emote')} **${db.monster_data.get(ooch_id, 'name')}** (level ${level}) to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
     },

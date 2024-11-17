@@ -14,15 +14,15 @@ let functions = {
      * @param {String} event_name The name of the global event (defaults to false if not needed)
      */
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
-
+        
         const { setup_battle, generate_trainer_battle } = require('./func_battle.js');
-        const { give_item, setup_playspace_str, create_ooch, map_emote_string } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch, map_emote_string, move } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('next').setLabel('▶').setStyle(ButtonStyle.Success),
             );
-
+        
         db.profile.set(user_id, event_name, 'cur_event_name');
         db.profile.set(user_id, event_array, 'cur_event_array');
         db.profile.set(user_id, start_pos, 'cur_event_pos');
@@ -108,6 +108,7 @@ let functions = {
 
             if (obj_content.objective != false) {
                 event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
+                db.profile.set(user_id, obj_content.objective, 'objective');
             } else if (event_embed.data.fields != undefined) {
                 event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'New Objective');
             }
@@ -345,6 +346,7 @@ let functions = {
                     await thread.messages.fetch(msg_to_edit).then((msg) => {
                         msg.edit({ content: playspace_str[0], components: playspace_str[1] });
                     }).catch(() => {});
+                    //await move(thread, user_id, '', 1);
                     return;
                 }
             }
@@ -494,7 +496,7 @@ let functions = {
                             // Remove Vrumbox
                             ooch_party = ooch_party.filter(v => v.id !== 52);
                             let mainOoch = ooch_party[0];
-                            let mainOochFixed = create_ooch(mainOoch.id, 5, [], mainOoch.nickname, 0, mainOoch.ability, 1.25, 1.25, 1.25, 1.25);
+                            let mainOochFixed = create_ooch(mainOoch.id, 5, [], mainOoch.nickname, 0, mainOoch.ability, 5, 5, 5, 5);
                             ooch_party[0] = mainOochFixed;
                             db.profile.set(user_id, ooch_party, 'ooch_party')
 
@@ -517,6 +519,8 @@ let functions = {
                         await thread.messages.fetch(msg_to_edit).then(async (msg) => {
                             await msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
                         }).catch((err) => { console.log(err) });
+
+                        // await move(thread, user_id, '', 1);
                         return;
                     } else {
                         current_place++;

@@ -1170,7 +1170,7 @@ module.exports = {
         //             ID,  NAME,               Description
         create_ability(0,  'Miniscule',         'Becomes super small and increases evasion against attacks by 1 stage.');
         create_ability(1,  'Icky',              'Boosts the power of OOZE & FUNGAL type attacks by 20%.');
-        create_ability(2,  'Burdened',          'A large growth reduces SPD by 1 stage but raises DEF by 1 stage');
+        create_ability(2,  'Burdened',          'A large growth at the start of battle reduces SPD by 1 stage but raises DEF by 1 stage');
         create_ability(3,  'Broodmother',       'Gains 1 stage of ATK for each Oochamon with the same type in the party.'); 
         create_ability(4,  'Tough',             'A durable body grants a 1 stage increase to DEF.');  
         create_ability(5,  'Shadow',            'Grants a 25% chance to VANISH after being attacked.'); 

@@ -12,17 +12,17 @@ module.exports = {
         .setName('menu')
         .setDescription('Pull up the menu.'),
     async execute(interaction) {
-
+        await interaction.deferReply();
         let playerState = db.profile.get(interaction.user.id, 'player_state');
         
         if (playerState == PlayerState.NotPlaying) {
-            return interaction.reply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
+            return interaction.editReply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
         } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
-            return interaction.reply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
+            return interaction.editReply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
         } else if (playerState == PlayerState.Menu) {
-            return interaction.reply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, ephemeral: true });
+            return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, ephemeral: true });
         }else if (playerState != PlayerState.Playspace){
-            return interaction.reply({ content: 'You can\'t pull up the menu right now.', ephemeral: true });
+            return interaction.editReply({ content: 'You can\'t pull up the menu right now.', ephemeral: true });
         }
 
         db.profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
@@ -268,7 +268,7 @@ module.exports = {
 
         if (onTeleporter == false) settings_row_2.components[1].setDisabled(true);
         let menuMsg;
-        await interaction.reply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        await interaction.editReply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
             menuMsg = msg;
         });
@@ -971,7 +971,6 @@ module.exports = {
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
-
                 ooch_data = db.monster_data.get(0);
                 let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
                 let ooch_img_file = get_ooch_art(ooch_data.name);
@@ -982,10 +981,13 @@ module.exports = {
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
-                        dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
-                    } else {
-                        dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
+                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
+                        if(oochadex_data[ooch_data.evo_id].seen != 0) {
+                            dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
+                        } else {
+                            dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
+                        }
+                        
                     }
 
                 if (oochadex_data[0].caught != 0) {
@@ -1009,10 +1011,12 @@ module.exports = {
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                     .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && oochadex_data[ooch_data.evo_id].seen != 0) {
-                        dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
-                    } else {
-                        dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
+                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
+                        if(oochadex_data[ooch_data.evo_id].seen != 0){
+                            dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
+                        } else {
+                            dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
+                        }
                     }
 
                 if (oochadex_data[selected].caught != 0) {

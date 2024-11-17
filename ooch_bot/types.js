@@ -44,7 +44,8 @@ const EventMode = {
     OochamonPick: 3,
     Transition: 4,
     Objective: 5,
-    Options: 6
+    Options: 6,
+    EventFinish: 7
 }
 
 const DialogueType = {

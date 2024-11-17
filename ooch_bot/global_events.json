@@ -233,7 +233,7 @@
 				"image": "",
 				"items": [],
 				"money": 0,
-				"objective": "Investigate the Caves",
+				"objective": "Investigate the Caves to the North-West",
 				"title": "Professor Lyra"
 			}
 		],
@@ -736,7 +736,7 @@
 		[
 			0,
 			{
-				"description": "Let's get you a few items to start with. Here's a few Potions and a Perfect Prism.",
+				"description": "Let's get you a few items to start with. Here's a few Potions and a Perfect Prism, which can catch any Oochamon at a 100% chance.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [
@@ -757,7 +757,7 @@
 		[
 			0,
 			{
-				"description": "Prisms are our way of capturing and taming the wild Oochamon of the world. It's very painless for them, I assure you.\nThis prism you received has a 100% catch chance!",
+				"description": "Prisms are our way of capturing and taming the wild Oochamon of the world. It's very painless for them, I assure you.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -793,7 +793,7 @@
 		[
 			0,
 			{
-				"description": "Now go catch that Oochamon!",
+				"description": "Now go catch that Oochamon, then move on!\nAlso, please don't try to fight it. It's quite powerful!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -905,7 +905,7 @@
 		[
 			0,
 			{
-				"description": "One useful tip! If your move is super effective or not very effective, it'll be red or green respectively.\nIf it doesn't do damage and instead has a different effect, it'll be grey, and if its neutral effective, it'll be blue!",
+				"description": "One useful tip! If your move is super effective or not very effective, it'll be green or red respectively.\nIf it doesn't do damage and instead has a different effect, it'll be grey, and if its neutral effective, it'll be blue!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -943,7 +943,7 @@
 		[
 			0,
 			{
-				"description": "That's basically how the game works. Catch Oochamon, beat up peoples teams of Oochamon, and save the world!",
+				"description": "That's basically how the game works. Catch Oochamon, beat up people's teams of Oochamon, and save the world!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -956,6 +956,18 @@
 			0,
 			{
 				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh! I almost forgot, you can also trade with other players using `/trade`. Try it out sometime with your friends!\nBye bye!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],

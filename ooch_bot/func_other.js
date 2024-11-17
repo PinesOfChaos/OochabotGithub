@@ -49,6 +49,11 @@ module.exports = {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
 
+        let oochData = db.monster_data.get(ooch.id);
+        if (oochData.evo_id != -1 && oochData.evo_lvl != -1) {
+            infoEmbed.setFooter({ text: `Evolves into ??? at level ${oochData.evo_lvl}` });
+        }
+
         return [infoEmbed, get_ooch_art(ooch.name)];
     },
     

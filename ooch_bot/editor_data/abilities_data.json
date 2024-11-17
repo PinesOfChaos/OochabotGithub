@@ -12,7 +12,7 @@
   {
     "id": 2,
     "name": "Burdened",
-    "description": "A large growth reduces SPD by 1 stage but raises DEF by 1 stage"
+    "description": "A large growth at the start of battle reduces SPD by 1 stage but raises DEF by 1 stage"
   },
   {
     "id": 3,

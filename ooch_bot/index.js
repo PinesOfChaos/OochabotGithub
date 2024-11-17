@@ -59,6 +59,10 @@ for(let i = 0; i < guild_ids.length; i++){
 client.on('ready', async () => {
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
+
+        // UNCOMMENT THIS IF DOING DEV STUFF!!
+        //if (user != '122568101995872256' && user != '145342159724347393') continue;
+
         let user_profile = db.profile.get(user);
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
