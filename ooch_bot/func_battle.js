@@ -1345,7 +1345,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
         if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
         
         //If the target has the Doubled status effect
-        if(status_doubled > 0 && move_damage > 0) {
+        if(status_doubled != 1 && move_damage > 0) {
             string_to_send += `\n--- <:status_doubled:1274938495953014845> **The damage was DOUBLED!**`
         }
 
