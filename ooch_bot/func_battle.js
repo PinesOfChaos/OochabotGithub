@@ -781,12 +781,14 @@ prompt_battle_input: async function(thread, user_id) {
                             let id = prism_inv_keys[i];
                             let amount = db.profile.get(user_id, `prism_inv.${prism_inv_keys[i]}`)
 
-                            prism_select_options.push({ 
-                                label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description').slice(0,100),
-                                value: `${id}`,
-                                emoji: db.item_data.get(id, 'emote'),
-                            })
+                            if (amount > 0 && amount != undefined) {
+                                prism_select_options.push({ 
+                                    label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                    description: db.item_data.get(id, 'description').slice(0,100),
+                                    value: `${id}`,
+                                    emoji: db.item_data.get(id, 'emote'),
+                                })
+                            }
                         }
 
                         bag_select.addComponents(
