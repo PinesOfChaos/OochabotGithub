@@ -109,7 +109,7 @@ module.exports = {
         db.monster_data.set(key_id, monster);
     
         // Check if the artwork exists
-        fs.access(`./art/ResizedArt/${monster.name.toLowerCase()}.png`, (err) => {
+        fs.access(`./Art/ResizedArt/${monster.name.toLowerCase()}.png`, (err) => {
             if (err) {
                 console.log(`ART ERROR: ${monster.name}`);
             }
