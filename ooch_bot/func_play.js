@@ -639,7 +639,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('play_dist')
-                    .setLabel(`${spdEmotes[db.profile.get(user_id, 'move_speed')-1]}`)
+                    .setEmoji(`${spdEmotes[db.profile.get(user_id, 'move_speed')-1]}`)
                     .setStyle(ButtonStyle.Secondary),
             ).addComponents(
                 new ButtonBuilder()
