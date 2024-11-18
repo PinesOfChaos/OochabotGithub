@@ -324,6 +324,10 @@ module.exports = {
 
                             db.profile.ensure(user_id, 0, `${item.category}.${item_id}`);
                             let amtHeld = db.profile.get(user_id, `${item.category}.${item_id}`); 
+                            if (amtHeld < 0) {
+                                db.profile.set(user_id, 0, `${item.category}.${item_id}`);
+                                amtHeld = 0;
+                            }
                             let maxAmt = Math.floor(oochabux / item.price);
                             if (maxAmt > 50) maxAmt = 50;
                             msg.edit({ components: [] });

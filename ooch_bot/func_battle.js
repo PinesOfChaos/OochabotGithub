@@ -1212,7 +1212,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     }
     
     if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
-    let status_blind = (attacker.status_effects.includes(Status.Blind) ? .75 : 1);
+    let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
     let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
     let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
     let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
@@ -1444,9 +1444,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
                         let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
-                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])} to ${signValue}${currentValue}**!`;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])}** to **+${currentValue}**!`;
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
                         }
@@ -1455,9 +1454,8 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
                         let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
-                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to ${signValue}${currentValue}!`
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to **-${currentValue}!**`
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }

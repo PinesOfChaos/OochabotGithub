@@ -940,7 +940,8 @@ module.exports = {
                     break;
                     case 'evolve':
                         let oldOoch = user_profile.ooch_party[selData[0]];
-                        let newOoch = create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, oldOoch.nickname, oldOoch.current_exp, oldOoch.abilities,
+
+                        let newOoch = create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, false, oldOoch.current_exp, oldOoch.abilities,
                             (oldOoch.stats.hp_iv - 1) * 20, 
                             (oldOoch.stats.atk_iv - 1) * 20, 
                             (oldOoch.stats.def_iv - 1) * 20, 
