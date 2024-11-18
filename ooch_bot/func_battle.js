@@ -693,6 +693,8 @@ prompt_battle_input: async function(thread, user_id) {
 
                     if (i_sel.customId == 'back') {
                         b_collector.stop();
+                        if (prism_collector != undefined) prism_collector.stop();
+                        if (heal_collector != undefined) heal_collector.stop();
                         await bag_msg.delete();
                         db.profile.dec(user_id, 'turn_msg_counter');
                         db.profile.dec(user_id, 'battle_msg_counter');
