@@ -602,7 +602,7 @@ module.exports = {
                         if (db.item_data.get(id, 'type') == 'potion') {
                             heal_select_options.push({ 
                                 label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                description: db.item_data.get(id, 'description'),
+                                description: db.item_data.get(id, 'description_short'),
                                 value: `${id}`,
                                 emoji: db.item_data.get(id, 'emote'),
                             });

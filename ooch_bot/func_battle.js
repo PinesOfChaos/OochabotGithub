@@ -713,7 +713,7 @@ prompt_battle_input: async function(thread, user_id) {
                             if (amount > 0 && amount != undefined) {
                                 heal_select_options.push({ 
                                     label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                    description: db.item_data.get(id, 'description').slice(0, 100),
+                                    description: db.item_data.get(id, 'description_short').slice(0, 100),
                                     value: `${id}`,
                                     emoji: db.item_data.get(id, 'emote'),
                                 })
