@@ -1443,9 +1443,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                     else if (status_split[0] == '+'){
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
-                        let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
+                        let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`;
+                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])}** to **+${currentValue}**!`;
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])}** to **${signValue}${currentValue}**!`;
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
                         }
@@ -1453,9 +1454,10 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                     else if (status_split[0] == '-') {
                         let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
                         status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
-                        let currentValue = `${Math.abs(_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8))}`
+                        let currentValue = `${Math.abs(_.clamp(prevStatValue - parseInt(status_split[2]), -8, 8))}`;
+                        let signValue = currentValue < 0 ? '-' : '+';
                         if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
-                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to **-${currentValue}!**`
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to **${signValue}${currentValue}!**`
                         } else {
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
                         }
