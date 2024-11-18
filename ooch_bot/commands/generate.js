@@ -3117,12 +3117,12 @@ module.exports = {
 
         //#region Create Maps
         await db.maps.clear();
-        let files = fs.readdirSync('./maps/');
+        let files = fs.readdirSync('./Maps/');
         for (let file of files) {
             if (!file.includes('.json')) continue;
             let map_name = file.replace('.json', '');
 
-            fs.readFile(`./maps/${file}`, 'utf8', (err, data) => {
+            fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
                 if (err) {
                     console.log(`Error reading file: ${file}`);
                     return;
