@@ -268,7 +268,7 @@ module.exports = {
 
         if (onTeleporter == false) settings_row_2.components[1].setDisabled(true);
         let menuMsg;
-        await interaction.editReply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        await interaction.editReply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
             menuMsg = msg;
         });
@@ -318,14 +318,19 @@ module.exports = {
             let party_2 = new ActionRowBuilder();
             let pa_components = [party];
             for (let i = 0; i < ooch_party.length; i++) {
-                // If i is 0 or 1, add components to party`
+                let evoLvl = db.monster_data.get(ooch_party[i].id, 'evo_lvl');
+                let canEvolve = false;
+                if (ooch_party[i].level >= evoLvl && evoLvl != -1) {
+                    canEvolve = true;
+                }
+                // If i is 0 or 1, add components to party
                 // If i is 2 or 3, add components to party_2
                 // This is to make a 2x2 table of buttons, lol
                 if (for_item == false) {
                     ((i <= 1) ? party : party_2).addComponents(
                         new ButtonBuilder()
                         .setCustomId(`par_ooch_id_${i}`)
-                        .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})`)
+                        .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})${canEvolve == true ? ' ⏫' : ``}`)
                         .setStyle((ooch_party[i].alive) ? ((i == 0) ? ButtonStyle.Success : ButtonStyle.Secondary) : ButtonStyle.Danger)
                         .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
                     )
@@ -681,15 +686,38 @@ module.exports = {
             // Set a nickname button
             else if (selected == 'nickname') {
                 let nick_filter = m => {
-                    if (m.author.id != interaction.user.id) return false;
-                    if (m.content.length <= 16) {
-                        return true;
-                    } else {
+                    if (m.author.id !== interaction.user.id) return false;
+                
+                    // Check nickname length
+                    if (m.content.length > 16) {
                         i.followUp({ content: `Nicknames must be 16 characters or less.`, ephemeral: true });
                         m.delete().catch(() => {});
                         return false;
                     }
-                }
+                
+                    // Check for Discord mentions
+                    if (/<@!?[0-9]+>/g.test(m.content)) {
+                        i.followUp({ content: `Nicknames cannot contain Discord mentions.`, ephemeral: true });
+                        m.delete().catch(() => {});
+                        return false;
+                    }
+                
+                    // Check for line breaks
+                    if (/\n/.test(m.content)) {
+                        i.followUp({ content: `Nicknames cannot contain line breaks.`, ephemeral: true });
+                        m.delete().catch(() => {});
+                        return false;
+                    }
+                
+                    // Check for Discord timestamps
+                    if (/<t:[0-9]+:[a-zA-Z]>/g.test(m.content)) {
+                        i.followUp({ content: `Nicknames cannot contain Discord timestamps.`, ephemeral: true });
+                        m.delete().catch(() => {});
+                        return false;
+                    }
+                
+                    return true;
+                };
                 
                 i.update({ content: `Enter a nickname for your ${selected_ooch.name}! (16 characters max, Type \`reset\` to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
                 nick_msg_collector = menuMsg.channel.createMessageCollector({ filter: nick_filter, max: 1 });

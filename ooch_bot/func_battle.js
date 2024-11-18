@@ -1841,7 +1841,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             let burn_val = Math.round(ooch.stats.hp/10);
             ooch.current_hp -= burn_val;
             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-            string_to_send += `\n${ooch.emote} **${ooch.nickname}** was hurt by its burn and loses **${burn_val} HP**.`;
+            string_to_send += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
         }
     
         if (ooch_infected) {
@@ -1850,13 +1850,13 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
             if (opposing_ooch != undefined) {
                 opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-                string_to_send += `\n${ooch.emote} **${ooch.nickname}** has **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from **INFECTED!**`;
+                string_to_send += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from **INFECTED!**`;
             }
         }
 
         if (ooch_digitized && ooch.type != [OochType.Tech]) {
             ooch.type = [OochType.Tech];
-            string_to_send += `\n${ooch.emote} **${ooch.nickname}** was digitized and had its type changed to **Tech**!.`;
+            string_to_send += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was digitized and had its type changed to **Tech**!.`;
         }
 
         if (ooch_doomed) {
@@ -1864,9 +1864,9 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
             if (ooch.doom_timer == 0) {
                 ooch.current_hp = 0;
                 ooch.alive = false;
-                string_to_send += `\n${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0! It dies unceremoniously.`
+                string_to_send += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0! It dies unceremoniously.`
             } else {
-                string_to_send += `\n${ooch.emote} **${ooch.nickname}**'s **DOOM** timer went down by 1 due to its status effect.\n**${ooch.doom_timer} turns left!**`
+                string_to_send += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer went down by 1.\n**${ooch.doom_timer} turns left!**`
             }
         }
     }

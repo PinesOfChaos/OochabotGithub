@@ -632,12 +632,14 @@ module.exports = {
         db.player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
         let moveBtns = [];
+        let spdEmotes = ['<:wlk1:1307858678229110937>', '<:wlk2:1307858664119336982>', '<:wlk3:1307858651297349652>', '<:wlk4:1307858636793577514>'];
+
         if (db.profile.get(user_id, 'settings.discord_move_buttons') === true) {
             const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('play_dist')
-                    .setLabel(`${db.profile.get(user_id, 'move_speed')}`)
+                    .setLabel(`${spdEmotes[db.profile.get(user_id, 'move_speed')-1]}`)
                     .setStyle(ButtonStyle.Secondary),
             ).addComponents(
                 new ButtonBuilder()
