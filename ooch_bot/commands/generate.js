@@ -1221,7 +1221,7 @@ module.exports = {
         create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.'); 
         create_ability(51, 'Radioactive',       'Changes the Radioactive Oochamon\'s type to Flame every other turn.');
         create_ability(52, 'Energized',         'Increases ATK and SPD by 1 stage on kill.'); 
-        create_ability(53, 'Patient',           'Increases DEF by 1 stage each turn.'); 
+        create_ability(53, 'Patient',           'Increases DEF by 1 stage every other turn.'); 
         create_ability(54, 'Easy Go',           'Heals the rest of the Oochamon Trainer\'s party by 20% of their max HP when defeated.');
         create_ability(55, 'Bomber',            'The Oochamon explodes upon fainting, dealing half of the opposing Oochamon\'s HP on death.');
         create_ability(56, 'Flammable',         'Gains 1 stage of ATK when hit with a FLAME type move.');

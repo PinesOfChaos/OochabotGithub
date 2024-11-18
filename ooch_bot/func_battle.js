@@ -2278,8 +2278,10 @@ use_eot_ability: function(ooch, user_id) {
             ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its SPD from its ability **Inertia**!`;
         break;
         case Ability.Patient:
-            ooch = modify_stat(ooch, Stats.Defense, 1); 
-            ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Patient**!`;
+            if (db.profile.get(user_id, 'battle_turn_counter') % 2 === 0) {
+                ooch = modify_stat(ooch, Stats.Defense, 1);
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Patient**!`;
+            }
         break;
         case Ability.Increment:
             let randomStat = _.sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
