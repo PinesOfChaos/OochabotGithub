@@ -340,11 +340,15 @@ module.exports = {
         create_tile(`c_017`,       Tile.Int,      applicationEmojis ); // Tutorial Door Closed
         create_tile(`c_018`,       Tile.Int,      applicationEmojis ); // Mr. Nice
         create_tile(`c_019`,       Tile.Int,      applicationEmojis ); // Tutorial Spikes
-        create_tile(`c_020`,       Tile.Int,      applicationEmojis ); // Thunder Peak Lightning Ball
+        create_tile(`c_020`,       Tile.Int,      applicationEmojis ); // Generic Sign
         create_tile(`c_021`,       Tile.Int,      applicationEmojis ); // Mechanical Wall
         create_tile(`c_022`,       Tile.Int,      applicationEmojis ); // Character on Lavaboard
         create_tile(`c_023`,       Tile.Int,      applicationEmojis ); // Character on Teleporter
-        
+        create_tile(`c_024`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Amber)
+        create_tile(`c_025`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Blue)
+        create_tile(`c_026`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Pink)
+
+
         //#endregion
 
         //#region Item Data
@@ -1174,7 +1178,7 @@ module.exports = {
         create_ability(3,  'Broodmother',       'Gains 1 stage of ATK for each Oochamon with the same type in the party.'); 
         create_ability(4,  'Tough',             'A durable body grants a 1 stage increase to DEF upon entering the battlefield.');  
         create_ability(5,  'Shadow',            'Grants a 25% chance to VANISH after being attacked.'); 
-        create_ability(6,  'Withering',         'Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages upon entering the battlefield.');  
+        create_ability(6,  'Withering',         'Withers away the opposing Oochamon, lowering it\'s DEF by 1 stage upon entering the battlefield.');  
         create_ability(7,  'Darkbright',        'Attacks that afflict BURN also BLIND and vice-versa.');  
         create_ability(8,  'Gentle',            'A kind heart reduces both your ATK and the enemy ATK by 1 stage.');  
         create_ability(9,  'Warm',              'Increases the damage of FLAME attacks by 10%.');  
@@ -1202,7 +1206,7 @@ module.exports = {
         create_ability(31, 'Tangled',           'Causes enemies that hit it to be SNARED.'); 
         create_ability(32, 'Mundane',           'Makes the Oochamon completely immune to Status Effects.'); 
         create_ability(33, 'Rogue',             'Doubles the damage dealt to full HP enemies.'); 
-        create_ability(34, 'Crystallize',       'Boosts the power of Ooze, Flame, and Stone attacks by 30%.'); 
+        create_ability(34, 'Crystallize',       'Boosts the power of Ooze, Flame, and Crystal attacks by 30%.'); 
         create_ability(35, 'Lacerating',        'All attacks do an extra attack to an enemy, dealing 5% of their max HP.'); 
         create_ability(36, 'Gravity',           'Attacks deal 1% more damage per number of turns in this battle.');
         create_ability(37, 'Sporespray',        'INFECTS the enemy when the Sporespray Oochamon faints.'); 

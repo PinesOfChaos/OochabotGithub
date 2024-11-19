@@ -32,7 +32,7 @@
   {
     "id": 6,
     "name": "Withering",
-    "description": "Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages upon entering the battlefield."
+    "description": "Withers away the opposing Oochamon, lowering it's DEF by 1 stage upon entering the battlefield."
   },
   {
     "id": 7,
@@ -172,7 +172,7 @@
   {
     "id": 34,
     "name": "Crystallize",
-    "description": "Boosts the power of Ooze, Flame, and Stone attacks by 30%."
+    "description": "Boosts the power of Ooze, Flame, and Crystal attacks by 30%."
   },
   {
     "id": 35,

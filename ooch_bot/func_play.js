@@ -711,7 +711,7 @@ module.exports = {
                             def_iv = _.random(0,10), spd_iv = _.random(0,10), held_item = false) {
 
         const { get_stats, level_up, exp_to_next_level } = require('./func_battle');
-                        
+  
         //Fix IV math
         hp_iv = (hp_iv/20) + 1;
         atk_iv = (atk_iv/20) + 1;
@@ -725,7 +725,7 @@ module.exports = {
 
         // Pick a random ability (unless we specify, then force one)
         let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
-        if (ability != false) {
+        if (ability != false && ability != -1) {
             rand_ability = ability;
         }
         

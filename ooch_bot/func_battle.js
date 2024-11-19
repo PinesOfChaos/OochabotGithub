@@ -361,10 +361,14 @@ prompt_battle_input: async function(thread, user_id) {
             switch (ooch_pick.ability) {
                 case Ability.Boisterous:
                     ooch_enemy.current_hp = _.clamp(Math.floor(ooch_enemy.current_hp - ooch_enemy.stats.hp * 0.1), 1, ooch_enemy.stats.hp);
-                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost 10% of it's hp from the switch in ability **Boisterous**!`;
+                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost 10% of it's hp from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
                 break;
                 case Ability.Gentle:
                     ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
+                break;
+                case Ability.Withering:
+                    ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
+                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
                 break;
             }
 
@@ -630,6 +634,10 @@ prompt_battle_input: async function(thread, user_id) {
                         break;
                         case Ability.Gentle:
                             ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
+                        break;
+                        case Ability.Withering:
+                            ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
+                            string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
                         break;
                     }
                 
@@ -1072,11 +1080,12 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
         case OochType.Stone:
             if (ooch_attacker.ability == Ability.Burrower) damage *= 1.1;
             if (ooch_defender.ability == Ability.Armored) damage *= 0.8;
-            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; break;
         case OochType.Tech:
             if (ooch_attacker.ability == Ability.LiquidCooled) damage *= 1.25; break;
         case OochType.Sound:
             if (ooch_attacker.ability == Ability.BassBoost) damage *= 1.2; break;
+        case OochType.Crystal:
+            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; break;
     }
 
     damage = Math.round(damage);
@@ -1226,7 +1235,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
     let string_to_send = ``;
     let ability_dmg_multiplier = 1;
     let battleSpeed = db.profile.get(user_id, 'settings.battle_speed')
-    let selfTarget = move_accuracy < 0;
+    let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
 
     // If 2 Oochamon are the same, then pre-pend Player and Enemy to differentiate them
     let atkOochName = attacker.nickname;
@@ -1973,6 +1982,10 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
                 case Ability.Gentle:
                     ooch_plr = modify_stat(ooch_plr, Stats.Attack, -0.1);
                 break;
+                case Ability.Withering:
+                    ooch_plr = modify_stat(ooch_plr, Stats.Defense, -1);
+                    string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_enemy.emote} **${ooch_enemy.nickname}**!`;
+                break;
             }
 
             // Reset modified stats for dead oochamon
@@ -2190,10 +2203,6 @@ ability_stat_change: function(ooch, ooch_inv) {
             ooch = modify_stat(ooch, Stats.Speed, -1); 
             output_msg = `${ooch.emote} **${ooch.nickname}** decreased its SPD and increased its ATK from its ability **Dense**!`;
         break;
-        case Ability.Withering:
-            ooch = modify_stat(ooch, Stats.Speed, 1); 
-            output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its SPD from its ability **Withering**!`;
-        break;
         case Ability.Fleeting:
             ooch = modify_stat(ooch, Stats.Speed, 2);
             ooch = modify_stat(ooch, Stats.Attack, 2); 
@@ -2259,10 +2268,6 @@ use_eot_ability: function(ooch, user_id) {
     const { modify_stat, type_to_emote, add_status_effect } = require('./func_battle.js');
     let ability_text = ``;
     switch(ooch.ability) {
-        case Ability.Withering:
-            ooch.current_hp -= Math.round(ooch.stats.hp * 0.05); 
-            ability_text = `\n${ooch.emote} **${ooch.nickname}** lost 5% of its max HP due to its ability **Withering**!`;
-        break;
         case Ability.Fleeting:
             ooch.current_hp = Math.floor(ooch.current_hp / 2);
             ability_text = `\n${ooch.emote} **${ooch.nickname}** had its HP halved due to its ability **Fleeting**!`;

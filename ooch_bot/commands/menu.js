@@ -386,14 +386,14 @@ module.exports = {
                         });
                     }
                 }
+            }
 
-                if (other_select_options.length == 0) {
-                    other_select_options.push({ 
-                        label: `No Usable Items.`,
-                        description: 'Can\'t use anything!',
-                        value: `n/a`
-                    });
-                }
+            if (other_select_options.length == 0) {
+                other_select_options.push({ 
+                    label: `No Usable Items.`,
+                    description: 'Can\'t use anything!',
+                    value: `n/a`
+                });
             }
 
             bag_select.addComponents(
@@ -441,7 +441,7 @@ module.exports = {
             // Back to Main Menu
             if (selected == 'back_to_menu') {
                 let user_profile = db.profile.get(interaction.user.id);
-                await i.update({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}`, embeds: [], components: [settings_row_1, settings_row_2, settings_row_3], files: [] });
+                await i.update({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, embeds: [], components: [settings_row_1, settings_row_2, settings_row_3], files: [] });
             } 
             // Back to Party Select
             else if (selected == 'back_to_party') {
@@ -969,13 +969,20 @@ module.exports = {
                     case 'evolve':
                         let oldOoch = user_profile.ooch_party[selData[0]];
 
-                        let newOoch = create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, false, oldOoch.current_exp, oldOoch.abilities,
+                        // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
+                        let nickname = oldOoch.nickname == oldOoch.name ? false : oldOoch.nickname;
+
+                        let newOoch = create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, nickname, oldOoch.current_exp, false,
                             (oldOoch.stats.hp_iv - 1) * 20, 
                             (oldOoch.stats.atk_iv - 1) * 20, 
                             (oldOoch.stats.def_iv - 1) * 20, 
                             (oldOoch.stats.spd_iv - 1) * 20 );
                         user_profile.ooch_party[selData[0]] = newOoch;
-                        item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.nickname}** into ${newOoch.emote} **${newOoch.name}**!`;
+
+                        db.profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].seen`);
+                        db.profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].caught`);
+
+                        item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.name}** into ${newOoch.emote} **${newOoch.name}**!`;
                     break;
                 }
 
@@ -1000,6 +1007,76 @@ module.exports = {
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
+                let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
+                let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
+                oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
+                let oochadex_sel_options_1 = [];
+                let oochadex_sel_options_2 = [];
+                let oochadex_sel_options_3 = [];
+                let oochadex_sel_options_4 = [];
+                
+                for (let i = 0; i < db.monster_data.keyArray().length; i++) {
+                    ooch_data = db.monster_data.get(i);
+                    oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
+                    if (i < 25) {
+                        oochadex_sel_options_1.push({
+                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                            value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                        })
+                    } else if (i >= 25 && i < 50) {
+                        oochadex_sel_options_2.push({
+                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                            value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                        })
+                    } else if (i >= 50 && i < 75) {
+                        oochadex_sel_options_3.push({
+                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                            value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                        })
+                    } else if (i >= 75 && i < 100) {
+                        oochadex_sel_options_4.push({
+                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                            value: `dex_${i}`,
+                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                        })
+                    }
+                }
+        
+                oochadex_sel_1.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('oochadex_sel_1')
+                        .setPlaceholder('Oochadex #1-#25')
+                        .addOptions(oochadex_sel_options_1),
+                );
+        
+                oochadex_sel_2.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('oochadex_sel_2')
+                        .setPlaceholder(`Oochadex #26-#50`)
+                        .addOptions(oochadex_sel_options_2),
+                );
+        
+                oochadex_sel_3.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('oochadex_sel_3')
+                        .setPlaceholder(`Oochadex #51-#75`)
+                        .addOptions(oochadex_sel_options_3),
+                );
+        
+                oochadex_sel_4.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('oochadex_sel_4')
+                        .setPlaceholder(`Oochadex #76-#100`)
+                        .addOptions(oochadex_sel_options_4),
+                );
+
                 ooch_data = db.monster_data.get(0);
                 let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
                 let ooch_img_file = get_ooch_art(ooch_data.name);
@@ -1249,6 +1326,8 @@ module.exports = {
                 await i.update({ content: null });
                 await i.deleteReply();
             }
+
+            user_profile = db.profile.get(interaction.user.id);
             //#endregion
         });
     },
