@@ -104,7 +104,7 @@
 			"sprite_id": "c00_002",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 4,
 					"def_iv": 8,
 					"hp_iv": 1,
@@ -128,7 +128,7 @@
 			"aggro_range": 3,
 			"coin": 0,
 			"flag_given": "spawn_nice1",
-			"flag_kill": "",
+			"flag_kill": "spawn_nice1",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -208,7 +208,7 @@
 					"spd_iv": 2
 				},
 				{
-					"ability": 0,
+					"ability": 18,
 					"atk_iv": 0,
 					"def_iv": 4,
 					"hp_iv": 7,

@@ -122,7 +122,7 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "Scavenger Gale",
+			"name": "Scout Gale",
 			"npc_id": "293774352884031078",
 			"post_combat_dialogue": "Uhh... go away?",
 			"pre_combat_dialogue": "Shh, shh, you didn't see me here.",
@@ -133,7 +133,7 @@
 			"sprite_id": "c00_001",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 1,
 					"def_iv": 5,
 					"hp_iv": 2,
@@ -173,7 +173,7 @@
 			"sprite_id": "c00_005",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 1,
 					"def_iv": 3,
 					"hp_iv": 7,
@@ -271,7 +271,7 @@
 			"sprite_id": "c00_014",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 6,
 					"def_iv": 7,
 					"hp_iv": 9,
@@ -289,7 +289,7 @@
 					"spd_iv": 1
 				},
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 8,
 					"def_iv": 6,
 					"hp_iv": 10,
@@ -329,7 +329,7 @@
 			"sprite_id": "c00_003",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 3,
 					"def_iv": 6,
 					"hp_iv": 3,
@@ -347,7 +347,7 @@
 					"spd_iv": 2
 				},
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 2,
 					"def_iv": 6,
 					"hp_iv": 8,
@@ -387,7 +387,7 @@
 			"sprite_id": "c00_001",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 2,
 					"def_iv": 7,
 					"hp_iv": 3,
@@ -427,7 +427,7 @@
 			"sprite_id": "c00_001",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 3,
 					"def_iv": 3,
 					"hp_iv": 5,
@@ -507,7 +507,7 @@
 			"sprite_id": "c00_014",
 			"team": [
 				{
-					"ability": 2,
+					"ability": 9999,
 					"atk_iv": 5,
 					"def_iv": 6,
 					"hp_iv": 8,

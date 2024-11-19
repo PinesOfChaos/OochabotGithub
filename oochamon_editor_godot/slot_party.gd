@@ -133,16 +133,17 @@ func refresh_abilities(index):
 			ability = ooch_data.ooch_ability[i]
 			o_slot_ability.add_item(Global.DataAbilities[ability].ability_name, ability)
 			o_slot_ability.set_item_tooltip(i,Global.DataAbilities[ability].ability_desc)
-			if slot_data.ability == i:
+			if slot_data.ability == ability:
 				o_slot_ability.select(i)
 			elif i == 0 and slot_data.ability == -1:
 				slot_data.ability = ability
 				already_set = true
+				
+		o_slot_ability.add_item("Random", 9999)
 		
 		#set the default ability to be randomized by default
 		if(!already_set):
 			var rand_id = o_slot_ability.item_count
-			o_slot_ability.add_item("Random", -1)
 			o_slot_ability.select(o_slot_ability.item_count - 1)
 				
 			
@@ -223,6 +224,7 @@ func _on_slot_level_value_changed(value):
 	
 func _on_slot_ability_item_selected(index):
 	slot_data.ability = o_slot_ability.get_item_id(index)
+	print(slot_data.ability)
 
 func refresh_summary(index):
 	var hp = floor(Global.DataOochamon[index].ooch_hp * pow(1.05, slot_data.level) * (slot_data.hp_iv/10 + 1)) + 10

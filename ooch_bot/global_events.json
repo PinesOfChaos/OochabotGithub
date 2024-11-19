@@ -279,7 +279,7 @@
 				"image": "starter.png",
 				"options": [
 					{
-						"ability": 2,
+						"ability": 9999,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,
@@ -297,7 +297,7 @@
 						"spd_iv": 5
 					},
 					{
-						"ability": 2,
+						"ability": 9999,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,
@@ -315,7 +315,7 @@
 						"spd_iv": 5
 					},
 					{
-						"ability": 2,
+						"ability": 9999,
 						"atk_iv": 5,
 						"def_iv": 5,
 						"hp_iv": 5,

@@ -70,7 +70,7 @@
 					"spd_iv": 2
 				},
 				{
-					"ability": 0,
+					"ability": 31,
 					"atk_iv": 4,
 					"def_iv": 10,
 					"hp_iv": 5,
@@ -287,7 +287,7 @@
 			"sprite_id": "c00_010",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 8,
 					"atk_iv": 5,
 					"def_iv": 1,
 					"hp_iv": 8,

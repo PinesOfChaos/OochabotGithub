@@ -68,8 +68,8 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"height": 4,
-			"width": 4,
-			"x": 8,
+			"width": 6,
+			"x": 5,
 			"y": 53
 		}
 	],
@@ -137,7 +137,7 @@
 			"sprite_id": "c00_013",
 			"team": [
 				{
-					"ability": 0,
+					"ability": 9999,
 					"atk_iv": 9,
 					"def_iv": 0,
 					"hp_iv": 8,
