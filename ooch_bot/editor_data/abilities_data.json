@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "Miniscule",
-    "description": "Becomes super small and increases evasion against attacks by 1 stage."
+    "description": "Becomes super small and increases evasion against attacks by 1 stage upon entering the battlefield."
   },
   {
     "id": 1,
@@ -12,7 +12,7 @@
   {
     "id": 2,
     "name": "Burdened",
-    "description": "A large growth at the start of battle reduces SPD by 1 stage but raises DEF by 1 stage"
+    "description": "A large growth reduces SPD by 1 stage but raises DEF by 1 stage upon entering the battlefield."
   },
   {
     "id": 3,
@@ -22,7 +22,7 @@
   {
     "id": 4,
     "name": "Tough",
-    "description": "A durable body grants a 1 stage increase to DEF."
+    "description": "A durable body grants a 1 stage increase to DEF upon entering the battlefield."
   },
   {
     "id": 5,
@@ -32,7 +32,7 @@
   {
     "id": 6,
     "name": "Withering",
-    "description": "Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages."
+    "description": "Loss of the body reduces HP by 5% each turn, but raises SPD by 2 stages upon entering the battlefield."
   },
   {
     "id": 7,
@@ -57,7 +57,7 @@
   {
     "id": 11,
     "name": "Conflicted",
-    "description": "Multiple minds increase ALL stats by 1 stage."
+    "description": "Multiple minds increase ALL stats by 1 stage upon entering the battlefield."
   },
   {
     "id": 12,
@@ -77,7 +77,7 @@
   {
     "id": 15,
     "name": "Dense",
-    "description": "Increases ATK by 1 stage but reduces SPD by 1 stage."
+    "description": "Increases ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield."
   },
   {
     "id": 16,
@@ -97,17 +97,17 @@
   {
     "id": 19,
     "name": "Efficient",
-    "description": "Increases ATK by 1 stage each turn."
+    "description": "Increases ATK by 1 stage every other turn."
   },
   {
     "id": 20,
     "name": "Boisterous",
-    "description": "Shatters eardrums when it enters the field dealing 10% of the enemy's HP"
+    "description": "Shatters eardrums when it enters the field dealing 10% of the enemy's HP."
   },
   {
     "id": 21,
     "name": "Haunted",
-    "description": "Applies the DOOMED status to an enemy when the holder of the ability dies."
+    "description": "Applies the DOOMED status to an enemy when the Haunted Oochamon faints."
   },
   {
     "id": 22,
@@ -122,7 +122,7 @@
   {
     "id": 24,
     "name": "Uncontrolled",
-    "description": "Increases ATK by 3 stages and reduces DEF by 1 stages but randomly chooses an attack each turn"
+    "description": "Increases ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn."
   },
   {
     "id": 25,
@@ -142,7 +142,7 @@
   {
     "id": 28,
     "name": "Immense",
-    "description": "Increases DEF by 2 stages but also makes opponent's moves always hit."
+    "description": "Increases DEF by 2 stages upon entering the battlefield, but also makes opponent's moves always hit."
   },
   {
     "id": 29,
@@ -162,12 +162,12 @@
   {
     "id": 32,
     "name": "Mundane",
-    "description": "Cannot be affected by Status Effects."
+    "description": "Makes the Oochamon completely immune to Status Effects."
   },
   {
     "id": 33,
     "name": "Rogue",
-    "description": "DOUBLES the damage dealt to full HP enemies."
+    "description": "Doubles the damage dealt to full HP enemies."
   },
   {
     "id": 34,
@@ -187,7 +187,7 @@
   {
     "id": 37,
     "name": "Sporespray",
-    "description": "INFECTS the enemy when defeated."
+    "description": "INFECTS the enemy when the Sporespray Oochamon faints."
   },
   {
     "id": 38,
@@ -197,7 +197,7 @@
   {
     "id": 39,
     "name": "Bipolar",
-    "description": "Use the DEF stat when dealing damage."
+    "description": "Use the DEF stat when dealing damage, rather than the ATK stat."
   },
   {
     "id": 40,
@@ -207,12 +207,12 @@
   {
     "id": 41,
     "name": "Nullify",
-    "description": "Change an opponents ability to Null while out on the field."
+    "description": "Nullify's the opposing Oochamon, changing their ability to Null while out on the field."
   },
   {
     "id": 42,
     "name": "Duplicant",
-    "description": "Copy the opponent's ability."
+    "description": "Copies the opponent's ability."
   },
   {
     "id": 43,
@@ -227,12 +227,12 @@
   {
     "id": 45,
     "name": "Immobile",
-    "description": "Always go last when attacking, but gain a DEF increase."
+    "description": "Always go last when attacking, but gain a DEF increase upon entering the battlefield."
   },
   {
     "id": 46,
     "name": "Strings Attached",
-    "description": "20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking."
+    "description": "Gains a 20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking."
   },
   {
     "id": 47,
@@ -242,7 +242,7 @@
   {
     "id": 48,
     "name": "Spectral",
-    "description": "Changes type to Magic every other turn."
+    "description": "Changes the Spectral Oochamon's type to Magic every other turn."
   },
   {
     "id": 49,
@@ -257,7 +257,7 @@
   {
     "id": 51,
     "name": "Radioactive",
-    "description": "Changes type to Flame every other turn."
+    "description": "Changes the Radioactive Oochamon's type to Flame every other turn."
   },
   {
     "id": 52,
@@ -267,17 +267,17 @@
   {
     "id": 53,
     "name": "Patient",
-    "description": "Increases DEF by 1 stage each turn."
+    "description": "Increases DEF by 1 stage every other turn."
   },
   {
     "id": 54,
     "name": "Easy Go",
-    "description": "Heals the rest of your party by 20% of their max HP when defeated."
+    "description": "Heals the rest of the Oochamon Trainer's party by 20% of their max HP when defeated."
   },
   {
     "id": 55,
     "name": "Bomber",
-    "description": "Halves the enemy HP on death."
+    "description": "The Oochamon explodes upon fainting, dealing half of the opposing Oochamon's HP on death."
   },
   {
     "id": 56,
@@ -312,17 +312,17 @@
   {
     "id": 62,
     "name": "Riposte",
-    "description": "Increases damage dealt by 20%. After attacking or the turn ends, this ability becomes Parry."
+    "description": "Increases damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry."
   },
   {
     "id": 63,
     "name": "Swaying",
-    "description": "Increases DEF by 1 stage but lowers accuracy by 1 stage."
+    "description": "Increases DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage."
   },
   {
     "id": 64,
     "name": "Thrashing",
-    "description": "Increases ATK by 1 stage but lowers evasion by 1 stage."
+    "description": "Increases ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage."
   },
   {
     "id": 65,
@@ -332,17 +332,17 @@
   {
     "id": 66,
     "name": "Protector",
-    "description": "Immune to inneffective damage during the turn it switches in."
+    "description": "The Oochamon gets protected, making it immune to not very effective damage during the turn it switches into the battlefield."
   },
   {
     "id": 67,
     "name": "Phantasmal",
-    "description": "Immune to Neutral-type moves."
+    "description": "The Oochamon becomes phantasmal, making it immune to Neutral-type moves."
   },
   {
     "id": 68,
     "name": "Matryoshka",
-    "description": "The first time it would be KO'd, restores its HP to half."
+    "description": "The first time the Oochamon would faint, revives and restores its HP to half."
   },
   {
     "id": 69,
@@ -362,7 +362,7 @@
   {
     "id": 72,
     "name": "Neutralizer",
-    "description": "No Oochamon are affected by status effects."
+    "description": "Makes every Oochamon on the battlefield immune to Status Effects."
   },
   {
     "id": 73,
@@ -372,6 +372,6 @@
   {
     "id": 74,
     "name": "Stealthy",
-    "description": "Gets FOCUSED if it hasn't dealt damage this turn."
+    "description": "The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn't dealt damage this turn."
   }
 ]
