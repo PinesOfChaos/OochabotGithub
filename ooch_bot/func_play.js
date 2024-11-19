@@ -725,7 +725,7 @@ module.exports = {
 
         // Pick a random ability (unless we specify, then force one)
         let rand_ability = ability_list[_.random(0, ability_list.length - 1)]
-        if (ability != false && ability != -1) {
+        if (ability !== false && ability != 9999) {
             rand_ability = ability;
         }
         
