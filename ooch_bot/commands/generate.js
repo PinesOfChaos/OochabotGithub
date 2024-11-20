@@ -1480,8 +1480,8 @@ module.exports = {
             oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.', 
             type: [OochType.Fungal],
             hp: 14, atk: 10, def: 9, spd: 12, //total 35
-            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale],
-             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.StickyOrb],
+             [11, Move.Impale], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
              [36, Move.ThornShot], [41, Move.FiberSlicer], [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Miniscule ],
             pre_evo_id: -1, evo_id: 14, evo_lvl: 9, evo_stage: 0
@@ -1495,8 +1495,8 @@ module.exports = {
             oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.', 
             type: [OochType.Fungal],
             hp: 21, atk: 17, def: 12, spd: 15, //total 65
-            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.Impale],
-             [11, Move.StickyOrb], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
+            move_list: [ [1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [7, Move.StickyOrb],
+             [11, Move.Impale], [17, Move.ThornShot], [23, Move.MycoBurst], [29, Move.PrecisionStrike],
              [36, Move.ThornShot], [41, Move.FiberSlicer], [-1, Move.Glimmer] ],
             abilities: [ Ability.Moist, Ability.Alert ],
             pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
