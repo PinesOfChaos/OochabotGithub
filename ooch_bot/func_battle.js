@@ -368,7 +368,7 @@ prompt_battle_input: async function(thread, user_id) {
                 break;
                 case Ability.Withering:
                     ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
-                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
+                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Withering** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
                 break;
             }
 
@@ -637,7 +637,7 @@ prompt_battle_input: async function(thread, user_id) {
                         break;
                         case Ability.Withering:
                             ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
-                            string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
+                            string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Withering** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
                         break;
                     }
                 
@@ -1984,7 +1984,7 @@ end_of_round: async function(thread, user_id, ooch_plr, ooch_enemy) {
                 break;
                 case Ability.Withering:
                     ooch_plr = modify_stat(ooch_plr, Stats.Defense, -1);
-                    string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}** had its defense lowered from the switch in ability **Boisterous** from ${ooch_enemy.emote} **${ooch_enemy.nickname}**!`;
+                    string_to_send += `\n${ooch_plr.emote} **${ooch_plr.nickname}** had its defense lowered from the switch in ability **Withering** from ${ooch_enemy.emote} **${ooch_enemy.nickname}**!`;
                 break;
             }
 
