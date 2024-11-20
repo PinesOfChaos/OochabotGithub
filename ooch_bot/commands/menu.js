@@ -565,7 +565,7 @@ module.exports = {
                     // move[0] is the level the move is learned
                     if (move[0] <= selected_ooch.level && move[0] != -1) available_moves += 1;
                 }
-                if (available_moves >= 5) party_extra_buttons_2.components[1].setDisabled(Boolean(available_moves < 5));
+                party_extra_buttons_2.components[1].setDisabled(Boolean(available_moves < 5));
 
                 // Check if we can evolve
                 let evoLvl = db.monster_data.get(selected_ooch.id, 'evo_lvl');
