@@ -16,7 +16,7 @@ let functions = {
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
         
         const { setup_battle, generate_trainer_battle } = require('./func_battle.js');
-        const { give_item, setup_playspace_str, create_ooch, map_emote_string, move } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(

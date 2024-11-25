@@ -1101,7 +1101,7 @@ battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defende
  */
 battle_calc_exp: function(enemy_level, enemy_evo_stage, bonus_multiplier = 1) {
     let exp_multiplier = 0.90
-    return Math.round(((bonus_multiplier * (1.025 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 20) * exp_multiplier);
+    return Math.round(((bonus_multiplier * (1.025 ** enemy_level) * (2 ** enemy_evo_stage) * 8 * enemy_level * (_.random(90, 100)/100)) + 20) * exp_multiplier + (Math.max(level - 20, 0) * 100));
 },
 
 /**

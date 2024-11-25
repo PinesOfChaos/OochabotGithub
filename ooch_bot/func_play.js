@@ -125,6 +125,7 @@ module.exports = {
                     if (x1 && y1 && x2 && y2) {
                         if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
                             stop_moving = true;
+                            moveDisable = true;
                             await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
                         }
                     }

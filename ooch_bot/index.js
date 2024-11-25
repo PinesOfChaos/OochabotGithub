@@ -1,6 +1,5 @@
-// require the discord.js module
+require('dotenv').config();
 const fs = require('fs');
-const { token, client_id, guild_ids } = require('./config.json');
 const { REST } = require('@discordjs/rest');
 const { Routes, InteractionType } = require('discord-api-types/v9');
 const wait = require('wait');
@@ -36,24 +35,21 @@ for (const file of commandFiles) {
     }
 }
 
-const rest = new REST({ version: '9' }).setToken(token);
+const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
+(async () => {
+    try {
+        console.log('Started refreshing application (/) commands.');
 
-for(let i = 0; i < guild_ids.length; i++){
-    (async () => {
-        try {
-            console.log('Started refreshing application (/) commands.');
+        await rest.put(
+            Routes.applicationCommands(process.env.BOT_CLIENT_ID),
+            { body: registerCommands },
+        );
 
-            await rest.put(
-                Routes.applicationGuildCommands(client_id, guild_ids[i]),
-                { body: registerCommands },
-            );
-
-            console.log('Successfully reloaded application (/) commands.');
-        } catch (error) {
-            console.error(error);
-        }
-    })();
-}
+        console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error);
+    }
+})();
 //#endregion
 
 client.on('ready', async () => {
@@ -61,7 +57,7 @@ client.on('ready', async () => {
     for (let user of userIds) {
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        //if (user != '122568101995872256' && user != '145342159724347393') continue;
+        if (user != '122568101995872256' && user != '145342159724347393') continue;
 
         let user_profile = db.profile.get(user);
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
@@ -401,5 +397,5 @@ client.on('messageCreate', async message => {
 });
 
 //Log Bot in to the Discord
-client.login(token);
+client.login(process.env.BOT_TOKEN);
 
