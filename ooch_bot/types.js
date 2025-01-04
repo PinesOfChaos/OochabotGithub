@@ -57,7 +57,8 @@ const DialogueType = {
 const TrainerType = {
     Wild: 0,
     NPCTrainer: 1,
-    OnlineUser: 2
+    OnlineUser: 2,
+    User: 3
 }
 
 const Stats = {
@@ -95,6 +96,10 @@ const OochType = {
     Crystal: 'crystal',
     Cloth: 'cloth',
     Martial: 'martial',
+}
+
+const Weather = {
+    Clear : 0
 }
 
 const Move = {
@@ -322,6 +327,15 @@ const ItemType = {
     Misc: 2,
 }
 
+const BattleState = {
+    Start : 0,
+    AwaitInput : 1,
+    SetTurnOrder : 2,
+    TurnsProcess : 3,
+    EndOfRound : 4,
+    EndOfBattle : 5
+}
+
 const Tile = {
     Floor: 0,
     Npc: 1,
@@ -378,5 +392,5 @@ module.exports = {
     EventMode, DialogueType, TrainerType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget,
+    MoveTarget, Weather, BattleState
 };

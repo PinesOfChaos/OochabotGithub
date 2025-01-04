@@ -13,4 +13,5 @@ module.exports = {
   tile_data: new Enmap({ name: "tile_data" }),
   events_data: new Enmap({ name: "events_data" }),
   global_data: new Enmap({ name: "global_data" }),
+  battle_data: new Enmap({ name: "battle_data" }),
 };
