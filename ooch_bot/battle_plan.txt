@@ -15,7 +15,7 @@ battle_data {
                 is_catchable: Boolean,
                 action_selected: Any or False,
                 display_msg_id: String,
-                is_player: Boolean,
+                user_type: Enum,
                 (other attributes)
             },
         ],

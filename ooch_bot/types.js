@@ -54,11 +54,12 @@ const DialogueType = {
     NPCLose: 2
 }
 
-const TrainerType = {
-    Wild: 0,
-    NPCTrainer: 1,
-    OnlineUser: 2,
-    User: 3
+// Add special AI types here
+const UserType = {
+    Player: 0,
+    Wild: 1,
+    NPCTrainer: 2,
+    NPCSmart : 3
 }
 
 const Stats = {
@@ -336,6 +337,19 @@ const BattleState = {
     EndOfBattle : 5
 }
 
+const BattleInput = {
+    Attack: 'fight',
+    Run : 'run',
+    Switch : 'switch',
+    Bag : 'bag',
+    Info : 'info',
+    Back : 'back',
+
+    BagPrism: 'prism',
+    BagHeal: 'heal',
+    BagOther: 'other'
+}
+
 const BattleAction = { //These double as the base priority values for actions
     Attack :    0,
     Run :       10_000,
@@ -400,8 +414,8 @@ const TileEmoteGuildsArray = [
 
 module.exports = { 
     PlayerState, TypeEmote, GraphicsMode, Flags, 
-    EventMode, DialogueType, TrainerType, 
+    EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget, Weather, BattleState, BattleAction
+    MoveTarget, Weather, BattleState, BattleAction, BattleInput
 };
