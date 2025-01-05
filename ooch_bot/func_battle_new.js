@@ -2,7 +2,7 @@ const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState } = require("./types");
+const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction} = require("./types");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -185,7 +185,9 @@ let functions = {
             battle_msg_counter : abilityMsg == '' ? 1 : 2,
             turn_msg_counter : 0,
             battle_state : BattleState.Start,
-            
+            battle_action_queue : [],
+
+
             turn_counter : 0,
             users : users,
 
@@ -206,6 +208,59 @@ let functions = {
         //await functions.prompt_battle_input(thread, user_id);
     },
 
+    /**
+     * Create an Attack action
+     * @param {Number} user_id The user which is causing this action
+     * @param {Number} target_user_id The user to be hit by the move
+     * @param {Number} move_slot The move to be used
+     * @returns returns a battle action object
+     */
+    new_battle_action_attack : function(user_id, target_user_id, move_slot){
+        let action = {
+            action_type : BattleAction.Attack,
+            priority : BattleAction.Attack,
+            user_id : user_id,
+            target_user_id : target_user_id,
+            move_slot : move_slot
+
+            
+        }
+
+        return(action);
+    },
+
+    /**
+     * Create a Run action
+     * @param {Number} user_id The user which is causing this action
+     * @returns returns a battle action object
+     */
+    new_battle_action_run : function(user_id){
+        let action = {
+            action_type : BattleAction.Run,
+            priority : BattleAction.Run,
+            user_id : user_id
+        }
+
+        return(action);
+    },
+
+    /**
+     * Create a Switch action
+     * @param {Number} user_id The user which is causing this action
+     * @param {Number} slot_to The slot to switch to
+     * @returns returns a battle action object
+     */
+    new_battle_action_switch(user_id, slot_to){
+        let action = {
+            action_type : BattleAction.Run,
+            priority : BattleAction.Run,
+            user_id : user_id,
+
+            slot_to : slot_to
+        }
+
+        return(action);
+    }
 
     /**
      * Selects a random target player in the battle

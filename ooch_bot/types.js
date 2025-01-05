@@ -336,6 +336,17 @@ const BattleState = {
     EndOfBattle : 5
 }
 
+const BattleAction = { //These double as the base priority values for actions
+    Attack :    0,
+    Run :       10_000,
+    Switch :    20_000,
+
+    Prism :     30_000,
+    Heal :      40_000,
+    Other :     50_000
+    
+}
+
 const Tile = {
     Floor: 0,
     Npc: 1,
@@ -392,5 +403,5 @@ module.exports = {
     EventMode, DialogueType, TrainerType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget, Weather, BattleState
+    MoveTarget, Weather, BattleState, BattleAction
 };
