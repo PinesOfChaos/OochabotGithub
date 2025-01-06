@@ -44,7 +44,6 @@ generate_trainer_battle(trainer_obj) {
         ooch_base.moveset = ooch_base.moveset.filter(v => v != 9999);
         let ooch = create_ooch(ooch_base.id, ooch_base.level, ooch_base.moveset, ooch_base.nickname, 0, ooch_base.ability,
                                ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv);
-        console.log(ooch);
         party_generated.push(ooch); 
     }
     

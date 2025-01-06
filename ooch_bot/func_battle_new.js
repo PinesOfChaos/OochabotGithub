@@ -22,9 +22,9 @@ let functions = {
     },
 
     /**
-     * Generates a battle team
-     * @param {Object} guild Guild this battle is taking place in
-     * @param {Object} thread Thread this battle is taking place in
+     * Generates a battle user object
+     * @param {Object} guild Guild this user session is taking place in
+     * @param {Object} thread Thread this user session is taking place in
      * @param {Number} type Type of Battle TrainerType(Wild, NPCTrainer, User, OnlineUser)
      * @param {Object} options Additional data, data required varies by type
      * @returns 
@@ -215,13 +215,13 @@ let functions = {
      * @param {Number} move_slot The move to be used
      * @returns returns a battle action object
      */
-    new_battle_action_attack : function(user_id, target_user_id, move_slot) {
+    new_battle_action_attack : function(user_id, target_user_id, move_id) {
         let action = {
             action_type : BattleAction.Attack,
             priority : BattleAction.Attack,
             user_id : user_id,
             target_user_id : target_user_id,
-            move_slot : move_slot
+            move_id : move_id
         }
 
         return(action);
@@ -378,11 +378,21 @@ let functions = {
         return(moves_sorted)
     },
 
-    /** 
-     * 
+    /* TODOs: 
+        - Ensure the turn msg counters are correct after this is correct globally
+        - Make sure messages are updated properly
+    */
+
+    /** Gather input for battle actions
+     * @param battle_id The ID of the battle being prompted for
      */
     prompt_battle_actions: async function(battle_id) {
         let battle_data = db.battle_data.get(battle_id);
+
+        // Store current battle state to roll back to if needed
+        db.battle_data.delete(battle_id, 'rollback_profile');
+        db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
+        db.battle_data.set(battle_id, 0, 'turn_msg_counter');
 
         //#region Setup Action Rows
         const inputRow = new ActionRowBuilder()
@@ -469,107 +479,169 @@ let functions = {
                     functions.handle_battle_action(battle_id);
                 }
             } else {
-                let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2, row3] });
-                db.profile.inc(user_id, 'turn_msg_counter');
-                db.profile.inc(user_id, 'battle_msg_counter');
-                
-                const collector = thread.createMessageComponentCollector({ max: 1 });
+                await thread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
                 const inputCollector = thread.createMessageComponentCollector();
                 
                 await inputCollector.on('collect', async i => {
                     let customId = i.customId;
+                    let activeOoch = user.party[user.active_slot];
                     
                     switch(customId) {
+
                         case BattleInput.Back:
-                           
+                            await i.update({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
                         break;
+                        
                         case BattleInput.Attack:
+                            let move_id, move_name, move_type, move_damage, move_effective_emote = '',
+                                buttonStyle = ButtonStyle.Primary, moveButtons;
+
+                            // Get the Oochamon's Attack options
+                            for (let i = 0; i < activeOoch.move_list.length; i++) {
+                                move_id = activeOoch.move_list[i];
+                                move_name = db.move_data.get(`${move_id}`, 'name')
+                                move_type = db.move_data.get(`${move_id}`, 'type')
+                                move_damage = db.move_data.get(`${move_id}`, 'damage')
+                                
+                                // TODO: Figure out how to display this properly
+                                /*
+                                move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
+                                let buttonStyle = ButtonStyle.Primary
+                                if (move_effective_emote[0] > 1) {
+                                    move_effective_emote = ' △';
+                                    buttonStyle = ButtonStyle.Success
+                                } else if (move_effective_emote[0] < 1) {
+                                    move_effective_emote = ' ▽';
+                                    buttonStyle = ButtonStyle.Danger
+                                } else {
+                                    move_effective_emote = '';
+                                }
+            
+                                if (move_damage == 0) {
+                                    move_effective_emote = '';
+                                    buttonStyle = ButtonStyle.Secondary
+                                }*/
+            
+                                moveButtons.addComponents(
+                                    new ButtonBuilder()
+                                        .setCustomId(`atk_${move_id}`)
+                                        .setLabel(`${move_name} ${move_effective_emote}`)
+                                        .setStyle(buttonStyle)
+                                        .setEmoji(`${type_to_emote(move_type)}`)
+                                )
+                            }
+            
+                            // Switch message to be about using the move input
+                            await i.update({ content: `Select a move to use!`, components: [moveButtons, backButton]});
 
                         break;
+                        // Selecting a move
+                        case customId.includes('atk_'):
+                            if (battle_data.users.length == 2) {
+                                let enemy_user = battle_data.users.filter(u => u.team_id != user_obj.team_id)[0];
+                                let move_id = customId.replace('atk_', '');
+                                user.action_selected = functions.new_battle_action_attack(user.user_id, enemy_user.user_id, move_id);
+                            } else {
+                                // TODO: Handle more than 1 user, this needs a new submenu
+                            }
+
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+
+                            // Continue on if everyone has selected (which should happen at the end)
+                            if (battle_data.users.every(u => u.action_selected !== false)) {
+                                db.battle_data.set(battle_id, battleData);
+                                inputCollector.stop();
+                                functions.handle_battle_action(battle_id);
+                            }
+                        break;
+
                         case BattleInput.Switch:
 
                         break;
+
                         case BattleInput.Bag:
-
-                        break;
-                        case BattleInput.Run:
-
-                        break;
-                        case BattleInput.Info:
-                            let plrOochPrisms = '';
-                            for (let ooch of d) {
-                                plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            }
-            
-                            let enemyOochPrisms = '';
-                            for (let ooch of ooch_enemy_profile.ooch_party) {
-                                enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            }
-            
-                            let oochInfoFields = [];
-                            const formatStatBar = (stat) => {
-                                return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
-                            };
-            
-                            // Setup field info for the embed about both oochamon
-                            for (let ooch of [ooch_plr, ooch_enemy]) {
-                                let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
-                                
-                                let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                                            `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
-                                            `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
-                                            `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                                            `**Stat Changes:**\n` +
-                                            `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                                            `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                                            `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                                            `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                                            `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
-            
-                                if (ooch != ooch_enemy) {
-                                    let moveset_str = ``;
-                                    for (let move_id of ooch.moveset) {
-                                        let move = db.move_data.get(move_id);
-                                        move.accuracy = Math.abs(move.accuracy);
-                                        if (move.damage !== 0) {
-                                            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                                        } else {
-                                            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                                        }
-                                    }
-                                    infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
-                                }
-            
-                                oochInfoFields.push({
-                                    name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                                    value: infoStr,
-                                    inline: true,
-                                });
-                            }
-            
-            
-                            let battleInfoEmbed = new EmbedBuilder()
-                                .setTitle('Battle Information 📒')
-                                .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
-                                .addFields(oochInfoFields)
-                            let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
-            
-                            const info_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
-                            await info_collector.on('collect', async i_sel => {
-                                switch (i_sel.customId) {
-                                    case 'back':
-                                        info_collector.stop();
-                                        await info_msg.delete();
-                                        await prompt_battle_input(thread, user_id);
-                                    break;
-                                }
-                            });
+                            
                         break;
                         case BattleInput.BagHeal:
 
                         break;
                         case BattleInput.BagPrism:
 
+                        break;
+
+                        case BattleInput.Run:
+                            user.action_selected = functions.new_battle_action_run(user.user_id);
+
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+
+                            // Continue on if everyone has selected (which should happen at the end)
+                            if (battle_data.users.every(u => u.action_selected !== false)) {
+                                db.battle_data.set(battle_id, battleData);
+                                inputCollector.stop();
+                                functions.handle_battle_action(battle_id);
+                            }
+
+                        break;
+
+                        // TODO: Add this, and make support for multiple Oochamon somehow
+                        case BattleInput.Info:
+                            // let plrOochPrisms = '';
+                            // for (let ooch of d) {
+                            //     plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                            // }
+            
+                            // let enemyOochPrisms = '';
+                            // for (let ooch of ooch_enemy_profile.ooch_party) {
+                            //     enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                            // }
+            
+                            // let oochInfoFields = [];
+                            // const formatStatBar = (stat) => {
+                            //     return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
+                            // };
+            
+                            // // Setup field info for the embed about both oochamon
+                            // for (let ooch of [ooch_plr, ooch_enemy]) {
+                            //     let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
+                                
+                            //     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
+                            //                 `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
+                            //                 `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
+                            //                 `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
+                            //                 `**Stat Changes:**\n` +
+                            //                 `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
+                            //                 `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
+                            //                 `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
+                            //                 `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
+                            //                 `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
+            
+                            //     if (ooch != ooch_enemy) {
+                            //         let moveset_str = ``;
+                            //         for (let move_id of ooch.moveset) {
+                            //             let move = db.move_data.get(move_id);
+                            //             move.accuracy = Math.abs(move.accuracy);
+                            //             if (move.damage !== 0) {
+                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
+                            //             } else {
+                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
+                            //             }
+                            //         }
+                            //         infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
+                            //     }
+            
+                            //     oochInfoFields.push({
+                            //         name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
+                            //         value: infoStr,
+                            //         inline: true,
+                            //     });
+                            // }
+            
+            
+                            // let battleInfoEmbed = new EmbedBuilder()
+                            //     .setTitle('Battle Information 📒')
+                            //     .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
+                            //     .addFields(oochInfoFields)
+                            // let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
                         break;
                     }
 
@@ -599,13 +671,6 @@ let functions = {
         let move_id, move_name, move_damage, move_accuracy, turn_order; // Battle variables
         let displayEmbed = new EmbedBuilder();
         let battleSpeed = ooch_plr_profile.settings.battle_speed;
-    
-       
-    
-        // Store current battle state to roll back to if needed
-        db.profile.delete(user_id, 'rollback_profile');
-        db.profile.set(user_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
-        db.profile.set(user_id, 0, 'turn_msg_counter');
             
         // If our current oochamon sent out is dead, we need to get input to switch our oochamon.
         if (ooch_plr.current_hp <= 0) {
@@ -736,132 +801,74 @@ let functions = {
             db.profile.dec(user_id, 'battle_msg_counter');
             switch (sel.customId) {
                 case 'fight':
-    
-                    // Get the player's Attack options
-                    for (let i = 0; i < move_list.length; i++) {
-                        
-                        move_id = move_list[i];
-                        move_name = db.move_data.get(`${move_id}`, 'name')
-                        move_type = db.move_data.get(`${move_id}`, 'type')
-                        move_damage = db.move_data.get(`${move_id}`, 'damage')
-                        move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
-                        let buttonStyle = ButtonStyle.Primary
-                        if (move_effective_emote[0] > 1) {
-                            move_effective_emote = ' △';
-                            buttonStyle = ButtonStyle.Success
-                        } else if (move_effective_emote[0] < 1) {
-                            move_effective_emote = ' ▽';
-                            buttonStyle = ButtonStyle.Danger
-                        } else {
-                            move_effective_emote = '';
-                        }
-    
-                        if (move_damage == 0) {
-                            move_effective_emote = '';
-                            buttonStyle = ButtonStyle.Secondary
-                        }
-    
-                        move_buttons.addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`${move_id}`)
-                                .setLabel(`${move_name} ${move_effective_emote}`)
-                                .setStyle(buttonStyle)
-                                .setEmoji(`${type_to_emote(move_type)}`)
-                        )
+                    function calculate_speed(ooch_obj) {
+                        let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
+                        if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
+                        if (ooch_obj.ability == Ability.Immobile) speed /= 100; 
+                    
+                        return speed;
                     }
-    
-                    //Select the move to use
-                    let atk_msg = await thread.send({ content: `Select a move to use!`, components: [move_buttons, back_button]});
+
+                    //Get the speed values for the oochamons in the fighterino
+                    let enemy_speed = calculate_speed(ooch_enemy);
+                    let plr_speed = calculate_speed(ooch_plr);
+
+                    //Turn Order
+                    if (enemy_speed > plr_speed) { // Enemy goes first
+                        turn_order = ['e', 'p'];
+                    } else if (plr_speed > enemy_speed){ // Player goes first
+                        turn_order = ['p', 'e'];
+                    } else if (ooch_enemy.stats.spd > ooch_plr.stats.spd){ // (Speed tie use base stats) Enemy goes first
+                        turn_order = ['e', 'p'];
+                    } else if (ooch_plr.stats.spd > ooch_enemy.stats.spd){ // (Speed tie use base stats) Player goes first
+                        turn_order = ['p', 'e'];
+                    } else{ //Do a coinflip in the case of a speed tie
+                        turn_order = Math.random() < .5 ? turn_order = ['e', 'p'] : turn_order = ['p', 'e'];
+                    }
+
+                    await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
                     db.profile.inc(user_id, 'turn_msg_counter');
                     db.profile.inc(user_id, 'battle_msg_counter');
-                    const atk_collector = thread.createMessageComponentCollector({ max: 1 });   
-    
-                    await atk_collector.on('collect', async atk => {
-    
-                        if (atk.customId == 'back') {
-                            atk_collector.stop();
-                            await atk_msg.delete();
-                            db.profile.dec(user_id, 'turn_msg_counter');
-                            db.profile.dec(user_id, 'battle_msg_counter');
-                            await prompt_battle_input(thread, user_id);
-                            return;
+
+                    for (let i = 0; i < turn_order.length; i++) {
+
+                        let atk_id = atk.customId;
+                        if (ooch_plr.ability === Ability.Uncontrolled) atk_id = _.sample(move_list);
+
+                        if (turn_order[i] == 'p') {
+                            // Player attacks enemy
+                            [ooch_plr, ooch_enemy] = await attack(thread, user_id, atk_id, ooch_plr, ooch_enemy, '**------------ Player Turn ------------**');
+                        } else {
+                            // Enemy attacks player
+                            atk_id = _.sample(ooch_enemy.moveset);
+                            if (ooch_enemy.ability === Ability.Uncontrolled) atk_id = _.sample(ooch_enemy.moveset);
+                            [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
                         }
-    
-                        await atk_msg.delete();
-                        db.profile.dec(user_id, 'turn_msg_counter');
-                        db.profile.dec(user_id, 'battle_msg_counter');
-    
-                        function calculate_speed(ooch_obj) {
-                            let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
-                            if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
-                            if (ooch_obj.ability == Ability.Immobile) speed /= 100; 
-                        
-                            return speed;
-                        }
-    
-                        //Get the speed values for the oochamons in the fighterino
-                        let enemy_speed = calculate_speed(ooch_enemy);
-                        let plr_speed = calculate_speed(ooch_plr);
-    
-                        //Turn Order
-                        if (enemy_speed > plr_speed) { // Enemy goes first
-                            turn_order = ['e', 'p'];
-                        } else if (plr_speed > enemy_speed){ // Player goes first
-                            turn_order = ['p', 'e'];
-                        } else if (ooch_enemy.stats.spd > ooch_plr.stats.spd){ // (Speed tie use base stats) Enemy goes first
-                            turn_order = ['e', 'p'];
-                        } else if (ooch_plr.stats.spd > ooch_enemy.stats.spd){ // (Speed tie use base stats) Player goes first
-                            turn_order = ['p', 'e'];
-                        } else{ //Do a coinflip in the case of a speed tie
-                            turn_order = Math.random() < .5 ? turn_order = ['e', 'p'] : turn_order = ['p', 'e'];
-                        }
-    
-                        await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
-                        db.profile.inc(user_id, 'turn_msg_counter');
-                        db.profile.inc(user_id, 'battle_msg_counter');
-    
-                        for (let i = 0; i < turn_order.length; i++) {
-    
-                            let atk_id = atk.customId;
-                            if (ooch_plr.ability === Ability.Uncontrolled) atk_id = _.sample(move_list);
-    
-                            if (turn_order[i] == 'p') {
-                                // Player attacks enemy
-                                [ooch_plr, ooch_enemy] = await attack(thread, user_id, atk_id, ooch_plr, ooch_enemy, '**------------ Player Turn ------------**');
-                            } else {
-                                // Enemy attacks player
-                                atk_id = _.sample(ooch_enemy.moveset);
-                                if (ooch_enemy.ability === Ability.Uncontrolled) atk_id = _.sample(ooch_enemy.moveset);
-                                [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-                            }
-    
-                            // Update ooch_enemy and ooch_plr in the database.
-                            db.profile.set(user_id, ooch_plr, `ooch_party[${ooch_plr_profile.ooch_active_slot}]`);
-                            db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${ooch_enemy_profile.ooch_active_slot}]`);
-    
-                            // Victory/Defeat Check
-                            let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr);
-                            if (victory_check == true) return;
-                            
-                            // The next user doesn't get a turn if we defeat their Oochamon
-                            if (i == 0 && ((turn_order[i] == 'p' && ooch_enemy.current_hp <= 0) || (turn_order[i] == 'e' && ooch_plr.current_hp <= 0))) {
-                                break;
-                            }
-    
-                        }
-    
-                        //Apply Status Effects and other end of turn stuff
-                        await end_of_round(thread, user_id, ooch_plr, ooch_enemy);
-                        
-                        //Double check for Victory/Defeat after status effects have happened
+
+                        // Update ooch_enemy and ooch_plr in the database.
+                        db.profile.set(user_id, ooch_plr, `ooch_party[${ooch_plr_profile.ooch_active_slot}]`);
+                        db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${ooch_enemy_profile.ooch_active_slot}]`);
+
+                        // Victory/Defeat Check
                         let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr);
                         if (victory_check == true) return;
-    
-                        // Prompt for more input
-                        await prompt_battle_input(thread, user_id);
-    
-                    });
-    
+                        
+                        // The next user doesn't get a turn if we defeat their Oochamon
+                        if (i == 0 && ((turn_order[i] == 'p' && ooch_enemy.current_hp <= 0) || (turn_order[i] == 'e' && ooch_plr.current_hp <= 0))) {
+                            break;
+                        }
+
+                    }
+
+                    //Apply Status Effects and other end of turn stuff
+                    await end_of_round(thread, user_id, ooch_plr, ooch_enemy);
+                    
+                    //Double check for Victory/Defeat after status effects have happened
+                    let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr);
+                    if (victory_check == true) return;
+
+                    // Prompt for more input
+                    await prompt_battle_input(thread, user_id);
                 break;
                 case 'switch':
                     let ooch_inv = db.profile.get(user_id, 'ooch_party')
