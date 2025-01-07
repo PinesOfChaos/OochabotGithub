@@ -352,12 +352,12 @@ const BattleInput = {
 
 const BattleAction = { //These double as the base priority values for actions
     Attack :    0,
-    Run :       10_000,
-    Switch :    20_000,
+    Run :       1_000_000,
+    Switch :    2_000_000,
 
-    Prism :     30_000,
-    Heal :      40_000,
-    Other :     50_000
+    Prism :     3_000_000,
+    Heal :      4_000_000,
+    Other :     5_000_000
     
 }
 

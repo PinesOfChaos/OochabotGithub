@@ -299,6 +299,24 @@ let functions = {
     },
 
     /**
+     * Create an Other action
+     * @param {Number} user_id The user which is causing this action
+     * @param {Number} item_id The id of the Item to use
+     * @returns returns a battle action object
+     */
+    new_battle_action_other(user_id, slot_to){
+        let action = {
+            action_type : BattleAction.Other,
+            priority : BattleAction.Other,
+            user_id : user_id,
+
+            item_id : item_id
+        }
+
+        return(action);
+    },
+
+    /**
      * Create a user_type
      * @param {Object} user_obj The user which is causing this action
      * @param {Object} battle_data The relevant battle data
@@ -364,7 +382,13 @@ let functions = {
         return(action);
     },
 
-    get_move_intention: function(move_list, target_type){
+    /**
+     * Gets a sorted list of moves
+     * @param {Array} moves_list 
+     * @param {Enum} target_type 
+     * @returns Array of moves shuffled and then sorted by their priority
+     */
+    get_move_intention: function(moves_list, target_type){
         let moves_to_sort = [];
         for(let move of moves_list){
             moves_to_sort.push({
@@ -376,6 +400,84 @@ let functions = {
         moves_to_sort = _.shuffle(moves_to_sort);
         let moves_sorted = moves_to_sort.sort((a, b) => b.priority - a.priority);
         return(moves_sorted)
+    },
+
+    /**
+     * Sorts the action queue of a given battle id in the database
+     * @param {String} battle_id 
+     */
+    sort_action_priority(battle_id){
+        let battle_data = db.battle_data.get(battle_id);
+        let action_list = battle_data.battle_action_queue;
+
+        //Add the speed of the user's active oochamon
+        for(let action of action_list){
+            
+            let user_id = action.user_id;
+            let user = battle_data.users[user_id];
+            let ooch_obj = user.party[user.active_slot];
+
+            //Priority based on action type
+            let base_priority = action.priority;
+
+            //Priority based on Oochamon Speed stat
+            let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
+            if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
+            if (ooch_obj.ability == Ability.Immobile) speed /= 100
+
+            //Priority based on whether the move has the "priority" effect
+            let move_priority = 0;
+            if(action.action_type == BattleAction.Attack){
+                let move = db.move_data.get(action.move_id);
+                let status_effects = move.status_effects;
+                for(let status of status_effects){
+                    let status_split = status.split('_');
+                    if(status_split[0] == 'priority'){
+                        move_priority += parseInt(status_split[1]) * 10_000;
+                    }
+                }
+
+            }
+            
+            //Combine the priorities to get the final value
+            action.priority = base_priority + move_priority + speed;
+        }
+
+        //Sort the actions in descending order by priority, then set it in the database
+        action_list.sort((a, b) => b.priority - a.priority);
+        db.battle_data.set(battle_id, action_list, 'battle_action_queue');
+    },
+
+    /**
+     * Processes the battle actions of a given battle id
+     */
+    process_battle_actions(battle_id){
+        let battle_data = db.battle_data.get(battle_id);
+        let actions = battle_data.battle_action_queue;
+
+        while(actions.length > 0){
+            let action = actions.shift();
+            switch(action.action_type){
+                case BattleAction.Attack:
+                    //TODO
+                break;
+                case BattleAction.Switch:
+                    //TODO
+                break;
+                case BattleAction.Run:
+                    //TODO
+                break;
+                case BattleAction.Heal:
+                    //TODO
+                break;
+                case BattleAction.Prism:
+                    //TODO
+                break;
+                case BattleAction.Other:
+                    //TODO
+                break;
+            }
+        }
     },
 
     /* TODOs: 
