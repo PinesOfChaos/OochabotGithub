@@ -1,3 +1,5 @@
+
+
 const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
@@ -81,6 +83,7 @@ let functions = {
 
         return {
             name: name,
+            name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
             battle_sprite: battle_sprite,
             user_id: user_id,
             thread: thread,
@@ -406,10 +409,7 @@ let functions = {
      * Sorts the action queue of a given battle id in the database
      * @param {String} battle_id 
      */
-    sort_action_priority(battle_id){
-        let battle_data = db.battle_data.get(battle_id);
-        let action_list = battle_data.battle_action_queue;
-
+    sort_action_priority(action_list){
         //Add the speed of the user's active oochamon
         for(let action of action_list){
             
@@ -445,18 +445,39 @@ let functions = {
 
         //Sort the actions in descending order by priority, then set it in the database
         action_list.sort((a, b) => b.priority - a.priority);
-        db.battle_data.set(battle_id, action_list, 'battle_action_queue');
     },
 
     /**
-     * Processes the battle actions of a given battle id
+     * Sends messages to all player-type users in an array of users
+     * @param {Array} users the list of users to send the message to (automatically skips non-players)
+     * @param {Object} message anything that can be sent as a discord message
      */
-    process_battle_actions(battle_id){
+    distribute_messages : async function(users, message){
+        for(let user of users){
+            if(user.is_player){
+                let thread = user.thread;
+                await thread.send(message);
+            }
+        }
+    },
+
+    /**
+     * Processes the battle_action_queue of a given battle_id
+     * @param {String} battle_id the id of the battle
+     */
+    process_battle_actions : async function(battle_id){
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
-
+        
         while(actions.length > 0){
+            //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
+            sort_action_priority(actions);
+
             let action = actions.shift();
+
+            let text = `**------------ ${user.name_possessive} Turn ------------**\n`;
+            let turn_data = false;
+
             switch(action.action_type){
                 case BattleAction.Attack:
                     //TODO
@@ -465,18 +486,214 @@ let functions = {
                     //TODO
                 break;
                 case BattleAction.Run:
-                    //TODO
+                    turn_data = await functions.action_process_run(battle_data, action);
                 break;
                 case BattleAction.Heal:
-                    //TODO
+                    turn_data = await functions.action_process_heal(battle_data, action);
                 break;
                 case BattleAction.Prism:
-                    //TODO
+                    turn_data = await functions.action_process_prism(battle_data, action);
                 break;
                 case BattleAction.Other:
                     //TODO
                 break;
             }
+
+            //Send the text to each of the user's threads
+            text += turn_data.return_string;
+            await functions.distribute_messages(battle_data.users, text);
+            
+
+            //Clear any remaining actions if we're meant to finish the battle
+            //Also send any final messages for the action
+            if(turn_data.finish_battle){
+                
+                if(turn_data.has('finish_data') && turn_data.finish_data != false){
+                    let finish_data = turn_data.finish_data;
+                    switch(finish_data.type){
+                        case 'capture':
+                            let delay = turn_data.finish_data.delay;
+                            let embed = turn_data.finish_data.info_embed;
+                            let png = turn_data.finish_data.ooch_png
+
+                            await functions.distribute_messages(battle_data.users, { embeds: [embed], files: [png] });
+                            await wait(delay);
+                        break;
+                    }
+                }
+
+                battle_data.actions = [];
+            }
+        }
+
+        //Apply end of round effects (burn, stat changes, etc.)
+        //TODO
+
+        //Check if anyone needs to send out a new mon
+        //TODO
+
+        //End the battle here if a win/loss-state has been achieved
+        //OR
+        //Send end of round message and increment the turn counter
+        //TODO
+        battle_data.battle_msg_counter +=1;
+        battle_data.turn_counter++;
+        db.battle_data.set(battle_id, battle_data);
+
+        //Round Ends here
+    },
+
+    /**
+     * Attemts to capture an oochamon, and if successful tells the battle to end
+     * @param {*} battle_data the current battle data
+     * @param {*} action the action data to process
+     * @returns Turn data {finish_battle : Boolean, finish_data : Varying, return_string : String}
+     */
+    action_process_prism : async function(battle_data, action){
+        let user = battle_data.users[action.user_id];
+        let finish_battle = false;
+        let finish_data = false;
+
+        let target_user = battle_data[action.target_user_id]
+        let item = await db.item_data.get(action.item_id);
+        let ooch_target = target_user.party[target_user.active_slot];
+        let return_string = `${user.name} threw a ${item.emote} ${item.name}.`;
+
+        let prism_result = functions.item_use(user.user_id, ooch, action.item_id); //True if successful catch, False if not
+        if(prism_result == true){
+            return_string += `\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
+            
+                if (user.party.length < 4) {
+                    return_string += `\nIt's been added to your party.`;
+                } else {
+                    return_string += `\nIt's been sent to your box.`;
+                }
+
+                let ooch_party = user.party;
+                let is_first_catch = (db.profile.get(user_id, `oochadex[${ooch_target.id}].caught`) == 0);
+                
+                // Distribute XP for a caught Oochamon
+                // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
+                exp_earned = functions.battle_calc_exp(ooch_target.level, db.monster_data.get(ooch_target.id, 'evo_stage'), 1); //catching mons will always give 1x EXP
+                if(is_first_catch) exp_earned *= 2;
+
+                let exp_earned_main = Math.round(exp_earned * 1.25);
+                if (ooch_plr.level != 50) {
+                    return_string += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
+                                        ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
+                }
+                if (ooch_party.length > 1) {
+                    return_string += `\nThe rest of your team earned **${exp_earned}** exp.`;
+                }
+                if(is_first_catch) return_string += `\n✨ *Gained 2x Experience from catching a New Oochamon!*`;
+
+                for (let i = 0; i < ooch_party.length; i++) {
+                    let ooch = ooch_party[i];
+                    if (i == user.active_slot) { 
+                        ooch.current_exp += Math.round(exp_earned * 1.25);
+                    } else { 
+                        ooch.current_exp += (ooch.alive === false ? exp_earned : Math.round(exp_earned / 2)); 
+                    }
+                    
+                    // Check for level ups
+                    if (ooch.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                        ooch = level_up(ooch);
+                        return_string += `\n${ooch[1]}`;
+                        ooch_party[i] = ooch[0];
+                    }
+                }
+
+                displayEmbed.setDescription(return_string)
+                await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+
+                // Heal the caught Oochamon when you catch it.
+                ooch_target.current_hp = ooch_target.stats.hp;
+
+                // Have it check here if you want to send the Oochamon to your party or not
+                if (user.party.length < 4) {
+                    user.party.push(ooch_target);
+                } else {
+                    db.profile.push(user_id, ooch_target, `ooch_pc`)
+                }
+                db.profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
+                let info_embed = ooch_info_embed(ooch_target);
+                let ooch_png = info_embed[1];
+                info_embed = info_embed[0];
+                info_embed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
+                finish_data = {type : 'capture', info_embed : info_embed, ooch_png : ooch_png, delay : 5000};
+                finish_battle = true;
+        }
+        else{
+            return_string = `\n\nUnfortunately, your prism catch attempt failed...`
+        }
+
+        return {
+            finish_battle : finish_battle,
+            finish_data : finish_data,
+            return_string : return_string,
+        }
+    },
+
+    /**
+     * Uses a healing item
+     * @param {*} battle_data the current battle data
+     * @param {*} action the action data to process
+     * @returns Turn data {finish_battle : Boolean, return_string : String}
+     */
+    action_process_heal : async function(battle_data, action){
+        let user = battle_data.users[action.user_id];
+        let finish_battle = false;
+
+        let item = await db.item_data.get(action.item_id);
+        let ooch = user.party[action.slot_target];
+        let return_string = `${user.name} used 1 ${item.emote} ${item.name}.`;
+
+        switch(item.type){
+            case 'potion':
+                return_string += await functions.item_use(user.user_id, ooch, action.item_id);
+            break;
+            case 'status':
+                return_string += await functions.item_use(user.user_id, ooch, action.item_id);
+            break;
+        }
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string,
+        }
+    },
+
+    /**
+     * Attempts to run away
+     * @param {*} battle_data the current battle data
+     * @param {*} action the action data to process
+     * @returns Turn data {finish_battle : Boolean, return_string : String}
+     */
+    action_process_run : async function(battle_data, action){
+        let user = battle_data.users[action.user_id];
+        let ooch_user = user.party[user.active_slot];
+        let ooch_max_check = 0;
+        let return_string = '';
+        let finish_battle = false;
+
+        for(let other_user of battle_data.users){
+            if(other_user.user_id != user.user_id){
+                let ooch_other = other_user.party[other_user.active_slot];
+                ooch_max_check = max(ooch_other.stats.spd + ooch_other.level * 10, ooch_max_check)
+            } 
+        }
+
+        if ((ooch_user.stats.spd + ooch_user.level * 15) / ((ooch_user.stats.spd + ooch_user.level * 10) + ooch_max_check ) > Math.random()) {
+            return_string += (`You successfully ran away!\nYour playspace will appear momentarily.`);
+            finish_battle = true;
+        }
+        else{
+            return_string += 'Failed to run away!'
+        }
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string,
         }
     },
 
@@ -1642,7 +1859,48 @@ type_effectiveness: function(attack_type, target_type) {
 
     return([multiplier,string])
 },
+    item_use: function(user_id, ooch, item_id) {
+        let item_data = db.item_data.get(item_id);
     
+        if (item_data.type == 'potion') {
+            if (db.profile.get(user_id, 'player_state') == PlayerState.Combat && ooch.alive == true) {
+                ooch.current_hp += item_data.potency;
+                ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                return ooch;
+            } else if (db.profile.get(user_id, 'player_state') != PlayerState.Combat) {
+                ooch.alive = true;
+                let prev_hp = ooch.current_hp;
+                ooch.current_hp += item_data.potency;
+                ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                return(`\n${ooch.emote} ${ooch.nickname} recovered ${ooch.current_hp - prev_hp} HP.`);
+            } 
+            
+        } else if (item_data.type == 'prism') {
+            let status_bonus = 1;
+            let prism_multiplier = item_data.potency;
+            let prism_chance = prism_multiplier / ooch.level * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
+    
+            if (Math.random() < prism_chance) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (item_data.type == 'status') {
+            let return_string = false;
+            if (item_data.potency !== 'All') {
+                ooch.status_effects = ooch.status_effects.filter(v => v != item_data.potency);
+                return_string = `\n${ooch.emote} ${ooch.nickname} recovered from its ${item.potency}.`
+                    
+            } else {
+                ooch.status_effects = [];
+                return_string = `\n${ooch.emote} ${ooch.nickname} had its status effects removed.`
+            }
+            return return_string == false ? ooch : return_string;
+        } else if (item_data.type == 'repel') {
+            db.profile.set(user_id, item_data.potency, 'repel_steps'); 
+        } 
+        
+    },
 }
 
 module.exports = functions;
