@@ -1,8 +1,9 @@
-const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, User } = require('discord.js');
 const db = require('./db.js');
 const _ = require('lodash');
-const { PlayerState, EventMode, Flags } = require('./types.js');
+const { PlayerState, EventMode, Flags, UserType, Weather } = require('./types.js');
 const { get_art_file } = require('./func_other.js');
+const { generate_battle_user, setup_battle } = require('./func_battle_new.js');
 
 let functions = {
     /**
@@ -15,7 +16,6 @@ let functions = {
      */
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
         
-        const { setup_battle, generate_trainer_battle } = require('./func_battle.js');
         const { give_item, setup_playspace_str, create_ooch } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
@@ -131,15 +131,11 @@ let functions = {
                 if (confirm_collector !== undefined) confirm_collector.stop();
             }
 
-            let trainer_obj;
-            if (obj_content.ooch_party == undefined) {
-                trainer_obj = generate_trainer_battle(obj_content);
-            } else {
-                trainer_obj = obj_content;
-            }
+            let trainerObj = generate_battle_user(thread, UserType.NPCTrainer, obj_content)
+            let userObj = generate_battle_user(thread, UserType.Player, { user_id: user_id, team_id: UserType.Player });
 
-            // Setup the battle
-            await setup_battle(thread, user_id, trainer_obj, true);
+            // Setup the battle for trainers
+            await setup_battle([userObj, trainerObj], Weather.Clear, obj_content.coin, 0, true, true, false);
         }
 
         async function oochPickEvent(obj_content, initial=false) {

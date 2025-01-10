@@ -8,7 +8,6 @@ const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, Mov
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
-const { create_ooch, setup_playspace_str, move } = require('./func_play');
 
 let functions = {
     /** 
@@ -25,16 +24,19 @@ let functions = {
 
     /**
      * Generates a battle user object
-     * @param {Object} guild Guild this user session is taking place in
      * @param {Object} thread Thread this user session is taking place in
-     * @param {Number} type Type of Battle TrainerType(Wild, NPCTrainer, User, OnlineUser)
+     * @param {Number} type Type of Battle UserType(Wild, NPCTrainer, User, OnlineUser)
      * @param {Object} options Additional data, data required varies by type
      * @returns 
      */
-    generate_battle_user: function(guild, thread, type, options) {
+    generate_battle_user: function(thread, type, options) {
+
+        const { create_ooch } = require('./func_play');
+
         let party = [];
         let battle_sprite = false;
         let user_id = false;
+        let team_id = false;
         let oochabux = false;
         let active_slot = 0;
         let is_catchable = false;
@@ -43,12 +45,13 @@ let functions = {
         let display_msg_id = false;
         
         switch (type) {
-            case TrainerType.Wild:
+            case UserType.Wild:
                 let ooch = create_ooch(options.ooch_id, options.ooch_level);
                 party = [ooch];
                 is_catchable = true;
+                team_id = UserType.Wild
             break;
-            case TrainerType.NPCTrainer:
+            case UserType.NPCTrainer:
                 let party_base = options.team;
                 let party_generated = [];
                 
@@ -66,11 +69,13 @@ let functions = {
                 oochabux = options.coin;
                 party = party_generated;
                 is_catchable = options.is_catchable;
+                team_id = type;
                 battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
             break;
-            case TrainerType.User:
+            case UserType.Player:
                 is_player = true;
                 user_id = options.user_id;
+                team_id = options.team_id;
                 let profile = db.profile.get(user_id);
                 
                 name = profile.name; // TODO: Fix this from being undefined
@@ -86,20 +91,28 @@ let functions = {
             name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
             battle_sprite: battle_sprite,
             user_id: user_id,
+            team_id: team_id,
+            user_type: type,
             thread: thread,
-            guild: guild,
             active_slot: active_slot, 
             is_catchable: is_catchable,
             party: party,
             action_selected: false,
             is_player: is_player,
-            display_msg_id: display_msg_id
+            display_msg_id: display_msg_id,
+            defeated : false
         }
     },
 
     /**
      * Sets up an Oochamon battle and begins prompting for input.
      * @param {Object} users The user object
+     * @param {Number} weather The weather enum
+     * @param {Number} oochabux The amount of Oochabux to give
+     * @param {Number} turn_timer The amount of time to do a turn before timeout (0 does not activate this)
+     * @param {Boolean} allow_items Allow the use of items in the battle
+     * @param {Boolean} give_rewards Give rewards at the end of a battle
+     * @param {Boolean} allow_run Allow running from the battle
      */
     setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run) {
         
@@ -135,18 +148,41 @@ let functions = {
 
         //     teams[i][j] = users[i];
         // }
-    
+
+        // Setup the battle data
+        let battleId = functions.generate_battle_id();
+
+        let battleDataObj = {
+            battle_id : battleId,
+            battle_msg_counter : abilityMsg == '' ? 1 : 2,
+            turn_msg_counter : 0,
+            battle_state : BattleState.Start,
+            battle_action_queue : [],
+            
+            end_of_turn_switch_queue : [],
+
+            turn_counter : 0,
+            users : users,
+
+            turn_timer : turn_timer,
+            allow_items : allow_items,
+            give_rewards : give_rewards,
+            allow_run : allow_run,
+            weather : weather,
+            oochabux: oochabux,
+            amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+        }
 
         // Handle all the text
         let battleStartText = ``;
-        for (let id in users) {
             // if (users[id].is_player) { 
             //     let playspace_msg = await users[id].thread.messages.fetch(users[id].display_msg_id).catch(() => {});
             //     await playspace_msg.delete().catch(() => {});
             // }
 
+        for (let [id, user] of battleDataObj.users.entries()) {
             //Handles the newly sent out oochamon
-            battle_action_queue.push(functions.new_battle_action_switch(id, user.active_slot, false, true));
+            functions.new_battle_action_switch(battleDataObj, id, user.active_slot, false, true);
 
             if (users[id].is_player) {
                 let my_team = users[id].team_id
@@ -184,35 +220,9 @@ let functions = {
             }
         }
 
-        // Setup the battle data
-        let battleId = functions.generate_battle_id();
-
-        let battleDataObj = {
-            battle_id : battleId,
-            battle_msg_counter : abilityMsg == '' ? 1 : 2,
-            turn_msg_counter : 0,
-            battle_state : BattleState.Start,
-            battle_action_queue : battle_action_queue,
-
-
-            turn_counter : 0,
-            users : users,
-
-            turn_timer : turn_timer,
-            allow_items : allow_items,
-            give_rewards : give_rewards,
-            allow_run : allow_run,
-            weather : weather,
-            oochabux: oochabux,
-            amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
-        }
-
         db.battle_data.set(battleId, battleDataObj);
-
-        console.log(battleDataObj, battleDataObj.users);
     
-        // TODO: Uncomment this when this function is ready to go
-        //await functions.prompt_battle_input(thread, user_id);
+        await functions.prompt_battle_actions(battleId);
     },
 
     /**
@@ -222,7 +232,7 @@ let functions = {
      * @param {Number} move_slot The move to be used
      * @returns returns a battle action object
      */
-    new_battle_action_attack : function(user_id, target_user_id, move_id) {
+    new_battle_action_attack : function(battle_data, user_id, target_user_id, move_id) {
         let action = {
             action_type : BattleAction.Attack,
             priority : BattleAction.Attack,
@@ -231,7 +241,7 @@ let functions = {
             move_id : move_id
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -239,14 +249,14 @@ let functions = {
      * @param {Number} user_id The user which is causing this action
      * @returns returns a battle action object
      */
-    new_battle_action_run : function(user_id){
+    new_battle_action_run : function(battle_data, user_id){
         let action = {
             action_type : BattleAction.Run,
             priority : BattleAction.Run,
             user_id : user_id
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -257,7 +267,7 @@ let functions = {
      * @param {Boolean} skip_initial_text Whether to skip the "User sent out/switched" lines of text
      * @returns returns a battle action object
      */
-    new_battle_action_switch(user_id, slot_target, is_switching, skip_initial_text = false){
+    new_battle_action_switch(battle_data, user_id, slot_target, is_switching, skip_initial_text = false){
         let action = {
             action_type : BattleAction.Switch,
             priority : BattleAction.Switch,
@@ -267,7 +277,7 @@ let functions = {
             skip_initial_text : skip_initial_text
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -277,7 +287,7 @@ let functions = {
      * @param {Number} target_user_id The user whos active mon we're catching
      * @returns returns a battle action object
      */
-    new_battle_action_prism(user_id, target_user_id){
+    new_battle_action_prism(battle_data, user_id, target_user_id){
         let action = {
             action_type : BattleAction.Prism,
             priority : BattleAction.Prism,
@@ -286,7 +296,7 @@ let functions = {
             target_user_id : target_user_id
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -296,7 +306,7 @@ let functions = {
      * @param {Number} slot_target The slot to apply healing to
      * @returns returns a battle action object
      */
-    new_battle_action_heal(user_id, slot_to){
+    new_battle_action_heal(battle_data, user_id, slot_to){
         let action = {
             action_type : BattleAction.Heal,
             priority : BattleAction.Heal,
@@ -306,7 +316,7 @@ let functions = {
             slot_target : slot_target
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -315,7 +325,7 @@ let functions = {
      * @param {Number} item_id The id of the Item to use
      * @returns returns a battle action object
      */
-    new_battle_action_other(user_id, slot_to){
+    new_battle_action_other(battle_data, user_id, slot_to){
         let action = {
             action_type : BattleAction.Other,
             priority : BattleAction.Other,
@@ -324,7 +334,7 @@ let functions = {
             item_id : item_id
         }
 
-        return(action);
+        battle_data.battle_action_queue.push(action);
     },
 
     /**
@@ -335,7 +345,7 @@ let functions = {
      */
     get_ai_action: function(user_obj, battle_data) {
         let active_mon = user_obj.party[user_obj.active_slot]
-        let moves = active_mon.move_list;
+        let moves = active_mon.moveset;
         let num_moves = moves.length;
         let users = battle_data.users;
         let target_user = false;
@@ -355,19 +365,19 @@ let functions = {
             case UserType.Wild:
                 target_user = _.sample(users_enemy);
                 move_id = _.sample(moves.move_id);
-                action = functions.new_battle_action_attack(user_obj.user_id, target_user.user_id, move_id);
+                action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
             break;
             case UserType.NPCTrainer:
                 target_user = _.sample(users_enemy);
-                target_mon = target_user.party[target_user.active_slot].type;
+                target_mon = target_user.party[target_user.active_slot];
                 move_intentions = functions.get_move_intention(moves, target_mon.type);
                 move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)];
                 
-                action = functions.new_battle_action_attack(user_obj.user_id, target_user_id, move_id);
+                action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
             break;
             case UserType.NPCSmart:
                 target_user = _.sample(users_enemy);
-                target_mon = target_user.party[target_user.active_slot].type;
+                target_mon = target_user.party[target_user.active_slot];
                 move_intentions = functions.get_move_intention(moves, target_mon.type);
                 let good_moves = move_intentions.filter((move) => move.priority > 1);
                 let okay_moves = move_intentions.filter((move) => move.priority == 1);
@@ -376,15 +386,15 @@ let functions = {
                 
                 if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
                     //Switch if there are no acceptable attacking moves and there is a mon we can switch to
-                    action = functions.new_battle_action_switch(user_obj.user_id, party_alive_slots[_.random(party_alive_slots.length - 1)]);
+                    action = functions.new_battle_action_switch(battle_data, user_obj.user_id, party_alive_slots[_.random(party_alive_slots.length - 1)]);
                 }
                 else if(good_moves.length > 0 || okay_moves.length > 0){
                     move_id = _.random(10) < 7 ? good_moves[0] : okay_moves[0];
-                    action = functions.new_battle_action_attack(user_obj.user_id, target_user.user_id, move_id);
+                    action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
                 }
                 else{
                     move_id = move_intentions[_.random(move_intentions.length - 1)];
-                    action = functions.new_battle_action_attack(user_obj.user_id, target_user.user_id, move_id);
+                    action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
                 }
             break;
         }
@@ -509,7 +519,6 @@ let functions = {
             //Send the text to each of the user's threads
             text += turn_data.return_string;
             await functions.distribute_messages(battle_data.users, text);
-            
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
@@ -574,10 +583,9 @@ let functions = {
         ooch_from.type = ooch_from.og_type;
         ooch_from.doom_timer = 4;
 
-
         //Check abilities vs other users
         for(let u of battle_data.users){
-            if(u.team_id != user.team_id){
+            if(u.team_id != user.team_id && !u.party[u.active_slot].defeated){
                 let ooch_enemy = u.party[u.ooch_active_slot];
 
                 //Enemy users' mons that affect the new mon
@@ -764,7 +772,7 @@ let functions = {
         }
 
         if ((ooch_user.stats.spd + ooch_user.level * 15) / ((ooch_user.stats.spd + ooch_user.level * 10) + ooch_max_check ) > Math.random()) {
-            return_string += (`You successfully ran away!\nYour playspace will appear momentarily.`);
+            return_string += `You successfully ran away!\nYour playspace will appear momentarily.`;
             finish_battle = true;
         }
         else{
@@ -789,71 +797,71 @@ let functions = {
         let battle_data = db.battle_data.get(battle_id);
 
         // Store current battle state to roll back to if needed
-        db.battle_data.delete(battle_id, 'rollback_profile');
-        db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
-        db.battle_data.set(battle_id, 0, 'turn_msg_counter');
+        // db.battle_data.delete(battle_id, 'rollback_profile');
+        // db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
+        // db.battle_data.set(battle_id, 0, 'turn_msg_counter');
 
-        //#region Setup Action Rows
+        //#region Setup buttons and select menus
         const inputRow = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId(BattleInput.Fight)
-                .setLabel('Fight')
-                .setEmoji('⚔️')
-                .setStyle(ButtonStyle.Primary),
-        ) .addComponents(
-            new ButtonBuilder()
-                .setCustomId(BattleInput.Switch)
-                .setLabel('Switch')
-                .setEmoji('<:item_prism:1274937161262698536>')
-                .setStyle(ButtonStyle.Success),
-        );
- 
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('fight')
+                    .setLabel('Fight')
+                    .setEmoji('⚔️')
+                    .setStyle(ButtonStyle.Primary),
+            ) .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('switch')
+                    .setLabel('Switch')
+                    .setEmoji('<:item_prism:1274937161262698536>')
+                    .setStyle(ButtonStyle.Success),
+            );
+    
         const inputRow2 = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.Bag)
+                    .setCustomId('bag')
                     .setLabel('Item')
                     .setEmoji('🎒')
                     .setStyle(ButtonStyle.Danger),
             ) .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.Run)
+                    .setCustomId('run')
                     .setLabel('Run')
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji('🏃‍♂️')
-                    .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
+                    .setDisabled(!battle_data.allow_run),
             );
-        
+    
         const inputRow3 = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId(BattleInput.Info)
+                        .setCustomId('info')
                         .setLabel('View Battle Info')
                         .setEmoji('📒')
                         .setStyle(ButtonStyle.Secondary),
                 )
-        
+                
         const moveButtons = new ActionRowBuilder();
-        const switchButtonsRow1 = new ActionRowBuilder();
-        const switchButtonsRow2 = new ActionRowBuilder();
+        const switchButtons1 = new ActionRowBuilder();
+        const switchButtons2 = new ActionRowBuilder();
         const bagButtons = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.BagHeal)
+                    .setCustomId('heal_button')
                     .setLabel('Healing')
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('<:item_potion_magic:1274937146423115922>'),
             ).addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.BagPrism)
+                    .setCustomId('prism_button')
                     .setLabel('Prism')
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('<:item_prism:1274937161262698536>')
-                    .setDisabled(ooch_enemy_profile.is_catchable === false),
+                    .setDisabled(!battle_data.is_catchable),
             ).addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.Back)
+                    .setCustomId('back')
                     .setLabel('Back')
                     .setStyle(ButtonStyle.Danger),
             )
@@ -861,7 +869,7 @@ let functions = {
         const backButton = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(BattleInput.Back)
+                    .setCustomId('back')
                     .setLabel('Back')
                     .setStyle(ButtonStyle.Danger),
             )
@@ -875,11 +883,13 @@ let functions = {
                 // Continue on if everyone has selected (which should happen at the end)
                 if (battle_data.users.every(u => u.action_selected !== false)) {
                     db.battle_data.set(battle_id, battleData);
-                    functions.handle_battle_action(battle_id);
+                    await functions.process_battle_actions(battle_id);
                 }
             } else {
-                await thread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
-                const inputCollector = thread.createMessageComponentCollector();
+                console.log(user.thread);
+                await user.thread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
+
+                const inputCollector = user.thread.createMessageComponentCollector();
                 
                 await inputCollector.on('collect', async i => {
                     let customId = i.customId;
@@ -893,11 +903,11 @@ let functions = {
                         
                         case BattleInput.Attack:
                             let move_id, move_name, move_type, move_damage, move_effective_emote = '',
-                                buttonStyle = ButtonStyle.Primary, moveButtons;
+                                buttonStyle = ButtonStyle.Primary;
 
                             // Get the Oochamon's Attack options
-                            for (let i = 0; i < activeOoch.move_list.length; i++) {
-                                move_id = activeOoch.move_list[i];
+                            for (let i = 0; i < activeOoch.moveset.length; i++) {
+                                move_id = activeOoch.moveset[i];
                                 move_name = db.move_data.get(`${move_id}`, 'name')
                                 move_type = db.move_data.get(`${move_id}`, 'type')
                                 move_damage = db.move_data.get(`${move_id}`, 'damage')
@@ -950,7 +960,7 @@ let functions = {
                             if (battle_data.users.every(u => u.action_selected !== false)) {
                                 db.battle_data.set(battle_id, battleData);
                                 inputCollector.stop();
-                                functions.handle_battle_action(battle_id);
+                                await functions.process_battle_actions(battle_id);
                             }
                         break;
 
@@ -964,6 +974,7 @@ let functions = {
                         case BattleInput.BagHeal:
 
                         break;
+
                         case BattleInput.BagPrism:
 
                         break;
@@ -1051,22 +1062,81 @@ let functions = {
     },
 
     /**
-     * Handles all battle input and logic. The main battle function.
-     * @param {Object} thread The thread that Oochamon is being played in.
-     * @param {String} user_id The user id of the user playing Oochamon.
+     * Checks if any oochamon have been fainted
+     * @param {Object} battle_data The current battle_data
      */
-    handle_battle_action: async function(battle_id) {
-    
-        const { type_to_emote, attack, end_of_round, victory_defeat_check, prompt_battle_input,
-        item_use, finish_battle, ability_stat_change, modify_stat, battle_calc_exp,
-        level_up, type_effectiveness } = require('./func_battle.js');
-    
-        let battleData = db.battle_data.get(battle_id);
-        // Get the players oochamon in the first spot of their party
+    battle_faint_check: async function(battle_data) {
+        let string_to_send = '';
+        let active_teams = [];
+        // Get the players active oochamon, check if they are alive
+        for(let user of battle_data.users){
+            let active_ooch = user.party[user.active_slot];
+            let user_defeated = true;
+            let user_next_slot = 999;
+            if(active_ooch.current_hp <= 0 && active_ooch.alive == true){
+                
+                
+                active_ooch.current_hp = 0;
+                active_ooch.alive = false;
+
+                string_to_send += `${user.name}'s ${active_ooch.emote} ${active_ooch.nickname} was defeated!`
+                
+                for(let [i, party_ooch] of user.party.entries()){
+                    if(party_ooch.hp > 0){
+                        user_defeated = false;
+                        user_next_slot = min(user_next_slot, i);
+                    }
+                }
+
+                if(user_defeated){
+                    string_to_send += `${user.name}'s party was wiped out!`
+                    user.defeated = true;
+                }
+                else{
+                    battle_data.end_of_turn_switch_queue.push(user.user_id);
+                    if(!active_teams.includes(user.team_id)){
+                        active_teams.push(user.team_id);
+                    }
+                }
+            }
+        }
+
+        if(active_teams.length < 2){
+            //Finish the battle
+        }
+        
+        return(string_to_send);
+    },
+
+    //Handle letting the users switch mons during end of round here
+    end_of_round_switch : async function(battle_data){
+        let users = battle_data.users;
+        let next_slot = 9999;
+        for(let user of users){
+            switch(user.user_type){
+                case UserType.Wild:
+                case UserType.NPCTrainer:
+                case UserType.NPCSmart:
+                    for(let [i, ooch] of user.party.entries()){
+                        if(ooch.alive){ i = min(i, next_slot)}
+                    }
+                    
+                    await functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
+                break;
+                case UserType.Player:
+                    //Prompt buttons here
+
+                    //Submit their next slot for combat
+                    await functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
+                break;
+            }
+        }
+
+
         let active_slot = ooch_plr_profile.ooch_active_slot;
         let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
         let ooch_pos = active_slot;
-        let move_list = ooch_plr.moveset;
+        let moveset = ooch_plr.moveset;
         let move_id, move_name, move_damage, move_accuracy, turn_order; // Battle variables
         let displayEmbed = new EmbedBuilder();
         let battleSpeed = ooch_plr_profile.settings.battle_speed;
@@ -1232,7 +1302,7 @@ let functions = {
                     for (let i = 0; i < turn_order.length; i++) {
 
                         let atk_id = atk.customId;
-                        if (ooch_plr.ability === Ability.Uncontrolled) atk_id = _.sample(move_list);
+                        if (ooch_plr.ability === Ability.Uncontrolled) atk_id = _.sample(moveset);
 
                         if (turn_order[i] == 'p') {
                             // Player attacks enemy
