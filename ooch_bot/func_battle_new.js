@@ -104,6 +104,7 @@ let functions = {
     setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run) {
         
         let abilityMsg = '';
+        let battle_action_queue = [];
     
         // // Adjust things for abilities
         // for (let id in users) {
@@ -143,6 +144,9 @@ let functions = {
             //     let playspace_msg = await users[id].thread.messages.fetch(users[id].display_msg_id).catch(() => {});
             //     await playspace_msg.delete().catch(() => {});
             // }
+
+            //Handles the newly sent out oochamon
+            battle_action_queue.push(functions.new_battle_action_switch(id, user.active_slot, false, true));
 
             if (users[id].is_player) {
                 let my_team = users[id].team_id
@@ -188,7 +192,7 @@ let functions = {
             battle_msg_counter : abilityMsg == '' ? 1 : 2,
             turn_msg_counter : 0,
             battle_state : BattleState.Start,
-            battle_action_queue : [],
+            battle_action_queue : battle_action_queue,
 
 
             turn_counter : 0,
@@ -249,14 +253,18 @@ let functions = {
      * Create a Switch action
      * @param {Number} user_id The user which is causing this action
      * @param {Number} slot_to The slot to switch to
+     * @param {Boolean} is_switching Whether the user is switching a mon in or just sending one out
+     * @param {Boolean} skip_initial_text Whether to skip the "User sent out/switched" lines of text
      * @returns returns a battle action object
      */
-    new_battle_action_switch(user_id, slot_target){
+    new_battle_action_switch(user_id, slot_target, is_switching, skip_initial_text = false){
         let action = {
             action_type : BattleAction.Switch,
             priority : BattleAction.Switch,
             user_id : user_id,
-            slot_target : slot_target
+            slot_target : slot_target,
+            is_switching : is_switching,
+            skip_initial_text : skip_initial_text
         }
 
         return(action);
@@ -378,7 +386,6 @@ let functions = {
                     move_id = move_intentions[_.random(move_intentions.length - 1)];
                     action = functions.new_battle_action_attack(user_obj.user_id, target_user.user_id, move_id);
                 }
-                
             break;
         }
 
@@ -483,7 +490,7 @@ let functions = {
                     //TODO
                 break;
                 case BattleAction.Switch:
-                    //TODO
+                    turn_data = await functions.action_process_switch(battle_data, action);
                 break;
                 case BattleAction.Run:
                     turn_data = await functions.action_process_run(battle_data, action);
@@ -541,6 +548,79 @@ let functions = {
         db.battle_data.set(battle_id, battle_data);
 
         //Round Ends here
+    },
+
+
+    action_process_switch : async function(battle_data, action){
+        let user = battle_data.users[action.user_id];
+        let finish_battle = false;
+
+        let ooch_to = user.party[user.active_slot];
+        let ooch_from = user.party[action.slot_target];
+        user.active_slot = action.slot_target;
+        
+        let return_string = (action.is_switching 
+            ? `${user.name} switched from ${db.monster_data.get(ooch_from.id, 'emote')} **${ooch_from.nickname}** to ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
+            : `${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
+        )
+        if (action.skip_text) {return_string = '';}
+
+        ooch_from.stats.atk_mul = 0;
+        ooch_from.stats.def_mul = 0;
+        ooch_from.stats.spd_mul = 0;
+        ooch_from.stats.acc_mul = 0;
+        ooch_from.stats.eva_mul = 0;
+        ooch_from.ability = ooch_from.og_ability;
+        ooch_from.type = ooch_from.og_type;
+        ooch_from.doom_timer = 4;
+
+
+        //Check abilities vs other users
+        for(let u of battle_data.users){
+            if(u.team_id != user.team_id){
+                let ooch_enemy = u.party[u.ooch_active_slot];
+
+                //Enemy users' mons that affect the new mon
+                switch (ooch_enemy.ability) {
+                    case Ability.Alert: //Increases atk if a new enemy mon switches in
+                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 1);
+                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
+                    break;
+                    case Ability.Duplicant: //Copies the ability of the newly switched-in mon
+                        if (ooch_to.ability !== Ability.InvalidEntry) {
+                            ooch_enemy.ability = ooch_to.ability;
+                            string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** ability was changed to **${_.startCase(db.ability_data.get(ooch_to.ability, 'name'))}** through it's **Duplicant** ability!`;
+                        }
+                    break;
+                    case Ability.Nullify: //Changes the ability of the newly switched mon to "Null"
+                        ooch_to.ability = Ability.Null;
+                        string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s ability changed to **Null** due to ${ooch_enemy.emote} **${ooch_enemy.nickname}**'s **Nullify**!`
+                    break;
+                }
+
+                //User's new mon abilities that affect all enemies
+                switch (ooch_to.ability) {
+                    case Ability.Boisterous: //Enemy loses 10% HP
+                        let prev_hp = ooch_enemy.current_hp;
+                        ooch_enemy.current_hp = _.clamp(Math.floor(ooch_enemy.current_hp - ooch_enemy.stats.hp * 0.1), 1, ooch_enemy.stats.hp);
+                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost ${prev_hp - ooch_enemy.current_hp} HP due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Boisterous**!`;
+                    break;
+                    case Ability.Gentle: //Lowers enemy ATK 1 stage
+                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
+                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its ATK lowered due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Gentle**!`;
+                    break;
+                    case Ability.Withering: //Lowers enemy DEF 1 stage
+                        ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
+                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its DEF lowered due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Withering**!`;
+                    break;
+                }
+            }
+        }
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string
+        }
     },
 
     /**
@@ -630,7 +710,7 @@ let functions = {
         return {
             finish_battle : finish_battle,
             finish_data : finish_data,
-            return_string : return_string,
+            return_string : return_string
         }
     },
 
@@ -659,7 +739,7 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string,
+            return_string : return_string
         }
     },
 
@@ -693,7 +773,7 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string,
+            return_string : return_string
         }
     },
 
