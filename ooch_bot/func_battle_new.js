@@ -267,7 +267,7 @@ let functions = {
      * @param {Boolean} skip_initial_text Whether to skip the "User sent out/switched" lines of text
      * @returns returns a battle action object
      */
-    new_battle_action_switch(battle_data, user_id, slot_target, is_switching, skip_initial_text = false){
+    new_battle_action_switch : function(battle_data, user_id, slot_target, is_switching, skip_initial_text = false){
         let action = {
             action_type : BattleAction.Switch,
             priority : BattleAction.Switch,
@@ -287,7 +287,7 @@ let functions = {
      * @param {Number} target_user_id The user whos active mon we're catching
      * @returns returns a battle action object
      */
-    new_battle_action_prism(battle_data, user_id, target_user_id){
+    new_battle_action_prism : function(battle_data, user_id, target_user_id){
         let action = {
             action_type : BattleAction.Prism,
             priority : BattleAction.Prism,
@@ -306,7 +306,7 @@ let functions = {
      * @param {Number} slot_target The slot to apply healing to
      * @returns returns a battle action object
      */
-    new_battle_action_heal(battle_data, user_id, slot_to){
+    new_battle_action_heal : function(battle_data, user_id, slot_to){
         let action = {
             action_type : BattleAction.Heal,
             priority : BattleAction.Heal,
@@ -325,7 +325,7 @@ let functions = {
      * @param {Number} item_id The id of the Item to use
      * @returns returns a battle action object
      */
-    new_battle_action_other(battle_data, user_id, slot_to){
+    new_battle_action_other : function(battle_data, user_id, slot_to){
         let action = {
             action_type : BattleAction.Other,
             priority : BattleAction.Other,
@@ -343,10 +343,9 @@ let functions = {
      * @param {Object} battle_data The relevant battle data
      * @returns returns a battle action object
      */
-    get_ai_action: function(user_obj, battle_data) {
+    get_ai_action : function(user_obj, battle_data) {
         let active_mon = user_obj.party[user_obj.active_slot]
         let moves = active_mon.moveset;
-        let num_moves = moves.length;
         let users = battle_data.users;
         let target_user = false;
         let action = false;
@@ -485,45 +484,35 @@ let functions = {
     process_battle_actions : async function(battle_id){
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
-        
+        let action, header, text, faint_check, finish_battle;
+
         while(actions.length > 0){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
-            sort_action_priority(actions);
+            functions.sort_action_priority(actions);
 
-            let action = actions.shift();
+            action = actions.shift();
+            header = `**------------ ${action.user.name}'s Turn ------------**\n`;
+            text = ``;
 
-            let text = `**------------ ${user.name_possessive} Turn ------------**\n`;
-            let turn_data = false;
-
-            switch(action.action_type){
-                case BattleAction.Attack:
-                    //TODO
-                break;
-                case BattleAction.Switch:
-                    turn_data = await functions.action_process_switch(battle_data, action);
-                break;
-                case BattleAction.Run:
-                    turn_data = await functions.action_process_run(battle_data, action);
-                break;
-                case BattleAction.Heal:
-                    turn_data = await functions.action_process_heal(battle_data, action);
-                break;
-                case BattleAction.Prism:
-                    turn_data = await functions.action_process_prism(battle_data, action);
-                break;
-                case BattleAction.Other:
-                    //TODO
-                break;
+            //Perform the action for the turn
+            let turn_data = await functions.action_process(battle_data, action);
+            text += turn_data.return_string;
+            finish_battle = finish_battle || turn_data.finish_battle;
+            
+            //Check if anything fainted
+            if(finish_battle == false){
+                faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+                text += faint_check.text;
+                finish_battle = finish_battle || faint_check.finish_battle;
             }
 
             //Send the text to each of the user's threads
-            text += turn_data.return_string;
-            await functions.distribute_messages(battle_data.users, text);
+            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
+            
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
-            if(turn_data.finish_battle){
-                
+            if(finish_battle){
                 if(turn_data.has('finish_data') && turn_data.finish_data != false){
                     let finish_data = turn_data.finish_data;
                     switch(finish_data.type){
@@ -542,15 +531,104 @@ let functions = {
             }
         }
 
-        //Apply end of round effects (burn, stat changes, etc.)
-        //TODO
+        //End of round stuff
+        let end_of_round_header = `**------------ End of Round ------------**\n`;
+        let end_of_round_text = ``;
 
-        //Check if anyone needs to send out a new mon
-        //TODO
+
+        //Apply end of round abilities/effects (burn, stat changes, etc.)
+        let ooch, eot_result;
+        for(let user of battle_data.users){
+            ooch = user.party[user.active_slot];
+
+            //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
+            eot_result = functions.use_eot_ability(user_id, battle_data); 
+            ooch = eot_result.ooch;
+            end_of_round_text += eot_result.text;
+
+            //Check if anything fainted from abilities
+            faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+            end_of_round_text += faint_check.text;
+            finish_battle = finish_battle || faint_check.finish_battle;
+
+            // Handle status effects
+            let status_checks = []
+            if (ooch.status_effects.includes(Status.Burn)) {status_checks.push(Status.Burn)};
+            if (ooch.status_effects.includes(Status.Infect)) {status_checks.push(Status.Infect)};
+            if(ooch.status_effects.includes(Status.Doom)) {status_checks.push(Status.Doom)};
+            if(ooch.status_effects.includes(Status.Digitize)) {status_checks.push(Status.Digitize)};
+
+            for(let effect of status_checks){
+                if(finish_battle){ break; }
+
+                switch(effect){
+                    case Status.Burn:
+                        let burn_val = Math.round(ooch.stats.hp/10);
+                        ooch.current_hp -= burn_val;
+                        ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                        end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
+                    break;
+                    case Status.Infect:
+                        let infect_val = Math.round(ooch.stats.hp/20)
+                        ooch.current_hp -= infect_val;
+                        ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                        if (opposing_ooch != undefined) {
+                            opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
+                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from **INFECTED!**`;
+                        }
+                    break;
+                    case Status.Doom:
+                        ooch.doom_timer -= 1;
+                        if (ooch.doom_timer == 0) {
+                            ooch.current_hp = 0;
+                            ooch.alive = false;
+                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
+                        } else {
+                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
+                        }
+                    break;
+                    case Status.Digitize:
+                        if(ooch.type != [OochType.Tech]){
+                            ooch.type = [OochType.Tech];
+                            end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was digitized and had its type changed to **Tech**!.`;
+                        }
+                    break;
+                }
+
+                //Check if anything fainted from status effects
+                faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+                end_of_round_text += faint_check.text;
+                finish_battle = finish_battle || faint_check.finish_battle;
+            }
+        }
+
+        await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(end_of_round_header, end_of_round_text)]});
+
+
+        //End of round switch-ins
+        let faint_switch_header = '**------------ Switching In ------------**';
+        let faint_switch_text = ''
+        functions.end_of_round_prompt_switch(battle_data);
+
+        //Send out any new mons or any other actions that have been moved to the end of turn queue
+        while(actions.length > 0 && finish_battle == false){
+            functions.sort_action_priority(actions);
+            action = actions.shift();
+            turn_data = await functions.action_process(battle_data, action);
+
+            //Check if anything fainted as a result of the actions
+            faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+            faint_switch_text += faint_check.text;
+            finish_battle = finish_battle || faint_check.finish_battle;
+        }
+        
+        if(faint_switch_text != ''){
+            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(faint_switch_header, faint_switch_text)]});
+        }
 
         //End the battle here if a win/loss-state has been achieved
         //OR
-        //Send end of round message and increment the turn counter
+        //Continue the fight
         //TODO
         battle_data.battle_msg_counter +=1;
         battle_data.turn_counter++;
@@ -559,6 +637,38 @@ let functions = {
         //Round Ends here
     },
 
+    battle_embed_create : function(header, text, color = '#808080'){
+        let embed = new EmbedBuilder()
+            .setColor(color)
+            .setTitle(header)
+            .setDescription(text);
+        return embed;
+    },
+
+    action_process : async function(battle_data, action){
+        let turn_data;
+        switch(action.action_type){
+            case BattleAction.Attack:
+                //TODO
+            break;
+            case BattleAction.Switch:
+                turn_data = await functions.action_process_switch(battle_data, action);
+            break;
+            case BattleAction.Run:
+                turn_data = await functions.action_process_run(battle_data, action);
+            break;
+            case BattleAction.Heal:
+                turn_data = await functions.action_process_heal(battle_data, action);
+            break;
+            case BattleAction.Prism:
+                turn_data = await functions.action_process_prism(battle_data, action);
+            break;
+            case BattleAction.Other:
+                //TODO
+            break;
+        }
+        return turn_data;
+    },
 
     action_process_switch : async function(battle_data, action){
         let user = battle_data.users[action.user_id];
@@ -585,7 +695,7 @@ let functions = {
 
         //Check abilities vs other users
         for(let u of battle_data.users){
-            if(u.team_id != user.team_id && !u.party[u.active_slot].defeated){
+            if(u.team_id != user.team_id && u.party[u.active_slot].alive){
                 let ooch_enemy = u.party[u.ooch_active_slot];
 
                 //Enemy users' mons that affect the new mon
@@ -1068,14 +1178,21 @@ let functions = {
     battle_faint_check: async function(battle_data) {
         let string_to_send = '';
         let active_teams = [];
+        let finish_battle = false;
+        
+
         // Get the players active oochamon, check if they are alive
         for(let user of battle_data.users){
+            let exp_given = 0;
             let active_ooch = user.party[user.active_slot];
             let user_defeated = true;
             let user_next_slot = 999;
+            let bonus_multiplier = user.type != UserType.Wild ? 2 : 1;
             if(active_ooch.current_hp <= 0 && active_ooch.alive == true){
                 
-                
+                if(battle_data.give_rewards){
+                    exp_given += Math.round(functions.battle_calc_exp(ooch, bonus_multiplier));
+                }
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
 
@@ -1099,40 +1216,96 @@ let functions = {
                     }
                 }
             }
+
+            //Distribute EXP to other users' mons & level them up if possible
+            if(exp_given > 0){
+                for(let other_user of battle_data.users){
+                    if(other_user.type == UserType.Player && other_user.user_id != user.user_id){
+                        let ooch_party = other_user.party;
+                        let other_ooch = ooch_party[other_user.active_slot];
+                        let exp_main = Math.floor(exp_given *1.25);
+                        let exp_others = Math.floor(exp_given *.5);
+                        if (other_ooch.level != 50) {
+                            string_to_send += `\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} exp!**` + 
+                                                ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
+                        }
+                        if (other_user.party.length > 1) {
+                            string_to_send += `\nThe rest of your team earned **${exp_others}** exp.`;
+                        }
+
+                        for (let i = 0; i < ooch_party.length; i++) {
+                            if (i == other_user.ooch_active_slot) { 
+                                ooch_party[i].current_exp += exp_main;
+                            } 
+                            else { 
+                                ooch_party[i].current_exp += exp_others; 
+                            }
+                            
+                            // Check for level ups
+                            let ooch_data = ooch_party[i];
+                            if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                                ooch_data = level_up(ooch_data);
+                                string_to_send += ooch_data[1];
+                            }
+                        }
+                    }
+                }
+            }
         }
 
+        //If there's 1 remaining team finish the battle
         if(active_teams.length < 2){
-            //Finish the battle
+            finish_battle = true;
         }
         
-        return(string_to_send);
+        return({
+            text : string_to_send, 
+            finish_battle : finish_battle
+        });
+    },
+
+    /**
+     * Calculates the amount of EXP earned when defeating an Oochamon.
+     * @param {Number} ooch The oochamon that was defeated
+     * @param {Number} bonus_multiplier Multiplier for exp given (default 1)
+     * @returns A number of the amount of EXP earned
+     */
+    battle_calc_exp: function(ooch, bonus_multiplier = 1) {
+        let mon_data = db.monster_data.get(ooch.species, ooch.id)
+        let evo_stage = mon_data.evo_stage;
+        let exp_multiplier = 0.90
+        let level = ooch.level;
+        
+        return Math.round(
+            ((bonus_multiplier * (1.025 ** level) * (2 ** evo_stage) * 8 * level * (_.random(90, 100)/100)) + 20) * exp_multiplier + //Base EXP given at all levels
+            (Math.max(level - 20, 0) * 100) //Extra EXP given after LV 20
+        );
     },
 
     //Handle letting the users switch mons during end of round here
-    end_of_round_switch : async function(battle_data){
+    end_of_round_prompt_switch : async function(battle_data){
         let users = battle_data.users;
         let next_slot = 9999;
         for(let user of users){
             switch(user.user_type){
-                case UserType.Wild:
-                case UserType.NPCTrainer:
-                case UserType.NPCSmart:
-                    for(let [i, ooch] of user.party.entries()){
-                        if(ooch.alive){ i = min(i, next_slot)}
-                    }
-                    
-                    await functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
-                break;
                 case UserType.Player:
-                    //Prompt buttons here
+                    //TODO: Prompt buttons here
 
                     //Submit their next slot for combat
-                    await functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
+                    functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
+                break;
+                default:
+                    for(let [i, ooch] of user.party.entries()){
+                        if(ooch.alive){ next_slot = i; break;}
+                    }
+                    functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
                 break;
             }
         }
+    },
 
-
+    old_function : async function(){ //This function is old but i dont want to mess with it 
+        
         let active_slot = ooch_plr_profile.ooch_active_slot;
         let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
         let ooch_pos = active_slot;
@@ -2051,6 +2224,76 @@ type_effectiveness: function(attack_type, target_type) {
         } 
         
     },
+
+    use_eot_ability : function(battle_data, user_id) {
+        let ability_text = ``;
+        let user = battle_data.users[user_id];
+        let ooch = user.party[user.active_slot];
+
+        switch(ooch.ability) {
+            case Ability.Fleeting:
+                ooch.current_hp = Math.floor(ooch.current_hp / 2);
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** had its HP halved due to its ability **Fleeting**!`;
+            break;
+            case Ability.Efficient:
+                if (battle_data.turn_counter % 2 === 0) {
+                    ooch = modify_stat(ooch, Stats.Attack, 1);
+                    ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its ATK from its ability **Efficient**!`;
+                }
+            break;
+            case Ability.Inertia:
+                ooch = modify_stat(ooch, Stats.Speed, 1); 
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its SPD from its ability **Inertia**!`;
+            break;
+            case Ability.Patient:
+                if (battle_data.turn_counter % 2 === 0) {
+                    ooch = modify_stat(ooch, Stats.Defense, 1);
+                    ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Patient**!`;
+                }
+            break;
+            case Ability.Increment:
+                let randomStat = _.sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
+                ooch = modify_stat(ooch, randomStat, 1);
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** randomly increased its ${_.upperCase(randomStat)} from its ability **Increment**!`;
+            break;
+            case Ability.Riposte:
+                ooch.ability = Ability.Parry;
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its stance, and shifted its ability to **Parry**!`;
+            break;
+            case Ability.HoleDweller:
+                if (battle_data.turn_counter % 2 === 0) {
+                    ooch = add_status_effect(ooch, Status.Vanish);
+                    ability_text = `${ooch.emote} **${ooch.nickname}** **VANISHED** into a hole with its ability **Hole Dweller**!`;
+                }
+            break;
+        }
+    
+        if (!ooch.status_effects.includes(Status.Digitize)) {
+            switch (ooch.ability) {
+                case Ability.Spectral:
+                    if (ooch.type == ooch.og_type) {
+                        ooch.type = [OochType.Magic];
+                        ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Magic)} **Magic** through its ability **Spectral**!`
+                    } else {
+                        ooch.type = ooch.og_type;
+                        ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**.`
+                    }
+                break;
+                case Ability.Radioactive:
+                    if (ooch.type == ooch.og_type) {
+                        ooch.type = [OochType.Flame];
+                        ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Flame)} **Flame** through its ability **Radioactive**!`
+                    } else {
+                        ooch.type = ooch.og_type;
+                        ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its type back to ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**.`
+                    }
+                break;
+            }
+        }
+        
+    
+        return {ooch : ooch, text :ability_text};
+    }
 }
 
 module.exports = functions;

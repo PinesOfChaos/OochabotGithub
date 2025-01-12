@@ -351,6 +351,8 @@ const BattleInput = {
 }
 
 const BattleAction = { //These double as the base priority values for actions
+    EndOfRound : -1_000_000,
+
     Attack :    0,
     Run :       1_000_000,
     Switch :    2_000_000,
