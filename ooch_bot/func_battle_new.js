@@ -24,18 +24,17 @@ let functions = {
 
     /**
      * Generates a battle user object
-     * @param {Object} thread Thread this user session is taking place in
      * @param {Number} type Type of Battle UserType(Wild, NPCTrainer, User, OnlineUser)
      * @param {Object} options Additional data, data required varies by type
      * @returns 
      */
-    generate_battle_user: function(thread, type, options) {
+    generate_battle_user: async function(type, options) {
 
         const { create_ooch } = require('./func_play');
+        const { botClient } = require("./index.js");
 
         let party = [];
         let battle_sprite = false;
-        let user_id = false;
         let team_id = false;
         let oochabux = false;
         let active_slot = 0;
@@ -43,6 +42,9 @@ let functions = {
         let name = 'Wild Oochamon';
         let is_player = false;
         let display_msg_id = false;
+        let thread_id = false;
+        let guild_id = false;
+        let user_id = false;
         
         switch (type) {
             case UserType.Wild:
@@ -76,13 +78,20 @@ let functions = {
                 is_player = true;
                 user_id = options.user_id;
                 team_id = options.team_id;
+                thread_id = options.thread_id;
+                guild_id = options.guild_id;
+
                 let profile = db.profile.get(user_id);
                 
-                name = profile.name; // TODO: Fix this from being undefined
+                let guild = botClient.guilds.cache.get(guild_id);
+                let member = await guild.members.fetch(user_id);
+                name = member.displayName;
+                
                 battle_sprite = profile.player_sprite;
                 party = profile.ooch_party;
                 active_slot = profile.ooch_active_slot;
                 display_msg_id = profile.display_msg_id;
+                
             break;
         }
 
@@ -93,7 +102,8 @@ let functions = {
             user_id: user_id,
             team_id: team_id,
             user_type: type,
-            thread: thread,
+            thread_id: thread_id,
+            guild_id: guild_id,
             active_slot: active_slot, 
             is_catchable: is_catchable,
             party: party,
@@ -115,9 +125,14 @@ let functions = {
      * @param {Boolean} allow_run Allow running from the battle
      */
     setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run) {
-        
+
         let abilityMsg = '';
         let battle_action_queue = [];
+
+        // Add index to users
+        for (let i = 0; i < users.length; i++) {
+            users[i].user_index = i;
+        }
     
         // // Adjust things for abilities
         // for (let id in users) {
@@ -182,10 +197,10 @@ let functions = {
 
         for (let [id, user] of battleDataObj.users.entries()) {
             //Handles the newly sent out oochamon
-            functions.new_battle_action_switch(battleDataObj, id, user.active_slot, false, true);
+            console.log(battleDataObj);
 
             if (users[id].is_player) {
-                let my_team = users[id].team_id
+                let my_team = users[id].team_id;
                 for (let id2 in users) {
                     if (id2 != id){
                         
@@ -220,24 +235,35 @@ let functions = {
             }
         }
 
+
+        //
+        for(let user of battleDataObj.users){
+            let switch_in_text = functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
+            battleStartText += switch_in_text;
+        }
+
+        await functions.distribute_messages(battleDataObj.users, battleStartText);
+
         db.battle_data.set(battleId, battleDataObj);
-    
+        
+        
         await functions.prompt_battle_actions(battleId);
     },
 
     /**
      * Create an Attack action
-     * @param {Number} user_id The user which is causing this action
-     * @param {Number} target_user_id The user to be hit by the move
-     * @param {Number} move_slot The move to be used
+     * @param {Number} user_index The user which is causing this action
+     * @param {Number} target_user_index The user to be hit by the move
+     * @param {Number} move_id The id of the move to be used
      * @returns returns a battle action object
      */
-    new_battle_action_attack : function(battle_data, user_id, target_user_id, move_id) {
+    new_battle_action_attack : function(battle_data, user_index, target_user_index, move_id) {
+
         let action = {
             action_type : BattleAction.Attack,
             priority : BattleAction.Attack,
-            user_id : user_id,
-            target_user_id : target_user_id,
+            user_index : user_index,
+            target_user_index : target_user_index,
             move_id : move_id
         }
 
@@ -246,14 +272,14 @@ let functions = {
 
     /**
      * Create a Run action
-     * @param {Number} user_id The user which is causing this action
+     * @param {Number} user_index The user which is causing this action
      * @returns returns a battle action object
      */
-    new_battle_action_run : function(battle_data, user_id){
+    new_battle_action_run : function(battle_data, user_index){
         let action = {
             action_type : BattleAction.Run,
             priority : BattleAction.Run,
-            user_id : user_id
+            user_index : user_index
         }
 
         battle_data.battle_action_queue.push(action);
@@ -261,17 +287,17 @@ let functions = {
 
     /**
      * Create a Switch action
-     * @param {Number} user_id The user which is causing this action
+     * @param {Number} user_index The user which is causing this action
      * @param {Number} slot_to The slot to switch to
      * @param {Boolean} is_switching Whether the user is switching a mon in or just sending one out
      * @param {Boolean} skip_initial_text Whether to skip the "User sent out/switched" lines of text
      * @returns returns a battle action object
      */
-    new_battle_action_switch : function(battle_data, user_id, slot_target, is_switching, skip_initial_text = false){
+    new_battle_action_switch : function(battle_data, user_index, slot_target, is_switching, skip_initial_text = false){
         let action = {
             action_type : BattleAction.Switch,
             priority : BattleAction.Switch,
-            user_id : user_id,
+            user_index : user_index,
             slot_target : slot_target,
             is_switching : is_switching,
             skip_initial_text : skip_initial_text
@@ -282,18 +308,18 @@ let functions = {
 
     /**
      * Create a Prism action
-     * @param {Number} user_id The user which is causing this action
+     * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
-     * @param {Number} target_user_id The user whos active mon we're catching
+     * @param {Number} target_user_index The user whos active mon we're catching
      * @returns returns a battle action object
      */
-    new_battle_action_prism : function(battle_data, user_id, target_user_id){
+    new_battle_action_prism : function(battle_data, user_index, target_user_index){
         let action = {
             action_type : BattleAction.Prism,
             priority : BattleAction.Prism,
-            user_id : user_id,
+            user_index : user_index,
             item_id : item_id,
-            target_user_id : target_user_id
+            target_user_index : target_user_index
         }
 
         battle_data.battle_action_queue.push(action);
@@ -301,16 +327,16 @@ let functions = {
 
     /**
      * Create a Heal action
-     * @param {Number} user_id The user which is causing this action
+     * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
      * @param {Number} slot_target The slot to apply healing to
      * @returns returns a battle action object
      */
-    new_battle_action_heal : function(battle_data, user_id, slot_to){
+    new_battle_action_heal : function(battle_data, user_index, slot_to){
         let action = {
             action_type : BattleAction.Heal,
             priority : BattleAction.Heal,
-            user_id : user_id,
+            user_index : user_index,
 
             item_id : item_id,
             slot_target : slot_target
@@ -321,15 +347,15 @@ let functions = {
 
     /**
      * Create an Other action
-     * @param {Number} user_id The user which is causing this action
+     * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
      * @returns returns a battle action object
      */
-    new_battle_action_other : function(battle_data, user_id, slot_to){
+    new_battle_action_other : function(battle_data, user_index, slot_to){
         let action = {
             action_type : BattleAction.Other,
             priority : BattleAction.Other,
-            user_id : user_id,
+            user_index : user_index,
 
             item_id : item_id
         }
@@ -344,7 +370,7 @@ let functions = {
      * @returns returns a battle action object
      */
     get_ai_action : function(user_obj, battle_data) {
-        let active_mon = user_obj.party[user_obj.active_slot]
+        let active_mon = user_obj.party[user_obj.active_slot];
         let moves = active_mon.moveset;
         let users = battle_data.users;
         let target_user = false;
@@ -353,7 +379,7 @@ let functions = {
         let move_intentions = []
 
         let users_enemy = users.filter(u => u.team_id != user_obj.team_id);
-        let users_friendly = users.filter(u => u.team_id == user_obj.team_id && u.user_id != user_obj.user_id);
+        let users_friendly = users.filter(u => u.team_id == user_obj.team_id && u.user_index != user_obj.user_index);
         let party_alive_slots = [];
         user_obj.party.forEach((mon, i) => {
             if(mon.hp > 0){party_alive_slots.push(i)}
@@ -364,7 +390,7 @@ let functions = {
             case UserType.Wild:
                 target_user = _.sample(users_enemy);
                 move_id = _.sample(moves.move_id);
-                action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
+                functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
             break;
             case UserType.NPCTrainer:
                 target_user = _.sample(users_enemy);
@@ -372,7 +398,7 @@ let functions = {
                 move_intentions = functions.get_move_intention(moves, target_mon.type);
                 move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)];
                 
-                action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
+                functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
             break;
             case UserType.NPCSmart:
                 target_user = _.sample(users_enemy);
@@ -385,20 +411,18 @@ let functions = {
                 
                 if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
                     //Switch if there are no acceptable attacking moves and there is a mon we can switch to
-                    action = functions.new_battle_action_switch(battle_data, user_obj.user_id, party_alive_slots[_.random(party_alive_slots.length - 1)]);
+                    functions.new_battle_action_switch(battle_data, user_obj.user_index, party_alive_slots[_.random(party_alive_slots.length - 1)]);
                 }
                 else if(good_moves.length > 0 || okay_moves.length > 0){
                     move_id = _.random(10) < 7 ? good_moves[0] : okay_moves[0];
-                    action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
+                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
                 }
                 else{
                     move_id = move_intentions[_.random(move_intentions.length - 1)];
-                    action = functions.new_battle_action_attack(battle_data, user_obj.user_id, target_user.user_id, move_id);
+                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
                 }
             break;
         }
-
-        return(action);
     },
 
     /**
@@ -410,31 +434,35 @@ let functions = {
     get_move_intention: function(moves_list, target_type){
         let moves_to_sort = [];
         for(let move of moves_list){
+            let move_data = db.move_data.get(move);
             moves_to_sort.push({
-                priority : move.damage == 0 ? 1 : functions.type_effectiveness(move.type, target_type), 
-                move_id : move.id,
-                damage : move.damage})
+                priority : move_data.damage == 0 ? 1 : functions.type_effectiveness(move_data.type, target_type)[0], 
+                move_id : move_data.id,
+                damage : move_data.damage})
         }
         
         moves_to_sort = _.shuffle(moves_to_sort);
         let moves_sorted = moves_to_sort.sort((a, b) => b.priority - a.priority);
-        return(moves_sorted)
+        moves_sorted = moves_sorted.map(mv => mv.move_id);
+
+        return(moves_sorted);
     },
 
     /**
      * Sorts the action queue of a given battle id in the database
-     * @param {String} battle_id 
+     * @param {String} battle_data 
      */
-    sort_action_priority(action_list){
+    sort_action_priority(battle_data){
+        let action_list = battle_data.battle_action_queue;
         //Add the speed of the user's active oochamon
         for(let action of action_list){
             
-            let user_id = action.user_id;
-            let user = battle_data.users[user_id];
+            let user_index = action.user_index;
+            let user = battle_data.users[user_index];
             let ooch_obj = user.party[user.active_slot];
 
             //Priority based on action type
-            let base_priority = action.priority;
+            let base_priority = action.action_type;
 
             //Priority based on Oochamon Speed stat
             let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
@@ -445,11 +473,13 @@ let functions = {
             let move_priority = 0;
             if(action.action_type == BattleAction.Attack){
                 let move = db.move_data.get(action.move_id);
-                let status_effects = move.status_effects;
-                for(let status of status_effects){
-                    let status_split = status.split('_');
-                    if(status_split[0] == 'priority'){
-                        move_priority += parseInt(status_split[1]) * 10_000;
+                let effects = move.effect;
+                for(let effect of effects) {
+                    if (typeof effect == String) {
+                        let status_split = effect.status.split('_');
+                        if(status_split[0] == 'priority'){
+                            move_priority += parseInt(status_split[1]) * 10_000;
+                        }
                     }
                 }
 
@@ -469,50 +499,328 @@ let functions = {
      * @param {Object} message anything that can be sent as a discord message
      */
     distribute_messages : async function(users, message){
+        const { botClient } = require("./index.js");
+        
         for(let user of users){
             if(user.is_player){
-                let thread = user.thread;
+                let thread = botClient.channels.cache.get(user.thread_id);
                 await thread.send(message);
             }
         }
+    },
+
+    
+    /* TODOs: 
+        - Ensure the turn msg counters are correct after this is correct globally
+        - Make sure messages are updated properly
+    */
+
+    /** Gather input for battle actions
+     * @param battle_id The ID of the battle being prompted for
+     */
+    prompt_battle_actions: async function(battle_id) {
+
+        const { botClient } = require("./index.js");
+
+        let battle_data = db.battle_data.get(battle_id);
+
+        // Store current battle state to roll back to if needed
+        // db.battle_data.delete(battle_id, 'rollback_profile');
+        // db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
+        // db.battle_data.set(battle_id, 0, 'turn_msg_counter');
+
+        //#region Setup buttons and select menus
+        const inputRow = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('fight')
+                    .setLabel('Fight')
+                    .setEmoji('⚔️')
+                    .setStyle(ButtonStyle.Primary),
+            ) .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('switch')
+                    .setLabel('Switch')
+                    .setEmoji('<:item_prism:1274937161262698536>')
+                    .setStyle(ButtonStyle.Success),
+            );
+    
+        const inputRow2 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('bag')
+                    .setLabel('Item')
+                    .setEmoji('🎒')
+                    .setStyle(ButtonStyle.Danger),
+            ) .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('run')
+                    .setLabel('Run')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji('🏃‍♂️')
+                    .setDisabled(!battle_data.allow_run),
+            );
+    
+        const inputRow3 = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('info')
+                        .setLabel('View Battle Info')
+                        .setEmoji('📒')
+                        .setStyle(ButtonStyle.Secondary),
+                )
+                
+        let moveButtons = new ActionRowBuilder();
+        let switchButtons1 = new ActionRowBuilder();
+        let switchButtons2 = new ActionRowBuilder();
+        let bagButtons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('heal_button')
+                    .setLabel('Healing')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('<:item_potion_magic:1274937146423115922>'),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('prism_button')
+                    .setLabel('Prism')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('<:item_prism:1274937161262698536>')
+                    .setDisabled(!battle_data.is_catchable),
+            ).addComponents(
+                new ButtonBuilder()
+                    .setCustomId('back')
+                    .setLabel('Back')
+                    .setStyle(ButtonStyle.Danger),
+            )
+    
+        const backButton = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('back')
+                    .setLabel('Back')
+                    .setStyle(ButtonStyle.Danger),
+            )
+        //#endregion
+
+        // Handle users
+        await battle_data.users.forEach(async (user) => {
+            if (user.user_type != UserType.Player) {
+                functions.get_ai_action(user, battle_data);
+                user.action_selected = true;
+
+                // Continue on if everyone has selected (which should happen at the end)
+                if (battle_data.users.every(u => u.action_selected !== false)) {
+                    db.battle_data.set(battle_id, battleData);
+                    await functions.process_battle_actions(battle_id);
+                }
+            } else {
+                let userThread = botClient.channels.cache.get(user.thread_id);
+                await userThread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
+
+                const inputCollector = userThread.createMessageComponentCollector();
+                
+                await inputCollector.on('collect', async i => {
+                    let customId = i.customId;
+                    let activeOoch = user.party[user.active_slot];
+
+                    if (customId == BattleInput.Back) {
+                        await i.update({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
+
+                    } else if (customId == BattleInput.Attack) {
+                        let move_id, move_name, move_type, move_damage, move_effective_emote = '',
+                            buttonStyle = ButtonStyle.Primary;
+
+                        moveButtons = new ActionRowBuilder()
+
+                        // Get the Oochamon's Attack options
+                        for (let i = 0; i < activeOoch.moveset.length; i++) {
+                            move_id = activeOoch.moveset[i];
+                            move_name = db.move_data.get(`${move_id}`, 'name')
+                            move_type = db.move_data.get(`${move_id}`, 'type')
+                            move_damage = db.move_data.get(`${move_id}`, 'damage')
+                            
+                            // TODO: Figure out how to display this properly
+                            /*
+                            move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
+                            let buttonStyle = ButtonStyle.Primary
+                            if (move_effective_emote[0] > 1) {
+                                move_effective_emote = ' △';
+                                buttonStyle = ButtonStyle.Success
+                            } else if (move_effective_emote[0] < 1) {
+                                move_effective_emote = ' ▽';
+                                buttonStyle = ButtonStyle.Danger
+                            } else {
+                                move_effective_emote = '';
+                            }
+        
+                            if (move_damage == 0) {
+                                move_effective_emote = '';
+                                buttonStyle = ButtonStyle.Secondary
+                            }*/
+        
+                            
+                            moveButtons.addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`atk_${move_id}`)
+                                    .setLabel(`${move_name} ${move_effective_emote}`)
+                                    .setStyle(buttonStyle)
+                                    .setEmoji(`${functions.type_to_emote(move_type)}`)
+                            )
+                        }
+        
+                        // Switch message to be about using the move input
+                        await i.update({ content: `Select a move to use!`, components: [moveButtons, backButton]});
+                    } else if (customId.includes('atk_')) {
+                        if (battle_data.users.length == 2) {
+                            let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
+                            let move_id = customId.replace('atk_', '');
+                            user.action_selected = true;
+                            functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
+                        } else {
+                            // TODO: Handle more than 1 user, this needs a new submenu
+                        }
+
+                        i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+
+                        // Continue on if everyone has selected (which should happen at the end)
+                        if (battle_data.users.every(u => u.action_selected !== false)) {
+                            db.battle_data.set(battle_id, battle_data);
+                            inputCollector.stop();
+                            await functions.process_battle_actions(battle_id);
+                        }
+
+                    } else if (customId == BattleInput.Switch) {
+
+                    } else if (customId == BattleInput.Bag) {
+
+                    } else if (customId == BattleInput.BagHeal) {
+
+                    } else if (customId == BattleInput.BagPrism) {
+                        
+                    } else if (customId == BattleInput.Run) {
+                        user.action_selected = functions.new_battle_action_run(user.user_index);
+
+                        i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+
+                        // Continue on if everyone has selected (which should happen at the end)
+                        if (battle_data.users.every(u => u.action_selected !== false)) {
+                            db.battle_data.set(battle_id, battleData);
+                            inputCollector.stop();
+                            functions.handle_battle_action(battle_id);
+                        }
+                    } else if (customId == BattleInput.Info) {
+                        // TODO: Add this, and make support for multiple Oochamon somehow
+                            // let plrOochPrisms = '';
+                            // for (let ooch of d) {
+                            //     plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                            // }
+            
+                            // let enemyOochPrisms = '';
+                            // for (let ooch of ooch_enemy_profile.ooch_party) {
+                            //     enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                            // }
+            
+                            // let oochInfoFields = [];
+                            // const formatStatBar = (stat) => {
+                            //     return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
+                            // };
+            
+                            // // Setup field info for the embed about both oochamon
+                            // for (let ooch of [ooch_plr, ooch_enemy]) {
+                            //     let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
+                                
+                            //     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
+                            //                 `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
+                            //                 `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
+                            //                 `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
+                            //                 `**Stat Changes:**\n` +
+                            //                 `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
+                            //                 `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
+                            //                 `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
+                            //                 `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
+                            //                 `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
+            
+                            //     if (ooch != ooch_enemy) {
+                            //         let moveset_str = ``;
+                            //         for (let move_id of ooch.moveset) {
+                            //             let move = db.move_data.get(move_id);
+                            //             move.accuracy = Math.abs(move.accuracy);
+                            //             if (move.damage !== 0) {
+                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
+                            //             } else {
+                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
+                            //             }
+                            //         }
+                            //         infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
+                            //     }
+            
+                            //     oochInfoFields.push({
+                            //         name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
+                            //         value: infoStr,
+                            //         inline: true,
+                            //     });
+                            // }
+            
+            
+                            // let battleInfoEmbed = new EmbedBuilder()
+                            //     .setTitle('Battle Information 📒')
+                            //     .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
+                            //     .addFields(oochInfoFields)
+                            // let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
+                    }
+                });
+            }
+        }); 
     },
 
     /**
      * Processes the battle_action_queue of a given battle_id
      * @param {String} battle_id the id of the battle
      */
-    process_battle_actions : async function(battle_id){
+    process_battle_actions : async function(battle_id, use_header){
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
         let action, header, text, faint_check, finish_battle;
 
         while(actions.length > 0){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
-            functions.sort_action_priority(actions);
+            functions.sort_action_priority(battle_data);
 
             action = actions.shift();
-            header = `**------------ ${action.user.name}'s Turn ------------**\n`;
+            console.log(action);
+            let user = battle_data.users[action.user_index]
+            header = `**------------ ${user.name}'s Turn ------------**\n`;
             text = ``;
 
             //Perform the action for the turn
             let turn_data = await functions.action_process(battle_data, action);
+            console.log(turn_data);
             text += turn_data.return_string;
             finish_battle = finish_battle || turn_data.finish_battle;
             
             //Check if anything fainted
-            if(finish_battle == false){
+            if(finish_battle == false) {
                 faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
                 text += faint_check.text;
                 finish_battle = finish_battle || faint_check.finish_battle;
             }
 
             //Send the text to each of the user's threads
-            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
-            
+            if(use_header){
+                await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
+            }
+            else{
+                let embed = new EmbedBuilder()
+                .setColor('#808080')
+                .setDescription(text);
+                await functions.distribute_messages(battle_data.users, { embeds: [embed]});
+            }
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
-            if(finish_battle){
+
+            if(finish_battle == true){
                 if(turn_data.has('finish_data') && turn_data.finish_data != false){
                     let finish_data = turn_data.finish_data;
                     switch(finish_data.type){
@@ -542,7 +850,7 @@ let functions = {
             ooch = user.party[user.active_slot];
 
             //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
-            eot_result = functions.use_eot_ability(user_id, battle_data); 
+            eot_result = functions.use_eot_ability(battle_data, user.user_index); 
             ooch = eot_result.ooch;
             end_of_round_text += eot_result.text;
 
@@ -604,15 +912,14 @@ let functions = {
 
         await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(end_of_round_header, end_of_round_text)]});
 
-
         //End of round switch-ins
         let faint_switch_header = '**------------ Switching In ------------**';
-        let faint_switch_text = ''
+        let faint_switch_text = '';
         functions.end_of_round_prompt_switch(battle_data);
 
         //Send out any new mons or any other actions that have been moved to the end of turn queue
         while(actions.length > 0 && finish_battle == false){
-            functions.sort_action_priority(actions);
+            functions.sort_action_priority(battle_data);
             action = actions.shift();
             turn_data = await functions.action_process(battle_data, action);
 
@@ -637,6 +944,13 @@ let functions = {
         //Round Ends here
     },
 
+    /**
+     * Creates a simple embed for the battle
+     * @param {String} header the text to display at the top of the embed
+     * @param {String} text the text to display in the body of the embed
+     * @param {Color} color the color along the edge of the embed
+     * @returns a simple embed
+     */
     battle_embed_create : function(header, text, color = '#808080'){
         let embed = new EmbedBuilder()
             .setColor(color)
@@ -645,11 +959,16 @@ let functions = {
         return embed;
     },
 
+    /**
+     * Processes an action inside of a battle
+     * @param {Object} battle_data the current battle_data
+     * @param {Object} action the action to process
+     */
     action_process : async function(battle_data, action){
         let turn_data;
         switch(action.action_type){
             case BattleAction.Attack:
-                //TODO
+                turn_data = await functions.action_process_attack(battle_data, action);
             break;
             case BattleAction.Switch:
                 turn_data = await functions.action_process_switch(battle_data, action);
@@ -670,12 +989,36 @@ let functions = {
         return turn_data;
     },
 
-    action_process_switch : async function(battle_data, action){
-        let user = battle_data.users[action.user_id];
+    /**
+     * Uses an attack
+     * @param {*} battle_data the current battle data
+     * @param {*} action the action data to process
+     * @returns Turn data {finish_battle : Boolean, return_string : String}
+     */
+    action_process_attack : async function(battle_data, action){
+        let user = battle_data.users[action.user_index];
         let finish_battle = false;
 
-        let ooch_to = user.party[user.active_slot];
-        let ooch_from = user.party[action.slot_target];
+        let return_string = await functions.attack(battle_data, user.user_index, action.target_user_index, action.move_id);
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string
+        }
+    },
+
+    /**
+     * Processes a "Switch" action type
+     * @param {Object} battle_data the current battle_data
+     * @param {Object} action the action to process
+     */
+    action_process_switch : async function(battle_data, action){
+        let user = battle_data.users[action.user_index];
+        let finish_battle = false;
+
+        let ooch_to = user.party[action.slot_target];
+        let ooch_from = user.party[user.active_slot];
+
         user.active_slot = action.slot_target;
         
         let return_string = (action.is_switching 
@@ -693,10 +1036,24 @@ let functions = {
         ooch_from.type = ooch_from.og_type;
         ooch_from.doom_timer = 4;
 
+        return_string += functions.use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string
+        }
+    },
+
+    use_switch_ability(battle_data, user_index, slot_from, slot_to, is_switching){
+        let user = battle_data.users[user_index]
+        let ooch_to = user.party[slot_to];
+        let ooch_from = user.party[slot_from];
+        let string_to_send = '';
+
         //Check abilities vs other users
         for(let u of battle_data.users){
             if(u.team_id != user.team_id && u.party[u.active_slot].alive){
-                let ooch_enemy = u.party[u.ooch_active_slot];
+                let ooch_enemy = u.party[u.active_slot];
 
                 //Enemy users' mons that affect the new mon
                 switch (ooch_enemy.ability) {
@@ -735,10 +1092,7 @@ let functions = {
             }
         }
 
-        return {
-            finish_battle : finish_battle,
-            return_string : return_string
-        }
+        return(string_to_send);
     },
 
     /**
@@ -748,16 +1102,16 @@ let functions = {
      * @returns Turn data {finish_battle : Boolean, finish_data : Varying, return_string : String}
      */
     action_process_prism : async function(battle_data, action){
-        let user = battle_data.users[action.user_id];
+        let user = battle_data.users[action.user_index];
         let finish_battle = false;
         let finish_data = false;
 
-        let target_user = battle_data[action.target_user_id]
+        let target_user = battle_data[action.target_user_index]
         let item = await db.item_data.get(action.item_id);
         let ooch_target = target_user.party[target_user.active_slot];
         let return_string = `${user.name} threw a ${item.emote} ${item.name}.`;
 
-        let prism_result = functions.item_use(user.user_id, ooch, action.item_id); //True if successful catch, False if not
+        let prism_result = functions.item_use(user.user_index, ooch, action.item_id); //True if successful catch, False if not
         if(prism_result == true){
             return_string += `\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
             
@@ -768,7 +1122,7 @@ let functions = {
                 }
 
                 let ooch_party = user.party;
-                let is_first_catch = (db.profile.get(user_id, `oochadex[${ooch_target.id}].caught`) == 0);
+                let is_first_catch = (db.profile.get(user_index, `oochadex[${ooch_target.id}].caught`) == 0);
                 
                 // Distribute XP for a caught Oochamon
                 // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
@@ -839,7 +1193,7 @@ let functions = {
      * @returns Turn data {finish_battle : Boolean, return_string : String}
      */
     action_process_heal : async function(battle_data, action){
-        let user = battle_data.users[action.user_id];
+        let user = battle_data.users[action.user_index];
         let finish_battle = false;
 
         let item = await db.item_data.get(action.item_id);
@@ -848,10 +1202,10 @@ let functions = {
 
         switch(item.type){
             case 'potion':
-                return_string += await functions.item_use(user.user_id, ooch, action.item_id);
+                return_string += await functions.item_use(user.user_index, ooch, action.item_id);
             break;
             case 'status':
-                return_string += await functions.item_use(user.user_id, ooch, action.item_id);
+                return_string += await functions.item_use(user.user_index, ooch, action.item_id);
             break;
         }
 
@@ -868,14 +1222,14 @@ let functions = {
      * @returns Turn data {finish_battle : Boolean, return_string : String}
      */
     action_process_run : async function(battle_data, action){
-        let user = battle_data.users[action.user_id];
+        let user = battle_data.users[action.user_index];
         let ooch_user = user.party[user.active_slot];
         let ooch_max_check = 0;
         let return_string = '';
         let finish_battle = false;
 
         for(let other_user of battle_data.users){
-            if(other_user.user_id != user.user_id){
+            if(other_user.user_index != user.user_index){
                 let ooch_other = other_user.party[other_user.active_slot];
                 ooch_max_check = max(ooch_other.stats.spd + ooch_other.level * 10, ooch_max_check)
             } 
@@ -895,282 +1249,6 @@ let functions = {
         }
     },
 
-    /* TODOs: 
-        - Ensure the turn msg counters are correct after this is correct globally
-        - Make sure messages are updated properly
-    */
-
-    /** Gather input for battle actions
-     * @param battle_id The ID of the battle being prompted for
-     */
-    prompt_battle_actions: async function(battle_id) {
-        let battle_data = db.battle_data.get(battle_id);
-
-        // Store current battle state to roll back to if needed
-        // db.battle_data.delete(battle_id, 'rollback_profile');
-        // db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
-        // db.battle_data.set(battle_id, 0, 'turn_msg_counter');
-
-        //#region Setup buttons and select menus
-        const inputRow = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('fight')
-                    .setLabel('Fight')
-                    .setEmoji('⚔️')
-                    .setStyle(ButtonStyle.Primary),
-            ) .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('switch')
-                    .setLabel('Switch')
-                    .setEmoji('<:item_prism:1274937161262698536>')
-                    .setStyle(ButtonStyle.Success),
-            );
-    
-        const inputRow2 = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('bag')
-                    .setLabel('Item')
-                    .setEmoji('🎒')
-                    .setStyle(ButtonStyle.Danger),
-            ) .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('run')
-                    .setLabel('Run')
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji('🏃‍♂️')
-                    .setDisabled(!battle_data.allow_run),
-            );
-    
-        const inputRow3 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('info')
-                        .setLabel('View Battle Info')
-                        .setEmoji('📒')
-                        .setStyle(ButtonStyle.Secondary),
-                )
-                
-        const moveButtons = new ActionRowBuilder();
-        const switchButtons1 = new ActionRowBuilder();
-        const switchButtons2 = new ActionRowBuilder();
-        const bagButtons = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('heal_button')
-                    .setLabel('Healing')
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji('<:item_potion_magic:1274937146423115922>'),
-            ).addComponents(
-                new ButtonBuilder()
-                    .setCustomId('prism_button')
-                    .setLabel('Prism')
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji('<:item_prism:1274937161262698536>')
-                    .setDisabled(!battle_data.is_catchable),
-            ).addComponents(
-                new ButtonBuilder()
-                    .setCustomId('back')
-                    .setLabel('Back')
-                    .setStyle(ButtonStyle.Danger),
-            )
-    
-        const backButton = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('back')
-                    .setLabel('Back')
-                    .setStyle(ButtonStyle.Danger),
-            )
-        //#endregion
-
-        // Handle users
-        await battle_data.users.forEach(async (user) => {
-            if (user.user_type != UserType.Player) {
-                user.action_selected = functions.get_ai_action(user, battle_data);
-
-                // Continue on if everyone has selected (which should happen at the end)
-                if (battle_data.users.every(u => u.action_selected !== false)) {
-                    db.battle_data.set(battle_id, battleData);
-                    await functions.process_battle_actions(battle_id);
-                }
-            } else {
-                console.log(user.thread);
-                await user.thread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
-
-                const inputCollector = user.thread.createMessageComponentCollector();
-                
-                await inputCollector.on('collect', async i => {
-                    let customId = i.customId;
-                    let activeOoch = user.party[user.active_slot];
-                    
-                    switch(customId) {
-
-                        case BattleInput.Back:
-                            await i.update({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
-                        break;
-                        
-                        case BattleInput.Attack:
-                            let move_id, move_name, move_type, move_damage, move_effective_emote = '',
-                                buttonStyle = ButtonStyle.Primary;
-
-                            // Get the Oochamon's Attack options
-                            for (let i = 0; i < activeOoch.moveset.length; i++) {
-                                move_id = activeOoch.moveset[i];
-                                move_name = db.move_data.get(`${move_id}`, 'name')
-                                move_type = db.move_data.get(`${move_id}`, 'type')
-                                move_damage = db.move_data.get(`${move_id}`, 'damage')
-                                
-                                // TODO: Figure out how to display this properly
-                                /*
-                                move_effective_emote = type_effectiveness(move_type, ooch_enemy.type);
-                                let buttonStyle = ButtonStyle.Primary
-                                if (move_effective_emote[0] > 1) {
-                                    move_effective_emote = ' △';
-                                    buttonStyle = ButtonStyle.Success
-                                } else if (move_effective_emote[0] < 1) {
-                                    move_effective_emote = ' ▽';
-                                    buttonStyle = ButtonStyle.Danger
-                                } else {
-                                    move_effective_emote = '';
-                                }
-            
-                                if (move_damage == 0) {
-                                    move_effective_emote = '';
-                                    buttonStyle = ButtonStyle.Secondary
-                                }*/
-            
-                                moveButtons.addComponents(
-                                    new ButtonBuilder()
-                                        .setCustomId(`atk_${move_id}`)
-                                        .setLabel(`${move_name} ${move_effective_emote}`)
-                                        .setStyle(buttonStyle)
-                                        .setEmoji(`${type_to_emote(move_type)}`)
-                                )
-                            }
-            
-                            // Switch message to be about using the move input
-                            await i.update({ content: `Select a move to use!`, components: [moveButtons, backButton]});
-
-                        break;
-                        // Selecting a move
-                        case customId.includes('atk_'):
-                            if (battle_data.users.length == 2) {
-                                let enemy_user = battle_data.users.filter(u => u.team_id != user_obj.team_id)[0];
-                                let move_id = customId.replace('atk_', '');
-                                user.action_selected = functions.new_battle_action_attack(user.user_id, enemy_user.user_id, move_id);
-                            } else {
-                                // TODO: Handle more than 1 user, this needs a new submenu
-                            }
-
-                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-
-                            // Continue on if everyone has selected (which should happen at the end)
-                            if (battle_data.users.every(u => u.action_selected !== false)) {
-                                db.battle_data.set(battle_id, battleData);
-                                inputCollector.stop();
-                                await functions.process_battle_actions(battle_id);
-                            }
-                        break;
-
-                        case BattleInput.Switch:
-
-                        break;
-
-                        case BattleInput.Bag:
-                            
-                        break;
-                        case BattleInput.BagHeal:
-
-                        break;
-
-                        case BattleInput.BagPrism:
-
-                        break;
-
-                        case BattleInput.Run:
-                            user.action_selected = functions.new_battle_action_run(user.user_id);
-
-                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-
-                            // Continue on if everyone has selected (which should happen at the end)
-                            if (battle_data.users.every(u => u.action_selected !== false)) {
-                                db.battle_data.set(battle_id, battleData);
-                                inputCollector.stop();
-                                functions.handle_battle_action(battle_id);
-                            }
-
-                        break;
-
-                        // TODO: Add this, and make support for multiple Oochamon somehow
-                        case BattleInput.Info:
-                            // let plrOochPrisms = '';
-                            // for (let ooch of d) {
-                            //     plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            // }
-            
-                            // let enemyOochPrisms = '';
-                            // for (let ooch of ooch_enemy_profile.ooch_party) {
-                            //     enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            // }
-            
-                            // let oochInfoFields = [];
-                            // const formatStatBar = (stat) => {
-                            //     return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
-                            // };
-            
-                            // // Setup field info for the embed about both oochamon
-                            // for (let ooch of [ooch_plr, ooch_enemy]) {
-                            //     let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
-                                
-                            //     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                            //                 `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
-                            //                 `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
-                            //                 `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                            //                 `**Stat Changes:**\n` +
-                            //                 `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                            //                 `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                            //                 `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                            //                 `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                            //                 `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
-            
-                            //     if (ooch != ooch_enemy) {
-                            //         let moveset_str = ``;
-                            //         for (let move_id of ooch.moveset) {
-                            //             let move = db.move_data.get(move_id);
-                            //             move.accuracy = Math.abs(move.accuracy);
-                            //             if (move.damage !== 0) {
-                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                            //             } else {
-                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                            //             }
-                            //         }
-                            //         infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
-                            //     }
-            
-                            //     oochInfoFields.push({
-                            //         name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                            //         value: infoStr,
-                            //         inline: true,
-                            //     });
-                            // }
-            
-            
-                            // let battleInfoEmbed = new EmbedBuilder()
-                            //     .setTitle('Battle Information 📒')
-                            //     .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
-                            //     .addFields(oochInfoFields)
-                            // let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
-                        break;
-                    }
-
-                    
-                });
-            }
-        }); 
-    },
-
     /**
      * Checks if any oochamon have been fainted
      * @param {Object} battle_data The current battle_data
@@ -1180,7 +1258,6 @@ let functions = {
         let active_teams = [];
         let finish_battle = false;
         
-
         // Get the players active oochamon, check if they are alive
         for(let user of battle_data.users){
             let exp_given = 0;
@@ -1188,7 +1265,13 @@ let functions = {
             let user_defeated = true;
             let user_next_slot = 999;
             let bonus_multiplier = user.type != UserType.Wild ? 2 : 1;
-            if(active_ooch.current_hp <= 0 && active_ooch.alive == true){
+            
+            if(active_ooch.current_hp > 0){
+                if(!active_teams.includes(user.team_id)){
+                    active_teams.push(user.team_id);
+                }
+            }
+            else if(active_ooch.current_hp <= 0 && active_ooch.alive == true){
                 
                 if(battle_data.give_rewards){
                     exp_given += Math.round(functions.battle_calc_exp(ooch, bonus_multiplier));
@@ -1210,17 +1293,18 @@ let functions = {
                     user.defeated = true;
                 }
                 else{
-                    battle_data.end_of_turn_switch_queue.push(user.user_id);
+                    battle_data.end_of_turn_switch_queue.push(user.user_index);
                     if(!active_teams.includes(user.team_id)){
                         active_teams.push(user.team_id);
                     }
                 }
             }
+            
 
             //Distribute EXP to other users' mons & level them up if possible
             if(exp_given > 0){
                 for(let other_user of battle_data.users){
-                    if(other_user.type == UserType.Player && other_user.user_id != user.user_id){
+                    if(other_user.type == UserType.Player && other_user.user_index != user.user_index){
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given *1.25);
@@ -1287,736 +1371,22 @@ let functions = {
         let users = battle_data.users;
         let next_slot = 9999;
         for(let user of users){
-            switch(user.user_type){
-                case UserType.Player:
-                    //TODO: Prompt buttons here
+            if(!user.party[user.active_slot].alive && !user.defeated){
+                switch(user.user_type){
+                    case UserType.Player:
+                        //TODO: Prompt buttons here
 
-                    //Submit their next slot for combat
-                    functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
-                break;
-                default:
-                    for(let [i, ooch] of user.party.entries()){
-                        if(ooch.alive){ next_slot = i; break;}
-                    }
-                    functions.new_battle_action_switch(battle_data, user.user_id, next_slot, false);
-                break;
-            }
-        }
-    },
-
-    old_function : async function(){ //This function is old but i dont want to mess with it 
-        
-        let active_slot = ooch_plr_profile.ooch_active_slot;
-        let ooch_plr = ooch_plr_profile.ooch_party[active_slot];
-        let ooch_pos = active_slot;
-        let moveset = ooch_plr.moveset;
-        let move_id, move_name, move_damage, move_accuracy, turn_order; // Battle variables
-        let displayEmbed = new EmbedBuilder();
-        let battleSpeed = ooch_plr_profile.settings.battle_speed;
-            
-        // If our current oochamon sent out is dead, we need to get input to switch our oochamon.
-        if (ooch_plr.current_hp <= 0) {
-            let ooch_check, ooch_emote, ooch_hp, ooch_button_color, ooch_disable;
-            let ooch_party = db.profile.get(user_id, 'ooch_party');
-    
-            // On death ability that affects the entire party:
-            if (ooch_plr.ability === Ability.EasyGo) {
-                for (let i = 0; i < ooch_party.length; i++) {
-                    let plr = ooch_party[i];
-                    if (plr.id != ooch_plr.id && plr.current_hp != 0) {
-                        plr.current_hp = _.clamp(Math.round(plr.current_hp + (plr.stats.hp / 10)), 0, plr.stats.hp)
-                        ooch_party[i] = plr;
-                    }
-                }
-                db.profile.set(user_id, ooch_party, 'ooch_party');
-            }
-    
-            const switch_buttons_1_die = new ActionRowBuilder();
-            const switch_buttons_2_die = new ActionRowBuilder();
-    
-            //Go through the party and create buttons of mons to switch to
-            for (let i = 0; i < ooch_party.length; i++) {
-                ooch_check = ooch_party[i];
-                ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-                ooch_button_color = ButtonStyle.Primary;
-                ooch_disable = false;
-    
-                //Check if the slot we're checking is the currently active mon (dead) or another dead party member, and if so, disable the button
-                if (i == db.profile.get(user_id, 'ooch_active_slot')) {
-                    ooch_button_color = ButtonStyle.Success;
-                    ooch_disable = true;
-                } else if (ooch_check.current_hp <= 0) {
-                    ooch_button_color = ButtonStyle.Primary;
-                    ooch_disable = true;
-                }
-    
-                ((i <= 1) ? switch_buttons_1_die : switch_buttons_2_die).addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`${i}`)
-                        .setLabel(`${ooch_check.nickname} (${ooch_hp})`)
-                        .setStyle(ooch_button_color)
-                        .setEmoji(ooch_emote)
-                        .setDisabled(ooch_disable),
-                )
-            }
-    
-            await thread.send({ content: `Select the new Oochamon you want to switch in!`, components: (switch_buttons_2_die.components.length != 0) ? [switch_buttons_1_die, switch_buttons_2_die] : [switch_buttons_1_die] })
-            db.profile.inc(user_id, 'turn_msg_counter');
-            db.profile.inc(user_id, 'battle_msg_counter');
-    
-            const s_collector_d = thread.createMessageComponentCollector({ max: 1 });
-    
-            await s_collector_d.on('collect', async ooch_sel => {
-                let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-                let string_to_send = `You sent out ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}** to battle!`;
-    
-                // Reset stat multipliers for dead Oochamon
-                ooch_plr.stats.atk_mul = 0;
-                ooch_plr.stats.def_mul = 0;
-                ooch_plr.stats.spd_mul = 0;
-                ooch_plr.stats.acc_mul = 0;
-                ooch_plr.stats.eva_mul = 0;
-                ooch_plr.ability = ooch_plr.og_ability;
-                ooch_plr.type = ooch_plr.og_type;
-                ooch_plr.status_effects = [];
-                ooch_plr.doom_timer = 4;
-                db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
-    
-                // Check for on switch in abilities, player switching in, enemy ability activated
-                switch (ooch_enemy.ability) {
-                    case Ability.Alert:
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 1);
-                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
+                        //Submit their next slot for combat
+                        functions.new_battle_action_switch(battle_data, user.user_index, next_slot, false);
                     break;
-                    case Ability.Duplicant:
-                        if (ooch_pick.ability !== Ability.InvalidEntry) {
-                            ooch_enemy.ability = ooch_pick.ability;
-                            string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s copied its ability to **${_.startCase(db.ability_data.get(ooch_pick.ability, 'name'))}** through it's **Duplicant** ability!`;
+                    default:
+                        for(let [i, ooch] of user.party.entries()){
+                            if(ooch.alive){ next_slot = i; break;}
                         }
-                    break;
-                    case Ability.Nullify:
-                        ooch_pick.ability = Ability.Null;
-                        string_to_send += `\n${ooch_pick.emote} **${ooch_pick.nickname}**'s ability changed to **Null** from the ability **Nullify** from ${ooch_enemy.emote} **${ooch_enemy.nickname}**!`
+                        functions.new_battle_action_switch(battle_data, user.user_index, next_slot, false);
                     break;
                 }
-    
-                // Check for on switch in abilities, player switching in, player ability activated
-                switch (ooch_pick.ability) {
-                    case Ability.Boisterous:
-                        ooch_enemy.current_hp = _.clamp(Math.floor(ooch_enemy.current_hp - ooch_enemy.stats.hp * 0.1), 1, ooch_enemy.stats.hp);
-                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost 10% of it's hp from the switch in ability **Boisterous** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
-                    break;
-                    case Ability.Gentle:
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
-                    break;
-                    case Ability.Withering:
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
-                        string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Withering** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
-                    break;
-                }
-    
-                let ooch_pos = parseInt(ooch_sel.customId);
-                ooch_plr = ooch_pick;
-                db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
-                active_slot = ooch_pos;
-    
-                // Update on switch in stats
-                ooch_plr = ability_stat_change(ooch_plr, ooch_plr_profile.ooch_party);
-                string_to_send += `\n${ooch_plr[1]}`;
-                ooch_plr = ooch_plr[0];
-                
-                await ooch_sel.update({ content: string_to_send, components: [] })
-                await prompt_battle_input(thread, user_id);
-            });
-            
-        } else { // If our currently sent out Oochamon is alive, do input as normal.
-    
-        let sel_msg = await thread.send({ content: `### -- Select An Action --`, components: [row, row2, row3] });
-        db.profile.inc(user_id, 'turn_msg_counter');
-        db.profile.inc(user_id, 'battle_msg_counter');
-        const collector = thread.createMessageComponentCollector({ max: 1 });
-    
-        await collector.on('collect', async sel => {
-            await sel_msg.delete().catch(() => {});
-            db.profile.dec(user_id, 'turn_msg_counter');
-            db.profile.dec(user_id, 'battle_msg_counter');
-            switch (sel.customId) {
-                case 'fight':
-                    function calculate_speed(ooch_obj) {
-                        let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
-                        if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
-                        if (ooch_obj.ability == Ability.Immobile) speed /= 100; 
-                    
-                        return speed;
-                    }
-
-                    //Get the speed values for the oochamons in the fighterino
-                    let enemy_speed = calculate_speed(ooch_enemy);
-                    let plr_speed = calculate_speed(ooch_plr);
-
-                    //Turn Order
-                    if (enemy_speed > plr_speed) { // Enemy goes first
-                        turn_order = ['e', 'p'];
-                    } else if (plr_speed > enemy_speed){ // Player goes first
-                        turn_order = ['p', 'e'];
-                    } else if (ooch_enemy.stats.spd > ooch_plr.stats.spd){ // (Speed tie use base stats) Enemy goes first
-                        turn_order = ['e', 'p'];
-                    } else if (ooch_plr.stats.spd > ooch_enemy.stats.spd){ // (Speed tie use base stats) Player goes first
-                        turn_order = ['p', 'e'];
-                    } else{ //Do a coinflip in the case of a speed tie
-                        turn_order = Math.random() < .5 ? turn_order = ['e', 'p'] : turn_order = ['p', 'e'];
-                    }
-
-                    await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
-                    db.profile.inc(user_id, 'turn_msg_counter');
-                    db.profile.inc(user_id, 'battle_msg_counter');
-
-                    for (let i = 0; i < turn_order.length; i++) {
-
-                        let atk_id = atk.customId;
-                        if (ooch_plr.ability === Ability.Uncontrolled) atk_id = _.sample(moveset);
-
-                        if (turn_order[i] == 'p') {
-                            // Player attacks enemy
-                            [ooch_plr, ooch_enemy] = await attack(thread, user_id, atk_id, ooch_plr, ooch_enemy, '**------------ Player Turn ------------**');
-                        } else {
-                            // Enemy attacks player
-                            atk_id = _.sample(ooch_enemy.moveset);
-                            if (ooch_enemy.ability === Ability.Uncontrolled) atk_id = _.sample(ooch_enemy.moveset);
-                            [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-                        }
-
-                        // Update ooch_enemy and ooch_plr in the database.
-                        db.profile.set(user_id, ooch_plr, `ooch_party[${ooch_plr_profile.ooch_active_slot}]`);
-                        db.profile.set(user_id, ooch_enemy, `ooch_enemy.ooch_party[${ooch_enemy_profile.ooch_active_slot}]`);
-
-                        // Victory/Defeat Check
-                        let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr);
-                        if (victory_check == true) return;
-                        
-                        // The next user doesn't get a turn if we defeat their Oochamon
-                        if (i == 0 && ((turn_order[i] == 'p' && ooch_enemy.current_hp <= 0) || (turn_order[i] == 'e' && ooch_plr.current_hp <= 0))) {
-                            break;
-                        }
-
-                    }
-
-                    //Apply Status Effects and other end of turn stuff
-                    await end_of_round(thread, user_id, ooch_plr, ooch_enemy);
-                    
-                    //Double check for Victory/Defeat after status effects have happened
-                    let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr);
-                    if (victory_check == true) return;
-
-                    // Prompt for more input
-                    await prompt_battle_input(thread, user_id);
-                break;
-                case 'switch':
-                    let ooch_inv = db.profile.get(user_id, 'ooch_party')
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
-    
-                    // Check if we have only 1 oochamon.
-                    if (ooch_inv.length == 1) {
-                        thread.send('You only have 1 oochamon in your party, so you cannot switch.' +
-                        '\nSelect a different action!');
-                        db.profile.inc(user_id, 'turn_msg_counter');
-                        db.profile.inc(user_id, 'battle_msg_counter');
-                        
-                        // Prompt for more input
-                        await prompt_battle_input(thread, user_id);
-                        return;
-                    }
-    
-                    for (let i = 0; i < ooch_inv.length; i++) {
-                        ooch_check = ooch_inv[i];
-                        ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
-                        ooch_name = ooch_check.nickname;
-                        ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-                        ooch_button_color = ButtonStyle.Primary;
-                        ooch_disable = false;
-    
-                        if (i == db.profile.get(user_id, 'ooch_active_slot')) {
-                            ooch_button_color = ButtonStyle.Success;
-                            ooch_prev = ooch_check;
-                            ooch_disable = true;
-                        }
-                        else if (ooch_check.current_hp <= 0) {
-                            ooch_disable = true;
-                        }
-    
-                        ((i <= 1) ? switch_buttons_1 : switch_buttons_2).addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`${i}`)
-                                .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
-                                .setStyle(ooch_button_color)
-                                .setEmoji(ooch_emote)
-                                .setDisabled(ooch_disable),
-                        )
-                    }
-    
-                    let switch_msg = await thread.send({ content: `**------------ Player Turn ------------**` + 
-                    `\nSelect the new Oochamon you want to switch in!`, components: (switch_buttons_2.components.length != 0) ? [switch_buttons_1, switch_buttons_2, back_button] : [switch_buttons_1, back_button] })
-                    db.profile.inc(user_id, 'turn_msg_counter');
-                    db.profile.inc(user_id, 'battle_msg_counter');
-    
-                    const s_collector = thread.createMessageComponentCollector({ max: 1 });
-    
-                    await s_collector.on('collect', async ooch_sel => {
-    
-                        if (ooch_sel.customId == 'back') {
-                            s_collector.stop();
-                            await switch_msg.delete();
-                            db.profile.dec(user_id, 'turn_msg_counter');
-                            db.profile.dec(user_id, 'battle_msg_counter');
-                            await prompt_battle_input(thread, user_id);
-                            return;
-                        }
-                            
-                        await thread.send(`# Turn ${db.profile.get(user_id, 'battle_turn_counter')}`);
-                        db.profile.inc(user_id, 'turn_msg_counter');
-                        db.profile.inc(user_id, 'battle_msg_counter');
-    
-                        let ooch_pick = db.profile.get(user_id, `ooch_party[${parseInt(ooch_sel.customId)}]`)
-                        let string_to_send = `You switched your active Oochamon from ${db.monster_data.get(ooch_prev.id, 'emote')} **${ooch_prev.nickname}** to ${db.monster_data.get(ooch_pick.id, 'emote')} **${ooch_pick.nickname}**.`;
-                        displayEmbed = new EmbedBuilder()
-                        displayEmbed.setColor('#0095ff')
-                        displayEmbed.setTitle('↩️ Switch ↩️')
-    
-                        // Reset stat multipliers for oochamon being swapped
-                        ooch_prev.stats.atk_mul = 0;
-                        ooch_prev.stats.def_mul = 0;
-                        ooch_prev.stats.spd_mul = 0;
-                        ooch_prev.stats.acc_mul = 0;
-                        ooch_prev.stats.eva_mul = 0;
-                        ooch_prev.ability = ooch_prev.og_ability;
-                        ooch_prev.type = ooch_prev.og_type;
-                        ooch_prev.doom_timer = 4;
-                        db.profile.set(user_id, ooch_prev, `ooch_party[${active_slot}]`);
-    
-                        // Check for on switch in abilities, player switching in, enemy ability activated
-                        switch (ooch_enemy.ability) {
-                            case Ability.Alert:
-                                ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 1);
-                                string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
-                            break;
-                            case Ability.Duplicant:
-                                if (ooch_pick.ability !== Ability.InvalidEntry) {
-                                    ooch_enemy.ability = ooch_pick.ability;
-                                    string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s copied its ability to **${_.startCase(db.ability_data.get(ooch_pick.ability, 'name'))}** through it's **Duplicant** ability!`;
-                                }
-                            break;
-                            case Ability.Nullify:
-                                ooch_pick.ability = Ability.Null;
-                                string_to_send += `\n${ooch_pick.emote} **${ooch_pick.nickname}**'s ability changed to **Null** from the ability **Nullify** from ${ooch_enemy.emote} **${ooch_enemy.nickname}**!`
-                            break;
-                        }
-    
-                        // Check for on switch in abilities, player switching in, player ability activated
-                        switch (ooch_pick.ability) {
-                            case Ability.Boisterous:
-                                ooch_enemy.current_hp = _.clamp(Math.floor(ooch_enemy.current_hp - ooch_enemy.stats.hp * 0.1), 1, ooch_enemy.stats.hp);
-                                string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost 10% of it's hp from the switch in ability **Boisterous**!`;
-                            break;
-                            case Ability.Gentle:
-                                ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
-                            break;
-                            case Ability.Withering:
-                                ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
-                                string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its defense lowered from the switch in ability **Withering** from ${ooch_pick.emote} **${ooch_pick.nickname}**!`;
-                            break;
-                        }
-                    
-                        ooch_pos = parseInt(ooch_sel.customId);
-                        ooch_plr = ooch_pick;
-                        db.profile.set(user_id, ooch_pos, 'ooch_active_slot');
-                        // Update on switch in stats
-                        ooch_plr = ability_stat_change(ooch_plr, ooch_plr_profile.ooch_party);
-                        string_to_send += `\n${ooch_plr[1]}`;
-                        ooch_plr = ooch_plr[0];
-    
-                        displayEmbed.setDescription(string_to_send)
-                        await ooch_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: [] })
-    
-                        db.profile.set(user_id, ooch_plr, `ooch_party[${ooch_pos}]`);
-    
-                        // Enemy attacks player
-                        let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
-                        [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-    
-                        //Apply Status Effects and other end of turn stuff
-                        await end_of_round(thread, user_id, ooch_plr, ooch_enemy);                        
-    
-                        // Victory/Defeat Check
-                        let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr, true);
-                        if (victory_check == true) return;
-    
-                        // Prompt for more input
-                        await prompt_battle_input(thread, user_id);
-    
-                    });
-                break;
-                case 'bag':
-                    //#region
-                    let heal_inv = db.profile.get(user_id, 'heal_inv');
-                    let heal_inv_keys = Object.keys(heal_inv);
-                    let prism_inv = db.profile.get(user_id, 'prism_inv');
-                    let prism_inv_keys = Object.keys(prism_inv);
-                    let bag_select = new ActionRowBuilder();
-                    displayEmbed = new EmbedBuilder();
-                    
-                    if (heal_inv_keys.length == 0) bag_buttons.components[0].disabled = true;
-                    if (prism_inv_keys.length == 0) bag_buttons.components[1].disabled = true;
-                    if (heal_inv_keys.length == 0 && prism_inv_keys.length == 0) {
-                        thread.send(`You don't have any items, so you can't use any!` +
-                        `\nSelect a different action!`)
-    
-                        await prompt_battle_input(thread, user_id);
-                        return;
-                    }
-    
-                    let bag_msg = await thread.send({ content: `Select the item category you'd like to use an item in!`, components: [bag_buttons]});
-                    db.profile.inc(user_id, 'turn_msg_counter');
-                    db.profile.inc(user_id, 'battle_msg_counter');
-    
-                    const b_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
-                    let prism_collector;
-                    let heal_collector;
-    
-                    await b_collector.on('collect', async i_sel => {
-    
-                        if (i_sel.customId == 'back') {
-                            b_collector.stop();
-                            if (prism_collector != undefined) prism_collector.stop();
-                            if (heal_collector != undefined) heal_collector.stop();
-                            await bag_msg.delete();
-                            db.profile.dec(user_id, 'turn_msg_counter');
-                            db.profile.dec(user_id, 'battle_msg_counter');
-                            await prompt_battle_input(thread, user_id);
-                            return;
-                        }
-    
-                        if (prism_collector != undefined) prism_collector.stop();
-                        if (heal_collector != undefined) heal_collector.stop();
-    
-                        if (i_sel.customId == 'heal_button') {
-                            bag_select = new ActionRowBuilder();
-                            let heal_select_options = [];
-                            for (let i = 0; i < heal_inv_keys.length; i++) {
-                                let id = heal_inv_keys[i];
-                                let amount = db.profile.get(user_id, `heal_inv.${heal_inv_keys[i]}`)
-    
-                                if (amount > 0 && amount != undefined) {
-                                    heal_select_options.push({ 
-                                        label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                        description: db.item_data.get(id, 'description_short').slice(0, 100),
-                                        value: `${id}`,
-                                        emoji: db.item_data.get(id, 'emote'),
-                                    })
-                                }
-                            }
-    
-                            bag_select.addComponents(
-                                new StringSelectMenuBuilder()
-                                    .setCustomId('heal_select')
-                                    .setPlaceholder('Select an item in your heal inventory to use!')
-                                    .addOptions(heal_select_options),
-                            );
-    
-                            await i_sel.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bag_buttons] })
-    
-                            heal_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
-    
-                            await heal_collector.on('collect', async item_sel => {
-                                let item_id = item_sel.values[0];
-                                let item_data = db.item_data.get(item_id);
-    
-                                if (db.profile.get(user_id, `heal_inv.${item_id}`) == undefined) return;
-                                
-                                ooch_plr = item_use(user_id, ooch_plr, item_id)
-                                db.profile.set(user_id, ooch_plr, `ooch_party[${active_slot}]`);
-                                let item_usage_text = '';
-                                switch (item_data.type) {
-                                    case 'potion': item_usage_text = ` and healed **${item_data.potency}** HP!`; break;
-                                    case 'status': item_usage_text = ` and recovered from **${db.status_data.get(item_data.potency, 'name').toUpperCase()}**!`; break;
-                                }
-    
-                                if (ooch_plr.alive == false) item_usage_text = ', but it failed, because the Oochamon has fainted.'
-    
-                                displayEmbed.setColor('#02ff2c');
-                                displayEmbed.setTitle(`❤️ Healing ❤️`)
-                                displayEmbed.setDescription(`${item_data.emote} Used **${item_data.name}**${item_usage_text}`)
-                                item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
-                                
-                                db.profile.math(user_id, '-', 1, `heal_inv.${item_id}`);
-    
-                                b_collector.stop();
-                                if (prism_collector != undefined) prism_collector.stop();
-                                heal_collector.stop();
-    
-                                // Enemy attacks player
-                                let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
-                                [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-    
-                                //Apply Status Effects and other end of turn stuff
-                                await end_of_round(thread, user_id, ooch_plr, ooch_enemy);                        
-    
-                                // Victory/Defeat Check
-                                let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr, true);
-                                if (victory_check == true) return;
-    
-                                // Prompt for more input
-                                await prompt_battle_input(thread, user_id);
-                            });
-    
-                        } else if (i_sel.customId == 'prism_button') {
-    
-                            bag_select = new ActionRowBuilder();
-                            let prism_select_options = [];
-                            for (let i = 0; i < prism_inv_keys.length; i++) {
-                                let id = prism_inv_keys[i];
-                                let amount = db.profile.get(user_id, `prism_inv.${prism_inv_keys[i]}`)
-    
-                                if (amount > 0 && amount != undefined) {
-                                    prism_select_options.push({ 
-                                        label: `${db.item_data.get(id, 'name')} (${amount})`,
-                                        description: db.item_data.get(id, 'description').slice(0,100),
-                                        value: `${id}`,
-                                        emoji: db.item_data.get(id, 'emote'),
-                                    })
-                                }
-                            }
-    
-                            bag_select.addComponents(
-                                new StringSelectMenuBuilder()
-                                    .setCustomId('prism_select')
-                                    .setPlaceholder('Select a prism you\'d like to use!')
-                                    .addOptions(prism_select_options),
-                            );
-    
-                            await i_sel.update({ content: `Select a prism to use!`, components: [bag_select, bag_buttons] })
-    
-                            prism_collector = thread.createMessageComponentCollector({ componentType: ComponentType.StringSelect, max: 1 });
-    
-                            await prism_collector.on('collect', async item_sel => { 
-                                let item_id = item_sel.values[0];
-                                let item_data = db.item_data.get(item_id);
-                                if (db.profile.get(user_id, `prism_inv.${item_id}`) == undefined) return;
-    
-                                let string_to_send = `${item_data.emote} Used a **${item_data.name}** on the ${db.monster_data.get(ooch_enemy.id, 'emote')} **${ooch_enemy.nickname}**`;
-                                
-                                db.profile.math(user_id, '-', 1, `prism_inv.${item_id}`);
-    
-                                let prism_result = item_use(user_id, ooch_enemy, item_id)
-                                b_collector.stop();
-                                prism_collector.stop();
-                                if (heal_collector != undefined) heal_collector.stop();
-                                
-                                // Setup embed
-                                displayEmbed.setColor('#f2d751');
-                                displayEmbed.setTitle(`<:item_prism:1274937161262698536> Prism Throw <:item_prism:1274937161262698536>`)
-    
-                                // If we caught the Oochamon successfully
-                                if (prism_result == true) { 
-                                    string_to_send += `\n\n**You successfully caught the wild ${ooch_enemy.nickname}!**`;
-    
-                                    if (db.profile.get(user_id, 'ooch_party').length < 4) {
-                                        string_to_send += `\nIt's been added to your party.`;
-                                    } else {
-                                        string_to_send += `\nIt's been added to your box.`;
-                                    }
-    
-                                    let user_profile = db.profile.get(user_id);
-                                    let ooch_party = user_profile.ooch_party;
-                                    let is_first_catch = (db.profile.get(user_id, `oochadex[${ooch_enemy.id}].caught`) == 0);
-                                    
-                                    // Distribute XP for a caught Oochamon
-                                    // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
-                                    exp_earned = battle_calc_exp(ooch_enemy.level, db.monster_data.get(ooch_enemy.id, 'evo_stage'), 1); //catching mons will always give 1x EXP
-                                    if(is_first_catch) exp_earned *= 2;
-    
-                                    let exp_earned_main = Math.round(exp_earned * 1.25);
-                                    if (ooch_plr.level != 50) {
-                                        string_to_send += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
-                                                            ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
-                                    }
-                                    if (ooch_party.length > 1) {
-                                        string_to_send += `\nThe rest of your team earned **${exp_earned}** exp.`;
-                                    }
-                                    if(is_first_catch) string_to_send += `\n✨ *Gained 2x Experience from catching a New Oochamon!*`;
-    
-                                    for (let i = 0; i < ooch_party.length; i++) {
-                                        if (i == user_profile.ooch_active_slot) { 
-                                            db.profile.math(user_id, '+', Math.round(exp_earned * 1.25), `ooch_party[${i}].current_exp`);
-                                        } else { 
-                                            db.profile.math(user_id, '+', (ooch_party[i].alive === false ? exp_earned : Math.round(exp_earned / 2)), `ooch_party[${i}].current_exp`); 
-                                        }
-                                        
-                                        // Check for level ups
-                                        let ooch_data = db.profile.get(user_id, `ooch_party[${i}]`)
-                                        if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                                            ooch_data = level_up(ooch_data);
-                                            string_to_send += `\n${ooch_data[1]}`;
-                                            await db.profile.set(user_id, ooch_data[0], `ooch_party[${i}]`)
-                                        }
-                                    }
-    
-                                    displayEmbed.setDescription(string_to_send)
-                                    await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
-    
-                                    // Heal the caught Oochamon when you catch it.
-                                    ooch_enemy.current_hp = ooch_enemy.stats.hp;
-    
-                                    // Have it check here if you want to send the Oochamon to your party or not
-                                    if (db.profile.get(user_id, 'ooch_party').length < 4) {
-                                        db.profile.push(user_id, ooch_enemy, `ooch_party`);
-                                    } else {
-                                        db.profile.push(user_id, ooch_enemy, `ooch_pc`)
-                                    }
-                                    db.profile.math(user_id, '+', 1, `oochadex[${ooch_enemy.id}].caught`)
-                                    let infoEmbed = ooch_info_embed(ooch_enemy);
-                                    let oochPng = infoEmbed[1];
-                                    infoEmbed = infoEmbed[0];
-                                    infoEmbed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
-    
-                                    // Wait a bit after finishing a battle to allow viewing info about Oochamon
-                                    await thread.send({ embeds: [infoEmbed], files: [oochPng] });
-                                    await db.profile.inc(user_id, 'turn_msg_counter');
-                                    await db.profile.inc(user_id, 'battle_msg_counter');
-    
-                                    await wait(5000);
-    
-                                    await finish_battle(thread, user_id, true);
-    
-                                    return;
-                                } else {
-                                    string_to_send += `\n\nUnfortunately, your prism catch attempt failed...`;
-                                    displayEmbed.setDescription(string_to_send);
-                                    await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []}).catch(() => {});
-                                }
-    
-                                // Enemy attacks player
-                                let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
-                                [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-    
-                                //Apply Status Effects and other end of turn stuff
-                                await end_of_round(thread, user_id, ooch_plr, ooch_enemy);                        
-    
-                                // Victory/Defeat Check
-                                let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr, true);
-                                if (victory_check == true) return;
-    
-                                // Prompt for more input
-                                await prompt_battle_input(thread, user_id);
-                            });
-                        } 
-    
-                    });
-                    //#endregion
-                break;
-                case 'run':
-                    if ((ooch_plr.stats.spd + ooch_plr.level * 15) / ((ooch_plr.stats.spd + ooch_plr.level * 10) + (ooch_enemy.stats.spd + ooch_enemy.level * 10) ) > Math.random()) {
-                        await wait(battleSpeed);
-                        await thread.send(`**------------ Player Turn ------------**` +
-                        `\nYou successfully ran away!\nYour playspace will appear momentarily.`);
-                        await db.profile.inc(user_id, 'turn_msg_counter');
-                        await db.profile.inc(user_id, 'battle_msg_counter');
-                        await finish_battle(thread, user_id);
-                        return;
-                    } else {
-                        await wait(battleSpeed);
-                        await thread.send(`**------------ Player Turn ------------**` + 
-                        `\nYou failed to run away!`)
-                        await db.profile.inc(user_id, 'turn_msg_counter');
-                        await db.profile.inc(user_id, 'battle_msg_counter');
-    
-                        // Enemy attacks player
-                        let atk_id = ooch_enemy.moveset[_.random(0,ooch_enemy.moveset.length-1)];
-                        [ooch_enemy, ooch_plr] = await attack(thread, user_id, atk_id, ooch_enemy, ooch_plr, '**------------ Enemy Turn ------------**');
-    
-                        //Apply Status Effects and other end of turn stuff
-                        await end_of_round(thread, user_id, ooch_plr, ooch_enemy);
-    
-                        // Victory/Defeat Check
-                        let victory_check = await victory_defeat_check(thread, user_id, ooch_enemy, ooch_plr, true);
-                        if (victory_check == true) return;
-    
-                        // Prompt for more input
-                        await prompt_battle_input(thread, user_id);
-                    }
-                break;
-                case 'info':
-                    let plrOochPrisms = '';
-                    for (let ooch of ooch_plr_profile.ooch_party) {
-                        plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                    }
-    
-                    let enemyOochPrisms = '';
-                    for (let ooch of ooch_enemy_profile.ooch_party) {
-                        enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                    }
-    
-                    let oochInfoFields = [];
-                    const formatStatBar = (stat) => {
-                        return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
-                    };
-    
-                    // Setup field info for the embed about both oochamon
-                    for (let ooch of [ooch_plr, ooch_enemy]) {
-                        let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
-                        
-                        let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                                    `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
-                                    `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
-                                    `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                                    `**Stat Changes:**\n` +
-                                    `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                                    `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                                    `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                                    `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                                    `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
-    
-                        if (ooch != ooch_enemy) {
-                            let moveset_str = ``;
-                            for (let move_id of ooch.moveset) {
-                                let move = db.move_data.get(move_id);
-                                move.accuracy = Math.abs(move.accuracy);
-                                if (move.damage !== 0) {
-                                    moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                                } else {
-                                    moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                                }
-                            }
-                            infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
-                        }
-    
-                        oochInfoFields.push({
-                            name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                            value: infoStr,
-                            inline: true,
-                        });
-                    }
-    
-    
-                    let battleInfoEmbed = new EmbedBuilder()
-                        .setTitle('Battle Information 📒')
-                        .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
-                        .addFields(oochInfoFields)
-                    let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
-    
-                    const info_collector = thread.createMessageComponentCollector({ componentType:  ComponentType.Button });
-                    await info_collector.on('collect', async i_sel => {
-                        switch (i_sel.customId) {
-                            case 'back':
-                                info_collector.stop();
-                                await info_msg.delete();
-                                await prompt_battle_input(thread, user_id);
-                            break;
-                        }
-                    });
-                break;
             }
-        });
         }
     },
 
@@ -2031,17 +1401,17 @@ let functions = {
      * @param {Boolean} allow_self whether to check for self (default false)
      * @returns returns an array of user_id(s) within the battle
      */
-    get_random_targets: function(users, my_team_id, my_user_id, max_num = 1, other_team = true, same_team = false, allow_self = false) {
+    get_random_targets: function(users, my_team_id, my_user_index, max_num = 1, other_team = true, same_team = false, allow_self = false) {
         let options = []
         for(let user of users){
-            if(user.user_id == my_user_id && allow_self){
-                options.push(user.user_id)
+            if(user.user_index == my_user_index && allow_self){
+                options.push(user.user_index)
             }
             else if(user.team_id == my_team_id && same_team){
-                options.push(user.user_id)
+                options.push(user.user_index)
             }
             else if(user.team_id != my_team_id && other_team){
-                options.push(user.user_id)
+                options.push(user.user_index)
             }
         }
 
@@ -2061,127 +1431,127 @@ let functions = {
     },
 
     /**
- * A helper function for type effectiveness, takes 2 types and figures out the
- * attack multiplier for the attacking type based on the defending type.
- * @param {String} attack_type The type that is attacking
- * @param {Array} target_type The type that is defending
- * @returns An array with structured like [attack_multiplier, attack_string]
- */
-type_effectiveness: function(attack_type, target_type) {
-    let multiplier = 1;
-    let string = '';
+     * A helper function for type effectiveness, takes 2 types and figures out the
+     * attack multiplier for the attacking type based on the defending type.
+     * @param {String} attack_type The type that is attacking
+     * @param {Array} target_type The type that is defending
+     * @returns An array with structured like [attack_multiplier, attack_string]
+     */
+    type_effectiveness: function(attack_type, target_type) {
+        let multiplier = 1;
+        let string = '';
 
-    for (let type_defender of target_type) {
-        switch(attack_type){
-            case OochType.Neutral:
-                switch(type_defender){
-                    case OochType.Magic: multiplier *= .5; break;
-                }
-            break;
-            case OochType.Fungal:
-                switch(type_defender){
-                    case OochType.Flame:   multiplier *= .5; break;
-                    case OochType.Fungal:  multiplier *= .5; break;
-                    case OochType.Stone:   multiplier *= 2; break;
-                    case OochType.Ooze:    multiplier *= 2; break;
-                    case OochType.Crystal: multiplier *= .5; break;
-                    case OochType.Sound:   multiplier *= 2; break;
-                }
-            break;
-            case OochType.Flame:
-                switch(type_defender){
-                    case OochType.Ooze:    multiplier *= .5; break;
-                    case OochType.Flame:   multiplier *= .5; break;
-                    case OochType.Stone:   multiplier *= .5; break;
-                    case OochType.Void:    multiplier *= 2; break;
-                    case OochType.Fungal:  multiplier *= 2; break;
-                    case OochType.Crystal: multiplier *= .5; break;
-                    case OochType.Cloth:   multiplier *= 2; break;
-                }
-            break;
-            case OochType.Stone:
-                switch(type_defender){
-                    case OochType.Ooze:    multiplier *= .5; break;
-                    case OochType.Tech:    multiplier *= 2; break;
-                    case OochType.Flame:   multiplier *= 2; break;
-                    case OochType.Crystal: multiplier *= 2; break;
-                    case OochType.Sound:   multiplier *= .5; break;
-                }
-            break;
-            case OochType.Tech:
-                switch(type_defender){
-                    case OochType.Magic:   multiplier *= .5; break;
-                    case OochType.Ooze:    multiplier *= .5; break;
-                    case OochType.Fungal:  multiplier *= 2; break;
-                    case OochType.Stone:   multiplier *= 2; break;
-                }
-            break;
-            case OochType.Ooze:
-                switch(type_defender){
-                    case OochType.Fungal:  multiplier *= .5; break;
-                    case OochType.Ooze:    multiplier *= .5; break;
-                    case OochType.Flame:   multiplier *= 2; break;
-                    case OochType.Stone:   multiplier *= 2; break;
-                }
-            break;
-            case OochType.Magic:
-                switch(type_defender){
-                    case OochType.Flame:  multiplier *= .5; break;
-                    case OochType.Tech:   multiplier *=  2; break;
-                    case OochType.Stone:  multiplier *=  2; break;
-                    case OochType.Crystal: multiplier *= .5; break;
-                }
-            break;
-            case OochType.Sound:
-                switch(type_defender){
-                    case OochType.Fungal:  multiplier *= .5; break;
-                    case OochType.Crystal: multiplier *=  2; break;
-                    case OochType.Stone:   multiplier *=  2; break;
-                    case OochType.Cloth:   multiplier *= .5; break;
-                    case OochType.Martial: multiplier *= .5; break; 
-                }
-            break;
-            case OochType.Crystal:
-                switch(type_defender){
-                    case OochType.Cloth:    multiplier *=  2; break;
-                    case OochType.Magic:    multiplier *=  2; break;
-                    case OochType.Stone:    multiplier *= .5; break;
-                    case OochType.Martial:  multiplier *=  2; break;
-                }
-            break;
-            case OochType.Cloth:
-                switch(type_defender){
-                    case OochType.Sound:   multiplier *= 2; break;
-                    case OochType.Fungal:  multiplier *= .5; break;
-                    case OochType.Crystal: multiplier *= .5; break;
-                }
-            break;
-            case OochType.Martial:
-                switch(type_defender){
-                    case OochType.Magic:  multiplier *= .5; break; 
-                    case OochType.Ooze:   multiplier *= .5; break; 
-                    case OochType.Stone:  multiplier *= 2; break; 
-                }
-            break;
-            case OochType.Void:
-                multiplier *= 1.5;
-            break;
+        for (let type_defender of target_type) {
+            switch(attack_type){
+                case OochType.Neutral:
+                    switch(type_defender){
+                        case OochType.Magic: multiplier *= .5; break;
+                    }
+                break;
+                case OochType.Fungal:
+                    switch(type_defender){
+                        case OochType.Flame:   multiplier *= .5; break;
+                        case OochType.Fungal:  multiplier *= .5; break;
+                        case OochType.Stone:   multiplier *= 2; break;
+                        case OochType.Ooze:    multiplier *= 2; break;
+                        case OochType.Crystal: multiplier *= .5; break;
+                        case OochType.Sound:   multiplier *= 2; break;
+                    }
+                break;
+                case OochType.Flame:
+                    switch(type_defender){
+                        case OochType.Ooze:    multiplier *= .5; break;
+                        case OochType.Flame:   multiplier *= .5; break;
+                        case OochType.Stone:   multiplier *= .5; break;
+                        case OochType.Void:    multiplier *= 2; break;
+                        case OochType.Fungal:  multiplier *= 2; break;
+                        case OochType.Crystal: multiplier *= .5; break;
+                        case OochType.Cloth:   multiplier *= 2; break;
+                    }
+                break;
+                case OochType.Stone:
+                    switch(type_defender){
+                        case OochType.Ooze:    multiplier *= .5; break;
+                        case OochType.Tech:    multiplier *= 2; break;
+                        case OochType.Flame:   multiplier *= 2; break;
+                        case OochType.Crystal: multiplier *= 2; break;
+                        case OochType.Sound:   multiplier *= .5; break;
+                    }
+                break;
+                case OochType.Tech:
+                    switch(type_defender){
+                        case OochType.Magic:   multiplier *= .5; break;
+                        case OochType.Ooze:    multiplier *= .5; break;
+                        case OochType.Fungal:  multiplier *= 2; break;
+                        case OochType.Stone:   multiplier *= 2; break;
+                    }
+                break;
+                case OochType.Ooze:
+                    switch(type_defender){
+                        case OochType.Fungal:  multiplier *= .5; break;
+                        case OochType.Ooze:    multiplier *= .5; break;
+                        case OochType.Flame:   multiplier *= 2; break;
+                        case OochType.Stone:   multiplier *= 2; break;
+                    }
+                break;
+                case OochType.Magic:
+                    switch(type_defender){
+                        case OochType.Flame:  multiplier *= .5; break;
+                        case OochType.Tech:   multiplier *=  2; break;
+                        case OochType.Stone:  multiplier *=  2; break;
+                        case OochType.Crystal: multiplier *= .5; break;
+                    }
+                break;
+                case OochType.Sound:
+                    switch(type_defender){
+                        case OochType.Fungal:  multiplier *= .5; break;
+                        case OochType.Crystal: multiplier *=  2; break;
+                        case OochType.Stone:   multiplier *=  2; break;
+                        case OochType.Cloth:   multiplier *= .5; break;
+                        case OochType.Martial: multiplier *= .5; break; 
+                    }
+                break;
+                case OochType.Crystal:
+                    switch(type_defender){
+                        case OochType.Cloth:    multiplier *=  2; break;
+                        case OochType.Magic:    multiplier *=  2; break;
+                        case OochType.Stone:    multiplier *= .5; break;
+                        case OochType.Martial:  multiplier *=  2; break;
+                    }
+                break;
+                case OochType.Cloth:
+                    switch(type_defender){
+                        case OochType.Sound:   multiplier *= 2; break;
+                        case OochType.Fungal:  multiplier *= .5; break;
+                        case OochType.Crystal: multiplier *= .5; break;
+                    }
+                break;
+                case OochType.Martial:
+                    switch(type_defender){
+                        case OochType.Magic:  multiplier *= .5; break; 
+                        case OochType.Ooze:   multiplier *= .5; break; 
+                        case OochType.Stone:  multiplier *= 2; break; 
+                    }
+                break;
+                case OochType.Void:
+                    multiplier *= 1.5;
+                break;
+            }
         }
-    }
-    
-    multiplier = Math.min(8, Math.max(.125,multiplier))
+        
+        multiplier = Math.min(8, Math.max(.125,multiplier))
 
-    switch(multiplier){
-        case(0.125):    string = '*Barely effective...*';        break;
-        case(0.25):     string = '*Very ineffective...*';        break;
-        case(0.5):      string = '*Not very effective...*';      break;
-        case(2):        string = '*Super effective!*';           break;
-        case(4):        string = '*Incredibly effective!*';      break;
-        case(8):        string = '*Devastatingly effective!*';   break;
-    }
+        switch(multiplier){
+            case(0.125):    string = '*Barely effective...*';        break;
+            case(0.25):     string = '*Very ineffective...*';        break;
+            case(0.5):      string = '*Not very effective...*';      break;
+            case(2):        string = '*Super effective!*';           break;
+            case(4):        string = '*Incredibly effective!*';      break;
+            case(8):        string = '*Devastatingly effective!*';   break;
+        }
 
-    return([multiplier,string])
-},
+        return([multiplier, string])
+    },
     item_use: function(user_id, ooch, item_id) {
         let item_data = db.item_data.get(item_id);
     
@@ -2225,9 +1595,9 @@ type_effectiveness: function(attack_type, target_type) {
         
     },
 
-    use_eot_ability : function(battle_data, user_id) {
+    use_eot_ability : function(battle_data, user_index) {
         let ability_text = ``;
-        let user = battle_data.users[user_id];
+        let user = battle_data.users[user_index];
         let ooch = user.party[user.active_slot];
 
         switch(ooch.ability) {
@@ -2292,9 +1662,401 @@ type_effectiveness: function(attack_type, target_type) {
         }
         
     
-        return {ooch : ooch, text :ability_text};
-    }
+        return {ooch : ooch, text : ability_text};
+    },
+
+    /**
+     * Converts a type string to an emote for that type.
+     * @param {Array} type_array The type array to turn into a type string
+     * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
+     * @returns The emote string
+     */
+    type_to_emote: function(type_array, text_emote = false) {
+        let return_string = '';
+
+        if (!Array.isArray(type_array)) {
+            type_array = [type_array];
+        }
+
+        for (let type of type_array) {
+            switch(type) {
+                case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1274936258811920414>'   : '<:icon_flame:1274936249484050472>';   break;
+                case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1274936284497969203>'  : '<:icon_fungal:1274936267884199947>';  break;
+                case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1274936569790468096>'   : '<:icon_magic:1274936558595866787>';   break;
+                case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1274936655236563055>'   : '<:icon_stone:1274936641433243781>';   break;
+                case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1274936596155863080>' : '<:icon_neutral:1274936582583091210>'; break;
+                case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1274936617320316928>'    : '<:icon_ooze:1274936607136288810>';    break;
+                case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1274936688589803613>'    : '<:icon_tech:1274936672022298624>';    break;
+                case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_void:1274936702959485011>';    break;
+                case OochType.Sound:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_sound:1296312531068911616>';   break;
+                case OochType.Crystal: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_crystal:1296312529126948894>'; break;
+                case OochType.Cloth:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_cloth:1296312526882996234>';   break;
+                case OochType.Martial: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_martial:1296312529949036575>'; break;
+            }
+        }
+
+        return return_string;
+    },
+
+    /**
+     * A helper function that handles doing an attack and using a move on
+     * another Oochamon in an Oochamon battle.
+     * @param {Object} thread The thread Oochamon is being played in.
+     * @param {String} user_id The user id of the user playing Oochamon.
+     * @param {String} atk_id The ID of the attack being used
+     * @param {Object} attacker The Oochamon data of the attacker
+     * @param {Object} defender The Oochamon data of the defender
+     * @param {String} header The header string displaying whos turn it is in the battle
+     * @returns An array of the attacker and defender Oochamon data, after the attacks.
+     */
+    attack: async function(battle_data, user_index_attacker, user_index_defender, atk_id) {
+        const { type_effectiveness, battle_calc_damage, modify_stat, add_status_effect, type_to_emote, get_stat_multiplier } = require('./func_battle.js');
+
+        let user_attacker = battle_data.users[user_index_attacker];
+        let user_defender = battle_data.users[user_index_defender];
+        let attacker = user_attacker.party[user_attacker.active_slot];
+        let defender = user_defender.party[user_defender.active_slot];
+
+        let move_effects =   db.move_data.get(atk_id, 'effect');
+        let ogMoveId = atk_id;
+        if (move_effects.some(effect => effect.status === 'random')) {
+            let moveList = db.move_data.keyArray();
+            // Remove some moves that shouldn't be obtained with random
+            moveList = moveList.filter(v => !([40, 92].includes(parseInt(v))))
+
+            atk_id = _.sample(db.move_data.keyArray());
+            move_effects =   db.move_data.get(atk_id, 'effect');
+        }
+        let move_name =     db.move_data.get(atk_id, 'name');
+        let move_type =     db.move_data.get(atk_id, 'type');
+        let move_damage =   db.move_data.get(atk_id, 'damage');
+        let move_accuracy = db.move_data.get(atk_id, 'accuracy');
+        if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
+        let move_type_emote =      type_to_emote(move_type);
+        let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
+        let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
+        if (attacker.status_effects.includes(Status.Focus)) {
+            crit_multiplier = 2;
+            attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
+        }
+        
+        if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
+        let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
+        let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
+        let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
+        let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
+        let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
+        let reflect_dmg = 0;
+        let attacker_emote = db.monster_data.get(attacker.id, 'emote');
+        let defender_emote = db.monster_data.get(defender.id, 'emote');
+        let defender_field_text = ``;
+        let string_to_send = ``;
+        let ability_dmg_multiplier = 1;
+        let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
+
+        let atkOochName = attacker.nickname;
+        let defOochName = defender.nickname;
+
+        move_accuracy = Math.abs(move_accuracy);
+        if (attacker.ability == Ability.Rogue && defender.current_hp === defender.stats.hp) {
+            ability_dmg_multiplier = 2;
+        }
+
+        let dmg = 0;
+        if (move_damage != 0) {
+            dmg = battle_calc_damage(move_damage * type_multiplier[0] * status_doubled * ability_dmg_multiplier, 
+                                    move_type, attacker, defender, battle_data.turn_counter) * crit_multiplier;
+        }
+        vampire_heal = Math.ceil(vampire_heal * dmg); //used later
+        // Remove doubled status effect
+        if (status_doubled != 1) {
+            defender.status_effects = defender.status_effects.filter(v => v != Status.Double);
+        }
+
+        // If the defender has Vanish AND the attack is not self targeting, it should fail
+        let chance_to_hit = move_accuracy/100 * get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4)
+        if ((((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false)) || (selfTarget == true)) {
+            // Take damage and heal from move effects
+            defender.current_hp -= dmg
+            defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
+
+            attacker.current_hp += Math.round(vampire_heal);
+            attacker.current_hp += Math.round(attacker.stats.hp * move_heal);
+            attacker.current_hp -= recoil_damage;
+            attacker.current_hp = _.clamp(attacker.current_hp, 0, attacker.stats.hp)
+
+            // When the Oochamon attacker hits the defender and we aren't targetting ourself
+            if (selfTarget === false && dmg !== 0) {
+                switch (attacker.ability) {
+                    case Ability.Leech:
+                        attacker.current_hp = _.clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
+                    break;
+                    case Ability.Ensnare:
+                        if (check_chance(30) && !defender.status_effects.includes(Status.Vanish)) {
+                            defender = add_status_effect(defender, Status.Snare);
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **SNARED** on hit from the ability **Ensnare** from ${attacker_emote} **${atkOochName}**!`;
+                        }
+                    break;
+                    case Ability.Lacerating:
+                        defender.current_hp = _.clamp(defender.current_hp + Math.round(dmg * 0.05), 0, defender.stats.hp);
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost 5% of their HP from the ability **Lacerating** from ${attacker_emote} **${atkOochName}**!`;
+                    break;
+                    case Ability.Frostbite:
+                        modify_stat(defender, Stats.Speed, -1);
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** had its SPD lowered from the ability **Frostbite** from ${attacker_emote} **${atkOochName}**!`;
+                    break;
+                    case Ability.StringsAttached:
+                        if (check_chance(20)) {
+                            let randomStatus = _.sample([Status.Burn, Status.Blind, Status.Infect, Status.Snare]);
+                            defender = add_status_effect(defender, randomStatus);
+                            let statusName = db.status_data.get(randomStatus, 'name');
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **${_.upperCase(statusName)}** on hit from the ability **Strings Attached!** from ${attacker_emote} **${atkOochName}**!`;
+                        }
+                    break;
+                    case Ability.Riposte:
+                        attacker.ability = Ability.Parry;
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** changed its stance, and shifted its ability to **Parry**!`;
+                    break;
+                }
+                
+                // When the Oochamon defender gets hit by the attacker
+                switch (defender.ability) {
+                    case Ability.Reactive:
+                        attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp)
+                        reflect_dmg = Math.round(attacker.stats.hp * 0.1);
+                    break;
+                    case Ability.Shadow:
+                        if (check_chance(20) && !defender.status_effects.includes(Status.Vanish)) {
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** **VANISHED** after being hit using its ability **Shadow**!`;
+                            defender = add_status_effect(defender, Status.Vanish);
+                        }
+                    break;
+                    case Ability.Tangled:
+                        if (!attacker.status_effects.includes(Status.Snare)) {
+                            attacker = add_status_effect(attacker, Status.Snare);
+                            defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** was **SNARED** by ${defender_emote} **${defOochName}**'s ability **Tangled**!`;
+                        }
+                    break;
+                    case Ability.Flammable:
+                        if (move_type === OochType.Flame) {
+                            defender = modify_stat(defender, Stats.Attack, 1);
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** raised its ATK after being hit using its ability **Flammable**!`; 
+                        }
+                    break;
+                    case Ability.Parry:
+                        defender.ability = Ability.Riposte;
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** changed its stance, and shifted its ability to **Riposte**!`;
+                    break;
+                }
+            }
+
+            if (ogMoveId !== atk_id) {
+                string_to_send += `\n🎲 **${db.move_data.get(ogMoveId, 'name')}** changed into **${move_name}**!\n`;
+            }
+
+            if (move_effects.some(effect => effect.status === 'typematch')) {
+                string_to_send += `\n✨ **${move_name}** changed into the ${defender_emote} **${defOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
+            }
+
+            string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
+            if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
+            
+            //If the target has the Doubled status effect
+            if(status_doubled != 1 && move_damage > 0) {
+                string_to_send += `\n--- <:status_doubled:1274938495953014845> **The damage was DOUBLED!**`
+            }
+
+            //If a crit lands
+            if (crit_multiplier >= 2) {
+                string_to_send += `\n--- 💢 **A critical hit!**`
+            }
+
+            //If an attack has vampire
+            if (vampire_heal > 0) {
+                string_to_send += `\n--- 🩸 ${attacker_emote} **${atkOochName}** leeched **${vampire_heal}** HP from ${defender_emote} **${defOochName}**!`;
+            }
+
+            //If an attack has heal
+            if (move_heal > 0) {
+                string_to_send += `\n--- ❤️ ${attacker_emote} **${atkOochName}** healed **${Math.round(attacker.stats.hp * move_heal)}** HP!`;
+            }
+
+            //If attack has recoil
+            if (recoil_damage > 0) {
+                string_to_send += `\n--- 💥 ${attacker_emote} **${atkOochName}** lost **${recoil_damage}** HP from recoil!`
+            }
+
+            // If attack has reflect damage
+            if (reflect_dmg > 0) {
+                string_to_send += `\n--- 🪞 ${attacker_emote} **${atkOochName}** took **${reflect_dmg}** reflect damage from ${defender_emote} **${defOochName}**'s ability **Reactive**!`
+            }
+
+            if (move_effects.length != 0) {
+                for (let eff of move_effects) {
+                    let status_target = eff.target == MoveTarget.Self ? attacker : defender;
+                    let status_target_emote = eff.target == MoveTarget.Self ? attacker_emote : defender_emote;
+                    let statStatus = false;
+                    if (isNaN(eff.status)) {
+                        statStatus = eff.status.includes('+') || eff.status.includes('-');
+                    }
+
+                    if (selfTarget !== false) {
+                        // Change move_effect_chance based on abilities
+                        switch (attacker.ability) {
+                            case Ability.Scorching:
+                                if (eff.status == Status.Burn) eff.chance = 100;
+                            break;
+                            case Ability.LiquidCooled:
+                                if (eff.status == Status.Burn) eff.chance = 0;
+                            break;
+                        }
+
+                        if (statStatus === false) {
+                            switch (defender.ability) {
+                                case Ability.Mundane:
+                                    eff.chance = 0;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Apply move effects
+                    if (Math.random() < eff.chance/100 && eff.chance > 0) { 
+                        let status_split = []
+                        if (isNaN(eff.status)) status_split = eff.status.split('_')
+                        let status_adds = [eff.status];
+
+                        if (db.status_data.keyArray().includes(`${eff.status}`)) {
+                            let statusData = db.status_data.get(eff.status);
+                            // Setup list of status effects to add
+                            switch (status_target.ability) {
+                                case Ability.Darkbright:
+                                    switch (eff.status) {
+                                        case Status.Burn: status_adds.push(Status.Blind);
+                                        case Status.Blind: status_adds.push(Status.Burn);
+                                    }
+                                break;
+                                case Ability.Radiant:
+                                    switch (eff.status) {
+                                        case Status.Infect: status_adds.push(Status.Burn);
+                                        case Status.Burn: status_adds.push(Status.Infect);
+                                    }
+                                break;
+                            }
+
+                            // Remove duplicates
+                            status_adds = status_adds.filter((item, index) => status_adds.indexOf(item) === index);     
+
+                            defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** was **${statusData.name.toUpperCase()}!**`
+                            status_target.status_effects.push(status_adds);
+                            status_target.status_effects = status_target.status_effects.flat(1);
+                            status_target.status_effects = status_target.status_effects.filter((item, index) => status_target.status_effects.indexOf(item) === index);     
+                        }
+                        // +_def_1 is the format
+                        else if (status_split[0] == '+'){
+                            let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
+                            status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
+                            let currentValue = `${_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8)}`;
+                            let signValue = currentValue < 0 ? '-' : '+';
+                            if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
+                                defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** ${parseInt(status_split[2]) > 1 ? 'sharply ' : ''}raised its **${_.upperCase(status_split[1])}** to **${signValue}${Math.abs(currentValue)}**!`;
+                            } else {
+                                defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** raised any further!`;
+                            }
+                        }
+                        else if (status_split[0] == '-') {
+                            let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
+                            status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
+                            let currentValue = `${_.clamp(prevStatValue - parseInt(status_split[2]), -8, 8)}`;
+                            let signValue = currentValue < 0 ? '-' : '+';
+                            if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
+                                defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** had its **${_.upperCase(status_split[1])}** ${-parseInt(status_split[2]) < -1 ? 'sharply ' : ''}lowered to **${signValue}${Math.abs(currentValue)}!**`
+                            } else {
+                                defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** cannot have its **${_.upperCase(status_split[1])}** lowered any further!`;
+                            }
+                        } else if (eff.status == 'clear_status') {
+                            status_target.status_effects = [];
+                            defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its status effects cleared!`;
+                        } else if (eff.status == 'clear_stat_stages') {
+                            status_target.stats.atk_mul = 0;
+                            status_target.stats.def_mul = 0;
+                            status_target.stats.spd_mul = 0;
+                            status_target.stats.acc_mul = 0;
+                            status_target.stats.eva_mul = 0;
+                            defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its stats set back to normal!`;
+                        }
+                    }
+                }
+            }
+        // If the attack misses
+        } else {
+            string_to_send += `\n${attacker_emote} **${atkOochName}** tried to use ${move_name} but it missed!`
+            if (defender.status_effects.includes(Status.Vanish)) {
+                defender.status_effects = defender.status_effects.filter(v => v !== Status.Vanish);
+                string_to_send += `\n--- ${defender_emote} **${defOochName}** reappeared and lost its **VANISHED** status!`
+            }
+        }
+
+        // Check if opposing Oochamon is dead
+        if (defender.current_hp <= 0) {
+            defender_field_text += `\n--- 🪦 ${defender_emote} **${defOochName}** fainted!`
+            defender.alive = false;
+            
+            // Attacker oochamon on kill ability triggers
+            switch (attacker.ability) {
+                case Ability.Energized:
+                    attacker = modify_stat(attacker, Stats.Attack, 1);
+                    attacker = modify_stat(attacker, Stats.Speed, 1);
+                    defender_field_text += `\n${attacker_emote} **${atkOochName}** was energized from the kill and gained a boost in attack and speed from its ability **Energized**!`;
+                break;
+                case Ability.InvalidEntry:
+                    // 34 is the ID of i_
+                    db.monster_data.set('34', 1, 'atk');
+                    db.monster_data.set('34', 1, 'def');
+                    db.monster_data.set('34', 1, 'spd');
+                    db.monster_data.set('34', 1, 'hp');
+                break;
+                case Ability.Ravenous:
+                    attacker.current_hp = _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
+                    defender_field_text += `\n${attacker_emote} **${atkOochName}** healed 20% HP back from its ability **Ravenous**!`;
+                break;
+            }
+
+            // Opposing oochamon death ability triggers
+            switch (defender.ability) {
+                case Ability.Haunted:
+                    if (!attacker.status_effects.includes(Status.Doom)) {
+                        attacker = add_status_effect(attacker, Status.Doom);
+                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was **DOOMED** from ${defender_emote} **${defOochName}**'s ability **Haunted**!`;
+                    }
+                break;
+                case Ability.Sporespray:
+                    if (!attacker.status_effects.includes(Status.Infect)) {
+                        attacker = add_status_effect(attacker, Status.Infect);
+                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was **INFECTED** from ${defender_emote} **${defOochName}**'s ability **Sporespray**!`;
+                    }
+                break;
+                case Ability.InvalidEntry:
+                    // 34 is the ID of i_
+                    db.monster_data.inc('34', 'atk');
+                    db.monster_data.inc('34', 'def');
+                    db.monster_data.inc('34', 'spd');
+                    db.monster_data.inc('34', 'hp');
+                break;
+                case Ability.EasyGo:
+                    defender_field_text += `\n💖 Healed the rest of ${defender_emote} **${defOochName}**'s team by **20%** due to its ability **Easy Go**!`;
+                break;
+                case Ability.Bomber:
+                    attacker.current_hp = _.ceil(attacker.current_hp / 2);
+                    defender_field_text += `\n${attacker_emote} **${atkOochName}** had its current HP halved from ${defender_emote} **${defOochName}**'s ability **Bomber**!`;
+                break;
+            }
+        }
+
+        string_to_send = `${string_to_send}${defender_field_text}` 
+        return string_to_send;
+    },  
 }
 
 module.exports = functions;
-

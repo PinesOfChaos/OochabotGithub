@@ -5,7 +5,6 @@ const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
 
-
 module.exports = {
 
     move: async function(thread, user_id, direction, dist = 1) {

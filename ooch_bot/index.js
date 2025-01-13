@@ -399,3 +399,4 @@ client.on('messageCreate', async message => {
 //Log Bot in to the Discord
 client.login(process.env.BOT_TOKEN);
 
+module.exports = { botClient: client } 
