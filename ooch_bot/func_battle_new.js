@@ -125,6 +125,7 @@ let functions = {
      * @param {Boolean} allow_run Allow running from the battle
      */
     setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run) {
+        const { botClient } = require("./index.js");
 
         let abilityMsg = '';
         let battle_action_queue = [];
@@ -173,6 +174,7 @@ let functions = {
             turn_msg_counter : 0,
             battle_state : BattleState.Start,
             battle_action_queue : [],
+            battle_speed : 2500,
             
             end_of_turn_switch_queue : [],
 
@@ -189,37 +191,44 @@ let functions = {
         }
 
         // Handle all the text
-        let battleStartText = ``;
-            // if (users[id].is_player) { 
-            //     let playspace_msg = await users[id].thread.messages.fetch(users[id].display_msg_id).catch(() => {});
-            //     await playspace_msg.delete().catch(() => {});
-            // }
-
+        let battleStartText, sendOutText, active_ooch;
         for (let [id, user] of battleDataObj.users.entries()) {
-            //Handles the newly sent out oochamon
-            console.log(battleDataObj);
+            //Reset text messages per player
+            battleStartText = '';
+            sendOutText = '';
+
+            //The current player in combat
+            active_ooch = user.party[user.active_slot];
+            sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
 
             if (users[id].is_player) {
-                let my_team = users[id].team_id;
+                let my_team_id = users[id].team_id;
                 for (let id2 in users) {
-                    if (id2 != id){
-                        
-                        if (users[id2].is_catchable) { //Wild oochamon
-                            battleStartText += `# A wild ${users[id2].name} appeared!\n`;
-                            //Uncaught mon text here
-                            if (db.profile.get(id, `oochadex[${users[id2].party[users[id2].active_slot]}].caught`) == 0) {
+                    //All other players in combat
+                    if(id2 != id){ 
+                        let user2 = users[id2];
+                        console.log(user2);
+                        let active_ooch = user2.party[user2.active_slot];
+                        if (user2.is_catchable) { //Wild oochamon
+                            battleStartText += `# A wild ${user2.name} appeared!\n`;
+                            if (db.profile.get(id, `oochadex[${active_ooch}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                             }
                         }
-                        else if (users[id2].team_id != my_team) { //Opposing Player/NPC
-                            battleStartText += `# ${users[id2].name} wants to battle!\n`; 
+                        else if (user2.team_id != my_team_id) { //Opposing Player/NPC
+                            battleStartText += `# ${user2.name} wants to battle!\n`;
+                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
                         }
                         else { //Allied Player/NPC
-                            let activeOoch = users[id2].party[users[id2].active_slot];
-                            battleStartText += `# ${users[id2].name} sent out ${activeOoch.emote} **${activeOoch.name}!**\n`; //REPLACE
+                            battleStartText += `# ${user2.name} allies with you!**\n`; 
+                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
                         }
                     }
                 }
+
+
+                let thread = botClient.channels.cache.get(user.thread_id);
+                await thread.send(`${battleStartText}\n${sendOutText}`);
 
                 //Send the start_message to the user
                 // // Generate intro to battle image
@@ -235,18 +244,20 @@ let functions = {
             }
         }
 
-
-        //
+        //Handle switch-in abilities
+        let switch_in_text = '';
         for(let user of battleDataObj.users){
-            let switch_in_text = functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
-            battleStartText += switch_in_text;
+            switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
+        }
+        if(switch_in_text != ''){
+            await functions.distribute_messages(battleDataObj.users, switch_in_text);
         }
 
-        await functions.distribute_messages(battleDataObj.users, battleStartText);
+        //Send the round start message
+        functions.distribute_messages(battleDataObj.users, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
+
 
         db.battle_data.set(battleId, battleDataObj);
-        
-        
         await functions.prompt_battle_actions(battleId);
     },
 
@@ -611,7 +622,7 @@ let functions = {
 
                 // Continue on if everyone has selected (which should happen at the end)
                 if (battle_data.users.every(u => u.action_selected !== false)) {
-                    db.battle_data.set(battle_id, battleData);
+                    db.battle_data.set(battle_id, battle_data);
                     await functions.process_battle_actions(battle_id);
                 }
             } else {
@@ -705,7 +716,7 @@ let functions = {
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
-                            db.battle_data.set(battle_id, battleData);
+                            db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
                             functions.handle_battle_action(battle_id);
                         }
@@ -778,7 +789,7 @@ let functions = {
      * Processes the battle_action_queue of a given battle_id
      * @param {String} battle_id the id of the battle
      */
-    process_battle_actions : async function(battle_id, use_header){
+    process_battle_actions : async function(battle_id){
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
         let action, header, text, faint_check, finish_battle;
@@ -807,21 +818,14 @@ let functions = {
             }
 
             //Send the text to each of the user's threads
-            if(use_header){
-                await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
-            }
-            else{
-                let embed = new EmbedBuilder()
-                .setColor('#808080')
-                .setDescription(text);
-                await functions.distribute_messages(battle_data.users, { embeds: [embed]});
-            }
+            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
+            
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
 
             if(finish_battle == true){
-                if(turn_data.has('finish_data') && turn_data.finish_data != false){
+                if(('finish_data' in turn_data) && turn_data.finish_data != false){
                     let finish_data = turn_data.finish_data;
                     switch(finish_data.type){
                         case 'capture':
@@ -837,6 +841,8 @@ let functions = {
 
                 battle_data.actions = [];
             }
+
+            await wait(battle_data.battle_speed);
         }
 
         //End of round stuff
@@ -910,7 +916,10 @@ let functions = {
             }
         }
 
-        await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(end_of_round_header, end_of_round_text)]});
+        if(end_of_round_text != ''){
+            await wait(battle_data.battle_speed);
+            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(end_of_round_header, end_of_round_text)]});
+        }
 
         //End of round switch-ins
         let faint_switch_header = '**------------ Switching In ------------**';
@@ -933,15 +942,31 @@ let functions = {
             await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(faint_switch_header, faint_switch_text)]});
         }
 
-        //End the battle here if a win/loss-state has been achieved
-        //OR
-        //Continue the fight
-        //TODO
-        battle_data.battle_msg_counter +=1;
+        
+
+        //Clear all user's actions
         battle_data.turn_counter++;
+        for(let user of battle_data.users){ user.action_selected = false; }
         db.battle_data.set(battle_id, battle_data);
 
-        //Round Ends here
+        //Do stuff depending on whether the battle is finished
+        if(!finish_battle){
+            
+            await wait(battle_data.battle_speed);
+            functions.distribute_messages(battle_data.users, { embeds : [functions.generate_round_start_embed(battle_data)]});
+            
+
+            //TODO PROMPT NEXT ROUND'S BATTLE ACTIONS PLS JEFF I BEG OF YOU (currently this will just infinite loop if you select an attack)
+            
+            await wait(battle_data.battle_speed);
+            functions.prompt_battle_actions(battle_data.battle_id);
+        }
+        else{
+            
+        }
+
+        
+        
     },
 
     /**
@@ -2057,6 +2082,63 @@ let functions = {
         string_to_send = `${string_to_send}${defender_field_text}` 
         return string_to_send;
     },  
+
+
+    generate_round_start_embed(battle_data){
+        let header = `**------------ Round ${battle_data.turn_counter + 1} Start ------------**\n`
+        let hp_string = ``;
+        let user_name, active_ooch;
+        for(let user of battle_data.users){
+            user_name = user.is_catchable ? 'Wild' : `${user.name}'s`
+            active_ooch = user.party[user.active_slot];
+            hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\``;
+            hp_string += functions.generate_hp_bar(active_ooch, 'plr');
+            hp_string += `\n`;
+        }
+
+        let embed = functions.battle_embed_create(header, hp_string)
+        return(embed);
+    },
+
+    /**
+     * Generate a custom emote HP bar for use in Oochamon battles.
+     * @param {Object} ooch The oochamon data.
+     * @param {String} style The style of the HP bar (plr/enemy)
+     * @returns The generated HP emote string for the Oochamon.
+     */
+    generate_hp_bar: function(ooch, style) {
+        let hp_string = ``;
+        let hp_sec = (ooch.current_hp / ooch.stats.hp);
+        let sections = Math.ceil(hp_sec * 10);
+        if(ooch.current_hp != ooch.stats.hp){ sections = Math.min(sections, 9); }
+        let piece_type;
+    
+        hp_string += `\n${db.monster_data.get(ooch.id, 'emote')} `;
+    
+        if (style == 'plr') {
+            piece_type = `<:p_f_hm:1274936333277855775>`
+            if (sections <= 5) piece_type = `<:p_m_hm:1274936384779714680>`;
+            if (sections <= 2) piece_type = `<:p_l_hm:1274936321890193501>`;
+    
+            hp_string += `<:p_hs:1274936342677028905>`;
+            hp_string += `${piece_type.repeat(sections)}` // Filled slots
+            hp_string += `${`<:p_g_hm:1274936302529155115>`.repeat(10 - sections)}` // Empty slots
+            hp_string += `<:p_he:1274936313123967016>\n`;
+        } else {
+            piece_type = `<:e_f_hm:1274935813758521416>`;
+            if (sections <= 5) piece_type = `<:e_m_hm:1274936005777948744>`;
+            if (sections <= 2) piece_type = `<:e_l_hm:1274935997037154417>`;
+    
+            hp_string += `<:e_hs:1274935985289039915>`;
+            hp_string += `${piece_type.repeat(sections)}` // Filled slots
+            hp_string += `${`<:e_g_hm:1274935806301048974>`.repeat(10 - sections)}` // Empty slots
+            hp_string += `<:e_he:1274935824173240372>\n`;
+        }
+    
+        hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\``;
+    
+        return hp_string;
+    },
 }
 
 module.exports = functions;

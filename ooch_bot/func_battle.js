@@ -2,7 +2,7 @@ const db = require("./db")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget } = require("./types");
+const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget } = require("./types");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -21,7 +21,7 @@ generate_wild_battle: function(ooch_id, ooch_level) {
     let ooch_enemy = {
         name: 'Wild Oochamon',
         ooch_active_slot: 0,
-        trainer_type: TrainerType.Wild, 
+        trainer_type: UserType.Wild, 
         is_catchable: true,
         ooch_party:[ooch]
     }
@@ -51,7 +51,7 @@ generate_trainer_battle(trainer_obj) {
     let trainer_return = {
         name: trainer_obj.name,
         ooch_active_slot: 0,
-        trainer_type: TrainerType.NPCTrainer,
+        trainer_type: UserType.NPCTrainer,
         oochabux: trainer_obj.coin,
         ooch_party: party_generated,
         is_catchable: trainer_obj.is_catchable,
@@ -219,7 +219,7 @@ prompt_battle_input: async function(thread, user_id) {
                 .setLabel('Run')
                 .setStyle(ButtonStyle.Secondary)
                 .setEmoji('🏃‍♂️')
-                .setDisabled(ooch_enemy_profile.trainer_type !== TrainerType.Wild),
+                .setDisabled(ooch_enemy_profile.trainer_type !== UserType.Wild),
         );
 
     const row3 = new ActionRowBuilder()
@@ -1715,7 +1715,7 @@ victory_defeat_check: async function(thread, user_id, ooch_enemy, ooch_plr) {
             let string_to_send = ``;
             let displayEmbed = new EmbedBuilder();
             let is_wild = false;
-            if (db.profile.get(user_id, 'ooch_enemy.trainer_type') == TrainerType.Wild) {
+            if (db.profile.get(user_id, 'ooch_enemy.trainer_type') == UserType.Wild) {
                 oochabux = _.random(5, 40);
                 is_wild = true;
             } else {
