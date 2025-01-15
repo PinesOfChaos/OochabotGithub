@@ -792,30 +792,31 @@ let functions = {
     process_battle_actions : async function(battle_id){
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
-        let action, header, text, faint_check, finish_battle;
+        let finish_battle = false;
+        let action, header, text, faint_check;
+        
 
-        while(actions.length > 0){
+        while(actions.length > 0 && !finish_battle){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
             functions.sort_action_priority(battle_data);
 
             action = actions.shift();
-            console.log(action);
+
             let user = battle_data.users[action.user_index]
             header = `**------------ ${user.name}'s Turn ------------**\n`;
             text = ``;
 
             //Perform the action for the turn
             let turn_data = await functions.action_process(battle_data, action);
-            console.log(turn_data);
             text += turn_data.return_string;
-            finish_battle = finish_battle || turn_data.finish_battle;
+            finish_battle = turn_data.finish_battle;
             
             //Check if anything fainted
-            if(finish_battle == false) {
-                faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
-                text += faint_check.text;
-                finish_battle = finish_battle || faint_check.finish_battle;
-            }
+            
+            faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+            text += faint_check.text;
+            finish_battle = finish_battle || faint_check.finish_battle;
+            
 
             //Send the text to each of the user's threads
             await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
@@ -853,7 +854,9 @@ let functions = {
         //Apply end of round abilities/effects (burn, stat changes, etc.)
         let ooch, eot_result;
         for(let user of battle_data.users){
+            
             ooch = user.party[user.active_slot];
+            if(!ooch.alive){ continue; } //Skip this one if it's dead
 
             //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
             eot_result = functions.use_eot_ability(battle_data, user.user_index); 
@@ -895,7 +898,7 @@ let functions = {
                         ooch.doom_timer -= 1;
                         if (ooch.doom_timer == 0) {
                             ooch.current_hp = 0;
-                            ooch.alive = false;
+                            //ooch.alive = false;
                             end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
                         } else {
                             end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
@@ -962,7 +965,7 @@ let functions = {
             functions.prompt_battle_actions(battle_data.battle_id);
         }
         else{
-            
+            console.log(`BATTLE ID${battle_data.battle_id} FINISHED`)
         }
 
         
@@ -1297,14 +1300,14 @@ let functions = {
                 }
             }
             else if(active_ooch.current_hp <= 0 && active_ooch.alive == true){
+                string_to_send += `\n--- 🪦 ${user.name_possessive} ${active_ooch.emote} **${active_ooch.nickname}** fainted!`
                 
                 if(battle_data.give_rewards){
-                    exp_given += Math.round(functions.battle_calc_exp(ooch, bonus_multiplier));
+                    exp_given += Math.round(functions.battle_calc_exp(active_ooch, bonus_multiplier));
+                    console.log('GRANT EXP OR I KILL THE BOT')
                 }
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
-
-                string_to_send += `${user.name}'s ${active_ooch.emote} ${active_ooch.nickname} was defeated!`
                 
                 for(let [i, party_ooch] of user.party.entries()){
                     if(party_ooch.hp > 0){
@@ -1314,7 +1317,7 @@ let functions = {
                 }
 
                 if(user_defeated){
-                    string_to_send += `${user.name}'s party was wiped out!`
+                    string_to_send += `\n\n**${user.name}'s party was wiped out!**`
                     user.defeated = true;
                 }
                 else{
@@ -1329,17 +1332,19 @@ let functions = {
             //Distribute EXP to other users' mons & level them up if possible
             if(exp_given > 0){
                 for(let other_user of battle_data.users){
-                    if(other_user.type == UserType.Player && other_user.user_index != user.user_index){
+                    if((other_user.user_type == UserType.Player) && (other_user.user_index != user.user_index)){
+
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given *1.25);
                         let exp_others = Math.floor(exp_given *.5);
-                        if (other_ooch.level != 50) {
-                            string_to_send += `\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} exp!**` + 
+
+                        if (other_ooch.level < 50) { //TODO UPDATE THIS TO A GLOBAL "MAX_LEVEL" VALUE
+                            string_to_send += `\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
                                                 ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
                         if (other_user.party.length > 1) {
-                            string_to_send += `\nThe rest of your team earned **${exp_others}** exp.`;
+                            string_to_send += `\nThe rest of the team earned **${exp_others}** exp.`;
                         }
 
                         for (let i = 0; i < ooch_party.length; i++) {
@@ -1362,7 +1367,7 @@ let functions = {
             }
         }
 
-        //If there's 1 remaining team finish the battle
+        //If there's 0 - 1 remaining teams finish the battle
         if(active_teams.length < 2){
             finish_battle = true;
         }
@@ -1380,7 +1385,8 @@ let functions = {
      * @returns A number of the amount of EXP earned
      */
     battle_calc_exp: function(ooch, bonus_multiplier = 1) {
-        let mon_data = db.monster_data.get(ooch.species, ooch.id)
+        let mon_data = db.monster_data.get(`${ooch.id}`);
+        console.log(mon_data);
         let evo_stage = mon_data.evo_stage;
         let exp_multiplier = 0.90
         let level = ooch.level;
@@ -2025,8 +2031,8 @@ let functions = {
 
         // Check if opposing Oochamon is dead
         if (defender.current_hp <= 0) {
-            defender_field_text += `\n--- 🪦 ${defender_emote} **${defOochName}** fainted!`
-            defender.alive = false;
+            //defender_field_text += `\n--- 🪦 ${defender_emote} **${defOochName}** fainted!`
+            //defender.alive = false;
             
             // Attacker oochamon on kill ability triggers
             switch (attacker.ability) {

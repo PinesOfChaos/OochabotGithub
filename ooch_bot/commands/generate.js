@@ -4,6 +4,7 @@ const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
+const { refresh_global_variables } = require('../func_global_data.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -3177,7 +3178,12 @@ module.exports = {
                 db.events_data.set(event[0], event[1]);
             }
         }); 
+
+        //Add in any new global variables we've created, this is *not* a hard reset
+        await refresh_global_variables(false);
         
         await interaction.editReply('Generated game data.');
+
+        
     },
 };
