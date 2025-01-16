@@ -2141,7 +2141,11 @@ let functions = {
             hp_string += `<:e_he:1274935824173240372>\n`;
         }
     
-        hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\``;
+        hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;
+
+        for (let status of ooch.status_effects) {
+            hp_string += db.status_data.get(status, 'emote');
+        }
     
         return hp_string;
     },

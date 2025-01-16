@@ -25,13 +25,13 @@ let functions = {
         let number = parseFloat(value);
         if(number === NaN){
             console.log(`INVALID VALUE - set_global_from_string: "${value}"`);
-            return false;
+            return undefined;
         }
 
         //Exit if the name of the property doesn't exist in the global_data
         if(!global_data.hasOwnProperty(name)){
             console.log(console.log(`INVALID NAME - set_global_from_string: "${name}"`));
-            return false;
+            return undefined;
         }
 
         switch(action){
@@ -51,6 +51,52 @@ let functions = {
 
         return true;
     },
+
+    /**
+     * Returns true/false by comparing a global variable to a string 
+     * @param {String} string_submitted string separated by periods "global.PROPERTY_NAME.ACTION(greaterthan, lessthan, equals).VALUE(must be a number)"
+     * @returns returns true/false depending on the resulting comparison
+     */
+    get_global_from_string: async function(string_submitted) {
+        let global_data = db.global_data.get('global_data');
+
+        let parts = string_submitted.split('.');
+        let name = parts[1];
+        let action = parts[2];
+        let value = parts[3];
+
+        //Exit if the value is not a number
+        let number = parseFloat(value);
+        if(number === NaN){
+            console.log(`INVALID VALUE - get_global_from_string: "${value}"`);
+            return undefined;
+        }
+
+        //Exit if the name of the property doesn't exist in the global_data
+        if(!global_data.hasOwnProperty(name)){
+            console.log(console.log(`INVALID NAME - get_global_from_string: "${name}"`));
+            return undefined;
+        }
+
+        switch(action){
+            case 'greaterthan':
+                return global_data[name] > value;
+            break;
+            case 'lessthan':
+                return global_data[name] < value;
+            break;
+            case 'equals':
+                return global_data[name] == value;
+            break;
+            default: //Exit if the action was not recognized
+                console.log(`INVALID ACTION - get_global_from_string: "${action}"`);
+                return undefined;
+            break;
+        }
+
+        
+    },
+
 
     /**
      * Resets the global variables
