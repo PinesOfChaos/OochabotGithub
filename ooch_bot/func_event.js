@@ -131,8 +131,12 @@ let functions = {
                 if (confirm_collector !== undefined) confirm_collector.stop();
             }
 
+            obj_content.team_id = 1;
             let trainerObj = await generate_battle_user(UserType.NPCTrainer, obj_content)
-            let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: UserType.Player, thread_id: thread.id, guild_id: thread.guild.id });
+            let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+            let trainerObj1 = (await generate_battle_user(UserType.NPCTrainer, obj_content)).team_id = 2
+            let trainerObj2 = (await generate_battle_user(UserType.NPCTrainer, obj_content)).team_id = 3
+            let trainerObj3 = (await generate_battle_user(UserType.NPCTrainer, obj_content)).team_id = 4
 
             // Setup the battle for trainers
             await setup_battle([userObj, trainerObj], Weather.Clear, obj_content.coin, 0, true, true, false);

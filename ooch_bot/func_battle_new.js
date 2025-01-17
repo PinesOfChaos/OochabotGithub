@@ -52,7 +52,7 @@ let functions = {
                 let ooch = create_ooch(options.ooch_id, options.ooch_level);
                 party = [ooch];
                 is_catchable = true;
-                team_id = UserType.Wild
+                team_id = options.team_id;
             break;
             case UserType.NPCTrainer:
                 let party_base = options.team;
@@ -72,8 +72,8 @@ let functions = {
                 oochabux = options.coin;
                 party = party_generated;
                 is_catchable = options.is_catchable;
-                team_id = type;
-                prism_inv = 
+                team_id = options.team_id;
+                //prism_inv = 
                 battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
             break;
             case UserType.Player:
@@ -137,40 +137,19 @@ let functions = {
         let abilityMsg = '';
         let battle_action_queue = [];
 
+        for(let i = 0; i < 2; i++){
+            let test_user = structuredClone(users[1]);
+            test_user.team_id = i;
+            users.push(test_user);
+        }
+        
+
         // Add index to users
         for (let i = 0; i < users.length; i++) {
             users[i].user_index = i;
         }
     
-        // // Adjust things for abilities
-        // for (let id in users) {
-
-        //     let activeOoch = activeOoch;
-        //     activeOoch = ability_stat_change(activeOoch, users[id].party);
-
-        //     // Index 0 is the oochamon itself, 1 is the ability msg
-        //     activeOoch = activeOoch[0];
-        //     abilityMsg += `\n${activeOoch[1]}`;
-            
-        //     switch (activeOoch.ability) {
-        //         case Ability.Duplicant:
-        //             let randTarget = functions.get_random_targets(teams, users[id].team_id, id);
-        //             if (users[randTarget].party[users[randTarget].active_slot].ability !== Ability.InvalidEntry) {
-        //                 activeOoch.ability = users[randTarget].party[users[randTarget].active_slot].ability;
-        //                 abilityMsg += `\n${activeOoch.emote} **${activeOoch.name}**'s copied its ability to **${_.startCase(db.ability_data.get(users[randTarget].party[users[randTarget].active_slot].ability, 'name'))}** through it's **Duplicant** ability!`;
-        //             }
-        //         break;
-        //         case Ability.Nullify:
-        //             trainer_obj.users[i].party[0].ability = Ability.Null;
-        //             abilityMsg += `\nAll abilities were changed to **Null** from the ability **Nullify** from ${plrOochEmote} **${plrOochName}**!`
-        //         break;
-        //         case Ability.Gentle: // Affects enemy oochamon
-        //             modify_stat(trainer_obj.users[i].party[0], Stats.Attack, -1);
-        //         break;
-        //     }
-
-        //     teams[i][j] = users[i];
-        // }
+        console.log(users);
 
         // Setup the battle data
         let battleId = functions.generate_battle_id();
@@ -235,7 +214,7 @@ let functions = {
 
                 let thread = botClient.channels.cache.get(user.thread_id);
                 // Generate intro to battle image
-                let battle_image = await functions.generate_battle_image(battleDataObj, id);
+                let battle_image = await functions.generate_battle_image(battleDataObj, user.user_index);
                 thread.send({ 
                     content: battleStartText,
                     files: [battle_image]
@@ -2287,7 +2266,7 @@ let functions = {
      * @param {Boolean} is_npc_battle If this is an NPC battle, or a wild battle.
      * @returns A png attachment to be sent into a chat.
      */
-    generate_battle_image: async function(battle_data, user_id) {
+    generate_battle_image: async function(battle_data, user_index) {
 
         // Define helper functions that are only used here
         function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
@@ -2315,12 +2294,9 @@ let functions = {
         };
 
         function deg_to_rad(degrees){
-            return degrees * (180/Math.PI);
+            return degrees * (Math.PI / 180);
         };
 
-        // if (items.some(item => item.a === '3')) {
-        //     // do something
-        // }
 
         //Sort everyone into their teams
         let teams = {};
@@ -2335,45 +2311,88 @@ let functions = {
         let width = 480;
         let height = 270;
         let center_x = width/2;
-        let center_y = height/2 - 32; //offsets height to account for sprites
-        let radius_oochamon = .35;
-        let radius_trainer = .45;
-        let perspective_team_id  = battle_data.users[user_id].team_id;
+        let center_y = height/2 + 16; //offsets height to account for sprites
+        let radius_oochamon = .325;
+        let radius_user = .425;
+        let perspective_team_id  = battle_data.users[user_index].team_id;
         let rotation_increments = 360 / Object.keys(teams).length;
-        let offset_rotation = 240 + (parseInt(perspective_team_id) * rotation_increments); //THIS MIGHT NEED TO SUBTRACT INSTEAD IDK YET
-        
-        //These set the 'origin' of the image the bottom center
-        let user_offset_x = -16;
-        let user_offset_y = -32;
-        let ooch_offset_x = -32;
-        let ooch_offset_y = -64;
-
+        let offset_rotation = 135 + (parseInt(perspective_team_id) * rotation_increments);
 
         //Get position data for each user
         let sprites = [];
+        let platforms = [];
+        let shadows = [];
+        
         for(let team_id of Object.keys(teams)){
             let team = teams[team_id];
             for(let [i, user] of Object.entries(team)){
-                let rotation = deg_to_rad((parseInt(team_id) * rotation_increments) - (i * 10) + offset_rotation);
-            
-                let ooch_x = (Math.cos(rotation) * width * radius_oochamon) + ooch_offset_x + center_x
-                sprites.push({ //Oochamon Sprite
+
+                let rotation = deg_to_rad((parseInt(team_id) * rotation_increments) + (i * 20) + offset_rotation);
+                let avg_x = 0;
+                let avg_y = 0;
+                let avg_num = 0
+
+
+                let ooch_info = user.party[user.active_slot];
+                let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
+                let ooch_y = (Math.sin(rotation) * radius_oochamon * height) + center_y;
+                let ooch_sprite = { //Oochamon Sprite
                     x : ooch_x,
-                    y : (Math.sin(rotation) * height * radius_oochamon) + ooch_offset_y + center_y,
-                    sprite : `./Art/ResizedArt/${_.lowerCase(user.party[user.active_slot].name)}.png`,
-                    flipped : ooch_x > center_x
-                }) 
+                    y : ooch_y,
+                    origin_x : 32,
+                    origin_y : 64,
+                    sprite : `./Art/ResizedArt/${_.lowerCase(ooch_info.name)}.png`,
+                    x_scale : ooch_x < center_x ? -1 : 1,
+                    y_scale : 1,
+                    ooch_info : ooch_info,
+                    user_info : false,
+                    user_index : user.user_index
+                };
+                sprites.push(ooch_sprite);
+                shadows.push({
+                    x : ooch_x,
+                    y : ooch_y,
+                    origin_x : 32,
+                    origin_y : 16
+                })
+                avg_x += ooch_x;
+                avg_y += ooch_y;
+                avg_num++;
 
                 
                 if(user.battle_sprite != false){ //User Sprite
-                    let user_x = (Math.cos(rotation) * width * radius_trainer)  + user_offset_x + center_x
-                    sprites.push({
+                    let user_x = (Math.cos(rotation) * radius_user * width) + center_x;
+                    let user_y = (Math.sin(rotation) * radius_user * height) + center_y;
+                    let user_sprite = {
                         x : user_x,
-                        y : (Math.sin(rotation) * height * radius_trainer) - user_offset_y + center_y,
+                        y : user_y,
+                        origin_x : 16,
+                        origin_y : 32,
                         sprite : `./Art/NPCs/${user.battle_sprite}.png`,
-                        flipped : user_x > center_x
+                        x_scale : user_x < center_x ? -1 : 1,
+                        y_scale : 1,
+                        ooch_info : false,
+                        user_info : user,
+                        user_index : user.user_index
+                    }
+                    sprites.push(user_sprite);
+                    shadows.push({
+                        x : user_x,
+                        y : user_y,
+                        origin_x : 32,
+                        origin_y : 16
                     })
+                    avg_x += user_x;
+                    avg_y += user_y;
+                    avg_num++;
                 }
+
+                platforms.push({
+                    x : avg_x / avg_num,
+                    y : avg_y / avg_num,
+                    origin_x : 64,
+                    origin_y : 32
+                })
             }
         }
 
@@ -2382,94 +2401,103 @@ let functions = {
             a.y > b.y
         })
 
-        let canvas = new Canvas(480, 270);
+        let canvas = new Canvas(width, height);
         FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
         let ctx = canvas.getContext("2d");
-        const background = await loadImage(`./Art/BattleArt/battle_bg_hub.png`);
         
+        // Draw the background
         // This uses the canvas dimensions to stretch the image onto the entire canvas
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        const background = await loadImage(`./Art/BattleArt/battle_bg_hub.png`);
+        ctx.drawImage(background, 0, 0, width, height);
+
+        //Draw platforms per team
+        let platform_image = await loadImage(`./Art/BattleArt/test_platform_128x64.png`);
+        for(let platform of platforms){
+            ctx.drawImage(platform_image, platform.x - platform.origin_x, platform.y - platform.origin_y);
+        }
+
+        //Draw shadows for all sprites
+        let shadow_image = await loadImage(`./Art/BattleArt/shadow_64x32.png`);
+        for(let shadow of shadows){
+            ctx.drawImage(shadow_image, shadow.x - shadow.origin_x, shadow.y - shadow.origin_y);
+        }
+
+        //Add drop shadows
+        ctx.shadowColor = 'black';
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.shadowBlur = 3;
 
         //Draw the sprites to the image
         for(let sprite of sprites){
+            let horz_check = sprite.x < center_x;
+            let vert_check = sprite.y < center_y;
             let image = await loadImage(sprite.sprite);
-            ctx.drawImage(image, sprite.x, sprite.y);
-        }
-        
-        /*
-        const plrSprite = await loadImage('./Art/NPCs/c_000.png')
-        const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
-        let enemySprite = null;
-        if (enemy.trainer_battle_sprite != false && enemy.trainer_battle_sprite != undefined) {
-            enemySprite = await loadImage(`./Art/NPCs/${enemy.trainer_battle_sprite}.png`)
-        }
-        const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
-        const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
-        let plrOochTypes = [];
-        let enemyOochTypes = [];
-        let counter = 0;
-        for (let type of plr.ooch_party[plr.ooch_active_slot].type) {
-            let typeImage = await loadImage(`./Art/ArtFiles/icon_${type}.png`);
-            ctx.drawImage(typeImage, 125 + (18 * counter), 225, 16, 16);
-            counter++; 
-        }
-        counter = 0;
-        for (let type of enemy.ooch_party[enemy.ooch_active_slot].type) {
-            let typeImage = await loadImage(`./Art/ArtFiles/icon_${type}.png`);
-            ctx.drawImage(typeImage, 340 + (18 * counter), 95, 16, 16);
-            counter++;
-        }
-        let playerMemberObj = thread.guild.members.cache.get(user_id);
-        const playerName = playerMemberObj.displayName;
 
-        // Player
-        ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
-        ctx.font = `italic bold 20px main_med`;
-        fillTextScaled(playerName, 'main_med', 20, 150, canvas, 'italic bold');
-        ctx.fillText(playerName, 10, 110);
-        ctx.fillStyle = 'white';
-
-        // Player Prisms
-        for (let i = 0; i < plr.ooch_party.length; i++) {
-            ctx.drawImage(prismIcon, 10 + (30 * i), 115);
-        }
-
-        // Player Oochamon and Player Sprite
-        flipDrawImage(ctx, plrSprite, 27, 157, true); // horizontal mirror
-        flipDrawImage(ctx, oochPlr, 65, 180, true); // horizontal mirror
-        ctx.font = `10px main_med`;
-        ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 75, 255);
-        for (let i = 0; i < plrOochTypes.length; i++) {
-            
-        }
-        ctx.fillText(`HP: ${plr.ooch_party[plr.ooch_active_slot].current_hp} / ${plr.ooch_party[plr.ooch_active_slot].stats.hp}`, 75, 265);
-
-        // Enemy
-        ctx.font = `italic bold 20px main_med`;
-        ctx.textAlign = 'right';
-        ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
-        fillTextScaled(is_npc_battle ? enemy.name : '', 'main_med', 20, 150, canvas, 'italic bold');
-        ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 170);
-        ctx.fillStyle = 'white';
-
-        if (is_npc_battle) {
-            // Enemy Prisms
-            for (let i = 0; i < enemy.ooch_party.length; i++) {
-                ctx.drawImage(prismIcon, 420 - (30 * i), 120);
+            if(horz_check){ 
+                flipDrawImage(ctx, image, sprite.x - sprite.origin_x, sprite.y - sprite.origin_y, true); 
             }
-
-            if (enemySprite != null) {
-                // Enemy Sprite
-                ctx.drawImage(enemySprite, 421, 75);
+            else{
+                ctx.drawImage(image, sprite.x - sprite.origin_x, sprite.y - sprite.origin_y);
             }
         }
 
-        // Enemy Oochamon
-        ctx.drawImage(oochEnemy, 350, 15);
-        ctx.font = `10px main_med`;
-        ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 90)
-        ctx.textAlign = 'left';
-        */
+        //Draw UI Elements
+        for(let sprite of sprites){
+            let horz_check = sprite.x < center_x;
+            let vert_check = sprite.y < center_y;
+            let buffer = 8;
+            let image = await loadImage(sprite.sprite);
+
+            let ooch_info = sprite.ooch_info;
+            if(ooch_info != false){
+                let draw_x = horz_check ? sprite.x - 16 : sprite.x + 16;
+                let draw_y = sprite.y + buffer;
+                
+                ctx.fillStyle = 'white';
+                ctx.font = `italic bold 10px main_med`;
+                ctx.textAlign = horz_check ? 'left' : 'right';
+                
+                if(sprite.user_index == user_index){
+                    ctx.fillText(`Lv. ${ooch_info.level} ${ooch_info.nickname}`, draw_x, draw_y);
+                }
+                else{ //Uses name instead of nickname to prevent users abusing nicknames
+                    ctx.fillText(`Lv. ${ooch_info.level} ${ooch_info.name}`, draw_x, draw_y);
+                }
+
+                let type_x = horz_check ? draw_x : draw_x - 16;
+                let type_y = draw_y + 4;
+                let step = horz_check ? 18 : -18;
+                let counter_types = 0
+                for(let type of ooch_info.type){
+                    let type_image = await loadImage(`./Art/ArtFiles/icon_${type}.png`)
+                    ctx.drawImage(type_image, type_x + (counter_types * step), type_y, 16, 16);
+                    counter_types++;
+                }
+            }
+
+            let user_info = sprite.user_info;
+            if(user_info != false){
+                let draw_x = sprite.x;
+                let draw_y = vert_check ? sprite.y - image.height - (buffer * 2.5) : sprite.y + (buffer * 3);
+
+                ctx.fillStyle = 'white';
+                ctx.font = `italic bold 16px main_med`;
+                ctx.textAlign = 'center';
+
+                ctx.fillText(`${user_info.name}`, draw_x, draw_y);
+
+                //Draw prisms if this is a non-wild battle
+                if(user_info.user_type != UserType.Wild){
+                    let step = horz_check ? -24 : 24;
+                    let prism_x = horz_check ? (sprite.x - (image.width * 1.5) - buffer) : (sprite.x + (image.width * .5) + buffer);
+                    let prism_image = await loadImage('./Art/ArtFiles/item_prism.png');
+                    for(let i = (user_info.party.length) - 1; i >= 0; i--){ //iterate backwards to achieve the desired stacking effect
+                        ctx.drawImage(prism_image, prism_x + (i * step), sprite.y - sprite.origin_y, 32, 32)
+                    }
+                }
+            }
+        }
 
         let pngData = canvas.toBufferSync('png');
 
