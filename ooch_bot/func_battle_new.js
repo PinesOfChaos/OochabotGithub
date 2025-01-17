@@ -45,6 +45,7 @@ let functions = {
         let thread_id = false;
         let guild_id = false;
         let user_id = false;
+        let heal_inv = [], prism_inv = [], other_inv = [];
         
         switch (type) {
             case UserType.Wild:
@@ -72,6 +73,7 @@ let functions = {
                 party = party_generated;
                 is_catchable = options.is_catchable;
                 team_id = type;
+                prism_inv = 
                 battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
             break;
             case UserType.Player:
@@ -91,7 +93,9 @@ let functions = {
                 party = profile.ooch_party;
                 active_slot = profile.ooch_active_slot;
                 display_msg_id = profile.display_msg_id;
-                
+                heal_inv = profile.heal_inv;
+                prism_inv = profile.prism_inv;
+                other_inv = profile.other_inv;
             break;
         }
 
@@ -100,6 +104,9 @@ let functions = {
             name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
             battle_sprite: battle_sprite,
             user_id: user_id,
+            heal_inv: heal_inv,
+            prism_inv: prism_inv,
+            other_inv: other_inv,
             team_id: team_id,
             user_type: type,
             thread_id: thread_id,
@@ -174,7 +181,7 @@ let functions = {
             turn_msg_counter : 0,
             battle_state : BattleState.Start,
             battle_action_queue : [],
-            battle_speed : 2500,
+            battle_speed : 1000,
             
             end_of_turn_switch_queue : [],
 
@@ -207,7 +214,6 @@ let functions = {
                     //All other players in combat
                     if(id2 != id){ 
                         let user2 = users[id2];
-                        console.log(user2);
                         let active_ooch = user2.party[user2.active_slot];
                         if (user2.is_catchable) { //Wild oochamon
                             battleStartText += `# A wild ${user2.name} appeared!\n`;
@@ -228,19 +234,15 @@ let functions = {
 
 
                 let thread = botClient.channels.cache.get(user.thread_id);
-                await thread.send(`${battleStartText}\n${sendOutText}`);
+                // Generate intro to battle image
+                let battle_image = await functions.generate_battle_image(battleDataObj, id);
+                thread.send({ 
+                    content: battleStartText,
+                    files: [battle_image]
+                });
+                await wait(battleDataObj.delay);
+                await thread.send({embeds : [functions.battle_embed_create( '**------------ Battle Start ------------**', `${sendOutText}`)]});
 
-                //Send the start_message to the user
-                // // Generate intro to battle image
-                // let battle_image = await generate_battle_image(thread, user_id, db.profile.get(user_id), trainer_obj, is_npc_battle);
-                // thread.send({ 
-                //     content: battleStartText
-                //     //files: [battle_image]
-                // });
-                
-                // if (abilityMsg.replaceAll('\n','') != '') {
-                //     await thread.send(abilityMsg);
-                // }
             }
         }
 
@@ -250,7 +252,7 @@ let functions = {
             switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
         }
         if(switch_in_text != ''){
-            await functions.distribute_messages(battleDataObj.users, switch_in_text);
+            await functions.distribute_messages(battleDataObj.users, { embeds : [functions.battle_em('**------------ Abilities ------------**', switch_in_text)]});
         }
 
         //Send the round start message
@@ -263,6 +265,7 @@ let functions = {
 
     /**
      * Create an Attack action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @param {Number} target_user_index The user to be hit by the move
      * @param {Number} move_id The id of the move to be used
@@ -283,6 +286,7 @@ let functions = {
 
     /**
      * Create a Run action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @returns returns a battle action object
      */
@@ -298,6 +302,7 @@ let functions = {
 
     /**
      * Create a Switch action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @param {Number} slot_to The slot to switch to
      * @param {Boolean} is_switching Whether the user is switching a mon in or just sending one out
@@ -319,6 +324,7 @@ let functions = {
 
     /**
      * Create a Prism action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
      * @param {Number} target_user_index The user whos active mon we're catching
@@ -338,12 +344,13 @@ let functions = {
 
     /**
      * Create a Heal action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
      * @param {Number} slot_target The slot to apply healing to
      * @returns returns a battle action object
      */
-    new_battle_action_heal : function(battle_data, user_index, slot_to){
+    new_battle_action_heal : function(battle_data, user_index, item_id, slot_target){
         let action = {
             action_type : BattleAction.Heal,
             priority : BattleAction.Heal,
@@ -358,11 +365,12 @@ let functions = {
 
     /**
      * Create an Other action
+     * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
      * @param {Number} item_id The id of the Item to use
      * @returns returns a battle action object
      */
-    new_battle_action_other : function(battle_data, user_index, slot_to){
+    new_battle_action_other : function(battle_data, user_index, item_id){
         let action = {
             action_type : BattleAction.Other,
             priority : BattleAction.Other,
@@ -524,6 +532,8 @@ let functions = {
     /* TODOs: 
         - Ensure the turn msg counters are correct after this is correct globally
         - Make sure messages are updated properly
+        - Disable the switch button if you have no oochamon is selected
+        - Setup submenu to select Oochamon to heal, rather than only being able to heal the currently sent out Oochamon.
     */
 
     /** Gather input for battle actions
@@ -587,22 +597,17 @@ let functions = {
         let bagButtons = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId('heal_button')
+                    .setCustomId('heal')
                     .setLabel('Healing')
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('<:item_potion_magic:1274937146423115922>'),
             ).addComponents(
                 new ButtonBuilder()
-                    .setCustomId('prism_button')
+                    .setCustomId('prism')
                     .setLabel('Prism')
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('<:item_prism:1274937161262698536>')
                     .setDisabled(!battle_data.is_catchable),
-            ).addComponents(
-                new ButtonBuilder()
-                    .setCustomId('back')
-                    .setLabel('Back')
-                    .setStyle(ButtonStyle.Danger),
             )
     
         const backButton = new ActionRowBuilder()
@@ -627,7 +632,7 @@ let functions = {
                 }
             } else {
                 let userThread = botClient.channels.cache.get(user.thread_id);
-                await userThread.send({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
+                await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
 
                 const inputCollector = userThread.createMessageComponentCollector();
                 
@@ -636,8 +641,8 @@ let functions = {
                     let activeOoch = user.party[user.active_slot];
 
                     if (customId == BattleInput.Back) {
-                        await i.update({ content: `### -- Select An Action --`, components: [inputRow, inputRow2, inputRow3] });
-
+                        await i.update({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
+                        
                     } else if (customId == BattleInput.Attack) {
                         let move_id, move_name, move_type, move_damage, move_effective_emote = '',
                             buttonStyle = ButtonStyle.Primary;
@@ -692,93 +697,219 @@ let functions = {
                             // TODO: Handle more than 1 user, this needs a new submenu
                         }
 
-                        i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
-                            await functions.process_battle_actions(battle_id);
+                            i.update({ content: `` });
+                            i.deleteReply();
+                            functions.process_battle_actions(battle_id);
+                        } else {
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
 
                     } else if (customId == BattleInput.Switch) {
 
-                    } else if (customId == BattleInput.Bag) {
-
-                    } else if (customId == BattleInput.BagHeal) {
-
-                    } else if (customId == BattleInput.BagPrism) {
+                        let ooch_inv = user.party;
+                        let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
                         
-                    } else if (customId == BattleInput.Run) {
-                        user.action_selected = functions.new_battle_action_run(user.user_index);
+                        switchButtons1 = new ActionRowBuilder();
+                        switchButtons2 = new ActionRowBuilder();
 
-                        i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+                        for (let i = 0; i < ooch_inv.length; i++) {
+                            ooch_check = ooch_inv[i];
+                            ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                            ooch_name = ooch_check.nickname;
+                            ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
+                            ooch_button_color = ButtonStyle.Primary;
+                            ooch_disable = false;
+        
+                            if (i == user.active_slot) {
+                                ooch_button_color = ButtonStyle.Success;
+                                ooch_prev = ooch_check;
+                                ooch_disable = true;
+                            }
+                            else if (ooch_check.current_hp <= 0) {
+                                ooch_disable = true;
+                            }
+        
+                            ((i <= 1) ? switchButtons1 : switchButtons2).addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`switch_${i}`)
+                                    .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
+                                    .setStyle(ooch_button_color)
+                                    .setEmoji(ooch_emote)
+                                    .setDisabled(ooch_disable),
+                            )
+                        }
+
+                        await i.update({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2, backButton] : [switchButtons1, backButton] });
+
+                    } else if (customId.includes('switch_')) {
+
+                        user.action_selected = functions.new_battle_action_switch(battle_data, user.user_index, customId.replace('switch_', ''), true, false);
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
-                            functions.handle_battle_action(battle_id);
+                            i.update({ content: `` });
+                            i.deleteReply();
+                            functions.process_battle_actions(battle_id);
+                        } else {
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
+
+                    } else if (customId == BattleInput.Bag) {
+                        await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
+                        
+                    } else if (customId == BattleInput.BagHeal) {
+                        
+                        let heal_inv = user.heal_inv;
+                        let heal_inv_keys = Object.keys(heal_inv);
+                        let bag_select = new ActionRowBuilder();
+                        let heal_select_options = [];
+                        
+                        for (let i = 0; i < heal_inv_keys.length; i++) {
+                            let id = heal_inv_keys[i];
+                            let amount = heal_inv[heal_inv_keys[i]];
+
+                            if (amount > 0 && amount != undefined) {
+                                heal_select_options.push({ 
+                                    label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                    description: db.item_data.get(id, 'description_short').slice(0, 100),
+                                    value: `${id}`,
+                                    emoji: db.item_data.get(id, 'emote'),
+                                })
+                            }
+                        }
+
+                        bag_select.addComponents(
+                            new StringSelectMenuBuilder()
+                                .setCustomId('heal_item_select')
+                                .setPlaceholder('Select an item in your heal inventory to use!')
+                                .addOptions(heal_select_options),
+                        );
+
+                        await i.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bagButtons, backButton] })
+
+                    } else if (customId == BattleInput.BagPrism) {
+
+                        let prism_inv = user.prism_inv;
+                        let prism_inv_keys = Object.keys(prism_inv);
+                        let bag_select = new ActionRowBuilder();
+                        let prism_select_options = [];
+                        
+                        for (let i = 0; i < prism_inv_keys.length; i++) {
+                            let id = prism_inv_keys[i];
+                            let amount = prism_inv[prism_inv_keys[i]];
+
+                            if (amount > 0 && amount != undefined) {
+                                prism_select_options.push({ 
+                                    label: `${db.item_data.get(id, 'name')} (${amount})`,
+                                    description: db.item_data.get(id, 'description_short').slice(0, 100),
+                                    value: `${id}`,
+                                    emoji: db.item_data.get(id, 'emote'),
+                                })
+                            }
+                        }
+
+                        bag_select.addComponents(
+                            new StringSelectMenuBuilder()
+                                .setCustomId('prism_item_select')
+                                .setPlaceholder('Select an item in your pventory to use!')
+                                .addOptions(prism_select_options),
+                        );
+
+                        await i.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bagButtons, backButton] });
+                    } else if (customId.includes('_item_select')) {
+
+                        if (customId == 'prism_item_select') {
+                            user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0]);
+                        } else {
+                            user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, i.values[0], user.active_slot);
+                        }
+
+                        // Continue on if everyone has selected (which should happen at the end)
+                        if (battle_data.users.every(u => u.action_selected !== false)) {
+                            db.battle_data.set(battle_id, battle_data);
+                            inputCollector.stop();
+                            i.update({ content: `` });
+                            i.deleteReply();
+                            functions.process_battle_actions(battle_id);
+                        } else {
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+                        }
+                        
+
+                    } else if (customId == BattleInput.Run) {
+                        user.action_selected = functions.new_battle_action_run(battle_data, user.user_index);
+
+                        // Continue on if everyone has selected (which should happen at the end)
+                        if (battle_data.users.every(u => u.action_selected !== false)) {
+                            db.battle_data.set(battle_id, battle_data);
+                            inputCollector.stop();
+                            i.update({ content: `` });
+                            i.deleteReply();
+                            functions.process_battle_actions(battle_id);
+                        } else {
+                            i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+                        }
+                        
                     } else if (customId == BattleInput.Info) {
-                        // TODO: Add this, and make support for multiple Oochamon somehow
-                            // let plrOochPrisms = '';
-                            // for (let ooch of d) {
-                            //     plrOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            // }
-            
-                            // let enemyOochPrisms = '';
-                            // for (let ooch of ooch_enemy_profile.ooch_party) {
-                            //     enemyOochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
-                            // }
-            
-                            // let oochInfoFields = [];
-                            // const formatStatBar = (stat) => {
-                            //     return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
-                            // };
-            
-                            // // Setup field info for the embed about both oochamon
-                            // for (let ooch of [ooch_plr, ooch_enemy]) {
-                            //     let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
-                                
-                            //     let infoStr = `**Oochamon Left:** ${oochInfoFields.length == 0 ? plrOochPrisms : enemyOochPrisms}\n` +
-                            //                 `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
-                            //                 `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
-                            //                 `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                            //                 `**Stat Changes:**\n` +
-                            //                 `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                            //                 `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                            //                 `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                            //                 `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                            //                 `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
-            
-                            //     if (ooch != ooch_enemy) {
-                            //         let moveset_str = ``;
-                            //         for (let move_id of ooch.moveset) {
-                            //             let move = db.move_data.get(move_id);
-                            //             move.accuracy = Math.abs(move.accuracy);
-                            //             if (move.damage !== 0) {
-                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                            //             } else {
-                            //                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                            //             }
-                            //         }
-                            //         infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
-                            //     }
-            
-                            //     oochInfoFields.push({
-                            //         name: `${ooch == ooch_plr ? 'Player' : 'Enemy'} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                            //         value: infoStr,
-                            //         inline: true,
-                            //     });
-                            // }
-            
-            
-                            // let battleInfoEmbed = new EmbedBuilder()
-                            //     .setTitle('Battle Information 📒')
-                            //     .setDescription(`**Turn #${ooch_plr_profile.battle_turn_counter}**\n`)
-                            //     .addFields(oochInfoFields)
-                            // let info_msg = await thread.send({ content: null, embeds: [battleInfoEmbed], components: [back_button]});
+                        // TODO: Make this a page system to show enemy data
+                        
+                        let oochPrisms = '';
+                        for (let ooch of user.party) {
+                            oochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                        }
+        
+                        let oochInfoFields = [];
+                        const formatStatBar = (stat) => {
+                            return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
+                        };
+        
+                        // Setup field info for the embed about both oochamon
+                        for (let ooch of [user.party[user.active_slot]]) {
+                            let oochStatusEffects = ooch.status_effects.map(v => db.status_data.get(v, 'emote'));
+                            
+                            let infoStr = `**Oochamon Left:** ${oochPrisms}\n` +
+                                        `**Type:** ${functions.type_to_emote(ooch.type)} **${ooch.type.map(v => _.capitalize(v)).join(' | ')}**\n` +
+                                        `**Ability:** ${db.ability_data.get(ooch.ability, 'name')}\n` +
+                                        `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
+                                        `**Stat Changes:**\n` +
+                                        `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
+                                        `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
+                                        `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
+                                        `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
+                                        `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
+        
+                            let moveset_str = ``;
+                            for (let move_id of ooch.moveset) {
+                                let move = db.move_data.get(move_id);
+                                move.accuracy = Math.abs(move.accuracy);
+                                if (move.damage !== 0) {
+                                    moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
+                                } else {
+                                    moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
+                                }
+                            }
+                            infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
+        
+                            oochInfoFields.push({
+                                name: `${user.name_possessive} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
+                                value: infoStr,
+                                inline: true,
+                            });
+                        }
+        
+        
+                        let battleInfoEmbed = new EmbedBuilder()
+                            .setTitle('Battle Information 📒')
+                            .setDescription(`**Turn #${battle_data.turn_counter + 1}**\n`)
+                            .addFields(oochInfoFields)
+                            
+                        await i.update({ content: null, embeds: [battleInfoEmbed], components: [backButton] });
                     }
                 });
             }
@@ -1139,7 +1270,9 @@ let functions = {
         let ooch_target = target_user.party[target_user.active_slot];
         let return_string = `${user.name} threw a ${item.emote} ${item.name}.`;
 
-        let prism_result = functions.item_use(user.user_index, ooch, action.item_id); //True if successful catch, False if not
+        let prism_result = functions.item_use(user.user_id, ooch, action.item_id, true); //True if successful catch, False if not
+        battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
+
         if(prism_result == true){
             return_string += `\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
             
@@ -1226,16 +1359,10 @@ let functions = {
 
         let item = await db.item_data.get(action.item_id);
         let ooch = user.party[action.slot_target];
-        let return_string = `${user.name} used 1 ${item.emote} ${item.name}.`;
-
-        switch(item.type){
-            case 'potion':
-                return_string += await functions.item_use(user.user_index, ooch, action.item_id);
-            break;
-            case 'status':
-                return_string += await functions.item_use(user.user_index, ooch, action.item_id);
-            break;
-        }
+        let return_string = `${user.name} used 1 ${item.emote} **${item.name}**.`;
+        let extra_text = await functions.item_use(user.user_index, ooch, action.item_id, true); 
+        battle_data.users[action.user_index].heal_inv[action.item_id] -= 1;
+        return_string += extra_text;
 
         return {
             finish_battle : finish_battle,
@@ -1386,7 +1513,6 @@ let functions = {
      */
     battle_calc_exp: function(ooch, bonus_multiplier = 1) {
         let mon_data = db.monster_data.get(`${ooch.id}`);
-        console.log(mon_data);
         let evo_stage = mon_data.evo_stage;
         let exp_multiplier = 0.90
         let level = ooch.level;
@@ -1583,20 +1709,22 @@ let functions = {
 
         return([multiplier, string])
     },
-    item_use: function(user_id, ooch, item_id) {
-        let item_data = db.item_data.get(item_id);
+    
+    item_use: function(user_id, ooch, item_id, in_battle=false) {
+        let item_data = db.item_data.get(item_id); 
     
         if (item_data.type == 'potion') {
-            if (db.profile.get(user_id, 'player_state') == PlayerState.Combat && ooch.alive == true) {
+            if (in_battle && ooch.alive == true) {
+                let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                return ooch;
-            } else if (db.profile.get(user_id, 'player_state') != PlayerState.Combat) {
+                return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
+            } else if (in_battle == false) {
                 ooch.alive = true;
                 let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                return(`\n${ooch.emote} ${ooch.nickname} recovered ${ooch.current_hp - prev_hp} HP.`);
+                return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
             } 
             
         } else if (item_data.type == 'prism') {
@@ -2148,6 +2276,204 @@ let functions = {
         }
     
         return hp_string;
+    },
+
+        /**
+     * Generate a beginning of battle image based on data passed in
+     * @param {Object} thread The thread this instance of Oochamon is being played in
+     * @param {String} user_id The user ID of the user playing Oochamon
+     * @param {Object} plr The player object
+     * @param {Object} enemy The enemy object
+     * @param {Boolean} is_npc_battle If this is an NPC battle, or a wild battle.
+     * @returns A png attachment to be sent into a chat.
+     */
+    generate_battle_image: async function(battle_data, user_id) {
+
+        // Define helper functions that are only used here
+        function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
+            ctx.save();  // save the current canvas state
+            ctx.setTransform(
+                horizontal ? -1 : 1, 0, // set the direction of x axis
+                0, vertical ? -1 : 1,   // set the direction of y axis
+                x + (horizontal ? image.width : 0), // set the x origin
+                y + (vertical ? image.height : 0)   // set the y origin
+            );
+            ctx.drawImage(image,0,0);
+            ctx.restore(); // restore the state as it was when this function was called
+        }
+
+        const fillTextScaled = (text, font, fontSize, cutoff, canvas, fontMod = '') => {
+            const context = canvas.getContext('2d');
+            do {
+                // Assign the font to the context and decrement it so it can be measured again
+                context.font = `${fontMod} ${fontSize -= 1}px ${font}`;
+                // Compare pixel width of the text to the canvas minus the approximate avatar size
+            } while (context.measureText(text).width > cutoff);
+        
+            // Return the result to use in the actual canvas
+            return context.font;
+        };
+
+        function deg_to_rad(degrees){
+            return degrees * (180/Math.PI);
+        };
+
+        // if (items.some(item => item.a === '3')) {
+        //     // do something
+        // }
+
+        //Sort everyone into their teams
+        let teams = {};
+        for(let user of battle_data.users){
+            let team_id_to_text = `${user.team_id}`
+            if(!teams.hasOwnProperty(team_id_to_text)){
+                teams[team_id_to_text] = []
+            }
+            teams[team_id_to_text].push(user);
+        }
+
+        let width = 480;
+        let height = 270;
+        let center_x = width/2;
+        let center_y = height/2 - 32; //offsets height to account for sprites
+        let radius_oochamon = .35;
+        let radius_trainer = .45;
+        let perspective_team_id  = battle_data.users[user_id].team_id;
+        let rotation_increments = 360 / Object.keys(teams).length;
+        let offset_rotation = 240 + (parseInt(perspective_team_id) * rotation_increments); //THIS MIGHT NEED TO SUBTRACT INSTEAD IDK YET
+        
+        //These set the 'origin' of the image the bottom center
+        let user_offset_x = -16;
+        let user_offset_y = -32;
+        let ooch_offset_x = -32;
+        let ooch_offset_y = -64;
+
+
+        //Get position data for each user
+        let sprites = [];
+        for(let team_id of Object.keys(teams)){
+            let team = teams[team_id];
+            for(let [i, user] of Object.entries(team)){
+                let rotation = deg_to_rad((parseInt(team_id) * rotation_increments) - (i * 10) + offset_rotation);
+            
+                let ooch_x = (Math.cos(rotation) * width * radius_oochamon) + ooch_offset_x + center_x
+                sprites.push({ //Oochamon Sprite
+                    x : ooch_x,
+                    y : (Math.sin(rotation) * height * radius_oochamon) + ooch_offset_y + center_y,
+                    sprite : `./Art/ResizedArt/${_.lowerCase(user.party[user.active_slot].name)}.png`,
+                    flipped : ooch_x > center_x
+                }) 
+
+                
+                if(user.battle_sprite != false){ //User Sprite
+                    let user_x = (Math.cos(rotation) * width * radius_trainer)  + user_offset_x + center_x
+                    sprites.push({
+                        x : user_x,
+                        y : (Math.sin(rotation) * height * radius_trainer) - user_offset_y + center_y,
+                        sprite : `./Art/NPCs/${user.battle_sprite}.png`,
+                        flipped : user_x > center_x
+                    })
+                }
+            }
+        }
+
+        //Sort sprites by y-value for the illusion of depth on crowded scenes(depth-sorting may not be correct here, test it first!!!)
+        sprites.sort((a, b) => {
+            a.y > b.y
+        })
+
+        let canvas = new Canvas(480, 270);
+        FontLibrary.use("main_med", ["./fonts/LEMONMILK-Medium.otf"]);
+        let ctx = canvas.getContext("2d");
+        const background = await loadImage(`./Art/BattleArt/battle_bg_hub.png`);
+        
+        // This uses the canvas dimensions to stretch the image onto the entire canvas
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        //Draw the sprites to the image
+        for(let sprite of sprites){
+            let image = await loadImage(sprite.sprite);
+            ctx.drawImage(image, sprite.x, sprite.y);
+        }
+        
+        /*
+        const plrSprite = await loadImage('./Art/NPCs/c_000.png')
+        const oochPlr = await loadImage(`./Art/ResizedArt/${_.lowerCase(plr.ooch_party[plr.ooch_active_slot].name)}.png`);
+        let enemySprite = null;
+        if (enemy.trainer_battle_sprite != false && enemy.trainer_battle_sprite != undefined) {
+            enemySprite = await loadImage(`./Art/NPCs/${enemy.trainer_battle_sprite}.png`)
+        }
+        const oochEnemy = await loadImage(`./Art/ResizedArt/${_.lowerCase(enemy.ooch_party[enemy.ooch_active_slot].name)}.png`);
+        const prismIcon = await loadImage('./Art/ArtFiles/item_prism.png');
+        let plrOochTypes = [];
+        let enemyOochTypes = [];
+        let counter = 0;
+        for (let type of plr.ooch_party[plr.ooch_active_slot].type) {
+            let typeImage = await loadImage(`./Art/ArtFiles/icon_${type}.png`);
+            ctx.drawImage(typeImage, 125 + (18 * counter), 225, 16, 16);
+            counter++; 
+        }
+        counter = 0;
+        for (let type of enemy.ooch_party[enemy.ooch_active_slot].type) {
+            let typeImage = await loadImage(`./Art/ArtFiles/icon_${type}.png`);
+            ctx.drawImage(typeImage, 340 + (18 * counter), 95, 16, 16);
+            counter++;
+        }
+        let playerMemberObj = thread.guild.members.cache.get(user_id);
+        const playerName = playerMemberObj.displayName;
+
+        // Player
+        ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
+        ctx.font = `italic bold 20px main_med`;
+        fillTextScaled(playerName, 'main_med', 20, 150, canvas, 'italic bold');
+        ctx.fillText(playerName, 10, 110);
+        ctx.fillStyle = 'white';
+
+        // Player Prisms
+        for (let i = 0; i < plr.ooch_party.length; i++) {
+            ctx.drawImage(prismIcon, 10 + (30 * i), 115);
+        }
+
+        // Player Oochamon and Player Sprite
+        flipDrawImage(ctx, plrSprite, 27, 157, true); // horizontal mirror
+        flipDrawImage(ctx, oochPlr, 65, 180, true); // horizontal mirror
+        ctx.font = `10px main_med`;
+        ctx.fillText(`Lv. ${plr.ooch_party[plr.ooch_active_slot].level} ${plr.ooch_party[plr.ooch_active_slot].nickname}`, 75, 255);
+        for (let i = 0; i < plrOochTypes.length; i++) {
+            
+        }
+        ctx.fillText(`HP: ${plr.ooch_party[plr.ooch_active_slot].current_hp} / ${plr.ooch_party[plr.ooch_active_slot].stats.hp}`, 75, 265);
+
+        // Enemy
+        ctx.font = `italic bold 20px main_med`;
+        ctx.textAlign = 'right';
+        ctx.fillStyle = plr.location_data.area = 'fungal_cave' ? 'white' : 'black';
+        fillTextScaled(is_npc_battle ? enemy.name : '', 'main_med', 20, 150, canvas, 'italic bold');
+        ctx.fillText(is_npc_battle ? `${enemy.name}` : '', 450, 170);
+        ctx.fillStyle = 'white';
+
+        if (is_npc_battle) {
+            // Enemy Prisms
+            for (let i = 0; i < enemy.ooch_party.length; i++) {
+                ctx.drawImage(prismIcon, 420 - (30 * i), 120);
+            }
+
+            if (enemySprite != null) {
+                // Enemy Sprite
+                ctx.drawImage(enemySprite, 421, 75);
+            }
+        }
+
+        // Enemy Oochamon
+        ctx.drawImage(oochEnemy, 350, 15);
+        ctx.font = `10px main_med`;
+        ctx.fillText(`Lv. ${enemy.ooch_party[enemy.ooch_active_slot].level} ${enemy.ooch_party[enemy.ooch_active_slot].nickname}`, 410, 90)
+        ctx.textAlign = 'left';
+        */
+
+        let pngData = canvas.toBufferSync('png');
+
+        return pngData;
     },
 }
 
