@@ -137,11 +137,12 @@ let functions = {
         let abilityMsg = '';
         let battle_action_queue = [];
 
-        for(let i = 0; i < 2; i++){
-            let test_user = structuredClone(users[1]);
-            test_user.team_id = i;
-            users.push(test_user);
-        }
+        // This was used for testing alternate battle modes, feel free to delete
+        // for(let i = 0; i < 2; i++){
+        //     let test_user = structuredClone(users[1]);
+        //     test_user.team_id = i;
+        //     users.push(test_user);
+        // }
         
 
         // Add index to users
@@ -149,7 +150,6 @@ let functions = {
             users[i].user_index = i;
         }
     
-        console.log(users);
 
         // Setup the battle data
         let battleId = functions.generate_battle_id();
@@ -195,17 +195,17 @@ let functions = {
                         let user2 = users[id2];
                         let active_ooch = user2.party[user2.active_slot];
                         if (user2.is_catchable) { //Wild oochamon
-                            battleStartText += `# A wild ${user2.name} appeared!\n`;
+                            battleStartText += `## A wild ${user2.name} appeared!\n`;
                             if (db.profile.get(id, `oochadex[${active_ooch}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                             }
                         }
                         else if (user2.team_id != my_team_id) { //Opposing Player/NPC
-                            battleStartText += `# ${user2.name} wants to battle!\n`;
+                            battleStartText += `## ${user2.name} wants to battle!\n`;
                             sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
                         }
                         else { //Allied Player/NPC
-                            battleStartText += `# ${user2.name} allies with you!**\n`; 
+                            battleStartText += `## ${user2.name} allies with you!\n`; 
                             sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
                         }
                     }
@@ -1410,7 +1410,6 @@ let functions = {
                 
                 if(battle_data.give_rewards){
                     exp_given += Math.round(functions.battle_calc_exp(active_ooch, bonus_multiplier));
-                    console.log('GRANT EXP OR I KILL THE BOT')
                 }
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
@@ -2327,17 +2326,20 @@ let functions = {
             let team = teams[team_id];
             for(let [i, user] of Object.entries(team)){
 
-                let rotation = deg_to_rad((parseInt(team_id) * rotation_increments) + (i * 20) + offset_rotation);
+                
+                let rotation = deg_to_rad((parseInt(team_id) * rotation_increments) + offset_rotation);
                 let avg_x = 0;
                 let avg_y = 0;
                 let avg_num = 0
-
+                let team_step = 144 * i;
 
                 let ooch_info = user.party[user.active_slot];
                 let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
                 let ooch_y = (Math.sin(rotation) * radius_oochamon * height) + center_y;
+                team_step = team_step * (ooch_x < center_x ? 1 : -1);
+                
                 let ooch_sprite = { //Oochamon Sprite
-                    x : ooch_x,
+                    x : ooch_x + team_step,
                     y : ooch_y,
                     origin_x : 32,
                     origin_y : 64,
@@ -2346,25 +2348,27 @@ let functions = {
                     y_scale : 1,
                     ooch_info : ooch_info,
                     user_info : false,
-                    user_index : user.user_index
+                    user_index : user.user_index,
+                    horz_check : ooch_x < center_x,
+                    vert_check : ooch_y < center_y
                 };
                 sprites.push(ooch_sprite);
                 shadows.push({
-                    x : ooch_x,
+                    x : ooch_x + team_step,
                     y : ooch_y,
                     origin_x : 32,
                     origin_y : 16
                 })
-                avg_x += ooch_x;
+                avg_x += ooch_x + team_step;
                 avg_y += ooch_y;
                 avg_num++;
 
-                
+
                 if(user.battle_sprite != false){ //User Sprite
                     let user_x = (Math.cos(rotation) * radius_user * width) + center_x;
                     let user_y = (Math.sin(rotation) * radius_user * height) + center_y;
                     let user_sprite = {
-                        x : user_x,
+                        x : user_x + team_step,
                         y : user_y,
                         origin_x : 16,
                         origin_y : 32,
@@ -2373,16 +2377,18 @@ let functions = {
                         y_scale : 1,
                         ooch_info : false,
                         user_info : user,
-                        user_index : user.user_index
+                        user_index : user.user_index,
+                        horz_check : ooch_x < center_x,
+                        vert_check : ooch_y < center_y
                     }
                     sprites.push(user_sprite);
                     shadows.push({
-                        x : user_x,
+                        x : user_x + team_step,
                         y : user_y,
                         origin_x : 32,
                         origin_y : 16
                     })
-                    avg_x += user_x;
+                    avg_x += user_x + team_step;
                     avg_y += user_y;
                     avg_num++;
                 }
@@ -2430,8 +2436,8 @@ let functions = {
 
         //Draw the sprites to the image
         for(let sprite of sprites){
-            let horz_check = sprite.x < center_x;
-            let vert_check = sprite.y < center_y;
+            let horz_check = sprite.horz_check;
+            let vert_check = sprite.vert_check;
             let image = await loadImage(sprite.sprite);
 
             if(horz_check){ 
@@ -2444,8 +2450,8 @@ let functions = {
 
         //Draw UI Elements
         for(let sprite of sprites){
-            let horz_check = sprite.x < center_x;
-            let vert_check = sprite.y < center_y;
+            let horz_check = sprite.horz_check;
+            let vert_check = sprite.vert_check;
             let buffer = 8;
             let image = await loadImage(sprite.sprite);
 
@@ -2489,11 +2495,11 @@ let functions = {
 
                 //Draw prisms if this is a non-wild battle
                 if(user_info.user_type != UserType.Wild){
-                    let step = horz_check ? -24 : 24;
-                    let prism_x = horz_check ? (sprite.x - (image.width * 1.5) - buffer) : (sprite.x + (image.width * .5) + buffer);
-                    let prism_image = await loadImage('./Art/ArtFiles/item_prism.png');
+                    let step = 12;
+                    let prism_x = horz_check ? (sprite.x - (image.width * 1.5) - buffer) + 24 : (sprite.x + (image.width * .5) + buffer) - 8;
+                    let prism_image = await loadImage('./Art/BattleArt/prism_tiny.png');
                     for(let i = (user_info.party.length) - 1; i >= 0; i--){ //iterate backwards to achieve the desired stacking effect
-                        ctx.drawImage(prism_image, prism_x + (i * step), sprite.y - sprite.origin_y, 32, 32)
+                        ctx.drawImage(prism_image, prism_x, sprite.y - sprite.origin_y + (i * step));
                     }
                 }
             }
