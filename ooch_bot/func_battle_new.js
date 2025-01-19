@@ -138,11 +138,11 @@ let functions = {
         let battle_action_queue = [];
 
         // This was used for testing alternate battle modes, feel free to delete
-        // for(let i = 0; i < 2; i++){
-        //     let test_user = structuredClone(users[1]);
-        //     test_user.team_id = i;
-        //     users.push(test_user);
-        // }
+        for(let i = 0; i < 2; i++){
+            let test_user = structuredClone(users[1]);
+            test_user.team_id = i;
+            users.push(test_user);
+        }
         
 
         // Add index to users
@@ -177,7 +177,7 @@ let functions = {
         }
 
         // Handle all the text
-        let battleStartText, sendOutText, active_ooch;
+        let battleStartText, sendOutText, active_ooch, types_string;
         for (let [id, user] of battleDataObj.users.entries()) {
             //Reset text messages per player
             battleStartText = '';
@@ -185,7 +185,8 @@ let functions = {
 
             //The current player in combat
             active_ooch = user.party[user.active_slot];
-            sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
+            types_string = `- Type: ${functions.type_to_emote(active_ooch.type)}`;
+            sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
 
             if (users[id].is_player) {
                 let my_team_id = users[id].team_id;
@@ -193,21 +194,25 @@ let functions = {
                     //All other players in combat
                     if(id2 != id){ 
                         let user2 = users[id2];
-                        let active_ooch = user2.party[user2.active_slot];
+                        active_ooch = user2.party[user2.active_slot];
+                        types_string = `- Type: ${functions.type_to_emote(active_ooch.type)}`;
+                        
                         if (user2.is_catchable) { //Wild oochamon
-                            battleStartText += `## A wild ${user2.name} appeared!\n`;
+                            battleStartText += `## A wild ${user2.name} appeared! ${types_string}\n`;
                             if (db.profile.get(id, `oochadex[${active_ooch}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                             }
                         }
                         else if (user2.team_id != my_team_id) { //Opposing Player/NPC
                             battleStartText += `## ${user2.name} wants to battle!\n`;
-                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
+                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
                         }
                         else { //Allied Player/NPC
                             battleStartText += `## ${user2.name} allies with you!\n`; 
-                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**!\n`
+                            sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
                         }
+
+                        
                     }
                 }
 
@@ -2322,6 +2327,22 @@ let functions = {
         let platforms = [];
         let shadows = [];
         
+        sprites.push({ //VS sign
+            x : width / 2,
+            y : height / 2,
+            origin_x : width / 2,
+            origin_y : height / 2,
+            sprite : `./Art/BattleArt/battle_bg_VS.png`,
+            x_scale : 1,
+            y_scale : 1,
+            ooch_info : false,
+            user_info : false,
+            user_index : false,
+            horz_check : false,
+            vert_check : false
+        })
+
+
         for(let team_id of Object.keys(teams)){
             let team = teams[team_id];
             for(let [i, user] of Object.entries(team)){
@@ -2331,7 +2352,7 @@ let functions = {
                 let avg_x = 0;
                 let avg_y = 0;
                 let avg_num = 0
-                let team_step = 144 * i;
+                let team_step = 144 * i + (team.length > 1 ? -40 : 0);
 
                 let ooch_info = user.party[user.active_slot];
                 let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
@@ -2402,9 +2423,11 @@ let functions = {
             }
         }
 
-        //Sort sprites by y-value for the illusion of depth on crowded scenes(depth-sorting may not be correct here, test it first!!!)
+        
+
+        //Sort sprites by y-value for the illusion of depth on crowded scenes
         sprites.sort((a, b) => {
-            a.y > b.y
+            a.y - b.y
         })
 
         let canvas = new Canvas(width, height);
@@ -2471,26 +2494,29 @@ let functions = {
                     ctx.fillText(`Lv. ${ooch_info.level} ${ooch_info.name}`, draw_x, draw_y);
                 }
 
-                let type_x = horz_check ? draw_x : draw_x - 16;
-                let type_y = draw_y + 4;
-                let step = horz_check ? 18 : -18;
-                let counter_types = 0
-                for(let type of ooch_info.type){
-                    let type_image = await loadImage(`./Art/ArtFiles/icon_${type}.png`)
-                    ctx.drawImage(type_image, type_x + (counter_types * step), type_y, 16, 16);
-                    counter_types++;
-                }
+                //This is used for adding types to the image, commented out for now
+                // let type_x = horz_check ? draw_x : draw_x - 16;
+                // let type_y = draw_y + 4;
+                // let step = horz_check ? 18 : -18;
+                // let counter_types = 0
+                // for(let type of ooch_info.type){
+                //     let type_image = await loadImage(`./Art/ArtFiles/icon_${type}.png`)
+                //     ctx.drawImage(type_image, type_x + (counter_types * step), type_y, 16, 16);
+                //     counter_types++;
+                // }
             }
 
             let user_info = sprite.user_info;
             if(user_info != false){
-                let draw_x = sprite.x;
-                let draw_y = vert_check ? sprite.y - image.height - (buffer * 2.5) : sprite.y + (buffer * 3);
+                let draw_x = sprite.x + (horz_check ? buffer : -buffer);
+                let draw_y = sprite.y + (vert_check ?  -image.height - (buffer * 2.5) : (buffer * 3));
 
                 ctx.fillStyle = 'white';
                 ctx.font = `italic bold 16px main_med`;
                 ctx.textAlign = 'center';
 
+
+                fillTextScaled(user_info.name, 'main_med', 16, 120, canvas, 'italic bold');
                 ctx.fillText(`${user_info.name}`, draw_x, draw_y);
 
                 //Draw prisms if this is a non-wild battle
