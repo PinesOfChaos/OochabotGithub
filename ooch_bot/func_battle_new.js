@@ -187,7 +187,7 @@ let functions = {
 
             //The current player in combat
             active_ooch = user.party[user.active_slot];
-            types_string = `- Type: ${functions.type_to_emote(active_ooch.type)}`;
+            types_string = ` ${functions.type_to_emote(active_ooch.type)}`;
             sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
 
             if (users[id].is_player) {
@@ -197,7 +197,7 @@ let functions = {
                     if(id2 != id){ 
                         let user2 = users[id2];
                         active_ooch = user2.party[user2.active_slot];
-                        types_string = `- Type: ${functions.type_to_emote(active_ooch.type)}`;
+                        types_string = ` ${functions.type_to_emote(active_ooch.type)}`;
                         
                         if (user2.is_catchable) { //Wild oochamon
                             battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
@@ -228,7 +228,7 @@ let functions = {
                     files: [battle_image]
                 });
                 await wait(battleDataObj.delay);
-                await thread.send({embeds : [functions.battle_embed_create( '**------------ Battle Start ------------**', `${sendOutText}`)]});
+                await thread.send({content: '## ------------ Battle Start ------------', embeds : [functions.battle_embed_create(`${sendOutText}`)]});
 
             }
         }
@@ -239,7 +239,7 @@ let functions = {
             switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
         }
         if(switch_in_text != ''){
-            await functions.distribute_messages(battleDataObj.users, { embeds : [functions.battle_em('**------------ Abilities ------------**', switch_in_text)]});
+            await functions.distribute_messages(battleDataObj.users, { embeds : [functions.battle_embed_create(switch_in_text)]});
         }
 
         //Send the round start message
@@ -635,7 +635,7 @@ let functions = {
                     let activeOoch = user.party[user.active_slot];
 
                     if (customId == BattleInput.Back) {
-                        await i.update({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
+                        await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
                         
                     } else if (customId == BattleInput.Attack) {
                         let move_id, move_name, move_type, move_damage, move_effective_emote = '',
@@ -935,7 +935,6 @@ let functions = {
             action = actions.shift();
 
             let user = battle_data.users[action.user_index]
-            header = `**------------ ${user.name}'s Turn ------------**\n`;
             text = ``;
 
             //Perform the action for the turn
@@ -944,29 +943,26 @@ let functions = {
             finish_battle = turn_data.finish_battle;
             
             //Check if anything fainted
-            
             faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
             text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
             
-
             //Send the text to each of the user's threads
-            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(header, text)]});
-            
+            await functions.distribute_messages(battle_data.users, { content: `## ------------ ${user.name}'s Turn ------------`, embeds: [functions.battle_embed_create(text, turn_data.embed_color, turn_data.embed_header)]});
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
 
             if(finish_battle == true){
                 if(('finish_data' in turn_data) && turn_data.finish_data != false){
-                    let finish_data = turn_data.finish_data;
+                    let finish_data = turn_data.finish_data;f
                     switch(finish_data.type){
                         case 'capture':
                             let delay = turn_data.finish_data.delay;
                             let embed = turn_data.finish_data.info_embed;
                             let png = turn_data.finish_data.ooch_png
 
-                            await functions.distribute_messages(battle_data.users, { embeds: [embed], files: [png] });
+                            await functions.distribute_messages(battle_data.users, { content: `## ------------ ${user.name}'s Turn ------------`, embeds: [embed], files: [png] });
                             await wait(delay);
                         break;
                     }
@@ -979,9 +975,8 @@ let functions = {
         }
 
         //End of round stuff
-        let end_of_round_header = `**------------ End of Round ------------**\n`;
+        let end_of_round_header = `## ------------ End of Round ------------`;
         let end_of_round_text = ``;
-
 
         //Apply end of round abilities/effects (burn, stat changes, etc.)
         let ooch, eot_result;
@@ -1053,11 +1048,11 @@ let functions = {
 
         if(end_of_round_text != ''){
             await wait(battle_data.battle_speed);
-            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(end_of_round_header, end_of_round_text)]});
+            await functions.distribute_messages(battle_data.users, { content: end_of_round_header, embeds: [functions.battle_embed_create(end_of_round_text)]});
         }
 
         //End of round switch-ins
-        let faint_switch_header = '**------------ Switching In ------------**';
+        let faint_switch_header = '## ------------ Switching In ------------';
         let faint_switch_text = '';
         functions.end_of_round_prompt_switch(battle_data);
 
@@ -1074,10 +1069,8 @@ let functions = {
         }
         
         if(faint_switch_text != ''){
-            await functions.distribute_messages(battle_data.users, { embeds: [functions.battle_embed_create(faint_switch_header, faint_switch_text)]});
+            await functions.distribute_messages(battle_data.users, { content: faint_switch_header, embeds: [functions.battle_embed_create(faint_switch_text)]});
         }
-
-        
 
         //Clear all user's actions
         battle_data.turn_counter++;
@@ -1089,9 +1082,6 @@ let functions = {
             
             await wait(battle_data.battle_speed);
             functions.distribute_messages(battle_data.users, { embeds : [functions.generate_round_start_embed(battle_data)]});
-            
-
-            //TODO PROMPT NEXT ROUND'S BATTLE ACTIONS PLS JEFF I BEG OF YOU (currently this will just infinite loop if you select an attack)
             
             await wait(battle_data.battle_speed);
             functions.prompt_battle_actions(battle_data.battle_id);
@@ -1105,16 +1095,17 @@ let functions = {
 
     /**
      * Creates a simple embed for the battle
-     * @param {String} header the text to display at the top of the embed
      * @param {String} text the text to display in the body of the embed
      * @param {Color} color the color along the edge of the embed
+     * @param {String} header the text to display at the top of the embed
      * @returns a simple embed
      */
-    battle_embed_create : function(header, text, color = '#808080'){
+    battle_embed_create : function(text, color = '#808080', header = false) {
         let embed = new EmbedBuilder()
             .setColor(color)
-            .setTitle(header)
             .setDescription(text);
+        if (header != false) embed.setTitle(header)
+            
         return embed;
     },
 
@@ -1162,7 +1153,9 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string
+            return_string : return_string,
+            embed_header : '⚔️ Attack ⚔️',
+            embed_color : '#ffaa00',
         }
     },
 
@@ -1199,7 +1192,9 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string
+            return_string : return_string,
+            embed_header : '↩️ Switch ↩️',
+            embed_color : '#0095ff',
         }
     },
 
@@ -1217,7 +1212,7 @@ let functions = {
                 //Enemy users' mons that affect the new mon
                 switch (ooch_enemy.ability) {
                     case Ability.Alert: //Increases atk if a new enemy mon switches in
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, 1);
+                        ooch_enemy = functions.modify_stat(ooch_enemy, Stats.Attack, 1);
                         string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s ability **Alert** raised its ATK from the new Oochamon switch!`;
                     break;
                     case Ability.Duplicant: //Copies the ability of the newly switched-in mon
@@ -1240,11 +1235,11 @@ let functions = {
                         string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** lost ${prev_hp - ooch_enemy.current_hp} HP due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Boisterous**!`;
                     break;
                     case Ability.Gentle: //Lowers enemy ATK 1 stage
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Attack, -1);
+                        ooch_enemy = functions.modify_stat(ooch_enemy, Stats.Attack, -1);
                         string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its ATK lowered due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Gentle**!`;
                     break;
                     case Ability.Withering: //Lowers enemy DEF 1 stage
-                        ooch_enemy = modify_stat(ooch_enemy, Stats.Defense, -1);
+                        ooch_enemy = functions.modify_stat(ooch_enemy, Stats.Defense, -1);
                         string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}** had its DEF lowered due to ${ooch_to.emote} **${ooch_to.nickname}**'s **Withering**!`;
                     break;
                 }
@@ -1316,7 +1311,7 @@ let functions = {
                 }
 
                 displayEmbed.setDescription(return_string)
-                await item_sel.update({ content: `**------------ Player Turn ------------**`, embeds: [displayEmbed], components: []});
+                await item_sel.update({ content: `## ------------ Player Turn ------------`, embeds: [displayEmbed], components: []});
 
                 // Heal the caught Oochamon when you catch it.
                 ooch_target.current_hp = ooch_target.stats.hp;
@@ -1344,7 +1339,9 @@ let functions = {
         return {
             finish_battle : finish_battle,
             finish_data : finish_data,
-            return_string : return_string
+            return_string : return_string,
+            embed_header : `<:item_prism:1274937161262698536> Prism Throw <:item_prism:1274937161262698536>`,
+            embed_color : '#49f6ff'
         }
     },
 
@@ -1367,7 +1364,9 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string
+            return_string : return_string,
+            embed_header : `❤️ Healing ❤️`,
+            embed_color : '#02ff2c',
         }
     },
 
@@ -1401,7 +1400,9 @@ let functions = {
 
         return {
             finish_battle : finish_battle,
-            return_string : return_string
+            return_string : return_string,
+            embed_header : '🏃‍♂️ Run 🏃‍♂️',
+            embed_color : '#ff0000'
         }
     },
 
@@ -1768,23 +1769,23 @@ let functions = {
             break;
             case Ability.Efficient:
                 if (battle_data.turn_counter % 2 === 0) {
-                    ooch = modify_stat(ooch, Stats.Attack, 1);
+                    ooch = functions.modify_stat(ooch, Stats.Attack, 1);
                     ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its ATK from its ability **Efficient**!`;
                 }
             break;
             case Ability.Inertia:
-                ooch = modify_stat(ooch, Stats.Speed, 1); 
+                ooch = functions.modify_stat(ooch, Stats.Speed, 1); 
                 ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its SPD from its ability **Inertia**!`;
             break;
             case Ability.Patient:
                 if (battle_data.turn_counter % 2 === 0) {
-                    ooch = modify_stat(ooch, Stats.Defense, 1);
+                    ooch = functions.modify_stat(ooch, Stats.Defense, 1);
                     ability_text = `\n${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Patient**!`;
                 }
             break;
             case Ability.Increment:
                 let randomStat = _.sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
-                ooch = modify_stat(ooch, randomStat, 1);
+                ooch = functions.modify_stat(ooch, randomStat, 1);
                 ability_text = `\n${ooch.emote} **${ooch.nickname}** randomly increased its ${_.upperCase(randomStat)} from its ability **Increment**!`;
             break;
             case Ability.Riposte:
@@ -1871,7 +1872,7 @@ let functions = {
      * @returns An array of the attacker and defender Oochamon data, after the attacks.
      */
     attack: async function(battle_data, user_index_attacker, user_index_defender, atk_id) {
-        const { type_effectiveness, battle_calc_damage, modify_stat, add_status_effect, type_to_emote, get_stat_multiplier } = require('./func_battle.js');
+        const { type_effectiveness, battle_calc_damage, add_status_effect, type_to_emote, get_stat_multiplier } = require('./func_battle.js');
 
         let user_attacker = battle_data.users[user_index_attacker];
         let user_defender = battle_data.users[user_index_defender];
@@ -1964,7 +1965,7 @@ let functions = {
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost 5% of their HP from the ability **Lacerating** from ${attacker_emote} **${atkOochName}**!`;
                     break;
                     case Ability.Frostbite:
-                        modify_stat(defender, Stats.Speed, -1);
+                        functions.modify_stat(defender, Stats.Speed, -1);
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** had its SPD lowered from the ability **Frostbite** from ${attacker_emote} **${atkOochName}**!`;
                     break;
                     case Ability.StringsAttached:
@@ -2001,7 +2002,7 @@ let functions = {
                     break;
                     case Ability.Flammable:
                         if (move_type === OochType.Flame) {
-                            defender = modify_stat(defender, Stats.Attack, 1);
+                            defender = functions.modify_stat(defender, Stats.Attack, 1);
                             defender_field_text += `\n--- ${defender_emote} **${defOochName}** raised its ATK after being hit using its ability **Flammable**!`; 
                         }
                     break;
@@ -2117,7 +2118,7 @@ let functions = {
                         // +_def_1 is the format
                         else if (status_split[0] == '+'){
                             let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
-                            status_target = modify_stat(status_target, status_split[1], parseInt(status_split[2]));
+                            status_target = functions.modify_stat(status_target, status_split[1], parseInt(status_split[2]));
                             let currentValue = `${_.clamp(prevStatValue + parseInt(status_split[2]), -8, 8)}`;
                             let signValue = currentValue < 0 ? '-' : '+';
                             if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
@@ -2128,7 +2129,7 @@ let functions = {
                         }
                         else if (status_split[0] == '-') {
                             let prevStatValue = status_target.stats[`${status_split[1]}_mul`];
-                            status_target = modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
+                            status_target = functions.modify_stat(status_target, status_split[1], -parseInt(status_split[2]));
                             let currentValue = `${_.clamp(prevStatValue - parseInt(status_split[2]), -8, 8)}`;
                             let signValue = currentValue < 0 ? '-' : '+';
                             if (prevStatValue !== status_target.stats[`${status_split[1]}_mul`]) {
@@ -2167,8 +2168,8 @@ let functions = {
             // Attacker oochamon on kill ability triggers
             switch (attacker.ability) {
                 case Ability.Energized:
-                    attacker = modify_stat(attacker, Stats.Attack, 1);
-                    attacker = modify_stat(attacker, Stats.Speed, 1);
+                    attacker = functions.modify_stat(attacker, Stats.Attack, 1);
+                    attacker = functions.modify_stat(attacker, Stats.Speed, 1);
                     defender_field_text += `\n${attacker_emote} **${atkOochName}** was energized from the kill and gained a boost in attack and speed from its ability **Energized**!`;
                 break;
                 case Ability.InvalidEntry:
@@ -2219,9 +2220,44 @@ let functions = {
         return string_to_send;
     },  
 
+    /**
+     * Add or subtract a stat to an Oochamon object. NOTE: THIS DOES NOT SET THE MULTIPLIER UNLESS YOU USE THE SET ARGUMENT!
+     * @param {Object} ooch The oochamon object to change stat mulitipliers on.
+     * @param {String} stat The stat to change (atk, def, spd, acc, or eva)
+     * @param {number} stage The stage amount to change it by (-8 to 8)
+     * @param {Boolean} [set=false] Set the value instead of add to/subtract from the value.
+     * @returns The Oochamon object with stats changed.
+     */
+    modify_stat: function(ooch, stat, stage, set = false) {
+        let min_stage = -8;
+        let max_stage = 8;
+        switch(stat) {
+            case 'atk': 
+                ooch.stats.atk_mul = (set == true ? stage : ooch.stats.atk_mul + stage); 
+                ooch.stats.atk_mul = _.clamp(ooch.stats.atk_mul, min_stage, max_stage); 
+            break; 
+            case 'def': 
+                ooch.stats.def_mul = (set == true ? stage : ooch.stats.def_mul + stage);
+                ooch.stats.def_mul = _.clamp(ooch.stats.def_mul, min_stage, max_stage); 
+            break;
+            case 'spd': 
+                ooch.stats.spd_mul = (set == true ? stage : ooch.stats.spd_mul + stage);
+                ooch.stats.spd_mul = _.clamp(ooch.stats.spd_mul, min_stage, max_stage); 
+            break; 
+            case 'acc': 
+                ooch.stats.acc_mul = (set == true ? stage : ooch.stats.acc_mul + stage); 
+                ooch.stats.acc_mul = _.clamp(ooch.stats.acc_mul, min_stage, max_stage); 
+            break; 
+            case 'eva': 
+                ooch.stats.eva_mul = (set == true ? stage : ooch.stats.eva_mul + stage);
+                ooch.stats.eva_mul = _.clamp(ooch.stats.eva_mul, min_stage, max_stage); 
+            break;
+        }
+    
+        return ooch;
+    },
 
-    generate_round_start_embed(battle_data){
-        let header = `**------------ Round ${battle_data.turn_counter + 1} Start ------------**\n`
+    generate_round_start_embed(battle_data) {
         let hp_string = ``;
         let user_name, active_ooch;
         for(let user of battle_data.users){
@@ -2232,7 +2268,7 @@ let functions = {
             hp_string += `\n`;
         }
 
-        let embed = functions.battle_embed_create(header, hp_string)
+        let embed = functions.battle_embed_create(hp_string)
         return(embed);
     },
 
@@ -2376,7 +2412,15 @@ let functions = {
                 let ooch_info = user.party[user.active_slot];
                 let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
                 let ooch_y = (Math.sin(rotation) * radius_oochamon * height) + center_y;
+                let user_x = (Math.cos(rotation) * radius_user * width) + center_x;
+                let user_y = (Math.sin(rotation) * radius_user * height) + center_y;
+                
                 team_step = team_step * (ooch_x < center_x ? 1 : -1);
+                
+                if(user.battle_sprite == false){ //Center's the ooch if it's by itself
+                    ooch_x = (ooch_x + user_x) / 2;
+                    ooch_y = (ooch_y + user_y) / 2;
+                }
                 
                 let ooch_sprite = { //Oochamon Sprite
                     x : ooch_x + team_step,
@@ -2404,9 +2448,8 @@ let functions = {
                 avg_num++;
 
 
+                
                 if(user.battle_sprite != false){ //User Sprite
-                    let user_x = (Math.cos(rotation) * radius_user * width) + center_x;
-                    let user_y = (Math.sin(rotation) * radius_user * height) + center_y;
                     let user_sprite = {
                         x : user_x + team_step,
                         y : user_y,
@@ -2428,11 +2471,13 @@ let functions = {
                         origin_x : 32,
                         origin_y : 16
                     })
+
                     avg_x += user_x + team_step;
                     avg_y += user_y;
                     avg_num++;
                 }
-
+                
+                
                 platforms.push({
                     x : avg_x / avg_num,
                     y : avg_y / avg_num,
@@ -2544,7 +2589,7 @@ let functions = {
                     let prism_x = horz_check ? (sprite.x - (image.width * 1.5) - buffer) + 24 : (sprite.x + (image.width * .5) + buffer) - 8;
                     let prism_image = await loadImage('./Art/BattleArt/prism_tiny.png');
                     for(let i = (user_info.party.length) - 1; i >= 0; i--){ //iterate backwards to achieve the desired stacking effect
-                        ctx.drawImage(prism_image, prism_x, sprite.y - sprite.origin_y + (i * step));
+                        ctx.drawImage(prism_image, prism_x, sprite.y - sprite.origin_y + (i * step) - 12);
                     }
                 }
             }
