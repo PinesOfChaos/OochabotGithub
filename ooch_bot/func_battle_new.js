@@ -131,7 +131,7 @@ let functions = {
      * @param {Boolean} give_rewards Give rewards at the end of a battle
      * @param {Boolean} allow_run Allow running from the battle
      */
-    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run) {
+    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false) {
         const { botClient } = require("./index.js");
 
         let abilityMsg = '';
@@ -139,9 +139,9 @@ let functions = {
 
         // This was used for testing alternate battle modes, feel free to delete
         for(let i = 0; i < 2; i++){
-            let test_user = structuredClone(users[1]);
-            test_user.team_id = i;
-            users.push(test_user);
+            //let test_user = structuredClone(users[1]);
+            //test_user.team_id = i;
+            //users.push(test_user);
         }
         
 
@@ -166,6 +166,8 @@ let functions = {
 
             turn_counter : 0,
             users : users,
+
+            fake_battle : fake_battle,
 
             turn_timer : turn_timer,
             allow_items : allow_items,
@@ -198,10 +200,11 @@ let functions = {
                         types_string = `- Type: ${functions.type_to_emote(active_ooch.type)}`;
                         
                         if (user2.is_catchable) { //Wild oochamon
-                            battleStartText += `## A wild ${user2.name} appeared! ${types_string}\n`;
-                            if (db.profile.get(id, `oochadex[${active_ooch}].caught`) == 0) {
+                            battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
+                            if (db.profile.get(user.user_id, `oochadex[${active_ooch}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                             }
+                            sendOutText += `The wild ${active_ooch.emote} **${active_ooch.name}** wants to battle! ${types_string}\n`
                         }
                         else if (user2.team_id != my_team_id) { //Opposing Player/NPC
                             battleStartText += `## ${user2.name} wants to battle!\n`;
@@ -314,7 +317,7 @@ let functions = {
      * @param {Number} target_user_index The user whos active mon we're catching
      * @returns returns a battle action object
      */
-    new_battle_action_prism : function(battle_data, user_index, target_user_index){
+    new_battle_action_prism : function(battle_data, user_index, item_id, target_user_index){
         let action = {
             action_type : BattleAction.Prism,
             priority : BattleAction.Prism,
@@ -392,8 +395,9 @@ let functions = {
         switch (user_obj.user_type) {
             case UserType.Wild:
                 target_user = _.sample(users_enemy);
-                move_id = _.sample(moves.move_id);
+                move_id = _.sample(moves);
                 functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                console.log(moves, move_id)
             break;
             case UserType.NPCTrainer:
                 target_user = _.sample(users_enemy);
@@ -476,6 +480,8 @@ let functions = {
             let move_priority = 0;
             if(action.action_type == BattleAction.Attack){
                 let move = db.move_data.get(action.move_id);
+                console.log(action)
+                console.log(move)
                 let effects = move.effect;
                 for(let effect of effects) {
                     if (typeof effect == String) {
@@ -591,7 +597,7 @@ let functions = {
                     .setLabel('Prism')
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('<:item_prism:1274937161262698536>')
-                    .setDisabled(!battle_data.is_catchable),
+                    .setDisabled(true),
             )
     
         const backButton = new ActionRowBuilder()
@@ -608,6 +614,10 @@ let functions = {
             if (user.user_type != UserType.Player) {
                 functions.get_ai_action(user, battle_data);
                 user.action_selected = true;
+
+                if(user.is_catchable){
+                    bagButtons.components[1].setDisabled(false);
+                }
 
                 // Continue on if everyone has selected (which should happen at the end)
                 if (battle_data.users.every(u => u.action_selected !== false)) {
@@ -808,8 +818,15 @@ let functions = {
                         await i.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bagButtons, backButton] });
                     } else if (customId.includes('_item_select')) {
 
+                        let user_to_catch;
+                        for(let catch_target of battle_data.users){
+                            if(catch_target.is_catchable){
+                                user_to_catch = catch_target.user_index;
+                            }
+                        }
+
                         if (customId == 'prism_item_select') {
-                            user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0]);
+                            user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
                         } else {
                             user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, i.values[0], user.active_slot);
                         }
@@ -1080,11 +1097,10 @@ let functions = {
             functions.prompt_battle_actions(battle_data.battle_id);
         }
         else{
+            await functions.finish_battle(battle_data);
             console.log(`BATTLE ID${battle_data.battle_id} FINISHED`)
         }
 
-        
-        
     },
 
     /**
@@ -1249,12 +1265,12 @@ let functions = {
         let finish_battle = false;
         let finish_data = false;
 
-        let target_user = battle_data[action.target_user_index]
+        let target_user = battle_data.users[action.target_user_index]
         let item = await db.item_data.get(action.item_id);
         let ooch_target = target_user.party[target_user.active_slot];
         let return_string = `${user.name} threw a ${item.emote} ${item.name}.`;
 
-        let prism_result = functions.item_use(user.user_id, ooch, action.item_id, true); //True if successful catch, False if not
+        let prism_result = functions.item_use(user.user_id, ooch_target, action.item_id, true); //True if successful catch, False if not
         battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
 
         if(prism_result == true){
@@ -1266,18 +1282,17 @@ let functions = {
                     return_string += `\nIt's been sent to your box.`;
                 }
 
-                let ooch_party = user.party;
-                let is_first_catch = (db.profile.get(user_index, `oochadex[${ooch_target.id}].caught`) == 0);
-                
                 // Distribute XP for a caught Oochamon
                 // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
-                exp_earned = functions.battle_calc_exp(ooch_target.level, db.monster_data.get(ooch_target.id, 'evo_stage'), 1); //catching mons will always give 1x EXP
-                if(is_first_catch) exp_earned *= 2;
+                let is_first_catch = (db.profile.get(user.user_id, `oochadex[${ooch_target.id}].caught`) == 0);
+                exp_earned = functions.battle_calc_exp(ooch_target, is_first_catch ? 2 : 1); //catching mons will always give 1x EXP, 2x for first catch
 
+                let ooch_party = user.party;
+                let ooch_plr = ooch_party[user.active_slot]
                 let exp_earned_main = Math.round(exp_earned * 1.25);
                 if (ooch_plr.level != 50) {
-                    return_string += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${Math.round(exp_earned * 1.25)} exp!**` + 
-                                        ` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
+                    return_string += `\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${exp_earned_main} exp!**`
+                                        //` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
                 }
                 if (ooch_party.length > 1) {
                     return_string += `\nThe rest of your team earned **${exp_earned}** exp.`;
@@ -1287,7 +1302,7 @@ let functions = {
                 for (let i = 0; i < ooch_party.length; i++) {
                     let ooch = ooch_party[i];
                     if (i == user.active_slot) { 
-                        ooch.current_exp += Math.round(exp_earned * 1.25);
+                        ooch.current_exp += Math.round(exp_earned_main);
                     } else { 
                         ooch.current_exp += (ooch.alive === false ? exp_earned : Math.round(exp_earned / 2)); 
                     }
@@ -1319,6 +1334,8 @@ let functions = {
                 info_embed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
                 finish_data = {type : 'capture', info_embed : info_embed, ooch_png : ooch_png, delay : 5000};
                 finish_battle = true;
+
+                
         }
         else{
             return_string = `\n\nUnfortunately, your prism catch attempt failed...`
@@ -1482,15 +1499,17 @@ let functions = {
             finish_battle = true;
         }
         
+        
         return({
             text : string_to_send, 
             finish_battle : finish_battle
         });
+        
     },
 
     /**
      * Calculates the amount of EXP earned when defeating an Oochamon.
-     * @param {Number} ooch The oochamon that was defeated
+     * @param {Object} ooch The oochamon that was defeated
      * @param {Number} bonus_multiplier Multiplier for exp given (default 1)
      * @returns A number of the amount of EXP earned
      */
@@ -2352,7 +2371,7 @@ let functions = {
                 let avg_x = 0;
                 let avg_y = 0;
                 let avg_num = 0
-                let team_step = 144 * i + (team.length > 1 ? -40 : 0);
+                let team_step = 144 * i +  -40;
 
                 let ooch_info = user.party[user.active_slot];
                 let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
@@ -2538,52 +2557,60 @@ let functions = {
 
     /**
      * Handle finishing an Oochamon battle and setting back up the playspace.
-     * @param {Object} thread The thread Oochamon is being played in.
-     * @param {String} user_id The user id of the user playing Oochamon.
-     * @param {Boolean} battle_won If the user won the battle or not
+     * @param {Object} battle_data The battle data for the current battle.
      */
     finish_battle: async function(battle_data) {
         const { event_process } = require('./func_event');
+        const { botClient } = require("./index.js");
+        const { setup_playspace_str } = require('./func_play'); 
 
         for(let user_info of battle_data.users){
             if(user_info.user_id == false){ continue; } //Skip users that are not players
 
             let battle_won = !user_info.defeated; //We won if we were not defeated
             let user_id = user_info.user_id;
-            db.profile.set(user_id, {}, 'ooch_enemy');
+            let thread = botClient.channels.cache.get(user_info.thread_id);
+            
             await wait(5000);
 
-            let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
-            if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
-                await thread.bulkDelete(msgs_to_delete)
+            //Clear all messages in the user's thread
+            let message_count;
+            do {
+                message_count = thread.messageCount;
+                await thread.bulkDelete(100);
             }
+            while(message_count > thread.memberCount);
+            
 
-            // Reset Oochamon stat multipliers and ability and status effects
-            for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
-                let ooch = db.profile.get(user_id, `ooch_party[${i}]`);
-                ooch.stats.atk_mul = 0;
-                ooch.stats.def_mul = 0;
-                ooch.stats.spd_mul = 0;
-                ooch.stats.acc_mul = 0;
-                ooch.stats.eva_mul = 0;
-                ooch.ability = ooch.og_ability;
-                ooch.type = ooch.og_type;
-                ooch.doom_timer = 4;
-                ooch.status_effects = [];
-                if (battle_won === false) {
-                    ooch.current_hp = ooch.stats.hp;
-                    ooch.alive = true;
+            if(!battle_data.fake_battle){
+                //Reset relevant ooch info and stuff
+                for (let ooch of user_info.party){
+                    ooch.stats.atk_mul = 0;
+                    ooch.stats.def_mul = 0;
+                    ooch.stats.spd_mul = 0;
+                    ooch.stats.acc_mul = 0;
+                    ooch.stats.eva_mul = 0;
+                    ooch.ability = ooch.og_ability;
+                    ooch.type = ooch.og_type;
+                    ooch.doom_timer = 4;
+                    ooch.status_effects = [];
+                    if (battle_won === false) {
+                        ooch.current_hp = ooch.stats.hp;
+                        ooch.alive = true;
+                    }
                 }
 
-                db.profile.set(user_id, ooch, `ooch_party[${i}]`);
-            }
+                //Set the party as needed
+                db.profile.set(user_id, user_info.party, `ooch_party`);
 
-            // If we lost, go back to the teleporter location.
-            if (battle_won === false) {
-                db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
-                db.profile.set(user_id, [], 'cur_event_array');
-                db.profile.set(user_id, 0, 'cur_event_pos')
-            } 
+
+                // If we lost, go back to the teleporter location.
+                if (battle_won === false) {
+                    db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
+                    db.profile.set(user_id, [], 'cur_event_array');
+                    db.profile.set(user_id, 0, 'cur_event_pos')
+                } 
+            }
 
             // Setup playspace
             let playspace_str = await setup_playspace_str(user_id);

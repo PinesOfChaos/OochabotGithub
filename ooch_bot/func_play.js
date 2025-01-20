@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState, Tile, Zone, ItemType } = require('./types.js');
+const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -13,7 +13,7 @@ module.exports = {
         */
 
         const { map_emote_string, setup_playspace_str } = require('./func_play.js');
-        const { generate_wild_battle, setup_battle, level_up, exp_to_next_level } = require("./func_battle");
+        const { generate_wild_battle, setup_battle, level_up, exp_to_next_level, generate_battle_user } = require("./func_battle_new");
 
         let checkPlrState = db.profile.get(user_id, 'player_state')
         if (checkPlrState !== PlayerState.Playspace) {
@@ -450,14 +450,16 @@ module.exports = {
                                     await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
-                                        let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
+                                        //let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
+                                        let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : slot.ooch_id.toString(), ooch_level : mon_level, team_id : 1})
+                                        let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
-                                            await setup_battle(thread, user_id, generated_ooch);
+                                            await setup_battle([oochObj, userObj], Weather.Clear, 0, 0, true, true, true);
                                         }
                                         else {
-                                            if (Math.random() > .6) { //60/40 chance to run ignoring the encounter entirely if 'Run' is chosen
-                                                await setup_battle(thread, user_id, generated_ooch);
+                                            if (Math.random() > .6) { //40% chance to start the battle if 'Run' is chosen
+                                                await setup_battle([oochObj, userObj], Weather.Clear, 0, 0, true, true, true);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 60/40, ignore the input*/

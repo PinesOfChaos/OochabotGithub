@@ -132,7 +132,7 @@ let functions = {
             }
 
             obj_content.team_id = 1;
-            let trainerObj = await generate_battle_user(UserType.NPCTrainer, obj_content)
+            let trainerObj = await generate_battle_user(UserType.NPCTrainer, obj_content);
             let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
 
             // Setup the battle for trainers
