@@ -2535,6 +2535,77 @@ let functions = {
 
         return pngData;
     },
+
+    /**
+     * Handle finishing an Oochamon battle and setting back up the playspace.
+     * @param {Object} thread The thread Oochamon is being played in.
+     * @param {String} user_id The user id of the user playing Oochamon.
+     * @param {Boolean} battle_won If the user won the battle or not
+     */
+    finish_battle: async function(battle_data) {
+        const { event_process } = require('./func_event');
+
+        for(let user_info of battle_data.users){
+            if(user_info.user_id == false){ continue; } //Skip users that are not players
+
+            let battle_won = !user_info.defeated; //We won if we were not defeated
+            let user_id = user_info.user_id;
+            db.profile.set(user_id, {}, 'ooch_enemy');
+            await wait(5000);
+
+            let msgs_to_delete = db.profile.get(user_id, 'battle_msg_counter');
+            if (msgs_to_delete <= 100 && db.profile.get(user_id, 'settings.battle_cleanup') == true) {
+                await thread.bulkDelete(msgs_to_delete)
+            }
+
+            // Reset Oochamon stat multipliers and ability and status effects
+            for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
+                let ooch = db.profile.get(user_id, `ooch_party[${i}]`);
+                ooch.stats.atk_mul = 0;
+                ooch.stats.def_mul = 0;
+                ooch.stats.spd_mul = 0;
+                ooch.stats.acc_mul = 0;
+                ooch.stats.eva_mul = 0;
+                ooch.ability = ooch.og_ability;
+                ooch.type = ooch.og_type;
+                ooch.doom_timer = 4;
+                ooch.status_effects = [];
+                if (battle_won === false) {
+                    ooch.current_hp = ooch.stats.hp;
+                    ooch.alive = true;
+                }
+
+                db.profile.set(user_id, ooch, `ooch_party[${i}]`);
+            }
+
+            // If we lost, go back to the teleporter location.
+            if (battle_won === false) {
+                db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
+                db.profile.set(user_id, [], 'cur_event_array');
+                db.profile.set(user_id, 0, 'cur_event_pos')
+            } 
+
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user_id);
+            await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+            await db.profile.delete(user_id, 'rollback_profile');
+
+            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                db.profile.set(user_id, msg.id, 'display_msg_id');
+            });
+            
+            if (battle_won === true) {
+                // If we won the battle
+                let cur_event_array = db.profile.get(user_id, 'cur_event_array');
+                let cur_event_pos = parseInt(db.profile.get(user_id, 'cur_event_pos'));
+
+                if (cur_event_array.length != 0) {
+                    // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
+                    await event_process(user_id, thread, cur_event_array, cur_event_pos);
+                }
+            }
+        }
+    },
 }
 
 module.exports = functions;
