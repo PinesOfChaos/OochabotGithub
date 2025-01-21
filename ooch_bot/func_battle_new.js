@@ -1303,15 +1303,16 @@ let functions = {
                     }
                     
                     // Check for level ups
-                    if (ooch.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                        ooch = level_up(ooch);
+                    if (ooch.current_exp >= ooch.next_lvl_exp) { // If we can level up
+                        ooch = functions.level_up(ooch);
                         return_string += `\n${ooch[1]}`;
                         ooch_party[i] = ooch[0];
                     }
                 }
 
                 displayEmbed.setDescription(return_string)
-                await item_sel.update({ content: `## ------------ Player Turn ------------`, embeds: [displayEmbed], components: []});
+                functions.distribute_messages(battle_data.users, {})
+                await item_sel.update({ content: `## ------------ ${user.name}'s Turn ------------`, embeds: [displayEmbed], components: []});
 
                 // Heal the caught Oochamon when you catch it.
                 ooch_target.current_hp = ooch_target.stats.hp;
@@ -1486,7 +1487,7 @@ let functions = {
                             // Check for level ups
                             let ooch_data = ooch_party[i];
                             if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                                ooch_data = level_up(ooch_data);
+                                ooch_data = functions.level_up(ooch_data);
                                 string_to_send += ooch_data[1];
                             }
                         }
@@ -2677,6 +2678,68 @@ let functions = {
                 }
             }
         }
+    },
+
+    /**
+     * Handle leveling up an Oochamon, including
+     * giving it new moves.
+     * @param {Object} ooch The oochamon that is leveling up
+     * @returns A leveled up oochamon, and the output text, both in an array.
+     */
+    level_up: function(ooch) {
+        const { exp_to_next_level, get_stats, type_to_emote } = require('./func_battle');
+        let level_counter = 0;
+        let starting_level = ooch.level;
+        let evoData = false;
+        let output = ``;
+        let possibleMoves = db.monster_data.get(ooch.id, 'move_list');
+    
+        if (ooch.level <= 50) {
+            while (ooch.current_exp >= exp_to_next_level(ooch.level) && ooch.level < 50) {
+                ooch.current_exp -= ooch.next_lvl_exp;
+                ooch.level += 1;
+    
+                ooch.next_lvl_exp = exp_to_next_level(ooch.level);
+    
+                let new_stats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
+                let hp_dif = new_stats[0] - ooch.stats.hp //Get the difference between new HP and old HP to be added to the mon
+    
+                ooch.stats.hp = new_stats[0]
+                ooch.stats.atk = new_stats[1]
+                ooch.stats.def = new_stats[2]
+                ooch.stats.spd = new_stats[3]
+                ooch.current_hp += hp_dif
+    
+                if(ooch.current_hp > 0){
+                    ooch.alive = true;
+                }
+                
+                level_counter += 1;
+            }
+    
+            let curOochMoveset = ooch.moveset;
+    
+            // Determine new moves
+            possibleMoves = possibleMoves.filter(v => {
+                return _.inRange(v[0], starting_level + 1, ooch.level + 1)
+            });
+            possibleMoves = possibleMoves.map(v => {
+                let moveData = db.move_data.get(v[1]);
+                // If the Oochamon can learn the new move and has room, add it automatically.
+                if (ooch.moveset.length < 4) ooch.moveset.push(moveData.id);
+                return `- ${type_to_emote(moveData.type)} **${moveData.name}**`;
+            })
+    
+            // Determine if it can evolve
+            if (ooch.level >= db.monster_data.get(ooch.id, `evo_lvl`) && db.monster_data.get(ooch.id, 'evo_id') != -1) {
+                evoData = db.monster_data.get(db.monster_data.get(ooch.id, 'evo_id'));
+            }
+    
+            output =  `\n⬆️ ${db.monster_data.get(ooch.id, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
+            `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**\n` : ``}` +
+            `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `\nYou can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
+        }
+        return [ooch, output];
     },
 }
 
