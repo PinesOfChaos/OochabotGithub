@@ -955,7 +955,7 @@ let functions = {
 
             if(finish_battle == true){
                 if(('finish_data' in turn_data) && turn_data.finish_data != false){
-                    let finish_data = turn_data.finish_data;f
+                    let finish_data = turn_data.finish_data;
                     switch(finish_data.type){
                         case 'capture':
                             let delay = turn_data.finish_data.delay;
@@ -1257,6 +1257,7 @@ let functions = {
      */
     action_process_prism : async function(battle_data, action){
         let user = battle_data.users[action.user_index];
+        let user_id = user.user_id;
         let finish_battle = false;
         let finish_data = false;
 
@@ -1310,9 +1311,9 @@ let functions = {
                     }
                 }
 
-                displayEmbed.setDescription(return_string)
-                functions.distribute_messages(battle_data.users, {})
-                await item_sel.update({ content: `## ------------ ${user.name}'s Turn ------------`, embeds: [displayEmbed], components: []});
+                let capture_embed = this.battle_embed_create(return_string, '#49f6ff')
+                //functions.distribute_messages(battle_data.users, {})
+                //await item_sel.update({ content: `## ------------ ${user.name}'s Turn ------------`, embeds: [capture_embed], components: []});
 
                 // Heal the caught Oochamon when you catch it.
                 ooch_target.current_hp = ooch_target.stats.hp;
@@ -1324,6 +1325,7 @@ let functions = {
                     db.profile.push(user_id, ooch_target, `ooch_pc`)
                 }
                 db.profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
+
                 let info_embed = ooch_info_embed(ooch_target);
                 let ooch_png = info_embed[1];
                 info_embed = info_embed[0];
