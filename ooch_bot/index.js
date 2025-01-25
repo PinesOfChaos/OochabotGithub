@@ -324,10 +324,13 @@ client.on('messageCreate', async message => {
         player_state = db.profile.get(message.author.id, 'player_state');
         switch (player_state) {
             case PlayerState.Playspace: 
-                if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
-                    let speedMatch = message.content.toLowerCase().match(/^([1-4])$/);
+                let speedMatch = message.content.toLowerCase().match(/^([1-4])$/);
 
-                    if (speedMatch && db.profile.get(message.author.id, 'settings.discord_move_buttons') === true) {
+                if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
+                    if (message.content == 'fw') {
+                        await move(message.channel, message.author.id, '', 1, 1);
+                        await message.delete().catch(() => {});
+                    } else if (speedMatch && db.profile.get(message.author.id, 'settings.discord_move_buttons') === true) {
                         const speedMultiplier = parseInt(speedMatch[1]) - 1;
                         db.profile.set(message.author.id, (speedMultiplier % 4) + 1, 'move_speed');
                         let playspace_str = setup_playspace_str(message.author.id);

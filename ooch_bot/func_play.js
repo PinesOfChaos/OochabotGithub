@@ -7,7 +7,7 @@ const { event_process, event_from_npc } = require('./func_event');
 
 module.exports = {
 
-    move: async function(thread, user_id, direction, dist = 1) {
+    move: async function(thread, user_id, direction, dist = 1, encounter_chance = false) {
         /*
             db.player_positions.set(interaction.user.id, interaction.member.displayName, 'player_name');
         */
@@ -110,8 +110,10 @@ module.exports = {
             let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());
             // 10% chance on cave, 40% chance on other places
-            let encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
-            if (profile_data.repel_steps != 0) encounter_chance = 0;
+            if (encounter_chance === false) {
+                encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
+                if (profile_data.repel_steps != 0) encounter_chance = 0;
+            }
 
             //Events
             if (!stop_moving) {
@@ -146,8 +148,9 @@ module.exports = {
                         stop_moving = true;
                         playerx -= xmove;
                         playery -= ymove;
-                        
-                        event_process(user_id, thread, event_from_npc(obj, user_id));
+
+                        let npc_event_obj = await event_from_npc(obj, user_id);
+                        event_process(user_id, thread, npc_event_obj);
                     }
                     else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                         let quarter_circle_radians = 90 * Math.PI / 180;
@@ -170,7 +173,8 @@ module.exports = {
                                     stop_moving = true;
                                     stop_check = true;
                                     
-                                    event_process(user_id, thread, event_from_npc(obj, user_id));
+                                    let npc_event_obj = await event_from_npc(obj, user_id)
+                                    event_process(user_id, thread, npc_event_obj);
                                     break;
                                 }
                             }
@@ -420,7 +424,7 @@ module.exports = {
                     }
                 break;
                 case Tile.Grass:
-                    if ((Math.random() < encounter_chance) && (!stop_moving)) {
+                    if ((Math.random() <= encounter_chance) && (!stop_moving)) {
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
                             

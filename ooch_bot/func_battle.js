@@ -1324,7 +1324,7 @@ attack: async function(thread, user_id, atk_id, attacker, defender, header) {
                 break;
                 case Ability.Shadow:
                     if (check_chance(20) && !defender.status_effects.includes(Status.Vanish)) {
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** **VANISHED** after being hit using its ability **Shadow**!`;
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** <:status_vanish:1274938531864776735> **VANISHED** after being hit using its ability **Shadow**!`;
                         defender = add_status_effect(defender, Status.Vanish);
                     }
                 break;

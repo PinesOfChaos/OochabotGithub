@@ -73,7 +73,6 @@ let functions = {
                 party = party_generated;
                 is_catchable = options.is_catchable;
                 team_id = options.team_id;
-                //prism_inv = 
                 battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
             break;
             case UserType.Player:
@@ -144,7 +143,6 @@ let functions = {
             //users.push(test_user);
         }
         
-
         // Add index to users
         for (let i = 0; i < users.length; i++) {
             users[i].user_index = i;
@@ -156,7 +154,7 @@ let functions = {
 
         let battleDataObj = {
             battle_id : battleId,
-            battle_msg_counter : abilityMsg == '' ? 1 : 2,
+            battle_msg_counter : 2,
             turn_msg_counter : 0,
             battle_state : BattleState.Start,
             battle_action_queue : [],
@@ -214,11 +212,8 @@ let functions = {
                             battleStartText += `## ${user2.name} allies with you!\n`; 
                             sendOutText += `${user2.name} sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
                         }
-
-                        
                     }
                 }
-
 
                 let thread = botClient.channels.cache.get(user.thread_id);
                 // Generate intro to battle image
@@ -228,7 +223,7 @@ let functions = {
                     files: [battle_image]
                 });
                 await wait(battleDataObj.delay);
-                await thread.send({content: '## ------------ Battle Start ------------', embeds : [functions.battle_embed_create(`${sendOutText}`)]});
+                await thread.send({content: '## ------ Battle Start ------', embeds : [functions.battle_embed_create(`${sendOutText}`)]});
 
             }
         }
@@ -239,11 +234,11 @@ let functions = {
             switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
         }
         if(switch_in_text != ''){
-            await functions.distribute_messages(battleDataObj.users, { embeds : [functions.battle_embed_create(switch_in_text)]});
+            await functions.distribute_messages(battleDataObj, { embeds : [functions.battle_embed_create(switch_in_text)]});
         }
 
         //Send the round start message
-        functions.distribute_messages(battleDataObj.users, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
+        functions.distribute_messages(battleDataObj, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
 
 
         db.battle_data.set(battleId, battleDataObj);
@@ -504,13 +499,15 @@ let functions = {
 
     /**
      * Sends messages to all player-type users in an array of users
-     * @param {Array} users the list of users to send the message to (automatically skips non-players)
+     * @param {Object} battle_data The battle data
      * @param {Object} message anything that can be sent as a discord message
      */
-    distribute_messages : async function(users, message){
+    distribute_messages : async function(battle_data, message){
         const { botClient } = require("./index.js");
+
+        battle_data.battle_msg_counter += 1;
         
-        for(let user of users){
+        for(let user of battle_data.users){
             if(user.is_player){
                 let thread = botClient.channels.cache.get(user.thread_id);
                 await thread.send(message);
@@ -926,7 +923,8 @@ let functions = {
         let actions = battle_data.battle_action_queue;
         let finish_battle = false;
         let action, header, text, faint_check;
-        
+
+        await functions.distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
 
         while(actions.length > 0 && !finish_battle){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
@@ -946,9 +944,9 @@ let functions = {
             faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
             text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
-            
+
             //Send the text to each of the user's threads
-            await functions.distribute_messages(battle_data.users, { content: `## ------------ ${user.name}'s Turn ------------`, embeds: [functions.battle_embed_create(text, turn_data.embed_color, turn_data.embed_header)]});
+            await functions.distribute_messages(battle_data, { content: `## ------ ${user.name}'s Turn ------`, embeds: [functions.battle_embed_create(text, turn_data.embed_color, turn_data.embed_header)]});
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
@@ -962,7 +960,7 @@ let functions = {
                             let embed = turn_data.finish_data.info_embed;
                             let png = turn_data.finish_data.ooch_png
 
-                            await functions.distribute_messages(battle_data.users, { content: `## ------------ ${user.name}'s Turn ------------`, embeds: [embed], files: [png] });
+                            await functions.distribute_messages(battle_data, { content: `## ------ ${user.name}'s Turn ------`, embeds: [embed], files: [png] });
                             await wait(delay);
                         break;
                     }
@@ -975,7 +973,7 @@ let functions = {
         }
 
         //End of round stuff
-        let end_of_round_header = `## ------------ End of Round ------------`;
+        let end_of_round_header = `## ------ End of Round ------`;
         let end_of_round_text = ``;
 
         //Apply end of round abilities/effects (burn, stat changes, etc.)
@@ -1018,7 +1016,7 @@ let functions = {
                         ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
                         if (opposing_ooch != undefined) {
                             opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from **INFECTED!**`;
+                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from being **INFECTED!**`;
                         }
                     break;
                     case Status.Doom:
@@ -1034,7 +1032,7 @@ let functions = {
                     case Status.Digitize:
                         if(ooch.type != [OochType.Tech]){
                             ooch.type = [OochType.Tech];
-                            end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was digitized and had its type changed to **Tech**!.`;
+                            end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
                         }
                     break;
                 }
@@ -1052,7 +1050,7 @@ let functions = {
         }
 
         //End of round switch-ins
-        let faint_switch_header = '## ------------ Switching In ------------';
+        let faint_switch_header = '## ------ Switching In ------';
         let faint_switch_text = '';
         functions.end_of_round_prompt_switch(battle_data);
 
@@ -1069,7 +1067,7 @@ let functions = {
         }
         
         if(faint_switch_text != ''){
-            await functions.distribute_messages(battle_data.users, { content: faint_switch_header, embeds: [functions.battle_embed_create(faint_switch_text)]});
+            await functions.distribute_messages(battle_data, { content: faint_switch_header, embeds: [functions.battle_embed_create(faint_switch_text)]});
         }
 
         //Clear all user's actions
@@ -1081,7 +1079,7 @@ let functions = {
         if(!finish_battle){
             
             await wait(battle_data.battle_speed);
-            functions.distribute_messages(battle_data.users, { embeds : [functions.generate_round_start_embed(battle_data)]});
+            functions.distribute_messages(battle_data, { embeds : [functions.generate_round_start_embed(battle_data)]});
             
             await wait(battle_data.battle_speed);
             functions.prompt_battle_actions(battle_data.battle_id);
@@ -1264,13 +1262,13 @@ let functions = {
         let target_user = battle_data.users[action.target_user_index]
         let item = await db.item_data.get(action.item_id);
         let ooch_target = target_user.party[target_user.active_slot];
-        let return_string = `${user.name} threw a ${item.emote} ${item.name}.`;
+        let return_string = `${user.name} threw a ${item.emote} **${item.name}**.`;
 
         let prism_result = functions.item_use(user.user_id, ooch_target, action.item_id, true); //True if successful catch, False if not
         battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
 
         if(prism_result == true){
-            return_string += `\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
+            return_string += `\n*The prism pulses once...*\n*The prism pulses twice..!*\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
             
                 if (user.party.length < 4) {
                     return_string += `\nIt's been added to your party.`;
@@ -1311,9 +1309,8 @@ let functions = {
                     }
                 }
 
-                let capture_embed = this.battle_embed_create(return_string, '#49f6ff')
-                //functions.distribute_messages(battle_data.users, {})
-                //await item_sel.update({ content: `## ------------ ${user.name}'s Turn ------------`, embeds: [capture_embed], components: []});
+                //functions.distribute_messages(battle_data, {})
+                //await item_sel.update({ content: `## ------ ${user.name}'s Turn ------`, embeds: [capture_embed], components: []});
 
                 // Heal the caught Oochamon when you catch it.
                 ooch_target.current_hp = ooch_target.stats.hp;
@@ -1336,7 +1333,12 @@ let functions = {
                 
         }
         else{
-            return_string = `\n\nUnfortunately, your prism catch attempt failed...`
+            let pulseAmt = _.random(0, 2);
+            for (let i = 0; i < pulseAmt; i++) {
+                if (i == 1) return_string += '\n*The prism pulses once...*';
+                if (i == 2) return_string += '\n*The prism pulses twice..!*';
+            }
+            return_string = `\n\nThe prism cracks open, and the Oochamon bounces back into the battlefield!`
         }
 
         return {
@@ -1389,7 +1391,7 @@ let functions = {
         for(let other_user of battle_data.users){
             if(other_user.user_index != user.user_index){
                 let ooch_other = other_user.party[other_user.active_slot];
-                ooch_max_check = max(ooch_other.stats.spd + ooch_other.level * 10, ooch_max_check)
+                ooch_max_check = Math.max(ooch_other.stats.spd + ooch_other.level * 10, ooch_max_check)
             } 
         }
 
@@ -1798,7 +1800,7 @@ let functions = {
             case Ability.HoleDweller:
                 if (battle_data.turn_counter % 2 === 0) {
                     ooch = add_status_effect(ooch, Status.Vanish);
-                    ability_text = `${ooch.emote} **${ooch.nickname}** **VANISHED** into a hole with its ability **Hole Dweller**!`;
+                    ability_text = `${ooch.emote} **${ooch.nickname}** <:status_vanish:1274938531864776735> **VANISHED** into a hole with its ability **Hole Dweller**!`;
                 }
             break;
         }
@@ -1922,6 +1924,8 @@ let functions = {
         let atkOochName = attacker.nickname;
         let defOochName = defender.nickname;
 
+        
+
         move_accuracy = Math.abs(move_accuracy);
         if (attacker.ability == Ability.Rogue && defender.current_hp === defender.stats.hp) {
             ability_dmg_multiplier = 2;
@@ -1955,12 +1959,12 @@ let functions = {
                 switch (attacker.ability) {
                     case Ability.Leech:
                         attacker.current_hp = _.clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
-                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
+                        defender_field_text += `\n--- ${attackcer_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
                     break;
                     case Ability.Ensnare:
                         if (check_chance(30) && !defender.status_effects.includes(Status.Vanish)) {
                             defender = add_status_effect(defender, Status.Snare);
-                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** was **SNARED** on hit from the ability **Ensnare** from ${attacker_emote} **${atkOochName}**!`;
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** was <:status_snared:1274938520821305355> **SNARED** on hit from the ability **Ensnare** from ${attacker_emote} **${atkOochName}**!`;
                         }
                     break;
                     case Ability.Lacerating:
@@ -1993,14 +1997,14 @@ let functions = {
                     break;
                     case Ability.Shadow:
                         if (check_chance(20) && !defender.status_effects.includes(Status.Vanish)) {
-                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** **VANISHED** after being hit using its ability **Shadow**!`;
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** <:status_vanish:1274938531864776735> **VANISHED** after being hit using its ability **Shadow**!`;
                             defender = add_status_effect(defender, Status.Vanish);
                         }
                     break;
                     case Ability.Tangled:
                         if (!attacker.status_effects.includes(Status.Snare)) {
                             attacker = add_status_effect(attacker, Status.Snare);
-                            defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** was **SNARED** by ${defender_emote} **${defOochName}**'s ability **Tangled**!`;
+                            defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** was <:status_snared:1274938520821305355> **SNARED** by ${defender_emote} **${defOochName}**'s ability **Tangled**!`;
                         }
                     break;
                     case Ability.Flammable:
@@ -2024,12 +2028,21 @@ let functions = {
                 string_to_send += `\n✨ **${move_name}** changed into the ${defender_emote} **${defOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
             }
 
+            //Add one of the battle description flavor texts if applicable
+            let move_battle_desc = db.move_data.get(atk_id, 'battle_desc');
+            if(typeof move_battle_desc == "string") {
+                move_battle_desc = move_battle_desc.replaceAll("USER", `${attacker_emote} ${atkOochName}`);
+                move_battle_desc = move_battle_desc.replaceAll("TARGET", `${defender_emote} ${defOochName}`);
+
+                string_to_send += `\n--- *${move_battle_desc}*`;
+            }
+
             string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
             if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
-            
+
             //If the target has the Doubled status effect
             if(status_doubled != 1 && move_damage > 0) {
-                string_to_send += `\n--- <:status_doubled:1274938495953014845> **The damage was DOUBLED!**`
+                string_to_send += `\n--- **The damage was <:status_doubled:1274938495953014845> DOUBLED!**`
             }
 
             //If a crit lands
@@ -2159,7 +2172,7 @@ let functions = {
             string_to_send += `\n${attacker_emote} **${atkOochName}** tried to use ${move_name} but it missed!`
             if (defender.status_effects.includes(Status.Vanish)) {
                 defender.status_effects = defender.status_effects.filter(v => v !== Status.Vanish);
-                string_to_send += `\n--- ${defender_emote} **${defOochName}** reappeared and lost its **VANISHED** status!`
+                string_to_send += `\n--- ${defender_emote} **${defOochName}** reappeared and lost its <:status_vanish:1274938531864776735> **VANISHED** status!`
             }
         }
 
@@ -2193,13 +2206,13 @@ let functions = {
                 case Ability.Haunted:
                     if (!attacker.status_effects.includes(Status.Doom)) {
                         attacker = add_status_effect(attacker, Status.Doom);
-                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was **DOOMED** from ${defender_emote} **${defOochName}**'s ability **Haunted**!`;
+                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was <:status_doomed:1274938483924009062> **DOOMED** from ${defender_emote} **${defOochName}**'s ability **Haunted**!`;
                     }
                 break;
                 case Ability.Sporespray:
                     if (!attacker.status_effects.includes(Status.Infect)) {
                         attacker = add_status_effect(attacker, Status.Infect);
-                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was **INFECTED** from ${defender_emote} **${defOochName}**'s ability **Sporespray**!`;
+                        defender_field_text += `\n${attacker_emote} **${atkOochName}** was <:status_infected:1274938506225123358> **INFECTED** from ${defender_emote} **${defOochName}**'s ability **Sporespray**!`;
                     }
                 break;
                 case Ability.InvalidEntry:
@@ -2619,16 +2632,19 @@ let functions = {
             let user_id = user_info.user_id;
             let thread = botClient.channels.cache.get(user_info.thread_id);
             
-            await wait(5000);
-
-            //Clear all messages in the user's thread
-            let message_count;
-            do {
-                message_count = thread.messageCount;
-                await thread.bulkDelete(100);
-            }
-            while(message_count > thread.memberCount);
+            await wait(1000);
             
+            //Clear all messages in the user's thread
+            if (battle_data.battle_msg_counter <= 100) {
+                await thread.bulkDelete(battle_data.battle_msg_counter);
+            } else {
+                let message_count = battle_data.battle_msg_counter;
+                do {
+                    await thread.bulkDelete(100);
+                    message_count -= 100;
+                }
+                while(message_count > thread.memberCount);
+            }
 
             if(!battle_data.fake_battle){
                 //Reset relevant ooch info and stuff
@@ -2650,7 +2666,6 @@ let functions = {
 
                 //Set the party as needed
                 db.profile.set(user_id, user_info.party, `ooch_party`);
-
 
                 // If we lost, go back to the teleporter location.
                 if (battle_won === false) {

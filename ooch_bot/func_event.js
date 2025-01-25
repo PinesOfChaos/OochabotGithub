@@ -120,10 +120,7 @@ let functions = {
             }
         }
 
-        async function battleEvent(obj_content, initial=false) {
-
-            // Increment by one so that after the battle we end up in the next part of the event.
-            db.profile.set(user_id, current_place+1, 'cur_event_pos');    
+        async function battleEvent(obj_content, initial=false) {    
 
             if (initial == false) {
                 // Delete the embed message to prep for battle, and kill the collector as well.
@@ -137,6 +134,9 @@ let functions = {
 
             // Setup the battle for trainers
             await setup_battle([userObj, trainerObj], Weather.Clear, obj_content.coin, 0, true, true, false);
+
+            // Increment by one so that after the battle we end up in the next part of the event.
+            db.profile.set(user_id, current_place+1, 'cur_event_pos');
         }
 
         async function oochPickEvent(obj_content, initial=false) {
@@ -362,20 +362,10 @@ let functions = {
             msg_to_edit = profile_data.display_msg_id;
         }
 
-        // Disable movement buttons
+        // Hide movement buttons
         if (event_name !== 'ev_intro') {
             await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-                const newComponents = msg.components.map((row) => {
-                    const newRow = row.toJSON(); 
-                    newRow.components = newRow.components.map((button) => {
-                        button.disabled = true; 
-                        return button;
-                    });
-                    return newRow;
-                });
-
-                await msg.edit({ components: newComponents }).catch(() => {});
-
+                await msg.edit({ components: [] }).catch(() => {});
             }).catch(() => {});
         }
 
@@ -534,9 +524,7 @@ let functions = {
      * @param {Array} npc_obj the NPC object we want to create the event array for
      * @param {String} user_id The user id of the user interacting with the NPC
      */
-    event_from_npc: function(npc_obj, user_id) {
-
-        const { generate_trainer_battle } = require('./func_battle.js');
+    event_from_npc: async function(npc_obj, user_id) {
         let npc_flag = `${Flags.NPC}${npc_obj.name}${npc_obj.npc_id}`; //Flag generated for this npc at this position
         let return_array = [];
         let user_flags = db.profile.get(user_id, 'flags');
@@ -573,7 +561,7 @@ let functions = {
             }
 
             //Setup a battle
-            return_array.push([EventMode.Battle, generate_trainer_battle(npc_obj)])
+            return_array.push([EventMode.Battle, npc_obj])
 
         } else if (battle_npc == false && !user_flags.includes(npc_flag)) {
             // If this NPC isn't a battle NPC and the user doesn't yet have their flag (meaning they haven't interacted with them yet)

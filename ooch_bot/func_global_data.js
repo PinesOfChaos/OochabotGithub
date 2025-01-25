@@ -110,7 +110,7 @@ let functions = {
             old_vars = {};
         }
 
-        let keys = new_vars.keys();
+        let keys = Object.keys(new_vars);
         for(let key of keys){
             if(hard_reset || !old_vars.hasOwnProperty(key)){ //If this is a hard reset OR the key doesn't already exist, set it
                 old_vars[key] = new_vars[key];

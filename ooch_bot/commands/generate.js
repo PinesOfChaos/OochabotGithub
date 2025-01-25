@@ -513,25 +513,29 @@ module.exports = {
             id : 1, name : 'Bash', type : OochType.Neutral,
             damage : 20, accuracy: 100,
             effect : [],
-            description : 'The target is dealt some blunt damage.'
+            description : 'The target is dealt some blunt damage.',
+            battle_desc : 'USER bashes TARGET!'
         });
         create_move({
             id : 2, name : 'Spore Shot', type : OochType.Fungal,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'A puff of spore burst from the user\'s body.'
+            description : 'A puff of spore burst from the user\'s body.',
+            battle_desc : 'USER sprays some spores at TARGET!'
         });
         create_move({
             id : 3, name : 'Pebble Blast', type : OochType.Stone,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'Fires a barrage of small pebbles.'
+            description : 'Fires a barrage of small pebbles.',
+            battle_desc : 'USER fires a barrage of pebbles at TARGET!'
         });
         create_move({
             id : 4, name : 'Fireball', type : OochType.Flame,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'Shoots a ball of fire at the target.'
+            description : 'Shoots a ball of fire at the target.',
+            battle_desc : 'USER launches a fireball at TARGET!'
         });
         create_move({
             id : 5, name : 'Slash', type : OochType.Neutral,
@@ -555,7 +559,8 @@ module.exports = {
             id : 8, name : 'Engulf', type : OochType.Flame,
             damage : 30, accuracy: 90,
             effect : [{status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
-            description : 'The target is BURNED by red-hot flames.'
+            description : 'The target is BURNED by red-hot flames.',
+            battle_desc : 'TARGET is engulfed in flames!'
         });
         create_move({
             id : 9, name : 'Impale', type : OochType.Neutral,
@@ -571,9 +576,9 @@ module.exports = {
         });
         create_move({
             id : 11, name : 'Boulder Dash', type : OochType.Stone,
-            damage : 70, accuracy: 90,
-            effect : [],
-            description : 'Flings a massive boulder at the target.'
+            damage : 60, accuracy: 90,
+            effect : [{status : 'priority_1', chance : 100, target : MoveTarget.Self}],
+            description : 'Flings a boulder at the target before it has a chance to do anything.'
         });
         create_move({
             id : 12, name : 'Torch', type : OochType.Flame,
@@ -611,6 +616,7 @@ module.exports = {
             damage : 110, accuracy: 70,
             effect : [],
             description : 'Massive crystals are swung wildly to inflict damage.',
+            battle_desc : 'A massive crystal erupts from the ground and slams into TARGET!'
         });
         create_move({
             id : 18, name : 'Caustic Orb', type : OochType.Ooze,
@@ -647,6 +653,7 @@ module.exports = {
             damage : 45, accuracy: 100,
             effect : [{status : Status.Snare, chance : 30, target : MoveTarget.Enemy}],
             description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.',
+            battle_desc : 'USER clamps down on TARGET!'
         });
         create_move({
             id : 24, name : 'Magic Bolt', type : OochType.Magic,
@@ -690,7 +697,8 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : Status.Double, chance : 100, target : MoveTarget.Enemy}],
             description : 'Travels to a different time, ensuring the next damage the target takes is DOUBLED.',
-            tags : [MoveTag.Time]
+            tags : [MoveTag.Time],
+            battle_desc : 'USER looks into TARGET\'s future...'
         });
         create_move({
             id : 31, name : 'Time Warp', type : OochType.Magic,
@@ -932,6 +940,7 @@ module.exports = {
             damage : 30, accuracy: 90,
             effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : '-_spd_1', chance : 100, target : MoveTarget.Enemy},],
             description : 'Launch a damaging spore at the opponent which lowers ATK and SPD.',
+            battle_desc : 'Spores begin to rain from the sky!'
         });
         create_move({
             id : 71, name : 'Torque', type : OochType.Tech,
@@ -964,6 +973,7 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : '+_def_1', chance : 100, target : MoveTarget.Self}, {status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
             description : 'Rapid fungal growth increases ATK, DEF, and SPD.',
+            battle_desc : 'USER gets huge!'
         });
         create_move({
             id : 76, name : 'Myco-Burst', type : OochType.Fungal,
@@ -982,18 +992,21 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : 'heal', chance : 50, target : MoveTarget.Self}],
             description : 'The user gathers missing parts of its body to restore half its HP.',
+            battle_desc : 'USER slurps up some resources!'
         });
         create_move({
             id : 79, name : 'Digital Gamble', type : OochType.Tech,
             damage : 0, accuracy: 100,
             effect : [{status : 'random', chance : 100, target : MoveTarget.None}],
             description : 'The user randomly uses a move.',
+            battle_desc : 'Let\'s go gambling!'
         });
         create_move({
             id : 80, name : 'Sedimentation', type : OochType.Stone,
             damage : 0, accuracy: 100,
             effect : [{status : '+_def_2', chance : 100, target : MoveTarget.Self}],
             description : 'Spend the turn gathering stone to greatly increase DEF.',
+            battle_desc : 'USER buries itself in tough stones!'
         });
         create_move({
             id : 81, name : 'Plasma Cannon', type : OochType.Flame,
@@ -1018,7 +1031,8 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
             description : 'Release stored-up radiation to BURN the target and reduce its ATK.',
-            tags : [MoveTag.Light]
+            tags : [MoveTag.Light],
+            battle_desc : 'USER\'s body flashes with a sickening green glow!'
         });
         create_move({
             id : 85, name : 'Caltrops', type : OochType.Stone,
@@ -1031,12 +1045,14 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : Status.Focus, chance : 100, target : MoveTarget.Self}],
             description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
+            battle_desc : 'USER begins to blend in with the darkness...'
         });
         create_move({
             id : 87, name : 'Fog', type : OochType.Neutral,
             damage : 0, accuracy: 100,
             effect : [{status : '-_acc_2', chance : 100, target : MoveTarget.Self}, {status : '-_acc_2', chance : 100, target : MoveTarget.Enemy}],
             description : 'Spray thick fog which heavily reduces Accuracy on both sides.',
+            battle_desc: 'The air begins to thicken!'
         });
         create_move({
             id : 88, name : 'Purify', type : OochType.Neutral,
@@ -1073,6 +1089,7 @@ module.exports = {
             damage : 170, accuracy: 80,
             effect : [{status : Status.Vanish, chance : 100, target : MoveTarget.Enemy}],
             description : 'Hit the opponent so hard they get launched and VANISH.',
+            battle_desc : 'USER launched TARGET into the sky!'
         });
 
         //New Moves Start Here

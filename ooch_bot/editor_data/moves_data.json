@@ -17,6 +17,7 @@
     "accuracy": 100,
     "effect": [],
     "description": "The target is dealt some blunt damage.",
+    "battle_desc": "USER bashes TARGET!",
     "tags": []
   },
   {
@@ -27,6 +28,7 @@
     "accuracy": 100,
     "effect": [],
     "description": "A puff of spore burst from the user's body.",
+    "battle_desc": "USER sprays some spores at TARGET!",
     "tags": []
   },
   {
@@ -37,6 +39,7 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fires a barrage of small pebbles.",
+    "battle_desc": "USER fires a barrage of pebbles at TARGET!",
     "tags": []
   },
   {
@@ -47,6 +50,7 @@
     "accuracy": 100,
     "effect": [],
     "description": "Shoots a ball of fire at the target.",
+    "battle_desc": "USER launches a fireball at TARGET!",
     "tags": []
   },
   {
@@ -105,6 +109,7 @@
       }
     ],
     "description": "The target is BURNED by red-hot flames.",
+    "battle_desc": "TARGET is engulfed in flames!",
     "tags": []
   },
   {
@@ -131,10 +136,16 @@
     "id": 11,
     "name": "Boulder Dash",
     "type": "stone",
-    "damage": 70,
+    "damage": 60,
     "accuracy": 90,
-    "effect": [],
-    "description": "Flings a massive boulder at the target.",
+    "effect": [
+      {
+        "status": "priority_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Flings a boulder at the target before it has a chance to do anything.",
     "tags": []
   },
   {
@@ -221,6 +232,7 @@
     "accuracy": 70,
     "effect": [],
     "description": "Massive crystals are swung wildly to inflict damage.",
+    "battle_desc": "A massive crystal erupts from the ground and slams into TARGET!",
     "tags": []
   },
   {
@@ -317,6 +329,7 @@
       }
     ],
     "description": "Clamps down tight on the target to deal damage and SNARE them if you get lucky.",
+    "battle_desc": "USER clamps down on TARGET!",
     "tags": []
   },
   {
@@ -415,7 +428,8 @@
     "description": "Travels to a different time, ensuring the next damage the target takes is DOUBLED.",
     "tags": [
       2
-    ]
+    ],
+    "battle_desc": "USER looks into TARGET's future..."
   },
   {
     "id": 31,
@@ -1030,6 +1044,7 @@
       }
     ],
     "description": "Launch a damaging spore at the opponent which lowers ATK and SPD.",
+    "battle_desc": "Spores begin to rain from the sky!",
     "tags": []
   },
   {
@@ -1139,6 +1154,7 @@
       }
     ],
     "description": "Rapid fungal growth increases ATK, DEF, and SPD.",
+    "battle_desc": "USER gets huge!",
     "tags": []
   },
   {
@@ -1187,6 +1203,7 @@
       }
     ],
     "description": "The user gathers missing parts of its body to restore half its HP.",
+    "battle_desc": "USER slurps up some resources!",
     "tags": []
   },
   {
@@ -1203,6 +1220,7 @@
       }
     ],
     "description": "The user randomly uses a move.",
+    "battle_desc": "Let's go gambling!",
     "tags": []
   },
   {
@@ -1219,6 +1237,7 @@
       }
     ],
     "description": "Spend the turn gathering stone to greatly increase DEF.",
+    "battle_desc": "USER buries itself in tough stones!",
     "tags": []
   },
   {
@@ -1290,7 +1309,8 @@
     "description": "Release stored-up radiation to BURN the target and reduce its ATK.",
     "tags": [
       0
-    ]
+    ],
+    "battle_desc": "USER's body flashes with a sickening green glow!"
   },
   {
     "id": 85,
@@ -1327,6 +1347,7 @@
       }
     ],
     "description": "Lurk in the shadows boosting ATK and makes the user FOCUSED.",
+    "battle_desc": "USER begins to blend in with the darkness...",
     "tags": []
   },
   {
@@ -1348,6 +1369,7 @@
       }
     ],
     "description": "Spray thick fog which heavily reduces Accuracy on both sides.",
+    "battle_desc": "The air begins to thicken!",
     "tags": []
   },
   {
@@ -1443,6 +1465,7 @@
       }
     ],
     "description": "Hit the opponent so hard they get launched and VANISH.",
+    "battle_desc": "USER launched TARGET into the sky!",
     "tags": []
   },
   {
