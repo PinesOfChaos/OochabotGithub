@@ -41,9 +41,10 @@ module.exports = {
 
         let settings_row_2 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Primary).setEmoji('📱'),
-            ).addComponents(
-                new ButtonBuilder().setCustomId('oochabox').setLabel('Oochabox').setStyle(ButtonStyle.Secondary).setEmoji('📦'),
+                new ButtonBuilder().setCustomId('multiplayer').setLabel('Multiplayer').setStyle(ButtonStyle.Primary).setEmoji('🌍'),
+            )
+            .addComponents(
+                new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'),
             );
 
         let settings_row_3 = new ActionRowBuilder()
@@ -59,7 +60,6 @@ module.exports = {
                 new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
             );
 
-        // Back Buttons
         let ooch_back_button = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
@@ -82,6 +82,26 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_item').setLabel('Back').setStyle(ButtonStyle.Danger)
             );
+
+        let mp_back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('back_to_mp').setLabel('Back').setStyle(ButtonStyle.Danger)
+            );
+
+        // Online submenu buttons
+        let online_buttons_1 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('global_button').setLabel('Global').setStyle(ButtonStyle.Primary).setEmoji('🌍'),
+            ).addComponents(
+                new ButtonBuilder().setCustomId('friends_button').setLabel('Friends').setStyle(ButtonStyle.Primary).setEmoji('🧑‍🤝‍🧑'),
+            )
+    
+        let online_buttons_2 = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('trade_button').setLabel('Trade').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>'),
+            ).addComponents(
+                new ButtonBuilder().setCustomId('battle_button').setLabel('Battle').setStyle(ButtonStyle.Danger).setEmoji('⚔️'),
+            )
 
         // Extra buttons for box
         let box_buttons = new ActionRowBuilder()
@@ -261,12 +281,7 @@ module.exports = {
 
         //#endregion End of making action rows
         let user_profile = db.profile.get(interaction.user.id);
-        let areaTeleporters = db.maps.get(user_profile.location_data.area, 'map_savepoints');
-        let onTeleporter = areaTeleporters.filter(v => {
-            return user_profile.location_data.x == v.x && user_profile.location_data.y == v.y;
-        })
 
-        if (onTeleporter == false) settings_row_2.components[1].setDisabled(true);
         let menuMsg;
         await interaction.editReply({ content:  `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
         await interaction.fetchReply().then(msg => {
@@ -461,11 +476,15 @@ module.exports = {
                 box_row = buildBoxData(interaction.user, page_num);
                 i.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
             } 
-             // Back to Box Select
-             else if (selected == 'back_to_item') {
+            // Back to Box Select
+            else if (selected == 'back_to_item') {
                 box_row = await buildItemData();
                 bagEmbed.setDescription(box_row[0]);
                 i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
+            } 
+            // Back to Multiplayer Select
+            else if (selected == 'back_to_mp') {
+                i.update({ components: [online_buttons_1, back_button] });
             } 
             //#endregion
 
@@ -1003,7 +1022,18 @@ module.exports = {
 
             }
             //#endregion
-        
+
+            //#region Multiplayer Submenu
+            // Multiplayer Main Menu
+            else if (selected == 'multiplayer') {
+                await i.update({ content: '**Online Multiplayer**', components: [online_buttons_1, back_button] });
+            } 
+            // Trade/Battle Choice Menu
+            else if (selected == 'global_button' || selected == 'friends_button') {
+                await i.update({ content: '**Online Multiplayer**', components: [online_buttons_2, mp_back_button] });
+            }
+            //#endregion
+
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {

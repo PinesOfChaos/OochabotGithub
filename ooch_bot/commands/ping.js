@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { setup_battle, generate_battle_user } = require("../func_battle_new");
+const { setup_battle, generate_battle_user } = require("../func_battle");
 const { PlayerState, TrainerType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, Weather } = require("../types");
 
 module.exports = {

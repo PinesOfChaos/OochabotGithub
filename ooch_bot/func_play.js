@@ -13,7 +13,7 @@ module.exports = {
         */
 
         const { map_emote_string, setup_playspace_str } = require('./func_play.js');
-        const { generate_wild_battle, setup_battle, level_up, exp_to_next_level, generate_battle_user } = require("./func_battle_new");
+        const { generate_wild_battle, setup_battle, level_up, exp_to_next_level, generate_battle_user } = require("./func_battle.js");
 
         let checkPlrState = db.profile.get(user_id, 'player_state')
         if (checkPlrState !== PlayerState.Playspace) {
