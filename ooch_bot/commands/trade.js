@@ -1,9 +1,9 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder } = require('discord.js');
 const db = require('../db.js');
-const { setup_playspace_str, buildBoxData } = require('../func_play.js');
+const { setup_playspace_str } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
 const wait = require('wait');
-const { ooch_info_embed } = require('../func_other.js');
+const { ooch_info_embed, buildBoxData } = require('../func_other.js');
 
 // TODO: HANDLE TIMEOUTS WHILE MID TRADE
 

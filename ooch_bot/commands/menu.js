@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Stri
 const db = require('../db.js');
 const _ = require('lodash');
 const wait = require('wait');
-const { setup_playspace_str, create_ooch, buildBoxData } = require('../func_play');
+const { setup_playspace_str, create_ooch } = require('../func_play');
 const { PlayerState, TypeEmote, ItemType } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
 const { ooch_info_embed, get_ooch_art } = require('../func_other.js');
@@ -41,7 +41,7 @@ module.exports = {
 
         let settings_row_2 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('multiplayer').setLabel('Multiplayer').setStyle(ButtonStyle.Primary).setEmoji('🌍'),
+                new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('🗺️').setDisabled(true),
             )
             .addComponents(
                 new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'),
@@ -82,63 +82,6 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_item').setLabel('Back').setStyle(ButtonStyle.Danger)
             );
-
-        let mp_back_button = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('back_to_mp').setLabel('Back').setStyle(ButtonStyle.Danger)
-            );
-
-        // Online submenu buttons
-        let online_buttons_1 = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('global_button').setLabel('Global').setStyle(ButtonStyle.Primary).setEmoji('🌍'),
-            ).addComponents(
-                new ButtonBuilder().setCustomId('friends_button').setLabel('Friends').setStyle(ButtonStyle.Primary).setEmoji('🧑‍🤝‍🧑'),
-            )
-    
-        let online_buttons_2 = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('trade_button').setLabel('Trade').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>'),
-            ).addComponents(
-                new ButtonBuilder().setCustomId('battle_button').setLabel('Battle').setStyle(ButtonStyle.Danger).setEmoji('⚔️'),
-            )
-
-        // Extra buttons for box
-        let box_buttons = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('num_label').setLabel('1').setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('party_label').setLabel('Party').setStyle(ButtonStyle.Success)
-            )
-
-        let box_sel_buttons = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('add_ooch').setLabel('Add To Party').setStyle(ButtonStyle.Success)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('release').setLabel('Release').setStyle(ButtonStyle.Danger)
-            )
-
-        let box_party_sel_buttons = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-            ).addComponents(
-                new ButtonBuilder().setCustomId('add_box').setLabel('Add To Box').setStyle(ButtonStyle.Secondary)
-            )
-            
-        let confirm_buttons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId('yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-        ).addComponents(
-            new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
-        );
 
         // Party Menu Extra Buttons
         let party_extra_buttons = new ActionRowBuilder()
@@ -208,76 +151,8 @@ module.exports = {
             );
 
 
-        let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-        oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
+        let oochadex_sel_1 = new ActionRowBuilder()
         let oochadex_sel_options_1 = [];
-        let oochadex_sel_options_2 = [];
-        let oochadex_sel_options_3 = [];
-        let oochadex_sel_options_4 = [];
-        let ooch_data = db.monster_data.get(0);
-        let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
-
-        for (let i = 0; i < db.monster_data.keyArray().length; i++) {
-            ooch_data = db.monster_data.get(i);
-            oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
-            if (i < 25) {
-                oochadex_sel_options_1.push({
-                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                    value: `dex_${i}`,
-                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                })
-            } else if (i >= 25 && i < 50) {
-                oochadex_sel_options_2.push({
-                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                    value: `dex_${i}`,
-                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                })
-            } else if (i >= 50 && i < 75) {
-                oochadex_sel_options_3.push({
-                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                    value: `dex_${i}`,
-                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                })
-            } else if (i >= 75 && i < 100) {
-                oochadex_sel_options_4.push({
-                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                    value: `dex_${i}`,
-                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                })
-            }
-        }
-
-        oochadex_sel_1.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('oochadex_sel_1')
-                .setPlaceholder('Oochadex #1-#25')
-                .addOptions(oochadex_sel_options_1),
-        );
-
-        oochadex_sel_2.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('oochadex_sel_2')
-                .setPlaceholder(`Oochadex #26-#50`)
-                .addOptions(oochadex_sel_options_2),
-        );
-
-        oochadex_sel_3.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('oochadex_sel_3')
-                .setPlaceholder(`Oochadex #51-#75`)
-                .addOptions(oochadex_sel_options_3),
-        );
-
-        oochadex_sel_4.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('oochadex_sel_4')
-                .setPlaceholder(`Oochadex #76-#100`)
-                .addOptions(oochadex_sel_options_4),
-        );
 
         //#endregion End of making action rows
         let user_profile = db.profile.get(interaction.user.id);
@@ -421,11 +296,68 @@ module.exports = {
             return [item_list_str, bag_select];
         }
 
+        async function buildDexData(page, ooch_id) {
+            let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
+            let oochadex_sel_1 = new ActionRowBuilder();
+            let oochadex_sel_options_1 = [];
+            page = parseInt(page);
+            let num_max = (25 * page);
+            
+            for (let i = 0 + (25 * (page - 1)); i < (25 * page); i++) {
+                ooch_data = db.monster_data.get(i);
+                oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
+                if (oochadex_check == undefined){
+                    num_max = i+1;
+                    break;
+                } 
+                oochadex_sel_options_1.push({
+                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    value: `dex_${i}`,
+                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                })
+            }
+    
+            oochadex_sel_1.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('oochadex_sel_1')
+                    .setPlaceholder(`Oochadex #${1 + (25 * (page - 1))}-#${num_max}`)
+                    .addOptions(oochadex_sel_options_1),
+            );
+
+
+            ooch_data = db.monster_data.get(ooch_id);
+            let ooch_img_file;
+            let is_caught = false;
+            if (ooch_data != undefined) {
+                let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
+                ooch_img_file = get_ooch_art(ooch_data.name);
+                dexEmbed = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
+                    .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
+                    .setDescription(`*${ooch_data.oochive_entry}*`)
+                    .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
+                    .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
+
+                if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
+                    if(oochadex_data[ooch_data.evo_id].caught != 0) {
+                        dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
+                    } else {
+                        dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl} • Caught: ${oochadex_data[0].caught}` });
+                    }
+                }
+                is_caught = oochadex_data[ooch_data.id].caught > 0;
+            }
+
+            return { embed: dexEmbed, sel_row: oochadex_sel_1, img: ooch_img_file, is_caught: is_caught};
+        }
+
         // Initialize all variables used across multiple sub menus here
         let selected, collectorId;
         let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch,
         move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed,
-        heal_inv, prism_inv, key_inv, display_inv, page_num, pages, box_row, slot_num, ooch_user_data, prefEmbed,
+        heal_inv, prism_inv, key_inv, display_inv, page_num, dex_page_num, prefEmbed,
         pref_data, pref_desc;
 
         // Enable party healing button if we have healing items
@@ -481,10 +413,6 @@ module.exports = {
                 box_row = await buildItemData();
                 bagEmbed.setDescription(box_row[0]);
                 i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
-            } 
-            // Back to Multiplayer Select
-            else if (selected == 'back_to_mp') {
-                i.update({ components: [online_buttons_1, back_button] });
             } 
             //#endregion
 
@@ -1023,240 +951,56 @@ module.exports = {
             }
             //#endregion
 
-            //#region Multiplayer Submenu
-            // Multiplayer Main Menu
-            else if (selected == 'multiplayer') {
-                await i.update({ content: '**Online Multiplayer**', components: [online_buttons_1, back_button] });
+            //#region Map Submenu
+            // Map
+            else if (selected == 'map') {
+               // TODO: Figure this out later!
             } 
-            // Trade/Battle Choice Menu
-            else if (selected == 'global_button' || selected == 'friends_button') {
-                await i.update({ content: '**Online Multiplayer**', components: [online_buttons_2, mp_back_button] });
-            }
             //#endregion
 
             //#region Oochadex / Oochadex Submenu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
-                let oochadex_data = db.profile.get(interaction.user.id, 'oochadex');
-                let oochadex_sel_1 = new ActionRowBuilder(), oochadex_sel_2 = new ActionRowBuilder(),
-                oochadex_sel_3 = new ActionRowBuilder(), oochadex_sel_4 = new ActionRowBuilder()
-                let oochadex_sel_options_1 = [];
-                let oochadex_sel_options_2 = [];
-                let oochadex_sel_options_3 = [];
-                let oochadex_sel_options_4 = [];
-                
-                for (let i = 0; i < db.monster_data.keyArray().length; i++) {
-                    ooch_data = db.monster_data.get(i);
-                    oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
-                    if (i < 25) {
-                        oochadex_sel_options_1.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else if (i >= 25 && i < 50) {
-                        oochadex_sel_options_2.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else if (i >= 50 && i < 75) {
-                        oochadex_sel_options_3.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    } else if (i >= 75 && i < 100) {
-                        oochadex_sel_options_4.push({
-                            label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                            description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
-                            value: `dex_${i}`,
-                            emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
-                        })
-                    }
-                }
-        
-                oochadex_sel_1.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_1')
-                        .setPlaceholder('Oochadex #1-#25')
-                        .addOptions(oochadex_sel_options_1),
-                );
-        
-                oochadex_sel_2.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_2')
-                        .setPlaceholder(`Oochadex #26-#50`)
-                        .addOptions(oochadex_sel_options_2),
-                );
-        
-                oochadex_sel_3.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_3')
-                        .setPlaceholder(`Oochadex #51-#75`)
-                        .addOptions(oochadex_sel_options_3),
-                );
-        
-                oochadex_sel_4.addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId('oochadex_sel_4')
-                        .setPlaceholder(`Oochadex #76-#100`)
-                        .addOptions(oochadex_sel_options_4),
-                );
+                let dexData = await buildDexData(1, 0);
+                console.log(dexData.sel_row);
+                dex_page_num = 1;
 
-                ooch_data = db.monster_data.get(0);
-                let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
-                let ooch_img_file = get_ooch_art(ooch_data.name);
-                dexEmbed = new EmbedBuilder()
-                    .setColor('#808080')
-                    .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
-                    .setDescription(`*${ooch_data.oochive_entry}*`)
-                    .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
-                    .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
-                        if(oochadex_data[ooch_data.evo_id].seen != 0) {
-                            dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
-                        } else {
-                            dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
-                        }
-                        
-                    }
-
-                if (oochadex_data[0].caught != 0) {
-                    i.update({ content: `**Seen:** ${oochadex_data[0].seen} | **Caught:** ${oochadex_data[0].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
+                if (dexData.is_caught) {
+                    i.update({ content: null,
+                    embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img] });
                 } else {
-                    i.update({ content: `**You have not ${oochadex_data[0].seen != 0 ? `caught ${ooch_data.name}` : `encountered this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
+                    i.update({ content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
+                    embeds: [], components: [dexData.sel_row, dex_arrows], files: [] })
                 }
             }
             // Oochadex Select Menus
-            else if (selected.includes('dex_')) {
-                selected = parseInt(selected.replace('dex_', ''));
-                ooch_data = db.monster_data.get(selected);
-                let ooch_abilities = ooch_data.abilities.map(v => v = db.ability_data.get(v, 'name'));
-                let ooch_img_file = get_ooch_art(ooch_data.name);
-                dexEmbed = new EmbedBuilder()
-                    .setColor('#808080')
-                    .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
-                    .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
-                    .setDescription(`*${ooch_data.oochive_entry}*`)
-                    .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
-                    .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
-                    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
-                        if(oochadex_data[ooch_data.evo_id].seen != 0){
-                            dexEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
-                        } else {
-                            dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}` });
-                        }
-                    }
-
-                if (oochadex_data[selected].caught != 0) {
-                    i.update({ content: `**Seen:** ${oochadex_data[selected].seen} | **Caught:** ${oochadex_data[selected].caught}`,
-                    embeds: [dexEmbed], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [ooch_img_file] });
-                } else {
-                    i.update({ content: `**You have not encountered ${oochadex_data[selected].seen != 0 ? `a ${ooch_data.name}` : `this Oochamon`} yet... Go out into the wild and find it!**`,
-                    embeds: [], components: [oochadex_sel_1, oochadex_sel_2, oochadex_sel_3, oochadex_sel_4, back_button], files: [] });
+            else if (selected.includes('dex_left') || selected.includes('dex_right')) {
+                selected == 'dex_left' ? dex_page_num -= 1 : dex_page_num += 1;
+                if (dex_page_num > 5) {
+                    dex_page_num = 1;
+                } else if (dex_page_num < 1) {
+                    dex_page_num = 5;
                 }
-            }
-            //#endregion
-            
-            //#region Oochabox / Oochabox Menu
-            // Oochabox Button
-            else if (selected == 'oochabox') {  
-                user_profile = db.profile.get(interaction.user.id);
-                pages = 9; // Number of pages, starts at 0
-                page_num = 0;
-                box_row = buildBoxData(interaction.user, page_num);
-                i.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-            }
-            // Label buttons
-            else if (selected.includes('emp') || selected.includes('label')) {
-                i.update({ content: `**Oochabox**`, files: [] });
-            }
-            // Page buttons
-            else if (selected == 'left' || selected == 'right') {
-                selected == 'left' ? page_num -= 1 : page_num += 1;
-                page_num = (page_num + pages) % pages; // Handle max page overflow
-                
-                box_row = buildBoxData(interaction.user, page_num);
-                box_buttons.components[3].setLabel(`${page_num + 1}`);
-                i.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-            } 
-            // Oochamon in Box View
-            else if (selected.includes('box_ooch')) {
-                user_profile = db.profile.get(interaction.user.id);
-                let slot_data = selected.split('_');
-                slot_num = slot_data[3];
-                let party_slot = false;
-                if (selected.includes('_party')) party_slot = true;
 
-                if (party_slot == false) {
-                    ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
+                let dexData = await buildDexData(dex_page_num, dex_page_num * 25);
+
+                if (dexData.is_caught) {
+                    i.update({ content: null,
+                    embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img] });
                 } else {
-                    ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
+                    i.update({ content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
+                    embeds: [], components: [dexData.sel_row, dex_arrows], files: [] })
                 }
-        
-                // Disable the "add to box" button if we only have one party member.
-                box_party_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 1))
-                // Disable the "add to party" button if we have 4 party members.
-                box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
+            } else if (selected.includes('dex_')) {
+                let dexData = await buildDexData(dex_page_num, selected.replace('dex_', ''));
 
-                dexEmbed = ooch_info_embed(ooch_user_data);
-                dexPng = dexEmbed[1];
-                dexEmbed = dexEmbed[0];
-
-                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
-            }
-            // Add Oochamon to Box
-            else if (selected == 'add_box') {
-                user_profile = db.profile.get(interaction.user.id);
-                // Put the specified oochamon into the box.
-                db.profile.push(interaction.user.id, ooch_user_data, `ooch_pc`);
-                user_profile.ooch_party.splice(slot_num, 1)
-                db.profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
-                // Build new PC button rows
-                box_row = buildBoxData(interaction.user, page_num);
-                // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-            } 
-            // Add Oochamon to team
-            else if (selected == 'add_ooch') {
-                user_profile = db.profile.get(interaction.user.id);
-                // Put the specified oochamon into our team
-                db.profile.push(interaction.user.id, ooch_user_data, `ooch_party`);
-                // Take oochamon out of PC
-                user_profile.ooch_pc.splice(slot_num, 1);
-                db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
-                // Build new PC button rows
-                box_row = buildBoxData(interaction.user, page_num);
-                // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-            
-            }
-            // Release an Oochamon
-            else if (selected == 'release') {
-                user_profile = db.profile.get(interaction.user.id);
-                await i.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [confirm_buttons], files: [] });
-            }
-            // Confirm to release an Oochamon
-            else if (selected == 'yes') {
-                user_profile = db.profile.get(interaction.user.id);
-                user_profile.ooch_pc.splice(slot_num, 1);
-                db.profile.set(interaction.user.id, user_profile.ooch_pc, 'ooch_pc');
-                // Build new PC button rows
-                box_row = buildBoxData(interaction.user, page_num);
-                // Kick back to PC screen
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-            }
-            // Confirm to not release an Oochamon
-            else if (selected == 'no') {
-                user_profile = db.profile.get(interaction.user.id);
-                i.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
+                if (dexData.is_caught) {
+                    i.update({ content: null,
+                    embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img] });
+                } else {
+                    i.update({ content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
+                    embeds: [], components: [dexData.sel_row, dex_arrows], files: [] })
+                }
             }
             //#endregion
 

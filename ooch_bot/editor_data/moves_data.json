@@ -17,7 +17,6 @@
     "accuracy": 100,
     "effect": [],
     "description": "The target is dealt some blunt damage.",
-    "battle_desc": "USER bashes TARGET!",
     "tags": []
   },
   {
@@ -28,7 +27,6 @@
     "accuracy": 100,
     "effect": [],
     "description": "A puff of spore burst from the user's body.",
-    "battle_desc": "USER sprays some spores at TARGET!",
     "tags": []
   },
   {
@@ -39,7 +37,6 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fires a barrage of small pebbles.",
-    "battle_desc": "USER fires a barrage of pebbles at TARGET!",
     "tags": []
   },
   {
@@ -50,7 +47,6 @@
     "accuracy": 100,
     "effect": [],
     "description": "Shoots a ball of fire at the target.",
-    "battle_desc": "USER launches a fireball at TARGET!",
     "tags": []
   },
   {
@@ -109,7 +105,6 @@
       }
     ],
     "description": "The target is BURNED by red-hot flames.",
-    "battle_desc": "TARGET is engulfed in flames!",
     "tags": []
   },
   {
@@ -232,7 +227,6 @@
     "accuracy": 70,
     "effect": [],
     "description": "Massive crystals are swung wildly to inflict damage.",
-    "battle_desc": "A massive crystal erupts from the ground and slams into TARGET!",
     "tags": []
   },
   {
@@ -329,7 +323,6 @@
       }
     ],
     "description": "Clamps down tight on the target to deal damage and SNARE them if you get lucky.",
-    "battle_desc": "USER clamps down on TARGET!",
     "tags": []
   },
   {
@@ -355,7 +348,7 @@
         "target": 1
       }
     ],
-    "description": "Shoots bright sparks with the potential to BLIND.",
+    "description": "Shoots bright sparks with the potential to BLIND the target.",
     "tags": []
   },
   {
@@ -425,11 +418,10 @@
         "target": 1
       }
     ],
-    "description": "Travels to a different time, ensuring the next damage the target takes is DOUBLED.",
+    "description": "Travels to a different time, EXPOSING the target's weaknesses.",
     "tags": [
       2
-    ],
-    "battle_desc": "USER looks into TARGET's future..."
+    ]
   },
   {
     "id": 31,
@@ -444,7 +436,7 @@
         "target": 1
       }
     ],
-    "description": "Warps spacetime around the target, with a chance to DOUBLE the next damage they take.",
+    "description": "Warps spacetime around the target, with a chance to EXPOSE the target.",
     "tags": [
       2
     ]
@@ -631,6 +623,7 @@
       }
     ],
     "description": "The user self destructs to inflict massive damage.",
+    "battle_desc": "USER detonates violently!",
     "tags": []
   },
   {
@@ -758,7 +751,7 @@
         "target": 1
       }
     ],
-    "description": "Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.",
+    "description": "Crimson threads fly at the target, with a chance to EXPOSE the target.",
     "tags": []
   },
   {
@@ -1044,7 +1037,6 @@
       }
     ],
     "description": "Launch a damaging spore at the opponent which lowers ATK and SPD.",
-    "battle_desc": "Spores begin to rain from the sky!",
     "tags": []
   },
   {
@@ -1154,7 +1146,6 @@
       }
     ],
     "description": "Rapid fungal growth increases ATK, DEF, and SPD.",
-    "battle_desc": "USER gets huge!",
     "tags": []
   },
   {
@@ -1203,7 +1194,6 @@
       }
     ],
     "description": "The user gathers missing parts of its body to restore half its HP.",
-    "battle_desc": "USER slurps up some resources!",
     "tags": []
   },
   {
@@ -1237,7 +1227,6 @@
       }
     ],
     "description": "Spend the turn gathering stone to greatly increase DEF.",
-    "battle_desc": "USER buries itself in tough stones!",
     "tags": []
   },
   {
@@ -1309,8 +1298,7 @@
     "description": "Release stored-up radiation to BURN the target and reduce its ATK.",
     "tags": [
       0
-    ],
-    "battle_desc": "USER's body flashes with a sickening green glow!"
+    ]
   },
   {
     "id": 85,
@@ -1347,7 +1335,6 @@
       }
     ],
     "description": "Lurk in the shadows boosting ATK and makes the user FOCUSED.",
-    "battle_desc": "USER begins to blend in with the darkness...",
     "tags": []
   },
   {
@@ -1465,7 +1452,6 @@
       }
     ],
     "description": "Hit the opponent so hard they get launched and VANISH.",
-    "battle_desc": "USER launched TARGET into the sky!",
     "tags": []
   },
   {
@@ -1587,7 +1573,7 @@
         "target": 1
       }
     ],
-    "description": "Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.",
+    "description": "Launch a future-seeing crystal ball at the enemy, it might just forsee a future where the target's weakness is EXPOSED.",
     "tags": []
   },
   {
@@ -1704,6 +1690,7 @@
     "accuracy": 1000,
     "effect": [],
     "description": "You hit the jackpot!!!",
+    "battle_desc": "USER hit the jackpot!!!",
     "tags": []
   }
 ]

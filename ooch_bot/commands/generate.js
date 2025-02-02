@@ -513,29 +513,25 @@ module.exports = {
             id : 1, name : 'Bash', type : OochType.Neutral,
             damage : 20, accuracy: 100,
             effect : [],
-            description : 'The target is dealt some blunt damage.',
-            battle_desc : 'USER bashes TARGET!'
+            description : 'The target is dealt some blunt damage.'
         });
         create_move({
             id : 2, name : 'Spore Shot', type : OochType.Fungal,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'A puff of spore burst from the user\'s body.',
-            battle_desc : 'USER sprays some spores at TARGET!'
+            description : 'A puff of spore burst from the user\'s body.'
         });
         create_move({
             id : 3, name : 'Pebble Blast', type : OochType.Stone,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'Fires a barrage of small pebbles.',
-            battle_desc : 'USER fires a barrage of pebbles at TARGET!'
+            description : 'Fires a barrage of small pebbles.'
         });
         create_move({
             id : 4, name : 'Fireball', type : OochType.Flame,
             damage : 30, accuracy: 100,
             effect : [],
-            description : 'Shoots a ball of fire at the target.',
-            battle_desc : 'USER launches a fireball at TARGET!'
+            description : 'Shoots a ball of fire at the target.'
         });
         create_move({
             id : 5, name : 'Slash', type : OochType.Neutral,
@@ -559,8 +555,7 @@ module.exports = {
             id : 8, name : 'Engulf', type : OochType.Flame,
             damage : 30, accuracy: 90,
             effect : [{status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
-            description : 'The target is BURNED by red-hot flames.',
-            battle_desc : 'TARGET is engulfed in flames!'
+            description : 'The target is BURNED by red-hot flames.'
         });
         create_move({
             id : 9, name : 'Impale', type : OochType.Neutral,
@@ -615,8 +610,7 @@ module.exports = {
             id : 17, name : 'Gem Bash', type : OochType.Crystal,
             damage : 110, accuracy: 70,
             effect : [],
-            description : 'Massive crystals are swung wildly to inflict damage.',
-            battle_desc : 'A massive crystal erupts from the ground and slams into TARGET!'
+            description : 'Massive crystals are swung wildly to inflict damage.'
         });
         create_move({
             id : 18, name : 'Caustic Orb', type : OochType.Ooze,
@@ -652,8 +646,7 @@ module.exports = {
             id : 23, name : 'Clamp Down', type : OochType.Neutral,
             damage : 45, accuracy: 100,
             effect : [{status : Status.Snare, chance : 30, target : MoveTarget.Enemy}],
-            description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.',
-            battle_desc : 'USER clamps down on TARGET!'
+            description : 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.'
         });
         create_move({
             id : 24, name : 'Magic Bolt', type : OochType.Magic,
@@ -665,7 +658,7 @@ module.exports = {
             id : 25, name : 'Sparkler', type : OochType.Flame,
             damage : 40, accuracy: 100,
             effect : [{status : Status.Blind, chance : 30, target : MoveTarget.Enemy}],
-            description : 'Shoots bright sparks with the potential to BLIND.',
+            description : 'Shoots bright sparks with the potential to BLIND the target.',
         });
         create_move({
             id : 26, name : 'Arca Strike', type : OochType.Magic,
@@ -695,16 +688,15 @@ module.exports = {
         create_move({
             id : 30, name : 'Blink', type : OochType.Magic,
             damage : 0, accuracy: 100,
-            effect : [{status : Status.Double, chance : 100, target : MoveTarget.Enemy}],
-            description : 'Travels to a different time, ensuring the next damage the target takes is DOUBLED.',
-            tags : [MoveTag.Time],
-            battle_desc : 'USER looks into TARGET\'s future...'
+            effect : [{status : Status.Expose, chance : 100, target : MoveTarget.Enemy}],
+            description : 'Travels to a different time, EXPOSING the target\'s weaknesses.',
+            tags : [MoveTag.Time]
         });
         create_move({
             id : 31, name : 'Time Warp', type : OochType.Magic,
             damage : 50, accuracy: 100,
-            effect : [{status : Status.Double, chance : 50, target : MoveTarget.Enemy}],
-            description : 'Warps spacetime around the target, with a chance to DOUBLE the next damage they take.',
+            effect : [{status : Status.Expose, chance : 50, target : MoveTarget.Enemy}],
+            description : 'Warps spacetime around the target, with a chance to EXPOSE the target.',
             tags : [MoveTag.Time]
         });
         create_move({
@@ -784,6 +776,7 @@ module.exports = {
             damage : 250, accuracy: 100,
             effect : [{status : 'recoil', chance : 100, target : MoveTarget.Self}],
             description : 'The user self destructs to inflict massive damage.',
+            battle_desc : 'USER detonates violently!'
         });
         create_move({
             id : 45, name : 'Siphon', type : OochType.Fungal,
@@ -830,8 +823,8 @@ module.exports = {
         create_move({
             id : 52, name : 'Fated Threads', type : OochType.Cloth,
             damage : 70, accuracy: 100,
-            effect : [{status : Status.Double, chance : 50, target : MoveTarget.Enemy}],
-            description : 'Crimson threads fly at the target, with a chance to DOUBLE the next damage it takes.',
+            effect : [{status : Status.Expose, chance : 50, target : MoveTarget.Enemy}],
+            description : 'Crimson threads fly at the target, with a chance to EXPOSE the target.',
         });
         create_move({
             id : 53, name : 'Sync Strike', type : OochType.Neutral,
@@ -939,8 +932,7 @@ module.exports = {
             id : 70, name : 'Enfeebling Spore', type : OochType.Fungal,
             damage : 30, accuracy: 90,
             effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : '-_spd_1', chance : 100, target : MoveTarget.Enemy},],
-            description : 'Launch a damaging spore at the opponent which lowers ATK and SPD.',
-            battle_desc : 'Spores begin to rain from the sky!'
+            description : 'Launch a damaging spore at the opponent which lowers ATK and SPD.'
         });
         create_move({
             id : 71, name : 'Torque', type : OochType.Tech,
@@ -972,8 +964,7 @@ module.exports = {
             id : 75, name : 'Overgrowth', type : OochType.Fungal,
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : '+_def_1', chance : 100, target : MoveTarget.Self}, {status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
-            description : 'Rapid fungal growth increases ATK, DEF, and SPD.',
-            battle_desc : 'USER gets huge!'
+            description : 'Rapid fungal growth increases ATK, DEF, and SPD.'
         });
         create_move({
             id : 76, name : 'Myco-Burst', type : OochType.Fungal,
@@ -991,8 +982,7 @@ module.exports = {
             id : 78, name : 'Slurp Up', type : OochType.Ooze,
             damage : 0, accuracy: 100,
             effect : [{status : 'heal', chance : 50, target : MoveTarget.Self}],
-            description : 'The user gathers missing parts of its body to restore half its HP.',
-            battle_desc : 'USER slurps up some resources!'
+            description : 'The user gathers missing parts of its body to restore half its HP.'
         });
         create_move({
             id : 79, name : 'Digital Gamble', type : OochType.Tech,
@@ -1005,8 +995,7 @@ module.exports = {
             id : 80, name : 'Sedimentation', type : OochType.Stone,
             damage : 0, accuracy: 100,
             effect : [{status : '+_def_2', chance : 100, target : MoveTarget.Self}],
-            description : 'Spend the turn gathering stone to greatly increase DEF.',
-            battle_desc : 'USER buries itself in tough stones!'
+            description : 'Spend the turn gathering stone to greatly increase DEF.'
         });
         create_move({
             id : 81, name : 'Plasma Cannon', type : OochType.Flame,
@@ -1031,8 +1020,7 @@ module.exports = {
             damage : 0, accuracy: 100,
             effect : [{status : '-_atk_1', chance : 100, target : MoveTarget.Enemy}, {status : Status.Burn, chance : 100, target : MoveTarget.Enemy}],
             description : 'Release stored-up radiation to BURN the target and reduce its ATK.',
-            tags : [MoveTag.Light],
-            battle_desc : 'USER\'s body flashes with a sickening green glow!'
+            tags : [MoveTag.Light]
         });
         create_move({
             id : 85, name : 'Caltrops', type : OochType.Stone,
@@ -1044,8 +1032,7 @@ module.exports = {
             id : 86, name : 'Lurk', type : OochType.Magic,
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : Status.Focus, chance : 100, target : MoveTarget.Self}],
-            description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
-            battle_desc : 'USER begins to blend in with the darkness...'
+            description : 'Lurk in the shadows boosting ATK and makes the user FOCUSED.'
         });
         create_move({
             id : 87, name : 'Fog', type : OochType.Neutral,
@@ -1088,11 +1075,8 @@ module.exports = {
             id : 93, name : 'High Impact', type : OochType.Neutral,
             damage : 170, accuracy: 80,
             effect : [{status : Status.Vanish, chance : 100, target : MoveTarget.Enemy}],
-            description : 'Hit the opponent so hard they get launched and VANISH.',
-            battle_desc : 'USER launched TARGET into the sky!'
+            description : 'Hit the opponent so hard they get launched and VANISH.'
         });
-
-        //New Moves Start Here
         create_move({
             id : 94, name : 'Shards', type : OochType.Crystal,
             damage : 20, accuracy: 100,
@@ -1139,8 +1123,8 @@ module.exports = {
         create_move({
             id : 101, name : 'Crystal Ball', type : OochType.Crystal,
             damage : 50, accuracy: 90,
-            effect : [{status : Status.Double, chance : 30, target : MoveTarget.Enemy}],
-            description : 'Launch a future-seeing crystal ball at the enemy, it might just forsee a future where they take DOUBLE damage.',
+            effect : [{status : Status.Expose, chance : 30, target : MoveTarget.Enemy}],
+            description : 'Launch a future-seeing crystal ball at the enemy, it might just forsee a future where the target\'s weakness is EXPOSED.',
         });
         create_move({
             id : 102, name : 'Sonic Boom', type : OochType.Sound,
@@ -1178,11 +1162,12 @@ module.exports = {
             effect : [{status : Status.Doom, chance : 100, target : MoveTarget.Enemy}],
             description : 'Wraps the target in cursed cloths, DOOMING the target.',
         });
-        create_move({
+        create_move({ //This move should not be given to any mon, it's here as a small chance for Digital Gamble
             id : 108, name : 'Jackpot', type : OochType.Tech,
             damage : 9999, accuracy: 1000,
             effect : [],
             description : 'You hit the jackpot!!!',
+            battle_desc : 'USER hit the jackpot!!!'
         });
 
         //#endregionF
@@ -1257,9 +1242,10 @@ module.exports = {
         create_ability(64, 'Thrashing',         'Increases ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage.');
         create_ability(65, 'Union',             'Increases ATK and DEF by 1 stage.');
         
-        // EVENTUAL ABILITIES DON'T WORRY ABOUT THEM UNTIL MAIN GAME IS DONE
-        create_ability(66, 'Protector',        'The Oochamon gets protected, making it immune to not very effective damage during the turn it switches into the battlefield.');
-        create_ability(67, 'Phantasmal',       'The Oochamon becomes phantasmal, making it immune to Neutral-type moves.');
+
+        // TO DO ABILITIES
+        create_ability(66, 'Protector',        'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.');
+        create_ability(67, 'Phantasmal',       'The Oochamon is phantasmal, making it immune to Neutral-type moves.');
         create_ability(68, 'Matryoshka',       'The first time the Oochamon would faint, revives and restores its HP to half.');
         create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.');
         create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
@@ -1267,6 +1253,17 @@ module.exports = {
         create_ability(72, 'Neutralizer',      'Makes every Oochamon on the battlefield immune to Status Effects.');
         create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.')
         create_ability(74, 'Stealthy',         'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.');
+        create_ability(75, 'Pursuer',          'Deals 20% current HP damage to an Oochamon as it switches out.');
+        create_ability(76, 'Bloodrush',        'Taking damage increases SPD by 1 stage.');
+        create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.');
+        create_ability(78, 'Martyr',           'If this Oochamon is swapped out with 0 HP, increases the ATK of the next mon to switch in.');
+        create_ability(79, 'Condiment',        'Increases the DEF & SPD of Lasangato in the party 1 stage.');
+        create_ability(80, 'Double or Nothing','Stat changes are either doubled or do nothing.');
+        create_ability(81, 'Vigorous',         'Increases healing by 30%.');
+        create_ability(82, 'Turbine',          'Increases ATK whenever a Flame-type move is used.');
+        create_ability(83, 'Pact',             'Increases the damage of the user\'s first move by 30% on repeated uses.');
+        create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.');
+        create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
         
 
         //#endregion
@@ -1281,8 +1278,11 @@ module.exports = {
         create_status(4,   'Snared',    '<:status_snared:1274938520821305355>',     'Ensnares the Oochamon, forcing it to go second in battle.');
         create_status(5,   'Vanished',  '<:status_vanish:1274938531864776735>',     'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
         create_status(6,   'Doomed',    '<:status_doomed:1274938483924009062>',     'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
-        create_status(7,   'Doubled',   '<:status_doubled:1274938495953014845>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+        create_status(7,   'Exposed',   '<:status_exposed:1335433347345813624>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
         create_status(8,   'Focused',   '<:status_focused:1304616656915533855>',    'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+        create_status(9,   'Sleep',     '<:status_sleep:1335446202275070034>',      'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
+        create_status(10,  'Petrify',   '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
+        create_status(11,  'Weak',      '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
 
         
         //#endregion
@@ -3121,7 +3121,7 @@ module.exports = {
             let move_found = false;
             for(let tmon of test_mons){
                 for(let tmove2 of tmon.move_list){
-                    if(tmove1.id == tmove2[1]){
+                    if(tmove1.id == tmove2[1] || tmove1.id == 108){ //108 Jackpot's ID
                         move_found = true;
                         break;
                     }

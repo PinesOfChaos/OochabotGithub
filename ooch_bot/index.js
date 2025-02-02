@@ -65,22 +65,22 @@ client.on('ready', async () => {
         let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
         if (userThread == undefined) continue;
 
-        if (user_profile.player_state == PlayerState.Combat) {
-            // Delete turn messages
-            let msgDeleteCount = db.profile.get(user, 'turn_msg_counter');
-            if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
-                await userThread.bulkDelete(msgDeleteCount);
-            }
+        // if (user_profile.player_state == PlayerState.Combat) {
+        //     // Delete turn messages
+        //     let msgDeleteCount = db.profile.get(user, 'turn_msg_counter');
+        //     if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
+        //         await userThread.bulkDelete(msgDeleteCount);
+        //     }
 
-            // Rollback profile to previous turn.
-            if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
-                db.profile.set(user, JSON.parse(user_profile.rollback_profile));
-                db.profile.set(user, false, 'rollback_profile');
-            }
+        //     // Rollback profile to previous turn.
+        //     if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
+        //         db.profile.set(user, JSON.parse(user_profile.rollback_profile));
+        //         db.profile.set(user, false, 'rollback_profile');
+        //     }
 
-            await prompt_battle_input(userThread, user);
+        //     await prompt_battle_input(userThread, user);
 
-        } else if (user_profile.player_state == PlayerState.Intro) {
+        if (user_profile.player_state == PlayerState.Intro) {
 
             await userThread.bulkDelete(100).catch(() => {});
             await reset_oochamon(user);

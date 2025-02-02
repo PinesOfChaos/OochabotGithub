@@ -80,8 +80,11 @@ const Status = {
     Snare: 4,
     Vanish: 5,
     Doom: 6,
-    Double: 7,
+    Expose: 7,
     Focus: 8,
+    Sleep: 9,
+    Petrify: 10,
+    weak: 11
 }
 
 const OochType = {
@@ -291,7 +294,18 @@ const Ability = {
     Constructor: 71,
     Neutralizer: 72,
     BassBoost: 73,
-    Stealthy: 74
+    Stealthy: 74,
+    Pursuer: 75,
+    Bloodrush: 76,
+    Chronomancy: 77,
+    Martyr: 78,
+    Condiment: 79,
+    DoubleOrNothing: 80,
+    Vigorous: 81,
+    Turbine: 82,
+    Pact: 83,
+    Exploiter: 84,
+    Seer: 85
 }
 
 const Item = {

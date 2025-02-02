@@ -10,6 +10,7 @@ const { ooch_info_embed, check_chance } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 
 let functions = {
+    
     /** 
      * Generate a Battle ID
      * @returns Generates a Battle ID as a string
@@ -171,6 +172,13 @@ let functions = {
             //Reset text messages per player
             battleStartText = '';
             sendOutText = '';
+
+            if (fake_battle) {
+                for (let i = 0; i < user.party.length; i++) {
+                    user.party[i].current_hp = user.party[i].stats.hp;
+                    user.party[i].alive = true;
+                }
+            }
 
             //The current player in combat
             active_ooch = user.party[user.active_slot];
@@ -685,8 +693,10 @@ let functions = {
                             inputCollector.stop();
                             i.update({ content: `` });
                             i.deleteReply();
+                            await inputCollector.stop();
                             functions.process_battle_actions(battle_id);
                         } else {
+                            await inputCollector.stop();
                             i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
 
@@ -737,8 +747,10 @@ let functions = {
                             inputCollector.stop();
                             i.update({ content: `` });
                             i.deleteReply();
+                            await inputCollector.stop();
                             functions.process_battle_actions(battle_id);
                         } else {
+                            await inputCollector.stop();
                             i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
 
@@ -825,8 +837,10 @@ let functions = {
                             inputCollector.stop();
                             i.update({ content: `` });
                             i.deleteReply();
+                            await inputCollector.stop();
                             functions.process_battle_actions(battle_id);
                         } else {
+                            await inputCollector.stop();
                             i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
                         
@@ -840,8 +854,10 @@ let functions = {
                             inputCollector.stop();
                             i.update({ content: `` });
                             i.deleteReply();
+                            await inputCollector.stop();
                             functions.process_battle_actions(battle_id);
                         } else {
+                            await inputCollector.stop();
                             i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                         }
                         
@@ -1187,116 +1203,103 @@ let functions = {
         }
     },
 
-    /**
-     * Have the oochs ability affect its stats, then return the ooch with its stats adjusted accordingly.
-     * Read the generate.js to see what each ability does.
-     * @param {Object} ooch The oochamon object to have affected by it's ability
-     * @param {Array} ooch_inv The oochamon party array for the user
-     * @returns The Oochamon object with changed stats.
-     */
-    ability_stat_change: function(ooch, ooch_inv) {
-
-        let output_msg = ``;
-        let incAmount = 0;
-        // Check for digitized status effect
-        if (ooch.status_effects.includes(Status.Digitize)) {
-            ooch.type = [OochType.Tech];
-        }
-
-        switch (ooch.ability) {
-            case Ability.Miniscule: 
-                ooch = functions.modify_stat(ooch, Stats.Evasion, 1);
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased evasion from its ability **Miniscule**!`;
-            break;
-            case Ability.Burdened: 
-                ooch = functions.modify_stat(ooch, Stats.Speed, -1);
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** decreased its SPD and increased its DEF from its ability **Burdened**!`;
-            break;
-            case Ability.Tough:
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Tough**!`;
-            break;
-            case Ability.Immobile:
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its DEF from its ability **Immobile**!`;
-            break;
-            case Ability.Gentle:
-                ooch = functions.modify_stat(ooch, Stats.Attack, -1); 
-                output_msg = `All Oochamon on the field had their ATK decreased from the ability **Gentle**!`;
-            break;
-            case Ability.Conflicted:
-                ooch = functions.modify_stat(ooch, Stats.Attack, 1);
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1);
-                ooch = functions.modify_stat(ooch, Stats.Speed, 1);
-                ooch = functions.modify_stat(ooch, Stats.Accuracy, 1);
-                ooch = functions.modify_stat(ooch, Stats.Evasion, 1); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased all of its stats from its ability **Conflicted**!`;
-            break;
-            case Ability.Dense:
-                ooch = functions.modify_stat(ooch, Stats.Attack, 1);
-                ooch = functions.modify_stat(ooch, Stats.Speed, -1); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** decreased its SPD and increased its ATK from its ability **Dense**!`;
-            break;
-            case Ability.Fleeting:
-                ooch = functions.modify_stat(ooch, Stats.Speed, 2);
-                ooch = functions.modify_stat(ooch, Stats.Attack, 2); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its SPD and ATK from its ability **Fleeting**!`;
-            break;
-            case Ability.Uncontrolled:
-                ooch = functions.modify_stat(ooch, Stats.Attack, 3); 
-                ooch = functions.modify_stat(ooch, Stats.Defense, -1);
-                output_msg = `${ooch.emote} **${ooch.nickname}** dramatically increased its ATK and reduced its DEF from its ability **Uncontrolled**!`;
-            break;
-            case Ability.Immense:
-                ooch = functions.modify_stat(ooch, Stats.Defense, 2); 
-                output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its DEF from its ability **Immense**!`;
-            break;
-            case Ability.Swaying:
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1);
-                ooch = functions.modify_stat(ooch, Stats.Accuracy, -1);
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its DEF and decreased its accuracy from its ability **Swaying**!`;
-            break;
-            case Ability.Thrashing:
-                ooch = functions.modify_stat(ooch, Stats.Attack, 1);
-                ooch = functions.modify_stat(ooch, Stats.Evasion, -1);
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its ATK and decreased its evasion from its ability **Thrashing**!`;
-            break;
-            case Ability.Union:
-                ooch = functions.modify_stat(ooch, Stats.Attack, 1);
-                ooch = functions.modify_stat(ooch, Stats.Defense, 1);
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its ATK and DEF from its ability **Union**!`;
-            break;
-            case Ability.Broodmother:
-                incAmount = 0;
-                for (let ooch_i of ooch_inv) {
-                    if (ooch_i.type[0] === ooch.type[0] && ooch_i.id != ooch.id) {
-                        ooch = functions.modify_stat(ooch, Stats.Attack, 1);
-                        incAmount += 1;
-                    }
-                } 
-                output_msg = `${ooch.emote} **${ooch.nickname}** increased its ATK by **${incAmount} stages** from its ability **Broodmother**!`;
-            break;
-            case Ability.Apprentice:
-                incAmount = 0;
-                for (let ooch_i of ooch_inv) {
-                    if (ooch_i.moveset.some(item => ooch.moveset.includes(item)) && ooch_i.id != ooch.id) {
-                        ooch = functions.modify_stat(ooch, Stats.Attack, 2);
-                        output_msg = `${ooch.emote} **${ooch.nickname}** sharply increased its ATK from its ability **Apprentice**!`;
-                        break;
-                    }
-                }
-            break;
-        }
-
-        return [ooch, output_msg];
-    }, 
-
     use_switch_ability(battle_data, user_index, slot_from, slot_to, is_switching){
         let user = battle_data.users[user_index]
         let ooch_to = user.party[slot_to];
         let ooch_from = user.party[slot_from];
         let string_to_send = '';
+
+        //If the ooch is affected by Digitize make it a tech type again
+        if (ooch_to.status_effects.includes(Status.Digitize)) {
+            ooch_to.type = [OochType.Tech];
+        }
+
+        //Effects of the mon to switching in
+        switch (ooch_to.ability) {
+            case Ability.Miniscule: 
+                ooch_to = functions.modify_stat(ooch_to, Stats.Evasion, 1);
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased evasion from its ability **Miniscule**!`;
+            break;
+            case Ability.Burdened: 
+                ooch_to = functions.modify_stat(ooch_to, Stats.Speed, -1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** decreased its SPD and increased its DEF from its ability **Burdened**!`;
+            break;
+            case Ability.Tough:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its DEF from its ability **Tough**!`;
+            break;
+            case Ability.Immobile:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its DEF from its ability **Immobile**!`;
+            break;
+            case Ability.Gentle:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, -1); 
+                string_to_send += `All Oochamon on the field had their ATK decreased from the ability **Gentle**!`;
+            break;
+            case Ability.Conflicted:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Speed, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Accuracy, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Evasion, 1); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased all of its stats from its ability **Conflicted**!`;
+            break;
+            case Ability.Dense:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Speed, -1); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** decreased its SPD and increased its ATK from its ability **Dense**!`;
+            break;
+            case Ability.Fleeting:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Speed, 2);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 2); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** sharply increased its SPD and ATK from its ability **Fleeting**!`;
+            break;
+            case Ability.Uncontrolled:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 3); 
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, -1);
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** dramatically increased its ATK and reduced its DEF from its ability **Uncontrolled**!`;
+            break;
+            case Ability.Immense:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 2); 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** sharply increased its DEF from its ability **Immense**!`;
+            break;
+            case Ability.Swaying:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Accuracy, -1);
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its DEF and decreased its accuracy from its ability **Swaying**!`;
+            break;
+            case Ability.Thrashing:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Evasion, -1);
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its ATK and decreased its evasion from its ability **Thrashing**!`;
+            break;
+            case Ability.Union:
+                ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1);
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its ATK and DEF from its ability **Union**!`;
+            break;
+            case Ability.Broodmother:
+                incAmount = 0;
+                for (let ooch_i of user.party) {
+                    if (ooch_i.type[0] === ooch.type[0] && ooch_i.id != ooch.id) {
+                        ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                        incAmount += 1;
+                    }
+                } 
+                string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** increased its ATK by **${incAmount} stages** from its ability **Broodmother**!`;
+            break;
+            case Ability.Apprentice:
+                incAmount = 0;
+                for (let ooch_i of user.party) {
+                    if (ooch_i.moveset.some(item => ooch_to.moveset.includes(item)) && ooch_i.id != ooch_to.id) {
+                        ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 2);
+                        string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** sharply increased its ATK from its ability **Apprentice**!`;
+                        break;
+                    }
+                }
+            break;
+        }
 
         //Check abilities vs other users
         for(let u of battle_data.users){
@@ -2108,7 +2111,7 @@ let functions = {
         
         if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
         let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
-        let status_doubled = (defender.status_effects.includes(Status.Double) ? 2 : 1);
+        let status_exposed = (defender.status_effects.includes(Status.Expose) ? 2 : 1);
         let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
         let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
         let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
@@ -2132,13 +2135,13 @@ let functions = {
 
         let dmg = 0;
         if (move_damage != 0) {
-            dmg = functions.battle_calc_damage(move_damage * type_multiplier[0] * status_doubled * ability_dmg_multiplier, 
+            dmg = functions.battle_calc_damage(move_damage * type_multiplier[0] * status_exposed * ability_dmg_multiplier, 
                                     move_type, attacker, defender, battle_data.turn_counter) * crit_multiplier;
         }
         vampire_heal = Math.ceil(vampire_heal * dmg); //used later
-        // Remove doubled status effect
-        if (status_doubled != 1) {
-            defender.status_effects = defender.status_effects.filter(v => v != Status.Double);
+        // Remove Exposed status effect
+        if (status_exposed != 1) {
+            defender.status_effects = defender.status_effects.filter(v => v != Status.Expose);
         }
 
         // If the defender has Vanish AND the attack is not self targeting, it should fail
@@ -2239,9 +2242,9 @@ let functions = {
             string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
             if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
 
-            //If the target has the Doubled status effect
-            if(status_doubled != 1 && move_damage > 0) {
-                string_to_send += `\n--- **The damage was <:status_doubled:1274938495953014845> DOUBLED!**`
+            //If the target has the Exposed status effect
+            if(status_exposed != 1 && move_damage > 0) {
+                string_to_send += `\n--- **The damage was <:status_exposed:1335433347345813624> doubled!**`
             }
 
             //If a crit lands

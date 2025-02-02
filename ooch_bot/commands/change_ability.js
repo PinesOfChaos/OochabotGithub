@@ -12,7 +12,6 @@ module.exports = {
                 .setDescription('Ability to change to')
                 .setRequired(true)),
     async execute(interaction) {
-        
         if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
         let ability = interaction.options.getString('ability');
         ability = parseInt(ability);

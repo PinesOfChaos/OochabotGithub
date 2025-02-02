@@ -19,5 +19,5 @@ module.exports = {
         let locationData = db.profile.get(interaction.user.id, 'location_data');
 
         interaction.reply({ content: `Current Area: **${locationData.area}**\n[X: ${locationData.x}, Y: ${locationData.y}]`, ephemeral: true });
-    },
-};
+    }   
+}
