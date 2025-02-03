@@ -84,7 +84,7 @@ const Status = {
     Focus: 8,
     Sleep: 9,
     Petrify: 10,
-    weak: 11
+    Weak: 11
 }
 
 const OochType = {

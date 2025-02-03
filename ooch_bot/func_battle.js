@@ -469,8 +469,6 @@ let functions = {
 
             //Priority based on Oochamon Speed stat
             let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
-            if (ooch_obj.status_effects.includes(Status.Snare)) speed /= 100;
-            if (ooch_obj.ability == Ability.Immobile) speed /= 100
 
             //Priority based on whether the move has the "priority" effect
             let move_priority = 0;
@@ -486,6 +484,16 @@ let functions = {
                     }
                 }
 
+                //Status and ability priority modifiers
+                if(ooch_obj.status_effects.includes(Status.Petrify)){
+                    move_priority -= 10_000;
+                }
+                if(ooch_obj.status_effects.includes(Status.Snare)){
+                    move_priority -= 10_000;
+                }
+                if(ooch_obj.ability == Ability.Immobile){
+                    move_priority -= 10_000;
+                }
             }
             
             //Combine the priorities to get the final value
@@ -1000,17 +1008,25 @@ let functions = {
             end_of_round_text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
 
-            // Handle status effects
+            // Handle status effects ORDER HERE MATTERS!!!
             let status_checks = []
+            if (ooch.status_effects.includes(Status.Sleep)) {status_checks.push(Status.Sleep)};
             if (ooch.status_effects.includes(Status.Burn)) {status_checks.push(Status.Burn)};
             if (ooch.status_effects.includes(Status.Infect)) {status_checks.push(Status.Infect)};
             if(ooch.status_effects.includes(Status.Doom)) {status_checks.push(Status.Doom)};
             if(ooch.status_effects.includes(Status.Digitize)) {status_checks.push(Status.Digitize)};
+            if(ooch.status_effects.includes(Status.Petrify)) {status_checks.push(Status.Petrify)};
 
             for(let effect of status_checks){
                 if(finish_battle){ break; }
 
                 switch(effect){
+                    case Status.Sleep:
+                        let sleep_val = Math.round(ooch.stats.hp/10);
+                        ooch.current_hp += sleep_val;
+                        ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                        end_of_round_text += `\n<:status_sleep:1335446202275070034> ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
+                    break;
                     case Status.Burn:
                         let burn_val = Math.round(ooch.stats.hp/10);
                         ooch.current_hp -= burn_val;
@@ -1040,6 +1056,12 @@ let functions = {
                         if(ooch.type != [OochType.Tech]){
                             ooch.type = [OochType.Tech];
                             end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
+                        }
+                    break;
+                    case Status.Petrify:
+                        if(ooch.type != [OochType.Stone]){
+                            ooch.type = [OochType.Stone];
+                            end_of_round_text += `\n<:status_petrify:1335446218393784454> ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
                         }
                     break;
                 }
@@ -1208,10 +1230,17 @@ let functions = {
         let ooch_to = user.party[slot_to];
         let ooch_from = user.party[slot_from];
         let string_to_send = '';
+        let status_types = []
 
         //If the ooch is affected by Digitize make it a tech type again
         if (ooch_to.status_effects.includes(Status.Digitize)) {
-            ooch_to.type = [OochType.Tech];
+            status_types.push(OochType.Tech);
+        }
+        if (ooch_to.status_effects.includes(Status.Petrify)) {
+            status_types.push(OochType.Stone);
+        }
+        if(status_types.length > 0){
+            ooch_to.type = status_types;
         }
 
         //Effects of the mon to switching in
@@ -1732,6 +1761,17 @@ let functions = {
         if (ooch.ability == Ability.Mundane || ooch.status_effects.includes(status)) {
             return ooch;
         }
+
+        //Stone types are immune to Petrify
+        if(ooch.type.includes(OochType.Stone) && status == Status.Petrify){
+            return ooch;
+        }
+
+        //Tech types are immune to Digitize
+        if(ooch.type.includes(OochType.Tech) && status == Status.Digitize){
+            return ooch;
+        }
+
         ooch.status_effects.push(status);
         return ooch;
     },
@@ -1950,7 +1990,7 @@ let functions = {
             break;
         }
     
-        if (!ooch.status_effects.includes(Status.Digitize)) {
+        if (!ooch.status_effects.includes(Status.Digitize) && !ooch.status_effects.includes(Status.Petrify)) {
             switch (ooch.ability) {
                 case Ability.Spectral:
                     if (ooch.type == ooch.og_type) {
@@ -2108,6 +2148,10 @@ let functions = {
             crit_multiplier = 2;
             attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
         }
+        //Weak status reduces the move's power by 10
+        if(attacker.status_effects.includes(Status.Weak)){
+            move_damage = _.max(move_damage - 10, 5)
+        }
         
         if (move_damage <= 0) { crit_multiplier = 1; } // Disable the crit text for non-damaging moves
         let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
@@ -2145,8 +2189,24 @@ let functions = {
         }
 
         // If the defender has Vanish AND the attack is not self targeting, it should fail
-        let chance_to_hit = move_accuracy/100 * functions.get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4)
-        if ((((chance_to_hit * status_blind > Math.random()) || (defender.ability == 'Immense')) && !(defender.status_effects.includes(Status.Vanish) && selfTarget === false)) || (selfTarget == true)) {
+        let chance_to_hit = move_accuracy/100 * functions.get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4) * status_blind
+        //These modify the chance to hit ORDER MATTERS [0 = 0% chance, 1 = 100% chance]
+        if(defender.ability == 'Immense'){ chance_to_hit = 1; }
+        if(defender.status_effects.includes(Status.Vanish)){ chance_to_hit = 0; }
+        if(selfTarget == true){ chance_to_hit = 1; }
+
+
+        let do_wakeup = (.3 > Math.random()) && (attacker.status.includes(Status.Sleep));
+        if(!do_wakeup){ //If we sleep, we sleep, do nothing
+            string_to_send += `\n${attacker_emote} **${atkOochName}** is SLEEPING...`;
+        }
+        else if (chance_to_hit > Math.random()){ //Does the attack successfully land?
+            if(do_wakeup){ //We woke up!
+                string_to_send += `\n${attacker_emote} **${atkOochName}** woke up!`;
+                attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
+            }
+
+
             // Take damage and heal from move effects
             defender.current_hp -= dmg
             defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
@@ -2241,6 +2301,8 @@ let functions = {
 
             string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
             if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
+
+            
 
             //If the target has the Exposed status effect
             if(status_exposed != 1 && move_damage > 0) {
@@ -2369,6 +2431,13 @@ let functions = {
                     }
                 }
             }
+
+            //If the target was SLEEPING and took damage, it gets woken up
+            if(dmg > 0 && defender.status_effects.includes(Status.Sleep)){
+                string_to_send += `\n${defender_emote} **${defOochName}** was jolted awake!`;
+                attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
+            }
+
         // If the attack misses
         } else {
             string_to_send += `\n${attacker_emote} **${atkOochName}** tried to use ${move_name} but it missed!`
