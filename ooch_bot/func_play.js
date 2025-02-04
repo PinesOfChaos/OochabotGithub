@@ -926,6 +926,7 @@ module.exports = {
             og_type: db.monster_data.get(ooch_id, 'type'),
             doom_timer: 4, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote')
+            
         }
 
         //Level up the ooch until its at the appropriate level

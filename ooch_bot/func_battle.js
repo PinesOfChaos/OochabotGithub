@@ -99,6 +99,24 @@ let functions = {
             break;
         }
 
+        //Set battle-specific values/triggers here
+        let slot_actions = [];
+        for(let slot of party){
+            slot_actions.push({
+                move_used_first : false,
+                move_used_last : false,
+
+                this_turn_did_attack : false,
+                this_turn_did_damage : false,
+                this_turn_was_attacked : false,
+                this_turn_was_damaged : false,
+                this_turn_switched_in : false,
+
+                used_ability_matryoshka : false
+            })
+            
+        }
+
         return {
             name: name,
             name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
@@ -115,9 +133,26 @@ let functions = {
             is_catchable: is_catchable,
             party: party,
             action_selected: false,
+            slot_actions : slot_actions,
             is_player: is_player,
             display_msg_id: display_msg_id,
             defeated : false
+        }
+    },
+
+    /**
+     * Resets all triggers that should be used once-per-turn
+     * @param {Object} battle_data The battle_data
+     */
+    reset_this_turn_triggers(battle_data){
+        for(let user of battle_data.users){
+            for(let slot of user.slot_actions){
+                for (const [key, value] of Object.entries(slot)) {
+                    if(key.includes('this_turn')){
+                        slot[key] = false;
+                    }
+                }
+            }
         }
     },
 
@@ -944,6 +979,9 @@ let functions = {
 
         await functions.distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
 
+        //Reset all battle triggers
+        reset_this_turn_triggers(battle_data);
+
         while(actions.length > 0 && !finish_battle){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
             functions.sort_action_priority(battle_data);
@@ -1234,6 +1272,8 @@ let functions = {
         let ooch_from = user.party[slot_from];
         let string_to_send = '';
         let status_types = []
+        let slot_info_to = user.slot_actions[slot_to];
+        slot_info_to.this_turn_switched_in = true;
 
         //If the ooch is affected by Digitize make it a tech type again
         if (ooch_to.status_effects.includes(Status.Digitize)) {
@@ -1986,8 +2026,15 @@ let functions = {
         let ability_text = ``;
         let user = battle_data.users[user_index];
         let ooch = user.party[user.active_slot];
+        let slot_info = user.slot_actions[user.active_slot];
 
         switch(ooch.ability) {
+            case Ability.Stealthy:
+                if(!slot_info.this_turn_did_damage){
+                    ooch = functions.add_status_effect(ooch, Status.Focus);
+                    ability_text = `${ooch.emote} **${ooch.nickname}** got <:status_focused:1304616656915533855> **FOCUSED** with its ability **Stealthy**!`;
+                }
+            break;
             case Ability.Fleeting:
                 ooch.current_hp = Math.floor(ooch.current_hp / 2);
                 ability_text = `\n${ooch.emote} **${ooch.nickname}** had its HP halved due to its ability **Fleeting**!`;
@@ -2169,6 +2216,11 @@ let functions = {
         let user_defender = battle_data.users[user_index_defender];
         let attacker = user_attacker.party[user_attacker.active_slot];
         let defender = user_defender.party[user_defender.active_slot];
+        let slot_attacker = user_attacker.slot_actions[user_attacker.active_slot];
+        let slot_defender = user_defender.slot_actions[user_defender.active_slot];
+
+        slot_attacker.this_turn_did_attack = true;
+        slot_defender.this_turn_was_attacked = true;
 
         let move_effects =   db.move_data.get(atk_id, 'effect');
         let ogMoveId = atk_id;
@@ -2251,6 +2303,9 @@ let functions = {
         else if(defender.ability = 'Phantasmal' && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
             string_to_send += `\n${defender_emote} **${defOochName}**\'s Phantasmal makes it immune to Neutral moves!`;
         }
+        else if(defender.ability = 'Protector' && type_multiplier < 1 && slot_defender.this_turn_switched_in){ //Protector mons are immune to damage types they resist the turn they swap in
+            string_to_send += `\n${defender_emote} **${defOochName}**\'s Protector makes it immune to moves it resists!`;
+        }
         else if (chance_to_hit > Math.random()){ //Does the attack successfully land?
             if(do_wakeup){ //We woke up!
                 string_to_send += `\n${attacker_emote} **${atkOochName}** woke up!`;
@@ -2265,6 +2320,9 @@ let functions = {
             attacker.current_hp += Math.round(attacker.stats.hp * move_heal * (attacker.ability == 'Vigorous' ? 1.3 : 1));
             attacker.current_hp -= recoil_damage;
             attacker.current_hp = _.clamp(attacker.current_hp, 0, attacker.stats.hp)
+
+            slot_attacker.this_turn_did_damage = true;
+            slot_defender.this_turn_was_damaged = true;
 
             // When the Oochamon attacker hits the defender and we aren't targetting ourself
             if (selfTarget === false && dmg !== 0) {
@@ -3016,6 +3074,8 @@ let functions = {
                     ooch.ability = ooch.og_ability;
                     ooch.type = ooch.og_type;
                     ooch.doom_timer = 4;
+
+                    
                     ooch.status_effects = [];
                     if (battle_won === false) {
                         ooch.current_hp = ooch.stats.hp;
