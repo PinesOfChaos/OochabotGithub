@@ -1245,25 +1245,25 @@ module.exports = {
 
         // TO DO ABILITIES
         create_ability(66, 'Protector',        'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.');
-        create_ability(67, 'Phantasmal',       'The Oochamon is phantasmal, making it immune to Neutral-type moves.');
+        create_ability(67, 'Phantasmal',       'The Oochamon is phantasmal, making it immune to Neutral-type moves.'); //done
         create_ability(68, 'Matryoshka',       'The first time the Oochamon would faint, revives and restores its HP to half.');
-        create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.');
-        create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
-        create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.');
+        create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.'); //done
+        create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.'); //done
+        create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.'); //REPLACE WITH SOMETHING ELSE
         create_ability(72, 'Neutralizer',      'Makes every Oochamon on the battlefield immune to Status Effects.');
-        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.')
+        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.') //done
         create_ability(74, 'Stealthy',         'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.');
-        create_ability(75, 'Pursuer',          'Deals 20% current HP damage to an Oochamon as it switches out.');
-        create_ability(76, 'Bloodrush',        'Taking damage increases SPD by 1 stage.');
-        create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.');
+        create_ability(75, 'Pursuer',          'Deals 20% current HP damage to an Oochamon as it switches out.'); //done
+        create_ability(76, 'Bloodrush',        'Taking damage increases SPD by 1 stage.'); //done
+        create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.'); //done
         create_ability(78, 'Martyr',           'If this Oochamon is swapped out with 0 HP, increases the ATK of the next mon to switch in.');
-        create_ability(79, 'Condiment',        'Increases the DEF & SPD of Lasangato in the party 1 stage.');
-        create_ability(80, 'Double or Nothing','Stat changes are either doubled or do nothing.');
-        create_ability(81, 'Vigorous',         'Increases healing by 30%.');
-        create_ability(82, 'Turbine',          'Increases ATK whenever a Flame-type move is used.');
+        create_ability(79, 'Condiment',        'Increases the DEF & SPD of Lasangato in the party 1 stage.'); //done
+        create_ability(80, 'Double or Nothing','Stat changes are either doubled or do nothing.'); //requires change to modify_stat if we want text for it
+        create_ability(81, 'Vigorous',         'Increases healing done by moves by 30%.'); //done
+        create_ability(82, 'Turbine',          'Increases ATK whenever it uses a Flame-type attack.'); //done
         create_ability(83, 'Pact',             'Increases the damage of the user\'s first move by 30% on repeated uses.');
-        create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.');
-        create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
+        create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.'); //done
+        create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.'); //done
         
 
         //#endregion

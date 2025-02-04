@@ -494,6 +494,9 @@ let functions = {
                 if(ooch_obj.ability == Ability.Immobile){
                     move_priority -= 10_000;
                 }
+                if(ooch_obj.ability == Ability.Chronomancy){
+                    move_priority += move.damage > 0 ? -10_000 : 10_000;
+                }
             }
             
             //Combine the priorities to get the final value
@@ -1013,9 +1016,9 @@ let functions = {
             if (ooch.status_effects.includes(Status.Sleep)) {status_checks.push(Status.Sleep)};
             if (ooch.status_effects.includes(Status.Burn)) {status_checks.push(Status.Burn)};
             if (ooch.status_effects.includes(Status.Infect)) {status_checks.push(Status.Infect)};
-            if(ooch.status_effects.includes(Status.Doom)) {status_checks.push(Status.Doom)};
-            if(ooch.status_effects.includes(Status.Digitize)) {status_checks.push(Status.Digitize)};
-            if(ooch.status_effects.includes(Status.Petrify)) {status_checks.push(Status.Petrify)};
+            if (ooch.status_effects.includes(Status.Doom)) {status_checks.push(Status.Doom)};
+            if (ooch.status_effects.includes(Status.Digitize)) {status_checks.push(Status.Digitize)};
+            if (ooch.status_effects.includes(Status.Petrify)) {status_checks.push(Status.Petrify)};
 
             for(let effect of status_checks){
                 if(finish_battle){ break; }
@@ -1243,6 +1246,8 @@ let functions = {
             ooch_to.type = status_types;
         }
 
+        
+
         //Effects of the mon to switching in
         switch (ooch_to.ability) {
             case Ability.Miniscule: 
@@ -1330,12 +1335,28 @@ let functions = {
             break;
         }
 
+        //Abilities that are triggered by mons in the user's party
+        for(let i of user.party.length){
+            if(i != slot_to){ //Slot to is the mon that's about to be out, so don't count it
+                let ooch_in_party = user.party[i];
+                switch(ooch_in_party.ability){
+                    case Ability.Condiment:
+                        if(['Lasangato'].includes(ooch_to.name)){ //Checks an array to see if food-based mons are in the list
+                            ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1);
+                            ooch_to = functions.modify_stat(ooch_to, Stats.Speed, 1);
+                            string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** SPD and DEF was increased due to its ally's **Condiment**!`;
+                        }
+                    break;
+                }
+            }
+        }
+
         //Check abilities vs other users
         for(let u of battle_data.users){
             if(u.team_id != user.team_id && u.party[u.active_slot].alive){
                 let ooch_enemy = u.party[u.active_slot];
 
-                //Enemy users' mons that affect the new mon
+                //Enemy users' mons that affect the new mon or the mon that switched out
                 switch (ooch_enemy.ability) {
                     case Ability.Alert: //Increases atk if a new enemy mon switches in
                         ooch_enemy = functions.modify_stat(ooch_enemy, Stats.Attack, 1);
@@ -1350,6 +1371,12 @@ let functions = {
                     case Ability.Nullify: //Changes the ability of the newly switched mon to "Null"
                         ooch_to.ability = Ability.Null;
                         string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s ability changed to **Null** due to ${ooch_enemy.emote} **${ooch_enemy.nickname}**'s **Nullify**!`
+                    break;
+                    case Ability.Pursuer:
+                        if(ooch_from.current_hp > 1){
+                            ooch_from.current_hp = _.max(Math.floor(ooch_from.current_hp - ooch_from.current_hp / 5), 1); //This should never kill the mon swapping out
+                            string_to_send += `\nThe fleeing ${ooch_from.emote} **${ooch_from.nickname}**'s lost some HP due to ${ooch_enemy.emote} **${ooch_enemy.nickname}**'s **Pursuer**!`;
+                        }
                     break;
                 }
 
@@ -1758,6 +1785,8 @@ let functions = {
      * @returns The affected Oochamon object, with its status added
      */
     add_status_effect: function(ooch, status) {
+        let return_string = '';
+
         if (ooch.ability == Ability.Mundane || ooch.status_effects.includes(status)) {
             return ooch;
         }
@@ -1770,6 +1799,12 @@ let functions = {
         //Tech types are immune to Digitize
         if(ooch.type.includes(OochType.Tech) && status == Status.Digitize){
             return ooch;
+        }
+
+        //Mons with Seer are immune to Exposed and instead gain +1 spd
+        if(ooch.ability == 'Seer' && status == Status.Expose){
+            return_string +=    `${ooch_target.emote} **${ooch_target.nickname}**\'s Seer changed its fortune! Its SPD increased by 1!`
+            ooch = functions.modify_stat(ooch, 'spd', 1);
         }
 
         ooch.status_effects.push(status);
@@ -1988,6 +2023,11 @@ let functions = {
                     ability_text = `${ooch.emote} **${ooch.nickname}** <:status_vanish:1274938531864776735> **VANISHED** into a hole with its ability **Hole Dweller**!`;
                 }
             break;
+            case Ability.DownwardSpiral:
+                let randomStatDecrease = _.sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
+                ooch = functions.modify_stat(ooch, randomStatDecrease, -1);
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** randomly decreased its ${_.upperCase(randomStatDecrease)} due to **Downward Spiral**!`;
+            break;
         }
     
         if (!ooch.status_effects.includes(Status.Digitize) && !ooch.status_effects.includes(Status.Petrify)) {
@@ -2062,12 +2102,16 @@ let functions = {
      */
     battle_calc_damage: function(move_damage, move_type, ooch_attacker, ooch_defender, turn_count) {
 
-        let attacker_atk_stat = ooch_attacker.stats.atk * functions.get_stat_multiplier(ooch_attacker.stats.atk_mul)
+        let attacker_atk_stat = ooch_attacker.stats.atk * functions.get_stat_multiplier(ooch_attacker.stats.atk_mul);
         let defender_def_stat = ooch_defender.stats.def * functions.get_stat_multiplier(ooch_defender.stats.def_mul);
 
         if (ooch_attacker.ability == Ability.Bipolar) {
             attacker_atk_stat = ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def);
         }
+        if (ooch_attacker.ability == Ability.Thorned) {
+            attacker_atk_stat += ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def_mul) / 4;
+        }
+        
 
         let damage = Math.round(Math.ceil((4 * ooch_attacker.level / 5 + 2) // Level Adjustment
         * (move_damage + _.random(-5, 5)) // Damage with random damage variance
@@ -2186,7 +2230,11 @@ let functions = {
         // Remove Exposed status effect
         if (status_exposed != 1) {
             defender.status_effects = defender.status_effects.filter(v => v != Status.Expose);
+            if(attacker.ability == 'Exploiter'){
+                status_exposed = 3;
+            }
         }
+
 
         // If the defender has Vanish AND the attack is not self targeting, it should fail
         let chance_to_hit = move_accuracy/100 * functions.get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4) * status_blind
@@ -2194,11 +2242,14 @@ let functions = {
         if(defender.ability == 'Immense'){ chance_to_hit = 1; }
         if(defender.status_effects.includes(Status.Vanish)){ chance_to_hit = 0; }
         if(selfTarget == true){ chance_to_hit = 1; }
-
+        
 
         let do_wakeup = (.3 > Math.random()) && (attacker.status.includes(Status.Sleep));
         if(!do_wakeup){ //If we sleep, we sleep, do nothing
             string_to_send += `\n${attacker_emote} **${atkOochName}** is SLEEPING...`;
+        }
+        else if(defender.ability = 'Phantasmal' && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
+            string_to_send += `\n${defender_emote} **${defOochName}**\'s Phantasmal makes it immune to Neutral moves!`;
         }
         else if (chance_to_hit > Math.random()){ //Does the attack successfully land?
             if(do_wakeup){ //We woke up!
@@ -2206,13 +2257,12 @@ let functions = {
                 attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
             }
 
-
             // Take damage and heal from move effects
             defender.current_hp -= dmg
             defender.current_hp = _.clamp(defender.current_hp, 0, defender.stats.hp);
 
             attacker.current_hp += Math.round(vampire_heal);
-            attacker.current_hp += Math.round(attacker.stats.hp * move_heal);
+            attacker.current_hp += Math.round(attacker.stats.hp * move_heal * (attacker.ability == 'Vigorous' ? 1.3 : 1));
             attacker.current_hp -= recoil_damage;
             attacker.current_hp = _.clamp(attacker.current_hp, 0, attacker.stats.hp)
 
@@ -2249,6 +2299,12 @@ let functions = {
                         attacker.ability = Ability.Parry;
                         defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** changed its stance, and shifted its ability to **Parry**!`;
                     break;
+                    case Ability.Turbine:
+                        if(move_type == OochType.Flame){
+                            attacker = functions.modify_stat(attacker, 'atk', 1);
+                            defender_field_text += `\n--- ${attackcer_emote} **${atkOochName}**\'s **Turbine** boosted its ATK!`
+                        }
+                    break;
                 }
                 
                 // When the Oochamon defender gets hit by the attacker
@@ -2279,6 +2335,10 @@ let functions = {
                         defender.ability = Ability.Riposte;
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** changed its stance, and shifted its ability to **Riposte**!`;
                     break;
+                    case Ability.Bloodrush:
+                        functions.modify_stat(defender, 'spd', 1);
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** raised its SPD after being hit using its ability **Bloodrush**!`; 
+                    break;
                 }
             }
 
@@ -2304,9 +2364,9 @@ let functions = {
 
             
 
-            //If the target has the Exposed status effect
+            //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
             if(status_exposed != 1 && move_damage > 0) {
-                string_to_send += `\n--- **The damage was <:status_exposed:1335433347345813624> doubled!**`
+                string_to_send += `\n--- **The damage was <:status_exposed:1335433347345813624> ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
             }
 
             //If a crit lands
@@ -2321,7 +2381,10 @@ let functions = {
 
             //If an attack has heal
             if (move_heal > 0) {
-                string_to_send += `\n--- ❤️ ${attacker_emote} **${atkOochName}** healed **${Math.round(attacker.stats.hp * move_heal)}** HP!`;
+                
+                string_to_send += `\n--- ❤️ ${attacker_emote} **${atkOochName}** healed **${Math.round(attacker.stats.hp * move_heal)}** HP`;
+                string_to_send += attacker.ability == 'Vigorous' ? ', boosted by Vigorous!' : '!'
+
             }
 
             //If attack has recoil
