@@ -962,7 +962,6 @@ module.exports = {
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
                 let dexData = await buildDexData(1, 0);
-                console.log(dexData.sel_row);
                 dex_page_num = 1;
 
                 if (dexData.is_caught) {

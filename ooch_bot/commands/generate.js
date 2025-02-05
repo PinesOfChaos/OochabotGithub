@@ -453,25 +453,25 @@ module.exports = {
             id : 16, name : 'Green Boostgem', emote : '<:item_iv_hp:1274937089666056294>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.HP, 
             description : 'A viridian crystal from the planet\'s core glowing with vitality. Your Oochamon seem strangely drawn to it.',
-            description_short : 'Permanently increases Health bonus of an Oochamon.'
+            description_short : 'Permanently Raises Health bonus of an Oochamon.'
         })
         create_item({
             id : 17, name : 'Red Boostgem', emote : '<:item_iv_atk:1274937039460237382>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Attack, 
             description : 'A crimson crystal from the planet\'s core glowing with power. Your Oochamon seem strangely drawn to it.',
-            description_short : 'Permanently increases Attack bonus of an Oochamon.'
+            description_short : 'Permanently Raises Attack bonus of an Oochamon.'
         })
         create_item({
             id : 18, name : 'Blue Boostgem', emote : '<:item_iv_def:1274937065317990486>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Defense, 
             description : 'An azure crystal from the planet\'s core glowing with protection. Your Oochamon seem strangely drawn to it.',
-            description_short : 'Permanently increases Defense bonus of an Oochamon.'
+            description_short : 'Permanently Raises Defense bonus of an Oochamon.'
         })
         create_item({
             id : 19, name : 'Yellow Boostgem', emote : '<:item_iv_spd:1274937099984048138>',
             category : 'other_inv', type : 'iv', price : 25000, potency : Stats.Speed, 
             description : 'An amber crystal from the planet\'s core glowing with energy. Your Oochamon seem strangely drawn to it.',
-            description_short : 'Permanently increases Speed bonus of an Oochamon.'
+            description_short : 'Permanently Raises Speed bonus of an Oochamon.'
         })
         create_item({
             id : 20, name : 'Spore Feather', emote : '<:item_sporefeather:1304609799245266964>',
@@ -964,7 +964,7 @@ module.exports = {
             id : 75, name : 'Overgrowth', type : OochType.Fungal,
             damage : 0, accuracy: 100,
             effect : [{status : '+_atk_1', chance : 100, target : MoveTarget.Self}, {status : '+_def_1', chance : 100, target : MoveTarget.Self}, {status : '+_spd_1', chance : 100, target : MoveTarget.Self}],
-            description : 'Rapid fungal growth increases ATK, DEF, and SPD.'
+            description : 'Rapid fungal growth Raises ATK, DEF, and SPD.'
         });
         create_move({
             id : 76, name : 'Myco-Burst', type : OochType.Fungal,
@@ -1175,7 +1175,7 @@ module.exports = {
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Ability Data
         //             ID,  NAME,               Description
-        create_ability(0,  'Miniscule',         'Becomes super small and increases evasion against attacks by 1 stage upon entering the battlefield.');
+        create_ability(0,  'Miniscule',         'Becomes super small and raises evasion against attacks by 1 stage upon entering the battlefield.');
         create_ability(1,  'Icky',              'Boosts the power of OOZE & FUNGAL type attacks by 20%.');
         create_ability(2,  'Burdened',          'A large growth reduces SPD by 1 stage but raises DEF by 1 stage upon entering the battlefield.');
         create_ability(3,  'Broodmother',       'Gains 1 stage of ATK for each Oochamon with the same type in the party.'); 
@@ -1184,26 +1184,26 @@ module.exports = {
         create_ability(6,  'Withering',         'Withers away the opposing Oochamon, lowering it\'s DEF by 1 stage upon entering the battlefield.');  
         create_ability(7,  'Darkbright',        'Attacks that afflict BURN also BLIND and vice-versa.');  
         create_ability(8,  'Gentle',            'A kind heart reduces both your ATK and the enemy ATK by 1 stage.');  
-        create_ability(9,  'Warm',              'Increases the damage of FLAME attacks by 10%.');  
+        create_ability(9,  'Warm',              'Raises the damage of FLAME attacks by 10%.');  
         create_ability(10, 'Radiant',           'Dangerous energy causes attacks that BURN also INFECT.'); 
         create_ability(11, 'Conflicted',        'Multiple minds increase ALL stats by 1 stage upon entering the battlefield.'); 
-        create_ability(12, 'Burrower',          'Increases the damage of STONE attacks by 10%.'); 
+        create_ability(12, 'Burrower',          'Raises the damage of STONE attacks by 10%.'); 
         create_ability(13, 'Reactive',          'When hit by an attack, reflects 10% of the attacker\'s HP as damage.'); 
-        create_ability(14, 'Inertia',           'Increases SPD by 1 stage each turn.'); 
-        create_ability(15, 'Dense',             'Increases ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield.');  
+        create_ability(14, 'Inertia',           'Raises SPD by 1 stage each turn.'); 
+        create_ability(15, 'Dense',             'Raises ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield.');  
         create_ability(16, 'Moist',             'Halves all incoming FLAME damage.'); 
-        create_ability(17, 'Alert',             'Increases ATK by 1 stage when an Oochamon switches in.');  
-        create_ability(18, 'Fleeting',          'Increases SPD and ATK by 2 stages but also loses half of current HP each turn.'); 
-        create_ability(19, 'Efficient',         'Increases ATK by 1 stage every other turn.'); 
+        create_ability(17, 'Alert',             'Raises ATK by 1 stage when an Oochamon switches in.');  
+        create_ability(18, 'Fleeting',          'Raises SPD and ATK by 2 stages but also loses half of current HP each turn.'); 
+        create_ability(19, 'Efficient',         'Raises ATK by 1 stage every other turn.'); 
         create_ability(20, 'Boisterous',        'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP.');
         create_ability(21, 'Haunted',           'Applies the DOOMED status to an enemy when the Haunted Oochamon faints.'); 
         create_ability(22, 'Leech',             'Restores HP equal to 10% of damage done to the enemy.'); 
         create_ability(23, 'Ensnare',           'Grants a 30% chance to SNARE an enemy when attacking.');  
-        create_ability(24, 'Uncontrolled',      'Increases ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn.');  
-        create_ability(25, 'Apprentice',        'Increases ATK by 2 stages if any other party members share a move with it.');  
-        create_ability(26, 'Focused',           'Increases damage of attacks by 10% if unaffected by status effects.'); 
+        create_ability(24, 'Uncontrolled',      'Raises ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn.');  
+        create_ability(25, 'Apprentice',        'Raises ATK by 2 stages if any other party members share a move with it.');  
+        create_ability(26, 'Focused',           'Raises damage of attacks by 10% if unaffected by status effects.'); 
         create_ability(27, 'Ravenous',          'Restores 20% of max HP upon defeating an enemy.'); 
-        create_ability(28, 'Immense',           'Increases DEF by 2 stages upon entering the battlefield, but also makes opponent\'s moves always hit.');  
+        create_ability(28, 'Immense',           'Raises DEF by 2 stages upon entering the battlefield, but also makes opponent\'s moves always hit.');  
         create_ability(29, 'Armored',           'Reduces STONE damage by 20%.');
         create_ability(30, 'Scorching',         'Attacks that can BURN always BURN.'); 
         create_ability(31, 'Tangled',           'Causes enemies that hit it to be SNARED.'); 
@@ -1224,11 +1224,11 @@ module.exports = {
         create_ability(46, 'Strings Attached',  'Gains a 20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking.');
         create_ability(47, 'Corrosive',         'Attacks deal more damage to enemies with high DEF.');
         create_ability(48, 'Spectral',          'Changes the Spectral Oochamon\'s type to Magic every other turn.');
-        create_ability(49, 'Height Advantage',  'Increases chance to do a critical hit by 10%.');
-        create_ability(50, 'Hearty',            'Increases damage done by 15% while above 50% HP.'); 
+        create_ability(49, 'Height Advantage',  'Raises chance to do a critical hit by 10%.');
+        create_ability(50, 'Hearty',            'Raises damage done by 15% while above 50% HP.'); 
         create_ability(51, 'Radioactive',       'Changes the Radioactive Oochamon\'s type to Flame every other turn.');
-        create_ability(52, 'Energized',         'Increases ATK and SPD by 1 stage on kill.'); 
-        create_ability(53, 'Patient',           'Increases DEF by 1 stage every other turn.'); 
+        create_ability(52, 'Energized',         'Raises ATK and SPD by 1 stage on kill.'); 
+        create_ability(53, 'Patient',           'Raises DEF by 1 stage every other turn.'); 
         create_ability(54, 'Easy Go',           'Heals the rest of the Oochamon Trainer\'s party by 20% of their max HP when defeated.');
         create_ability(55, 'Bomber',            'The Oochamon explodes upon fainting, dealing half of the opposing Oochamon\'s HP on death.');
         create_ability(56, 'Flammable',         'Gains 1 stage of ATK when hit with a FLAME type move.');
@@ -1237,33 +1237,30 @@ module.exports = {
         create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.'); 
         create_ability(60, 'Increment',         'Randomly boosts a stat by 1 stage at the end of each turn.');
         create_ability(61, 'Parry',             'Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte.');
-        create_ability(62, 'Riposte',           'Increases damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry.');
-        create_ability(63, 'Swaying',           'Increases DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage.');
-        create_ability(64, 'Thrashing',         'Increases ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage.');
-        create_ability(65, 'Union',             'Increases ATK and DEF by 1 stage.');
-        
-
-        // TO DO ABILITIES
-        create_ability(66, 'Protector',        'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.'); //done
-        create_ability(67, 'Phantasmal',       'The Oochamon is phantasmal, making it immune to Neutral-type moves.'); //done
-        create_ability(68, 'Matryoshka',       'The first time the Oochamon would faint, revives and restores its HP to half.'); //done
-        create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.'); //done
-        create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.'); //done
-        create_ability(71, 'Constructor',      'Raises DEF by 1 stage each turn.'); //REPLACE WITH SOMETHING ELSE
-        create_ability(72, 'Neutralizer',      'Makes every Oochamon on the battlefield immune to Status Effects.');
-        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.') //done
-        create_ability(74, 'Stealthy',         'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.'); //done
-        create_ability(75, 'Pursuer',          'Deals 20% current HP damage to an Oochamon as it switches out.'); //done
-        create_ability(76, 'Bloodrush',        'Taking damage increases SPD by 1 stage.'); //done
-        create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.'); //done
-        create_ability(78, 'Martyr',           'If this Oochamon is swapped out with 0 HP, increases the ATK of the next mon to switch in.');
-        create_ability(79, 'Condiment',        'Increases the DEF & SPD of Lasangato in the party 1 stage.'); //done
-        create_ability(80, 'Double or Nothing','Stat changes are either doubled or do nothing.'); //requires change to modify_stat if we want text for it
-        create_ability(81, 'Vigorous',         'Increases healing done by moves by 30%.'); //done
-        create_ability(82, 'Turbine',          'Increases ATK whenever it uses a Flame-type attack.'); //done
-        create_ability(83, 'Pact',             'Increases the damage of the user\'s first move by 30% on repeated uses.'); //done
-        create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.'); //done
-        create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.'); //done
+        create_ability(62, 'Riposte',           'Raises damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry.');
+        create_ability(63, 'Swaying',           'Raises DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage.');
+        create_ability(64, 'Thrashing',         'Raises ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage.');
+        create_ability(65, 'Union',             'Raises ATK and DEF by 1 stage.');
+        create_ability(66, 'Protector',        'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.');
+        create_ability(67, 'Phantasmal',       'The Oochamon is phantasmal, making it immune to Neutral-type moves.');
+        create_ability(68, 'Matryoshka',       'The first time the Oochamon would faint, revives and restores its HP to half.');
+        create_ability(69, 'Thorned',          'Attacks deal extra damage based on DEF.');
+        create_ability(70, 'Downward Spiral',  'Randomly lowers one of its stats 1 stage at the end of each turn.');
+        create_ability(71, 'Constructor',      'Raises DEF by 1 stage when hit by a Stone-type move.');
+        create_ability(72, 'Neutralizer',      'The special effects of damaging attacks are ignored, but their damage is increased by 30%.');
+        create_ability(73, 'Bass Boost',       'Boosts the power of Sound moves by 15%.');
+        create_ability(74, 'Stealthy',         'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.');
+        create_ability(75, 'Pursuer',          'Deals 20% current HP damage to an Oochamon as it switches out.');
+        create_ability(76, 'Bloodrush',        'Taking damage raises SPD by 1 stage.');
+        create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.');
+        create_ability(78, 'Martyr',           'If this Oochamon is swapped out with 0 HP, Raises the ATK of the next mon to switch in.');
+        create_ability(79, 'Condiment',        'Raises the DEF & SPD of Lasangato in the party 1 stage.');
+        create_ability(80, 'Double or Nothing','Attacks damage is either doubled or reduced to 0.');
+        create_ability(81, 'Vigorous',         'Raises healing done by moves by 30%.');
+        create_ability(82, 'Turbine',          'Raises ATK whenever it uses a Flame-type attack.');
+        create_ability(83, 'Pact',             'Raises the damage of the user\'s first move by 30% on repeated uses.');
+        create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.');
+        create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
         
 
         //#endregion
@@ -1283,7 +1280,19 @@ module.exports = {
         create_status(9,   'Sleep',     '<:status_sleep:1335446202275070034>',      'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
         create_status(10,  'Petrify',   '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
         create_status(11,  'Weak',      '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
+        //Poison stackable, weak hp drain status
+        
+        //#endregion
 
+        
+        //#region Weather Effects
+
+
+        //#endregion
+
+
+
+        //#region Forms
         
         //#endregion
 

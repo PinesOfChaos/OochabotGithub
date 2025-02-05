@@ -546,8 +546,9 @@ let functions = {
      * Sends messages to all player-type users in an array of users
      * @param {Object} battle_data The battle data
      * @param {Object} message anything that can be sent as a discord message
+     * @param {Boolean} end_battle_msg If this is the end of battle message with a button
      */
-    distribute_messages : async function(battle_data, message){
+    distribute_messages : async function(battle_data, message, end_battle_msg = false){
         const { botClient } = require("./index.js");
 
         battle_data.battle_msg_counter += 1;
@@ -556,6 +557,17 @@ let functions = {
             if(user.is_player){
                 let thread = botClient.channels.cache.get(user.thread_id);
                 await thread.send(message);
+
+                if (end_battle_msg == true) {
+                    const collector = thread.createMessageComponentCollector({ max: 1 });
+
+                    collector.on('collect', async i => {
+                        i.update({ content: 'Ending battle...', components: [] });
+                        i.deleteReply();
+
+                        await functions.finish_battle(battle_data);
+                    })
+                }
             }
         }
     },
@@ -836,6 +848,7 @@ let functions = {
                     } else if (customId == BattleInput.BagPrism) {
 
                         let prism_inv = user.prism_inv;
+                        console.log(prism_inv);
                         let prism_inv_keys = Object.keys(prism_inv);
                         let bag_select = new ActionRowBuilder();
                         let prism_select_options = [];
@@ -862,6 +875,7 @@ let functions = {
                         );
 
                         await i.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bagButtons, backButton] });
+
                     } else if (customId.includes('_item_select')) {
 
                         let user_to_catch;
@@ -980,7 +994,7 @@ let functions = {
         await functions.distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
 
         //Reset all battle triggers
-        reset_this_turn_triggers(battle_data);
+        functions.reset_this_turn_triggers(battle_data);
 
         while(actions.length > 0 && !finish_battle){
             //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
@@ -1154,9 +1168,17 @@ let functions = {
             await wait(battle_data.battle_speed);
             functions.prompt_battle_actions(battle_data.battle_id);
         }
-        else{
-            await functions.finish_battle(battle_data);
-            console.log(`BATTLE ID${battle_data.battle_id} FINISHED`)
+        else {
+            
+            const endButton = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('end_battle')
+                    .setLabel('Continue To Playspace')
+                    .setStyle(ButtonStyle.Primary),
+            )
+
+            functions.distribute_messages(battle_data, { components: [endButton] }, true);
         }
 
     },
@@ -1262,7 +1284,7 @@ let functions = {
         ooch_from.doom_timer = 4;
 
         return_string += functions.use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
-
+ 
         return {
             finish_battle : finish_battle,
             return_string : return_string,
@@ -1289,8 +1311,6 @@ let functions = {
         if(status_types.length > 0){
             ooch_to.type = status_types;
         }
-
-        
 
         //Effects of the mon to switching in
         switch (ooch_to.ability) {
@@ -1381,11 +1401,18 @@ let functions = {
 
         //Switch-out abilities
         switch(ooch_from.ability){
-            //@PINES DO MARTYR
+            case Ability.Martyr:
+                if(ooch_from.hp_current == 0){
+                    ooch_to = functions.modify_stat(ooch_to, Stats.Attack, 1);
+                    ooch_to = functions.modify_stat(ooch_to, Stats.Defense, 1);
+                    ooch_to = functions.modify_stat(ooch_to, Stats.Speed, 1);
+                    string_to_send += `${ooch_to.emote} **${ooch_to.nickname}** had its ATK, DEF, and SPD raised by ${ooch_from.emote} **${ooch_from.nickname}**!`;
+                }
+            break;
         }
 
         //Abilities that are triggered by mons in the user's party
-        for(let i of user.party.length){
+        for(let i = 0; i < user.party.length; i++) {
             if(i != slot_to){ //Slot to is the mon that's about to be out, so don't count it
                 let ooch_in_party = user.party[i];
                 switch(ooch_in_party.ability){
@@ -1601,7 +1628,7 @@ let functions = {
         }
 
         if ((ooch_user.stats.spd + ooch_user.level * 15) / ((ooch_user.stats.spd + ooch_user.level * 10) + ooch_max_check ) > Math.random()) {
-            return_string += `You successfully ran away!\nYour playspace will appear momentarily.`;
+            return_string += `You successfully ran away!`;
             finish_battle = true;
         }
         else{
@@ -2230,7 +2257,6 @@ let functions = {
 
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
-        
 
         let move_effects =   db.move_data.get(atk_id, 'effect');
         let ogMoveId = atk_id;
@@ -2249,11 +2275,6 @@ let functions = {
         if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
         let move_type_emote =      functions.type_to_emote(move_type);
         let type_multiplier = move_damage == 0 ? [1, ''] : functions.type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-        let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
-        if (attacker.status_effects.includes(Status.Focus)) {
-            crit_multiplier = 2;
-            attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
-        }
         //Weak status reduces the move's power by 10
         if(attacker.status_effects.includes(Status.Weak)){
             move_damage = _.max(move_damage - 10, 5)
@@ -2284,7 +2305,6 @@ let functions = {
         let move_matches_last = slot_attacker.move_used_last === atk_id;
         if(slot_attacker.move_used_first == false){ slot_attacker.move_used_first = atk_id; }
         slot_attacker.move_used_last = atk_id;
-       
 
         //Abilities that affect damage via misc conditions
         switch(slot_attacker.Ability){
@@ -2298,21 +2318,37 @@ let functions = {
                     ability_dmg_multiplier = 1.3;
                 }
             break;
+            case Ability.DoubleOrNothing:
+                ability_dmg_multiplier = check_chance(50) ? 2 : 0;
+            break;
+            case Ability.Neutralizer:
+                if(move_damage > 0){
+                    ability_dmg_multiplier = 1.3;
+                    move_effects = [];
+                }
+            break;
         }
 
+        //Check for crits
+        let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);
+        if (attacker.status_effects.includes(Status.Focus)) {
+            crit_multiplier = 2;
+            attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
+        }
+        if(move_damage == 0){ crit_multiplier = 1; }
+
+        //Final damage calc
         let dmg = 0;
         if (move_damage != 0) {
             dmg = functions.battle_calc_damage(move_damage * type_multiplier[0] * status_exposed * ability_dmg_multiplier, 
                                     move_type, attacker, defender, battle_data.turn_counter) * crit_multiplier;
         }
 
-        
-
         vampire_heal = Math.ceil(vampire_heal * dmg); //used later
         // Remove Exposed status effect
         if (status_exposed != 1) {
             defender.status_effects = defender.status_effects.filter(v => v != Status.Expose);
-            if(attacker.ability == 'Exploiter'){
+            if(attacker.ability == Ability.Exploiter){
                 status_exposed = 3;
             }
         }
@@ -2321,20 +2357,23 @@ let functions = {
         // If the defender has Vanish AND the attack is not self targeting, it should fail
         let chance_to_hit = move_accuracy/100 * functions.get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4) * status_blind
         //These modify the chance to hit ORDER MATTERS [0 = 0% chance, 1 = 100% chance]
-        if(defender.ability == 'Immense'){ chance_to_hit = 1; }
+        if(defender.ability == Ability.Immense){ chance_to_hit = 1; }
         if(defender.status_effects.includes(Status.Vanish)){ chance_to_hit = 0; }
         if(selfTarget == true){ chance_to_hit = 1; }
         
 
-        let do_wakeup = (.3 > Math.random()) && (attacker.status.includes(Status.Sleep));
-        if(!do_wakeup){ //If we sleep, we sleep, do nothing
+        let do_wakeup = (.3 > Math.random()) && (attacker.status_effects.includes(Status.Sleep));
+        if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
             string_to_send += `\n${attacker_emote} **${atkOochName}** is SLEEPING...`;
         }
-        else if(defender.ability = 'Phantasmal' && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
-            string_to_send += `\n${defender_emote} **${defOochName}**\'s Phantasmal makes it immune to Neutral moves!`;
+        else if(defender.ability == Ability.Phantasmal && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
+            string_to_send += `\n${defender_emote} **${defOochName}**\'s **Phantasmal** makes it immune to Neutral moves!`;
         }
-        else if(defender.ability = 'Protector' && type_multiplier < 1 && slot_defender.this_turn_switched_in){ //Protector mons are immune to damage types they resist the turn they swap in
-            string_to_send += `\n${defender_emote} **${defOochName}**\'s Protector makes it immune to moves it resists!`;
+        else if(defender.ability == Ability.Protector && type_multiplier < 1 && slot_defender.this_turn_switched_in){ //Protector mons are immune to damage types they resist the turn they swap in
+            string_to_send += `\n${defender_emote} **${defOochName}**\'s **Protector** makes it immune to moves it resists!`;
+        }
+        else if(attacker.ability == Ability.DoubleOrNothing && ability_dmg_multiplier < 1 && move_damage > 0){
+            string_to_send += `\n${attacker_emote} **${atkOochName}**\'s **Double or Nothing** didn't pay off...`;
         }
         else if (chance_to_hit > Math.random()){ //Does the attack successfully land?
             if(do_wakeup){ //We woke up!
@@ -2357,9 +2396,12 @@ let functions = {
             // When the Oochamon attacker hits the defender and we aren't targetting ourself
             if (selfTarget === false && dmg !== 0) {
                 switch (attacker.ability) {
+                    case Ability.DoubleOrNothing:
+                        `\n--- ${attacker_emote} **${atkOochName}**\'s **Double or Nothing** paid off, doubling the damage!`
+                    break;
                     case Ability.Leech:
                         attacker.current_hp = _.clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
-                        defender_field_text += `\n--- ${attackcer_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** gained **${Math.ceil(dmg * 0.1)} HP** from its ability **Leech**!`
                     break;
                     case Ability.Ensnare:
                         if (check_chance(30) && !defender.status_effects.includes(Status.Vanish)) {
@@ -2397,6 +2439,12 @@ let functions = {
                 
                 // When the Oochamon defender gets hit by the attacker
                 switch (defender.ability) {
+                    case Ability.Constructor:
+                        if(move_type === OochType.Stone){
+                            defender = functions.modify_stat(defender, Stats.Defense, 1);
+                            defender_field_text += `\n--- ${defender_emote} **${defOochName}** raised its DEF after being hit using its ability **Constructor**!`; 
+                        }
+                    break;
                     case Ability.Reactive:
                         attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp)
                         reflect_dmg = Math.round(attacker.stats.hp * 0.1);
@@ -2678,6 +2726,7 @@ let functions = {
     modify_stat: function(ooch, stat, stage, set = false) {
         let min_stage = -8;
         let max_stage = 8;
+
         switch(stat) {
             case 'atk': 
                 ooch.stats.atk_mul = (set == true ? stage : ooch.stats.atk_mul + stage); 
@@ -3053,7 +3102,7 @@ let functions = {
      * @param {Number} [scalar=2] The scalar to work off of
      * @returns The stat multiplier for stat calculations.
      */
-    get_stat_multiplier: function(stage, scalar=2) {
+    get_stat_multiplier: function(stage, scalar = 2) {
         if (scalar < 1) scalar = 1;
         return (stage >= 0) ? (stage / scalar) + 1 : scalar / (Math.abs(stage) + scalar)
     },
@@ -3092,7 +3141,7 @@ let functions = {
             
             //Clear all messages in the user's thread
             if (battle_data.battle_msg_counter <= 100) {
-                await thread.bulkDelete(battle_data.battle_msg_counter);
+                await thread.bulkDelete(battle_data.battle_msg_counter + 1);
             } else {
                 let message_count = battle_data.battle_msg_counter;
                 do {
@@ -3113,7 +3162,6 @@ let functions = {
                     ooch.ability = ooch.og_ability;
                     ooch.type = ooch.og_type;
                     ooch.doom_timer = 4;
-
                     
                     ooch.status_effects = [];
                     if (battle_won === false) {
@@ -3124,6 +3172,10 @@ let functions = {
 
                 //Set the party as needed
                 db.profile.set(user_id, user_info.party, `ooch_party`);
+                db.profile.set(user_id, user_info.prism_inv, `prism_inv`);
+                db.profile.set(user_id, user_info.heal_inv, `heal_inv`);
+                db.profile.set(user_id, user_info.other_inv, `other_inv`);
+
 
                 // If we lost, go back to the teleporter location.
                 if (battle_won === false) {
