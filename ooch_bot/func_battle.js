@@ -1239,6 +1239,11 @@ let functions = {
         let ooch_to = user.party[action.slot_target];
         let ooch_from = user.party[user.active_slot];
 
+        let slot_info_to = user.slot_actions[slot_to];
+        slot_info_to.this_turn_switched_in = true;
+        slot_info_to.move_used_first = false;
+        slot_info_to.move_used_last = false;
+
         user.active_slot = action.slot_target;
         
         let return_string = (action.is_switching 
@@ -1272,8 +1277,7 @@ let functions = {
         let ooch_from = user.party[slot_from];
         let string_to_send = '';
         let status_types = []
-        let slot_info_to = user.slot_actions[slot_to];
-        slot_info_to.this_turn_switched_in = true;
+        
 
         //If the ooch is affected by Digitize make it a tech type again
         if (ooch_to.status_effects.includes(Status.Digitize)) {
@@ -1373,6 +1377,11 @@ let functions = {
                     }
                 }
             break;
+        }
+
+        //Switch-out abilities
+        switch(ooch_from.ability){
+            //@PINES DO MARTYR
         }
 
         //Abilities that are triggered by mons in the user's party
@@ -2221,6 +2230,7 @@ let functions = {
 
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
+        
 
         let move_effects =   db.move_data.get(atk_id, 'effect');
         let ogMoveId = atk_id;
@@ -2266,11 +2276,28 @@ let functions = {
         let atkOochName = attacker.nickname;
         let defOochName = defender.nickname;
 
-        
-
+        //Make sure accuracy is a positive value (we might not need to do this anymore)
         move_accuracy = Math.abs(move_accuracy);
-        if (attacker.ability == Ability.Rogue && defender.current_hp === defender.stats.hp) {
-            ability_dmg_multiplier = 2;
+        
+        //Track recently used moves
+        let move_matches_first = slot_attacker.move_used_first === atk_id;
+        let move_matches_last = slot_attacker.move_used_last === atk_id;
+        if(slot_attacker.move_used_first == false){ slot_attacker.move_used_first = atk_id; }
+        slot_attacker.move_used_last = atk_id;
+       
+
+        //Abilities that affect damage via misc conditions
+        switch(slot_attacker.Ability){
+            case Ability.Rogue:
+                if(defender.current_hp === defender.stats.hp){
+                    ability_dmg_multiplier = 2;
+                }
+            break;
+            case Ability.Pact:
+                if(move_matches_first){
+                    ability_dmg_multiplier = 1.3;
+                }
+            break;
         }
 
         let dmg = 0;
@@ -2278,6 +2305,9 @@ let functions = {
             dmg = functions.battle_calc_damage(move_damage * type_multiplier[0] * status_exposed * ability_dmg_multiplier, 
                                     move_type, attacker, defender, battle_data.turn_counter) * crit_multiplier;
         }
+
+        
+
         vampire_heal = Math.ceil(vampire_heal * dmg); //used later
         // Remove Exposed status effect
         if (status_exposed != 1) {
@@ -2399,6 +2429,8 @@ let functions = {
                     break;
                 }
             }
+
+            
 
             if (ogMoveId !== atk_id) {
                 string_to_send += `\n🎲 **${db.move_data.get(ogMoveId, 'name')}** changed into **${move_name}**!\n`;
@@ -2620,6 +2652,13 @@ let functions = {
                 case Ability.Bomber:
                     attacker.current_hp = _.ceil(attacker.current_hp / 2);
                     defender_field_text += `\n${attacker_emote} **${atkOochName}** had its current HP halved from ${defender_emote} **${defOochName}**'s ability **Bomber**!`;
+                break;
+                case Ability.Matryoshka:
+                    if(slot_defender.used_ability_matryoshka == false){
+                        defender.current_hp = _.ceil(defender.stats.hp / 2);
+                        defender_field_text += `\n${defender_emote} **${defOochName}** fainted, but a small one popped out due to **Matryoshka**!`;
+                        slot_defender.used_ability_matryoshka = true;
+                    }
                 break;
             }
         }
