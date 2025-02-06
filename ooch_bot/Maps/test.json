@@ -4,45 +4,7 @@
 		"map_battleback": "",
 		"map_name": ""
 	},
-	"map_npcs": [
-		{
-			"aggro_range": 0,
-			"coin": 0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
-			"npc_id": "344541736411896337",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": false,
-			"sprite": 2,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_000",
-			"team": [
-				{
-					"ability": 9999,
-					"atk_iv": 0,
-					"def_iv": 0,
-					"hp_iv": 0,
-					"id": 9,
-					"item": -1,
-					"level": 5,
-					"moveset": [
-						1
-					],
-					"nickname": "",
-					"slot_enabled": true,
-					"spd_iv": 0
-				}
-			],
-			"x": 7,
-			"y": 1
-		}
-	],
+	"map_npcs": [],
 	"map_savepoints": [],
 	"map_shops": [],
 	"map_spawn_zones": [],
@@ -4272,5 +4234,16 @@
 			"t00_000"
 		]
 	],
-	"map_transitions": []
+	"map_transitions": [],
+	"map_weather": [
+		{
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 5,
+			"weather_name": "",
+			"width": 9,
+			"x": 7,
+			"y": 1
+		}
+	]
 }

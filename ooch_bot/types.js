@@ -103,7 +103,16 @@ const OochType = {
 }
 
 const Weather = {
-    Clear : 0
+    Clear : 'clear',
+    Heatwave : 'heatwave',
+    Thunderstorm : 'thunderstorm'
+}
+
+const FieldEffect = {
+    JaggedGround : 0,
+    EchoChamber : 1,
+    Wetlands : 2,
+    TwistedReality : 3
 }
 
 const Move = {
@@ -433,5 +442,6 @@ module.exports = {
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget, Weather, BattleState, BattleAction, BattleInput
+    MoveTarget, Weather, BattleState, BattleAction, BattleInput,
+    FieldEffect
 };

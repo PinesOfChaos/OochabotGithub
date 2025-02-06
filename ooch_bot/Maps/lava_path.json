@@ -917,6 +917,48 @@
 			"team": [],
 			"x": 29,
 			"y": 55
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "696815844701824141",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "→ Old Training Facility\n↓ Access Tunnel",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 43,
+			"y": 25
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "513928522094860065",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Beware of Lava! \nCooling Balms Recommended",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 25,
+			"y": 54
 		}
 	],
 	"map_savepoints": [
@@ -5285,6 +5327,26 @@
 			"connect_y": 39,
 			"x": 14,
 			"y": 58
+		}
+	],
+	"map_weather": [
+		{
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 51,
+			"weather_name": "heatwave",
+			"width": 36,
+			"x": 9,
+			"y": 6
+		},
+		{
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 17,
+			"weather_name": "heatwave",
+			"width": 16,
+			"x": 46,
+			"y": 17
 		}
 	]
 }

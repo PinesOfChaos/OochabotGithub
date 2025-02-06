@@ -254,6 +254,27 @@
 			"team": [],
 			"x": 34,
 			"y": 49
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "422788684824143157",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "↗ Lava Settlement\n← Fungal Caves",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 52,
+			"y": 50
 		}
 	],
 	"map_savepoints": [
@@ -3813,7 +3834,7 @@
 			"t03_006",
 			"t03_006",
 			"t03_002",
-			"t03_000",
+			"t03_005",
 			"t03_006",
 			"t03_006",
 			"t03_006",
@@ -4079,7 +4100,7 @@
 			"t03_006",
 			"t03_006",
 			"t03_002",
-			"t03_000",
+			"t03_005",
 			"t03_000",
 			"t03_000",
 			"t03_005",
@@ -4597,5 +4618,6 @@
 			"x": 55,
 			"y": 54
 		}
-	]
+	],
+	"map_weather": []
 }

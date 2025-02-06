@@ -193,6 +193,28 @@ size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New Chest"
 
+[node name="ButtonNewSign" type="Button" parent="VBoxMenu/HBoxNPC"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Sign"
+
+[node name="HBoxWeather" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonVisibleWeather" type="CheckBox" parent="VBoxMenu/HBoxWeather"]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewWeather" type="Button" parent="VBoxMenu/HBoxWeather"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Weather Zone"
+
 [node name="GridOoch" type="GridContainer" parent="."]
 visible = false
 layout_direction = 2
@@ -273,6 +295,12 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="weather_zones" type="Control" parent="MenuChildren"]
+z_index = -2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="Timer" type="Timer" parent="."]
 wait_time = 60.0
 autostart = true
@@ -318,4 +346,7 @@ text = "0, 0"
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
 [connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewChest" to="." method="_on_button_new_chest_button_down"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewSign" to="." method="_on_button_new_sign_button_down"]
+[connection signal="toggled" from="VBoxMenu/HBoxWeather/ButtonVisibleWeather" to="." method="_on_button_visible_weather_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxWeather/ButtonNewWeather" to="." method="_on_button_new_weather_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

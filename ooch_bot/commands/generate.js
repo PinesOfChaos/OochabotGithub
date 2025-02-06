@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
 const fs = require('fs');
 const db = require('../db.js');
-const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats } = require('../types.js');
+const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect } = require('../types.js');
 const { get_emote_string } = require('../func_other.js');
 const { refresh_global_variables } = require('../func_global_data.js')
 
@@ -1169,6 +1169,41 @@ module.exports = {
             description : 'You hit the jackpot!!!',
             battle_desc : 'USER hit the jackpot!!!'
         });
+        create_move({
+            id : 109, name : 'Jagged Ground', type : OochType.Stone,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'field', chance : FieldEffect.JaggedGround, target : MoveTarget.None}],
+            description : 'Jagged spikes erupt from the ground, any non-Stone-types that switch-in will take some damage.',
+            battle_desc : 'Jagged spikes erupt from the ground!'
+        });
+        create_move({
+            id : 110, name : 'Echo Chamber', type : OochType.Sound,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'field', chance : FieldEffect.EchoChamber, target : MoveTarget.None}],
+            description : 'Sound-type attacks harshly reverbrate in the area and can apply EXPOSED.',
+            battle_desc : 'Sounds begin to echo around the area!'
+        });
+        create_move({
+            id : 111, name : 'Wetlands', type : OochType.Ooze,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'field', chance : FieldEffect.Wetlands, target : MoveTarget.None}],
+            description : 'Viscous goo spreads across the area, non-Ooze-types move slower.',
+            battle_desc : 'Strage goo floods the battlefield!'
+        });
+        create_move({
+            id : 112, name : 'Twisted Reality', type : OochType.Magic,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'field', chance : FieldEffect.TwistedReality, target : MoveTarget.None}],
+            description : 'Reality becomes twisted in the surrounding area, Weaknesses and Resistances are flipped.',
+            battle_desc : 'Reality itself twists and contorts!'
+        });
+        create_move({
+            id : 113, name : 'Heatwave', type : OochType.Flame,
+            damage : 0, accuracy: 100,
+            effect : [{status : 'weather', chance : Weather.Heatwave, target : MoveTarget.None}],
+            description : 'The atmosphere is superheated! Non-Flame-type Oochamon will take damage at the end of each round.',
+            battle_desc : 'The local temperature begins to skyrocket!'
+        });
 
         //#endregionF
 
@@ -1283,19 +1318,6 @@ module.exports = {
         //Poison stackable, weak hp drain status
         
         //#endregion
-
-        
-        //#region Weather Effects
-
-
-        //#endregion
-
-
-
-        //#region Forms
-        
-        //#endregion
-
 
 
         //#region Creature Data

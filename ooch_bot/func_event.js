@@ -540,8 +540,9 @@ let functions = {
         flags_to_give.push(npc_flag)
 
         // Set the dialogue to be properly formatted
-        npc_obj.pre_combat_dialogue = npc_obj.pre_combat_dialogue.split('\n');
-        npc_obj.post_combat_dialogue = npc_obj.post_combat_dialogue.split('\n');
+        // Sign NPCs should display all their info at once
+        npc_obj.pre_combat_dialogue = npc_obj.name == 'Sign' ? [npc_obj.pre_combat_dialogue] : npc_obj.pre_combat_dialogue.split('\n');
+        npc_obj.post_combat_dialogue = npc_obj.name == 'Sign' ? [npc_obj.post_combat_dialogue] : npc_obj.post_combat_dialogue.split('\n');
         
         // If we don't have the NPCs flag, it means they haven't been beaten yet.
         if (!user_flags.includes(npc_flag) && battle_npc == true) {

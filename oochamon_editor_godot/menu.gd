@@ -21,6 +21,8 @@ extends Control
 @onready var menu_save_points = $MenuChildren/save_points
 @onready var menu_shops = $MenuChildren/shops
 @onready var menu_npcs = $MenuChildren/npcs
+@onready var menu_weather: Control = $MenuChildren/weather_zones
+
 @onready var label_notification: Label = $LabelNotification
 @onready var label_mouse_position: Label = $LabelMousePosition
 
@@ -168,6 +170,16 @@ func step():
 				y1 + bbox.scale_y * Global.TileSize
 			)
 		for child in menu_events.get_children():
+			var bbox = child.bounding_box
+			var x1 =bbox.pos_x * Global.TileSize
+			var y1 = bbox.pos_y * Global.TileSize
+			bbox.reset_box(
+				x1, 
+				y1, 
+				x1 + bbox.scale_x * Global.TileSize,
+				y1 + bbox.scale_y * Global.TileSize
+			)
+		for child in menu_weather.get_children():
 			var bbox = child.bounding_box
 			var x1 =bbox.pos_x * Global.TileSize
 			var y1 = bbox.pos_y * Global.TileSize
@@ -341,6 +353,7 @@ func _on_file_dialog_save_file_selected(path):
 			"map_shops" : [],
 			"map_events" : [],
 			"map_transitions" : [],
+			"map_weather" : []
 		}
 		
 		#Map Tiles
@@ -424,7 +437,18 @@ func _on_file_dialog_save_file_selected(path):
 				
 			save_data.map_events.push_back(ev_data)
 			
+		#Weather
+		for ev in menu_weather.get_children():
+			var ev_data = ev.weather_info
+			bbox = ev.bounding_box
 			
+			ev_data.x = bbox.pos_x
+			ev_data.y = bbox.pos_y
+			ev_data.width = bbox.scale_x
+			ev_data.height = bbox.scale_y
+				
+			save_data.map_weather.push_back(ev_data)
+		
 		#Transitions
 		for transition in menu_transitions.get_children():
 			var transition_data = transition.transition_data 
@@ -452,6 +476,18 @@ func _on_file_dialog_load_file_selected(path):
 		var _text = f.get_as_text(true)
 		var _json = JSON.parse_string(_text)
 		
+		#Modernize the map data
+		_json.merge({
+			"map_tiles" : [],
+			"map_npcs" : [],
+			"map_spawn_zones" : [],
+			"map_savepoints" : [],
+			"map_shops" : [],
+			"map_events" : [],
+			"map_transitions" : [],
+			"map_weather" : []
+		})
+		
 		var _main = get_parent()
 		var _menu = load("res://menu.tscn")
 		var _inst = _menu.instantiate()
@@ -473,6 +509,7 @@ func _on_file_dialog_load_file_selected(path):
 		var _save_points = _inst.menu_save_points
 		var _shops = _inst.menu_shops
 		var _npcs = _inst.menu_npcs
+		var _weather = _inst.menu_weather
 		
 		
 		
@@ -546,7 +583,18 @@ func _on_file_dialog_load_file_selected(path):
 			#assign new object as a child of the relevant menu part
 			_events.add_child(_obj)
 			_obj.owner = _events
-							
+					
+		for _info in _json.map_weather:
+			var _load = load("res://weather_zone.tscn")
+			var _obj = _load.instantiate()
+		
+			# add data to the object
+			_obj.weather_info = _info
+			
+			#assign new object as a child of the relevant menu part
+			_weather.add_child(_obj)
+			_obj.owner = _weather
+					
 		for _info in _json.map_transitions:
 			var _load = load("res://transition.tscn")
 			var _obj = _load.instantiate()
@@ -756,3 +804,36 @@ func _on_line_edit_map_name_text_changed(new_text: String) -> void:
 
 func _on_line_edit_map_battle_back_text_changed(new_text: String) -> void:
 	map_battle_bg = new_text
+
+
+func _on_button_visible_weather_toggled(toggled_on: bool) -> void:
+	menu_weather.visible = toggled_on
+
+
+func _on_button_new_weather_pressed() -> void:
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://weather_zone.tscn")
+	var instance = scene.instantiate()
+	instance.weather_info.x = floor(Global.CamX/Global.TileSize) + 20
+	instance.weather_info.y = floor(Global.CamY/Global.TileSize) + 10
+	menu_weather.add_child(instance)
+	Global.ObjSelected = menu_weather.get_child(menu_weather.get_child_count() - 1).get_instance_id()
+
+	refresh_all_children()
+	do_screen_refresh = true
+
+
+func _on_button_new_sign_button_down() -> void:
+	Global.CurrentMapMode = Global.MapMode.MAP_OBJ_EDIT
+	var scene = load("res://npc.tscn")
+	var instance = scene.instantiate()
+	instance.npc_data = {
+		"name" : "Sign",
+		"sprite_id" : "c00_020",
+		"pre_combat_dialogue" : "↖↗↘↙←→↑↓",
+		"flag_given" : "read_a_sign"
+	}
+	menu_npcs.add_child(instance)
+	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
+	instance.owner = o_menu
+	refresh_all_children()

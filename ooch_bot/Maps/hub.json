@@ -675,6 +675,27 @@
 			"team": [],
 			"x": 16,
 			"y": 29
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "855578627356822965",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Warning! Wild Oochamon have been spotted in nearby grass patches!",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 42,
+			"y": 41
 		}
 	],
 	"map_savepoints": [
@@ -2124,7 +2145,7 @@
 			"t02_000",
 			"t02_000",
 			"t02_000",
-			"t02_001",
+			"t02_000",
 			"t02_002",
 			"t02_002",
 			"t02_002",
@@ -3580,7 +3601,7 @@
 			"t02_019",
 			"t02_015",
 			"t02_014",
-			"t02_001",
+			"t02_000",
 			"t02_000",
 			"t02_000",
 			"t02_000",
@@ -4999,5 +5020,6 @@
 			"x": 29,
 			"y": 23
 		}
-	]
+	],
+	"map_weather": []
 }

@@ -709,6 +709,48 @@
 			"team": [],
 			"x": 23,
 			"y": 33
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "358490711487759151",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "← Lava Settlement\n→ Training Facility",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 9,
+			"y": 9
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "955723142262906468",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "WARNING:\nUnsafe Structure\nEnter at your own risk",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"team": [],
+			"x": 49,
+			"y": 11
 		}
 	],
 	"map_savepoints": [
@@ -5184,5 +5226,6 @@
 			"x": 5,
 			"y": 13
 		}
-	]
+	],
+	"map_weather": []
 }
