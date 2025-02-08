@@ -319,6 +319,30 @@ module.exports = {
         create_tile(`t${zTu}_003`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_004`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_011`,  Tile.Floor,    applicationEmojis ); //Tutorial Door Open
+        create_tile(`t${zTu}_013`,  Tile.Floor,    applicationEmojis ); //Spike Floor Deactivated
+        create_tile(`t${zTu}_020`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_021`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_022`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_030`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_031`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_032`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_040`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_041`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_042`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_050`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_051`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_052`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_061`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_062`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_070`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_071`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_072`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_080`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_081`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_082`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_090`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_091`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_092`,  Tile.Wall,     applicationEmojis ); //Elevator
 
         // NPCs
         create_tile(`c_000`,       Tile.Npc,      applicationEmojis ); // Main Character
