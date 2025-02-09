@@ -4,7 +4,7 @@ const db = require("./db.js")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput } = require("./types.js");
+const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect } = require("./types.js");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -112,7 +112,9 @@ let functions = {
                 this_turn_was_damaged : false,
                 this_turn_switched_in : false,
 
-                used_ability_matryoshka : false
+                used_ability_matryoshka : false,
+
+                counter_thunderstorm : 0
             })
             
         }
@@ -197,6 +199,7 @@ let functions = {
             give_rewards : give_rewards,
             allow_run : allow_run,
             weather : weather,
+            field_effect : FieldEffect.None,
             oochabux: oochabux,
             amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
         }
@@ -536,6 +539,16 @@ let functions = {
             
             //Combine the priorities to get the final value
             action.priority = base_priority + move_priority + speed;
+
+            //Reverse the attack order if the Twisted Reality field effect is active
+            if(battle_data.field_effect == FieldEffect.TwistedReality){
+                action.priority *= -1;
+            }
+
+            //Non-ooze mons lose priority in the Wetlands field effect
+            if((battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
+                action.priority -= 10_000;
+            }
         }
 
         //Sort the actions in descending order by priority, then set it in the database
@@ -1475,6 +1488,15 @@ let functions = {
             }
         }
 
+        switch(field_effect){
+            case FieldEffect.JaggedGround:
+                if(!ooch_to.type.includes(OochType.Stone)){
+                    ooch_to.current_hp = _.clamp(Math.floor(ooch_to.current_hp - ooch_to.stats.hp * 0.1), 1, ooch_to.stats.hp);
+                    string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** was hurt by the jagged terrain!`;
+                }
+            break;
+        }
+
         return(string_to_send);
     },
 
@@ -2137,6 +2159,40 @@ let functions = {
         }
         
     
+        //Weather effects
+        switch(battle_data.weather){
+            case Weather.Clear: break; //Do Nothing
+            case Weather.Heatwave: 
+                if(!ooch.type.includes(OochType.Flame)){
+                    let hp_lost = Math.floor(ooch.stats.hp / 16)
+                    ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
+                    ability_text += `\n${ooch.emote} **${ooch.nickname}** is damaged by the intesnse heat and loses ${hp_lost} HP!`;
+                }
+            break;
+            case Weather.Thunderstorm:
+                slot_info.counter_thunderstorm++;
+                switch(slot_info.counter_thunderstorm){
+                    case 1:
+                        ability_text += `\n${ooch.emote} **${ooch.nickname}** begins to spark...`;
+                    break;
+                    case 2:
+                        ability_text += `\n${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
+                    break;
+                    case 3:
+                        let hp_lost = Math.floor(ooch.stats.hp / 4);
+                        ability_text += `\n${ooch.emote} **${ooch.nickname}** is struck by lightning and loses ${hp_lost} HP!`;
+                        if(ooch.type.includes(OochType.Tech)){
+                            ability_text += `\n${ooch.emote} **${ooch.nickname}** was energized and its ATK increased!`;
+                            ooch = functions.modify_stat(ooch, Stats.Attack, 1);
+                        }
+                        ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
+                        slot_info.counter_thunderstorm = 0;
+                    break;
+                }
+            break;
+        }
+
+
         return {ooch : ooch, text : ability_text};
     },
 
@@ -2306,6 +2362,15 @@ let functions = {
         if(slot_attacker.move_used_first == false){ slot_attacker.move_used_first = atk_id; }
         slot_attacker.move_used_last = atk_id;
 
+        //Field Effects
+        switch(battle_data.field_effect){
+            case FieldEffect.EchoChamber:
+                if(move_type == OochType.Sound && move_damage > 0){
+                    move_effects.push({status : Status.Expose, chance : 100, target : MoveTarget.Enemy})
+                }
+            break;
+        }
+
         //Abilities that affect damage via misc conditions
         switch(slot_attacker.Ability){
             case Ability.Rogue:
@@ -2328,6 +2393,9 @@ let functions = {
                 }
             break;
         }
+
+
+        
 
         //Check for crits
         let crit_multiplier = (Math.random() > (0.95 - (move_effects.find(effect => effect.status === "critical")?.chance / 100 || 0) - (attacker.ability === Ability.HeightAdvantage ? 0.1 : 0)) ? 2 : 1);

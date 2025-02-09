@@ -109,10 +109,11 @@ const Weather = {
 }
 
 const FieldEffect = {
-    JaggedGround : 0,
-    EchoChamber : 1,
-    Wetlands : 2,
-    TwistedReality : 3
+    None : 0,
+    JaggedGround : 1,
+    EchoChamber : 2,
+    Wetlands : 3,
+    TwistedReality : 4
 }
 
 const Move = {
