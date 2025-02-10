@@ -607,11 +607,11 @@ module.exports = {
                                         let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
-                                            await setup_battle([oochObj, userObj], Weather.Clear, 0, 0, true, true, true);
+                                            await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true);
                                         }
                                         else {
                                             if (Math.random() > .6) { //40% chance to start the battle if 'Run' is chosen
-                                                await setup_battle([oochObj, userObj], Weather.Clear, 0, 0, true, true, true);
+                                                await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 60/40, ignore the input*/

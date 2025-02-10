@@ -133,7 +133,7 @@ let functions = {
             let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
 
             // Setup the battle for trainers
-            await setup_battle([userObj, trainerObj], Weather.Clear, obj_content.coin, 0, true, true, false);
+            await setup_battle([userObj, trainerObj], Weather.None, obj_content.coin, 0, true, true, false);
 
             // Increment by one so that after the battle we end up in the next part of the event.
             db.profile.set(user_id, current_place+1, 'cur_event_pos');
