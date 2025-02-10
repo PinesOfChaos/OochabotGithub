@@ -2328,6 +2328,7 @@ let functions = {
         let move_type =     db.move_data.get(atk_id, 'type');
         let move_damage =   db.move_data.get(atk_id, 'damage');
         let move_accuracy = db.move_data.get(atk_id, 'accuracy');
+        let move_guarantee_hit = move_accuracy < 0;
         if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
         let move_type_emote =      functions.type_to_emote(move_type);
         let type_multiplier = move_damage == 0 ? [1, ''] : functions.type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
@@ -2349,6 +2350,9 @@ let functions = {
         let string_to_send = ``;
         let ability_dmg_multiplier = 1;
         let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
+
+        let move_weather = (move_effects.find(effect => effect.status === "weather")?.chance || Weather.Clear);
+        let move_field = (move_effects.find(effect => effect.status === "field")?.chance || FieldEffect.None);
 
         let atkOochName = attacker.nickname;
         let defOochName = defender.nickname;
@@ -2443,7 +2447,7 @@ let functions = {
         else if(attacker.ability == Ability.DoubleOrNothing && ability_dmg_multiplier < 1 && move_damage > 0){
             string_to_send += `\n${attacker_emote} **${atkOochName}**\'s **Double or Nothing** didn't pay off...`;
         }
-        else if (chance_to_hit > Math.random()){ //Does the attack successfully land?
+        else if (chance_to_hit > Math.random() || move_guarantee_hit){ //Does the attack successfully land?
             if(do_wakeup){ //We woke up!
                 string_to_send += `\n${attacker_emote} **${atkOochName}** woke up!`;
                 attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
@@ -2568,7 +2572,23 @@ let functions = {
             string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
             if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
 
-            
+            //Handle Weather
+            if(move_weather != Weather.None){
+                if(move_weather == Weather.Clear){
+                    battle_data.weather = Weather.None;
+                    string_to_send += `\n--- The weather was cleared!`
+                }
+                else{ battle_data.weather = move_weather; }
+            }
+
+            //Handle Field Effects
+            if(move_field != FieldEffect.None){
+                if(move_field == FieldEffect.Clear){
+                    battle_data.field_effect = FieldEffect.None;
+                    string_to_send += `\n--- Field effects were cleared!`
+                }
+                else{ battle_data.field_effect = move_field; }
+            }
 
             //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
             if(status_exposed != 1 && move_damage > 0) {
