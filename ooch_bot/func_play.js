@@ -119,6 +119,7 @@ module.exports = {
         let map_transitions =   map_obj.map_transitions;
         let map_events =        map_obj.map_events;
         let map_shops =         map_obj.map_shops;
+        let map_bg =            map_obj.map_info.map_battleback;
         if (map_shops == undefined || map_shops == null) map_shops = [];        
         
         //set where the player is going to move
@@ -140,6 +141,7 @@ module.exports = {
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
         for(let i = 0; i < dist; i++){
+
             if(stop_moving){ break; }
             playerx += xmove;
             playery += ymove;
@@ -579,39 +581,41 @@ module.exports = {
                             spawn_zone = map_spawns[j];
                             x1 = (spawn_zone.x) <= playerx;
                             y1 = (spawn_zone.y) <= playery;
-                            x2 = (spawn_zone.x + spawn_zone.width) > playerx;
-                            y2 = (spawn_zone.y + spawn_zone.height) > playery;
+                            x2 = (spawn_zone.x + spawn_zone.width) + 1 > playerx;
+                            y2 = (spawn_zone.y + spawn_zone.height) + 1 > playery;
 
                             if(x1 && y1 && x2 && y2){
                                 stop_moving = true;
                                 let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                 let slot = spawn_zone.spawn_slots[slot_index];
-                                if(_.random(0, 10000) > 9999){ //This is the index of _i (the mon that randomly spawns 1/10,000 battles)
+                                
+                                if(_.random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/10,000 battles)
                                     let new_slot = {
-                                        ooch_id : 34,
+                                        ooch_id : -1,
                                         min_level : slot.min_level,
                                         max_level : slot.max_level,
                                     }
                                     slot = new_slot;
                                 } 
+                                
                                 let mon_level = _.random(slot.min_level, slot.max_level);
                                 let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
                                 let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
+                                
                                 //use slot .ooch_id, .min_level, .max_level to setup the encounter
                                 await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
                                     await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
-                                        //let generated_ooch = generate_wild_battle(slot.ooch_id.toString(), mon_level);
                                         let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : slot.ooch_id.toString(), ooch_level : mon_level, team_id : 1})
                                         let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
-                                            await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true);
+                                            await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true, false, map_bg);
                                         }
                                         else {
                                             if (Math.random() > .6) { //40% chance to start the battle if 'Run' is chosen
-                                                await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true);
+                                                await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true, false, map_bg);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 60/40, ignore the input*/

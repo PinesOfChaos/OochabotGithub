@@ -107,7 +107,7 @@ module.exports = {
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
         infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(Bonus: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(Bonus: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(Bonus: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(Bonus: ${iv_spd})\``, inline: true }]);
-        if (ooch.level == 50) {
+        if (ooch.level != 50) {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
 

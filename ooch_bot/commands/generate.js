@@ -3123,7 +3123,7 @@ module.exports = {
         create_monster({
             id: -1,
             emote: get_emote_string(applicationEmojis, 'i_'),
-            name: 'i_',
+            name: 'i',
             oochive_entry: 'ERROR: entry not found',
             type: [OochType.Void],
             hp: 1, atk: 1, def: 1, spd: 1, // total 4

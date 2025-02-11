@@ -131,9 +131,11 @@ let functions = {
             obj_content.team_id = 1;
             let trainerObj = await generate_battle_user(UserType.NPCTrainer, obj_content);
             let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+            let map_data = db.maps.get(profile_data.location_data.area);
+            let battle_bg = map_data.map_info.map_battleback;
 
             // Setup the battle for trainers
-            await setup_battle([userObj, trainerObj], Weather.None, obj_content.coin, 0, true, true, false);
+            await setup_battle([userObj, trainerObj], Weather.None, obj_content.coin, 0, true, true, false, false, battle_bg);
 
             // Increment by one so that after the battle we end up in the next part of the event.
             db.profile.set(user_id, current_place+1, 'cur_event_pos');

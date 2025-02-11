@@ -57,7 +57,7 @@ client.on('ready', async () => {
     for (let user of userIds) {
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (user != '122568101995872256' && user != '145342159724347393') continue;
+        if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
 
         let user_profile = db.profile.get(user);
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
@@ -128,8 +128,6 @@ client.on('ready', async () => {
 
                 await move(userThread, user, '', 1);
             }
-
-           
         }
     }
     console.log('Bot Ready')
@@ -327,7 +325,7 @@ client.on('messageCreate', async message => {
                 let speedMatch = message.content.toLowerCase().match(/^([1-4])$/);
 
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
-                    if (message.content == 'fw') {
+                    if (message.content == 'b') {
                         await move(message.channel, message.author.id, '', 1, 1);
                         await message.delete().catch(() => {});
                     } else if (speedMatch && db.profile.get(message.author.id, 'settings.discord_move_buttons') === true) {

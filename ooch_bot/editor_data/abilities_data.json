@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "Miniscule",
-    "description": "Becomes super small and increases evasion against attacks by 1 stage upon entering the battlefield."
+    "description": "Becomes super small and raises evasion against attacks by 1 stage upon entering the battlefield."
   },
   {
     "id": 1,
@@ -47,7 +47,7 @@
   {
     "id": 9,
     "name": "Warm",
-    "description": "Increases the damage of FLAME attacks by 10%."
+    "description": "Raises the damage of FLAME attacks by 10%."
   },
   {
     "id": 10,
@@ -62,7 +62,7 @@
   {
     "id": 12,
     "name": "Burrower",
-    "description": "Increases the damage of STONE attacks by 10%."
+    "description": "Raises the damage of STONE attacks by 10%."
   },
   {
     "id": 13,
@@ -72,12 +72,12 @@
   {
     "id": 14,
     "name": "Inertia",
-    "description": "Increases SPD by 1 stage each turn."
+    "description": "Raises SPD by 1 stage each turn."
   },
   {
     "id": 15,
     "name": "Dense",
-    "description": "Increases ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield."
+    "description": "Raises ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield."
   },
   {
     "id": 16,
@@ -87,17 +87,17 @@
   {
     "id": 17,
     "name": "Alert",
-    "description": "Increases ATK by 1 stage when an Oochamon switches in."
+    "description": "Raises ATK by 1 stage when an Oochamon switches in."
   },
   {
     "id": 18,
     "name": "Fleeting",
-    "description": "Increases SPD and ATK by 2 stages but also loses half of current HP each turn."
+    "description": "Raises SPD and ATK by 2 stages but also loses half of current HP each turn."
   },
   {
     "id": 19,
     "name": "Efficient",
-    "description": "Increases ATK by 1 stage every other turn."
+    "description": "Raises ATK by 1 stage every other turn."
   },
   {
     "id": 20,
@@ -122,17 +122,17 @@
   {
     "id": 24,
     "name": "Uncontrolled",
-    "description": "Increases ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn."
+    "description": "Raises ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn."
   },
   {
     "id": 25,
     "name": "Apprentice",
-    "description": "Increases ATK by 2 stages if any other party members share a move with it."
+    "description": "Raises ATK by 2 stages if any other party members share a move with it."
   },
   {
     "id": 26,
     "name": "Focused",
-    "description": "Increases damage of attacks by 10% if unaffected by status effects."
+    "description": "Raises damage of attacks by 10% if unaffected by status effects."
   },
   {
     "id": 27,
@@ -142,7 +142,7 @@
   {
     "id": 28,
     "name": "Immense",
-    "description": "Increases DEF by 2 stages upon entering the battlefield, but also makes opponent's moves always hit."
+    "description": "Raises DEF by 2 stages upon entering the battlefield, but also makes opponent's moves always hit."
   },
   {
     "id": 29,
@@ -247,12 +247,12 @@
   {
     "id": 49,
     "name": "Height Advantage",
-    "description": "Increases chance to do a critical hit by 10%."
+    "description": "Raises chance to do a critical hit by 10%."
   },
   {
     "id": 50,
     "name": "Hearty",
-    "description": "Increases damage done by 15% while above 50% HP."
+    "description": "Raises damage done by 15% while above 50% HP."
   },
   {
     "id": 51,
@@ -262,12 +262,12 @@
   {
     "id": 52,
     "name": "Energized",
-    "description": "Increases ATK and SPD by 1 stage on kill."
+    "description": "Raises ATK and SPD by 1 stage on kill."
   },
   {
     "id": 53,
     "name": "Patient",
-    "description": "Increases DEF by 1 stage every other turn."
+    "description": "Raises DEF by 1 stage every other turn."
   },
   {
     "id": 54,
@@ -312,32 +312,32 @@
   {
     "id": 62,
     "name": "Riposte",
-    "description": "Increases damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry."
+    "description": "Raises damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry."
   },
   {
     "id": 63,
     "name": "Swaying",
-    "description": "Increases DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage."
+    "description": "Raises DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage."
   },
   {
     "id": 64,
     "name": "Thrashing",
-    "description": "Increases ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage."
+    "description": "Raises ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage."
   },
   {
     "id": 65,
     "name": "Union",
-    "description": "Increases ATK and DEF by 1 stage."
+    "description": "Raises ATK and DEF by 1 stage."
   },
   {
     "id": 66,
     "name": "Protector",
-    "description": "The Oochamon gets protected, making it immune to not very effective damage during the turn it switches into the battlefield."
+    "description": "The Oochamon gets protected, making it immune to moves it resists during the turn it switches in."
   },
   {
     "id": 67,
     "name": "Phantasmal",
-    "description": "The Oochamon becomes phantasmal, making it immune to Neutral-type moves."
+    "description": "The Oochamon is phantasmal, making it immune to Neutral-type moves."
   },
   {
     "id": 68,
@@ -357,12 +357,12 @@
   {
     "id": 71,
     "name": "Constructor",
-    "description": "Raises DEF by 1 stage each turn."
+    "description": "Raises DEF by 1 stage when hit by a Stone-type move."
   },
   {
     "id": 72,
     "name": "Neutralizer",
-    "description": "Makes every Oochamon on the battlefield immune to Status Effects."
+    "description": "The special effects of damaging attacks are ignored, but their damage is increased by 30%."
   },
   {
     "id": 73,
@@ -373,5 +373,60 @@
     "id": 74,
     "name": "Stealthy",
     "description": "The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn't dealt damage this turn."
+  },
+  {
+    "id": 75,
+    "name": "Pursuer",
+    "description": "Deals 20% current HP damage to an Oochamon as it switches out."
+  },
+  {
+    "id": 76,
+    "name": "Bloodrush",
+    "description": "Taking damage raises SPD by 1 stage."
+  },
+  {
+    "id": 77,
+    "name": "Chronomancy",
+    "description": "Damaging moves get -1 Priority. Other moves get +1 Priority."
+  },
+  {
+    "id": 78,
+    "name": "Martyr",
+    "description": "If this Oochamon is swapped out with 0 HP, Raises the ATK of the next mon to switch in."
+  },
+  {
+    "id": 79,
+    "name": "Condiment",
+    "description": "Raises the DEF & SPD of Lasangato in the party 1 stage."
+  },
+  {
+    "id": 80,
+    "name": "Double or Nothing",
+    "description": "Attacks damage is either doubled or reduced to 0."
+  },
+  {
+    "id": 81,
+    "name": "Vigorous",
+    "description": "Raises healing done by moves by 30%."
+  },
+  {
+    "id": 82,
+    "name": "Turbine",
+    "description": "Raises ATK whenever it uses a Flame-type attack."
+  },
+  {
+    "id": 83,
+    "name": "Pact",
+    "description": "Raises the damage of the user's first move by 30% on repeated uses."
+  },
+  {
+    "id": 84,
+    "name": "Exploiter",
+    "description": "The EXPOSED status triples damage instead of doubling it."
+  },
+  {
+    "id": 85,
+    "name": "Seer",
+    "description": "If the Oochamon would be EXPOSED it instead gains +1 SPD."
   }
 ]

@@ -1145,7 +1145,7 @@
         "target": 0
       }
     ],
-    "description": "Rapid fungal growth increases ATK, DEF, and SPD.",
+    "description": "Rapid fungal growth Raises ATK, DEF, and SPD.",
     "tags": []
   },
   {
@@ -1691,6 +1691,91 @@
     "effect": [],
     "description": "You hit the jackpot!!!",
     "battle_desc": "USER hit the jackpot!!!",
+    "tags": []
+  },
+  {
+    "id": 109,
+    "name": "Jagged Ground",
+    "type": "stone",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "field",
+        "chance": 2,
+        "target": 3
+      }
+    ],
+    "description": "Jagged spikes erupt from the ground, any non-Stone-types that switch-in will take some damage.",
+    "battle_desc": "Jagged spikes erupt from the ground!",
+    "tags": []
+  },
+  {
+    "id": 110,
+    "name": "Echo Chamber",
+    "type": "sound",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "field",
+        "chance": 3,
+        "target": 3
+      }
+    ],
+    "description": "Sound-type attacks harshly reverbrate in the area and can apply EXPOSED.",
+    "battle_desc": "Sounds begin to echo around the area!",
+    "tags": []
+  },
+  {
+    "id": 111,
+    "name": "Wetlands",
+    "type": "ooze",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "field",
+        "chance": 4,
+        "target": 3
+      }
+    ],
+    "description": "Viscous goo spreads across the area, non-Ooze-types move slower.",
+    "battle_desc": "Strage goo floods the battlefield!",
+    "tags": []
+  },
+  {
+    "id": 112,
+    "name": "Twisted Reality",
+    "type": "magic",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "field",
+        "chance": 5,
+        "target": 3
+      }
+    ],
+    "description": "Reality becomes twisted in the surrounding area, Weaknesses and Resistances are flipped.",
+    "battle_desc": "Reality itself twists and contorts!",
+    "tags": []
+  },
+  {
+    "id": 113,
+    "name": "Heatwave",
+    "type": "flame",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "weather",
+        "chance": "heatwave",
+        "target": 3
+      }
+    ],
+    "description": "The atmosphere is superheated! Non-Flame-type Oochamon will take damage at the end of each round.",
+    "battle_desc": "The local temperature begins to skyrocket!",
     "tags": []
   }
 ]

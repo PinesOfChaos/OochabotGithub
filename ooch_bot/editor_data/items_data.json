@@ -200,7 +200,7 @@
     "price": 25000,
     "potency": "hp",
     "description": "A viridian crystal from the planet's core glowing with vitality. Your Oochamon seem strangely drawn to it.",
-    "description_short": "Permanently increases Health bonus of an Oochamon.",
+    "description_short": "Permanently Raises Health bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -212,7 +212,7 @@
     "price": 25000,
     "potency": "atk",
     "description": "A crimson crystal from the planet's core glowing with power. Your Oochamon seem strangely drawn to it.",
-    "description_short": "Permanently increases Attack bonus of an Oochamon.",
+    "description_short": "Permanently Raises Attack bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -224,7 +224,7 @@
     "price": 25000,
     "potency": "def",
     "description": "An azure crystal from the planet's core glowing with protection. Your Oochamon seem strangely drawn to it.",
-    "description_short": "Permanently increases Defense bonus of an Oochamon.",
+    "description_short": "Permanently Raises Defense bonus of an Oochamon.",
     "tags": []
   },
   {
@@ -236,7 +236,7 @@
     "price": 25000,
     "potency": "spd",
     "description": "An amber crystal from the planet's core glowing with energy. Your Oochamon seem strangely drawn to it.",
-    "description_short": "Permanently increases Speed bonus of an Oochamon.",
+    "description_short": "Permanently Raises Speed bonus of an Oochamon.",
     "tags": []
   },
   {

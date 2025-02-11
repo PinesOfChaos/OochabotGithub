@@ -109,6 +109,15 @@ module.exports = {
                 new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑'),
             )
 
+        // Dex arrows
+        let dex_arrows = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('dex_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
+            ).addComponents(
+                new ButtonBuilder().setCustomId('dex_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
+            ).addComponents(
+                new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
+            )
 
         // Preference Select Menu
         let pref_sel_menu = new ActionRowBuilder()
@@ -334,7 +343,7 @@ module.exports = {
                 ooch_img_file = get_ooch_art(ooch_data.name);
                 dexEmbed = new EmbedBuilder()
                     .setColor('#808080')
-                    .setTitle(`${ooch_data.name} (Type: ${_.capitalize(ooch_data.type)})`)
+                    .setTitle(`${ooch_data.name} (Type: ${ooch_data.type.map(v => TypeEmote[_.capitalize(v)]).join('')})`)
                     .setThumbnail(`attachment://${_.lowerCase(ooch_data.name)}.png`)
                     .setDescription(`*${ooch_data.oochive_entry}*`)
                     .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
