@@ -84,7 +84,19 @@ const Status = {
     Focus: 8,
     Sleep: 9,
     Petrify: 10,
-    Weak: 11
+    Weak: 11,
+
+    //Special Status Types that affect how the move itself works
+    Weather: 'weather',
+    WeatherDependent: 'weather_dependant',
+    Field: 'field',
+    CritChance: 'critical',
+    Heal: 'heal',
+    ClearStatus: 'clear_status',
+    ClearStatChanges: 'clear_stat_stages',
+    GoingFirstBonus: 'going_first',
+    GoingLastBonus: 'going_last',
+    TrueDamage: 'true_damage',
 }
 
 const OochType = {

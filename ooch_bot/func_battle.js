@@ -2457,11 +2457,26 @@ let functions = {
         let defender = user_defender.party[user_defender.active_slot];
         let slot_attacker = user_attacker.slot_actions[user_attacker.active_slot];
         let slot_defender = user_defender.slot_actions[user_defender.active_slot];
+        let attacker_emote = db.monster_data.get(attacker.id, 'emote');
+        let defender_emote = db.monster_data.get(defender.id, 'emote');
+        let atkOochName = attacker.nickname;
+        let defOochName = defender.nickname;
+        let string_to_send = ``;
+
+        //Figure out whether we're going first or last for misc values
+        let going_first = true;
+        let going_last = true;
+        for(let user of battle_data.users){
+            if(user.slot_actions[user.active_slot].this_turn_did_attack){ going_first = false}
+            else { going_last = false}
+        }
 
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
 
-        let move_effects =   db.move_data.get(atk_id, 'effect');
+        let move_info = db.move_data.get(atk_id);
+
+        let move_effects =   move_info.effect;
         let ogMoveId = atk_id;
         if (move_effects.some(effect => effect.status === 'random')) {
             let moveList = db.move_data.keyArray();
@@ -2469,15 +2484,44 @@ let functions = {
             moveList = moveList.filter(v => !([40, 92].includes(parseInt(v))))
 
             atk_id = _.sample(db.move_data.keyArray());
-            move_effects =   db.move_data.get(atk_id, 'effect');
+            move_info = db.move_data.get(atk_id);
         }
-        let move_name =     db.move_data.get(atk_id, 'name');
-        let move_type =     db.move_data.get(atk_id, 'type');
-        let move_damage =   db.move_data.get(atk_id, 'damage');
-        let move_accuracy = db.move_data.get(atk_id, 'accuracy');
+        let move_name =     move_info.name;
+        let move_type =     move_info.type;
+        let move_damage =   move_info.damage;
+        let move_accuracy = move_info.accuracy;
         let move_guarantee_hit = move_accuracy < 0;
         if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
         let move_type_emote =      functions.type_to_emote(move_type);
+
+        //For interactions that depend on going last/first
+        let first_last_failed_text = '' //If the move doesn't have any damage after doing this check we should fail the move
+        if(going_first && move_effects.some(effect => effect.status === Status.GoingFirstBonus)) {  
+            move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingFirstBonus)?.chance || 0))
+            if(move_damage == 0){ first_last_failed_text += `\n${attacker_emote} **${atkOochName}** missed its chance!`}
+        }
+        if(going_last && move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
+            move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
+            if(move_damage == 0){ first_last_failed_text += `\n${attacker_emote} **${atkOochName}** was too early!`}
+        }
+
+        //For moves with a weather-dependant type
+        if(move_effects.some(effect => effect.status === Status.WeatherDependent)){
+            switch(battle_data.weather){
+                case Weather.None: break; //Do nothing
+                case Weather.Heatwave: 
+                    move_type = OochType.Flame; 
+                    string_to_send += `\n${move_name}'s type was changed to ${functions.type_to_emote([OochType.Flame])} **Flame**!`
+                    move_effects.push({status : Status.Burn, chance : 30, target : MoveTarget.Enemy})
+                    break;
+                case Weather.Thunderstorm: 
+                    move_type = OochType.Sound; 
+                    string_to_send += `\n${move_name}'s type was changed to ${functions.type_to_emote([OochType.Sound])} **Sound**!`
+                    move_effects.push({status : Status.Expose, chance : 30, target : MoveTarget.Enemy})
+                    break;
+            }
+        }
+
         let type_multiplier = move_damage == 0 ? [1, ''] : functions.type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
         //Weak status reduces the move's power by 10
         if(attacker.status_effects.includes(Status.Weak)){
@@ -2490,18 +2534,16 @@ let functions = {
         let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
         let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
         let reflect_dmg = 0;
-        let attacker_emote = db.monster_data.get(attacker.id, 'emote');
-        let defender_emote = db.monster_data.get(defender.id, 'emote');
         let defender_field_text = ``;
-        let string_to_send = ``;
         let ability_dmg_multiplier = 1;
         let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
+
+        
 
         let move_weather = (move_effects.find(effect => effect.status === "weather")?.chance || Weather.None);
         let move_field = (move_effects.find(effect => effect.status === "field")?.chance || FieldEffect.None);
 
-        let atkOochName = attacker.nickname;
-        let defOochName = defender.nickname;
+        
 
         //Make sure accuracy is a positive value (we might not need to do this anymore)
         move_accuracy = Math.abs(move_accuracy);
@@ -2581,6 +2623,9 @@ let functions = {
         if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
             string_to_send += `\n${attacker_emote} **${atkOochName}** is SLEEPING...`;
         }
+        else if(first_last_failed_text != ''){
+            string_to_send += first_last_failed_text;
+        }
         else if(defender.ability == Ability.Phantasmal && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
             string_to_send += `\n${defender_emote} **${defOochName}**\'s **Phantasmal** makes it immune to Neutral moves!`;
         }
@@ -2595,6 +2640,10 @@ let functions = {
                 string_to_send += `\n${attacker_emote} **${atkOochName}** woke up!`;
                 attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
             }
+
+
+            //True damage added here
+            dmg += (move_effects.find(effect => effect.status === Status.TrueDamage)?.chance || 0);
 
             // Take damage and heal from move effects
             defender.current_hp -= dmg
