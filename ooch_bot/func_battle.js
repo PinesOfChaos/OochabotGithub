@@ -1068,7 +1068,7 @@ let functions = {
             action = actions.shift();
 
             let user = battle_data.users[action.user_index]
-            //if(user.party[user.ooch_active_slot].alive == false){ continue; }
+            if(user.party[user.active_slot].alive == false){ continue; }
 
             text = ``;
 
