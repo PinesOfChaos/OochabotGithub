@@ -124,6 +124,8 @@ let functions = {
                 this_turn_was_damaged : false,
                 this_turn_switched_in : false,
 
+                this_turn_revealed : false,
+
                 used_ability_matryoshka : false,
 
                 counter_thunderstorm : 0
@@ -1140,11 +1142,21 @@ let functions = {
             let end_of_round_text = ``;
 
             //Apply end of round abilities/effects (burn, stat changes, etc.)
-            let ooch, eot_result;
+            let ooch, eot_result, slot;
             for(let user of battle_data.users){
                 
                 ooch = user.party[user.active_slot];
+                slot = battle_data.slot_actions[user.user_index];
                 if(!ooch.alive){ continue; } //Skip this one if it's dead
+
+                let remove_reveal = true;
+                if(slot.this_turn_revealed){ 
+                    remove_reveal = false;
+                    slot.this_turn_revealed = false;
+                }
+                else{
+                    //TODO FILTER OUT THE REVEALED STATUS IF NOT REVEALED THIS TURN
+                }
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
                 eot_result = functions.use_eot_ability(battle_data, user.user_index); 
@@ -1158,17 +1170,28 @@ let functions = {
 
                 // Handle status effects ORDER HERE MATTERS!!!
                 let status_checks = []
-                if (ooch.status_effects.includes(Status.Sleep)) {status_checks.push(Status.Sleep)};
-                if (ooch.status_effects.includes(Status.Burn)) {status_checks.push(Status.Burn)};
-                if (ooch.status_effects.includes(Status.Infect)) {status_checks.push(Status.Infect)};
-                if (ooch.status_effects.includes(Status.Doom)) {status_checks.push(Status.Doom)};
-                if (ooch.status_effects.includes(Status.Digitize)) {status_checks.push(Status.Digitize)};
-                if (ooch.status_effects.includes(Status.Petrify)) {status_checks.push(Status.Petrify)};
+                if (ooch.status_effects.includes(Status.Sleep))     {status_checks.push(Status.Sleep)};
+                if (ooch.status_effects.includes(Status.Burn))      {status_checks.push(Status.Burn)};
+                if (ooch.status_effects.includes(Status.Infect))    {status_checks.push(Status.Infect)};
+                if (ooch.status_effects.includes(Status.Doom))      {status_checks.push(Status.Doom)};
+                if (ooch.status_effects.includes(Status.Digitize))  {status_checks.push(Status.Digitize)};
+                if (ooch.status_effects.includes(Status.Petrify))   {status_checks.push(Status.Petrify)};
+                if (ooch.status_effects.includes(Status.Vanish))    {status_checks.push(Status.Vanish)};
+                if (ooch.status_effects.includes(Status.Revealed))  {status_checks.push(Status.Revealed)};
 
                 for(let effect of status_checks){
                     if(finish_battle){ break; }
 
                     switch(effect){ //Status effects
+                        case Status.Vanish:
+                            end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared and gained the <:status_reveal:1339448769871220866> REVEALED status.`;
+                            ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
+                            ooch = functions.add_status_effect(ooch, Status.Revealed);
+                        break;
+                        case Status.Revealed:
+                            end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
+                            ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
+                        break;
                         case Status.Sleep:
                             let sleep_val = Math.round(ooch.stats.hp/10);
                             ooch.current_hp += sleep_val;
@@ -2491,6 +2514,7 @@ let functions = {
         let move_damage =   move_info.damage;
         let move_accuracy = move_info.accuracy;
         let move_guarantee_hit = move_accuracy < 0;
+        if (defender.status_effects.includes(Status.Revealed)){ move_guarantee_hit = true; }
         if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
         let move_type_emote =      functions.type_to_emote(move_type);
 
@@ -2850,6 +2874,7 @@ let functions = {
                         if (isNaN(eff.status)) status_split = eff.status.split('_')
                         let status_adds = [eff.status];
 
+                        //TODO CHANGE THIS TO TYPEOF PLS JEFF
                         if (db.status_data.keyArray().includes(`${eff.status}`)) {
                             let statusData = db.status_data.get(eff.status);
                             // Setup list of status effects to add
@@ -2870,6 +2895,9 @@ let functions = {
 
                             // Remove duplicates
                             status_adds = status_adds.filter((item, index) => status_adds.indexOf(item) === index);  
+                            if(status_adds.includes(Status.Revealed)){
+                                slot_defender.this_turn_revealed = true;
+                            }
 
                             defender_field_text += `\n--- ${status_target_emote} **${status_target.nickname}** was ${statusData.emote} **${statusData.name.toUpperCase()}!**`
                             status_target.status_effects.push(status_adds);
@@ -2922,10 +2950,6 @@ let functions = {
         // If the attack misses
         } else {
             string_to_send += `\n${attacker_emote} **${atkOochName}** tried to use ${move_name} but it missed!`
-            if (defender.status_effects.includes(Status.Vanish)) {
-                defender.status_effects = defender.status_effects.filter(v => v !== Status.Vanish);
-                string_to_send += `\n--- ${defender_emote} **${defOochName}** reappeared and lost its <:status_vanish:1274938531864776735> **VANISHED** status!`
-            }
         }
 
         // Check if opposing Oochamon is dead

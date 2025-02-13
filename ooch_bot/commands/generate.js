@@ -1411,8 +1411,9 @@ module.exports = {
         create_status(7,   'Exposed',   '<:status_exposed:1335433347345813624>',    'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
         create_status(8,   'Focused',   '<:status_focused:1304616656915533855>',    'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
         create_status(9,   'Sleep',     '<:status_sleep:1335446202275070034>',      'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
-        create_status(10,  'Petrify',   '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
-        create_status(11,  'Weak',      '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
+        create_status(10,  'Petrified', '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
+        create_status(11,  'Weakened',  '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
+        create_status(12,  'Revealed',  '<:status_reveal:1339448769871220866>',     'The Oochamon is guaranteed to be hit, it is also unable to gain the <:status_vanish:1274938531864776735> VANISHED status.');
         //Poison stackable, weak hp drain status
         
         //#endregion

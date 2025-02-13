@@ -224,5 +224,6 @@ module.exports = {
         db.status_data.set(key_id, name, 'name');
         db.status_data.set(key_id, emote, 'emote');
         db.status_data.set(key_id, description, 'description');
+        db.status_data.set(key_id, emote != '', 'visible'); //whether the status effect is displayed when making the healthbars
     }
 }

@@ -85,6 +85,7 @@ const Status = {
     Sleep: 9,
     Petrify: 10,
     Weak: 11,
+    Revealed: 12,
 
     //Special Status Types that affect how the move itself works
     Weather: 'weather',
