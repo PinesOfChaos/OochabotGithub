@@ -1,9 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
-const { type_to_emote } = require('../func_battle');
+const { type_to_emote, status_to_emote } = require('../func_battle');
 const { get_art_file } = require('../func_other.js');
-const { Status, MoveTarget } = require('../types.js');
+const { Status, MoveTarget, Weather, FieldEffect, OochType } = require('../types.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -57,7 +57,27 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('controls')
-                .setDescription('View the controls!')),
+                .setDescription('View the controls!'))
+
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('weather')
+                .setDescription('Get info about a weather type.')
+                .addStringOption(option => 
+                    option.setName('weather')
+                        .setDescription('The name of the weather')
+                        .setAutocomplete(true)
+                        .setRequired(true)))
+                        
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('field_effect')
+                .setDescription('Get info about a field effect.')
+                .addStringOption(option => 
+                    option.setName('field_effect')
+                        .setDescription('The name of the field effect')
+                        .setAutocomplete(true)
+                        .setRequired(true))),
 
     async execute(interaction) {
 
@@ -65,7 +85,7 @@ module.exports = {
         let selected_id = selected_db == 'move' ? interaction.options.getString('move') : (selected_db == 'status' ? interaction.options.getString('status') : interaction.options.getString('ability'));
         if (selected_db == 'item') selected_id = interaction.options.getString('item');
 
-        if (selected_db === 'move' || selected_db === 'ability' || selected_db == 'status' || selected_db == 'item') {
+        if (['move', 'ability', 'status', 'item'].includes(selected_db)) {
             if (isNaN(selected_id)) {
                 // TODO: Just have this try to find it in the database rather than saying this
                 return interaction.reply('Make sure you select from one of the drop down options, don\'t type this in manually!')
@@ -78,34 +98,69 @@ module.exports = {
 
                 let eff_str = ``
                 for(eff of info_move.effect){
-                    eff_str += `• ${eff.chance}% `
+                    let eff_line = `\n• ${eff.chance}% `
+
                     switch (eff.status) {
-                        case Status.Blind:          eff_str += `chance to Blind`;  break;
-                        case Status.Burn:           eff_str += `chance to Burn`; break;
-                        case Status.Digitize:       eff_str += `chance to Digitize`; break;
-                        case Status.Doom:           eff_str += `chance to Doom`; break;
-                        case Status.Expose:         eff_str += `chance to Expose`; break;
-                        case Status.Focus:          eff_str += `chance to Focus`; break;
-                        case Status.Infect:         eff_str += `chance to Infect`; break; 
-                        case Status.Snare:          eff_str += `chance to Snare`; break; 
-                        case Status.Vanish:         eff_str += `chance to Vanish`; break; 
-                        case 'critical':            eff_str += `chance to Critically Hit`; break;
-                        case 'random':              eff_str += `chance to Select a Random Move`; break;
-                        case 'heal':                eff_str += `of Max HP Healing to`; break;
-                        case 'typematch':           eff_str += `chance to match types with`; break;
-                        case 'recoil':              eff_str += `HP taken as Recoil Damage to`; break;
-                        case 'vampire':             eff_str += `of Damage done as Health Stolen`; break;
-                        case 'clear_stat_stages':   eff_str += `chance to Remove all Stat Changes from`; break;
-                        case 'clear_status':        eff_str += `chance to Remove all Status Effects from`; break;
+                        case Status.Blind:          eff_line += `chance to ${status_to_emote(eff.status)} Blind`;  break;
+                        case Status.Burn:           eff_line += `chance to ${status_to_emote(eff.status)} Burn`; break;
+                        case Status.Digitize:       eff_line += `chance to ${status_to_emote(eff.status)} Digitize`; break;
+                        case Status.Doom:           eff_line += `chance to ${status_to_emote(eff.status)} Doom`; break;
+                        case Status.Expose:         eff_line += `chance to ${status_to_emote(eff.status)} Expose`; break;
+                        case Status.Focus:          eff_line += `chance to ${status_to_emote(eff.status)} Focus`; break;
+                        case Status.Infect:         eff_line += `chance to ${status_to_emote(eff.status)} Infect`; break; 
+                        case Status.Snare:          eff_line += `chance to ${status_to_emote(eff.status)} Snare`; break; 
+                        case Status.Vanish:         eff_line += `chance to ${status_to_emote(eff.status)} Vanish`; break; 
+                        case Status.Focus:          eff_line += `chance to ${status_to_emote(eff.status)} Focus`; break; 
+                        case Status.Sleep:          eff_line += `chance to ${status_to_emote(eff.status)} Sleep`; break; 
+                        case Status.Petrify:        eff_line += `chance to ${status_to_emote(eff.status)} Petrify`; break; 
+                        case Status.Weak:           eff_line += `chance to ${status_to_emote(eff.status)} Weaken`; break; 
+                        case Status.Revealed:       eff_line += `chance to ${status_to_emote(eff.status)} Reveal`; break; 
+
+                        case 'critical':            eff_line += `chance to Critically Hit`; break;
+                        case 'random':              eff_line += `chance to Select a Random Move`; break;
+                        case 'heal':                eff_line += `of Max HP Healing to`; break;
+                        case 'typematch':           eff_line += `chance to match types with`; break;
+                        case 'recoil':              eff_line += `HP taken as Recoil Damage to`; break;
+                        case 'vampire':             eff_line += `of Damage done as Health Stolen`; break;
+                        case 'clear_stat_stages':   eff_line += `chance to Remove all Stat Changes from`; break;
+                        case 'clear_status':        eff_line += `chance to Remove all Status Effects from`; break;
+                        
+                        case Status.TrueDamage:     eff_line = `• Always deals ${eff.chance} true damage.`; continue;
+                        case Status.GoingFirstBonus:eff_line = `• Increases power by ${eff.chance} if going first.`; continue;
+                        case Status.GoingLastBonus: eff_line = `• Increases power by ${eff.chance} if going last.`; continue;
+                        case Status.WeatherDependent:
+                            eff_line = (
+                                `• Changes type and effects depending on the weather: ` +
+                                `\n\`\`Heatwave:     ${type_to_emote(OochType.Flame)} FLAME, 30% chance to ${status_to_emote(Status.Burn)} Burn.\`\`` + 
+                                `\n\`\`Thunderstorm: ${type_to_emote(OochType.Sound)} SOUND, 30% chance to ${status_to_emote(Status.Expose)} Expose.\`\``
+                            )
+                            continue;
+
+                        case 'weather':             eff_line =  `• Sets the weather to `;
+                            switch(eff.chance){ 
+                                case Weather.Clear:         eff_line += 'None.'; break;
+                                case Weather.Heatwave:      eff_line += 'Heatwave.'; break;
+                                case Weather.Thunderstorm:  eff_line += 'Thunderstorm.'; break;
+                            }
+                            continue;
+                        case 'field_effect':        eff_line = `• Sets the field effect to `;
+                            switch(eff.chance){ 
+                                case FieldEffect.Clear:     eff_line += 'None.'; break;
+                            }
+                            continue;
+
                         default:
                             let eff_split = eff.status.split('_')
                             switch(eff_split[0]){
                                 case '-':
                                 case '+':
-                                    eff_str += `${eff_split[0]}${eff_split[2]} ${eff_split[1].toUpperCase()} stages to`
+                                    eff_line += `${eff_split[0]}${eff_split[2]} ${eff_split[1].toUpperCase()} stages to`
+                                break;
+                                case 'priority':
+                                    eff_line = `• ${eff_split[1]} Priority.`;
                                 break;
                                 default:
-                                    eff_str += `${eff.status}`;
+                                    eff_line += `${eff.status}`;
                                 break;
                             }
 
@@ -113,13 +168,13 @@ module.exports = {
                     }
                     
                     switch(eff.target){
-                        case MoveTarget.Self:   eff_str += ` User.`; break;
-                        case MoveTarget.Enemy:  eff_str += ` Target.`; break;
-                        case MoveTarget.All:    eff_str += ` both Oochamon.`; break;
-                        case MoveTarget.None:   eff_str += `.`; break;
+                        case MoveTarget.Self:   eff_line += ` the User.`; break;
+                        case MoveTarget.Enemy:  eff_line += ` the Target.`; break;
+                        case MoveTarget.All:    eff_line += ` all Oochamon.`; break;
+                        case MoveTarget.None:   eff_line += `.`; break;
                     }
-                    
-                    eff_str += `\n`
+
+                    eff_str += eff_line;
                 }
 
 
@@ -130,7 +185,7 @@ module.exports = {
                     .addFields(
                         {name: 'Type:',     value: `${info_move.type.charAt(0).toUpperCase() + info_move.type.slice(1)}`, inline: true},
                         {name: 'Power:',    value: `${(info_move.damage == 0) ? '--' : info_move.damage}`, inline: true},
-                        {name: 'Accuracy:', value: `${Math.abs(info_move.accuracy)}%`, inline: true},
+                        {name: 'Accuracy:', value: info_move.accuracy > 0 ? `${info_move.accuracy}%` : `--`, inline: true},
 
                         {name: 'Effect(s):',   value: `${(info_move.effect == false) ? '--' : eff_str}`, inline: true}
                     );
@@ -207,6 +262,63 @@ module.exports = {
                     );
                 return interaction.reply({
                     embeds: [ embed_item ],
+                    ephemeral: true
+                })
+            break;
+            case 'weather':
+                let weather_desc = '';
+                switch(selected_id){
+                    case Weather.Heatwave: 
+                        weather_desc = 
+                                `- Blazing heat damages each Oochamon in the battle for 10% HP at the end of the turn. \n
+                                - ${type_to_emote(OochType.Flame)} FLAME-type Oochamon are immune to this effect.`; 
+                        break;
+                    case Weather.Thunderstorm: 
+                        weather_desc = 
+                                `- Each round Oochamon on the field build a static charge. \n
+                                - If an Oochamon stays in the battle for 3 turns, they are struck by lightning, taking 50% HP damage and resetting their charge.
+                                - ${type_to_emote(OochType.Tech)} TECH-type Oochamon will also have their ATK increased when struck by lightning.`; 
+                        break;
+                }
+                let embed_weather = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(selected_id)
+                    .setDescription(weather_desc)
+                return interaction.reply({
+                    embeds: [ embed_weather ],
+                    ephemeral: true
+                })
+            break;
+            case 'field_effect':
+                let field_desc = '';
+                switch(selected_id){
+                    case FieldEffect.JaggedGround: 
+                    field_desc = 
+                                `- Sharp rocks damage Oochamon that switch in for 10% HP. \n
+                                - This damage will not KO an oochamon. \n
+                                - ${type_to_emote(OochType.Tech)} STONE-type Oochamon are immune to this effect.`; 
+                        break;
+                    case FieldEffect.EchoChamber: 
+                    field_desc = 
+                                `- ${type_to_emote(OochType.Sound)} SOUND-type moves that deal damage also apply the ${status_to_emote(Status.Expose)} EXPOSED status.`; 
+                        break;
+                    case FieldEffect.Wetlands: 
+                    field_desc = 
+                                `- ${type_to_emote(OochType.Ooze)} OOZE-type Oochamon get +1 Priority.`; 
+                        break;
+                    case FieldEffect.TwistedReality: 
+                    field_desc = 
+                                `- Distortions reverse the move order! \n
+                                - Slower Oochamon go earlier, faster Oochamon move later.
+                                - Priority's effects are reversed.`; 
+                        break;
+                }
+                let embed_field = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(selected_id)
+                    .setDescription(field_desc)
+                return interaction.reply({
+                    embeds: [ embed_field ],
                     ephemeral: true
                 })
             break;

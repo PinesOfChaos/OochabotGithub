@@ -208,6 +208,16 @@ module.exports = {
         for (ooch_id in db.monster_data.keyArray()) {
             db.profile.push(user_id, { id: ooch_id, seen: 0, caught: 0 }, 'oochadex')
         }
+    },
+
+    quit_oochamon: async function(thread, user_id) {
+        await db.profile.set(user_id, false, 'play_thread_id');
+        await db.profile.set(user_id, false, 'play_guild_id');
+        await thread.members.remove(user_id);
+        await thread.leave();
+        await thread.setLocked(true);
+        await thread.setArchived(true);
+        await db.profile.set(user_id, PlayerState.NotPlaying, 'player_state');
     }
 
 }

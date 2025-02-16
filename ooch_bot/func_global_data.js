@@ -116,7 +116,6 @@ let functions = {
                 old_vars[key] = new_vars[key];
             }
             
-            
         }
 
         db.global_data.set('global_data', old_vars);
@@ -128,7 +127,8 @@ let functions = {
      */
     global_default_variables: function() {
         let new_vars = {
-            i_increment : 0
+            i_increment : 0,
+            max_level : 50
         }
 
         return(new_vars);

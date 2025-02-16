@@ -1154,9 +1154,6 @@ let functions = {
                     remove_reveal = false;
                     slot.this_turn_revealed = false;
                 }
-                else{
-                    //TODO FILTER OUT THE REVEALED STATUS IF NOT REVEALED THIS TURN
-                }
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
                 eot_result = functions.use_eot_ability(battle_data, user.user_index); 
@@ -1189,8 +1186,10 @@ let functions = {
                             ooch = functions.add_status_effect(ooch, Status.Revealed);
                         break;
                         case Status.Revealed:
-                            end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
-                            ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
+                            if(remove_reveal){
+                                end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
+                                ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
+                            }
                         break;
                         case Status.Sleep:
                             let sleep_val = Math.round(ooch.stats.hp/10);
@@ -1831,8 +1830,9 @@ let functions = {
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given * 1.25);
+                        let max_level = db.global_data.get("max_level");
 
-                        if (other_ooch.level < 50) { //TODO UPDATE THIS TO A GLOBAL "MAX_LEVEL" VALUE
+                        if (other_ooch.level < max_level) { //TODO UPDATE THIS TO A GLOBAL "MAX_LEVEL" VALUE
                             string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
                                                 ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
@@ -2044,7 +2044,6 @@ let functions = {
         let spd =   Math.floor(((level * ((base_spd * base_influence1) *  ((spd_iv * iv_influence + 1))))/100 + (base_spd * base_influence2)) + level + 5);
         return [hp, atk, def, spd];
     },
-
 
     /**
      * Add a status effect to an oochamon.
@@ -2334,7 +2333,7 @@ let functions = {
             case Weather.Clear: break; //Do Nothing
             case Weather.Heatwave: 
                 if(!ooch.type.includes(OochType.Flame)){
-                    let hp_lost = Math.floor(ooch.stats.hp / 16)
+                    let hp_lost = Math.floor(ooch.stats.hp / 10)
                     ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
                     ability_text += `\n${ooch.emote} **${ooch.nickname}** is damaged by the intesnse heat and loses ${hp_lost} HP!`;
                 }
@@ -2349,7 +2348,7 @@ let functions = {
                         ability_text += `\n${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
                     break;
                     case 3:
-                        let hp_lost = Math.floor(ooch.stats.hp / 4);
+                        let hp_lost = Math.floor(ooch.stats.hp / 2);
                         ability_text += `\n${ooch.emote} **${ooch.nickname}** is struck by lightning and loses ${hp_lost} HP!`;
                         if(ooch.type.includes(OochType.Tech)){
                             ability_text += `\n${ooch.emote} **${ooch.nickname}** was energized and its ATK increased!`;
@@ -2874,8 +2873,7 @@ let functions = {
                         if (isNaN(eff.status)) status_split = eff.status.split('_')
                         let status_adds = [eff.status];
 
-                        //TODO CHANGE THIS TO TYPEOF PLS JEFF
-                        if (db.status_data.keyArray().includes(`${eff.status}`)) {
+                        if (typeof eff.status == "number") {
                             let statusData = db.status_data.get(eff.status);
                             // Setup list of status effects to add
                             switch (status_target.ability) {
@@ -3582,7 +3580,13 @@ let functions = {
         }
         return [ooch, output];
     },
-    
+
+    /**
+     * Supply a status id, returns its emote if applicable
+     */
+    status_to_emote : function(status){
+        return(db.status_data.get(`${status}`, "emote"));
+    },
 }
 
 module.exports = functions;

@@ -116,19 +116,19 @@ const OochType = {
 }
 
 const Weather = {
-    None : 'none', //No weather
-    Clear : 'clear', //Used to clear weather
-    Heatwave : 'heatwave',
-    Thunderstorm : 'thunderstorm'
+    None : 'None', //No weather
+    Clear : 'Clear', //Used to clear weather
+    Heatwave : 'Heatwave',
+    Thunderstorm : 'Thunderstorm'
 }
 
 const FieldEffect = {
-    None : 0, //No field effect
-    Clear : 1, //Used to clear field
-    JaggedGround : 2,
-    EchoChamber : 3,
-    Wetlands : 4,
-    TwistedReality : 5
+    None : 'None', //No field effect
+    Clear : 'Clear', //Used to clear field
+    JaggedGround : 'Jagged Groun',
+    EchoChamber : 'Echo Chamber',
+    Wetlands : 'Wetlands',
+    TwistedReality : 'Twisted Reality'
 }
 
 const Move = {

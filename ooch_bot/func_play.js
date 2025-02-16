@@ -1,6 +1,6 @@
 const db = require("./db")
 const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather } = require('./types.js');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
 const { event_process, event_from_npc } = require('./func_event');
@@ -55,7 +55,7 @@ module.exports = {
 
         let qty_back_button = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('quantity_back').setLabel('Back').setStyle(ButtonStyle.Danger),
+                new ButtonBuilder().setCustomId('quantity_back').setLabel('Cancel Purchase').setStyle(ButtonStyle.Danger),
             );
         let item_qty_collector;
 
@@ -409,36 +409,42 @@ module.exports = {
                     if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = shopSelectOptions.map(id => {
+                        let item_data = db.item_data.get(id);
                         return { 
-                            label: `${db.item_data.get(id, 'name')} ($${db.item_data.get(id, 'price')})`,
-                            description: db.item_data.get(id, 'description_short'),
+                            label: `${item_data.name} (${db.profile.get(user_id, `${item_data.category}.${id}`)}/50) [$${item_data.price}]`,
+                            description: item_data.description_short,
                             value: `${id}`,
-                            emoji: db.item_data.get(id, 'emote'),
+                            emoji: item_data.emote,
                         }
                     });
+
+                    let oochabux = db.profile.get(user_id, 'oochabux');
 
                     // Setup shop select menu
                     let shopSelectMenu = new ActionRowBuilder()
                     .addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('shop_items')
-                            .setPlaceholder('Select an item to buy!')
+                            .setPlaceholder(`Select an item to buy! ($${oochabux})`)
                             .addOptions(shopSelectOptions),
                     );
 
-                    //start shop stuff here
-                    let oochabux = db.profile.get(user_id, 'oochabux');
+                    let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`)
+                    let shopEmbed = new EmbedBuilder()
+                        .setColor('#808080')
+                        .setTitle('Shop')
+                        .setImage(`attachment://shopPlaceholder.png`)
+                        .setDescription(obj.greeting_dialogue)
 
-                    let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
-                    let shopMsg = await thread.send({ files: [shopImage] });
-                    let msg = await thread.send({ content: `${obj.greeting_dialogue}\n**Oochabux: $${oochabux}**`, components: [shopSelectMenu, back_button] });
+                    let msg = await thread.send({ embeds: [shopEmbed], files: [shopImage], components: [shopSelectMenu, back_button] });
                     
                     // Delete the current playspace
                     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id')).catch(() => {});
-                    await playspace_msg.delete();
+                    await playspace_msg.delete().catch(() => {});
 
-                    shop_collector = await msg.createMessageComponentCollector({ time: 600000 });
+                    shop_collector = await thread.createMessageComponentCollector({ time: 600000 });
                     shop_collector.on('collect', async sel => {
+                        let oochabux = db.profile.get(user_id, 'oochabux');
                         if (sel.customId == 'back') {
                             db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                             let playspace_str = setup_playspace_str(user_id);
@@ -446,30 +452,27 @@ module.exports = {
                             db.profile.set(user_id, play_msg.id, 'display_msg_id')
                             db.profile.set(user_id, oochabux, 'oochabux')
                             await msg.delete().catch(() => {});
-                            await shopMsg.delete().catch(() => {});
                             shop_collector.stop();
                             if (item_qty_collector) item_qty_collector.stop();
                             return;
                         } else if (sel.customId == 'quantity_back') {
-                            await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] }).catch(() => {});
+                            await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
                             if (item_qty_collector) item_qty_collector.stop();
+                            return;
                         }
                         
                         let item_id = sel.values[0];
                         let item = db.item_data.get(item_id);
-                        let purchaseReqMsg;
                         if (item.price <= oochabux) {
                             const qty_filter = async m => {
                                 if (m.author.id != user_id) return false;
                                 if (!isNaN(parseInt(m.content))) {
                                     if (oochabux < item.price * parseInt(m.content)) {
-                                        sel.followUp({ content: `You do not have enough money to buy ${m.content}x ${item.emote} **${item.name}**.`, ephemeral: true });
                                         m.delete().catch(() => {});
                                         return false;
                                     }
                                     return true;
                                 } else {
-                                    sel.followUp({ content: `You must type in a number quantity of items you want to buy!`, ephemeral: true });
                                     m.delete().catch(() => {});
                                     return false;
                                 }
@@ -481,18 +484,22 @@ module.exports = {
                                 db.profile.set(user_id, 0, `${item.category}.${item_id}`);
                                 amtHeld = 0;
                             }
+
                             let maxAmt = Math.floor(oochabux / item.price);
                             if (maxAmt > 50) maxAmt = 50;
-                            msg.edit({ components: [] });
-                            let purchaseReqMsg = await sel.reply({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below. (Type 0 to not purchase)\n` + 
-                                `**You have enough Oochabux to buy ${maxAmt} of this item.**\n**You have ${amtHeld} of this item, and can hold ${50 - amtHeld} more of it.**` });
+                            if (amtHeld >= 50) {
+                                await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
+                                return;
+                            }
+                            await sel.update({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.\n` + 
+                                `You have enough Oochabux to buy **${50 - amtHeld}** more of this item.`,
+                                 embeds: [], files: [], components: [qty_back_button] });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
                             item_qty_collector.on('collect', async m => {
                                 let new_inv_qty = 0;
                                 let buyAmount = Math.abs(parseInt(m.content));
-                                if (buyAmount > 50) buyAmount = 50;
-                                if (amtHeld >= 50) buyAmount = 0;
+                                if (buyAmount > (50 - amtHeld)) buyAmount = (50 - amtHeld);
                                 oochabux -= item.price * buyAmount;
                                 switch (item.category) {
                                     case 'heal_inv': 
@@ -512,24 +519,46 @@ module.exports = {
                                     break;
                                 }
                                 
-                                await purchaseReqMsg.delete().catch(() => {});
                                 await m.delete().catch(() => {});
                                 let followUpMsg;
+
+                                shopSelectOptions = [];
+                                if (obj.type == 'default' || obj.type == null) {
+                                    shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
+                                }
+                                if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
+                                shopSelectOptions = shopSelectOptions.flat(1);
+
+                                shopSelectOptions = shopSelectOptions.map(id => {
+                                    let item_data = db.item_data.get(id);
+                                    return { 
+                                        label: `${item_data.name} (${db.profile.get(user_id, `${item_data.category}.${id}`)}/50) [$${item_data.price}]`,
+                                        description: item_data.description_short,
+                                        value: `${id}`,
+                                        emoji: item_data.emote,
+                                    }
+                                });
+            
+                                // Setup shop select menu
+                                let shopSelectMenu = new ActionRowBuilder()
+                                .addComponents(
+                                    new StringSelectMenuBuilder()
+                                        .setCustomId('shop_items')
+                                        .setPlaceholder(`Select an item to buy! ($${oochabux})`)
+                                        .addOptions(shopSelectOptions),
+                                );
+
                                 if (buyAmount != 0) {
                                     followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
                                 } else {
                                     followUpMsg = await sel.followUp({ content: `Nothing was purchased.` });
                                 }
-                                await msg.edit({ content: `${obj.greeting_dialogue}\nOochabux: **$${oochabux}**`, components: [shopSelectMenu, back_button] }).catch(() => {});
+                                await msg.edit({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
                                 await wait(7000);
                                 await followUpMsg.delete().catch(() => {});
                             });
                             
                         } else {
-                            if (purchaseReqMsg !== undefined) { 
-                                await purchaseReqMsg.delete().catch(() => {});
-                                await m.delete().catch(() => {});
-                            }
                             let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
                             msg.edit({ components: [shopSelectMenu, back_button] }).catch(() => {});
                             await wait(5000);
@@ -545,7 +574,6 @@ module.exports = {
                             db.profile.set(user_id, play_msg.id, 'display_msg_id')
                             db.profile.set(user_id, oochabux, 'oochabux')
                             await msg.delete().catch(() => {});
-                            await shopMsg.delete().catch(() => {});
                             shop_collector.stop();
                         }
                     });

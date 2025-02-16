@@ -12,7 +12,7 @@ const { move, setup_playspace_str } = require('./func_play.js');
 const { PlayerState } = require('./types.js');
 const { prompt_battle_input } = require('./func_battle.js');
 const { event_process } = require('./func_event.js');
-const { reset_oochamon } = require('./func_other.js');
+const { reset_oochamon, quit_oochamon } = require('./func_other.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
@@ -20,6 +20,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.commands = new Collection();
 const registerCommands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const inactivityTrackers = {};
 
 //#region 
 for (const file of commandFiles) {
@@ -64,6 +65,13 @@ client.on('ready', async () => {
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
         let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
         if (userThread == undefined) continue;
+        
+        // Set inactivity timer
+        const inactivityTimer = setTimeout(async () => {
+            await quit_oochamon(userThread, user);
+        }, 30 * 60 * 1000); 
+
+        inactivityTrackers[user] = inactivityTimer;
 
         // if (user_profile.player_state == PlayerState.Combat) {
         //     // Delete turn messages
@@ -292,6 +300,24 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.type !== InteractionType.ApplicationCommand) return;
 
+    // Reset inactivity timer
+    if (db.profile.has(interaction.user.id)) {
+        if (db.profile.get(interaction.user.id, 'player_state') != PlayerState.NotPlaying) {
+            if (interaction.channel.id == db.profile.get(interaction.user.id, 'play_thread_id')) {
+
+                if (inactivityTrackers[interaction.user.id]) {
+                    clearTimeout(inactivityTrackers[interaction.user.id]);
+                }
+
+                const inactivityTimer = setTimeout(async () => {
+                    await quit_oochamon(interaction.channel, interaction.user.id)
+                }, 30 * 60 * 1000);
+
+                inactivityTrackers[interaction.user.id] = inactivityTimer;
+            }
+        }
+    }
+
     const command = client.commands.get(interaction.commandName);
 
     if (!command) return;
@@ -320,6 +346,23 @@ client.on('messageCreate', async message => {
     // Funi game logic for controlling the game
     if (db.profile.has(message.author.id)) {
         player_state = db.profile.get(message.author.id, 'player_state');
+        
+        // Reset inactivity timer
+        if (player_state != PlayerState.NotPlaying) {
+            if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
+
+                if (inactivityTrackers[message.author.id]) {
+                    clearTimeout(inactivityTrackers[message.author.id]);
+                }
+
+                const inactivityTimer = setTimeout(async () => {
+                    await quit_oochamon(message.channel, message.author.id)
+                }, 30 * 60 * 1000);
+
+                inactivityTrackers[message.author.id] = inactivityTimer;
+            }
+        }
+
         switch (player_state) {
             case PlayerState.Playspace: 
                 let speedMatch = message.content.toLowerCase().match(/^([1-4])$/);
