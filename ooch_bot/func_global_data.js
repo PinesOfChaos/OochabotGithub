@@ -128,7 +128,8 @@ let functions = {
     global_default_variables: function() {
         let new_vars = {
             i_increment : 0,
-            max_level : 50
+            max_level : 50,
+            shifting_cave_last_update : Date.now()
         }
 
         return(new_vars);

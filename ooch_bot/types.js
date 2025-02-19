@@ -240,7 +240,27 @@ const Move = {
     ScarySheet: 105,
     FiberSlicer: 106,
     Mummify: 107,
-    Jackpot: 108
+    Jackpot: 108,
+    JaggedGround: 109,
+    EchoChamber: 110,
+    Wetlands: 111,
+    TwistedReality: 112,
+    Heatwave: 113,
+    Thunderstorm: 114,
+    SkyClear: 115,
+    PressureWave: 116,
+    HeldStrike: 117,
+    Lagspike: 118,
+    Whiplash: 119,
+    GuidedSpire: 120,
+    Heatseeker: 121,
+    EarSplitter: 122,
+    Micronet: 123,
+    AsbestosBomb: 124,
+    TrueReflection: 125,
+    GorgonEye: 126,
+    HawkEye: 127,
+    Frostbite: 128
 
 }
 
@@ -437,6 +457,7 @@ const MoveTag = {
     Light: 0,
     Electric: 1,
     Time : 2,
+    Cold : 3
 }
 
 const MoveTarget = {
