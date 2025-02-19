@@ -174,6 +174,10 @@ func refresh_moves(index, overwrite = true):
 				move_lv = ooch_data.ooch_moves[j].move_level
 				move_id = ooch_data.ooch_moves[j].move_index
 				
+				if move_lv > slot_data.level and slot_data.moveset[i] == move_id:
+					child.select(0)
+					slot_data.moveset[i] = 9999
+				
 				if move_lv <= slot_data.level:
 					move = Global.DataMoves[move_id]
 					element_texture = Global.element_info(move.move_element)[1]
@@ -215,7 +219,9 @@ func refresh_moves(index, overwrite = true):
 			if (i == 0) and (overwrite):
 				child.select(1)
 				slot_data.moveset[0] = child.get_item_id(1)
-					
+			
+	while(slot_data.moveset.size() < 4):
+		slot_data.moveset.push_back(9999)	
 
 func _on_slot_level_value_changed(value):
 	slot_data.level = value
@@ -254,15 +260,24 @@ func _on_slot_spd_value_changed(value):
 	refresh_summary(slot_data.id)
 
 func _on_move_1_item_selected(index):
+	print(slot_data.moveset)
+	print(o_move_1.get_item_id(index))
+	
 	slot_data.moveset[0] = o_move_1.get_item_id(index)
 
 func _on_move_2_item_selected(index):
+	print(slot_data.moveset)
+	print(o_move_2.get_item_id(index))
 	slot_data.moveset[1] = o_move_2.get_item_id(index)
 
 func _on_move_3_item_selected(index):
+	print(slot_data.moveset)
+	print(o_move_3.get_item_id(index))
 	slot_data.moveset[2] = o_move_3.get_item_id(index)
 
 func _on_move_4_item_selected(index):
+	print(slot_data.moveset)
+	print(o_move_4.get_item_id(index))
 	slot_data.moveset[3] = o_move_4.get_item_id(index)
 
 func _on_nickname_text_changed(new_text: String) -> void:

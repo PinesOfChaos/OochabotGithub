@@ -1996,5 +1996,23 @@
     ],
     "description": "REVEALS the enemy Oochamon, guaranteeing the next attack against it to hit.",
     "tags": []
+  },
+  {
+    "id": 128,
+    "name": "Frostbite",
+    "type": "ooze",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": 4,
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Frosty jaws lunge forward, SNARING the target.",
+    "tags": [
+      3
+    ]
   }
 ]

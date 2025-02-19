@@ -122,6 +122,7 @@ module.exports = {
             //Check if the mon has a hidden move it can learn
             let has_hidden_move = false
             for (let test_move of monster.move_list) {
+                
                 if(test_move[0] == -1){
                     has_hidden_move = true;
                 }

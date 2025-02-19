@@ -1999,7 +1999,7 @@ module.exports = {
             hp: 11, atk: 14, def: 15, spd: 5, // total 45
             move_list: [
                  [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], [8, Move.Sedimentation],
-                 [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale]
+                 [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale],
                  [26, Move.Reset], [29, Move.Grind], [35, Move.Torque], [39, Move.Heatseeker], [44, Move.IronHammer], [-1, Move.Boulderdash]
             ],
             abilities: [Ability.Armored, Ability.Inertia], 
@@ -2016,7 +2016,7 @@ module.exports = {
             hp: 15, atk: 19, def: 25, spd: 16, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], [8, Move.Sedimentation],
-                [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale]
+                [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale],
                 [26, Move.Reset], [29, Move.Grind], [35, Move.Torque], [39, Move.Heatseeker], [44, Move.IronHammer], [-1, Move.Boulderdash]
             ],
             abilities: [Ability.Armored, Ability.Leech], 
@@ -2245,7 +2245,7 @@ module.exports = {
             type: [OochType.Stone],
             hp: 7, atk: 10, def: 8, spd: 15, // total 40
             move_list: [
-                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt]
+                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt],
                 [12, Move.Entomb], [13, Move.Mud], [16, Move.Sedimentation], [20, Move.CursedEye], [23, Move.Mummify],
                 [27, Move.SyncStrike], [31, Move.Pulverize], [34, Move.TwistedReality], [37, Move.Boulderdash], [42, Move.CrashLanding], 
                 [44, Move.AshBlast], [-1, Move.ByteBite]
@@ -2263,7 +2263,7 @@ module.exports = {
             type: [OochType.Stone, OochType.Magic],
             hp: 14, atk: 28, def: 8, spd: 25, // total 75
             move_list: [
-                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt]
+                [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt],
                 [12, Move.Entomb], [13, Move.Mud], [16, Move.Sedimentation], [20, Move.CursedEye], [23, Move.Mummify],
                 [27, Move.SyncStrike], [31, Move.Pulverize], [34, Move.TwistedReality], [37, Move.Boulderdash], [42, Move.CrashLanding], 
                 [44, Move.AshBlast], [-1, Move.ByteBite]
@@ -2281,8 +2281,8 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 12, atk: 13, def: 12, spd: 8, // total 45
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode], [10, Move.Mud]
-                [12, Move.ClampDown], [15, Move.EnfeeblingSpore],  [18, Move.Fog], [22, Move.CausticOrb], [24, Move.Parasitize]
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode], [10, Move.Mud],
+                [12, Move.ClampDown], [15, Move.EnfeeblingSpore],  [18, Move.Fog], [22, Move.CausticOrb], [24, Move.Parasitize],
                 [28, Move.Bloom], [37, Move.DrainLife], [40, Move.Wetlands], [46, Move.Overgrowth], [-1, Move.Laminate]
             ],
             abilities: [Ability.Sporespray, Ability.Leech],
@@ -2298,8 +2298,8 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 35, atk: 15, def: 15, spd: 5, // total 70
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode], [10, Move.Mud]
-                [12, Move.ClampDown], [15, Move.EnfeeblingSpore],  [18, Move.Fog], [22, Move.CausticOrb], [24, Move.Parasitize]
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode], [10, Move.Mud],
+                [12, Move.ClampDown], [15, Move.EnfeeblingSpore],  [18, Move.Fog], [22, Move.CausticOrb], [24, Move.Parasitize],
                 [28, Move.Bloom], [37, Move.DrainLife], [40, Move.Wetlands], [46, Move.Overgrowth], [-1, Move.Laminate]
             ],
             abilities: [Ability.Sporespray, Ability.Leech],

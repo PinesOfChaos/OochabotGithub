@@ -18,7 +18,6 @@ extends Control
 @onready var items_list: VBoxContainer = $"npc_tab_container/Basic Info/items/items_list"
 
 
-@onready var button_back = $button_back
 @onready var slot_1 = $"npc_tab_container/Slot 1"
 @onready var slot_2 = $"npc_tab_container/Slot 2"
 @onready var slot_3 = $"npc_tab_container/Slot 3"
