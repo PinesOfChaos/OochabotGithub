@@ -8,7 +8,7 @@ module.exports = {
     .setName('ping')
     .setDescription('Pong!'),
     async execute(interaction) {
-        genmap_layout(48, 48, 3, 4, 10, .5);
+        genmap_layout(64, 64, 3, 4, 10, .5);
         interaction.reply(`**Check Console Log!!**`);
     },
 };
