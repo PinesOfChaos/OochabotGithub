@@ -193,6 +193,7 @@ module.exports = {
         // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
         db.profile.set(user_id, [], 'cur_event_array'); 
         db.profile.set(user_id, 0, 'cur_event_pos');
+        db.profile.set(user_id, false, 'cur_battle_id');
         
         // Settings
         db.profile.set(user_id, {
@@ -211,8 +212,20 @@ module.exports = {
     },
 
     quit_oochamon: async function(thread, user_id) {
-        await db.profile.set(user_id, false, 'play_thread_id');
-        await db.profile.set(user_id, false, 'play_guild_id');
+
+        const { finish_battle } = require('./func_battle.js');
+
+        let curBattleId = db.profile.get(user_id, 'cur_battle_id');
+        if (curBattleId != false && curBattleId != undefined) {
+            let battleData = db.battle_data.get(curBattleId);
+            if (battleData != undefined) {
+                for (let user of battleData.users) {
+                    if (user.is_player) await finish_battle(battleData, user.user_index);
+                } 
+            }
+        }
+
+        await thread.bulkDelete(5);
         await thread.members.remove(user_id);
         await thread.leave();
         await thread.setLocked(true);

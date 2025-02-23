@@ -10,7 +10,7 @@ const { Client, Partials, GatewayIntentBits, Collection } = require('discord.js'
 const db = require('./db.js');
 const { move, setup_playspace_str } = require('./func_play.js');
 const { PlayerState } = require('./types.js');
-const { prompt_battle_input } = require('./func_battle.js');
+const { prompt_battle_actions } = require('./func_battle.js');
 const { event_process } = require('./func_event.js');
 const { reset_oochamon, quit_oochamon } = require('./func_other.js');
 
@@ -69,27 +69,13 @@ client.on('ready', async () => {
         // Set inactivity timer
         const inactivityTimer = setTimeout(async () => {
             await quit_oochamon(userThread, user);
-        }, 30 * 60 * 1000); 
+        }, 30 * 60 * 1000);
 
         inactivityTrackers[user] = inactivityTimer;
 
-        // if (user_profile.player_state == PlayerState.Combat) {
-        //     // Delete turn messages
-        //     let msgDeleteCount = db.profile.get(user, 'turn_msg_counter');
-        //     if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
-        //         await userThread.bulkDelete(msgDeleteCount);
-        //     }
-
-        //     // Rollback profile to previous turn.
-        //     if (user_profile.rollback_profile !== false && user_profile.rollback_profile !== undefined) {
-        //         db.profile.set(user, JSON.parse(user_profile.rollback_profile));
-        //         db.profile.set(user, false, 'rollback_profile');
-        //     }
-
-        //     await prompt_battle_input(userThread, user);
+        if (user_profile.player_state == PlayerState.Combat) continue;
 
         if (user_profile.player_state == PlayerState.Intro) {
-
             await userThread.bulkDelete(100).catch(() => {});
             await reset_oochamon(user);
             await db.profile.set(user, userThread.id, 'play_thread_id');
@@ -138,6 +124,33 @@ client.on('ready', async () => {
             }
         }
     }
+
+    let battleIds = db.battle_data.keyArray();
+    for (let battle of battleIds) {
+        let battle_data = db.battle_data.get(battle);
+
+        for (let user of battle_data.users) {
+            if (user.is_player) {
+                let user_profile = db.profile.get(user.user_id);
+                let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
+                let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
+
+                // Delete turn messages
+                let msgDeleteCount = db.battle_data.get(battle, 'turn_msg_counter');
+                if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
+                    await userThread.bulkDelete(msgDeleteCount);
+                }  
+                
+                user.action_selected = false;
+            }
+        }
+
+        battle_data.battle_action_queue = [];
+        db.battle_data.set(battle, battle_data);
+
+        await prompt_battle_actions(battle);
+    }
+
     console.log('Bot Ready')
 });
 
@@ -298,7 +311,13 @@ client.on('interactionCreate', async interaction => {
         }
     }
 
-    if (interaction.type !== InteractionType.ApplicationCommand) return;
+    if (interaction.isButton()) {
+        switch (interaction.customId) {
+            case 'close_prompt':
+                await interaction.message.delete();
+            break;
+        }
+    }
 
     // Reset inactivity timer
     if (db.profile.has(interaction.user.id)) {
@@ -317,6 +336,8 @@ client.on('interactionCreate', async interaction => {
             }
         }
     }
+
+    if (interaction.type !== InteractionType.ApplicationCommand) return;
 
     const command = client.commands.get(interaction.commandName);
 

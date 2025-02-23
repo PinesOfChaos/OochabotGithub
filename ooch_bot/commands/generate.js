@@ -77,6 +77,7 @@ module.exports = {
         create_tile(`t${zG}_009`,  Tile.Wall,     applicationEmojis ); //Shop Upper Right
         create_tile(`t${zG}_010`,  Tile.Shop,     applicationEmojis ); //Shop Lower Left (interactable tile)
         create_tile(`t${zG}_011`,  Tile.Wall,     applicationEmojis ); //Shop Lower Right 
+        create_tile(`t${zG}_012`,  Tile.Floor,    applicationEmojis ); //Dungeon Exit Teleporter
         
         // Fungal
         create_tile(`t${zF}_000`,  Tile.Floor,    applicationEmojis ); //Fungal Floor

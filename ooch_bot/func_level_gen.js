@@ -1,12 +1,12 @@
 const _ = require('lodash');
-const { OochType } = require("./types");
+const { OochType, GenmapTheme } = require("./types");
 const { create_ooch } = require('./func_play.js');
 const db = require("./db.js")
 
 let functions = {
     genmap_theme : function(theme){
         switch(theme){
-            default: //Fungal Cave
+            case GenmapTheme.FungalCave: //Fungal Cave
                 return({
                     tile_floor : ["t01_000"],
                     tile_wall : ["t01_006"],
@@ -14,8 +14,8 @@ let functions = {
                     tile_decor : ["t01_001"],
                     tile_grass : ["t01_002"],
 
-                    type_primary : [OochType.Fungal],
-                    type_secondary : [OochType.Stone, OochType.Ooze],
+                    types_primary : [OochType.Fungal],
+                    types_secondary : [OochType.Stone, OochType.Ooze],
 
                     map_naturalness : .7
                 })
@@ -23,8 +23,13 @@ let functions = {
         }
     },
 
-    genmap_new : function(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints, has_shops){
-        let layout = functions.genmap_layout(width, height, Math.ceil(width / 16), Math.ceil(height / 16), 3, 5, theme.map_naturalness);
+    genmap_new : function(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints = false, has_shops = false){
+        //TODO Filter out flags with the map name from users' flag lists
+
+
+        let base_layout = functions.genmap_layout(width, height, Math.ceil(width / 16), Math.ceil(height / 16), 3, 5, theme.map_naturalness);
+        let layout = base_layout.layout;
+        let spawnzones_arr = base_layout.spawnzones;
 
         let savepoints = [];
         let spawnzones = [];
@@ -51,12 +56,20 @@ let functions = {
                             case "start": 
                                 start_pos = {x : i, y : j}; 
                                 break;
-                            case "end": end_pos = {x : i, y : j}; break;
+                            case "end": 
+                                end_pos = {x : i, y : j};
+                                tiles[i][j] = "t00_012"; break;
+                                break;
                             case "misc": misc_positions.push({x : i, y : j}); break;
                         }
                     break;
                 }
             }
+        }
+
+        //Place spawnzones
+        for(let zone of spawnzones_arr){
+            genmap_spawnzone(zone.x, zone.y, zone.w, zone.h, min_level, max_level, theme.types_primary, theme.types_secondary);
         }
 
         //Place a savepoint at the spawn if the map should have one
@@ -85,7 +98,6 @@ let functions = {
         //fill the misc positions with npcs/chests
         misc_positions = _.shuffle(misc_positions);
         let npc_count = Math.floor(misc_positions.length * .8)
-        let chest_count = misc_positions.length - npc_count;
 
         //Add npcs
         for(let i = 0; i < npc_count; i++){
@@ -103,6 +115,15 @@ let functions = {
             ))
         }
         
+        //Add end of floor exit tile
+        transitions.push({
+            connect_map : exit_map,
+            connect_x : exit_x,
+            connect_y : exit_y,
+            x : end_pos.x,
+            y : end_pos.y
+        })
+
 
         let map_data = {
             map_events : [],
@@ -116,7 +137,9 @@ let functions = {
 
             map_info : {
                 map_battleback : "battle_bg_hub",
-                map_name : name
+                map_name : name,
+                map_generated : true,
+                map_failsafe_pos : start_pos,
             }
         }
 
@@ -231,16 +254,9 @@ let functions = {
         return npc;
     },
 
-    genmap_npc : function(x, y, level_min, level_max){
-        
-        const lerp = (x, y, a) => x * (1 - a) + y * a;
-
-        let teamsize = Math.floor(Math.random() * 3) + 1;
-        let avg_level = lerp(level_max, level_min, teamsize/4); //more team, lower avg level
-
-        //TODO get this as an array
-        let npc_ooch_options = db.monster_data.values();
-        npc_ooch_options.filter((mon) => 
+    genmap_ooch_list : function(level){
+        let ooch_list = db.monster_data.values();
+        ooch_list.filter((mon) => 
             mon.evo_stage > 0 && //remove all mons that are evolved (we will evolve them later)
             ![ //remove legendaries and special mons the player shouldnt see
                 34, //Purif-i
@@ -250,21 +266,63 @@ let functions = {
                 97, //Roswier
                 98, //Chemerai
             ].includes(mon.id));
+        
+        for(let ooch of ooch_list){
+            let evo_level = ooch.evo_level;
+            if(evo_level <= level){
+                let evo = db.monster_data.get(`${ooch.evo_id}`);
+                if(evo_level != evo.evo_level){ //Prevent cyclical evolutions from infinitely looping this
+                    ooch_list.push(evo);
+                }
+            }
+        }
+        
+        return(ooch_list);
+    },
+
+    genmap_spawnzone : function(x, y, w, h, min_level, max_level, types_primary, types_secondary){
+        let spawn_slots = [];
+        
+        let types = [_.sample(types_primary), _.sample(types_primary), _.sample(types_secondary)]
+
+        for(let i = 0; i < types.length; i++){
+            let options = functions.genmap_ooch_list(min_level);
+            options.filter((o) => o.type.includes(types[i]));
+
+            spawn_slots.push({
+                min_level : min_level,
+                max_level : max_level,
+                ooch_id : _.sample(options).id
+            })
+        };
+        
+        let spawnzone = {
+            x : x,
+            y : y, 
+            height : h,
+            width : w,
+            spawn_slots : spawn_slots
+        }
+
+        return spawnzone;
+    },
+
+    genmap_npc : function(x, y, level_min, level_max){
+        
+        const lerp = (x, y, a) => x * (1 - a) + y * a;
+
+        let teamsize = Math.floor(Math.random() * 3) + 1;
+        let avg_level = lerp(level_max, level_min, teamsize/4); //more team, lower avg level
+
+        
 
         //Add mons to the npc's team
-        let team = []
+        let team = [];
+        let npc_ooch_options = functions.genmap_ooch_list(min_level);
         for(let i = 0; i < teamsize; i++){
             let ooch = _.sample(npc_ooch_options);
-            let ooch_level = avg_level + _.random(-2, 2, false);
+            let ooch_level = avg_level + _.random(0, 2, false);
 
-            //Evolve the mon if possible
-            let evo_steps = 0;
-            while(ooch.evo_level < ooch_level && ooch.evo_level != -1 && evo_steps < 5){
-                if(random() < .5){
-                    ooch = db.monster_data.get(ooch.evo_id);
-                }
-                evo_steps++;
-            }
             team.push(create_ooch(ooch.id, ooch_level));
         }
 
@@ -273,11 +331,56 @@ let functions = {
         npc.y = y;
         npc.aggro_range = 3;
         npc.team = team;
-        npc.sprite_id = "c00_005";
+        npc.sprite_id = _.sample([
+            "c00_001", "c00_002", "c00_003", "c00_004", "c00_005", "c00_011", "c00_014",
+        ]);
         npc.npc_id = "1234567890";
         npc.name = "Wandering Trainer";
-        pre_combat_dialog = "We must fight!"
-        post_combat_dialog = "*The trainer suddenly vanished...*"
+        npc.pre_combat_dialog = _.sample([
+            "...",
+            "???",
+            "!!!",
+            "We must fight!",
+            "It's Oochabattlin' time.\n*starts Oochabattlin' everywhere*",
+            "So, you come here often?",
+            "Fight me or fight me, the choice is yours!",
+            "Hey, so I might be a little lost.",
+            "Wanna battle?",
+            "It's a me, and I'm your problem now!",
+            "Hey, where'd everybody go?",
+            "I've been wandering for hours...",
+            "You ever get the feeling you've been here before?",
+            "I can't find my nose, *you* must have it, thief!",
+            "Oh yeah, it's all Oochin' together!",
+            "Give me your kneecaps!",
+            "*Is too busy consuming fistfuls of sand to say anything*",
+            "Wanna battle?",
+            "Help, I can't stop winning battles!",
+            "Oh how nice, you came all the way here just to lose!",
+            "Shh, I'm being sneaky.",
+            "Never give up, never surrender!",
+            "I know your IP address, I bet it's 192.168.1.1!",
+            "Sometimes I like to stand in the middle of empty rooms and contemplate life.",
+            "Oh, hi there, fighty fighty time?",
+            "Don't think about the lore implications of this area, okay?",
+            "I've done it, I finally know how to breathe!",
+            "Ok, but don't run away this time!",
+            "I refused to read signs for years and the avatar of sign smited me from existence.",
+            "You ever meet Mr. Nice? He sure is a very real person that I didn't just make up now!",
+            "Hello, yes, I would like to purchase one battle please!",
+            "Today's episode is sponsored by the letter 3.",
+            "Martial-type? No, I don't think that's a thing.",
+            "I have never known defeat!",
+            "Every time you run away from a battle I get a little closer.",
+            "You ever encounter an inky-black Oochamon that looks like it's glitching? Weird little thing.",
+            "Did you know that giraffes are, in fact, real animals?",
+            "Why have lunch when we can have battle?",
+            "This is *not* what I signed up for.",
+            "Elbows are best not thought about...",
+            "This isn't even my final form!",
+            "If not supposed to eat battery, why battery taste good?"
+        ])
+        npc.post_combat_dialog = "*The trainer suddenly vanishes...*"
         npc.remove_on_finish = true;
 
         return npc;
@@ -495,6 +598,7 @@ let functions = {
         }
 
         //Place grass patches
+        let spawnzones = []
         for(let i = 0; i < room_cols * room_rows; i++){
             let grass_done = false;
             while(!grass_done){
@@ -510,6 +614,12 @@ let functions = {
                     }
                 }
                 grass_done = true;
+                spawnzones.push({
+                    x : gx - gw,
+                    y : gy - gh,
+                    w : gw * 2,
+                    h : gh * 2
+                })
             }
         }
 
@@ -544,7 +654,10 @@ let functions = {
             console.log("Layout Generated");
             console.log(layout_text);
         }
-        return layout;
+        return {
+            layout : layout,
+            spawnzones : spawnzones
+        };
     }
 
 }

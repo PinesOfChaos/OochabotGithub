@@ -12,6 +12,10 @@ const PlayerState = {
     Trading: 'trading'
 }
 
+const GenmapTheme = {
+    FungalCave : 0
+}
+
 const TypeEmote = {
     Flame: '<:icon_flame:1274936249484050472>',
     Fungal:  '<:icon_fungal:1274936267884199947>',
@@ -480,5 +484,5 @@ module.exports = {
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
     MoveTarget, Weather, BattleState, BattleAction, BattleInput,
-    FieldEffect
+    FieldEffect, GenmapTheme
 };

@@ -8,6 +8,13 @@ const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, Mov
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
+const closeButton = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('close_prompt')
+            .setLabel('Click To Dismiss')
+            .setStyle(ButtonStyle.Danger),
+    )
 
 let functions = {
     
@@ -182,7 +189,7 @@ let functions = {
      * @param {Boolean} give_rewards Give rewards at the end of a battle
      * @param {Boolean} allow_run Allow running from the battle
      */
-    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, battle_bg = 'battle_bg_tutorial') {
+    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial') {
         const { botClient } = require("./index.js");
 
         // Add index to users
@@ -195,7 +202,7 @@ let functions = {
 
         let battleDataObj = {
             battle_id : battleId,
-            battle_msg_counter : 2,
+            battle_msg_counter : 3,
             turn_msg_counter : users.length, //This was 0, but because each user has an intro-message, we need to account for those
             battle_state : BattleState.Start,
             battle_action_queue : [],
@@ -218,19 +225,30 @@ let functions = {
             amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
         }
 
+        if (fake_battle) {
+            for(let [id, user] of battleDataObj.users.entries()) {
+                for (let i = 0; i < user.party.length; i++) {
+                    user.party[i].current_hp = user.party[i].stats.hp;
+                    user.party[i].alive = true;
+                    if (scale_to_level !== false) {
+                        let new_stats = functions.get_stats(user.party[i].id, scale_to_level, user.party[i].stats.hp_iv, user.party[i].stats.atk_iv, user.party[i].stats.def_iv, user.party[i].stats.spd_iv);
+                        user.party[i].stats.hp = new_stats[0];
+                        user.party[i].stats.atk = new_stats[1];
+                        user.party[i].stats.def = new_stats[2];
+                        user.party[i].stats.spd = new_stats[3];
+                        user.party[i].current_hp = user.party[i].stats.hp;
+                        user.party[i].level = scale_to_level;
+                    }
+                }
+            }
+        }
+
         // Handle all the text
         let battleStartText, sendOutText, active_ooch, types_string;
         for (let [id, user] of battleDataObj.users.entries()) {
             //Reset text messages per player
             battleStartText = '';
             sendOutText = '';
-
-            if (fake_battle) {
-                for (let i = 0; i < user.party.length; i++) {
-                    user.party[i].current_hp = user.party[i].stats.hp;
-                    user.party[i].alive = true;
-                }
-            }
 
             //The current player in combat
             active_ooch = user.party[user.active_slot];
@@ -266,6 +284,9 @@ let functions = {
 
                 let thread = botClient.channels.cache.get(user.thread_id);
 
+                db.profile.set(user.user_id, PlayerState.Combat, 'player_state');
+                db.profile.set(user.user_id, battleDataObj.battle_id, 'cur_battle_id');
+
                 // Delete playspace to enter battle
                 let playspace_msg = await thread.messages.fetch(db.profile.get(user.user_id, 'display_msg_id'));
                 await playspace_msg.delete().catch(() => {});
@@ -282,6 +303,8 @@ let functions = {
             }
         }
 
+        db.battle_data.set(battleId, battleDataObj);
+
         //Handle switch-in abilities
         let switch_in_text = '';
         for(let user of battleDataObj.users){
@@ -294,8 +317,6 @@ let functions = {
         //Send the round start message
         await functions.distribute_messages(battleDataObj, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
 
-
-        db.battle_data.set(battleId, battleDataObj);
         await functions.prompt_battle_actions(battleId);
     },
 
@@ -579,6 +600,7 @@ let functions = {
         const { botClient } = require("./index.js");
 
         battle_data.battle_msg_counter += 1;
+        db.battle_data.math(battle_data.battle_id, '+', 1, 'turn_msg_counter');
         
         for(let user of battle_data.users) {
             if(user.is_player){
@@ -630,11 +652,7 @@ let functions = {
         const { botClient } = require("./index.js");
 
         let battle_data = db.battle_data.get(battle_id);
-
-        // Store current battle state to roll back to if needed
-        // db.battle_data.delete(battle_id, 'rollback_profile');
-        // db.battle_data.set(battle_id, JSON.stringify(db.profile.get(user_id)), 'rollback_profile');
-        // db.battle_data.set(battle_id, 0, 'turn_msg_counter');
+        db.battle_data.set(battle_id, 1, 'turn_msg_counter');
 
         //#region Setup buttons and select menus
         const inputRow = new ActionRowBuilder()
@@ -784,7 +802,7 @@ let functions = {
                         }
         
                         // Switch message to be about using the move input
-                        await i.update({ content: `Select a move to use!`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, backButton] : [moveButtons1, backButton]});
+                        await i.update({ content: `Select a move to use!`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, backButton] : [moveButtons1, backButton]}).catch(() => {});
                     } else if (customId.includes('atk_')) {
                         if (battle_data.users.length == 2) {
                             let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
@@ -799,7 +817,7 @@ let functions = {
                         if (battle_data.users.every(u => u.action_selected !== false)) {
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
-                            await i.update({ content: `Waiting for other players...` });
+                            await i.update({ content: `Waiting for other players...` }).catch(() => {});
 
                             // Delete all input messages
                             for (let user of battle_data.users) {
@@ -813,7 +831,7 @@ let functions = {
                             functions.process_battle_actions(battle_id);
                         } else {
                             await inputCollector.stop();
-                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
                         }
 
                     } else if (customId == BattleInput.Switch) {
@@ -964,13 +982,13 @@ let functions = {
                                     ooch_prev = ooch_check;
                                     ooch_disable = true;
                                 }
-                                else if (ooch_check.current_hp <= 0) {
+                                else if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
                                     ooch_disable = true;
                                 }
             
                                 ((slot <= 1) ? healSelectButtons1 : healSelectButtons2).addComponents(
                                     new ButtonBuilder()
-                                        .setCustomId(`${i.values[0]}_${slot}_item_select_target`)
+                                        .setCustomId(`${i.values[0]}_${slot}_item_sel_target`)
                                         .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
                                         .setStyle(ooch_button_color)
                                         .setEmoji(ooch_emote)
@@ -1011,7 +1029,7 @@ let functions = {
                                 await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
                             }                                
                         }
-                    } else if (customId.includes('_item_select_target')) {
+                    } else if (customId.includes('_item_sel_target')) {
                         let custom_id_data = customId.split('_');
                         user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
@@ -1128,6 +1146,7 @@ let functions = {
     process_battle_actions : async function(battle_id){
         const { botClient } = require("./index.js");
 
+        db.battle_data.set(battle_id, 0, 'turn_msg_counter');
         let battle_data = db.battle_data.get(battle_id);
         let actions = battle_data.battle_action_queue;
         let finish_battle = false;
@@ -1199,10 +1218,9 @@ let functions = {
 
             //Apply end of round abilities/effects (burn, stat changes, etc.)
             let ooch, eot_result, slot;
-            for(let user of battle_data.users){
-                
+            for(let user of battle_data.users) {
                 ooch = user.party[user.active_slot];
-                slot = battle_data.slot_actions[user.user_index];
+                slot = user.slot_actions[user.user_index];
                 if(!ooch.alive){ continue; } //Skip this one if it's dead
 
                 let remove_reveal = true;
@@ -1246,7 +1264,7 @@ let functions = {
                                 end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
                                 ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
                             }
-                        break;
+                        break;s
                         case Status.Sleep:
                             let sleep_val = Math.round(ooch.stats.hp/10);
                             ooch.current_hp += sleep_val;
@@ -1335,10 +1353,10 @@ let functions = {
         //Do stuff depending on whether the battle is finished
         if(!finish_battle) {
             await wait(battle_data.battle_speed);
-            functions.distribute_messages(battle_data, { embeds : [functions.generate_round_start_embed(battle_data)]});
+            await functions.distribute_messages(battle_data, { embeds : [functions.generate_round_start_embed(battle_data)]});
             
             await wait(battle_data.battle_speed);
-            functions.prompt_battle_actions(battle_data.battle_id);
+            await functions.prompt_battle_actions(battle_data.battle_id);
         }
         else if (finish_battle === true) { 
             const endButton = new ActionRowBuilder()
@@ -1349,7 +1367,7 @@ let functions = {
                     .setStyle(ButtonStyle.Primary),
             )
 
-            functions.distribute_messages(battle_data, { components: [endButton] }, true);
+            await functions.distribute_messages(battle_data, { components: [endButton] }, true);
         }
         
 
@@ -1705,7 +1723,7 @@ let functions = {
                                         //` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
                 }
                 if (ooch_party.length > 1) {
-                    return_string += `\nThe rest of your team earned **${exp_earned}** exp.`;
+                    return_string += `\nThe rest of your team earned **${exp_earned}** exp.\n`;
                 }
                 if(is_first_catch) return_string += `\n✨ *Gained 2x Experience from catching a New Oochamon!*`;
 
@@ -1893,7 +1911,7 @@ let functions = {
                                                 ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
                         if (other_user.party.length > 1) {
-                            string_to_send += `\nThe rest of the team earned **${exp_given}** exp.`;
+                            string_to_send += `\nThe rest of the team earned **${exp_given}** exp.\n`;
                         }
 
                         for (let i = 0; i < ooch_party.length; i++) {
@@ -3481,8 +3499,9 @@ let functions = {
      * Handle finishing an Oochamon battle and setting back up the playspace.
      * @param {Object} battle_data The battle data for the current battle.
      * @param {String} user_index The user index whose battle to end.
+     * @param {Boolean} play_end True if finish_battle came from /play.
      */
-    finish_battle: async function(battle_data, user_index) {
+    finish_battle: async function(battle_data, user_index, play_end) {
         const { event_process } = require('./func_event.js');
         const { botClient } = require("./index.js");
         const { setup_playspace_str } = require('./func_play.js'); 
@@ -3505,7 +3524,7 @@ let functions = {
             while(message_count > thread.memberCount);
         }
 
-        if(!battle_data.fake_battle){
+        if(!battle_data.fake_battle) {
             //Reset relevant ooch info and stuff
             for (let ooch of user_info.party){
                 ooch.stats.atk_mul = 0;
@@ -3536,6 +3555,7 @@ let functions = {
                 db.profile.set(user_id, db.profile.get(user_id, 'checkpoint_data'), 'location_data');
                 db.profile.set(user_id, [], 'cur_event_array');
                 db.profile.set(user_id, 0, 'cur_event_pos')
+                db.profile.set(user_id, false, 'cur_battle_id');
             } 
         }
 
@@ -3563,6 +3583,10 @@ let functions = {
                 // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
                 await event_process(user_id, thread, cur_event_array, cur_event_pos);
             }
+        }
+
+        if (play_end) {
+            await thread.send({ content: 'A player has quit the battle, so it has been closed.', components: [closeButton] });
         }
     },
 

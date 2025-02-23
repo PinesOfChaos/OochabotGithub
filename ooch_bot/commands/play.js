@@ -4,19 +4,21 @@ const { setup_playspace_str, move } = require('../func_play.js');
 const { PlayerState } = require('../types.js');
 const { event_process } = require('../func_event.js');
 const wait = require('wait');
+const { finish_battle } = require('../func_battle.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
         .setDescription('Begin playing Oochamon!'),
     async execute(interaction) {
+        await interaction.deferReply();
         let target = interaction.user.id;
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.reply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
 
         if (!db.profile.has(target)) {
-            return interaction.reply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
+            return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
         } 
         let thread = interaction.channel;
 
@@ -52,7 +54,7 @@ module.exports = {
             
             await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
             await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
-            await interaction.reply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
+            await interaction.editReply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
         } else {
             await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
             await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
@@ -65,59 +67,44 @@ module.exports = {
             playspace_str = setup_playspace_str(interaction.user.id);
         }
 
-        // Reset Oochamon's stat and abilities and status effects
-        let ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
-        for (let i = 0; i < ooch_party.length; i++) {
-            ooch_party[i].stats.atk_mul = 0;
-            ooch_party[i].stats.def_mul = 0;
-            ooch_party[i].stats.acc_mul = 0;
-            ooch_party[i].stats.eva_mul = 0;
-            ooch_party[i].stats.spd_mul = 0;
-            ooch_party[i].ability = ooch_party[i].og_ability;
-            ooch_party[i].type = ooch_party[i].og_type;
-            ooch_party[i].doom_timer = 4;
-            ooch_party[i].status_effects = [];
-        }
-        db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
-        db.profile.set(interaction.user.id, {}, 'ooch_enemy');
-        db.profile.set(interaction.user.id, [], 'cur_event_array'); 
-        db.profile.set(interaction.user.id, false, 'cur_event_name');
-        db.profile.set(interaction.user.id, 0, 'battle_msg_counter'); 
-        db.profile.set(interaction.user.id, 0, 'turn_msg_counter'); 
-        db.profile.set(interaction.user.id, 0, 'cur_event_pos');
-
-        let outputMsg = false;
-        if (db.profile.get(interaction.user.id, 'settings.controls_msg') == true) {
-            outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nUse \`/lookup controls\` if you would like to view controls.`;
-        }
-
-        //Send reply displaying the player's location on the map
-        await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async msg => {
-            await db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
-        });
-         
-        if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
-            await event_process(interaction.user.id, thread, db.events_data.get('ev_intro'), 0, 'ev_intro');
+        let curBattleId = db.profile.get(interaction.user.id, 'cur_battle_id');
+        if (curBattleId != false && db.battle_data.has(curBattleId)) {
+            let battleData = db.battle_data.get(curBattleId);
+            for (let user of battleData.users) {
+                await finish_battle(battleData, user.user_index, true);
+            } 
         } else {
-            await move(thread, interaction.user.id, '', 1);
-        }
+            let outputMsg = false;
+            if (db.profile.get(interaction.user.id, 'settings.controls_msg') == true) {
+                outputMsg = `This is your play thread! All game related messages and playing will happen in this thread.\nUse \`/lookup controls\` if you would like to view controls.`;
+            }
 
-        if (playspace_str[0] != "**Intro**") {
-            if (outputMsg != false) {
-                if (thread != interaction.channel) {
-                    let tipMsg = await thread.send({ content: outputMsg, ephemeral: true });
-                    await wait(15000);
-                    await tipMsg.delete().catch(() => {});
-                } else {
-                    await interaction.reply({ content: outputMsg, ephemeral: true });
+            //Send reply displaying the player's location on the map
+            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async msg => {
+                await db.profile.set(interaction.user.id, msg.id, 'display_msg_id');
+            });
+            
+            if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
+                await event_process(interaction.user.id, thread, db.events_data.get('ev_intro'), 0, 'ev_intro');
+            } else {
+                await move(thread, interaction.user.id, '', 1);
+            }
+
+            if (playspace_str[0] != "**Intro**") {
+                if (outputMsg != false) {
+                    if (thread != interaction.channel) {
+                        let tipMsg = await thread.send({ content: outputMsg, ephemeral: true });
+                        await wait(15000);
+                        await tipMsg.delete().catch(() => {});
+                    } else {
+                        await interaction.editReply({ content: outputMsg, ephemeral: true });
+                    }
+                } else if (thread === interaction.channel) {
+                    await interaction.deleteReply().catch(() => {});
                 }
             } else if (thread === interaction.channel) {
-                await interaction.deferReply();
-                await interaction.deleteReply();
+                await interaction.deleteReply().catch(() => {});
             }
-        } else if (thread === interaction.channel) {
-            await interaction.deferReply();
-            await interaction.deleteReply();
         }
     },
 };
