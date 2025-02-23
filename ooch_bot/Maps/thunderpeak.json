@@ -2,7 +2,8 @@
 	"map_events": [],
 	"map_info": {
 		"map_battleback": "",
-		"map_name": ""
+		"map_name": "",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{

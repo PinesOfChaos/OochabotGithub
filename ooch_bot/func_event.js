@@ -538,6 +538,14 @@ let functions = {
             flags_to_give.push(npc_obj.flag_given)
         }
 
+        //Check if the map we're in is a generated one
+        let player_location = db.profile.get(user_id, 'location_data');
+        let map_name = player_location.area;
+        let map_obj =   db.maps.get(map_name.toLowerCase());
+        if(map_obj.map_info.map_generated){
+            npc_flag += map_info.map_name;
+        }
+
         //Set any post-combat_flags
         flags_to_give.push(npc_flag)
 

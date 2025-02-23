@@ -944,18 +944,76 @@ let functions = {
 
                     } else if (customId.includes('_item_select')) {
 
-                        let user_to_catch;
-                        for(let catch_target of battle_data.users){
-                            if(catch_target.is_catchable){
-                                user_to_catch = catch_target.user_index;
-                            }
-                        }
+                        let ooch_inv = user.party;
+                        let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
+                        
+                        healSelectButtons1 = new ActionRowBuilder();
+                        healSelectButtons2 = new ActionRowBuilder();
 
-                        if (customId == 'prism_item_select') {
-                            user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
+                        if (customId == 'heal_item_select') {
+                            for (let slot = 0; slot < ooch_inv.length; slot++) {
+                                ooch_check = ooch_inv[slot];
+                                ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                                ooch_name = ooch_check.nickname;
+                                ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
+                                ooch_button_color = ButtonStyle.Primary;
+                                ooch_disable = false;
+            
+                                if (i == user.active_slot) {
+                                    ooch_button_color = ButtonStyle.Success;
+                                    ooch_prev = ooch_check;
+                                    ooch_disable = true;
+                                }
+                                else if (ooch_check.current_hp <= 0) {
+                                    ooch_disable = true;
+                                }
+            
+                                ((slot <= 1) ? healSelectButtons1 : healSelectButtons2).addComponents(
+                                    new ButtonBuilder()
+                                        .setCustomId(`${i.values[0]}_${slot}_item_select_target`)
+                                        .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
+                                        .setStyle(ooch_button_color)
+                                        .setEmoji(ooch_emote)
+                                        .setDisabled(ooch_disable),
+                                )
+                            }
+
+                            await i.update({ content: `**-- Select An Oochamon To Heal --**`, components: (healSelectButtons2.components.length != 0) ? [healSelectButtons1, healSelectButtons2, backButton] : [healSelectButtons1, backButton] });
                         } else {
-                            user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, i.values[0], user.active_slot);
+                            let user_to_catch;
+                            for(let catch_target of battle_data.users){
+                                if(catch_target.is_catchable){
+                                    user_to_catch = catch_target.user_index;
+                                }
+                            }
+                            
+                            user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
+    
+                            // Continue on if everyone has selected (which should happen at the end)
+                            if (battle_data.users.every(u => u.action_selected !== false)) {
+                                db.battle_data.set(battle_id, battle_data);
+                                inputCollector.stop();
+                                await i.update({ content: `` });
+                                await i.deleteReply();
+    
+                                // Delete all input messages
+                                for (let user of battle_data.users) {
+                                    if (user.is_player) {
+                                        let thread = botClient.channels.cache.get(user.thread_id);
+                                        await thread.bulkDelete(1);
+                                    }
+                                }
+    
+                                await inputCollector.stop();
+                                functions.process_battle_actions(battle_id);
+                            } else {
+                                await inputCollector.stop();
+                                await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
+                            }                                
                         }
+                    } else if (customId.includes('_item_select_target')) {
+                        let custom_id_data = customId.split('_');
+                        user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
@@ -977,9 +1035,7 @@ let functions = {
                         } else {
                             await inputCollector.stop();
                             await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-                        }
-                        
-
+                        }             
                     } else if (customId == BattleInput.Run) {
                         user.action_selected = functions.new_battle_action_run(battle_data, user.user_index);
 

@@ -75,7 +75,8 @@
 	],
 	"map_info": {
 		"map_battleback": "battle_bg_tutorial",
-		"map_name": "Tutorial"
+		"map_name": "Tutorial",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{

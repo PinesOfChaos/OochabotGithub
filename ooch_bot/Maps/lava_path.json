@@ -2,7 +2,8 @@
 	"map_events": [],
 	"map_info": {
 		"map_battleback": "battle_bg_lava_fields",
-		"map_name": "Lava Fields"
+		"map_name": "Lava Fields",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{

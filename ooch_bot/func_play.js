@@ -112,6 +112,7 @@ module.exports = {
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
+        let map_info =          map_obj.map_info;
         let map_tiles =         map_obj.map_tiles; 
         let map_npcs =          map_obj.map_npcs;
         let map_spawns =        map_obj.map_spawn_zones;
@@ -181,7 +182,9 @@ module.exports = {
             //NPCs
             if(!stop_moving){
                 for(let obj of map_npcs){
-                    let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
+                    let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
+                    if(map_info.map_generated){npc_flag += map_info.map_name; }
+
                     //Skip NPCs if they meet any of these conditions
                     if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
                         (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag

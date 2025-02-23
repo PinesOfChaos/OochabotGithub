@@ -30,7 +30,8 @@
 	],
 	"map_info": {
 		"map_battleback": "battle_bg_hub",
-		"map_name": "Hub"
+		"map_name": "Hub",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{

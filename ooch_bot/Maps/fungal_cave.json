@@ -12,7 +12,8 @@
 	],
 	"map_info": {
 		"map_battleback": "battle_bg_fungal_cave",
-		"map_name": "Fungal Caves"
+		"map_name": "Fungal Caves",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{

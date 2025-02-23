@@ -12,7 +12,8 @@
 	],
 	"map_info": {
 		"map_battleback": "battle_bg_facility",
-		"map_name": "Abandoned Facility"
+		"map_name": "Abandoned Facility",
+		"map_generated": false
 	},
 	"map_npcs": [
 		{
