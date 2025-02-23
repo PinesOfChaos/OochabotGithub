@@ -251,7 +251,15 @@ module.exports = {
                         map_transitions =   map_obj.map_transitions;
                         map_events =        map_obj.map_events;
                         map_shops =         map_obj.map_shops;
-                        if (map_shops == undefined || map_shops == null) map_shops = [];        
+                        map_info =          map_obj.map_info;
+                        if (map_shops == undefined || map_shops == null) map_shops = []; 
+
+                        //If the map has a failsafe pos and the position to is invalid, go to the failsafe pos
+                        //This should only occur in generated maps, as their connection positions may change
+                        if ((obj.connect_x == -1 || obj.connect_y == -1) && map_info.has("map_failsafe_pos")){
+                            playerx = map_info.map_failsafe_pos.x;
+                            playery = map_info.map_failsafe_pos.y;
+                        }
                     }
                 }
             }

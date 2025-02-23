@@ -15,9 +15,23 @@ let functions = {
                     tile_grass : ["t01_002"],
 
                     types_primary : [OochType.Fungal],
-                    types_secondary : [OochType.Stone, OochType.Ooze],
+                    types_secondary : [OochType.Sound, OochType.Ooze],
 
                     map_naturalness : .7
+                })
+            break;
+            case GenmapTheme.ObsidianPath: //Obsidian Path
+                return({
+                    tile_floor : ["t04_000"],
+                    tile_wall : ["t04_004"],
+                    tile_edge : ["t03_003"],
+                    tile_decor : ["t04_001"],
+                    tile_grass : ["t04_002"],
+
+                    types_primary : [OochType.Flame],
+                    types_secondary : [OochType.Stone, OochType.Crystal],
+
+                    map_naturalness : .5
                 })
             break;
         }

@@ -13,21 +13,23 @@ const PlayerState = {
 }
 
 const GenmapTheme = {
-    FungalCave : 0
+    FungalCave : 0,
+    ObsidianPath : 1
 }
 
 const TypeEmote = {
-    Flame: '<:icon_flame:1274936249484050472>',
-    Fungal:  '<:icon_fungal:1274936267884199947>',
-    Magic: '<:icon_magic:1274936558595866787>',
-    Neutral: '<:icon_neutral:1274936582583091210>',
-    Ooze: '<:icon_ooze:1274936607136288810>',
-    Stone: '<:icon_stone:1274936641433243781>',
-    Tech: '<:icon_tech:1274936672022298624>',
-    Void: '<:icon_void:1274936702959485011>',
-    Crystal: '',
-    Cloth: '',
-    Sound: ''
+    Flame:      '<:icon_flame:1274936249484050472>',
+    Fungal:     '<:icon_fungal:1274936267884199947>',
+    Magic:      '<:icon_magic:1274936558595866787>',
+    Neutral:    '<:icon_neutral:1274936582583091210>',
+    Ooze:       '<:icon_ooze:1274936607136288810>',
+    Stone:      '<:icon_stone:1274936641433243781>',
+    Tech:       '<:icon_tech:1274936672022298624>',
+    Void:       '<:icon_void:1274936702959485011>',
+    Crystal:    '<:icon_crystal:1306340490857418893>',
+    Cloth:      '<:icon_cloth:1306340508762771559>',
+    Sound:      '<:icon_sound:1306340525376540773>',
+    Martial:    '<:icon_martial:1306340540513517588>'
 }
 
 const GraphicsMode = {

@@ -35,9 +35,11 @@ layout_mode = 2
 
 [node name="transition_x" type="SpinBox" parent="transition_vbox_container/HBoxContainer"]
 layout_mode = 2
+min_value = -1.0
 
 [node name="transition_y" type="SpinBox" parent="transition_vbox_container/HBoxContainer"]
 layout_mode = 2
+min_value = -1.0
 
 [connection signal="button_down" from="transition_object" to="." method="_on_transition_object_button_down"]
 [connection signal="pressed" from="transition_object" to="." method="_on_transition_object_pressed"]

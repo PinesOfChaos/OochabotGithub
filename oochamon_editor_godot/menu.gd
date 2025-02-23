@@ -344,7 +344,8 @@ func _on_file_dialog_save_file_selected(path):
 		var save_data = {
 			"map_info" : {
 				"map_name" : line_edit_map_name.text,
-				"map_battleback" : line_edit_map_battle_back.text
+				"map_battleback" : line_edit_map_battle_back.text,
+				"map_generated" : false,
 			},
 			"map_tiles" : [],
 			"map_npcs" : [],

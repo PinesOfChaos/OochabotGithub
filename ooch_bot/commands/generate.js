@@ -365,9 +365,9 @@ module.exports = {
         create_tile(`c_015`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Tech)
         create_tile(`c_016`,       Tile.Npc,      applicationEmojis ); // Global CFO
         create_tile(`c_017`,       Tile.Int,      applicationEmojis ); // Tutorial Door Closed
-        create_tile(`c_018`,       Tile.Int,      applicationEmojis ); // Mr. Nice
+        create_tile(`c_018`,       Tile.Npc,      applicationEmojis ); // Mr. Nice
         create_tile(`c_019`,       Tile.Int,      applicationEmojis ); // Tutorial Spikes
-        create_tile(`c_020`,       Tile.Int,      applicationEmojis ); // Generic Sign
+        create_tile(`c_020`,       Tile.Npc,      applicationEmojis ); // Generic Sign
         create_tile(`c_021`,       Tile.Int,      applicationEmojis ); // Mechanical Wall
         create_tile(`c_022`,       Tile.Int,      applicationEmojis ); // Character on Lavaboard
         create_tile(`c_023`,       Tile.Int,      applicationEmojis ); // Character on Teleporter
