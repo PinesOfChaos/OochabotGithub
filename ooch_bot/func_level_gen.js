@@ -4,6 +4,11 @@ const { create_ooch } = require('./func_play.js');
 const db = require("./db.js")
 
 let functions = {
+    /**
+     * Gets a theme to use in generated maps
+     * @param {Int} theme GenmapTheme.Theme 
+     * @returns a struct of data to feed into genmap_new
+     */
     genmap_theme : function(theme){
         switch(theme){
             case GenmapTheme.FungalCave: //Fungal Cave
@@ -24,7 +29,7 @@ let functions = {
                 return({
                     tile_floor : ["t04_000"],
                     tile_wall : ["t04_004"],
-                    tile_edge : ["t03_003"],
+                    tile_edge : ["t04_003", "t04_003", "t04_003", "t04_003", "t04_003", "t04_003", "t04_003", "t04_003", "t04_003", "t04_022"],
                     tile_decor : ["t04_001"],
                     tile_grass : ["t04_002"],
 
@@ -37,11 +42,29 @@ let functions = {
         }
     },
 
+    /**
+     * Generates a new map and returns its map data
+     * @param {String} name Name of the map to generate, this this will be converted to snake_case.json in the level name
+     * @param {Int} width Tile width (64 recommended for full size level)
+     * @param {Int} height Tile height (64 recommended for full size level)
+     * @param {Theme} theme Use genmap_theme(GenmapTheme.XXXXXX) 
+     * @param {Int} level_min Minimum level of encounters in the level
+     * @param {Int} level_max Maximum level of encounters in the level
+     * @param {String} exit_map Map where the exit of this level should lead to (examples: lava_path, training_facility, tutorial)
+     * @param {Int} exit_x Where on the map to place the player use -1 to use failsafe position
+     * @param {Int} exit_y Where on the map to place the player use -1 to use failsafe position
+     * @param {Boolean} has_savepoints Whether the generated map should have a savepoint
+     * @param {Boolean} has_shops Whether the generated map should have a shop
+     * @returns Map data ready to be converted to a .js file
+     */
     genmap_new : function(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints = false, has_shops = false){
-        //TODO Filter out flags with the map name from users' flag lists
+        //Filter out user's flags to any that don't include the map's name
+        let all_users = db.profile.array();
+        for(let user of all_users){
+            user.flags = user.flags.filter((flag) => !flag.includes(name));
+        }
 
-
-        let base_layout = functions.genmap_layout(width, height, Math.ceil(width / 16), Math.ceil(height / 16), 3, 5, theme.map_naturalness);
+        let base_layout = functions.genmap_layout(width, height, Math.ceil(width / 16), Math.ceil(height / 16), 10, theme.map_naturalness);
         let layout = base_layout.layout;
         let spawnzones_arr = base_layout.spawnzones;
 
@@ -59,13 +82,13 @@ let functions = {
             tiles[i] = [];
             for(let j = 0; j < height; j++){
                 switch(layout[i][j]){
-                    case "wall":    tiles[i][j] = theme.tile_wall; break;
-                    case "floor":   tiles[i][j] = theme.tile_floor; break;
-                    case "grass":   tiles[i][j] = theme.tile_grass; break;
-                    case "edge":    tiles[i][j] = theme.tile_edge; break;
-                    case "decor":   tiles[i][j] = theme.tile_decor; break;
+                    case "wall":    tiles[i][j] = _.sample(theme.tile_wall); break;
+                    case "floor":   tiles[i][j] = _.sample(theme.tile_floor); break;
+                    case "grass":   tiles[i][j] = _.sample(theme.tile_grass); break;
+                    case "edge":    tiles[i][j] = _.sample(theme.tile_edge); break;
+                    case "decor":   tiles[i][j] = _.sample(theme.tile_decor); break;
                     default: 
-                        tiles[i][j] = theme.tile_floor; 
+                        tiles[i][j] = _.sample(theme.tile_floor); 
                         switch(layout[i][j]){
                             case "start": 
                                 start_pos = {x : i, y : j}; 
@@ -83,7 +106,7 @@ let functions = {
 
         //Place spawnzones
         for(let zone of spawnzones_arr){
-            genmap_spawnzone(zone.x, zone.y, zone.w, zone.h, min_level, max_level, theme.types_primary, theme.types_secondary);
+            spawnzones.push(functions.genmap_spawnzone(zone.x, zone.y, zone.w, zone.h, level_min, level_max, theme.types_primary, theme.types_secondary));
         }
 
         //Place a savepoint at the spawn if the map should have one
@@ -115,7 +138,7 @@ let functions = {
 
         //Add npcs
         for(let i = 0; i < npc_count; i++){
-            map_npcs.push(functions.genmap_npc(
+            npcs.push(functions.genmap_npc(
                 misc_positions[i].x, misc_positions[i].y,
                 level_min, level_max
             ))
@@ -123,7 +146,7 @@ let functions = {
 
         //Add chests (picks up where npcs ends)
         for(let i = npc_count; i < misc_positions.length; i++){
-            map_npcs.push(functions.genmap_chest(
+            npcs.push(functions.genmap_chest(
                 misc_positions[i].x, misc_positions[i].y,
                 level_min, level_max
             ))
@@ -160,6 +183,33 @@ let functions = {
         return(map_data);
     },
 
+    /**
+     * Converts a battle oochamon into one ready for use in a map file
+     * @param {Object} ooch_data data of the oochamon to be converted
+     * @returns A map-ready oochamon for use in an NPC's party
+     */
+    genmap_ooch_convert: function(ooch_data){
+        let new_ooch = {
+            id : ooch_data.id,
+            level : ooch_data.level,
+            nickname : ooch_data.nickname,
+            ability : ooch_data.ability,
+            moveset : ooch_data.moveset,
+            hp_iv :  (20 * ooch_data.stats.hp_iv) - 10,
+            atk_iv : (20 * ooch_data.stats.atk_iv) - 10,
+            def_iv : (20 * ooch_data.stats.def_iv) - 10,
+            spd_iv : (20 * ooch_data.stats.spd_iv) - 10,
+            slot_enabled : true,
+            item : -1
+        }
+
+        return(new_ooch)
+    },
+
+    /**
+     * Creates a blank slate NPC for use in level gen
+     * @returns NPC object with all default values blank, empty, or 0
+     */
     genmap_empty_npc : function(){
         return({
             aggro_range : 0,
@@ -181,11 +231,19 @@ let functions = {
             sprite_dialog : "",
             sprite_id : "",
             team : [],
-            x : x,
-            y : y
+            x : 0,
+            y : 0
         })
     },
 
+    /**
+     * Creates a chest NPC with a filled with loot depending on the level of the chest
+     * @param {Int} x Position of the chest
+     * @param {Int} y Position of the chest
+     * @param {Int} level_min Minimum level for the chest to generate at
+     * @param {Int} level_max Maximum level for the chest to generate at
+     * @returns NPC object that comes with all the usual chest values
+     */
     genmap_chest : function(x, y, level_min, level_max){
         let chest_level = _.random(level_min, level_max, false);
         let chest_num = _.random(1, 3, false);
@@ -258,7 +316,7 @@ let functions = {
         npc.y = y;
         npc.aggro_range = 0;
         npc.items = chest_loot;
-        npc.sprite_id = "c_013";
+        npc.sprite_id = "c00_013";
         npc.npc_id = "1234567890";
         npc.name = "Chest";
         npc.pre_combat_dialog = "You opened the chest...";
@@ -268,13 +326,18 @@ let functions = {
         return npc;
     },
 
+    /**
+     * Generates a list of oochamon appropriate for a certain level range
+     * @param {Int} level 
+     * @returns List of oochamon data
+     */
     genmap_ooch_list : function(level){
-        let ooch_list = db.monster_data.values();
+        let ooch_list = db.monster_data.array();
         ooch_list.filter((mon) => 
             mon.evo_stage > 0 && //remove all mons that are evolved (we will evolve them later)
-            ![ //remove legendaries and special mons the player shouldnt see
+            mon.id >= 0 && //remove uncatchable mons
+            ![ //remove special mons the player shouldnt see
                 34, //Purif-i
-                -1, //i
                 105, //Nullifly,
                 96, //Tryptid
                 97, //Roswier
@@ -294,6 +357,18 @@ let functions = {
         return(ooch_list);
     },
 
+    /**
+     * Creates a spawnzone object
+     * @param {Int} x Leftmost position of the zone
+     * @param {Int} y Topmost position of the zone
+     * @param {Int} w Width
+     * @param {Int} h Height
+     * @param {Int} min_level Minimum level of oochamon that appear here
+     * @param {Int} max_level Maximum level of oochamon that appear here
+     * @param {Array} types_primary an array of [Oochtype], this is the main type that will appear
+     * @param {Array} types_secondary an array of [Oochtype], this type will occaisionally appear
+     * @returns Spawnzone object
+     */
     genmap_spawnzone : function(x, y, w, h, min_level, max_level, types_primary, types_secondary){
         let spawn_slots = [];
         
@@ -321,6 +396,14 @@ let functions = {
         return spawnzone;
     },
 
+    /**
+     * Creates an NPC object with a randomized team and intro quote
+     * @param {*} x Position of the npc
+     * @param {*} y Position of the npc
+     * @param {*} level_min Lowest level that can appear on the team
+     * @param {*} level_max Highest level that can appear on the team
+     * @returns NPC object with a random team
+     */
     genmap_npc : function(x, y, level_min, level_max){
         
         const lerp = (x, y, a) => x * (1 - a) + y * a;
@@ -332,12 +415,12 @@ let functions = {
 
         //Add mons to the npc's team
         let team = [];
-        let npc_ooch_options = functions.genmap_ooch_list(min_level);
+        let npc_ooch_options = functions.genmap_ooch_list(level_min);
         for(let i = 0; i < teamsize; i++){
             let ooch = _.sample(npc_ooch_options);
             let ooch_level = avg_level + _.random(0, 2, false);
 
-            team.push(create_ooch(ooch.id, ooch_level));
+            team.push(functions.genmap_ooch_convert(create_ooch(ooch.id, ooch_level)));
         }
 
         let npc = functions.genmap_empty_npc()
@@ -400,6 +483,16 @@ let functions = {
         return npc;
     },
 
+    /**
+     * Creates a layout for a generated map
+     * @param {*} width Width of the map
+     * @param {*} height Height of the map
+     * @param {*} room_cols How many columns of rooms to generate
+     * @param {*} room_rows How many rows of rooms to generate
+     * @param {*} room_size_avg Average size of rooms (10 is recommended)
+     * @param {*} naturalness How natural to make the environment feel 0 is rigid, 1 is curvy (0.0 - 0.7 is recommended)
+     * @returns Struct of {layout : array2d, spawnzones : array}
+     */
     genmap_layout : function(width, height, room_cols, room_rows, room_size_avg, naturalness){
 
         const lerp = (x, y, a) => x * (1 - a) + y * a;
@@ -550,7 +643,7 @@ let functions = {
                     
                         let lx = lerp(segments[0].x, segments[2].x, steps_done/steps_total);
                         let ly = lerp(segments[0].y, segments[2].y, steps_done/steps_total);
-                        console.log(steps_done/steps_total);
+
                         let cx = Math.floor(lerp(xat, lx, naturalness * .8));
                         let cy = Math.floor(lerp(yat, ly, naturalness * .8));
                         
@@ -562,8 +655,6 @@ let functions = {
                                 cy + Math.round(Math.sin(dir))
                             ] = "floor";
                         }
-
-                        console.log[cx, cy];
                     }
 
                     
@@ -622,8 +713,8 @@ let functions = {
 
                 let gw = Math.floor((Math.random() * 2) + 1);
                 let gh = Math.floor((Math.random() * 2) + 1);
-                for(let j = gx - gw; j < gx + gw; j++){
-                    for(let k = gy - gh; k < gy + gh; k++){
+                for(let j = gx - gw; j < gx + gw + 1; j++){
+                    for(let k = gy - gh; k < gy + gh + 1; k++){
                         if(layout[j][k] == "floor"){ layout[j][k] = "grass"; }
                     }
                 }
