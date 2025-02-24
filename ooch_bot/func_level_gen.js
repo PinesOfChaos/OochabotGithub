@@ -582,8 +582,6 @@ let functions = {
             }
         }
 
-        console.log("Adding rooms/halls")
-
         //Add rooms/halls to the layout
         for(let room of rooms){
             //Add rooms
@@ -630,7 +628,7 @@ let functions = {
                 let steps_total = Math.abs(room_to.x - room.x) + Math.abs(room_to.y - room.y);
                 let steps_done = 0;
                 
-                console.log(`${room.roomgridx}, ${room.roomgridy} => ${room_to.roomgridx}, ${room_to.roomgridy}, [${steps_total}]`)
+                //console.log(`${room.roomgridx}, ${room.roomgridy} => ${room_to.roomgridx}, ${room_to.roomgridy}, [${steps_total}]`)
                 
                 for(let i = 0; i < segments.length - 1; i++){
                     xto = segments[i + 1].x;
@@ -696,7 +694,6 @@ let functions = {
                 }
 
                 if(placeable){ 
-                    console.log(dx, dy)
                     layout[dx][dy] = "decor"; 
                 }
             }
@@ -738,7 +735,7 @@ let functions = {
             layout[spot.x][spot.y] = "misc";
         }
 
-        if(true){ //This section is for testing purposes, make false if not testing
+        if(false){ //This section is for testing purposes, make false if not testing
             var layout_text = '';
             for(let j = 1; j < height; j++){
                 for(let i = 0; i < width; i++){
@@ -756,9 +753,9 @@ let functions = {
                 }
                 layout_text += "\n"
             }
-            console.log("Layout Generated");
-            console.log(layout_text);
+
         }
+
         return {
             layout : layout,
             spawnzones : spawnzones

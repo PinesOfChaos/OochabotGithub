@@ -755,6 +755,7 @@ module.exports = {
         
         for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
+            if(map_info.map_generated){npc_flag += map_info.map_name; }
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
             if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
