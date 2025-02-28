@@ -75,7 +75,7 @@ let functions = {
             }
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != '') {
+            if (obj_content.dialogue_portrait != '' || obj_content.dialogue_portrait != undefined) {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -543,7 +543,7 @@ let functions = {
         let map_name = player_location.area;
         let map_obj =   db.maps.get(map_name.toLowerCase());
         if(map_obj.map_info.map_generated){
-            npc_flag += map_info.map_name;
+            npc_flag += map_obj.map_info.map_name;
         }
 
         //Set any post-combat_flags

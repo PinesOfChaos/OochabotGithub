@@ -6,6 +6,7 @@
     "dotenv": "^16.4.5",
     "enmap": "^5.9.8",
     "lodash": "^4.17.21",
+    "node-cron": "^3.0.3",
     "node-fetch": "^2.6.7",
     "skia-canvas": "^1.0.1",
     "string-progressbar": "^1.0.4",

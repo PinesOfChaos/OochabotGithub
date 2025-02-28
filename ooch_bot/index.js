@@ -4,6 +4,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes, InteractionType } = require('discord-api-types/v9');
 const wait = require('wait');
 const _ = require('lodash');
+const cron = require('node-cron');
 
 // create a new Discord client and give it some variables
 const { Client, Partials, GatewayIntentBits, Collection } = require('discord.js');
@@ -13,6 +14,7 @@ const { PlayerState } = require('./types.js');
 const { prompt_battle_actions } = require('./func_battle.js');
 const { event_process } = require('./func_event.js');
 const { reset_oochamon, quit_oochamon } = require('./func_other.js');
+const { genmap_allmaps } = require('./func_level_gen.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
@@ -52,6 +54,13 @@ const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
     }
 })();
 //#endregion
+
+// Runs at 9:00am (MST) every day
+cron.schedule('00 16 * * *', async () => { 
+    genmap_allmaps(client);
+}, {-
+    scheduled: true,
+});
 
 client.on('ready', async () => {
     let userIds = db.profile.keyArray();

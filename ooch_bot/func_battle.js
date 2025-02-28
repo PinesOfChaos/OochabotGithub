@@ -954,7 +954,7 @@ let functions = {
                         bag_select.addComponents(
                             new StringSelectMenuBuilder()
                                 .setCustomId('prism_item_select')
-                                .setPlaceholder('Select an item in your pventory to use!')
+                                .setPlaceholder('Select an item in your iventory to use!')
                                 .addOptions(prism_select_options),
                         );
 
@@ -1778,7 +1778,7 @@ let functions = {
             finish_battle : finish_battle,
             finish_data : finish_data,
             return_string : return_string,
-            turn_emote : `<:item_prism:1274937161262698536>`,
+            turn_emote : `🔶`,
             embed_color : '#49f6ff'
         }
     },

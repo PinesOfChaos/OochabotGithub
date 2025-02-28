@@ -1,9 +1,47 @@
 const _ = require('lodash');
 const { OochType, GenmapTheme } = require("./types");
-const { create_ooch } = require('./func_play.js');
+const { create_ooch, setup_playspace_str } = require('./func_play.js');
 const db = require("./db.js")
+const fs = require('fs');
 
 let functions = {
+
+    genmap_allmaps : async function(client){
+        
+        let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
+
+        //Everchange Cave (daily)
+        let level_name = "Everchange Cave";
+        let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
+        let level_filename = './Maps/' + level_lowername + '.json'
+        let new_level = functions.genmap_new(level_name, 64, 64, functions.genmap_theme(GenmapTheme.ObsidianPath), 15, 20, 'lava_path', 3, 52);
+        fs.writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
+        db.maps.set(level_lowername, new_level);
+        kickout_list.push(level_lowername);
+
+        //Kick players back to their last checkpoint if they're in one of the generated levels
+        for (let key of db.profile.keyArray()) { 
+            let profile = db.profile.get(key);
+            let loc_data = profile.location_data;
+
+            for(let level of kickout_list){
+                if(loc_data.area == level){
+                    let checkpoint = profile.checkpoint_data;
+                    db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
+                    let playspace_str = setup_playspace_str(key);
+                    let thread = client.channels.cache.get(profile.play_thread_id);
+                    let msg_to_edit = db.profile.get(key, 'display_msg_id');
+
+                    await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
+                        await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                    }).catch(() => {});
+
+                }
+            }
+        }
+        console.log('Generated daily maps.');
+    },
+
     /**
      * Gets a theme to use in generated maps
      * @param {Int} theme GenmapTheme.Theme 
@@ -123,7 +161,7 @@ let functions = {
         if(has_shops){
             tiles[start_pos.x + 1][start_pos.y] = "t00_007";
             shops.push({
-                greeting_dialogue : "Main System Initiating Shopkeep Mode",
+                greeting_dialogueue : "Main System Initiating Shopkeep Mode",
                 image : "",
                 special_items : [],
                 type : "default",
@@ -223,12 +261,13 @@ let functions = {
             name : "",
             npc_id : "",
             
-            pre_combat_dialog: "",
-            post_combat_dialog: "",
+            pre_combat_dialogue: "",
+            post_combat_dialogue: "",
             
             sprite : 0,
             sprite_combat : "",
             sprite_dialog : "",
+            dialogue_portrait : "",
             sprite_id : "",
             team : [],
             x : 0,
@@ -294,6 +333,10 @@ let functions = {
                 {count : 5, id :  4}, //greater prism
                 {count : 3, id :  5}, //grand prism
                 {count : 1, id :  7}, //attack crystal
+                {count : 2, id : 16}, //green boostgem
+                {count : 2, id : 17}, //red boostgem
+                {count : 2, id : 18}, //blue boostgem
+                {count : 2, id : 19}, //yellow boostgem
             ])
         }
         if(chest_level >= 40){
@@ -319,8 +362,8 @@ let functions = {
         npc.sprite_id = "c00_013";
         npc.npc_id = "1234567890";
         npc.name = "Chest";
-        npc.pre_combat_dialog = "You opened the chest...";
-        npc.post_combat_dialog = "";
+        npc.pre_combat_dialogue = "You opened the chest...";
+        npc.post_combat_dialogue = "";
         npc.remove_on_finish = true;
 
         return npc;
@@ -334,7 +377,7 @@ let functions = {
     genmap_ooch_list : function(level){
         let ooch_list = db.monster_data.array();
         ooch_list.filter((mon) => 
-            mon.evo_stage > 0 && //remove all mons that are evolved (we will evolve them later)
+            mon.evo_stage == 0 && //remove all mons that are evolved (we will evolve them later)
             mon.id >= 0 && //remove uncatchable mons
             ![ //remove special mons the player shouldnt see
                 34, //Purif-i
@@ -345,10 +388,10 @@ let functions = {
             ].includes(mon.id));
         
         for(let ooch of ooch_list){
-            let evo_level = ooch.evo_level;
+            let evo_level = ooch.evo_lvl;
             if(evo_level <= level){
                 let evo = db.monster_data.get(`${ooch.evo_id}`);
-                if(evo_level != evo.evo_level){ //Prevent cyclical evolutions from infinitely looping this
+                if(evo_level != evo.evo_lvl){ //Prevent cyclical evolutions from infinitely looping this
                     ooch_list.push(evo);
                 }
             }
@@ -433,7 +476,7 @@ let functions = {
         ]);
         npc.npc_id = "1234567890";
         npc.name = "Wandering Trainer";
-        npc.pre_combat_dialog = _.sample([
+        npc.pre_combat_dialogue = _.sample([
             "...",
             "???",
             "!!!",
@@ -477,7 +520,7 @@ let functions = {
             "This isn't even my final form!",
             "If not supposed to eat battery, why battery taste good?"
         ])
-        npc.post_combat_dialog = "*The trainer suddenly vanishes...*"
+        npc.post_combat_dialogue = "*The trainer suddenly vanishes...*"
         npc.remove_on_finish = true;
 
         return npc;

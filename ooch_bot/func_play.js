@@ -256,7 +256,7 @@ module.exports = {
 
                         //If the map has a failsafe pos and the position to is invalid, go to the failsafe pos
                         //This should only occur in generated maps, as their connection positions may change
-                        if ((obj.connect_x == -1 || obj.connect_y == -1) && map_info.has("map_failsafe_pos")){
+                        if ((obj.connect_x == -1 || obj.connect_y == -1) && map_info.map_failsafe_pos != undefined){
                             playerx = map_info.map_failsafe_pos.x;
                             playery = map_info.map_failsafe_pos.y;
                         }
@@ -451,7 +451,9 @@ module.exports = {
                     
                     // Delete the current playspace
                     let playspace_msg = await thread.messages.fetch(db.profile.get(user_id, 'display_msg_id')).catch(() => {});
-                    await playspace_msg.delete().catch(() => {});
+                    if (playspace_msg !== undefined) {
+                        await playspace_msg.delete().catch(() => {});
+                    }
 
                     shop_collector = await thread.createMessageComponentCollector({ time: 600000 });
                     shop_collector.on('collect', async sel => {
@@ -747,15 +749,13 @@ module.exports = {
             }
         }
 
-        
-
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
         let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
-            if(map_info.map_generated){npc_flag += map_info.map_name; }
+            if(map_obj.map_generated){npc_flag += map_obj.map_name; }
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
             if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
