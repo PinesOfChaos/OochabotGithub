@@ -376,16 +376,16 @@ let functions = {
      */
     genmap_ooch_list : function(level){
         let ooch_list = db.monster_data.array();
-        ooch_list.filter((mon) => 
-            mon.evo_stage == 0 && //remove all mons that are evolved (we will evolve them later)
-            mon.id >= 0 && //remove uncatchable mons
-            ![ //remove special mons the player shouldnt see
+        ooch_list = ooch_list.filter((mon) => (
+            (mon.evo_stage == 0) && //remove all mons that are evolved (we will evolve them later)
+            (mon.id >= 0) && //remove uncatchable mons
+            !([ //remove special mons the player shouldnt see
                 34, //Purif-i
                 105, //Nullifly,
                 96, //Tryptid
                 97, //Roswier
                 98, //Chemerai
-            ].includes(mon.id));
+            ].includes(mon.id))));
         
         for(let ooch of ooch_list){
             let evo_level = ooch.evo_lvl;

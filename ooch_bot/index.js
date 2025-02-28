@@ -58,11 +58,13 @@ const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
 // Runs at 9:00am (MST) every day
 cron.schedule('00 16 * * *', async () => { 
     genmap_allmaps(client);
-}, {-
+}, {
     scheduled: true,
 });
 
 client.on('ready', async () => {
+    
+
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
 

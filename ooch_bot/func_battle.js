@@ -548,10 +548,13 @@ let functions = {
             if(action.action_type == BattleAction.Attack){
                 let move = db.move_data.get(action.move_id);
                 let effects = move.effect;
+            
                 for(let effect of effects) {
-                    if (typeof effect == String) {
+
+                    if (typeof effect.status == "string") {
                         let status_split = effect.status.split('_');
                         if(status_split[0] == 'priority'){
+                            
                             move_priority += parseInt(status_split[1]) * 10_000;
                         }
                     }
@@ -1220,7 +1223,7 @@ let functions = {
             let ooch, eot_result, slot;
             for(let user of battle_data.users) {
                 ooch = user.party[user.active_slot];
-                slot = user.slot_actions[user.user_index];
+                slot = user.slot_actions[user.active_slot];
                 if(!ooch.alive){ continue; } //Skip this one if it's dead
 
                 let remove_reveal = true;
@@ -2299,7 +2302,7 @@ let functions = {
             let throw_chance = Math.random();
             let prism_wiggles = (throw_chance - prism_chance > 0.5 ? 0 : (throw_chance - prism_chance > 0.3 ? 1 : 2 ))
 
-            console.log(throw_chance, prism_chance, throw_chance - prism_chance);
+            //console.log(throw_chance, prism_chance, throw_chance - prism_chance);
     
             if (throw_chance < prism_chance) {
                 return [true, 2];
@@ -2405,10 +2408,11 @@ let functions = {
         //Weather effects
         switch(battle_data.weather){
             case Weather.Clear: break; //Do Nothing
+            case Weather.None: break; //Do Nothing
             case Weather.Heatwave: 
                 if(!ooch.type.includes(OochType.Flame)){
                     let hp_lost = Math.floor(ooch.stats.hp / 10)
-                    ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
+                    ooch.current_hp = _.clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
                     ability_text += `\n${ooch.emote} **${ooch.nickname}** is damaged by the intesnse heat and loses ${hp_lost} HP!`;
                 }
             break;
@@ -2428,7 +2432,7 @@ let functions = {
                             ability_text += `\n${ooch.emote} **${ooch.nickname}** was energized and its ATK increased!`;
                             ooch = functions.modify_stat(ooch, Stats.Attack, 1);
                         }
-                        ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
+                        ooch.current_hp = _.clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
                         slot_info.counter_thunderstorm = 0;
                     break;
                 }
