@@ -1267,7 +1267,7 @@ let functions = {
                                 end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
                                 ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
                             }
-                        break;s
+                        break;
                         case Status.Sleep:
                             let sleep_val = Math.round(ooch.stats.hp/10);
                             ooch.current_hp += sleep_val;
@@ -1281,7 +1281,7 @@ let functions = {
                             end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
                         break;
                         case Status.Infect:
-                            let infect_val = Math.round(ooch.stats.hp/20)
+                            let infect_val = Math.round(ooch.stats.hp/16);
                             ooch.current_hp -= infect_val;
                             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
                             if (opposing_ooch != undefined) {
@@ -2571,6 +2571,8 @@ let functions = {
             else { going_last = false}
         }
 
+        
+
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
 
@@ -2595,15 +2597,24 @@ let functions = {
         if (move_effects.some(effect => effect.status === 'random')) move_type = _.sample(defender.type);
         let move_type_emote =      functions.type_to_emote(move_type);
 
+
         //For interactions that depend on going last/first
         let first_last_failed_text = '' //If the move doesn't have any damage after doing this check we should fail the move
-        if(going_first && move_effects.some(effect => effect.status === Status.GoingFirstBonus)) {  
-            move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingFirstBonus)?.chance || 0))
-            if(move_damage == 0){ first_last_failed_text += `\n${attacker_emote} **${atkOochName}** missed its chance!`}
+        if(move_effects.some(effect => effect.status === Status.GoingFirstBonus)) {  
+            if(going_first){
+                move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingFirstBonus)?.chance || 0))
+            }
+            else if(move_damage == 0){ 
+                first_last_failed_text += `it missed its chance!`
+            }
         }
-        if(going_last && move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
-            move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
-            if(move_damage == 0){ first_last_failed_text += `\n${attacker_emote} **${atkOochName}** was too early!`}
+        if(move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
+            if(going_last){
+                move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
+            }
+            else if(move_damage == 0){ 
+                first_last_failed_text += `it moved too quickly!`
+            }
         }
 
         //For moves with a weather-dependant type
@@ -2719,22 +2730,24 @@ let functions = {
         if(defender.status_effects.includes(Status.Vanish)){ chance_to_hit = 0; }
         if(selfTarget == true){ chance_to_hit = 1; }
         
+        //Text for if we try to do a thing but fail
+        let tried_to_text = `${attacker_emote} **${atkOochName}**\'s tried to use **${move_name}**, but`
 
         let do_wakeup = (.3 > Math.random()) && (attacker.status_effects.includes(Status.Sleep));
         if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
-            string_to_send += `\n${attacker_emote} **${atkOochName}** is SLEEPING...`;
+            string_to_send += `\n${attacker_emote} **${atkOochName}** is <:status_sleep:1335446202275070034> SLEEPING...`;
         }
         else if(first_last_failed_text != ''){
-            string_to_send += first_last_failed_text;
+            string_to_send += `${tried_to_text} ${first_last_failed_text}`;
         }
         else if(defender.ability == Ability.Phantasmal && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
-            string_to_send += `\n${defender_emote} **${defOochName}**\'s **Phantasmal** makes it immune to Neutral moves!`;
+            string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**\'s **Phantasmal** makes it immune to Neutral-type moves!`;
         }
         else if(defender.ability == Ability.Protector && type_multiplier < 1 && slot_defender.this_turn_switched_in){ //Protector mons are immune to damage types they resist the turn they swap in
-            string_to_send += `\n${defender_emote} **${defOochName}**\'s **Protector** makes it immune to moves it resists!`;
+            string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**\'s **Protector** makes it immune to moves it resists!`;
         }
         else if(attacker.ability == Ability.DoubleOrNothing && ability_dmg_multiplier < 1 && move_damage > 0){
-            string_to_send += `\n${attacker_emote} **${atkOochName}**\'s **Double or Nothing** didn't pay off...`;
+            string_to_send += `\n${tried_to_text} but its **Double or Nothing** didn't pay off...`;
         }
         else if (chance_to_hit > Math.random() || move_guarantee_hit){ //Does the attack successfully land?
             if(do_wakeup){ //We woke up!

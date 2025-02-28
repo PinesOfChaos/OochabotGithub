@@ -165,6 +165,8 @@ module.exports = {
             if (!stop_moving) {
                 let x1,y1,x2,y2;
                 for (let obj of map_events) {
+                    if(stop_moving){ break; }
+
                     x1 = (obj.x) <= playerx;
                     y1 = (obj.y) <= playery;
                     x2 = (obj.x + obj.width) >= playerx;
@@ -182,8 +184,9 @@ module.exports = {
             //NPCs
             if(!stop_moving){
                 for(let obj of map_npcs){
+                    if(stop_moving){ break; } //Only interact with one NPC at a time (come back to this later maybe)
+
                     let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
-                    if(map_info.map_generated){npc_flag += map_info.map_name; }
 
                     //Skip NPCs if they meet any of these conditions
                     if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
@@ -234,6 +237,7 @@ module.exports = {
             //Transitions
             if(!stop_moving){
                 for(let obj of map_transitions){
+                    if(stop_moving){ break; }
                     if(obj.x == playerx && obj.y == playery){
                         stop_moving = true;
                         playerx = obj.connect_x;
@@ -267,6 +271,7 @@ module.exports = {
             //Save Points
             if(!stop_moving){
                 for(let obj of map_savepoints){
+                    if(stop_moving){ break; }
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
                         stop_moving = true;
@@ -407,6 +412,7 @@ module.exports = {
             }
             //Shops
             for(let obj of map_shops){
+                if(stop_moving){ break; }
                 //Check if player collides with this shop's position
                 if(obj.x == playerx && obj.y == playery && !stop_moving){
                     stop_moving = true;
@@ -618,7 +624,7 @@ module.exports = {
                     if ((Math.random() <= encounter_chance) && (!stop_moving)) {
                         let spawn_zone, x1,y1,x2,y2;
                         for(let j = 0; j < map_spawns.length; j++){
-                            
+                            if(stop_moving){ break;}
                             spawn_zone = map_spawns[j];
                             x1 = (spawn_zone.x) <= playerx;
                             y1 = (spawn_zone.y) <= playery;
@@ -666,6 +672,7 @@ module.exports = {
                                         }
                                     })
                                 })
+
                             }
 ;                        }
                     }
@@ -755,7 +762,6 @@ module.exports = {
         
         for (let obj of map_npcs) {
             let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`
-            if(map_obj.map_generated){ npc_flag += map_obj.map_name; }
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
             if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {

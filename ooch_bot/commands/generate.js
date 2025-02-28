@@ -1436,7 +1436,6 @@ module.exports = {
         create_status(10,  'Petrified', '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
         create_status(11,  'Weakened',  '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
         create_status(12,  'Revealed',  '<:status_reveal:1339448769871220866>',     'The Oochamon is guaranteed to be hit, it is also unable to gain the <:status_vanish:1274938531864776735> VANISHED status.');
-        //Poison stackable, weak hp drain status
         
         //#endregion
 

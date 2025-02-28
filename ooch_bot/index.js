@@ -63,8 +63,6 @@ cron.schedule('00 16 * * *', async () => {
 });
 
 client.on('ready', async () => {
-    
-
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
 

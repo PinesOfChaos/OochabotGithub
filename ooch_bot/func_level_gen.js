@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { OochType, GenmapTheme } = require("./types");
+const { OochType, GenmapTheme, Weather } = require("./types");
 const { create_ooch, setup_playspace_str } = require('./func_play.js');
 const db = require("./db.js")
 const fs = require('fs');
@@ -60,7 +60,9 @@ let functions = {
                     types_primary : [OochType.Fungal],
                     types_secondary : [OochType.Sound, OochType.Ooze],
 
-                    map_naturalness : .7
+                    map_naturalness : .7,
+
+                    weather_options : [Weather.None],
                 })
             break;
             case GenmapTheme.ObsidianPath: //Obsidian Path
@@ -74,7 +76,9 @@ let functions = {
                     types_primary : [OochType.Flame],
                     types_secondary : [OochType.Stone, OochType.Crystal],
 
-                    map_naturalness : .5
+                    map_naturalness : .5,
+
+                    weather_options : [Weather.None, Weather.Heatwave],
                 })
             break;
         }
@@ -112,6 +116,7 @@ let functions = {
         let npcs = [];
         let shops = [];
         let tiles = [];
+        let weatherzones = [];
 
         let start_pos = false;
         let end_pos = false;
@@ -190,6 +195,20 @@ let functions = {
             ))
         }
         
+        //Add weather depending on the environment
+        let weather_type = _.sample(theme.weather_options);
+        if(weather_type != Weather.None){
+            weatherzones.push({
+                x : 0,
+                y : 0, 
+                width : width,
+                height : height,
+                weather_name : weather_type,
+                flag_kill : "",
+                flag_required : ""
+            })
+        }
+
         //Add end of floor exit tile
         transitions.push({
             connect_map : exit_map,
@@ -209,6 +228,7 @@ let functions = {
             map_transitions : transitions,
 
             map_tiles : tiles,
+            map_weather : weatherzones,
 
             map_info : {
                 map_battleback : "battle_bg_hub",
@@ -249,6 +269,11 @@ let functions = {
      * @returns NPC object with all default values blank, empty, or 0
      */
     genmap_empty_npc : function(){
+        let pt1 = (`000000${_.random(0, 999999)}`).slice(-6);
+        let pt2 = (`000000${_.random(0, 999999)}`).slice(-6);
+        let pt3 = (`000000${_.random(0, 999999)}`).slice(-6);
+        let npc_id = `${pt1}${pt2}${pt3}_generated`;
+
         return({
             aggro_range : 0,
             coin : 0,
@@ -259,7 +284,7 @@ let functions = {
             is_catchable : false,
             items : [],
             name : "",
-            npc_id : "",
+            npc_id : npc_id,
             
             pre_combat_dialogue: "",
             post_combat_dialogue: "",
@@ -360,7 +385,6 @@ let functions = {
         npc.aggro_range = 0;
         npc.items = chest_loot;
         npc.sprite_id = "c00_013";
-        npc.npc_id = "1234567890";
         npc.name = "Chest";
         npc.pre_combat_dialogue = "You opened the chest...";
         npc.post_combat_dialogue = "";
@@ -380,8 +404,9 @@ let functions = {
             (mon.evo_stage == 0) && //remove all mons that are evolved (we will evolve them later)
             (mon.id >= 0) && //remove uncatchable mons
             !([ //remove special mons the player shouldnt see
+                26, //Blipoint
                 34, //Purif-i
-                105, //Nullifly,
+                105, //Nullifly
                 96, //Tryptid
                 97, //Roswier
                 98, //Chemerai
@@ -474,7 +499,6 @@ let functions = {
         npc.sprite_id = _.sample([
             "c00_001", "c00_002", "c00_003", "c00_004", "c00_005", "c00_011", "c00_014",
         ]);
-        npc.npc_id = "1234567890";
         npc.name = "Wandering Trainer";
         npc.pre_combat_dialogue = _.sample([
             "...",

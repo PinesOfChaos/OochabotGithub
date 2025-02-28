@@ -12,10 +12,6 @@ module.exports = {
         .setDescription('Battle in Oochamon!')
         .addSubcommand(subcommand =>
             subcommand
-                .setName('global')
-                .setDescription('Battle with anyone from any server!.'))
-        .addSubcommand(subcommand =>
-            subcommand
                 .setName('server')
                 .setDescription('Battle against someone in your own server!')
                 .addUserOption(option => 
