@@ -189,7 +189,7 @@ let functions = {
      * @param {Boolean} give_rewards Give rewards at the end of a battle
      * @param {Boolean} allow_run Allow running from the battle
      */
-    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial') {
+    setup_battle: async function(users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
         const { botClient } = require("./index.js");
 
         // Add index to users
@@ -214,6 +214,7 @@ let functions = {
             users : users,
 
             fake_battle : fake_battle,
+            is_online : is_online,
 
             turn_timer : turn_timer,
             allow_items : allow_items,
@@ -223,6 +224,7 @@ let functions = {
             field_effect : FieldEffect.None,
             oochabux: oochabux,
             amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+
         }
 
         if (fake_battle) {
@@ -310,6 +312,16 @@ let functions = {
         for(let user of battleDataObj.users){
             switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
         }
+
+        switch(weather){
+            case Weather.Heatwave: 
+                switch_in_text += '\n☀️ *The extreme heat of the area makes the Oochamon start to sweat...*'
+            break;
+            case Weather.Thunderstorm:
+                switch_in_text += '\n⛈️ *A thunderstorm starts to brew...*'
+            break;
+        }
+
         if(switch_in_text != ''){
             await functions.distribute_messages(battleDataObj, { embeds : [functions.battle_embed_create(switch_in_text)]});
         }
@@ -924,14 +936,18 @@ let functions = {
                             }
                         }
 
-                        bag_select.addComponents(
-                            new StringSelectMenuBuilder()
-                                .setCustomId('heal_item_select')
-                                .setPlaceholder('Select an item in your heal inventory to use!')
-                                .addOptions(heal_select_options),
-                        );
+                        if (heal_select_options.length > 0) {
+                            bag_select.addComponents(
+                                new StringSelectMenuBuilder()
+                                    .setCustomId('heal_item_select')
+                                    .setPlaceholder('Select an item in your heal inventory to use!')
+                                    .addOptions(heal_select_options),
+                            );
 
-                        await i.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bagButtons, backButton] })
+                            await i.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bagButtons, backButton] })
+                        } else {
+                            await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] })
+                        }
 
                     } else if (customId == BattleInput.BagPrism) {
 
@@ -1284,6 +1300,8 @@ let functions = {
                             let infect_val = Math.round(ooch.stats.hp/16);
                             ooch.current_hp -= infect_val;
                             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                            let opposing_ooch = battle_data.users.filter(u => u.team_id != user.team_id);
+                            opposing_ooch = opposing_ooch[0];
                             if (opposing_ooch != undefined) {
                                 opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
                                 end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from being **INFECTED!**`;
@@ -1670,11 +1688,12 @@ let functions = {
             }
         }
 
-        switch(battle_data.field_effect){
+        switch(battle_data.field_effect) {
             case FieldEffect.JaggedGround:
                 if(!ooch_to.type.includes(OochType.Stone)){
+                    let jagged_dmg = Math.floor(ooch_to.stats.hp * 0.1);
                     ooch_to.current_hp = _.clamp(Math.floor(ooch_to.current_hp - ooch_to.stats.hp * 0.1), 1, ooch_to.stats.hp);
-                    string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** was hurt by the jagged terrain!`;
+                    string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** lost **${jagged_dmg} HP** from the jagged terrain!`;
                 }
             break;
         }
@@ -2403,33 +2422,32 @@ let functions = {
                 break;
             }
         }
-        
-    
+
         //Weather effects
         switch(battle_data.weather){
             case Weather.Clear: break; //Do Nothing
             case Weather.None: break; //Do Nothing
             case Weather.Heatwave: 
-                if(!ooch.type.includes(OochType.Flame)){
-                    let hp_lost = Math.floor(ooch.stats.hp / 10)
+                if(!ooch.type.includes(OochType.Flame)) {
+                    let hp_lost = Math.floor(ooch.stats.hp / 10);
                     ooch.current_hp = _.clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
-                    ability_text += `\n${ooch.emote} **${ooch.nickname}** is damaged by the intesnse heat and loses ${hp_lost} HP!`;
+                    ability_text += `\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
                 }
             break;
             case Weather.Thunderstorm:
                 slot_info.counter_thunderstorm++;
                 switch(slot_info.counter_thunderstorm){
                     case 1:
-                        ability_text += `\n${ooch.emote} **${ooch.nickname}** begins to spark...`;
+                        ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** begins to spark...`;
                     break;
                     case 2:
-                        ability_text += `\n${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
+                        ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
                     break;
                     case 3:
                         let hp_lost = Math.floor(ooch.stats.hp / 2);
-                        ability_text += `\n${ooch.emote} **${ooch.nickname}** is struck by lightning and loses ${hp_lost} HP!`;
+                        ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
                         if(ooch.type.includes(OochType.Tech)){
-                            ability_text += `\n${ooch.emote} **${ooch.nickname}** was energized and its ATK increased!`;
+                            ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is energized by the lightning strike and **had its ATK increased!**`;
                             ooch = functions.modify_stat(ooch, Stats.Attack, 1);
                         }
                         ooch.current_hp = _.clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
@@ -3518,7 +3536,7 @@ let functions = {
      * @param {String} user_index The user index whose battle to end.
      * @param {Boolean} play_end True if finish_battle came from /play.
      */
-    finish_battle: async function(battle_data, user_index, play_end) {
+    finish_battle: async function(battle_data, user_index, play_end = false) {
         const { event_process } = require('./func_event.js');
         const { botClient } = require("./index.js");
         const { setup_playspace_str } = require('./func_play.js'); 
@@ -3528,10 +3546,11 @@ let functions = {
         let battle_won = !user_info.defeated; // We won if we were not defeated
         let user_id = user_info.user_id;
         let thread = botClient.channels.cache.get(user_info.thread_id);
+        let is_online = battle_data.is_online;
         
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
-            await thread.bulkDelete(battle_data.battle_msg_counter + 1);
+            await thread.bulkDelete(battle_data.battle_msg_counter + 1).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;
             do {
@@ -3541,7 +3560,7 @@ let functions = {
             while(message_count > thread.memberCount);
         }
 
-        if(!battle_data.fake_battle) {
+        if(!battle_data.fake_battle && !play_end) {
             //Reset relevant ooch info and stuff
             for (let ooch of user_info.party){
                 ooch.stats.atk_mul = 0;
@@ -3591,7 +3610,7 @@ let functions = {
             db.battle_data.delete(battle_data.battle_id);
         }
         
-        if (battle_won === true) {
+        if (battle_won === true && is_online == false && play_end == false) {
             // If we won the battle
             let cur_event_array = db.profile.get(user_id, 'cur_event_array');
             let cur_event_pos = parseInt(db.profile.get(user_id, 'cur_event_pos'));
@@ -3602,7 +3621,7 @@ let functions = {
             }
         }
 
-        if (play_end) {
+        if (play_end && is_online) {
             await thread.send({ content: 'A player has quit the battle, so it has been closed.', components: [closeButton] });
         }
     },

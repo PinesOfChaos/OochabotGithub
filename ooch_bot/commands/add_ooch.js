@@ -18,10 +18,10 @@ module.exports = {
                 .setDescription('Level of ooch')
                 .setRequired(false)),
     async execute(interaction) {
-
-        if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+        await interaction.deferReply();
+        if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
         let ooch_id = interaction.options.getString('oochamon');
-        if (isNaN(ooch_id)) return interaction.reply('You must input an oochamon ID here.');
+        if (isNaN(ooch_id)) return interaction.editReply('You must input an oochamon ID here.');
         ooch_id = parseInt(ooch_id);
         let level = interaction.options.getInteger('lv');
         if (level == null) level = 5;
@@ -39,7 +39,7 @@ module.exports = {
         db.profile.math(interaction.user.id, '+', 1, `oochadex[${ooch_id}].seen`);
         db.profile.math(interaction.user.id, '+', 1, `oochadex[${ooch_id}].caught`);
         
-        return interaction.reply(`Added **${ooch_id}**: ${db.monster_data.get(ooch_id, 'emote')} **${db.monster_data.get(ooch_id, 'name')}** (level ${level}) to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
+        return interaction.editReply(`Added **${ooch_id}**: ${db.monster_data.get(ooch_id, 'emote')} **${db.monster_data.get(ooch_id, 'name')}** (level ${level}) to ${dest == 'ooch_party' ? 'your party!' : 'the Oochabox!'}`)
     },
 };
 

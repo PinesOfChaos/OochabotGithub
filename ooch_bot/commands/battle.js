@@ -81,7 +81,7 @@ module.exports = {
                 await intUserTradeMsg.delete().catch(() => {});
                 await otherUserTradeMsg.delete().catch(() => {});
 
-                await setup_battle([intBattleUser, otherBattleUser], Weather.None, 0, 0, false, false, false, true, 25);
+                await setup_battle([intBattleUser, otherBattleUser], Weather.None, 0, 0, false, false, false, true, 25, 'battle_bg_tutorial', true);
             }
         })
 

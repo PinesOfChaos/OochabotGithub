@@ -190,7 +190,7 @@ let functions = {
         for(let i = npc_count; i < misc_positions.length; i++){
             
             let chest = functions.genmap_chest(misc_positions[i].x, misc_positions[i].y, level_min, level_max);
-            npc.npc_id += name; //Append the map name to the NPC to be removed later
+            chest.npc_id += name; //Append the map name to the NPC to be removed later
             npcs.push(chest)
         }
         

@@ -1702,7 +1702,7 @@
     "effect": [
       {
         "status": "field",
-        "chance": "Jagged Groun",
+        "chance": "jagged ground",
         "target": 3
       }
     ],
@@ -1719,7 +1719,7 @@
     "effect": [
       {
         "status": "field",
-        "chance": "Echo Chamber",
+        "chance": "echo chamber",
         "target": 3
       }
     ],
@@ -1736,7 +1736,7 @@
     "effect": [
       {
         "status": "field",
-        "chance": "Wetlands",
+        "chance": "wetlands",
         "target": 3
       }
     ],
@@ -1753,7 +1753,7 @@
     "effect": [
       {
         "status": "field",
-        "chance": "Twisted Reality",
+        "chance": "twisted reality",
         "target": 3
       }
     ],
@@ -1770,7 +1770,7 @@
     "effect": [
       {
         "status": "weather",
-        "chance": "Heatwave",
+        "chance": "heatwave",
         "target": 3
       }
     ],
@@ -1787,7 +1787,7 @@
     "effect": [
       {
         "status": "weather",
-        "chance": "Thunderstorm",
+        "chance": "thunderstorm",
         "target": 3
       }
     ],
@@ -1804,7 +1804,7 @@
     "effect": [
       {
         "status": "weather",
-        "chance": "Clear",
+        "chance": "clear",
         "target": 3
       }
     ],

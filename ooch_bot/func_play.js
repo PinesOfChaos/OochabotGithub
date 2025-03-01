@@ -121,7 +121,21 @@ module.exports = {
         let map_events =        map_obj.map_events;
         let map_shops =         map_obj.map_shops;
         let map_bg =            map_obj.map_info.map_battleback;
-        if (map_shops == undefined || map_shops == null) map_shops = [];        
+        let map_weather =       map_obj.map_weather;
+        if (map_shops == undefined || map_shops == null) map_shops = [];   
+        
+        let weather_options = []
+        let px = player_location.x;
+        let py = player_location.y;
+        for(let w of map_weather) {
+            if(px >= w.x && py >= w.y &&
+                px <= w.x + w.width && py <= w.y + w.height
+            ){
+                weather_options.push(w.weather_name);
+            }
+        }
+        
+        let battle_weather = weather_options.length > 0 ? _.sample(weather_options) : Weather.None
         
         //set where the player is going to move
         switch(direction.toLowerCase()){
@@ -201,6 +215,7 @@ module.exports = {
                         playery -= ymove;
 
                         let npc_event_obj = await event_from_npc(obj, user_id);
+                        console.log(npc_event_obj);
                         event_process(user_id, thread, npc_event_obj);
                     }
                     else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
@@ -291,7 +306,7 @@ module.exports = {
                                     selected.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
 
                                 } else if (selected.customId == 'back_to_box') {
-                                    box_row = buildBoxData(interaction.user, page_num);
+                                    box_row = buildBoxData(user_id, page_num);
                                     selected.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
                                 } else if (selected.customId == 'back_to_save') {
                                     selected.update({ content: `Would you like to heal your Oochamon and set a checkpoint here?\n*You can access your box here as well.*`, components: [confirm_buttons, oochabox_button] });
@@ -658,11 +673,11 @@ module.exports = {
                                         let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
-                                            await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true, false, false, map_bg);
+                                            await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                         }
                                         else {
                                             if (Math.random() > .6) { //40% chance to start the battle if 'Run' is chosen
-                                                await setup_battle([oochObj, userObj], Weather.None, 0, 0, true, true, true, false, false, map_bg);
+                                                await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 60/40, ignore the input*/

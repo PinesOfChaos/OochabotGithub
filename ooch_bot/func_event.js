@@ -135,7 +135,8 @@ let functions = {
             let battle_bg = map_data.map_info.map_battleback;
 
             // Setup the battle for trainers
-            await setup_battle([userObj, trainerObj], Weather.None, obj_content.coin, 0, true, true, false, false, false, battle_bg);
+            if (obj_content.battle_weather == undefined) obj_content.battle_weather = Weather.None;
+            await setup_battle([userObj, trainerObj], obj_content.battle_weather, obj_content.coin, 0, true, true, false, false, false, battle_bg);
 
             // Increment by one so that after the battle we end up in the next part of the event.
             db.profile.set(user_id, current_place+1, 'cur_event_pos');
@@ -538,24 +539,25 @@ let functions = {
             flags_to_give.push(npc_obj.flag_given)
         }
 
-        //Check for weather in case we need to battle in a weatherzone
+        //Set any post-combat_flags
+        flags_to_give.push(npc_flag)
+
         let player_location = db.profile.get(user_id, 'location_data');
-        let map_name = player_location.area;
-        let map_obj = db.maps.get(map_name.toLowerCase());
-        let weather_options = [Weather.None]
+        let map_obj = db.maps.get(player_location.area.toLowerCase());
+        let map_weather = map_obj.map_weather;
+        let weather_options = []
         let px = player_location.x;
         let py = player_location.y;
-        for(let w of map_obj.map_weather){
+        for(let w of map_weather) {
             if(px >= w.x && py >= w.y &&
                 px <= w.x + w.width && py <= w.y + w.height
             ){
                 weather_options.push(w.weather_name);
             }
         }
-        let battle_weather = _.sample(weather_options);
-
-        //Set any post-combat_flags
-        flags_to_give.push(npc_flag)
+        
+        let battle_weather = weather_options.length > 0 ? _.sample(weather_options) : Weather.None
+        npc_obj.battle_weather = battle_weather;
 
         // Set the dialogue to be properly formatted
         // Sign NPCs should display all their info at once

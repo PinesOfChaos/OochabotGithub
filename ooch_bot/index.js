@@ -63,6 +63,7 @@ cron.schedule('00 16 * * *', async () => {
 });
 
 client.on('ready', async () => {
+
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
 
@@ -147,7 +148,7 @@ client.on('ready', async () => {
                 // Delete turn messages
                 let msgDeleteCount = db.battle_data.get(battle, 'turn_msg_counter');
                 if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
-                    await userThread.bulkDelete(msgDeleteCount);
+                    await userThread.bulkDelete(msgDeleteCount).catch(() => {});
                 }  
                 
                 user.action_selected = false;

@@ -94,6 +94,7 @@ module.exports = {
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)
             move.accuracy = Math.abs(move.accuracy);
+            if (move.accuracy == -1) move.accuracy = 100;
             if (move.damage !== 0) {
                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
             } else {
@@ -220,7 +221,10 @@ module.exports = {
             let battleData = db.battle_data.get(curBattleId);
             if (battleData != undefined) {
                 for (let user of battleData.users) {
-                    if (user.is_player) await finish_battle(battleData, user.user_index);
+                    if (user.is_player) {
+                        db.profile.set(user.user_id, 0, 'cur_event_pos');
+                        await finish_battle(battleData, user.user_index, true);
+                    }
                 } 
             }
         }

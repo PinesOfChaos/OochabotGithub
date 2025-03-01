@@ -10,7 +10,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
         .setDescription('Begin playing Oochamon!'),
-    async execute(interaction) {
+    async execute(interaction, client) {
         await interaction.deferReply();
         let target = interaction.user.id;
 
@@ -20,6 +20,7 @@ module.exports = {
         if (!db.profile.has(target)) {
             return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
         } 
+
         let thread = interaction.channel;
 
         if (interaction.channel.type != ChannelType.PrivateThread) {
@@ -71,7 +72,12 @@ module.exports = {
         if (curBattleId != false && db.battle_data.has(curBattleId)) {
             let battleData = db.battle_data.get(curBattleId);
             for (let user of battleData.users) {
-                await finish_battle(battleData, user.user_index, true);
+                db.profile.set(interaction.user.id, 0, 'cur_event_pos');
+                let userThread = client.channels.cache.get(user.thread_id);
+                if (user.is_player) {
+                    await finish_battle(battleData, user.user_index, true);
+                    await move(userThread, user.user_id, '', 1);
+                }
             } 
         } else {
             let outputMsg = false;

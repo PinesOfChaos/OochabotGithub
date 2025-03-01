@@ -1214,7 +1214,7 @@ module.exports = {
             damage : 0, accuracy: -1,
             effect : [{status : Status.Field, chance : FieldEffect.Wetlands, target : MoveTarget.None}],
             description : 'Viscous goo spreads across the area, non-Ooze-types move slower.',
-            battle_desc : 'Strage goo floods the battlefield!'
+            battle_desc : 'Strange goo floods the battlefield!'
         });
         create_move({
             id : 112, name : 'Twisted Reality', type : OochType.Magic,
