@@ -379,6 +379,7 @@ module.exports = {
 
         // Disable the party healing button if all Oochamon are at full HP
         let oochHpCheck = db.profile.get(interaction.user.id, 'ooch_party');
+        //console.log(oochHpCheck)
         oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
         if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
 
@@ -724,7 +725,7 @@ module.exports = {
 
                     let displayContent = `Select a move to use!`;
                     if (move_sel_id) {
-                        displayContent = `Selected Move: ${type_to_emote(db.move_data.get(move_sel_id, 'type'))} **${db.move_data.get(move_sel_id, 'name')}**`;
+                        displayContent = `Selected Move: ${type_to_emote(db.move_data.get(move_sel_id, 'type'))} **${db.move_data.get(move_sel_id, 'name')}** (**${db.move_data.get(move_sel_id, 'damage')} power**, **${db.move_data.get(move_sel_id, 'accuracy') == -1 ? `${db.move_data.get(move_sel_id, 'accuracy')}` : '100'}** chance to hit)`;
                     }
 
                     i.update({ content: displayContent, components: [move_list_select, moves_back_button] });

@@ -4548,5 +4548,6 @@
 			"t00_000"
 		]
 	],
-	"map_transitions": []
+	"map_transitions": [],
+	"map_weather": []
 }

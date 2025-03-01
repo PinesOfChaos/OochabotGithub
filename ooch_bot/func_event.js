@@ -166,7 +166,7 @@ let functions = {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
-                    console.log(obj_content.dialogue_portrait);
+                    //console.log(obj_content.dialogue_portrait);
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
                     imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }

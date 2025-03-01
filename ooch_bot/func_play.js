@@ -215,7 +215,7 @@ module.exports = {
                         playery -= ymove;
 
                         let npc_event_obj = await event_from_npc(obj, user_id);
-                        console.log(npc_event_obj);
+                        //console.log(npc_event_obj);
                         event_process(user_id, thread, npc_event_obj);
                     }
                     else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
@@ -297,8 +297,9 @@ module.exports = {
                             confirm_collector = msg.createMessageComponentCollector();
                             confirm_collector.on('collect', async selected => {
 
+                                let pages = 9;
                                 if (selected.customId == 'oochabox') {  
-                                    let pages, box_row, slot_num, ooch_user_data;
+                                    let box_row, slot_num, ooch_user_data;
                                     user_profile = db.profile.get(user_id);
                                     pages = 9; // Number of pages, starts at 0
                                     page_num = 0;
@@ -843,10 +844,15 @@ module.exports = {
      */
     setup_playspace_str: function(user_id) {
         const { map_emote_string } = require('./func_play.js');
+        let player_info = db.profile.get(user_id)
         let player_location = db.profile.get(user_id, 'location_data');
         let biome = player_location.area;
         let playerx = player_location.x;
         let playery = player_location.y;
+        
+        if(player_location == false){
+            return ["Looks like you never finished the intro, try using `/reset` to start over"];
+        }
 
         //Get the map array based on the player's current biome
         let map_obj = db.maps.get(biome.toLowerCase());

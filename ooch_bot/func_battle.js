@@ -1303,8 +1303,9 @@ let functions = {
                             let opposing_ooch = battle_data.users.filter(u => u.team_id != user.team_id);
                             opposing_ooch = opposing_ooch[0];
                             if (opposing_ooch != undefined) {
-                                opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-                                end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from being **INFECTED!**`;
+                                //TODO
+                                //opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
+                                //end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from being **INFECTED!**`;
                             }
                         break;
                         case Status.Doom:
@@ -2311,7 +2312,7 @@ let functions = {
                 let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
+                return ooch;
             } 
             
         } else if (item_data.type == 'prism') {
@@ -3352,8 +3353,6 @@ let functions = {
                 avg_x += ooch_x + team_step;
                 avg_y += ooch_y;
                 avg_num++;
-
-
                 
                 if(user.battle_sprite != false){ //User Sprite
                     let user_sprite = {
@@ -3550,7 +3549,7 @@ let functions = {
         
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
-            await thread.bulkDelete(battle_data.battle_msg_counter + 1).catch(() => {});
+            await thread.bulkDelete(battle_data.battle_msg_counter + 5).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;
             do {
