@@ -28,7 +28,7 @@ let functions = {
                 if(loc_data.area == level){
                     let checkpoint = profile.checkpoint_data;
                     db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
-                    let playspace_str = setup_playspace_str(key);
+                    let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + setup_playspace_str(key);
                     let thread = client.channels.cache.get(profile.play_thread_id);
                     let msg_to_edit = db.profile.get(key, 'display_msg_id');
 
@@ -181,18 +181,17 @@ let functions = {
 
         //Add npcs
         for(let i = 0; i < npc_count; i++){
-            npcs.push(functions.genmap_npc(
-                misc_positions[i].x, misc_positions[i].y,
-                level_min, level_max
-            ))
+            let npc = functions.genmap_npc(misc_positions[i].x, misc_positions[i].y,level_min, level_max);
+            npc.npc_id += name;//Append the map name to the NPC to be removed later
+            npcs.push(npc);
         }
 
         //Add chests (picks up where npcs ends)
         for(let i = npc_count; i < misc_positions.length; i++){
-            npcs.push(functions.genmap_chest(
-                misc_positions[i].x, misc_positions[i].y,
-                level_min, level_max
-            ))
+            
+            let chest = functions.genmap_chest(misc_positions[i].x, misc_positions[i].y, level_min, level_max);
+            npc.npc_id += name; //Append the map name to the NPC to be removed later
+            npcs.push(chest)
         }
         
         //Add weather depending on the environment
@@ -272,7 +271,7 @@ let functions = {
         let pt1 = (`000000${_.random(0, 999999)}`).slice(-6);
         let pt2 = (`000000${_.random(0, 999999)}`).slice(-6);
         let pt3 = (`000000${_.random(0, 999999)}`).slice(-6);
-        let npc_id = `${pt1}${pt2}${pt3}_generated`;
+        let npc_id = `${pt1}${pt2}${pt3}`;
 
         return({
             aggro_range : 0,
@@ -404,6 +403,10 @@ let functions = {
             (mon.evo_stage == 0) && //remove all mons that are evolved (we will evolve them later)
             (mon.id >= 0) && //remove uncatchable mons
             !([ //remove special mons the player shouldnt see
+                0, //Sporbee
+                3, //Roocky
+                6, //Puppyre
+                69, //Nisythe
                 26, //Blipoint
                 34, //Purif-i
                 105, //Nullifly

@@ -538,13 +538,21 @@ let functions = {
             flags_to_give.push(npc_obj.flag_given)
         }
 
-        //Check if the map we're in is a generated one
+        //Check for weather in case we need to battle in a weatherzone
         let player_location = db.profile.get(user_id, 'location_data');
         let map_name = player_location.area;
-        let map_obj =   db.maps.get(map_name.toLowerCase());
-        if(map_obj.map_info.map_generated){
-            npc_flag += map_obj.map_info.map_name;
+        let map_obj = db.maps.get(map_name.toLowerCase());
+        let weather_options = [Weather.None]
+        let px = player_location.x;
+        let py = player_location.y;
+        for(let w of map_obj.map_weather){
+            if(px >= w.x && py >= w.y &&
+                px <= w.x + w.width && py <= w.y + w.height
+            ){
+                weather_options.push(w.weather_name);
+            }
         }
+        let battle_weather = _.sample(weather_options);
 
         //Set any post-combat_flags
         flags_to_give.push(npc_flag)
