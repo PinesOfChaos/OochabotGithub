@@ -75,7 +75,7 @@ let functions = {
             }
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != '' || obj_content.dialogue_portrait != undefined) {
+            if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -161,11 +161,12 @@ let functions = {
             event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != false) {
+            if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
+                    console.log(obj_content.dialogue_portrait);
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
                     imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }
@@ -281,7 +282,7 @@ let functions = {
             event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
-            if (obj_content.dialogue_portrait != false) {
+            if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
                 if (obj_content.dialogue_portrait.includes('NPC|')) {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -385,7 +386,6 @@ let functions = {
 
                 // Oochadex update
                 for (ooch_id of oochChoices) {
-                    db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].seen`);
                     if (ooch_id == parseInt(oochButtonData[1])) {
                         db.profile.math(user_id, '+', 1, `oochadex[${ooch_id}].caught`);
                     }

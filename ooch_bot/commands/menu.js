@@ -320,10 +320,10 @@ module.exports = {
                     break;
                 } 
                 oochadex_sel_options_1.push({
-                    label: oochadex_check.seen != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
-                    description: oochadex_check.seen != 0 ? `Seen: ${oochadex_check.seen} | Caught: ${oochadex_check.caught}` : `???`,
+                    label: oochadex_check.caught != 0 ? `#${i+1}: ${ooch_data.name}` : `#${i+1}: ???`,
+                    description: oochadex_check.caught != 0 ? `Caught: ${oochadex_check.caught}` : `???`,
                     value: `dex_${i}`,
-                    emoji: oochadex_check.seen != 0 ? ooch_data.emote : undefined,
+                    emoji: oochadex_check.caught != 0 ? ooch_data.emote : undefined,
                 })
             }
     
@@ -630,8 +630,6 @@ module.exports = {
 
                 // Finalize putting the ooch into the database and in our menu
                 db.profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
-
-                db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].seen`);
                 db.profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
 
                 let followUpMsg = await interaction.followUp({ content: `# You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
@@ -935,7 +933,6 @@ module.exports = {
                             (oldOoch.stats.spd_iv - 1) * 20 );
                         user_profile.ooch_party[selData[0]] = newOoch;
 
-                        db.profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].seen`);
                         db.profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].caught`);
 
                         item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.name}** into ${newOoch.emote} **${newOoch.name}**!`;

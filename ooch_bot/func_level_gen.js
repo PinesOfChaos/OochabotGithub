@@ -32,10 +32,11 @@ let functions = {
                     let thread = client.channels.cache.get(profile.play_thread_id);
                     let msg_to_edit = db.profile.get(key, 'display_msg_id');
 
-                    await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
-                        await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                    }).catch(() => {});
-
+                    if (thread != undefined && thread != false) {
+                        await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
+                            await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                        }).catch(() => {});
+                    }
                 }
             }
         }
@@ -63,6 +64,7 @@ let functions = {
                     map_naturalness : .7,
 
                     weather_options : [Weather.None],
+                    battle_bg : "battle_bg_fungal_cave"
                 })
             break;
             case GenmapTheme.ObsidianPath: //Obsidian Path
@@ -79,6 +81,7 @@ let functions = {
                     map_naturalness : .5,
 
                     weather_options : [Weather.None, Weather.Heatwave],
+                    battle_bg : "battle_bg_lava_fields"
                 })
             break;
         }
@@ -230,7 +233,7 @@ let functions = {
             map_weather : weatherzones,
 
             map_info : {
-                map_battleback : "battle_bg_hub",
+                map_battleback : theme.battle_bg,
                 map_name : name,
                 map_generated : true,
                 map_failsafe_pos : start_pos,

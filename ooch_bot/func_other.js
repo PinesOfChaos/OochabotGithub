@@ -177,7 +177,6 @@ module.exports = {
         db.profile.set(user_id, false, 'display_msg_id');
         db.profile.set(user_id, false, 'play_thread_id');
         db.profile.set(user_id, false, 'play_guild_id');
-        db.profile.set(user_id, false, 'rollback_profile');
         db.profile.set(user_id, 0, 'battle_msg_counter');
         db.profile.set(user_id, 0, 'battle_turn_counter');
         db.profile.set(user_id, 0, 'turn_msg_counter');
@@ -208,7 +207,7 @@ module.exports = {
 
         // Setup Oochadex template
         for (ooch_id in db.monster_data.keyArray()) {
-            db.profile.push(user_id, { id: ooch_id, seen: 0, caught: 0 }, 'oochadex')
+            db.profile.push(user_id, { id: ooch_id, caught: 0 }, 'oochadex')
         }
     },
 

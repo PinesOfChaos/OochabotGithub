@@ -63,12 +63,11 @@ cron.schedule('00 16 * * *', async () => {
 });
 
 client.on('ready', async () => {
-
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
+        //if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
 
         let user_profile = db.profile.get(user);
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
@@ -192,7 +191,7 @@ client.on('interactionCreate', async interaction => {
         switch (commandName) {
             case 'oochadex':
                 ooch_names = ooch_ids.map(v => {
-                    if (db.profile.get(interaction.user.id, `oochadex`)[v.id].seen != 0) {
+                    if (db.profile.get(interaction.user.id, `oochadex`)[v.id].caught != 0) {
                         return `#${v.id + 1}: ${_.startCase(v.name)}`
                     } else return `???`
                 });
