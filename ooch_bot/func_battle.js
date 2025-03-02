@@ -268,7 +268,7 @@ let functions = {
                         
                         if (user2.is_catchable) { //Wild oochamon
                             battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
-                            if (db.profile.get(user.user_id, `oochadex[${active_ooch}].caught`) == 0) {
+                            if (db.profile.get(user.user_id, `oochadex[${active_ooch.id}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                             }
                             sendOutText += `The wild ${active_ooch.emote} **${active_ooch.name}** wants to battle! ${types_string}\n`
@@ -305,13 +305,13 @@ let functions = {
             }
         }
 
-        db.battle_data.set(battleId, battleDataObj);
-
         //Handle switch-in abilities
         let switch_in_text = '';
         for(let user of battleDataObj.users){
             switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
         }
+
+        db.battle_data.set(battleId, battleDataObj);
 
         switch(weather){
             case Weather.Heatwave: 
@@ -1291,7 +1291,7 @@ let functions = {
                             end_of_round_text += `\n<:status_sleep:1335446202275070034> ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
                         break;
                         case Status.Burn:
-                            let burn_val = Math.round(ooch.stats.hp/10);
+                            let burn_val = Math.round(ooch.stats.hp * 0.07);
                             ooch.current_hp -= burn_val;
                             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
                             end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
@@ -1482,9 +1482,9 @@ let functions = {
 
         user.active_slot = action.slot_target;
         
-        let return_string = (action.is_switching 
-            ? `${user.name} switched from ${db.monster_data.get(ooch_from.id, 'emote')} **${ooch_from.nickname}** to ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
-            : `${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
+        let return_string = (action.is_switching
+            ? `\n${user.name} switched from ${db.monster_data.get(ooch_from.id, 'emote')} **${ooch_from.nickname}** to ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
+            : `\n${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
         )
         if (action.skip_text) {return_string = '';}
 
@@ -1513,7 +1513,6 @@ let functions = {
         let ooch_from = user.party[slot_from];
         let string_to_send = '';
         let status_types = []
-        
 
         //If the ooch is affected by Digitize make it a tech type again
         if (ooch_to.status_effects.includes(Status.Digitize)) {
@@ -2606,6 +2605,7 @@ let functions = {
 
             atk_id = _.sample(db.move_data.keyArray());
             move_info = db.move_data.get(atk_id);
+            move_effects =   move_info.effect;
         }
         let move_name =     move_info.name;
         let move_type =     move_info.type;
@@ -3172,7 +3172,7 @@ let functions = {
         for(let user of battle_data.users){
             user_name = user.is_catchable ? 'Wild' : `${user.name}'s`
             active_ooch = user.party[user.active_slot];
-            hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\``;
+            hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`;
             hp_string += functions.generate_hp_bar(active_ooch, 'plr');
             hp_string += `\n`;
         }

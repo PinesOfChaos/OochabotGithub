@@ -443,8 +443,10 @@ module.exports = {
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = shopSelectOptions.map(id => {
                         let item_data = db.item_data.get(id);
+                        let item_amount = db.profile.get(user_id, `${item_data.category}.${id}`);
+                        if (item_amount == undefined) item_amount = 0;
                         return { 
-                            label: `${item_data.name} (${db.profile.get(user_id, `${item_data.category}.${id}`)}/50) [$${item_data.price}]`,
+                            label: `${item_data.name} (${item_amount}/50) [$${item_data.price}]`,
                             description: item_data.description_short,
                             value: `${id}`,
                             emoji: item_data.emote,
@@ -536,6 +538,7 @@ module.exports = {
                                 let buyAmount = Math.abs(parseInt(m.content));
                                 if (buyAmount > (50 - amtHeld)) buyAmount = (50 - amtHeld);
                                 oochabux -= item.price * buyAmount;
+                                db.profile.set(user_id, oochabux, 'oochabux')
                                 switch (item.category) {
                                     case 'heal_inv': 
                                         db.profile.ensure(user_id, 0, `heal_inv.${item_id}`)

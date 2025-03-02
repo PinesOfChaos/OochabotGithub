@@ -864,17 +864,10 @@ module.exports = {
                             let checkpoint = db.profile.get(interaction.user.id, 'checkpoint_data');
                             let biome_to = checkpoint.area;
 
-                            let map_obj = db.maps.get(biome_to);
-                            let map_savepoints = map_obj.map_savepoints;
-                            map_savepoints = map_savepoints.filter(v => v.is_default !== false);
-                            if (map_savepoints.length == 0) {
-                                map_savepoints = [map_obj.map_savepoints[0]];
-                            }
-
                             //remove the player's info from the old biome and add it to the new one
-                            db.player_positions.set(biome_to, { x: map_savepoints[0].x, y: map_savepoints[0].y }, interaction.user.id);
+                            db.player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, interaction.user.id);
                             db.player_positions.delete(biome_from, interaction.user.id);
-                            db.profile.set(interaction.user.id, { area: biome_to, x: map_savepoints[0].x, y: map_savepoints[0].y }, 'location_data')
+                            db.profile.set(interaction.user.id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
 
                             for (let i = 0; i < db.profile.get(interaction.user.id, 'ooch_party').length; i++) {
                                 db.profile.set(interaction.user.id, db.profile.get(interaction.user.id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);

@@ -82,6 +82,7 @@ module.exports = {
         ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[_.capitalize(v)]).join('')}` 
             : ooch_title += ` [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[_.capitalize(v)]).join('')}`;
         let moveset_str = ``;
+        let ooch_data = db.monster_data.get(ooch.id);
 
         let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
 
@@ -112,9 +113,9 @@ module.exports = {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
 
-        let oochData = db.monster_data.get(ooch.id);
-        if (oochData.evo_id != -1 && oochData.evo_lvl != -1) {
-            infoEmbed.setFooter({ text: `Evolves into ??? at level ${oochData.evo_lvl}` });
+        if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
+            // TODO: Hide this if you haven't caught it.
+            infoEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
         }
 
         return [infoEmbed, get_ooch_art(ooch.name)];

@@ -1685,7 +1685,6 @@ module.exports = {
             abilities: [ Ability.Moist, Ability.Alert ],
             pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
-        
 
         //Moldot
         create_monster({
@@ -2823,8 +2822,8 @@ module.exports = {
             hp: 25, atk: 20, def: 20, spd: 15, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [10, Move.Embolden],
-                [13, Move.Fireball], [16, Move.TangledThreads], [18, Move.Radiate], [23, Move.IronHammer], [26, Move.Impale], 
-                [29, Move.Blight], [31, Move.Heatseeker], [36, Move.DebugBomb], [38, Move.MycoBurst], [43, Move.Reset], 
+                [13, Move.Fireball], [16, Move.TangledThreads], [18, Move.Radiate], [20, Move.MycoBurst], [23, Move.IronHammer], 
+                [26, Move.Impale], [29, Move.Blight], [31, Move.Heatseeker], [36, Move.DebugBomb], [43, Move.Reset], 
                 [-1, Move.CallThunder]
             ],
             abilities: [Ability.Bomber, Ability.Energized],
