@@ -17,18 +17,35 @@ module.exports = {
                 .addUserOption(option => 
                     option.setName('battle_user')
                         .setDescription('The user to battle with.')
-                        .setRequired(true))),
+                        .setRequired(true))
+
+                .addNumberOption(option => 
+                    option.setName('level_to_scale')
+                        .setDescription('Level to scale all Oochamon to. Level 25 is the default.')
+                        .setRequired(false))
+
+                .addStringOption(option => 
+                    option.setName('dont_scale_levels')
+                        .setDescription('If set, keeps your levels as is, rather than scaling them. Scales levesl by default.')
+                        .setRequired(false)
+                        .addChoices({ name: 'yes', value: 'yes' }))),
+
     async execute(interaction) {
-        let otherTradeUser = interaction.options.getUser('battle_user');
-        let intTradeUser = interaction.user;
-        let otherTradeMember = await interaction.guild.members.fetch(otherTradeUser.id);
-        let intTradeMember = interaction.member;
+        let otherBattleUser = interaction.options.getUser('battle_user');
+        if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', ephemeral: true });
+        let levelScale = interaction.options.getNumber('level_to_scale');
+        if (levelScale == null) levelScale = 25;
+        let disableScaleLevel = interaction.options.getString('dont_scale_levels');
+        if (disableScaleLevel == 'yes') levelScale = false;
+
+        let intBattleUser = interaction.user;
+        let otherBattleMember = await interaction.guild.members.fetch(otherBattleUser.id);
+        let intBattleMember = interaction.member;
         let intUserState = db.profile.get(interaction.user.id, 'player_state');
-        let otherUserState = db.profile.get(otherTradeUser.id, 'player_state');
-        let tradeState = 'trading';
+        let otherUserState = db.profile.get(otherBattleUser.id, 'player_state');
 
         if (intUserState == PlayerState.NotPlaying) {
-            return interaction.reply({ content: 'You must be playing the game to trade with other users.', ephemeral: true });
+            return interaction.reply({ content: 'You must be playing the game to battle with other users.', ephemeral: true });
         } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != db.profile.get(interaction.user.id, 'play_thread_id')) {
             return interaction.reply({ content: 'You can\'t battle here.', ephemeral: true });
         } else if (intUserState == PlayerState.Combat) {
@@ -36,17 +53,17 @@ module.exports = {
         }
 
         if (otherUserState == PlayerState.NotPlaying) {
-            return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, ephemeral: true });
         } else if (otherUserState == PlayerState.Combat) {
-            return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a battle right now.`, ephemeral: true });
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the middle of a battle right now.`, ephemeral: true });
         } else if (otherUserState !== PlayerState.Playspace) {
-            return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` })
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** is unable to battle right now, as they are in a different battle or in a menu.` })
         }
 
-        let otherUserThread = db.profile.get(otherTradeUser.id, 'play_thread_id');
-        otherUserThread = await interaction.guild.channels.cache.get(db.profile.get(otherTradeUser.id, 'play_thread_id'));
+        let otherUserThread = db.profile.get(otherBattleUser.id, 'play_thread_id');
+        otherUserThread = await interaction.guild.channels.cache.get(db.profile.get(otherBattleUser.id, 'play_thread_id'));
         if (!otherUserThread || !otherUserThread.isThread()) {
-            return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, ephemeral: true });
         }
 
         //#region Setup Rows/Functions
@@ -57,31 +74,31 @@ module.exports = {
                 new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
             );
 
-        let intUserTradeMsg;
-        await interaction.reply({ content: `Battle invitation sent to **${otherTradeMember.displayName}**! Waiting for response...` });
+        let intUserBattleMsg;
+        await interaction.reply({ content: `Battle invitation sent to **${otherBattleMember.displayName}**! Waiting for response...` });
         await interaction.fetchReply().then(msg => {
-            intUserTradeMsg = msg;
+            intUserBattleMsg = msg;
         });
 
         let intUserThread = interaction.channel;
-        let otherUserTradeMsg = await otherUserThread.send({ content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?`, components: [confirmButtons] });
+        let otherUserBattleMsg = await otherUserThread.send({ content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?`, components: [confirmButtons] });
 
         // Start the battle invitation process
-        confirm_collector = otherUserTradeMsg.createMessageComponentCollector({ max: 1, time: 60000 });
+        confirm_collector = otherUserBattleMsg.createMessageComponentCollector({ max: 1, time: 60000 });
 
         confirm_collector.on('collect', async i => {
             if (i.customId == 'yes') {
                 i.update({ content: `Accepted battle offer! Setting up battle with **${interaction.member.displayName} now...**`, components: [] });
                 db.profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
-                db.profile.set(otherTradeUser.id, PlayerState.Combat, 'player_state');
+                db.profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
 
-                let intBattleUser = await generate_battle_user(UserType.Player, { user_id: intTradeUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
-                let otherBattleUser = await generate_battle_user(UserType.Player, { user_id: otherTradeUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
+                let intBattleUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
+                let otherBattleUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
 
-                await intUserTradeMsg.delete().catch(() => {});
-                await otherUserTradeMsg.delete().catch(() => {});
+                await intUserBattleMsg.delete().catch(() => {});
+                await otherUserBattleMsg.delete().catch(() => {});
 
-                await setup_battle([intBattleUser, otherBattleUser], Weather.None, 0, 0, false, false, false, true, 25, 'battle_bg_tutorial', true);
+                await setup_battle([intBattleUser, otherBattleUser], Weather.None, 0, 0, false, false, false, true, levelScale, 'battle_bg_tutorial', true);
             }
         })
 
@@ -94,10 +111,10 @@ module.exports = {
             }
 
             if (doDelete) {
-                otherUserTradeMsg.delete();
-                await intUserTradeMsg.edit(`**${otherTradeMember.displayName}** has declined your battle offer.`);
+                otherUserBattleMsg.delete();
+                await intUserBattleMsg.edit(`**${otherBattleMember.displayName}** has declined your battle offer.`);
                 await wait(5000);
-                await intUserTradeMsg.delete();
+                await intUserBattleMsg.delete();
             }
         })
 

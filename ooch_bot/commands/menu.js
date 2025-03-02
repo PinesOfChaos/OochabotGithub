@@ -68,6 +68,11 @@ module.exports = {
                 new ButtonBuilder().setCustomId('quick_heal').setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️').setDisabled(true)
             );
 
+        let sel_ooch_back_button = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('back_to_ooch').setLabel('Back').setStyle(ButtonStyle.Danger)
+            );
+
         let party_back_button = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_party').setLabel('Back').setStyle(ButtonStyle.Danger)
@@ -75,9 +80,9 @@ module.exports = {
 
         let moves_back_button = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('back_to_ooch').setLabel('Back').setStyle(ButtonStyle.Danger)
+                new ButtonBuilder().setCustomId('moves').setLabel('Back').setStyle(ButtonStyle.Danger)
             );
-        
+
         let item_back_button = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder().setCustomId('back_to_item').setLabel('Back').setStyle(ButtonStyle.Danger)
@@ -579,7 +584,7 @@ module.exports = {
                     .addOptions(heal_select_options),
                 );
 
-                await i.update({ content: `**Select the healing item you'd like to use on this Oochamon!**`, components: [bag_select, moves_back_button] });
+                await i.update({ content: `**Select the healing item you'd like to use on this Oochamon!**`, components: [bag_select, back_button] });
             } 
             // Oochamon Heal Select Menu
             else if (collectorId == 'party_heal_select') {
@@ -693,7 +698,7 @@ module.exports = {
             // Move switcher button
             else if (selected == 'moves') {
                 let move_buttons = buildMoveData(selected_ooch);
-                i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button]});
+                i.update({ content: `**Moves Switcher for ${selected_ooch.emote} ${selected_ooch.nickname}:**`, embeds: [], components: [move_buttons[0], move_buttons[1], sel_ooch_back_button ], files: []});
             } 
             // Move switcher button/select menu handler
             else if (selected.includes('move_') && selected !== 'discord_move_buttons') {
@@ -708,7 +713,7 @@ module.exports = {
                             let db_move_data = db.move_data.get(move_data[1]);
                             move_list_select_options.push(
                                 new StringSelectMenuOptionBuilder()
-                                    .setLabel(`${db_move_data.name} [${db_move_data.damage} power, ${db_move_data.accuracy}% hit chance]`)
+                                    .setLabel(`${db_move_data.name} [${db_move_data.damage} Power, ${db_move_data.accuracy}% Accuracy]`)
                                     .setValue(`move_sel_${db_move_data.id}`)
                                     .setDescription(`${db_move_data.description.substring(0, 100)}`)
                                     .setEmoji(`${type_to_emote(db_move_data.type)}`)
@@ -724,11 +729,27 @@ module.exports = {
                     );
 
                     let displayContent = `Select a move to use!`;
+                    let moveEmbed;
                     if (move_sel_id) {
-                        displayContent = `Selected Move: ${type_to_emote(db.move_data.get(move_sel_id, 'type'))} **${db.move_data.get(move_sel_id, 'name')}** (**${db.move_data.get(move_sel_id, 'damage')} power**, **${db.move_data.get(move_sel_id, 'accuracy') == -1 ? `${db.move_data.get(move_sel_id, 'accuracy')}` : '100'}** chance to hit)`;
+                        let move_data = db.move_data.get(move_sel_id);
+                        if (move_data.accuracy == -1) move_data.accuracy = 100;
+                        let move_string = `
+                        ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
+                            *${move_data.description}*
+                        `;
+                        
+                        moveEmbed = new EmbedBuilder()
+                            .setTitle('Selected Move')
+                            .addFields([{
+                                name: `${type_to_emote([move_data.type])} ${move_data.name}`,
+                                value: move_string,
+                                inline: true
+                            }]);
+
+                        displayContent = ``;
                     }
 
-                    i.update({ content: displayContent, components: [move_list_select, moves_back_button] });
+                    i.update({ content: displayContent, embeds: [moveEmbed], components: [move_list_select, moves_back_button], files: [] });
                 } else { // if a select menu move is selected
                     selected = parseInt(selected.replace('move_sel_', ''));
                     db.profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].moveset[${move_sel_idx}]`);
@@ -743,7 +764,7 @@ module.exports = {
                     dexEmbed.data.fields[0].value = moveset_str;
 
                     let move_buttons = buildMoveData(selected_ooch);
-                    i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button]});
+                    i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button], files: [] });
                 }
             } 
             //#endregion

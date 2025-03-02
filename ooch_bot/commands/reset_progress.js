@@ -4,11 +4,11 @@ const wait = require('wait');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('reset')
-        .setDescription('Restart your Oochamon quest! THIS WILL DELETE ALL OF YOUR DATA!')
+        .setName('reset_progress')
+        .setDescription('Restart your Oochamon quest! THIS WILL DELETE ALL OF YOUR DATA AND PROGRESS!!!!')
         .addStringOption(option => 
             option.setName('confirm_code')
-                .setDescription('Type in "oochamon" to reset fully.')
+                .setDescription('Type in "oochamon" to reset fully. THIS WILL DELETE ALL OF YOUR DATA AND PROGRESS!!!!')
                 .setRequired(true)),
     async execute(interaction, client) {
         if (interaction.options.getString('confirm_code') == 'oochamon') {

@@ -2,7 +2,7 @@
 
 const db = require("./db.js")
 const wait = require('wait');
-const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder, ActionRow } = require('discord.js');
 const _ = require('lodash');
 const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect } = require("./types.js");
 const { Status } = require('./types.js');
@@ -38,15 +38,15 @@ let functions = {
      */
     generate_battle_user: async function(type, options) {
 
-        const { create_ooch } = require('./func_play.js');
+        const { create_ooch, move } = require('./func_play.js');
         const { botClient } = require("./index.js");
 
         let party = [];
         let battle_sprite = false;
         let team_id = false;
-        let oochabux = false;
         let active_slot = 0;
         let is_catchable = false;
+        let oochabux = 0;
         let name = 'Wild Oochamon';
         let is_player = false;
         let display_msg_id = false;
@@ -61,6 +61,7 @@ let functions = {
                 party = [ooch];
                 is_catchable = true;
                 team_id = options.team_id;
+                oochabux = _.random(5, 40);
             break;
             case UserType.NPCTrainer:
                 let party_base = options.team;
@@ -78,6 +79,9 @@ let functions = {
 
                 name = options.name;
                 oochabux = options.coin;
+                if (oochabux == 0) {
+                    oochabux = (party_base.reduce((sum, ooch) => sum + ooch.level, 0)) * 15;
+                }
                 party = party_generated;
                 is_catchable = options.is_catchable;
                 team_id = options.team_id;
@@ -159,7 +163,8 @@ let functions = {
             slot_actions : slot_actions,
             is_player: is_player,
             display_msg_id: display_msg_id,
-            defeated : false
+            defeated : false,
+            oochabux: oochabux
         }
     },
 
@@ -713,6 +718,8 @@ let functions = {
                 
         let moveButtons1 = new ActionRowBuilder();
         let moveButtons2 = new ActionRowBuilder();
+        let moveInfoViewing = false;
+        
         let switchButtons1 = new ActionRowBuilder();
         let switchButtons2 = new ActionRowBuilder();
         let bagButtons = new ActionRowBuilder()
@@ -737,6 +744,22 @@ let functions = {
                     .setCustomId('back')
                     .setLabel('Back')
                     .setStyle(ButtonStyle.Danger),
+            )
+
+        const moveBackButton = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('back')
+                    .setLabel('Back')
+                    .setStyle(ButtonStyle.Danger),
+            )
+
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('view_move_info')
+                    .setLabel('View Moves Info')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji('🗒️'),
             )
         //#endregion
 
@@ -817,7 +840,7 @@ let functions = {
                         }
         
                         // Switch message to be about using the move input
-                        await i.update({ content: `Select a move to use!`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, backButton] : [moveButtons1, backButton]}).catch(() => {});
+                        await i.update({ content: `Select a move to use!`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
                     } else if (customId.includes('atk_')) {
                         if (battle_data.users.length == 2) {
                             let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
@@ -847,6 +870,43 @@ let functions = {
                         } else {
                             await inputCollector.stop();
                             await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
+                        }
+
+                    } else if (customId == 'view_move_info') {
+
+                        let moveInfoEmbed = new EmbedBuilder()
+                            .setTitle('Move Info');
+                        let moveInfoFields = [];
+
+                        // Get the Oochamon's Attack options
+                        for (let i = 0; i < activeOoch.moveset.length; i++) {
+                            let move_id = activeOoch.moveset[i];
+                            let move_data = db.move_data.get(move_id);
+                            if (move_data.accuracy == -1) move_data.accuracy = 100;
+                            let move_string = `
+                            ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
+                                *${move_data.description}*
+                            `;
+                            
+                            moveInfoFields.push({
+                                name: `${functions.type_to_emote([move_data.type])} ${move_data.name}`,
+                                value: move_string,
+                                inline: true
+                             });
+                        }
+
+                        moveInfoFields.splice(2, 0, { name: '\u200B', value: '\u200B', inline: true });
+                        moveInfoFields.splice(5, 0, { name: '\u200B', value: '\u200B', inline: true });
+                        moveInfoEmbed.addFields(moveInfoFields);
+
+                        if (moveInfoViewing == true) {
+                            moveBackButton.components[1].setLabel('View Move Info');
+                            i.update({ embeds: [], components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
+                            moveInfoViewing = false;
+                        } else {
+                            moveBackButton.components[1].setLabel('Close Move Info');
+                            i.update({ embeds: [moveInfoEmbed],  components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
+                            moveInfoViewing = true;
                         }
 
                     } else if (customId == BattleInput.Switch) {
@@ -1909,6 +1969,9 @@ let functions = {
 
             if (user_defeated) {
                 if (user.user_type !== UserType.Wild) string_to_send += `\n--- **${user.name}'s party was wiped out!**`;
+                if (user.oochabux !== 0) {
+                    string_to_send += `\nReceived **${user.oochabux} oochabux** for winning the battle!`
+                }
                 user.defeated = true;
             } else {
                 battle_data.end_of_turn_switch_queue.push(user.user_index);
@@ -1927,6 +1990,11 @@ let functions = {
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given * 1.25);
                         let max_level = db.global_data.get("max_level");
+                        if (max_level == false || max_level == undefined) max_level = 50;
+
+                        if (user.oochabux) {
+                            db.profile.math(other_user.user_id, '+', user.oochabux, 'oochabux');
+                        }
 
                         if (other_ooch.level < max_level) { //TODO UPDATE THIS TO A GLOBAL "MAX_LEVEL" VALUE
                             string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
@@ -3080,7 +3148,7 @@ let functions = {
                     db.monster_data.set('-1', 1, 'hp');
                 break;
                 case Ability.Ravenous:
-                    attacker.current_hp = _.clamp(attacker.current_hp + (attacker.stats.hp * 0.2), 0, attacker.stats.hp);
+                    attacker.current_hp = _.clamp(_.round(attacker.current_hp + (attacker.stats.hp * 0.2)), 0, attacker.stats.hp);
                     defender_field_text += `\n${attacker_emote} **${atkOochName}** healed 20% HP back from its ability **Ravenous**!`;
                 break;
             }
@@ -3583,7 +3651,6 @@ let functions = {
             db.profile.set(user_id, user_info.prism_inv, `prism_inv`);
             db.profile.set(user_id, user_info.heal_inv, `heal_inv`);
             db.profile.set(user_id, user_info.other_inv, `other_inv`);
-
 
             // If we lost, go back to the teleporter location.
             if (battle_won === false) {
