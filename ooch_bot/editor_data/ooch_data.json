@@ -103,8 +103,8 @@
       "fungal"
     ],
     "hp": 15,
-    "atk": 20,
-    "def": 11,
+    "atk": 18,
+    "def": 13,
     "spd": 14,
     "move_list": [
       [
@@ -197,10 +197,10 @@
     "type": [
       "fungal"
     ],
-    "hp": 25,
-    "atk": 25,
-    "def": 16,
-    "spd": 14,
+    "hp": 22,
+    "atk": 23,
+    "def": 19,
+    "spd": 16,
     "move_list": [
       [
         1,
@@ -392,9 +392,9 @@
       "stone"
     ],
     "hp": 18,
-    "atk": 15,
+    "atk": 14,
     "def": 15,
-    "spd": 12,
+    "spd": 13,
     "move_list": [
       [
         1,
@@ -591,8 +591,8 @@
       "flame"
     ],
     "hp": 10,
-    "atk": 12,
-    "def": 8,
+    "atk": 11,
+    "def": 9,
     "spd": 10,
     "move_list": [
       [
@@ -689,10 +689,10 @@
     "type": [
       "flame"
     ],
-    "hp": 13,
-    "atk": 18,
+    "hp": 14,
+    "atk": 16,
     "def": 14,
-    "spd": 15,
+    "spd": 16,
     "move_list": [
       [
         1,
@@ -788,8 +788,8 @@
     "type": [
       "flame"
     ],
-    "hp": 16,
-    "atk": 26,
+    "hp": 19,
+    "atk": 23,
     "def": 18,
     "spd": 20,
     "move_list": [
@@ -888,8 +888,8 @@
       "stone"
     ],
     "hp": 12,
-    "atk": 7,
-    "def": 12,
+    "atk": 8,
+    "def": 11,
     "spd": 9,
     "move_list": [
       [
@@ -982,9 +982,9 @@
     "type": [
       "stone"
     ],
-    "hp": 18,
-    "atk": 25,
-    "def": 16,
+    "hp": 22,
+    "atk": 19,
+    "def": 18,
     "spd": 11,
     "move_list": [
       [
@@ -1077,10 +1077,10 @@
     "type": [
       "stone"
     ],
-    "hp": 10,
-    "atk": 10,
-    "def": 10,
-    "spd": 20,
+    "hp": 12,
+    "atk": 12,
+    "def": 11,
+    "spd": 15,
     "move_list": [
       [
         1,
@@ -1165,10 +1165,10 @@
       "stone",
       "crystal"
     ],
-    "hp": 15,
-    "atk": 20,
-    "def": 15,
-    "spd": 30,
+    "hp": 18,
+    "atk": 22,
+    "def": 14,
+    "spd": 26,
     "move_list": [
       [
         1,
@@ -1447,9 +1447,9 @@
       "fungal",
       "magic"
     ],
-    "hp": 5,
-    "atk": 5,
-    "def": 25,
+    "hp": 11,
+    "atk": 9,
+    "def": 15,
     "spd": 5,
     "move_list": [
       [
@@ -1535,10 +1535,10 @@
       "fungal",
       "magic"
     ],
-    "hp": 25,
+    "hp": 27,
     "atk": 25,
-    "def": 30,
-    "spd": 5,
+    "def": 23,
+    "spd": 10,
     "move_list": [
       [
         1,
@@ -1623,10 +1623,10 @@
       "flame",
       "stone"
     ],
-    "hp": 5,
-    "atk": 15,
-    "def": 5,
-    "spd": 10,
+    "hp": 10,
+    "atk": 10,
+    "def": 7,
+    "spd": 8,
     "move_list": [
       [
         1,
@@ -1707,9 +1707,9 @@
       "flame",
       "stone"
     ],
-    "hp": 15,
-    "atk": 25,
-    "def": 13,
+    "hp": 18,
+    "atk": 20,
+    "def": 15,
     "spd": 12,
     "move_list": [
       [
@@ -1881,8 +1881,8 @@
     ],
     "hp": 21,
     "atk": 20,
-    "def": 24,
-    "spd": 15,
+    "def": 22,
+    "spd": 17,
     "move_list": [
       [
         1,
@@ -2129,8 +2129,8 @@
       "ooze",
       "magic"
     ],
-    "hp": 16,
-    "atk": 25,
+    "hp": 21,
+    "atk": 20,
     "def": 19,
     "spd": 15,
     "move_list": [
@@ -2495,10 +2495,10 @@
     "type": [
       "magic"
     ],
-    "hp": 10,
+    "hp": 13,
     "atk": 15,
-    "def": 15,
-    "spd": 15,
+    "def": 13,
+    "spd": 14,
     "move_list": [
       [
         1,
@@ -2661,8 +2661,8 @@
     "type": [
       "ooze"
     ],
-    "hp": 7,
-    "atk": 13,
+    "hp": 10,
+    "atk": 10,
     "def": 9,
     "spd": 11,
     "move_list": [
@@ -2752,8 +2752,8 @@
     "type": [
       "ooze"
     ],
-    "hp": 11,
-    "atk": 18,
+    "hp": 14,
+    "atk": 15,
     "def": 12,
     "spd": 14,
     "move_list": [
@@ -2843,10 +2843,10 @@
     "type": [
       "ooze"
     ],
-    "hp": 25,
-    "atk": 20,
+    "hp": 24,
+    "atk": 22,
     "def": 20,
-    "spd": 20,
+    "spd": 19,
     "move_list": [
       [
         1,
@@ -3021,9 +3021,9 @@
     "type": [
       "tech"
     ],
-    "hp": 15,
-    "atk": 19,
-    "def": 25,
+    "hp": 20,
+    "atk": 21,
+    "def": 18,
     "spd": 16,
     "move_list": [
       [
@@ -3271,8 +3271,8 @@
       "stone",
       "flame"
     ],
-    "hp": 10,
-    "atk": 35,
+    "hp": 15,
+    "atk": 30,
     "def": 20,
     "spd": 10,
     "move_list": [
@@ -3363,9 +3363,9 @@
       "magic",
       "cloth"
     ],
-    "hp": 10,
+    "hp": 12,
     "atk": 15,
-    "def": 15,
+    "def": 13,
     "spd": 10,
     "move_list": [
       [
@@ -3451,9 +3451,9 @@
       "magic",
       "cloth"
     ],
-    "hp": 20,
+    "hp": 22,
     "atk": 20,
-    "def": 20,
+    "def": 18,
     "spd": 10,
     "move_list": [
       [
@@ -3534,7 +3534,7 @@
     "id": 39,
     "emote": "<:digityke:1274935731856347208>",
     "name": "Digityke",
-    "oochive_entry": "An old-model of machine companion, its feeble body prevents it from being of much use.",
+    "oochive_entry": "An old model of machine companion, its feeble body prevents it from being of much use.",
     "type": [
       "tech"
     ],
@@ -3622,10 +3622,10 @@
       "tech",
       "magic"
     ],
-    "hp": 30,
-    "atk": 10,
-    "def": 10,
-    "spd": 10,
+    "hp": 20,
+    "atk": 16,
+    "def": 13,
+    "spd": 11,
     "move_list": [
       [
         1,
@@ -3987,8 +3987,8 @@
       "flame",
       "stone"
     ],
-    "hp": 19,
-    "atk": 23,
+    "hp": 20,
+    "atk": 22,
     "def": 17,
     "spd": 11,
     "move_list": [
@@ -4082,8 +4082,8 @@
     "type": [
       "stone"
     ],
-    "hp": 7,
-    "atk": 10,
+    "hp": 8,
+    "atk": 9,
     "def": 8,
     "spd": 15,
     "move_list": [
@@ -4174,10 +4174,10 @@
       "stone",
       "magic"
     ],
-    "hp": 14,
-    "atk": 28,
-    "def": 8,
-    "spd": 25,
+    "hp": 18,
+    "atk": 24,
+    "def": 10,
+    "spd": 23,
     "move_list": [
       [
         1,
@@ -4348,9 +4348,9 @@
     "type": [
       "fungal"
     ],
-    "hp": 35,
+    "hp": 33,
     "atk": 15,
-    "def": 15,
+    "def": 17,
     "spd": 5,
     "move_list": [
       [
@@ -4516,9 +4516,9 @@
       "ooze",
       "crystal"
     ],
-    "hp": 15,
+    "hp": 20,
     "atk": 7,
-    "def": 30,
+    "def": 25,
     "spd": 3,
     "move_list": [
       [
@@ -4766,9 +4766,9 @@
       "tech"
     ],
     "hp": 20,
-    "atk": 13,
-    "def": 17,
-    "spd": 25,
+    "atk": 17,
+    "def": 15,
+    "spd": 23,
     "move_list": [
       [
         1,
@@ -5014,10 +5014,10 @@
     "type": [
       "flame"
     ],
-    "hp": 10,
+    "hp": 11,
     "atk": 13,
-    "def": 12,
-    "spd": 20,
+    "def": 13,
+    "spd": 18,
     "move_list": [
       [
         1,
@@ -5102,9 +5102,9 @@
       "flame"
     ],
     "hp": 20,
-    "atk": 18,
+    "atk": 22,
     "def": 17,
-    "spd": 25,
+    "spd": 21,
     "move_list": [
       [
         1,
@@ -5188,10 +5188,10 @@
     "type": [
       "flame"
     ],
-    "hp": 10,
+    "hp": 14,
     "atk": 13,
     "def": 12,
-    "spd": 20,
+    "spd": 16,
     "move_list": [
       [
         1,
@@ -5235,10 +5235,10 @@
     "type": [
       "flame"
     ],
-    "hp": 13,
+    "hp": 15,
     "atk": 17,
     "def": 13,
-    "spd": 22,
+    "spd": 20,
     "move_list": [
       [
         1,
@@ -5319,9 +5319,9 @@
       "flame"
     ],
     "hp": 20,
-    "atk": 25,
+    "atk": 23,
     "def": 17,
-    "spd": 18,
+    "spd": 21,
     "move_list": [
       [
         1,
@@ -5492,9 +5492,9 @@
     "type": [
       "fungal"
     ],
-    "hp": 18,
+    "hp": 20,
     "atk": 20,
-    "def": 25,
+    "def": 23,
     "spd": 17,
     "move_list": [
       [
@@ -5584,10 +5584,10 @@
       "fungal",
       "ooze"
     ],
-    "hp": 10,
+    "hp": 12,
     "atk": 13,
     "def": 12,
-    "spd": 20,
+    "spd": 18,
     "move_list": [
       [
         1,
@@ -5935,10 +5935,10 @@
     "type": [
       "crystal"
     ],
-    "hp": 12,
+    "hp": 14,
     "atk": 10,
     "def": 35,
-    "spd": 23,
+    "spd": 21,
     "move_list": [
       [
         1,
@@ -6198,10 +6198,10 @@
       "ooze",
       "cloth"
     ],
-    "hp": 30,
-    "atk": 23,
+    "hp": 25,
+    "atk": 22,
     "def": 17,
-    "spd": 10,
+    "spd": 16,
     "move_list": [
       [
         1,
@@ -6368,9 +6368,9 @@
     "type": [
       "stone"
     ],
-    "hp": 20,
-    "atk": 25,
-    "def": 25,
+    "hp": 25,
+    "atk": 23,
+    "def": 22,
     "spd": 15,
     "move_list": [
       [
@@ -6451,10 +6451,10 @@
     "type": [
       "tech"
     ],
-    "hp": 15,
+    "hp": 14,
     "atk": 15,
     "def": 15,
-    "spd": 10,
+    "spd": 11,
     "move_list": [
       [
         1,
@@ -6538,9 +6538,9 @@
     "type": [
       "tech"
     ],
-    "hp": 20,
-    "atk": 25,
-    "def": 23,
+    "hp": 23,
+    "atk": 24,
+    "def": 21,
     "spd": 17,
     "move_list": [
       [
@@ -6712,10 +6712,10 @@
     "type": [
       "tech"
     ],
-    "hp": 18,
-    "atk": 30,
-    "def": 17,
-    "spd": 30,
+    "hp": 19,
+    "atk": 25,
+    "def": 16,
+    "spd": 25,
     "move_list": [
       [
         1,
@@ -6801,9 +6801,9 @@
       "fungal"
     ],
     "hp": 15,
-    "atk": 10,
-    "def": 20,
-    "spd": 5,
+    "atk": 12,
+    "def": 13,
+    "spd": 10,
     "move_list": [
       [
         1,
@@ -6888,10 +6888,10 @@
       "tech",
       "fungal"
     ],
-    "hp": 25,
-    "atk": 20,
-    "def": 20,
-    "spd": 15,
+    "hp": 24,
+    "atk": 21,
+    "def": 19,
+    "spd": 16,
     "move_list": [
       [
         1,
@@ -6926,6 +6926,10 @@
         84
       ],
       [
+        20,
+        76
+      ],
+      [
         23,
         37
       ],
@@ -6944,10 +6948,6 @@
       [
         36,
         90
-      ],
-      [
-        38,
-        76
       ],
       [
         43,
@@ -6976,8 +6976,8 @@
       "stone"
     ],
     "hp": 27,
-    "atk": 10,
-    "def": 23,
+    "atk": 11,
+    "def": 22,
     "spd": 10,
     "move_list": [
       [
@@ -7022,7 +7022,7 @@
       ],
       [
         30,
-        93
+        117
       ],
       [
         33,
@@ -7062,10 +7062,10 @@
     "type": [
       "ooze"
     ],
-    "hp": 7,
-    "atk": 12,
+    "hp": 9,
+    "atk": 11,
     "def": 8,
-    "spd": 8,
+    "spd": 7,
     "move_list": [
       [
         1,
@@ -7150,10 +7150,10 @@
       "ooze",
       "flame"
     ],
-    "hp": 15,
-    "atk": 25,
-    "def": 15,
-    "spd": 20,
+    "hp": 18,
+    "atk": 22,
+    "def": 16,
+    "spd": 19,
     "move_list": [
       [
         1,
@@ -7741,8 +7741,8 @@
       "tech"
     ],
     "hp": 11,
-    "atk": 9,
-    "def": 13,
+    "atk": 10,
+    "def": 12,
     "spd": 7,
     "move_list": [
       [
@@ -8001,10 +8001,10 @@
     "type": [
       "flame"
     ],
-    "hp": 11,
-    "atk": 26,
-    "def": 14,
-    "spd": 24,
+    "hp": 15,
+    "atk": 24,
+    "def": 13,
+    "spd": 23,
     "move_list": [
       [
         1,
@@ -8181,8 +8181,8 @@
       "sound",
       "cloth"
     ],
-    "hp": 13,
-    "atk": 17,
+    "hp": 14,
+    "atk": 16,
     "def": 12,
     "spd": 18,
     "move_list": [
@@ -8273,10 +8273,10 @@
       "sound",
       "cloth"
     ],
-    "hp": 23,
-    "atk": 25,
-    "def": 17,
-    "spd": 15,
+    "hp": 24,
+    "atk": 22,
+    "def": 18,
+    "spd": 16,
     "move_list": [
       [
         1,

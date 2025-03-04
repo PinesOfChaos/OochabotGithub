@@ -807,7 +807,7 @@
 		[
 			0,
 			{
-				"description": "Great work! If you look at that new Oochamon in your menu, you'll notice it has special stats, called **Bonuses**.",
+				"description": "Great work! If you look at that new Oochamon in your menu, you'll find its information, alongside some stars next to its stats.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -819,7 +819,7 @@
 		[
 			0,
 			{
-				"description": "Bonuses are a special power an Oochamon has, unique to itself, that increase its various stats based on random chance.",
+				"description": "The stars are extra bonus stats, which are a special power an Oochamon has, unique to itself, that increase its various stats based on random chance.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
@@ -831,7 +831,19 @@
 		[
 			0,
 			{
-				"description": "We are researching a way to increase these to have an Oochamon reach it's ultimate power, but you may have to speak with the Researchers on that.",
+				"description": "The best bonus an Oochamon can have is 5 stars towards a stat. Every Oochamon is unique, so make sure to check your stat bonuses when you catch an Oochamon!",
+				"dialogue_portrait": "",
+				"image": "",
+				"items": [],
+				"money": 0,
+				"objective": "",
+				"title": "Tutorial Master"
+			}
+		],
+		[
+			0,
+			{
+				"description": "The researchers on base have been researching a special type of crystal to increase these bonuses after an Oochamon is born, but I don't know much about that.\nYou'll have to find out about it on your own!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],

@@ -11,7 +11,7 @@ const { Client, Partials, GatewayIntentBits, Collection } = require('discord.js'
 const db = require('./db.js');
 const { move, setup_playspace_str } = require('./func_play.js');
 const { PlayerState } = require('./types.js');
-const { prompt_battle_actions } = require('./func_battle.js');
+const { prompt_battle_actions, get_stats } = require('./func_battle.js');
 const { event_process } = require('./func_event.js');
 const { reset_oochamon, quit_oochamon } = require('./func_other.js');
 const { genmap_allmaps } = require('./func_level_gen.js');
@@ -66,10 +66,41 @@ client.on('ready', async () => {
     let userIds = db.profile.keyArray();
     for (let user of userIds) {
 
-        // UNCOMMENT THIS IF DOING DEV STUFF!!
-        //if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
-
         let user_profile = db.profile.get(user);
+
+        // if (user_profile != undefined) {
+        //     // Update all oochamon's stats
+        //     for (let i = 0; i < user_profile.ooch_party.length; i++) {
+        //         let ooch = user_profile.ooch_party[i];
+        //         let newStats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
+        //         ooch.stats.hp = newStats[0];
+        //         ooch.stats.atk = newStats[1];
+        //         ooch.stats.def = newStats[2];
+        //         ooch.stats.spd = newStats[3];
+        //         ooch.current_hp = ooch.stats.hp;
+        //         user_profile.ooch_party[i] = ooch;
+        //     }
+        //     db.profile.set(user, user_profile.ooch_party, 'ooch_party');
+
+        //     // Update all oochamon's stats
+        //     for (let i = 0; i < user_profile.ooch_pc.length; i++) {
+        //         let ooch = user_profile.ooch_pc[i];
+        //         let newStats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
+        //         ooch.stats.hp = newStats[0];
+        //         ooch.stats.atk = newStats[1];
+        //         ooch.stats.def = newStats[2];
+        //         ooch.stats.spd = newStats[3];
+        //         ooch.current_hp = ooch.stats.hp;
+        //         user_profile.ooch_pc[i] = ooch;
+        //     }
+        //     db.profile.set(user, user_profile.ooch_pc, 'ooch_pc');
+        // }
+
+        // user_profile = db.profile.get(user);
+
+        // UNCOMMENT THIS IF DOING DEV STUFF!!
+        if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
+
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
         let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);

@@ -35,6 +35,7 @@ module.exports = {
         if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', ephemeral: true });
         let levelScale = interaction.options.getNumber('level_to_scale');
         if (levelScale == null) levelScale = 25;
+        if (levelScale > 50) levelScale = 50;
         let disableScaleLevel = interaction.options.getString('dont_scale_levels');
         if (disableScaleLevel == 'yes') levelScale = false;
 
@@ -81,7 +82,8 @@ module.exports = {
         });
 
         let intUserThread = interaction.channel;
-        let otherUserBattleMsg = await otherUserThread.send({ content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?`, components: [confirmButtons] });
+        let otherUserBattleMsg = await otherUserThread.send({ content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?\n` + 
+            `*(Battle Options: ${levelScale != false ? `Scaled to* ***level ${levelScale}*** *Oochamon` : `* ***Normal Oochamon levels*** *`})*`, components: [confirmButtons] });
 
         // Start the battle invitation process
         confirm_collector = otherUserBattleMsg.createMessageComponentCollector({ max: 1, time: 60000 });
@@ -92,13 +94,13 @@ module.exports = {
                 db.profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
                 db.profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
 
-                let intBattleUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
-                let otherBattleUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
+                let intBattleDataUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
+                let otherBattleDataUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
 
                 await intUserBattleMsg.delete().catch(() => {});
                 await otherUserBattleMsg.delete().catch(() => {});
 
-                await setup_battle([intBattleUser, otherBattleUser], Weather.None, 0, 0, false, false, false, true, levelScale, 'battle_bg_tutorial', true);
+                await setup_battle([intBattleDataUser, otherBattleDataUser], Weather.None, 0, 0, false, false, false, true, levelScale, 'battle_bg_tutorial', true);
             }
         })
 
@@ -114,7 +116,7 @@ module.exports = {
                 otherUserBattleMsg.delete();
                 await intUserBattleMsg.edit(`**${otherBattleMember.displayName}** has declined your battle offer.`);
                 await wait(5000);
-                await intUserBattleMsg.delete();
+                await intUserBattleMsg.delete().catch(() => {});
             }
         })
 

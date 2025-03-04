@@ -5,7 +5,7 @@ const { TypeEmote, PlayerState, Item } = require('./types.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
 
-module.exports = {
+let functions = {
 
     // Builds the action rows and places emotes in for the Oochabox, based on the database.
     // Updates with new database info every time the function is run
@@ -107,8 +107,11 @@ module.exports = {
         let iv_atk = Math.round((ooch.stats.atk_iv - 1) * 20)
         let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
+
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
-        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** \`(Bonus: ${iv_hp})\`\nATK: **${ooch.stats.atk}** \`(Bonus: ${iv_atk})\`\nDEF: **${ooch.stats.def}** \`(Bonus: ${iv_def})\`\nSPD: **${ooch.stats.spd}** \`(Bonus: ${iv_spd})\``, inline: true }]);
+        infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** (${functions.get_iv_stars(iv_hp)})` + 
+            `\nATK: **${ooch.stats.atk}** (${functions.get_iv_stars(iv_atk)})\nDEF: **${ooch.stats.def}** (${functions.get_iv_stars(iv_def)})` + 
+            `\nSPD: **${ooch.stats.spd}** (${functions.get_iv_stars(iv_spd)})`, inline: true }]);
         if (ooch.level != 50) {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
@@ -159,6 +162,32 @@ module.exports = {
     get_art_file: function(path) {
         let file = new AttachmentBuilder(path);
         return file;
+    },
+
+    /**
+     * Creates and returns a bonus star emote string for IVs.
+     * @param {Number} iv The IV number to turn into stars
+     * @returns The star emote string.
+     */
+    get_iv_stars: function(iv) {
+        const star_empty = "<:star_empty:1346318267324825651>";
+        const star_half = "<:star_half:1346318282562605086>";
+        const star_full = "<:star_full:1346318298660343990>";
+    
+        let stars = [];
+        for (let i = 0; i < 5; i++) {
+            if (iv >= 2) {
+                stars.push(star_full);
+                iv -= 2;
+            } else if (iv == 1) {
+                stars.push(star_half);
+                iv -= 1;
+            } else {
+                stars.push(star_empty);
+            }
+        }
+
+        return stars.join("");
     },
 
     reset_oochamon: async function(user_id) {
@@ -238,3 +267,5 @@ module.exports = {
     }
 
 }
+
+module.exports = functions;

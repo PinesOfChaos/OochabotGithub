@@ -139,7 +139,9 @@ let functions = {
 
                 used_ability_matryoshka : false,
 
-                counter_thunderstorm : 0
+                counter_thunderstorm : 0,
+
+                status_counter_infect : 0
             })
             
         }
@@ -207,7 +209,7 @@ let functions = {
 
         let battleDataObj = {
             battle_id : battleId,
-            battle_msg_counter : 3,
+            battle_msg_counter : 4,
             turn_msg_counter : users.length, //This was 0, but because each user has an intro-message, we need to account for those
             battle_state : BattleState.Start,
             battle_action_queue : [],
@@ -1357,16 +1359,15 @@ let functions = {
                             end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
                         break;
                         case Status.Infect:
-                            let infect_val = Math.round(ooch.stats.hp/16);
+                            if(!slot.hasOwnProperty("status_counter_infect")){
+                                slot.status_counter_infect = 0;
+                            }
+
+                            slot.status_counter_infect += 1;
+                            let infect_val = Math.round(slot.status_counter_infect * ooch.stats.hp/16);
                             ooch.current_hp -= infect_val;
                             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                            let opposing_ooch = battle_data.users.filter(u => u.team_id != user.team_id);
-                            opposing_ooch = opposing_ooch[0];
-                            if (opposing_ooch != undefined) {
-                                //TODO
-                                //opposing_ooch.current_hp = Math.min(opposing_ooch.current_hp + infect_val, opposing_ooch.stats.hp);
-                                //end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}** had **${infect_val} HP** absorbed by ${opposing_ooch.emote} **${opposing_ooch.nickname}** from being **INFECTED!**`;
-                            }
+                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;                           
                         break;
                         case Status.Doom:
                             ooch.doom_timer -= 1;
@@ -1536,9 +1537,12 @@ let functions = {
         let ooch_from = user.party[user.active_slot];
 
         let slot_info_to = user.slot_actions[action.slot_target];
+        let slot_info_from = user.slot_actions[user.active_slot];
         slot_info_to.this_turn_switched_in = true;
         slot_info_to.move_used_first = false;
         slot_info_to.move_used_last = false;
+
+        slot_info_from.status_counter_infect = 0;
 
         user.active_slot = action.slot_target;
         
@@ -1996,7 +2000,7 @@ let functions = {
                             db.profile.math(other_user.user_id, '+', user.oochabux, 'oochabux');
                         }
 
-                        if (other_ooch.level < max_level) { //TODO UPDATE THIS TO A GLOBAL "MAX_LEVEL" VALUE
+                        if (other_ooch.level < max_level) { 
                             string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
                                                 ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
@@ -2005,7 +2009,7 @@ let functions = {
                         }
 
                         for (let i = 0; i < ooch_party.length; i++) {
-                            if (i == other_user.ooch_active_slot) { 
+                            if (i == other_user.active_slot) { 
                                 ooch_party[i].current_exp += exp_main;
                             } 
                             else { 
@@ -2088,8 +2092,7 @@ let functions = {
                                 ooch_button_color = ButtonStyle.Success;
                                 ooch_prev = ooch_check;
                                 ooch_disable = true;
-                            }
-                            else if (ooch_check.current_hp <= 0) {
+                            } else if (ooch_check.current_hp <= 0) {
                                 ooch_disable = true;
                             }
         
@@ -2202,7 +2205,7 @@ let functions = {
         let base_influence1 = 12
         let base_influence2 = .5
 
-        let hp =    Math.floor(((level * ((base_hp *  base_influence1) *  ((hp_iv *  iv_influence) + 1)))/100 + (base_hp *  base_influence2)) + level + 10);
+        let hp =    Math.floor((((level * ((base_hp *  base_influence1) *  ((hp_iv *  iv_influence) + 1)))/100 + (base_hp *  base_influence2)) + level + 10) * 1.3);
         let atk =   Math.floor(((level * ((base_atk * base_influence1) *  ((atk_iv * iv_influence + 1))))/100 + (base_atk * base_influence2)) + level + 5);
         let def =   Math.floor(((level * ((base_def * base_influence1) *  ((def_iv * iv_influence + 1))))/100 + (base_def * base_influence2)) + level + 5);
         let spd =   Math.floor(((level * ((base_spd * base_influence1) *  ((spd_iv * iv_influence + 1))))/100 + (base_spd * base_influence2)) + level + 5);
@@ -2583,9 +2586,8 @@ let functions = {
         if (ooch_attacker.ability == Ability.Thorned) {
             attacker_atk_stat += ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def_mul) / 4;
         }
-        
 
-        let damage = Math.round(Math.ceil((4 * ooch_attacker.level / 5 + 2) // Level Adjustment
+        let damage = Math.round(Math.ceil((.8 * ooch_attacker.level + 2) // Level Adjustment
         * (move_damage + _.random(-5, 5)) // Damage with random damage variance
         * (ooch_attacker.ability == Ability.Gravity ? (turn_count / 100) + 1 : 1)
         * (ooch_attacker.ability == Ability.Hexiply ? ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 : 1)
@@ -2737,12 +2739,8 @@ let functions = {
         let ability_dmg_multiplier = 1;
         let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
 
-        
-
         let move_weather = (move_effects.find(effect => effect.status === "weather")?.chance || Weather.None);
         let move_field = (move_effects.find(effect => effect.status === "field")?.chance || FieldEffect.None);
-
-        
 
         //Make sure accuracy is a positive value (we might not need to do this anymore)
         move_accuracy = Math.abs(move_accuracy);
@@ -3615,16 +3613,21 @@ let functions = {
         let thread = botClient.channels.cache.get(user_info.thread_id);
         let is_online = battle_data.is_online;
         
+        console.log(`EXPECTED MESSAGE COUNT: ${battle_data.battle_msg_counter}`);
+
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
-            await thread.bulkDelete(battle_data.battle_msg_counter + 5).catch(() => {});
+            await thread.bulkDelete(battle_data.battle_msg_counter).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;
             do {
                 await thread.bulkDelete(100);
                 message_count -= 100;
+                console.log(`NEW MESSAGE COUNT: ${message_count}`);
             }
             while(message_count > thread.memberCount);
+
+            console.log(`FINAL MESSAGE COUNT: ${message_count}`);
         }
 
         if(!battle_data.fake_battle && !play_end) {

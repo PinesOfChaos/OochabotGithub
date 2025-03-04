@@ -11,11 +11,11 @@ module.exports = {
         .setName('play')
         .setDescription('Begin playing Oochamon!'),
     async execute(interaction, client) {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         let target = interaction.user.id;
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        //if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
 
         if (!db.profile.has(target)) {
             return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
@@ -55,7 +55,7 @@ module.exports = {
             
             await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
             await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
-            await interaction.editReply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!`, ephemeral: true });
+            await interaction.editReply({ content: `Made your playspace! Go to this thread: <#${thread.id}> created for you to play!` });
         } else {
             await db.profile.set(interaction.user.id, thread.id, 'play_thread_id');
             await db.profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
@@ -70,6 +70,8 @@ module.exports = {
 
         let curBattleId = db.profile.get(interaction.user.id, 'cur_battle_id');
         if (curBattleId != false && db.battle_data.has(curBattleId)) {
+            await interaction.deleteReply().catch(() => {});
+            
             let battleData = db.battle_data.get(curBattleId);
             for (let user of battleData.users) {
                 db.profile.set(interaction.user.id, 0, 'cur_event_pos');

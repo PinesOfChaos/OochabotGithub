@@ -1424,7 +1424,7 @@ module.exports = {
         //#region Status Data
         //            ID,  NAME,        EMOTE                                       DESCRIPTION
         create_status(0,   'Burned',    '<:status_burned:1274938453569830997>',     'Burns the Oochamon at the end of each turn, dealing damage.');
-        create_status(1,   'Infected',  '<:status_infected:1274938506225123358>',   'Saps HP from the infected Oochamon, giving it to their opponent.');                                                                   
+        create_status(1,   'Infected',  '<:status_infected:1274938506225123358>',   'Damages the Oochamon at the end of each turn, the infection increases in severity each turn.');                                                                   
         create_status(2,   'Blinded',   '<:status_blinded:1274938440940781590>',    'Blinds the Oochamon, reducing its accuracy.');
         create_status(3,   'Digitized', '<:status_digitized:1274938471034654770>',  'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
         create_status(4,   'Snared',    '<:status_snared:1274938520821305355>',     'Ensnares the Oochamon, forcing it to go second in battle.');
@@ -1469,7 +1469,7 @@ module.exports = {
             name: 'Stingrowth',
             oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.', 
             type: [OochType.Fungal],
-            hp: 15, atk: 20, def: 11, spd: 14, //total 60
+            hp: 15, atk: 18, def: 13, spd: 14, //total 60
             move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], [8, Move.Glob], 
              [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [20, Move.Whiplash], [24, Move.TangledThreads], 
              [27, Move.ThornShot], [29, Move.MycoBurst], [33, Move.FiberSlicer], [35, Move.PrecisionStrike], 
@@ -1485,7 +1485,7 @@ module.exports = {
             name: 'Queenect',
             oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.', 
             type: [OochType.Fungal],
-            hp: 25, atk: 25, def: 16, spd: 14, //total 80
+            hp: 22, atk: 23, def: 19, spd: 16, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Embolden], [3, Move.SporeShot], [7, Move.Slash], [8, Move.Glob], 
              [10, Move.Siphon], [13, Move.TakeOver], [17, Move.Bloom], [20, Move.Whiplash], [24, Move.TangledThreads], 
              [27, Move.ThornShot], [29, Move.MycoBurst], [33, Move.FiberSlicer], [35, Move.PrecisionStrike], 
@@ -1517,7 +1517,7 @@ module.exports = {
             name: 'Graknight',
             oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.', 
             type: [OochType.Stone],
-            hp: 18, atk: 15, def: 15, spd: 12, //total 60
+            hp: 18, atk: 14, def: 15, spd: 13, //total 60
             move_list: [ [1, Move.Bash], [2, Move.Brittle], [3, Move.PebbleBlast], [8, Move.DustStorm], [9, Move.Screech],
              [11, Move.Sharpen], [14, Move.Impale], [17, Move.Boulderdash], [21, Move.JaggedGround], [24, Move.ArcaStrike], 
              [27, Move.LavaLance],  [30, Move.Thunder], [32, Move.EchoChamber], [34, Move.Gravitate], [36, Move.AsbestosBomb], 
@@ -1549,7 +1549,7 @@ module.exports = {
             name: 'Puppyre',
             oochive_entry: 'A very good boy, empowered by the spiraling patterns on its body.', 
             type: [OochType.Flame],
-            hp: 10, atk: 12, def: 8, spd: 10, //total 40
+            hp: 10, atk: 11, def: 9, spd: 10, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [9, Move.ByteBite],
              [11, Move.Torch], [13, Move.Purify], [15, Move.LenseFlare], [17, Move.ClampDown], [20, Move.SlowBurn], 
              [22, Move.HeldStrike], [24, Move.StickyOrb], [27, Move.Tumorize], [30, Move.HypeUp], [34, Move.SlurpUp], 
@@ -1565,7 +1565,7 @@ module.exports = {
             name: 'Dogglow',
             oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.', 
             type: [OochType.Flame],
-            hp: 13, atk: 18, def: 14, spd: 15, //total 60
+            hp: 14, atk: 16, def: 14, spd: 16, //total 60
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [9, Move.ByteBite],
              [11, Move.Torch], [13, Move.Purify], [15, Move.LenseFlare], [17, Move.ClampDown], [20, Move.SlowBurn], 
              [22, Move.HeldStrike], [24, Move.StickyOrb], [27, Move.Tumorize], [30, Move.HypeUp], [34, Move.SlurpUp], 
@@ -1581,7 +1581,7 @@ module.exports = {
             name: 'Hounuke',
             oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.', 
             type: [OochType.Flame],
-            hp: 16, atk: 26, def: 18, spd: 20, //total 80
+            hp: 19, atk: 23, def: 18, spd: 20, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.Fireball], [8, Move.Engulf], [9, Move.ByteBite],
              [11, Move.Torch], [13, Move.Purify], [15, Move.LenseFlare], [17, Move.ClampDown], [20, Move.SlowBurn], 
              [22, Move.HeldStrike], [24, Move.StickyOrb], [27, Move.Tumorize], [30, Move.HypeUp], [34, Move.SlurpUp], 
@@ -1597,7 +1597,7 @@ module.exports = {
             name: 'Glither',
             oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.', 
             type: [OochType.Stone],
-            hp: 12, atk: 7, def: 12, spd: 9, //total 40
+            hp: 12, atk: 8, def: 11, spd: 9, //total 40
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [6, Move.Caltrops], [8, Move.Slash], 
              [13, Move.DustStorm], [15, Move.Sedimentation], [17, Move.Grind], [19, Move.LenseFlare], [21, Move.Impale], 
              [27, Move.Glimmer], [30, Move.HeldStrike], [32, Move.GorgonEye], [34, Move.Entomb], [38, Move.GuidedSpire],
@@ -1613,7 +1613,7 @@ module.exports = {
             name: 'Sparafura',
             oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.', 
             type: [OochType.Stone],
-            hp: 18, atk: 25, def: 16, spd: 11, //total 70
+            hp: 22, atk: 19, def: 18, spd: 11, //total 70
             move_list: [ [1, Move.Bash], [2, Move.Intimidate], [3, Move.PebbleBlast], [6, Move.Caltrops], [8, Move.Slash], 
              [13, Move.DustStorm], [15, Move.Sedimentation], [17, Move.Grind], [19, Move.LenseFlare], [21, Move.Impale], 
              [27, Move.Glimmer], [30, Move.HeldStrike], [32, Move.GorgonEye], [34, Move.Entomb], [38, Move.GuidedSpire],
@@ -1629,7 +1629,7 @@ module.exports = {
             name: 'Constone',
             oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.', 
             type: [OochType.Stone],
-            hp: 10, atk: 10, def: 10, spd: 20, //total 50
+            hp: 12, atk: 12, def: 11, spd: 15, //total 50
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [9, Move.Shards],
              [11, Move.Restruct], [13, Move.Brittle], [18, Move.Boulderdash], [20, Move.Suplex], [24, Move.Torque], 
              [26, Move.Grind], [29, Move.Torch], [33, Move.GemBash], [37, Move.HypeUp], [43, Move.Pulverize], 
@@ -1645,7 +1645,7 @@ module.exports = {
             name: 'Amephyst',
             oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.', 
             type: [OochType.Stone, OochType.Crystal],
-            hp: 15, atk: 20, def: 15, spd: 30, //total 80
+            hp: 18, atk: 22, def: 14, spd: 26, //total 80
             move_list: [ [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.MagicBolt], [9, Move.Shards],
              [11, Move.Restruct], [13, Move.Brittle], [18, Move.Boulderdash], [20, Move.Suplex], [24, Move.Torque], 
              [26, Move.Grind], [29, Move.Torch], [33, Move.GemBash], [37, Move.HypeUp], [40, Move.CrystalBall], 
@@ -1693,7 +1693,7 @@ module.exports = {
             name: 'Moldot',
             oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
             type: [OochType.Fungal, OochType.Magic],
-            hp: 5, atk: 5, def: 25, spd: 5, //total 40
+            hp: 11, atk: 9, def: 15, spd: 5, //total 40
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.SporeShot], [8, Move.MagicBolt], [12, Move.TakeOver],
                 [15, Move.FiberSlicer], [17, Move.ClampDown], [20, Move.SlurpUp], [24, Move.Pulverize], [27, Move.HighImpact], 
@@ -1710,7 +1710,7 @@ module.exports = {
             name: 'Moldire',
             oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
             type: [OochType.Fungal, OochType.Magic],
-            hp: 25, atk: 25, def: 30, spd: 5, //total 85
+            hp: 27, atk: 25, def: 23, spd: 10, //total 85
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.SporeShot], [8, Move.MagicBolt], [12, Move.TakeOver],
                 [15, Move.FiberSlicer], [17, Move.ClampDown], [20, Move.SlurpUp], [24, Move.Pulverize], [27, Move.HighImpact], 
@@ -1727,7 +1727,7 @@ module.exports = {
             name: 'Charlite',
             oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
             type: [OochType.Flame, OochType.Stone],
-            hp: 5, atk: 15, def: 5, spd: 10, //total 35
+            hp: 10, atk: 10, def: 7, spd: 8, //total 35
             move_list: [
                 [1, Move.Hit], [2, Move.Embolden], [4, Move.Fireball], [8, Move.Intimidate], [10, Move.DustStorm], 
                 [13, Move.Radiate], [16, Move.Sparkler], [19, Move.Heatwave], [22, Move.Engulf], [24, Move.Fog], 
@@ -1744,7 +1744,7 @@ module.exports = {
             name: 'Darcoal',
             oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
             type: [OochType.Flame, OochType.Stone],
-            hp: 15, atk: 25, def: 13, spd: 12, //total 65
+            hp: 18, atk: 20, def: 15, spd: 12, //total 65
             move_list: [
                 [1, Move.Hit], [2, Move.Embolden], [4, Move.Fireball], [8, Move.Intimidate], [10, Move.DustStorm], 
                 [13, Move.Radiate], [16, Move.Sparkler], [19, Move.Heatwave], [22, Move.Engulf], [24, Move.Fog], 
@@ -1780,7 +1780,7 @@ module.exports = {
             name: 'Chantern',
             oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.', 
             type: [OochType.Flame, OochType.Sound],
-            hp: 21, atk: 20, def: 24, spd: 15, //total 80
+            hp: 21, atk: 20, def: 22, spd: 17, //total 80
             move_list: [
                 [1, Move.Bash], [3, Move.Fireball], [4, Move.Embolden], [7, Move.Screech], [10, Move.MagicBolt],
                 [12, Move.SonicBoom], [15, Move.EchoChamber], [17, Move.Torch], [21, Move.ClampDown], [23, Move.SonicBoom], 
@@ -1833,7 +1833,7 @@ module.exports = {
             name: 'Meduslime',
             oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.', 
             type: [OochType.Ooze, OochType.Magic],
-            hp: 16, atk: 25, def: 19, spd: 15, //total 75
+            hp: 21, atk: 20, def: 19, spd: 15, //total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [3, Move.Glob], [7, Move.MagicBolt], [8, Move.Bind], [11, Move.ClampDown],
                 [14, Move.PressureWave], [18, Move.Impale], [21, Move.Suplex], [25, Move.TangledThreads], [27, Move.Wetlands],  
@@ -1905,7 +1905,7 @@ module.exports = {
             name: 'Rerune',
             oochive_entry: 'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.', 
             type: [OochType.Magic], 
-            hp: 10, atk: 15, def: 15, spd: 15, // total 55
+            hp: 13, atk: 15, def: 13, spd: 14, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp], 
                 [15, Move.Slash], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale], 
@@ -1941,7 +1941,7 @@ module.exports = {
             name: 'Nucleorb',
             oochive_entry: 'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.', 
             type: [OochType.Ooze], 
-            hp: 7, atk: 13, def: 9, spd: 11, // total 40
+            hp: 10, atk: 10, def: 9, spd: 11, // total 40
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Siphon], [11, Move.Parasitize], 
                 [14, Move.CursedEye], [16, Move.Wetlands], [18, Move.Corrode], [22, Move.CausticOrb], [24, Move.Pulverize], 
@@ -1959,7 +1959,7 @@ module.exports = {
             name: 'Amebite',
             oochive_entry: 'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.', 
             type: [OochType.Ooze], 
-            hp: 11, atk: 18, def: 12, spd: 14, // total 55
+            hp: 14, atk: 15, def: 12, spd: 14, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Siphon], [11, Move.Parasitize], 
                 [14, Move.CursedEye], [16, Move.Wetlands], [18, Move.Corrode], [22, Move.CausticOrb], [24, Move.Pulverize], 
@@ -1977,7 +1977,7 @@ module.exports = {
             name: 'Amalgrime',
             oochive_entry: 'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.', 
             type: [OochType.Ooze], 
-            hp: 25, atk: 20, def: 20, spd: 20, // total 85
+            hp: 24, atk: 22, def: 20, spd: 19, // total 85
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Siphon], [11, Move.Parasitize], 
                 [14, Move.CursedEye], [16, Move.Wetlands], [18, Move.Corrode], [22, Move.CausticOrb], [24, Move.Pulverize], 
@@ -2012,7 +2012,7 @@ module.exports = {
             name: 'Erwrek',
             oochive_entry: 'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.', 
             type: [OochType.Tech], 
-            hp: 15, atk: 19, def: 25, spd: 16, // total 75
+            hp: 20, atk: 21, def: 18, spd: 16, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], [8, Move.Sedimentation],
                 [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale],
@@ -2064,7 +2064,7 @@ module.exports = {
             name: 'Lobstar',
             oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.', 
             type: [OochType.Stone, OochType.Flame], 
-            hp: 10, atk: 35, def: 20, spd: 10, // total 75
+            hp: 15, atk: 30, def: 20, spd: 10, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.Intimidate], [9, Move.Gravitate], 
                 [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [21, Move.JaggedGround], [23, Move.SolarBlast], 
@@ -2082,7 +2082,7 @@ module.exports = {
             name: 'Spoolette',
             oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.', 
             type: [OochType.Magic, OochType.Cloth], 
-            hp: 10, atk: 15, def: 15, spd: 10, // total 50
+            hp: 12, atk: 15, def: 13, spd: 10, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip], 
                 [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [28, Move.FatedThreads], 
@@ -2100,7 +2100,7 @@ module.exports = {
             name: 'Thimbite',
             oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.', 
             type: [OochType.Magic, OochType.Cloth], 
-            hp: 20, atk: 20, def: 20, spd: 10, // total 70wor
+            hp: 22, atk: 20, def: 18, spd: 10, // total 70
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip], 
                 [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [28, Move.FatedThreads], 
@@ -2116,7 +2116,7 @@ module.exports = {
             id: 39,
             emote: get_emote_string(applicationEmojis, 'digityke'),
             name: 'Digityke',
-            oochive_entry: 'An old-model of machine companion, its feeble body prevents it from being of much use.', 
+            oochive_entry: 'An old model of machine companion, its feeble body prevents it from being of much use.', 
             type: [OochType.Tech],
             hp: 10, atk: 7, def: 8, spd: 5, // total 30
             move_list: [
@@ -2136,7 +2136,7 @@ module.exports = {
             name: 'Codet',
             oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.', 
             type: [OochType.Tech, OochType.Magic],
-            hp: 30, atk: 10, def: 10, spd: 10, // total 60
+            hp: 20, atk: 16, def: 13, spd: 11, // total 60
             move_list: [
                 [1, Move.Bash], [2, Move.Slash], [5, Move.ByteBite], [7, Move.DigitalGamble], [10, Move.EarSplitter],
                 [12, Move.Suplex], [14, Move.Sparkler], [16, Move.SyncStrike], [20, Move.SelfDestruct], [21, Move.PhantomBullet], [23, Move.Heatseeker], 
@@ -2223,7 +2223,7 @@ module.exports = {
             name: 'Obstaggard',
             oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.', 
             type: [OochType.Flame, OochType.Stone],
-            hp: 19, atk: 23, def: 17, spd: 11, // total 70
+            hp: 20, atk: 22, def: 17, spd: 11, // total 70
             move_list: [
                 [1, Move.GuidedSpire], [1, Move.HealingGems],
                 [1, Move.Bash], [2, Move.Restruct], [4, Move.Fireball], [7, Move.Caltrops], [11, Move.JaggedGround],
@@ -2242,7 +2242,7 @@ module.exports = {
             name: 'Droplunk',
             oochive_entry: 'Oops, don\'t let this one drop on your head!', 
             type: [OochType.Stone],
-            hp: 7, atk: 10, def: 8, spd: 15, // total 40
+            hp: 8, atk: 9, def: 8, spd: 15, // total 40
             move_list: [
                 [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt],
                 [12, Move.Entomb], [13, Move.Mud], [16, Move.Sedimentation], [20, Move.CursedEye], [23, Move.Mummify],
@@ -2260,7 +2260,7 @@ module.exports = {
             name: 'Brykurse',
             oochive_entry: 'Square meatball!', 
             type: [OochType.Stone, OochType.Magic],
-            hp: 14, atk: 28, def: 8, spd: 25, // total 75
+            hp: 18, atk: 24, def: 10, spd: 23, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Intimidate], [4, Move.PebbleBlast], [7, Move.Gravitate], [10, Move.MagicBolt],
                 [12, Move.Entomb], [13, Move.Mud], [16, Move.Sedimentation], [20, Move.CursedEye], [23, Move.Mummify],
@@ -2295,7 +2295,7 @@ module.exports = {
             name: 'Reefest',
             oochive_entry: 'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.', 
             type: [OochType.Fungal],
-            hp: 35, atk: 15, def: 15, spd: 5, // total 70
+            hp: 33, atk: 15, def: 17, spd: 5, // total 70
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Glob], [7, Move.Corrode], [10, Move.Mud],
                 [12, Move.ClampDown], [15, Move.EnfeeblingSpore],  [18, Move.Fog], [22, Move.CausticOrb], [24, Move.Parasitize],
@@ -2329,7 +2329,7 @@ module.exports = {
             name: 'Boreyuc',
             oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.', 
             type: [OochType.Ooze, OochType.Crystal],
-            hp: 15, atk: 7, def: 30, spd: 3, // total 65
+            hp: 20, atk: 7, def: 25, spd: 3, // total 65
             move_list: [
                 [1, Move.Hit], [2, Move.Limber], [3, Move.Glob], [6, Move.Fog], [7, Move.Corrode],
                 [10, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [23, Move.Frostbite], [25, Move.CursedEye],
@@ -2380,7 +2380,7 @@ module.exports = {
             name: 'Hexyclone',
             oochive_entry: 'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.',
             type: [OochType.Tech],
-            hp: 20, atk: 13, def: 17, spd: 25, // total 75
+            hp: 20, atk: 17, def: 15, spd: 23, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Hasten], [6, Move.Sawblade], [8, Move.Caltrops], [12, Move.Sharpen],
                 [15, Move.SlowBurn], [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [31, Move.Radiate], 
@@ -2431,7 +2431,7 @@ module.exports = {
             name: 'Kindeep',
             oochive_entry: 'Schools of this fish-like oochamon are often found floating down in the caverns.',
             type: [OochType.Flame],
-            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            hp: 11, atk: 13, def: 13, spd: 18, // total 55
             move_list: [
                 [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [10, Move.LenseFlare],
                 [12, Move.Engulf], [16, Move.Lurk], [17, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
@@ -2449,7 +2449,7 @@ module.exports = {
             name: 'Ablayzz',
             oochive_entry: 'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.',
             type: [OochType.Flame],
-            hp: 20, atk: 18, def: 17, spd: 25, // total 80
+            hp: 20, atk: 22, def: 17, spd: 21, // total 80
             move_list: [
                 [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [10, Move.LenseFlare],
                 [12, Move.Engulf], [16, Move.Lurk], [17, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
@@ -2467,7 +2467,7 @@ module.exports = {
             name: 'Krakle',
             oochive_entry: 'This small \'mon has a superheated shell, don\'t touch it.',
             type: [OochType.Flame],
-            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            hp: 14, atk: 13, def: 12, spd: 16, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn],
                 [14, Move.Engulf], [-1, Move.Overgrowth]
@@ -2483,7 +2483,7 @@ module.exports = {
             name: 'Lightuft',
             oochive_entry: 'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.',
             type: [OochType.Flame],
-            hp: 13, atk: 17, def: 13, spd: 22, // total 65
+            hp: 15, atk: 17, def: 13, spd: 20, // total 65
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn], [11, Move.Screech],
                 [14, Move.Engulf], [16, Move.HawkEye], [20, Move.Torch], [23,  Move.SonicBoom], [27, Move.Inferno], 
@@ -2500,7 +2500,7 @@ module.exports = {
             name: 'Infernowl',
             oochive_entry: 'These apex predators will find a single volcano and make its entirety their hunting ground.',
             type: [OochType.Flame],
-            hp: 20, atk: 25, def: 17, spd: 18, // total 80
+            hp: 20, atk: 23, def: 17, spd: 21, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball], [7, Move.SlowBurn], [11, Move.Screech],
                 [14, Move.Engulf], [16, Move.HawkEye], [20, Move.Torch], [23,  Move.SonicBoom], [27, Move.Inferno], 
@@ -2535,7 +2535,7 @@ module.exports = {
             name: 'Decavian',
             oochive_entry: 'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.',
             type: [OochType.Fungal],
-            hp: 18, atk: 20, def: 25, spd: 17, // total 80
+            hp: 20, atk: 20, def: 23, spd: 17, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Overgrowth], [5, Move.Fireball],
                 [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
@@ -2553,7 +2553,7 @@ module.exports = {
             name: 'Phaegrim',
             oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
             type: [OochType.Fungal, OochType.Ooze],
-            hp: 10, atk: 13, def: 12, spd: 20, // total 55
+            hp: 12, atk: 13, def: 12, spd: 18, // total 55
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [4, Move.Limber], [7, Move.Brittle], [9, Move.CausticOrb],
                 [12, Move.TakeOver], [14, Move.EnfeeblingSpore], [17, Move.Lurk], [20, Move.CursedEye], [26, Move.DrainLife],
@@ -2625,7 +2625,7 @@ module.exports = {
             name: 'Speculidae',
             oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
             type: [OochType.Crystal],
-            hp: 12, atk: 10, def: 35, spd: 23, // total 80
+            hp: 14, atk: 10, def: 35, spd: 21, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Brittle], [5, Move.Shards], [7, Move.Caltrops], [9, Move.RagWhip],
                 [11, Move.Fog], [15, Move.Glimmer], [18, Move.Sedimentation], [19, Move.Boulderdash], [23, Move.HealingGems],
@@ -2678,7 +2678,7 @@ module.exports = {
             name: 'Marinette',
             oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
             type: [OochType.Ooze, OochType.Cloth],
-            hp: 30, atk: 23, def: 17, spd: 10, // total 80
+            hp: 25, atk: 22, def: 17, spd: 16, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.MagicBolt], [4, Move.Limber], [5, Move.RagWhip], [7, Move.Glob], [10, Move.Wetlands],
                 [12, Move.CausticOrb], [16, Move.SlurpUp], [19, Move.RallyingCry], [23, Move.Bind], [26, Move.TangledThreads],
@@ -2712,7 +2712,7 @@ module.exports = {
             name: 'Durubull',
             oochive_entry: 'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.',
             type: [OochType.Stone],
-            hp: 20, atk: 25, def: 25, spd: 15, // total 85
+            hp: 25, atk: 23, def: 22, spd: 15, // total 85
             move_list: [
                 [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Caltrops], [8, Move.PrecisionStrike], [11, Move.JaggedGround],
                 [13, Move.Boulderdash], [19, Move.DustStorm], [24, Move.Brittle], [26, Move.HighImpact], [28, Move.MetalLance],
@@ -2729,7 +2729,7 @@ module.exports = {
             name: 'Rustail',
             oochive_entry: 'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.',
             type: [OochType.Tech],
-            hp: 15, atk: 15, def: 15, spd: 10, // total 55
+            hp: 14, atk: 15, def: 15, spd: 11, // total 55
             move_list: [
                 [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Sawblade], [10, Move.ClampDown],
                 [13, Move.PrecisionStrike], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
@@ -2747,7 +2747,7 @@ module.exports = {
             name: 'Oxydrake',
             oochive_entry: 'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.',
             type: [OochType.Tech],
-            hp: 20, atk: 25, def: 23, spd: 17, // total 85
+            hp: 23, atk: 24, def: 21, spd: 17, // total 85
             move_list: [
                 [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Sawblade], [10, Move.ClampDown],
                 [13, Move.PrecisionStrike], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
@@ -2783,7 +2783,7 @@ module.exports = {
             name: 'Sabrink',
             oochive_entry: 'A grinning energy blade that relentlessly pursues its enemies.',
             type: [OochType.Tech],
-            hp: 18, atk: 30, def: 17, spd: 30, // total 85
+            hp: 19, atk: 25, def: 16, spd: 25, // total 85
             move_list: [
                 [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [13, Move.SlowBurn],
                 [17, Move.Barrage], [19, Move.Radiate], [21, Move.Slash], [26, Move.Gravitate], [29, Move.Slash],
@@ -2801,7 +2801,7 @@ module.exports = {
             name: 'Sapler',
             oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
             type: [OochType.Tech, OochType.Fungal],
-            hp: 15, atk: 10, def: 20, spd: 5, // total 50
+            hp: 15, atk: 12, def: 13, spd: 10, // total 50
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [10, Move.Embolden],
                 [13, Move.Fireball], [16, Move.TangledThreads], [18, Move.Radiate], [23, Move.IronHammer], [26, Move.Impale], 
@@ -2819,7 +2819,7 @@ module.exports = {
             name: 'Radient',
             oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
             type: [OochType.Tech, OochType.Fungal],
-            hp: 25, atk: 20, def: 20, spd: 15, // total 80
+            hp: 24, atk: 21, def: 19, spd: 16, // total 80
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [4, Move.Fog], [7, Move.Siphon], [10, Move.Embolden],
                 [13, Move.Fireball], [16, Move.TangledThreads], [18, Move.Radiate], [20, Move.MycoBurst], [23, Move.IronHammer], 
@@ -2837,11 +2837,11 @@ module.exports = {
             name: 'Lasangato',
             oochive_entry: 'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.',
             type: [OochType.Stone],
-            hp: 27, atk: 10, def: 23, spd: 10, // total 70
+            hp: 27, atk: 11, def: 22, spd: 10, // total 70
             move_list: [
                 [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Mud], [8, Move.DustStorm], [10, Move.Intimidate],
                 [12, Move.ClampDown], [17, Move.HypeUp], [22, Move.Sedimentation], [24, Move.JaggedGround], [27, Move.Gravitate],
-                [30, Move.HighImpact], [33, Move.Entomb], [35, Move.SlurpUp], [41, Move.Suplex], [46, Move.CrashLanding], [-1, Move.Inferno]
+                [30, Move.HeldStrike], [33, Move.Entomb], [35, Move.SlurpUp], [41, Move.Suplex], [46, Move.CrashLanding], [-1, Move.Inferno]
             ],
             abilities: [Ability.Burdened, Ability.Burrower],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -2854,7 +2854,7 @@ module.exports = {
             name: 'Crudoil',
             oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
             type: [OochType.Ooze],
-            hp: 7, atk: 12, def: 8, spd: 8, // total 35
+            hp: 9, atk: 11, def: 8, spd: 7, // total 35
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [5, Move.Limber], [7, Move.Fireball], [9, Move.Intimidate],
                 [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [28, Move.Inferno],
@@ -2872,7 +2872,7 @@ module.exports = {
             name: 'Oilantern',
             oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
             type: [OochType.Ooze, OochType.Flame],
-            hp: 15, atk: 25, def: 15, spd: 20, // total 75
+            hp: 18, atk: 22, def: 16, spd: 19, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Glob], [5, Move.Limber], [7, Move.Fireball], [9, Move.Intimidate],
                 [11, Move.StickyOrb], [18, Move.Lurk], [22, Move.SelfDestruct], [26, Move.Engulf], [28, Move.Inferno],
@@ -2992,7 +2992,7 @@ module.exports = {
             name: 'Fritarge',
             oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
             type: [OochType.Tech],
-            hp: 11, atk: 9, def: 13, spd: 7, // total 40
+            hp: 11, atk: 10, def: 12, spd: 7, // total 40
             move_list: [
                 [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [10, Move.ClampDown],
                 [13, Move.Entrench], [16, Move.Caltrops], [18, Move.IronHammer], [21, Move.Thunderstorm], [24, Move.AshBlast],
@@ -3046,7 +3046,7 @@ module.exports = {
             name: 'Fevour',
             oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
             type: [OochType.Flame],
-            hp: 11, atk: 26, def: 14, spd: 24, // total 75
+            hp: 15, atk: 24, def: 13, spd: 23, // total 75
             move_list: [
                 [1, Move.Bash], [2, Move.Embolden], [5, Move.Fireball], [8, Move.RallyingCry], [9, Move.ClampDown],
                 [13, Move.HypeUp], [17, Move.Torch], [20, Move.EarSplitter], [23, Move.Hasten], [28, Move.Engulf],
@@ -3082,7 +3082,7 @@ module.exports = {
             name: 'Silentoad',
             oochive_entry: 'Silentoad are quiet, watchful, and relentlessly protective of the Taditty that rest near them.',
             type: [OochType.Sound, OochType.Cloth],
-            hp: 13, atk: 17, def: 12, spd: 18, //total 60
+            hp: 14, atk: 16, def: 12, spd: 18, //total 60
             move_list: [
                 [1, Move.Bash], [2, Move.Screech], [4, Move.RagWhip], [8, Move.Hasten], [11, Move.PrecisionStrike],
                 [13, Move.EarShatter], [15, Move.Bind], [17, Move.RallyingCry], [20, Move.Whiplash], [24, Move.SonicBoom], [26, Move.PressureWave],
@@ -3100,7 +3100,7 @@ module.exports = {
             name: 'Bansheet',
             oochive_entry: 'Hidden beneath a tattered cloth, these creatures often catch unwary adventurers off guard with a head-splittingly loud screech.',
             type: [OochType.Sound, OochType.Cloth],
-            hp: 23, atk: 25, def: 17, spd: 15, //total 80
+            hp: 24, atk: 22, def: 18, spd: 16, //total 80
             move_list: [
                 [1, Move.Bash], [2, Move.Screech], [4, Move.RagWhip], [8, Move.Hasten], [11, Move.PrecisionStrike],
                 [13, Move.EarShatter], [15, Move.Bind], [17, Move.RallyingCry], [20, Move.Whiplash], [24, Move.SonicBoom], [26, Move.PressureWave],
