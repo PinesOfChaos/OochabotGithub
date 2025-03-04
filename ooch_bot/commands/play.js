@@ -15,7 +15,7 @@ module.exports = {
         let target = interaction.user.id;
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+        // if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
 
         if (!db.profile.has(target)) {
             return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
