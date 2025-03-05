@@ -76,13 +76,13 @@ module.exports = {
             await db.battle_data.delete(curBattleId);
 
             for (let user of battleData.users) {
-                db.profile.set(user.user_id, 0, 'cur_event_pos');
-                db.profile.set(user.user_id, false, 'cur_battle_id');
-                let userThread = client.channels.cache.get(user.thread_id);
-
                 if (user.is_player) {
+                    db.profile.set(user.user_id, 0, 'cur_event_pos');
+                    db.profile.set(user.user_id, false, 'cur_battle_id');
+                    let userThread = client.channels.cache.get(user.thread_id);
+
                     await finish_battle(battleData, user.user_index, true);
-                    await move(userThread, user.user_id, '', 1);
+                    await move(userThread, user.user_id, '', 1, 0);
                 }
             } 
         } else {
@@ -99,7 +99,7 @@ module.exports = {
             if (db.profile.get(interaction.user.id, 'player_state') == PlayerState.Intro) {
                 await event_process(interaction.user.id, thread, db.events_data.get('ev_intro'), 0, 'ev_intro');
             } else {
-                await move(thread, interaction.user.id, '', 1);
+                await move(thread, interaction.user.id, '', 1, 0);
             }
 
             if (playspace_str[0] != "**Intro**") {

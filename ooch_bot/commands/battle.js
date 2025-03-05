@@ -86,7 +86,7 @@ module.exports = {
         //#endregion
 
         let intUserBattleMsg;
-        await interaction.reply({ content: `Battle invitation sent to **${otherBattleMember.displayName}**! Waiting for response...`, components: [] });
+        await interaction.reply({ content: `Battle invitation sent to **${otherBattleMember.displayName}**! Waiting for response...`, components: [cancelButton] });
         await interaction.fetchReply().then(msg => {
             intUserBattleMsg = msg;
         });
@@ -99,27 +99,27 @@ module.exports = {
 
         // Start the battle invitation process
         confirm_collector = otherUserBattleMsg.createMessageComponentCollector({ max: 1, time: 60000 });
+        cancel_collector = intUserBattleMsg.createMessageComponentCollector({ max: 1, time: 60000 });
+
+        cancel_collector.on('collect', async i => {
+            if (i.customId == 'cancel') {
+                await confirm_collector.stop();
+            }
+        });
 
         confirm_collector.on('collect', async i => {
             if (i.customId == 'yes') {
                 i.update({ content: `Accepted battle offer! Setting up battle with **${interaction.member.displayName} now...**`, components: [] });
-                db.profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
-                db.profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
-
-                let intBattleDataUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
-                let otherBattleDataUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
-
-                await intUserBattleMsg.delete().catch(() => {});
-                await otherUserBattleMsg.delete().catch(() => {});
-
-                await setup_battle([intBattleDataUser, otherBattleDataUser], Weather.None, 0, 0, false, false, false, true, levelScale, 'battle_bg_tutorial', true);
+                db.profile.set(interaction.user.id, PlayerState.CombatOochSelect, 'player_state');
+                db.profile.set(otherBattleUser.id, PlayerState.CombatOochSelect, 'player_state');
             }
         });
 
         confirm_collector.on('end', async collected => {
             let doDelete = false;
             if (collected.first() == undefined) {
-                doDelete = true;
+                await otherUserBattleMsg.delete().catch(() => {});
+                await intUserBattleMsg.delete().catch(() => {});
                 db.profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
                 db.profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
             } else {

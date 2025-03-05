@@ -209,7 +209,7 @@ let functions = {
 
         let battleDataObj = {
             battle_id : battleId,
-            battle_msg_counter : 4,
+            battle_msg_counter : 0,
             turn_msg_counter : users.length, //This was 0, but because each user has an intro-message, we need to account for those
             battle_state : BattleState.Start,
             battle_action_queue : [],
@@ -254,6 +254,8 @@ let functions = {
 
         // Handle all the text
         let battleStartText, sendOutText, active_ooch, types_string;
+        battleDataObj.battle_msg_counter += 2;
+        
         for (let [id, user] of battleDataObj.users.entries()) {
             //Reset text messages per player
             battleStartText = '';
@@ -335,6 +337,8 @@ let functions = {
 
         //Send the round start message
         await functions.distribute_messages(battleDataObj, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
+
+        db.battle_data.set(battleId, battleDataObj);
 
         await functions.prompt_battle_actions(battleId);
     },
@@ -790,7 +794,13 @@ let functions = {
                 if (userThread == undefined) return;
                 await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
 
-                const inputCollector = userThread.createMessageComponentCollector();
+                const inputFilter = async i => {
+                    if (i.user.id != user.user_id) return false;
+                    if (db.profile.get(i.user.id, 'cur_battle_id') != battle_data.battle_id) return false;
+                    return true;
+                }
+
+                const inputCollector = userThread.createMessageComponentCollector({ time: 1.8e+6, filter: inputFilter });
                 
                 await inputCollector.on('collect', async i => {
                     let customId = i.customId;
@@ -1259,6 +1269,7 @@ let functions = {
             faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
             text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
+            if (!finish_battle) text += faint_check.finish_text;
 
             //Send the text to each of the user's threads
             let author_obj = false;
@@ -1431,13 +1442,13 @@ let functions = {
             //Clear all user's actions
             battle_data.turn_counter++;
             for(let user of battle_data.users){ user.action_selected = false; }
-            db.battle_data.set(battle_id, battle_data);
         }
         
         //Do stuff depending on whether the battle is finished
         if(!finish_battle) {
             await wait(battle_data.battle_speed);
             await functions.distribute_messages(battle_data, { embeds : [functions.generate_round_start_embed(battle_data)]});
+            db.battle_data.set(battle_id, battle_data);
             
             await wait(battle_data.battle_speed);
             await functions.prompt_battle_actions(battle_data.battle_id);
@@ -1450,11 +1461,22 @@ let functions = {
                     .setLabel('Continue To Playspace')
                     .setStyle(ButtonStyle.Primary),
             )
+            let victoryUser = battle_data.users.filter(user => user.defeated !== true)[0];
 
-            await functions.distribute_messages(battle_data, { components: [endButton] }, true);
+            const victorEmbed = new EmbedBuilder()
+                .setColor('#ffee00')
+                .setAuthor({ name: '🏆 Victory 🏆' })
+                .setTitle(`${victoryUser.name} has won the battle!`)
+                .setDescription(`${faint_check.finish_text}`)
+
+            if (victoryUser.is_player) {
+                let victoryDiscordUser = await botClient.users.fetch(victoryUser.user_id);
+                victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
+            }
+
+            await functions.distribute_messages(battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
+            db.battle_data.set(battle_id, battle_data);
         }
-        
-
     },
 
     /**
@@ -1937,6 +1959,7 @@ let functions = {
      */
     battle_faint_check: async function(battle_data) {
         let string_to_send = '';
+        let finish_string_to_send = '';
         let active_teams = [];
         let finish_battle = false;
         
@@ -1975,7 +1998,7 @@ let functions = {
             if (user_defeated) {
                 if (user.user_type !== UserType.Wild) string_to_send += `\n--- **${user.name}'s party was wiped out!**`;
                 if (user.oochabux !== 0) {
-                    string_to_send += `\nReceived **${user.oochabux} oochabux** for winning the battle!`
+                    finish_string_to_send += `\nReceived **${user.oochabux} oochabux** for winning the battle!`
                 }
                 user.defeated = true;
             } else {
@@ -2002,11 +2025,11 @@ let functions = {
                         }
 
                         if (other_ooch.level < max_level) { 
-                            string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
+                            finish_string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
                                                 ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
                         if (other_user.party.length > 1) {
-                            string_to_send += `\nThe rest of the team earned **${exp_given}** exp.\n`;
+                            finish_string_to_send += `\nThe rest of the team earned **${exp_given}** exp.\n`;
                         }
 
                         for (let i = 0; i < ooch_party.length; i++) {
@@ -2036,6 +2059,7 @@ let functions = {
         
         return({
             text : string_to_send, 
+            finish_text : finish_string_to_send,
             finish_battle : finish_battle
         });
         
@@ -2501,7 +2525,7 @@ let functions = {
             case Weather.None: break; //Do Nothing
             case Weather.Heatwave: 
                 if(!ooch.type.includes(OochType.Flame)) {
-                    let hp_lost = Math.floor(ooch.stats.hp / 10);
+                    let hp_lost = Math.floor(ooch.stats.hp * 0.05);
                     ooch.current_hp = _.clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
                     ability_text += `\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
                 }
@@ -3613,22 +3637,19 @@ let functions = {
         let user_id = user_info.user_id;
         let thread = botClient.channels.cache.get(user_info.thread_id);
         let is_online = battle_data.is_online;
-        
-        console.log(`EXPECTED MESSAGE COUNT: ${battle_data.battle_msg_counter}`);
 
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
+            console.log(`DELETING: ${battle_data.battle_msg_counter} MESSAGES`);
             await thread.bulkDelete(battle_data.battle_msg_counter).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;
             do {
                 await thread.bulkDelete(100);
                 message_count -= 100;
-                console.log(`NEW MESSAGE COUNT: ${message_count}`);
             }
             while(message_count > thread.memberCount);
 
-            console.log(`FINAL MESSAGE COUNT: ${message_count}`);
         }
 
         if(!battle_data.fake_battle && !play_end) {

@@ -10,15 +10,15 @@ let functions = {
     // Builds the action rows and places emotes in for the Oochabox, based on the database.
     // Updates with new database info every time the function is run
     // Needs to be updated in a lot of cases, so easier to put it in a function!
-    buildBoxData: function(user_id, page_num) {
+    buildBoxData: function(user_profile, page_num) {
         box_row = [];
         box_row[0] = new ActionRowBuilder();
         box_row[1] = new ActionRowBuilder();
         box_row[2] = new ActionRowBuilder();
         box_row[3] = new ActionRowBuilder();
         let box_idx = 0;
-        let oochabox_data = db.profile.get(user_id, 'ooch_pc');
-        let party_data = db.profile.get(user_id, 'ooch_party');
+        let oochabox_data = user_profile.ooch_pc;
+        let party_data = user_profile.ooch_party;
         let offset = (16 * page_num)
 
         for (let i = (0 + offset); i < (16 + offset); i++) {
