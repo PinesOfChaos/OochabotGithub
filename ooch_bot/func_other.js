@@ -246,17 +246,23 @@ let functions = {
         const { finish_battle } = require('./func_battle.js');
 
         let curBattleId = db.profile.get(user_id, 'cur_battle_id');
-        if (curBattleId != false && curBattleId != undefined) {
+        if (curBattleId != false && db.battle_data.has(curBattleId)) {
+            await interaction.deleteReply().catch(() => {});
+            
             let battleData = db.battle_data.get(curBattleId);
-            if (battleData != undefined) {
-                for (let user of battleData.users) {
-                    if (user.is_player) {
-                        db.profile.set(user.user_id, 0, 'cur_event_pos');
-                        await finish_battle(battleData, user.user_index, true);
-                    }
-                } 
-            }
-        }
+            await db.battle_data.delete(curBattleId);
+
+            for (let user of battleData.users) {
+                db.profile.set(user.user_id, 0, 'cur_event_pos');
+                db.profile.set(user.user_id, false, 'cur_battle_id');
+                let userThread = client.channels.cache.get(user.thread_id);
+
+                if (user.is_player) {
+                    await finish_battle(battleData, user.user_index, true);
+                    await move(userThread, user.user_id, '', 1);
+                }
+            } 
+        } 
 
         await thread.bulkDelete(5);
         await thread.members.remove(user_id);

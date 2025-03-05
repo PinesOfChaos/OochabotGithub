@@ -5,6 +5,7 @@ const { PlayerState, UserType, Weather } = require('../types.js');
 const wait = require('wait');
 const { ooch_info_embed } = require('../func_other.js');
 const { generate_battle_user, setup_battle } = require('../func_battle.js');
+const _ = require('lodash');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,13 +36,12 @@ module.exports = {
         if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', ephemeral: true });
         let levelScale = interaction.options.getNumber('level_to_scale');
         if (levelScale == null) levelScale = 25;
-        if (levelScale > 50) levelScale = 50;
+        levelScale = _.clamp(levelScale, 1, 50);
         let disableScaleLevel = interaction.options.getString('dont_scale_levels');
         if (disableScaleLevel == 'yes') levelScale = false;
 
         let intBattleUser = interaction.user;
         let otherBattleMember = await interaction.guild.members.fetch(otherBattleUser.id);
-        let intBattleMember = interaction.member;
         let intUserState = db.profile.get(interaction.user.id, 'player_state');
         let otherUserState = db.profile.get(otherBattleUser.id, 'player_state');
 
@@ -51,6 +51,8 @@ module.exports = {
             return interaction.reply({ content: 'You can\'t battle here.', ephemeral: true });
         } else if (intUserState == PlayerState.Combat) {
             return interaction.reply({ content: `You are in the middle of a battle. If you are not mid battle, please restart the game by running \`/play\` again.`, ephemeral: true });
+        } else if (intUserState == PlayerState.Invited) {
+            return interaction.reply({ content: `You currently have a battle invitation.`, ephemeral: true })
         }
 
         if (otherUserState == PlayerState.NotPlaying) {
@@ -59,6 +61,8 @@ module.exports = {
             return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the middle of a battle right now.`, ephemeral: true });
         } else if (otherUserState !== PlayerState.Playspace) {
             return interaction.reply({ content: `**${otherBattleMember.displayName}** is unable to battle right now, as they are in a different battle or in a menu.` })
+        } else if (otherUserState == PlayerState.Invited) {
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** has already been invited to a battle.` })
         }
 
         let otherUserThread = db.profile.get(otherBattleUser.id, 'play_thread_id');
@@ -75,13 +79,21 @@ module.exports = {
                 new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
             );
 
+        let cancelButton = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setCustomId('cancel').setLabel('Cancel Invite').setStyle(ButtonStyle.Danger),
+            );
+        //#endregion
+
         let intUserBattleMsg;
-        await interaction.reply({ content: `Battle invitation sent to **${otherBattleMember.displayName}**! Waiting for response...` });
+        await interaction.reply({ content: `Battle invitation sent to **${otherBattleMember.displayName}**! Waiting for response...`, components: [] });
         await interaction.fetchReply().then(msg => {
             intUserBattleMsg = msg;
         });
 
         let intUserThread = interaction.channel;
+        db.profile.set(otherBattleUser.id, PlayerState.Invited, 'player_state');
+        db.profile.set(intBattleUser.id, PlayerState.Invited, 'player_state');
         let otherUserBattleMsg = await otherUserThread.send({ content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?\n` + 
             `*(Battle Options: ${levelScale != false ? `Scaled to* ***level ${levelScale}*** *Oochamon` : `* ***Normal Oochamon levels*** *`})*`, components: [confirmButtons] });
 
@@ -102,14 +114,20 @@ module.exports = {
 
                 await setup_battle([intBattleDataUser, otherBattleDataUser], Weather.None, 0, 0, false, false, false, true, levelScale, 'battle_bg_tutorial', true);
             }
-        })
+        });
 
         confirm_collector.on('end', async collected => {
             let doDelete = false;
             if (collected.first() == undefined) {
                 doDelete = true;
+                db.profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
+                db.profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
             } else {
-                if (collected.first().customId == 'no') doDelete = true;
+                if (collected.first().customId == 'no') {
+                    doDelete = true;
+                    db.profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
+                    db.profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
+                }
             }
 
             if (doDelete) {

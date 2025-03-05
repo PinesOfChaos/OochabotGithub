@@ -16,7 +16,7 @@ let functions = {
      */
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
         
-        const { give_item, setup_playspace_str, create_ooch } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch, move } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -500,17 +500,17 @@ let functions = {
 
                         await confirm_collector.stop();
                         if (msg.id != msg_to_edit) await msg.delete();
-                        db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-                        db.profile.set(user_id, false, 'cur_event_name');
-                        db.profile.set(user_id, [], 'cur_event_array');
-                        db.profile.set(user_id, 0, 'cur_event_pos');
+                        await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                        await db.profile.set(user_id, false, 'cur_event_name');
+                        await db.profile.set(user_id, [], 'cur_event_array');
+                        await db.profile.set(user_id, 0, 'cur_event_pos');
                         quit = true; 
                         let playspace_str = setup_playspace_str(user_id);
                         await thread.messages.fetch(msg_to_edit).then(async (msg) => {
                             await msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
                         }).catch((err) => { console.log(err) });
 
-                        // await move(thread, user_id, '', 1);
+                        await move(thread, user_id, '', 2);
                         return;
                     } else {
                         current_place++;

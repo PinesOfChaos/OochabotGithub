@@ -9,7 +9,8 @@ const PlayerState = {
     Cutscene: 'cutscene',
     Encounter: 'encounter',
     NotPlaying: 'notplaying',
-    Trading: 'trading'
+    Trading: 'trading',
+    Invited: 'invited',
 }
 
 const GenmapTheme = {

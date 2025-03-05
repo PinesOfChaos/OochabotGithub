@@ -99,7 +99,7 @@ client.on('ready', async () => {
         // user_profile = db.profile.get(user);
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        // if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520') continue;
+        if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520' && user != '791144786685067274') continue;
 
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
@@ -168,27 +168,36 @@ client.on('ready', async () => {
     let battleIds = db.battle_data.keyArray();
     for (let battle of battleIds) {
         let battle_data = db.battle_data.get(battle);
+        if (battle_data == undefined) continue;
 
         for (let user of battle_data.users) {
             if (user.is_player) {
                 let user_profile = db.profile.get(user.user_id);
+
+                if (user_profile.cur_battle_id != battle_data.battle_id || user_profile.player_state != PlayerState.Combat) {
+                    db.battle_data.delete(battle_data.battle_id);
+                    break;
+                }
+
                 let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
                 let userThread = userGuild.channels.cache.get(user_profile.play_thread_id);
 
                 // Delete turn messages
                 let msgDeleteCount = db.battle_data.get(battle, 'turn_msg_counter');
                 if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
-                    await userThread.bulkDelete(msgDeleteCount).catch(() => {});
+                    if (userThread != undefined) await userThread.bulkDelete(msgDeleteCount).catch(() => {});
                 }  
                 
                 user.action_selected = false;
             }
         }
 
-        battle_data.battle_action_queue = [];
-        db.battle_data.set(battle, battle_data);
+        if (db.battle_data.has(battle_data.battle_id)) {
+            battle_data.battle_action_queue = [];
+            db.battle_data.set(battle, battle_data);
 
-        await prompt_battle_actions(battle);
+            await prompt_battle_actions(battle);
+        }
     }
 
     console.log('Bot Ready')
@@ -354,7 +363,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isButton()) {
         switch (interaction.customId) {
             case 'close_prompt':
-                await interaction.message.delete();
+                await interaction.message.delete().catch(() => {});
             break;
         }
     }

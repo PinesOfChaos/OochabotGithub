@@ -787,6 +787,7 @@ let functions = {
                 }
             } else {
                 let userThread = botClient.channels.cache.get(user.thread_id);
+                if (userThread == undefined) return;
                 await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
 
                 const inputCollector = userThread.createMessageComponentCollector();
@@ -863,7 +864,7 @@ let functions = {
                             for (let user of battle_data.users) {
                                 if (user.is_player) {
                                     let thread = botClient.channels.cache.get(user.thread_id);
-                                    await thread.bulkDelete(1);
+                                    await thread.bulkDelete(1).catch(() => {});
                                 }
                             }
 

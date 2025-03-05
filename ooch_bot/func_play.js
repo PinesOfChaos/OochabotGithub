@@ -187,6 +187,12 @@ module.exports = {
                     y2 = (obj.y + obj.height) >= playery;
                     if (x1 && y1 && x2 && y2) {
                         if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
+
+                            if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
+                                playerx -= xmove;
+                                playery -= ymove;
+                            }
+
                             stop_moving = true;
                             moveDisable = true;
                             await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
@@ -441,6 +447,7 @@ module.exports = {
                     }
                     if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);
+                    shopSelectOptions = [...new Set(shopSelectOptions)];
                     shopSelectOptions = shopSelectOptions.map(id => {
                         let item_data = db.item_data.get(id);
                         let item_amount = db.profile.get(user_id, `${item_data.category}.${id}`);
@@ -524,12 +531,14 @@ module.exports = {
 
                             let maxAmt = Math.floor(oochabux / item.price);
                             if (maxAmt > 50) maxAmt = 50;
+                            if (maxAmt > amtHeld) maxAmt -= amtHeld;
+
                             if (amtHeld >= 50) {
                                 await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
                                 return;
                             }
                             await sel.update({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.\n` + 
-                                `You have enough Oochabux to buy **${50 - amtHeld}** more of this item.`,
+                                `You have enough Oochabux to buy **${maxAmt}** more of this item.`,
                                  embeds: [], files: [], components: [qty_back_button] });
                             item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
 
@@ -566,6 +575,7 @@ module.exports = {
                                 }
                                 if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
                                 shopSelectOptions = shopSelectOptions.flat(1);
+                                shopSelectOptions = [...new Set(shopSelectOptions)];
 
                                 shopSelectOptions = shopSelectOptions.map(id => {
                                     let item_data = db.item_data.get(id);
@@ -680,7 +690,11 @@ module.exports = {
                                             await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                         }
                                         else {
-                                            if (Math.random() > .6) { //40% chance to start the battle if 'Run' is chosen
+                                            let run_chance = .6;
+                                            // If the Oochamon is 10 levels lower or more than our main Oochamon, guarantee run
+                                            if (profile_data.ooch_party[profile_data.ooch_active_slot].level > (mon_level + 10)) run_chance = 1;
+
+                                            if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
                                                 await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                                 await msg.delete();
                                             }

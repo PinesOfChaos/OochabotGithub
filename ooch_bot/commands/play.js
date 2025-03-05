@@ -15,7 +15,7 @@ module.exports = {
         let target = interaction.user.id;
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        // if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
 
         if (!db.profile.has(target)) {
             return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
@@ -73,9 +73,13 @@ module.exports = {
             await interaction.deleteReply().catch(() => {});
             
             let battleData = db.battle_data.get(curBattleId);
+            await db.battle_data.delete(curBattleId);
+
             for (let user of battleData.users) {
-                db.profile.set(interaction.user.id, 0, 'cur_event_pos');
+                db.profile.set(user.user_id, 0, 'cur_event_pos');
+                db.profile.set(user.user_id, false, 'cur_battle_id');
                 let userThread = client.channels.cache.get(user.thread_id);
+
                 if (user.is_player) {
                     await finish_battle(battleData, user.user_index, true);
                     await move(userThread, user.user_id, '', 1);

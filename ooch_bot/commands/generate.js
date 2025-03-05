@@ -266,6 +266,11 @@ module.exports = {
         create_tile(`t${zTP}_011`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
         create_tile(`t${zTP}_012`,  Tile.Floor,    applicationEmojis ); //Thunder Peak Floor (Spiky Bits)
         create_tile(`t${zTP}_013`,  Tile.Ice,      applicationEmojis ); //Thunder Peak Ice
+        create_tile(`t${zTP}_020`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Lower Edge
+        create_tile(`t${zTP}_021`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Bridge Part
+        create_tile(`t${zTP}_022`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Bridge Part
+        create_tile(`t${zTP}_023`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Bridge Part
+        create_tile(`t${zTP}_031`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Bridge Part
 
         //Tunnel
         create_tile(`t${zTn}_000`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor
