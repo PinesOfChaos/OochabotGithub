@@ -94,7 +94,12 @@ let functions = {
                 thread_id = options.thread_id;
                 guild_id = options.guild_id;
 
-                let profile = db.profile.get(user_id);
+                let profile;
+                if (options.profile != undefined && options.profile != false) {
+                    profile = db.profile.get(user_id);
+                } else {
+                    profile = options.profile;
+                }
                 
                 let guild = botClient.guilds.cache.get(guild_id);
                 let member = await guild.members.fetch(user_id);
@@ -2007,7 +2012,6 @@ let functions = {
                     active_teams.push(user.team_id);
                 }
             }
-            
 
             //Distribute EXP to other users' mons & level them up if possible
             if(exp_given > 0){
@@ -3689,7 +3693,6 @@ let functions = {
         // Setup playspace
         let playspace_str = await setup_playspace_str(user_id);
         await db.profile.set(user_id, PlayerState.Playspace, 'player_state');
-        await db.profile.delete(user_id, 'rollback_profile');
 
         await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
             db.profile.set(user_id, msg.id, 'display_msg_id');
