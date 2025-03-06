@@ -94,10 +94,10 @@ let functions = {
                 thread_id = options.thread_id;
                 guild_id = options.guild_id;
 
-                let profile;
+                console.log(options);
+
+                let profile = db.profile.get(user_id)
                 if (options.profile != undefined && options.profile != false) {
-                    profile = db.profile.get(user_id);
-                } else {
                     profile = options.profile;
                 }
                 
@@ -682,6 +682,7 @@ let functions = {
 
         const { botClient } = require("./index.js");
 
+        db.battle_data.math(battle_id, '+', 1, 'battle_msg_counter');
         let battle_data = db.battle_data.get(battle_id);
         db.battle_data.set(battle_id, 1, 'turn_msg_counter');
 
@@ -871,6 +872,7 @@ let functions = {
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
+                            battle_data.battle_msg_counter -= 1;
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
                             await i.update({ content: `Waiting for other players...` }).catch(() => {});
@@ -970,6 +972,7 @@ let functions = {
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
+                            battle_data.battle_msg_counter -= 1;
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
                             await i.update({ content: `Waiting for other players...` });
@@ -1106,6 +1109,7 @@ let functions = {
     
                             // Continue on if everyone has selected (which should happen at the end)
                             if (battle_data.users.every(u => u.action_selected !== false)) {
+                                battle_data.battle_msg_counter -= 1;
                                 db.battle_data.set(battle_id, battle_data);
                                 inputCollector.stop();
                                 await i.update({ content: `` });
@@ -1156,6 +1160,7 @@ let functions = {
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {
+                            battle_data.battle_msg_counter -= 1;
                             db.battle_data.set(battle_id, battle_data);
                             inputCollector.stop();
                             await i.update({ content: `` });
@@ -1468,18 +1473,22 @@ let functions = {
             )
             let victoryUser = battle_data.users.filter(user => user.defeated !== true)[0];
 
-            const victorEmbed = new EmbedBuilder()
-                .setColor('#ffee00')
-                .setAuthor({ name: '🏆 Victory 🏆' })
-                .setTitle(`${victoryUser.name} has won the battle!`)
-                .setDescription(`${faint_check.finish_text}`)
+            if (faint_check.finish_text != '') {
+                const victorEmbed = new EmbedBuilder()
+                    .setColor('#ffee00')
+                    .setAuthor({ name: '🏆 Victory 🏆' })
+                    .setTitle(`${victoryUser.name} has won the battle!`)
+                    .setDescription(`${faint_check.finish_text}`)
 
-            if (victoryUser.is_player) {
-                let victoryDiscordUser = await botClient.users.fetch(victoryUser.user_id);
-                victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
+                if (victoryUser.is_player) {
+                    let victoryDiscordUser = await botClient.users.fetch(victoryUser.user_id);
+                    victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
+                }
+
+                await functions.distribute_messages(battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
+            } else {
+                await functions.distribute_messages(battle_data, { components: [endButton], embeds: [] }, true);
             }
-
-            await functions.distribute_messages(battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
             db.battle_data.set(battle_id, battle_data);
         }
     },
@@ -3645,6 +3654,7 @@ let functions = {
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
             console.log(`DELETING: ${battle_data.battle_msg_counter} MESSAGES`);
+            console.log(user_id);
             await thread.bulkDelete(battle_data.battle_msg_counter).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;

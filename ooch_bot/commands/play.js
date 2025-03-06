@@ -25,16 +25,16 @@ module.exports = {
 
         if (interaction.channel.type != ChannelType.PrivateThread) {
 
-            // if (db.profile.has(target)) {
-            //     if (db.profile.get(target, 'play_thread_id') !== false) {
-            //         let thread = await interaction.guild.channels.cache.get(db.profile.get(interaction.user.id, 'play_thread_id'));
-            //         if (thread && thread.isThread()) {
-            //             await thread.members.remove(interaction.user.id);
-            //             await thread.leave();
-            //             await thread.setArchived(true);
-            //         } 
-            //     }
-            // }
+            if (db.profile.has(target)) {
+                if (db.profile.get(target, 'play_thread_id') !== false) {
+                    let oldThread = await interaction.guild.channels.cache.get(db.profile.get(interaction.user.id, 'play_thread_id'));
+                    if (oldThread && oldThread.isThread() && thread.id != oldThread.id) {
+                        await oldThread.members.remove(interaction.user.id);
+                        await oldThread.leave();
+                        await oldThread.setArchived(true);
+                    } 
+                }
+            }
 
             // Setup the play thread
             thread = await interaction.channel.threads.create({
