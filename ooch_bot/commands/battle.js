@@ -152,6 +152,8 @@ module.exports = {
                 let intProfile = db.profile.get(intBattleUser.id);
                 let otherProfile = db.profile.get(otherBattleUser.id);
                 let pages = 9;
+                let intBoxRow = [];
+                let otherBoxRow = [];
 
                 otherBoxCollector = otherUserThread.createMessageComponentCollector();
                 intBoxCollector = intUserThread.createMessageComponentCollector();
@@ -162,7 +164,7 @@ module.exports = {
                         selected.customId == 'box_left' ? intPageNum -= 1 : intPageNum += 1;
                         intPageNum = (intPageNum + pages) % pages; // Handle max page overflow
                         
-                        box_row = buildBoxData(db.profile.get(intBattleUser.id), intPageNum);
+                        intBoxRow = buildBoxData(db.profile.get(intBattleUser.id), intPageNum);
                         box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
                         selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
                     }
@@ -192,7 +194,7 @@ module.exports = {
                         selected.customId == 'box_left' ? otherPageNum -= 1 : otherPageNum += 1;
                         otherPageNum = (otherPageNum + pages) % pages; // Handle max page overflow
                         
-                        box_row = buildBoxData(db.profile.get(otherBattleUser.id), otherPageNum);
+                        otherBoxRow = buildBoxData(db.profile.get(otherBattleUser.id), otherPageNum);
                         box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
                         selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
                     }

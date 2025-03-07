@@ -1289,7 +1289,7 @@ module.exports = {
         });
         create_move({
             id : 121, name : 'Heatseeker', type : OochType.Tech,
-            damage : 65, accuracy: -1,
+            damage : 60, accuracy: -1,
             effect : [],
             description : 'Fires a guieded missile at the target. Guaranteed to hit.'
         });
