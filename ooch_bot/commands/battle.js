@@ -68,6 +68,8 @@ module.exports = {
             return interaction.reply({ content: `You are in the middle of a battle. If you are not mid battle, please restart the game by running \`/play\` again.`, ephemeral: true });
         } else if (intUserState == PlayerState.Invited) {
             return interaction.reply({ content: `You currently have a battle invitation.`, ephemeral: true })
+        } else if (intUserState == PlayerState.Intro) {
+            return interaction.reply({ content: `You cannot battle in the intro.`, ephemeral: true })
         }
 ``
         if (otherUserState == PlayerState.NotPlaying) {
@@ -78,6 +80,8 @@ module.exports = {
             return interaction.reply({ content: `**${otherBattleMember.displayName}** is unable to battle right now, as they are in a different battle or in a menu.` })
         } else if (otherUserState == PlayerState.Invited) {
             return interaction.reply({ content: `**${otherBattleMember.displayName}** has already been invited to a battle.` })
+        } else if (otherUserState == PlayerState.Intro) {
+            return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the intro, and cannot battle.` })
         }
 
         let otherUserThread = db.profile.get(otherBattleUser.id, 'play_thread_id');
@@ -164,14 +168,13 @@ module.exports = {
                         selected.customId == 'box_left' ? intPageNum -= 1 : intPageNum += 1;
                         intPageNum = (intPageNum + pages) % pages; // Handle max page overflow
                         
-                        intBoxRow = buildBoxData(db.profile.get(intBattleUser.id), intPageNum);
+                        intBoxRow = buildBoxData(intProfile, intPageNum);
                         box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
                         selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
                     }
 
                     else if (selected.customId.includes('box')) {
                         intIsReady = await box_collector_event(intBattleUser.id, selected, intPageNum, intProfile, true);
-                        console.log(intIsReady, otherIsReady);
                         
                         if (intIsReady) {
                             if (otherIsReady && intIsReady) {
@@ -194,7 +197,7 @@ module.exports = {
                         selected.customId == 'box_left' ? otherPageNum -= 1 : otherPageNum += 1;
                         otherPageNum = (otherPageNum + pages) % pages; // Handle max page overflow
                         
-                        otherBoxRow = buildBoxData(db.profile.get(otherBattleUser.id), otherPageNum);
+                        otherBoxRow = buildBoxData(otherProfile, otherPageNum);
                         box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
                         selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
                     }

@@ -30,6 +30,8 @@ module.exports = {
             return interaction.reply({ content: 'You can\'t trade here.', ephemeral: true });
         } else if (intUserState == PlayerState.Trading) {
             return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`, ephemeral: true });
+        } else if (intUserState !== PlayerState.Intro) {
+            return interaction.reply({ content: `You are unable to trade right now, as you are in the intro.` })
         }
 
         if (otherUserState == PlayerState.NotPlaying) {
@@ -38,6 +40,8 @@ module.exports = {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`, ephemeral: true });
         } else if (otherUserState !== PlayerState.Playspace) {
             return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` })
+        } else if (otherUserState !== PlayerState.Intro) {
+            return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in the intro.` })
         }
 
         let otherUserThread = db.profile.get(otherTradeUser.id, 'play_thread_id');
