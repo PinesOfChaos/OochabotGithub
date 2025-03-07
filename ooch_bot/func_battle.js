@@ -94,8 +94,6 @@ let functions = {
                 thread_id = options.thread_id;
                 guild_id = options.guild_id;
 
-                console.log(options);
-
                 let profile = db.profile.get(user_id)
                 if (options.profile != undefined && options.profile != false) {
                     profile = options.profile;
@@ -207,6 +205,9 @@ let functions = {
         // Add index to users
         for (let i = 0; i < users.length; i++) {
             users[i].user_index = i;
+            if (users[i].is_player) {
+                db.profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
+            }
         }
 
         // Setup the battle data
@@ -300,7 +301,6 @@ let functions = {
 
                 let thread = botClient.channels.cache.get(user.thread_id);
 
-                db.profile.set(user.user_id, PlayerState.Combat, 'player_state');
                 db.profile.set(user.user_id, battleDataObj.battle_id, 'cur_battle_id');
 
                 // Delete playspace to enter battle
@@ -346,6 +346,13 @@ let functions = {
         db.battle_data.set(battleId, battleDataObj);
 
         await functions.prompt_battle_actions(battleId);
+
+        // This is mostly just to fix people running play while a battle is setup
+        for(let user of battleDataObj.users){
+            if (user.is_player) {
+                db.profile.set(user.user_id, PlayerState.Combat, 'player_state');
+            }
+        }
     },
 
     /**
@@ -3653,8 +3660,6 @@ let functions = {
 
         //Clear all messages in the user's thread
         if (battle_data.battle_msg_counter <= 100) {
-            console.log(`DELETING: ${battle_data.battle_msg_counter} MESSAGES`);
-            console.log(user_id);
             await thread.bulkDelete(battle_data.battle_msg_counter).catch(() => {});
         } else {
             let message_count = battle_data.battle_msg_counter;
@@ -3663,7 +3668,6 @@ let functions = {
                 message_count -= 100;
             }
             while(message_count > thread.memberCount);
-
         }
 
         if(!battle_data.fake_battle && !play_end) {

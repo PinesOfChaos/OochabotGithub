@@ -326,13 +326,13 @@ functions = {
                                     selected.customId == 'box_left' ? page_num -= 1 : page_num += 1;
                                     page_num = (page_num + pages) % pages; // Handle max page overflow
                                     
-                                    box_row = buildBoxData(db.profile.get(user_id), page_num);
+                                    box_row = buildBoxData(profile_data, page_num);
                                     box_buttons.components[3].setLabel(`${page_num + 1}`);
                                     selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
                                 }
 
                                 else if (selected.customId.includes('box')) {
-                                    functions.box_collector_event(user_id, selected, 0, profile_data)
+                                    functions.box_collector_event(user_id, selected, page_num, profile_data)
                                 } 
                                 
                                 else if (selected.customId == 'yes') {
@@ -617,6 +617,7 @@ functions = {
                                     wild_encounter_collector.on('collect', async sel => {
                                         let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : slot.ooch_id.toString(), ooch_level : mon_level, team_id : 1})
                                         let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
                                             await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
@@ -624,7 +625,7 @@ functions = {
                                         else {
                                             let run_chance = .6;
                                             // If the Oochamon is 10 levels lower or more than our main Oochamon, guarantee run
-                                            if (profile_data.ooch_party[profile_data.ooch_active_slot].level > (mon_level + 10)) run_chance = 1;
+                                            if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
 
                                             if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
                                                 await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
@@ -1031,7 +1032,6 @@ functions = {
             // Put the specified oochamon into the box.
             user_profile.ooch_pc.push(ooch_user_data);
             user_profile.ooch_party.splice(slot_num, 1);
-            console.log(user_profile.ooch_party);
             // Build new PC button rows
             box_row = buildBoxData(user_profile, page_num);
             // Kick back to PC screen

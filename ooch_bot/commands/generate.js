@@ -239,8 +239,10 @@ module.exports = {
         create_tile(`t${zFF}_011`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
         create_tile(`t${zFF}_012`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
         create_tile(`t${zFF}_013`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_014`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
         create_tile(`t${zFF}_020`,  Tile.Wall,     applicationEmojis ); //Flower Field Inaccessible
         create_tile(`t${zFF}_021`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
+        create_tile(`t${zFF}_022`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
         create_tile(`t${zFF}_023`,  Tile.Wall,     applicationEmojis ); //Flower Field Wall
         create_tile(`t${zFF}_024`,  Tile.Floor,    applicationEmojis ); //Flower Field Wall
 
@@ -287,11 +289,14 @@ module.exports = {
         create_tile(`t${zTn}_011`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_012`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_013`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_014`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_015`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_016`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_017`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_018`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_019`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_022`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_023`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_025`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_026`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_027`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
@@ -379,6 +384,9 @@ module.exports = {
         create_tile(`c_024`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Amber)
         create_tile(`c_025`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Blue)
         create_tile(`c_026`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Pink)
+        create_tile(`c_027`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (Ooze)
+        create_tile(`c_028`,       Tile.Int,      applicationEmojis ); // Corrupted CFO
+        create_tile(`c_029`,       Tile.Int,      applicationEmojis ); // Access Tunnel Boulder
 
 
         //#endregion

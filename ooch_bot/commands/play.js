@@ -11,15 +11,19 @@ module.exports = {
         .setName('play')
         .setDescription('Begin playing Oochamon!'),
     async execute(interaction, client) {
-        await interaction.deferReply({ ephemeral: true });
         let target = interaction.user.id;
+        console.log(db.profile.get(target, 'player_state'));
+
+        if (!db.profile.has(target)) {
+            return interaction.reply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
+        } else if (db.profile.get(target, 'player_state') == PlayerState.BattleSetup || db.profile.get(target, 'player_state') == PlayerState.Encounter) {
+            return interaction.reply({ content: 'You cannot run `/play` right now.', ephemeral: true });
+        }
+
+        await interaction.deferReply({ ephemeral: true });
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
         //if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
-
-        if (!db.profile.has(target)) {
-            return interaction.editReply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
-        } 
 
         let thread = interaction.channel;
 

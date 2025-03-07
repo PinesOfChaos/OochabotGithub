@@ -11,7 +11,8 @@ const PlayerState = {
     NotPlaying: 'notplaying',
     Trading: 'trading',
     Invited: 'invited',
-    CombatOochSelect: 'combat_ooch_select'
+    CombatOochSelect: 'combat_ooch_select',
+    BattleSetup: 'battle_setup'
 }
 
 const GenmapTheme = {
