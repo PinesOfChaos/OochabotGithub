@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c0yk13s0j8dex"]
 
-[ext_resource type="Script" path="res://weather_zone.gd" id="1_qhgp6"]
+[ext_resource type="Script" uid="uid://uby22j23uryp" path="res://weather_zone.gd" id="1_qhgp6"]
 [ext_resource type="PackedScene" uid="uid://03iueniy68e0" path="res://bounding_box.tscn" id="2_dtp7i"]
 
 [node name="event_trigger" type="Control"]

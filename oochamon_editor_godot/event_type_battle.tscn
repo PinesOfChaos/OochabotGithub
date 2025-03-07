@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://by5tvhy1w6f1b"]
 
-[ext_resource type="Script" path="res://event_type_battle.gd" id="1_d27yg"]
+[ext_resource type="Script" uid="uid://c6uvjmqci1o4r" path="res://event_type_battle.gd" id="1_d27yg"]
 [ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_bc2ln"]
 
 [node name="VBoxContainer" type="VBoxContainer"]

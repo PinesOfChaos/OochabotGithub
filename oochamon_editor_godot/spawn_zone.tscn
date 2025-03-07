@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dsps6xgoth3u4"]
 
 [ext_resource type="PackedScene" uid="uid://03iueniy68e0" path="res://bounding_box.tscn" id="1_ep63b"]
-[ext_resource type="Script" path="res://spawn_zone.gd" id="1_xcail"]
-[ext_resource type="Script" path="res://button_add_slot.gd" id="3_6p8qu"]
+[ext_resource type="Script" uid="uid://b77uv2g6d1of8" path="res://spawn_zone.gd" id="1_xcail"]
+[ext_resource type="Script" uid="uid://yvnxkilpjw1t" path="res://button_add_slot.gd" id="3_6p8qu"]
 
 [node name="spawn_zone" type="Control"]
 layout_mode = 3

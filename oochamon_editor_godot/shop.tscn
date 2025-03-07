@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bxp1wcvcmswg7"]
 
 [ext_resource type="Texture2D" uid="uid://bsnaj41sa17n7" path="res://editor_assets/box_highlight1.png" id="1_av7li"]
-[ext_resource type="Script" path="res://shop.gd" id="1_xfuwg"]
+[ext_resource type="Script" uid="uid://dfc3wiahp4sek" path="res://shop.gd" id="1_xfuwg"]
 
 [node name="shop" type="Control"]
 layout_mode = 3

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cpxor80sjq855"]
 
-[ext_resource type="Script" path="res://event_type_options.gd" id="1_tnh33"]
+[ext_resource type="Script" uid="uid://f45yvk6i441f" path="res://event_type_options.gd" id="1_tnh33"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 custom_minimum_size = Vector2(800, 0)

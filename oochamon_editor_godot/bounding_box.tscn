@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://03iueniy68e0"]
 
-[ext_resource type="Script" path="res://bounding_box.gd" id="1_84a8u"]
+[ext_resource type="Script" uid="uid://bbrq1bu2nitis" path="res://bounding_box.gd" id="1_84a8u"]
 [ext_resource type="Texture2D" uid="uid://bsnaj41sa17n7" path="res://editor_assets/box_highlight1.png" id="2_yvvhb"]
 [ext_resource type="Texture2D" uid="uid://wcrqipflbhyu" path="res://editor_assets/box_highlight2.png" id="3_nd7js"]
 

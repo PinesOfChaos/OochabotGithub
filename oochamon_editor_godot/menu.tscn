@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://d4dhr42a1mqo6"]
 
-[ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
-[ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
+[ext_resource type="Script" uid="uid://cltqg3t5i1s65" path="res://menu.gd" id="1_ift6h"]
+[ext_resource type="Script" uid="uid://c5kfp4jtre2gt" path="res://GridOoch.gd" id="2_c15v4"]
 [ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
-[ext_resource type="Script" path="res://label_notification.gd" id="4_5s007"]
+[ext_resource type="Script" uid="uid://d3nsuy2ovm7xl" path="res://label_notification.gd" id="4_5s007"]
 
 [node name="Menu" type="Control" groups=["MainMenu"]]
 layout_mode = 3
@@ -18,7 +18,6 @@ script = ExtResource("1_ift6h")
 title = "Save Map File"
 initial_position = 2
 size = Vector2i(500, 400)
-ok_button_text = "Save"
 access = 2
 filters = PackedStringArray("*.json")
 

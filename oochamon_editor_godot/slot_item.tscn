@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bqcv8gwyak7r0"]
 
-[ext_resource type="Script" path="res://slot_item.gd" id="1_tiuqs"]
+[ext_resource type="Script" uid="uid://wu8k4fqpncei" path="res://slot_item.gd" id="1_tiuqs"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_k5r3u"]
 
