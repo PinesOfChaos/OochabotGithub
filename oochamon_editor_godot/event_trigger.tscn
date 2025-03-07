@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://byvta0q6emb8q"]
 
-[ext_resource type="Script" path="res://event_trigger.gd" id="1_p477o"]
+[ext_resource type="Script" uid="uid://wlj48tj4o73s" path="res://event_trigger.gd" id="1_p477o"]
 [ext_resource type="PackedScene" uid="uid://03iueniy68e0" path="res://bounding_box.tscn" id="2_ni0ob"]
 
 [node name="event_trigger" type="Control"]

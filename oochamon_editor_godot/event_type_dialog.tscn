@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://6vepne5x06nk"]
 
-[ext_resource type="Script" path="res://event_type_dialog.gd" id="1_sbktn"]
+[ext_resource type="Script" uid="uid://bsxpepbyswvas" path="res://event_type_dialog.gd" id="1_sbktn"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 offset_top = 274.0

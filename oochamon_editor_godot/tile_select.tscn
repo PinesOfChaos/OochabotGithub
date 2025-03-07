@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d2lpf1ry7m5up"]
 
-[ext_resource type="Script" path="res://tile_select.gd" id="1_jlqxn"]
+[ext_resource type="Script" uid="uid://c6jwriticavum" path="res://tile_select.gd" id="1_jlqxn"]
 
 [node name="TileSelect" type="TabContainer"]
 custom_minimum_size = Vector2(320, 320)

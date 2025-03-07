@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ho8u6ajxeik8"]
 
-[ext_resource type="Script" path="res://slot_party.gd" id="1_1kapc"]
+[ext_resource type="Script" uid="uid://dl67o6xtjalx1" path="res://slot_party.gd" id="1_1kapc"]
 
 [node name="Slot" type="VBoxContainer"]
 offset_right = 40.0

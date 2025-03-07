@@ -262,26 +262,34 @@ func _on_slot_spd_value_changed(value):
 func _on_move_1_item_selected(index):
 	print(slot_data.moveset)
 	print(o_move_1.get_item_id(index))
-	
+	fill_empty_moves()
 	slot_data.moveset[0] = o_move_1.get_item_id(index)
 
 func _on_move_2_item_selected(index):
 	print(slot_data.moveset)
 	print(o_move_2.get_item_id(index))
+	fill_empty_moves()
 	slot_data.moveset[1] = o_move_2.get_item_id(index)
 
 func _on_move_3_item_selected(index):
 	print(slot_data.moveset)
 	print(o_move_3.get_item_id(index))
+	fill_empty_moves()
 	slot_data.moveset[2] = o_move_3.get_item_id(index)
 
 func _on_move_4_item_selected(index):
 	print(slot_data.moveset)
 	print(o_move_4.get_item_id(index))
+	fill_empty_moves()
 	slot_data.moveset[3] = o_move_4.get_item_id(index)
+	
 
 func _on_nickname_text_changed(new_text: String) -> void:
 	slot_data.nickname = new_text
+
+func fill_empty_moves() -> void:
+	while(slot_data.moveset.size() < 4):
+		slot_data.moveset.push_back(9999)
 
 func _on_slot_randomize_ivs_pressed() -> void:
 	var _hp = randi_range(0, 10)

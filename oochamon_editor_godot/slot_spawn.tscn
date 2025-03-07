@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dhjjft4sprw8b"]
 
-[ext_resource type="Script" path="res://slot_spawn.gd" id="1_e2f1k"]
+[ext_resource type="Script" uid="uid://b5fgej3g1lavp" path="res://slot_spawn.gd" id="1_e2f1k"]
 
 [node name="slot_spawn" type="VBoxContainer"]
 anchors_preset = 15

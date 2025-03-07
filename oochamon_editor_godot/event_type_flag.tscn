@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dhshp3ax5h5fg"]
 
-[ext_resource type="Script" path="res://event_type_flag.gd" id="1_itauk"]
+[ext_resource type="Script" uid="uid://dgw8012a3vi5l" path="res://event_type_flag.gd" id="1_itauk"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 offset_right = 40.0
