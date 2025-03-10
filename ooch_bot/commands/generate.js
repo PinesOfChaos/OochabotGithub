@@ -311,6 +311,7 @@ module.exports = {
         create_tile(`t${zSc}_010`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
         create_tile(`t${zSc}_011`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
         create_tile(`t${zSc}_012`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
+        create_tile(`t${zSc}_013`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
         create_tile(`t${zSc}_020`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
         create_tile(`t${zSc}_021`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
         create_tile(`t${zSc}_022`,  Tile.Wall,     applicationEmojis ); //Scaffolds Wall
@@ -318,11 +319,16 @@ module.exports = {
         //Goo Lake
         create_tile(`t${zGL}_000`,  Tile.Floor,    applicationEmojis ); //Goo Lake Floor
         create_tile(`t${zGL}_001`,  Tile.Grass,    applicationEmojis ); //Goo Lake Wall
-        create_tile(`t${zGL}_010`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_002`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_003`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_011`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_012`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_020`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_021`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_030`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_031`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_040`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_041`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
 
         //Tutorial
         create_tile(`t${zTu}_000`,  Tile.Floor,    applicationEmojis ); //Tutorial Floor
@@ -344,6 +350,7 @@ module.exports = {
         create_tile(`t${zTu}_050`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_051`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_052`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_060`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_061`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_062`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_070`,  Tile.Wall,     applicationEmojis ); //Elevator
@@ -384,9 +391,19 @@ module.exports = {
         create_tile(`c_024`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Amber)
         create_tile(`c_025`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Blue)
         create_tile(`c_026`,       Tile.Int,      applicationEmojis ); // Thunder Peak Thunderball (Pink)
-        create_tile(`c_027`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (Ooze)
-        create_tile(`c_028`,       Tile.Int,      applicationEmojis ); // Corrupted CFO
+        create_tile(`c_027`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Ooze)
+        create_tile(`c_028`,       Tile.Npc,      applicationEmojis ); // Corrupted CFO
         create_tile(`c_029`,       Tile.Int,      applicationEmojis ); // Access Tunnel Boulder
+        create_tile(`c_030`,       Tile.Int,      applicationEmojis ); // Scaffold Red Dot
+        create_tile(`c_031`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_032`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_033`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_034`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_035`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_036`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
+        create_tile(`c_037`,       Tile.Int,      applicationEmojis ); // Switch (Red)
+        create_tile(`c_038`,       Tile.Int,      applicationEmojis ); // Switch (Blue)
+        
 
 
         //#endregion
