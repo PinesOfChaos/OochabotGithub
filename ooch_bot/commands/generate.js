@@ -204,6 +204,8 @@ module.exports = {
         create_tile(`t${zB}_004`,  Tile.Wall,     applicationEmojis ); //Interior Wall
         create_tile(`t${zB}_005`,  Tile.Wall,     applicationEmojis ); //Interior Wall
         create_tile(`t${zB}_006`,  Tile.Wall,     applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_007`,  Tile.Grass,    applicationEmojis ); //Interior Wall
+        create_tile(`t${zB}_008`,  Tile.Floor,    applicationEmojis ); //Interior Wall
         create_tile(`t${zB}_010`,  Tile.Wall,     applicationEmojis ); //Interior Wall
         create_tile(`t${zB}_011`,  Tile.Wall,     applicationEmojis ); //Interior Wall
         create_tile(`t${zB}_012`,  Tile.Wall,     applicationEmojis ); //Interior Wall
@@ -321,6 +323,7 @@ module.exports = {
         create_tile(`t${zGL}_001`,  Tile.Grass,    applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_002`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_003`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+        create_tile(`t${zGL}_010`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_011`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_012`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_020`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
@@ -353,9 +356,11 @@ module.exports = {
         create_tile(`t${zTu}_060`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_061`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_062`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_063`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_070`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_071`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_072`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_073`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_080`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_081`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_082`,  Tile.Wall,     applicationEmojis ); //Elevator

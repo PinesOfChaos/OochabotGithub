@@ -147,7 +147,9 @@ func refresh_data():
 		#Download related image
 		var emoji_id = _mon.emote.split(":")[2].replace(">","")
 		var link = "https://cdn.discordapp.com/emojis/" + emoji_id + ".png?size=32&quality=lossless"
-		download_texture(link, "oochamon/" + ("00" + str(_mon.id)).right(3) + ".png")
+		var png_name = "oochamon/" + ("00" + str(int(_mon.id))).right(3) + ".png"
+		download_texture(link, png_name)
+		#print(png_name)
 		
 		Global.DataOochamon.push_back({
 			ooch_index = _mon.id,

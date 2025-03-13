@@ -148,7 +148,6 @@ func refresh_abilities(index):
 				
 			
 func refresh_moves(index, overwrite = true):
-	print(["move_refresh", index])
 	while(slot_data.moveset.size() < 4):
 		slot_data.moveset.push_back(9999)
 	
@@ -206,14 +205,9 @@ func refresh_moves(index, overwrite = true):
 					child.set_item_tooltip(step + 1, tip)
 					step += 1
 					
-					print(slot_data.moveset)
-					
 					if(slot_data.moveset[i] == move_id):
 						child.select(j + 1)
 						overwrite = false
-						print([slot_data.moveset[i], move_id])
-						print("selected " + move.move_name)
-					
 
 			#if this is the first, set it to the first move the mon can learn
 			if (i == 0) and (overwrite):

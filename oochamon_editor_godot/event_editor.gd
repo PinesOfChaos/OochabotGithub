@@ -127,3 +127,7 @@ func _on_button_new_pressed() -> void:
 	_on_button_save_pressed()
 	get_tree().change_scene_to_file("res://event_editor.tscn")
 	queue_free()
+
+
+func _on_new_wait_pressed() -> void:
+	new_node(Global.EVENT_WAIT)

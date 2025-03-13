@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://chnvam8faavpc"]
+
+[ext_resource type="Script" uid="uid://cuplqcs26bgs4" path="res://event_type_wait.gd" id="1_ytkhu"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ytkhu")
+
+[node name="SpinBox" type="SpinBox" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "wait time in seconds"
+suffix = "sec"

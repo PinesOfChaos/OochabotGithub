@@ -1,72 +1,72 @@
 {
 	"ev_corrupt_fungal_defeat": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*Radio Static*",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": ""
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Hello? Can you hear me? It's Professor Lyra.",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Oh, oh my, so that's what happened to him... ",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "I'll see who I can get in contact with, in the meantime lets get you out of there.",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Please come back to the Hub and get some rest. I'll see you when you arrive.",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "caves_quest_end"
 			}
@@ -74,85 +74,85 @@
 	],
 	"ev_corrupt_tech_defeat": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*Radio Static*",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": ""
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Ah, hello there! It sounds like you've retrived the Lavaboard Prototype.",
 				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Engineer Al"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Bring it back here and we'll see about getting it functional for you!",
 				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Return the Lavaboard Prototype to Al",
 				"title": "Engineer Al"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Wait, what's that? The one who took it was all covered in Tech? And there was another like this in the fungal caves?",
 				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Engineer Al"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "I'll contact Professor Lyra, hopefully she'll have some insight on this matter.",
 				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Engineer Al"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Get back here safe now!",
 				"dialogue_portrait": "portrait_engineer_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Engineer Al"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "lavaboard_quest_end"
 			}
@@ -160,85 +160,85 @@
 	],
 	"ev_cromet_defeated": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*radio static*",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": ""
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Ah, hello, seems like your comms are working!",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "It's great to hear you've dealt with the Cromet situation! They're a rarely seen species, so I appreciate the extra effort!",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "...",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "...Oh, right, the caves!",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Please investigate the cave system to the North-West! The researchers there seem to be having some trouble.",
 				"dialogue_portrait": "portrait_prof_radio",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Investigate the Caves to the North-West",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "caves_quest_begin"
 			}
@@ -246,98 +246,98 @@
 	],
 	"ev_intro": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Welcome to the Oochamon Beta Test!",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Intro"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "This game is currently VERY WIP, and many changes could and will be made, so we appreciate any and all feedback you may give!",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Intro"
 			}
 		],
 		[
-			3,
+			3.0,
 			{
 				"description": "Let's begin with selecting an Oochamon.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
 				"dialogue_portrait": "",
 				"image": "starter.png",
 				"options": [
 					{
-						"ability": 9999,
-						"atk_iv": 5,
-						"def_iv": 5,
-						"hp_iv": 5,
-						"id": 0,
-						"item": -1,
-						"level": 5,
+						"ability": 9999.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 0.0,
+						"item": -1.0,
+						"level": 5.0,
 						"moveset": [
-							1,
-							61,
-							2,
-							9999
+							1.0,
+							61.0,
+							2.0,
+							9999.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 5
+						"spd_iv": 5.0
 					},
 					{
-						"ability": 9999,
-						"atk_iv": 5,
-						"def_iv": 5,
-						"hp_iv": 5,
-						"id": 3,
-						"item": -1,
-						"level": 5,
+						"ability": 9999.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 3.0,
+						"item": -1.0,
+						"level": 5.0,
 						"moveset": [
-							1,
-							63,
-							3,
-							9999
+							1.0,
+							63.0,
+							3.0,
+							9999.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 5
+						"spd_iv": 5.0
 					},
 					{
-						"ability": 9999,
-						"atk_iv": 5,
-						"def_iv": 5,
-						"hp_iv": 5,
-						"id": 6,
-						"item": -1,
-						"level": 5,
+						"ability": 9999.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 6.0,
+						"item": -1.0,
+						"level": 5.0,
 						"moveset": [
-							1,
-							64,
-							4,
-							9999
+							1.0,
+							64.0,
+							4.0,
+							9999.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 5
+						"spd_iv": 5.0
 					}
 				],
 				"title": "Intro"
 			}
 		],
 		[
-			6,
+			6.0,
 			{
 				"description": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled.",
 				"dialogue_portrait": "",
@@ -347,16 +347,16 @@
 						"emote": "",
 						"event": "ev_tutorial_begin",
 						"flag": "",
-						"price": 0,
-						"style": 2,
+						"price": 0.0,
+						"style": 2.0,
 						"text": "Do Tutorial"
 					},
 					{
 						"emote": "",
 						"event": "",
 						"flag": "",
-						"price": 0,
-						"style": 3,
+						"price": 0.0,
+						"style": 3.0,
 						"text": "Continue To Game"
 					}
 				],
@@ -364,85 +364,40 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Perfect! With that, we shall continue onto the game! Enjoy the wonderful world of Oochamon!",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Intro"
 			}
 		],
 		[
-			4,
+			4.0,
 			{
 				"default_tp": true,
 				"map_to": "hub",
-				"x_to": 0,
-				"y_to": 0
+				"x_to": 0.0,
+				"y_to": 0.0
 			}
 		]
 	],
-	"ev_rival_intro": [
+	"ev_moldire_boss": [
 		[
 			0,
 			{
-				"description": "Hey, you! Yeah, you {player}!",
-				"dialogue_portrait": "portrait_rival",
+				"description": "*arrreeeeaaaawwwww*",
+				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "???"
-			}
-		],
-		[
-			2,
-			{
-				"text": "spawn_rival_intro"
-			}
-		],
-		[
-			0,
-			{
-				"description": "Thought you could get ahead of me, didn't you?",
-				"dialogue_portrait": "portrait_rival",
-				"flags": [],
-				"image": "",
-				"items": [],
-				"money": 0,
-				"objective": "",
-				"title": "???"
-			}
-		],
-		[
-			0,
-			{
-				"description": "It's me, Cade, I knew you couldn't forget about me!",
-				"dialogue_portrait": "portrait_rival",
-				"flags": [],
-				"image": "",
-				"items": [],
-				"money": 0,
-				"objective": "",
-				"title": "Cade"
-			}
-		],
-		[
-			0,
-			{
-				"description": "What do you say we have a little battle here? I hear you've got your first Oochamon, and I've been wanting to battle!",
-				"dialogue_portrait": "portrait_rival",
-				"flags": [],
-				"image": "",
-				"items": [],
-				"money": 0,
-				"objective": "",
-				"title": "Cade"
 			}
 		],
 		[
@@ -450,28 +405,28 @@
 			{
 				"coin": 0,
 				"is_catchable": false,
-				"name": "Rival Cade",
-				"sprite": 7,
+				"name": "",
+				"sprite": 13,
 				"sprite_combat": "",
-				"sprite_id": "c00_007",
+				"sprite_id": "c00_013",
 				"team": [
 					{
-						"ability": 18,
-						"atk_iv": 2,
-						"def_iv": 2,
-						"hp_iv": 2,
-						"id": 26,
+						"ability": 13,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 16,
 						"item": -1,
-						"level": 5,
+						"level": 28.0,
 						"moveset": [
-							1,
-							30,
-							9999,
-							9999
+							78,
+							24,
+							106,
+							6
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 2
+						"spd_iv": 5.0
 					}
 				]
 			}
@@ -479,31 +434,223 @@
 		[
 			0,
 			{
-				"description": "I was uh... Just going easy on you, yeah. There's no way you'd win if we battled it out for real!",
+				"description": "*Moldire left something behind*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [
+					{
+						"count": 1.0,
+						"id": 0
+					}
+				],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "*radio static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Ah, hello, you've got a flower sample have you? And a rather strange one at that?",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Well, bring it on down to the the Lavapath Settlement and we'll see what can be done with it!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			2,
+			{
+				"text": "moldire_boss_defeated"
+			}
+		],
+		[
+			6,
+			{
+				"description": "Return to the Lavapath Settlement?",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"emote": "",
+						"event": "ev_moldire_boss_fast_travel",
+						"flag": "",
+						"price": 0,
+						"style": 0,
+						"text": "Yes"
+					},
+					{
+						"emote": "",
+						"event": "",
+						"flag": "",
+						"price": 0,
+						"style": 0,
+						"text": "No"
+					}
+				],
+				"title": ""
+			}
+		]
+	],
+	"ev_moldire_boss_fast_travel": [
+		[
+			4,
+			{
+				"default_tp": true,
+				"map_to": "lava_path",
+				"x_to": 0.0,
+				"y_to": 0.0
+			}
+		]
+	],
+	"ev_rival_intro": [
+		[
+			0.0,
+			{
+				"description": "Hey, you! Yeah, you {player}!",
 				"dialogue_portrait": "portrait_rival",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "spawn_rival_intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Thought you could get ahead of me, didn't you?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It's me, Cade, I knew you couldn't forget about me!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
 				"objective": "",
 				"title": "Cade"
 			}
 		],
 		[
-			0,
+			0.0,
+			{
+				"description": "What do you say we have a little battle here? I hear you've got your first Oochamon, and I've been wanting to battle!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			1.0,
+			{
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Rival Cade",
+				"sprite": 7.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_007",
+				"team": [
+					{
+						"ability": 18.0,
+						"atk_iv": 2.0,
+						"def_iv": 2.0,
+						"hp_iv": 2.0,
+						"id": 26.0,
+						"item": -1.0,
+						"level": 5.0,
+						"moveset": [
+							1.0,
+							30.0,
+							9999.0,
+							9999.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 2.0
+					}
+				]
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I was uh... Just going easy on you, yeah. There's no way you'd win if we battled it out for real!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Cade"
+			}
+		],
+		[
+			0.0,
 			{
 				"description": "Anyway, I've got some business to take care of, see ya around!",
 				"dialogue_portrait": "portrait_rival",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Cade"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "rival_intro_complete"
 			}
@@ -511,72 +658,124 @@
 	],
 	"ev_save_tutorial": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Very good! These save stations will digitally scan you and your team of Oochamon and fully heal them.",
 				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "They can also be used to set a checkpoint to return to should your party be defeated.",
 				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "When you're ready, come speak to me again!",
 				"dialogue_portrait": "portrait_prof",
 				"flags": [],
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Professor Lyra"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "save_tutorial_complete"
 			}
 		]
 	],
+	"ev_thunderpeak_down": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "elevator",
+				"x_to": 14.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "thunderpeak",
+				"x_to": 32.0,
+				"y_to": 61.0
+			}
+		]
+	],
+	"ev_thunderpeak_up": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "elevator",
+				"x_to": 4.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "thunderpeak",
+				"x_to": 32.0,
+				"y_to": 48.0
+			}
+		]
+	],
 	"ev_tutorial_1": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Welcome to the world of Oochamon! I am a disembodied voice, I don't have a name, but you can call me the Tutorial Master!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "???"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "To start, let's teach you how to properly move. Use the arrow buttons to move, and move up to the door!\n\nThe other 2 buttons on the top left and top right will be explained soon, so don't worry too much about them yet.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Proceed to the next door.",
 				"title": "Tutorial Master"
 			}
@@ -584,37 +783,37 @@
 	],
 	"ev_tutorial_2": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Let's also show you how to use *advanced movement tech!* (oooh, ahhh)",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "You can **jump** ahead tiles by clicking the number on the top left of the buttons to change your speed.\nYou can also type a number in chat to quickly change this number, when not in dialogue.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "For example, if you type in \"3\" in the chat after this chat, it will change your tile jump to 3!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
@@ -622,61 +821,61 @@
 	],
 	"ev_tutorial_3": [
 		[
-			0,
+			0.0,
 			{
 				"description": "On top of discord buttons for movement, you also have the option to do **message based movement!**",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "To do this, you can type `w`, `a`, `s` or `d` in the chat to move in one of the 4 directions.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "You can also jump ahead tiles by putting a number after the direction, something like `w2` or `d4`.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Finally, you can chain these together to move lots of spaces at once. For example, you can do `w2d4` to move up 2 then right 4\nOr you could do something like `wwwdd` to move up 3 then right 2. There's a lot of possibility with it!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Try out some things, then move on. If you'd like more information on controls, run `/lookup controls` for a detailed explanation of text based movement!\n\n**Note: Text message based movement may be a bit laggier than using the buttons. This is not a bug, just an unavoidable Discord problem.**",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
@@ -684,49 +883,49 @@
 	],
 	"ev_tutorial_4": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Great work!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Now, check out your menu with `/menu`, or by clicking the 3 horizontal lines on the top left of the discord buttons.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Go check it out, and play around in the menu to learn about it a little bit. There's even a settings menu where you can disable discord move buttons, text popups, and more!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Head over to the next door upwards as soon as you are ready to move on.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Check out the menu, then move on.",
 				"title": "Tutorial Master"
 			}
@@ -734,70 +933,70 @@
 	],
 	"ev_tutorial_5": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Let's get you a few items to start with. Here's a few Potions and a Perfect Prism, which can catch any Oochamon at a 100% chance.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [
 					{
-						"count": 3,
-						"id": 0
+						"count": 3.0,
+						"id": 0.0
 					},
 					{
-						"count": 1,
-						"id": 6
+						"count": 1.0,
+						"id": 6.0
 					}
 				],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Prisms are our way of capturing and taming the wild Oochamon of the world. It's very painless for them, I assure you.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Let's try out catching an Oochamon now. I've created a simulated Oochamon for you to learn catching with! It's inside the chest.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "You won't be able to keep this Oochamon after the tutorial, this is just to teach you how to capture things.\nYou will have ample opportunity to catch more on the planet.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Now go catch that Oochamon, then move on!\nAlso, please don't try to fight it. It's quite powerful!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Catch the Oochamon, and move on to the next door.",
 				"title": "Tutorial Master"
 			}
@@ -805,85 +1004,85 @@
 	],
 	"ev_tutorial_6": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Great work! If you look at that new Oochamon in your menu, you'll find its information, alongside some stars next to its stats.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "The stars are extra bonus stats, which are a special power an Oochamon has, unique to itself, that increase its various stats based on random chance.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "The best bonus an Oochamon can have is 5 stars towards a stat. Every Oochamon is unique, so make sure to check your stat bonuses when you catch an Oochamon!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "The researchers on base have been researching a special type of crystal to increase these bonuses after an Oochamon is born, but I don't know much about that.\nYou'll have to find out about it on your own!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Oochamon also have special abilities! You can view what your Oochamon ability does using `/lookup ability`.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "On that note, `/lookup` has a few other things to view as well, so keep the command in mind!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Move to the next door when you are ready.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Move to the next door.",
 				"title": "Tutorial Master"
 			}
@@ -891,49 +1090,49 @@
 	],
 	"ev_tutorial_7": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Let's learn about the bread and butter of Oochamon. Trainer fights!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "I've created a simulated trainer for you to fight. It's not a real person, but it still has feelings.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "One useful tip! If your move is super effective or not very effective, it'll be green or red respectively.\nIf it doesn't do damage and instead has a different effect, it'll be grey, and if its neutral effective, it'll be blue!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Anyways, go beat him up! This will be a good way for you to learn how to fight.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "Defeat the Oochamon SimTrainer!",
 				"title": "Tutorial Master"
 			}
@@ -941,77 +1140,77 @@
 	],
 	"ev_tutorial_8": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Great work. I knew you could do it! I'll give SimTrainer a cyber cookie later to make him feel better.",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "That's basically how the game works. Catch Oochamon, beat up people's teams of Oochamon, and save the world!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Oh! I almost forgot, you can also trade with other players using `/trade`. Try it out sometime with your friends!\nBye bye!",
 				"dialogue_portrait": "",
 				"image": "",
 				"items": [],
-				"money": 0,
+				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "tutorial"
 			}
 		],
 		[
-			4,
+			4.0,
 			{
 				"default_tp": true,
 				"map_to": "hub",
-				"x_to": 0,
-				"y_to": 0
+				"x_to": 0.0,
+				"y_to": 0.0
 			}
 		]
 	],
 	"ev_tutorial_begin": [
 		[
-			4,
+			4.0,
 			{
 				"default_tp": true,
 				"map_to": "tutorial",
-				"x_to": 0,
-				"y_to": 0
+				"x_to": 0.0,
+				"y_to": 0.0
 			}
 		]
 	]

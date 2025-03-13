@@ -35,6 +35,9 @@ func _ready() -> void:
 	elif event_slot_type == Global.EVENT_OPTIONS:
 		label.text = "Options"
 		spawn_child = "res://event_type_options.tscn"
+	elif event_slot_type == Global.EVENT_WAIT:
+		label.text = "Wait"
+		spawn_child = "res://event_type_wait.tscn"
 	
 	print(label.text)
 	if(spawn_child != ""):

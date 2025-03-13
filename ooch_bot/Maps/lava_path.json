@@ -7,20 +7,20 @@
 	},
 	"map_npcs": [
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
-					"id": 17
+					"count": 1.0,
+					"id": 17.0
 				},
 				{
-					"count": 1,
-					"id": 18
+					"count": 1.0,
+					"id": 18.0
 				}
 			],
 			"name": "Boostgem Researcher",
@@ -29,17 +29,17 @@
 			"post_combat_dialogue": "Have you found any more crystals on your journey?",
 			"pre_combat_dialogue": "We've been researching these gems that occur naturally in the surrounding areas.\nThey seem to boost the strength of Oochamon, maybe give one of these a try?",
 			"remove_on_finish": false,
-			"sprite": 5,
+			"sprite": 5.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"team": [],
-			"x": 52,
-			"y": 57
+			"x": 52.0,
+			"y": 57.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "lavaboard_quest_begin",
 			"flag_required": "",
@@ -51,17 +51,17 @@
 			"post_combat_dialogue": "Can't let you through without the boss's permission.",
 			"pre_combat_dialogue": "This tunnel is off limits!",
 			"remove_on_finish": false,
-			"sprite": 3,
+			"sprite": 3.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
 			"team": [],
-			"x": 53,
-			"y": 25
+			"x": 53.0,
+			"y": 25.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "lavaboard_quest_begin",
 			"flag_kill": "lavaboard_quest_end",
 			"flag_required": "",
@@ -73,17 +73,17 @@
 			"post_combat_dialogue": "Any luck with the Lavaboard Prototype?\nThey took off through that there cave just to the East.",
 			"pre_combat_dialogue": "Oh, you must be the new guy, yeah? \nDid the Professor Lyra send you my way?\nYa see, we have a bit of a problem. \nSomeone's run off with our Lavaboard Prototype.\nThey took of sprinting through the cave to the East, if you can retrieve it that'd be a huge help!{objective:Retrieve the stolen Lavaboard Prototype}",
 			"remove_on_finish": false,
-			"sprite": 9,
+			"sprite": 9.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
 			"team": [],
-			"x": 48,
-			"y": 26
+			"x": 48.0,
+			"y": 26.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -95,53 +95,53 @@
 			"post_combat_dialogue": "Fine, fine, I'll go...",
 			"pre_combat_dialogue": "Oi, this is my stash! Get outta here!",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"team": [
 				{
-					"ability": 9999,
-					"atk_iv": 4,
-					"def_iv": 7,
-					"hp_iv": 4,
-					"id": 44,
-					"item": -1,
-					"level": 11,
+					"ability": 9999.0,
+					"atk_iv": 4.0,
+					"def_iv": 7.0,
+					"hp_iv": 4.0,
+					"id": 44.0,
+					"item": -1.0,
+					"level": 11.0,
 					"moveset": [
-						1,
-						47,
-						4
+						1.0,
+						47.0,
+						4.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 8
+					"spd_iv": 8.0
 				},
 				{
-					"ability": 9999,
-					"atk_iv": 3,
-					"def_iv": 3,
-					"hp_iv": 7,
-					"id": 9,
-					"item": -1,
-					"level": 12,
+					"ability": 9999.0,
+					"atk_iv": 3.0,
+					"def_iv": 3.0,
+					"hp_iv": 7.0,
+					"id": 9.0,
+					"item": -1.0,
+					"level": 12.0,
 					"moveset": [
-						1,
-						5,
-						3,
-						64
+						1.0,
+						5.0,
+						3.0,
+						64.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 9
+					"spd_iv": 9.0
 				}
 			],
-			"x": 43,
-			"y": 15
+			"x": 43.0,
+			"y": 15.0
 		},
 		{
-			"aggro_range": 1,
-			"coin": 2000,
+			"aggro_range": 1.0,
+			"coin": 2000.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -153,54 +153,54 @@
 			"post_combat_dialogue": "Hmmm, I suppose you'll suffice.\nI'm sure we'll be seeing eachother soon.",
 			"pre_combat_dialogue": "My, my, you must be {player}.\nI've heard of your work so far, but I'd like to propose a small test of your skills.",
 			"remove_on_finish": true,
-			"sprite": 16,
+			"sprite": 16.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
 			"team": [
 				{
-					"ability": 24,
-					"atk_iv": 7,
-					"def_iv": 5,
-					"hp_iv": 5,
-					"id": 24,
-					"item": -1,
-					"level": 10,
+					"ability": 24.0,
+					"atk_iv": 7.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 24.0,
+					"item": -1.0,
+					"level": 10.0,
 					"moveset": [
-						1,
-						24,
-						25,
-						61
+						1.0,
+						24.0,
+						25.0,
+						61.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 2
+					"spd_iv": 2.0
 				},
 				{
-					"ability": 13,
-					"atk_iv": 7,
-					"def_iv": 0,
-					"hp_iv": 5,
-					"id": 87,
-					"item": -1,
-					"level": 12,
+					"ability": 13.0,
+					"atk_iv": 7.0,
+					"def_iv": 0.0,
+					"hp_iv": 5.0,
+					"id": 87.0,
+					"item": -1.0,
+					"level": 12.0,
 					"moveset": [
-						64,
-						24,
-						30,
-						35
+						64.0,
+						24.0,
+						30.0,
+						35.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				}
 			],
-			"x": 23,
-			"y": 26
+			"x": 23.0,
+			"y": 26.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -212,52 +212,52 @@
 			"post_combat_dialogue": "I think I'm gonna take some time to go cool off...",
 			"pre_combat_dialogue": "You'd think working so close to lava flows would be way too hot...\nAnd it is!",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"team": [
 				{
-					"ability": 0,
-					"atk_iv": 7,
-					"def_iv": 7,
-					"hp_iv": 8,
-					"id": 32,
-					"item": -1,
-					"level": 8,
+					"ability": 0.0,
+					"atk_iv": 7.0,
+					"def_iv": 7.0,
+					"hp_iv": 8.0,
+					"id": 32.0,
+					"item": -1.0,
+					"level": 8.0,
 					"moveset": [
-						80,
-						61,
-						3
+						80.0,
+						61.0,
+						3.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 6
+					"spd_iv": 6.0
 				},
 				{
-					"ability": 0,
-					"atk_iv": 0,
-					"def_iv": 0,
-					"hp_iv": 0,
-					"id": 52,
-					"item": -1,
-					"level": 11,
+					"ability": 0.0,
+					"atk_iv": 0.0,
+					"def_iv": 0.0,
+					"hp_iv": 0.0,
+					"id": 52.0,
+					"item": -1.0,
+					"level": 11.0,
 					"moveset": [
-						59,
-						1,
-						62
+						59.0,
+						1.0,
+						62.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 0
+					"spd_iv": 0.0
 				}
 			],
-			"x": 17,
-			"y": 40
+			"x": 17.0,
+			"y": 40.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -269,53 +269,53 @@
 			"post_combat_dialogue": "Oh, my bad, there was a pebble in my boot!",
 			"pre_combat_dialogue": "Watch where you're goin I'm workin' here!",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"team": [
 				{
-					"ability": 4,
-					"atk_iv": 2,
-					"def_iv": 9,
-					"hp_iv": 1,
-					"id": 72,
-					"item": -1,
-					"level": 8,
+					"ability": 4.0,
+					"atk_iv": 2.0,
+					"def_iv": 9.0,
+					"hp_iv": 1.0,
+					"id": 72.0,
+					"item": -1.0,
+					"level": 8.0,
 					"moveset": [
-						1,
-						3,
-						85
+						1.0,
+						3.0,
+						85.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				},
 				{
-					"ability": 9,
-					"atk_iv": 7,
-					"def_iv": 3,
-					"hp_iv": 4,
-					"id": 18,
-					"item": -1,
-					"level": 11,
+					"ability": 9.0,
+					"atk_iv": 7.0,
+					"def_iv": 3.0,
+					"hp_iv": 4.0,
+					"id": 18.0,
+					"item": -1.0,
+					"level": 11.0,
 					"moveset": [
-						0,
-						61,
-						4,
-						7
+						0.0,
+						61.0,
+						4.0,
+						7.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				}
 			],
-			"x": 26,
-			"y": 17
+			"x": 26.0,
+			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -327,70 +327,70 @@
 			"post_combat_dialogue": "Thanks, that helped a lot!",
 			"pre_combat_dialogue": "Hmm, the oochamon in this area seem to be mostly Flame-type.\nBut I guess that makes sense considering where we are...\n...\nOh, hey, I just caught these, help me test their performance!",
 			"remove_on_finish": false,
-			"sprite": 5,
+			"sprite": 5.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"team": [
 				{
-					"ability": 20,
-					"atk_iv": 0,
-					"def_iv": 10,
-					"hp_iv": 7,
-					"id": 19,
-					"item": -1,
-					"level": 10,
+					"ability": 20.0,
+					"atk_iv": 0.0,
+					"def_iv": 10.0,
+					"hp_iv": 7.0,
+					"id": 19.0,
+					"item": -1.0,
+					"level": 10.0,
 					"moveset": [
-						4,
-						61,
-						96
+						4.0,
+						61.0,
+						96.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 10
+					"spd_iv": 10.0
 				},
 				{
-					"ability": 27,
-					"atk_iv": 1,
-					"def_iv": 2,
-					"hp_iv": 4,
-					"id": 91,
-					"item": -1,
-					"level": 12,
+					"ability": 27.0,
+					"atk_iv": 1.0,
+					"def_iv": 2.0,
+					"hp_iv": 4.0,
+					"id": 91.0,
+					"item": -1.0,
+					"level": 12.0,
 					"moveset": [
-						61,
-						4,
-						23
+						61.0,
+						4.0,
+						23.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				},
 				{
-					"ability": 0,
-					"atk_iv": 1,
-					"def_iv": 10,
-					"hp_iv": 2,
-					"id": 66,
-					"item": -1,
-					"level": 12,
+					"ability": 0.0,
+					"atk_iv": 1.0,
+					"def_iv": 10.0,
+					"hp_iv": 2.0,
+					"id": 66.0,
+					"item": -1.0,
+					"level": 12.0,
 					"moveset": [
-						94,
-						63,
-						85,
-						95
+						94.0,
+						63.0,
+						85.0,
+						95.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				}
 			],
-			"x": 35,
-			"y": 19
+			"x": 35.0,
+			"y": 19.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "lavaboard_quest_begin",
@@ -402,41 +402,46 @@
 			"post_combat_dialogue": "Stay safe, we have a perfect safety record and I hope you'll maintain that.",
 			"pre_combat_dialogue": "Ah, got the boss's permission?\nGood, it's not safe on the other side of this cave.",
 			"remove_on_finish": false,
-			"sprite": 3,
+			"sprite": 3.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
 			"team": [],
-			"x": 52,
-			"y": 25
+			"x": 52.0,
+			"y": 25.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
-			"items": [],
+			"items": [
+				{
+					"count": 5.0,
+					"id": 1.0
+				}
+			],
 			"name": "Distracted Researcher",
 			"npc_id": "950885112632792178",
 			"objective": "",
-			"post_combat_dialogue": "Ok, I guess I can give you a *little* spoiler for upcoming content.\nThere will be more content.\nThat's the spoiler.\n...\nOh also the transition to this cave entrance doesn't even exist yet, so good luck getting through.",
-			"pre_combat_dialogue": "Oh, maybe try coming back here next patch.\n**That's it for this phase of the playtest, don't forget to leave feedback!**",
+			"post_combat_dialogue": "Now, where did I leave that vial...",
+			"pre_combat_dialogue": "Oh, was I in your way?\nSorry about that, I tend to get distracted from time to time.\nHow about a friendly battle to make up for it?\nJust kidding! I don't have any Oochamon of my own.\nHere, take these instead!",
 			"remove_on_finish": false,
-			"sprite": 5,
+			"sprite": 5.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"team": [],
-			"x": 10,
-			"y": 7
+			"x": 11.0,
+			"y": 8.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "flower_sample_delivered_al",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -446,17 +451,17 @@
 			"post_combat_dialogue": "It's looking pretty unstable.",
 			"pre_combat_dialogue": "Looks like it could be a while before this tunnel's safe to enter.",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"team": [],
-			"x": 44,
-			"y": 35
+			"x": 44.0,
+			"y": 35.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 517,
+			"aggro_range": 3.0,
+			"coin": 517.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -468,60 +473,60 @@
 			"post_combat_dialogue": "Fine, fine, I'll get back to work in another five minutes...",
 			"pre_combat_dialogue": "Me? I'm on my break.\nAnd I'm definitely not slacking off.",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"team": [
 				{
-					"ability": 4,
-					"atk_iv": 8,
-					"def_iv": 3,
-					"hp_iv": 2,
-					"id": 72,
-					"item": -1,
-					"level": 12,
+					"ability": 4.0,
+					"atk_iv": 8.0,
+					"def_iv": 3.0,
+					"hp_iv": 2.0,
+					"id": 72.0,
+					"item": -1.0,
+					"level": 12.0,
 					"moveset": [
-						1,
-						3,
-						85
+						1.0,
+						3.0,
+						85.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 5
+					"spd_iv": 5.0
 				},
 				{
-					"ability": 30,
-					"atk_iv": 8,
-					"def_iv": 8,
-					"hp_iv": 9,
-					"id": 44,
-					"item": -1,
-					"level": 15,
+					"ability": 30.0,
+					"atk_iv": 8.0,
+					"def_iv": 8.0,
+					"hp_iv": 9.0,
+					"id": 44.0,
+					"item": -1.0,
+					"level": 15.0,
 					"moveset": [
-						5,
-						47,
-						4
+						5.0,
+						47.0,
+						4.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 6
+					"spd_iv": 6.0
 				}
 			],
-			"x": 53,
-			"y": 47
+			"x": 53.0,
+			"y": 47.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 3,
-					"id": 4
+					"count": 3.0,
+					"id": 4.0
 				}
 			],
 			"name": "Bored Crew",
@@ -530,25 +535,25 @@
 			"post_combat_dialogue": "*Sigh...*",
 			"pre_combat_dialogue": "I'm so bored, there's nothing to do right now...\nHere, take these, I don't have any use for them...",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"team": [],
-			"x": 40,
-			"y": 25
+			"x": 40.0,
+			"y": 25.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 1800,
+			"aggro_range": 0.0,
+			"coin": 1800.0,
 			"flag_given": "lavaboard_get",
 			"flag_kill": "",
 			"flag_required": "lavaboard_quest_end",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
-					"id": 21
+					"count": 1.0,
+					"id": 21.0
 				}
 			],
 			"name": "Engineer Al",
@@ -556,74 +561,74 @@
 			"post_combat_dialogue": "Great, you'll do just fine on our next request! Here's your completed Lavaboard!\nNow, as for our next request...\nThere's a rather rare material further North of here.\nIf you hop on your Lavaboard and ride to the West, you'll get where you need to go.{objective:Ride the Lava River West}",
 			"pre_combat_dialogue": "Ah, perfect, you're back!\nIf you'll pass me the Lavaboard Prototype...\nHmm... I'll hand this off to another Engineer to tune it.\nIn the meantime, I'd like to test your strength!\nGet ready for another battle!",
 			"remove_on_finish": true,
-			"sprite": 9,
+			"sprite": 9.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
 			"team": [
 				{
-					"ability": 13,
-					"atk_iv": 2,
-					"def_iv": 10,
-					"hp_iv": 9,
-					"id": 10,
-					"item": -1,
-					"level": 15,
+					"ability": 13.0,
+					"atk_iv": 2.0,
+					"def_iv": 10.0,
+					"hp_iv": 9.0,
+					"id": 10.0,
+					"item": -1.0,
+					"level": 15.0,
 					"moveset": [
-						1,
-						3,
-						5,
-						7
+						1.0,
+						3.0,
+						5.0,
+						7.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 2
+					"spd_iv": 2.0
 				},
 				{
-					"ability": 14,
-					"atk_iv": 6,
-					"def_iv": 10,
-					"hp_iv": 5,
-					"id": 12,
-					"item": -1,
-					"level": 16,
+					"ability": 14.0,
+					"atk_iv": 6.0,
+					"def_iv": 10.0,
+					"hp_iv": 5.0,
+					"id": 12.0,
+					"item": -1.0,
+					"level": 16.0,
 					"moveset": [
-						1,
-						62,
-						24,
-						47
+						1.0,
+						62.0,
+						24.0,
+						47.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 5
+					"spd_iv": 5.0
 				},
 				{
-					"ability": 53,
-					"atk_iv": 3,
-					"def_iv": 10,
-					"hp_iv": 10,
-					"id": 85,
-					"item": -1,
-					"level": 18,
+					"ability": 53.0,
+					"atk_iv": 3.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 85.0,
+					"item": -1.0,
+					"level": 18.0,
 					"moveset": [
-						1,
-						56,
-						66,
-						56
+						1.0,
+						56.0,
+						66.0,
+						56.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 4
+					"spd_iv": 4.0
 				}
 			],
-			"x": 48,
-			"y": 26
+			"x": 48.0,
+			"y": 26.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "moldire_boss_defeated",
 			"flag_required": "lavaboard_get",
 			"is_catchable": false,
 			"items": [],
@@ -632,17 +637,17 @@
 			"post_combat_dialogue": "The settlement's a bit of a work in progress.\nBut we're still hard at work!",
 			"pre_combat_dialogue": "Having any luck out there? You can return here any time!",
 			"remove_on_finish": false,
-			"sprite": 9,
+			"sprite": 9.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
 			"team": [],
-			"x": 48,
-			"y": 26
+			"x": 48.0,
+			"y": 26.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "spawn_nice2",
 			"flag_kill": "spawn_nice2",
 			"flag_required": "talk_nice1",
@@ -653,37 +658,37 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 13,
-			"y": 27
+			"x": 13.0,
+			"y": 27.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 777,
+			"aggro_range": 3.0,
+			"coin": 777.0,
 			"flag_given": "talk_nice2",
 			"flag_kill": "",
 			"flag_required": "spawn_nice2",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
-					"id": 16
+					"count": 1.0,
+					"id": 16.0
 				},
 				{
-					"count": 1,
-					"id": 17
+					"count": 1.0,
+					"id": 17.0
 				},
 				{
-					"count": 1,
-					"id": 18
+					"count": 1.0,
+					"id": 18.0
 				},
 				{
-					"count": 1,
-					"id": 19
+					"count": 1.0,
+					"id": 19.0
 				}
 			],
 			"name": "Mr. Nice",
@@ -691,44 +696,44 @@
 			"post_combat_dialogue": "Ohoho? It appears you have bested me, friend. Please take this!\nMay we meet further down this road of destiny!",
 			"pre_combat_dialogue": "Oh, hello there my good friend, it would seem you've rescued me from my vaguely cuboidal prison once again!\nWithout further ado, let us begin our promised battle!",
 			"remove_on_finish": true,
-			"sprite": 18,
+			"sprite": 18.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_018",
 			"team": [
 				{
-					"ability": 54,
-					"atk_iv": 7,
-					"def_iv": 7,
-					"hp_iv": 7,
-					"id": 69,
-					"item": -1,
-					"level": 20,
+					"ability": 54.0,
+					"atk_iv": 7.0,
+					"def_iv": 7.0,
+					"hp_iv": 7.0,
+					"id": 69.0,
+					"item": -1.0,
+					"level": 20.0,
 					"moveset": [
-						1,
-						5,
-						68,
-						30
+						1.0,
+						5.0,
+						68.0,
+						30.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 7
+					"spd_iv": 7.0
 				}
 			],
-			"x": 13,
-			"y": 27
+			"x": 13.0,
+			"y": 27.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 2,
-					"id": 1
+					"count": 2.0,
+					"id": 1.0
 				}
 			],
 			"name": "Chest",
@@ -736,25 +741,25 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 19,
-			"y": 15
+			"x": 19.0,
+			"y": 15.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 3,
-					"id": 14
+					"count": 3.0,
+					"id": 14.0
 				}
 			],
 			"name": "Chest",
@@ -762,25 +767,25 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 27,
-			"y": 16
+			"x": 27.0,
+			"y": 16.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 1,
-					"id": 16
+					"count": 1.0,
+					"id": 16.0
 				}
 			],
 			"name": "Chest",
@@ -788,25 +793,25 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 23,
-			"y": 40
+			"x": 23.0,
+			"y": 40.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 5,
-					"id": 4
+					"count": 5.0,
+					"id": 4.0
 				}
 			],
 			"name": "Chest",
@@ -814,17 +819,17 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 42,
-			"y": 12
+			"x": 42.0,
+			"y": 12.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -835,44 +840,44 @@
 			"post_combat_dialogue": "*Sigh* Back to work for me I guess...",
 			"pre_combat_dialogue": "Welcome to my store, would you like to buy anything?\nWait, I'm not on the clock right now...\nWanna battle?",
 			"remove_on_finish": false,
-			"sprite": 11,
+			"sprite": 11.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_011",
 			"team": [
 				{
-					"ability": 0,
-					"atk_iv": 3,
-					"def_iv": 1,
-					"hp_iv": 2,
-					"id": 37,
-					"item": -1,
-					"level": 10,
+					"ability": 0.0,
+					"atk_iv": 3.0,
+					"def_iv": 1.0,
+					"hp_iv": 2.0,
+					"id": 37.0,
+					"item": -1.0,
+					"level": 10.0,
 					"moveset": [
-						1,
-						62,
-						24,
-						86
+						1.0,
+						62.0,
+						24.0,
+						86.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 0
+					"spd_iv": 0.0
 				}
 			],
-			"x": 24,
-			"y": 51
+			"x": 24.0,
+			"y": 51.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 2,
-					"id": 10
+					"count": 2.0,
+					"id": 10.0
 				}
 			],
 			"name": "Chest",
@@ -880,25 +885,25 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 53,
-			"y": 49
+			"x": 53.0,
+			"y": 49.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 3,
-					"id": 4
+					"count": 3.0,
+					"id": 4.0
 				}
 			],
 			"name": "Chest",
@@ -906,17 +911,17 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"team": [],
-			"x": 29,
-			"y": 55
+			"x": 29.0,
+			"y": 55.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
 			"flag_required": "",
@@ -927,17 +932,17 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "→ Old Training Facility\n↓ Access Tunnel",
 			"remove_on_finish": false,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"team": [],
-			"x": 43,
-			"y": 25
+			"x": 43.0,
+			"y": 25.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
 			"flag_required": "",
@@ -948,17 +953,17 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Beware of Lava! \nCooling Balms Recommended",
 			"remove_on_finish": false,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"team": [],
-			"x": 25,
-			"y": 54
+			"x": 25.0,
+			"y": 54.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "lavaboard_get",
 			"flag_required": "",
@@ -969,17 +974,17 @@
 			"post_combat_dialogue": "What happens in mystery building stays in mystery building.",
 			"pre_combat_dialogue": "No, go away.",
 			"remove_on_finish": false,
-			"sprite": 1,
+			"sprite": 1.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
 			"team": [],
-			"x": 8,
-			"y": 40
+			"x": 8.0,
+			"y": 40.0
 		},
 		{
-			"aggro_range": 1,
-			"coin": 0,
+			"aggro_range": 1.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -990,30 +995,72 @@
 			"post_combat_dialogue": "Enter at your own peril, you won't be able to leave until you find the exit!",
 			"pre_combat_dialogue": "Psst, hey you, you seem pretty strong.\nThere's a cave below here that constantly shifts and changes if you're interested...\nEnter at your own peril, you won't be able to leave until you find the exit!",
 			"remove_on_finish": false,
-			"sprite": 1,
+			"sprite": 1.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
 			"team": [],
-			"x": 4,
-			"y": 54
+			"x": 4.0,
+			"y": 54.0
+		},
+		{
+			"aggro_range": 3,
+			"coin": 2500.0,
+			"flag_given": "flower_sample_delivered_al",
+			"flag_kill": "",
+			"flag_required": "moldire_boss_defeated",
+			"is_catchable": false,
+			"items": [],
+			"name": "Engineer Al",
+			"npc_id": "383180474271978204",
+			"post_combat_dialogue": "Do be safe, the tunnel itself may be completed, but we still have to finish adding some supports!",
+			"pre_combat_dialogue": "Perfect timing! We've just recieved word that the Access Tunnel has been completed.\nCould you deliver that Strange Flower Sample to Professor Lyra?\nIf you head South through this tunnel you'll reach her in no time! \n{objective:Travel South through the Access Tunnel, and deliver the Flower Sample to Professor Lyra.}\nAh, and don't think I've forgotten about your reward, here you are!",
+			"remove_on_finish": false,
+			"sprite": 9,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_009",
+			"team": [],
+			"x": 45.0,
+			"y": 29.0
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "flower_sample_delivered_al",
+			"is_catchable": false,
+			"items": [],
+			"name": "Crew Tyler",
+			"npc_id": "047096365216559352",
+			"post_combat_dialogue": "Oh, if you intend to return to the Hub you can use the Access Tunnel.\nIt's directly south of the settlement here.",
+			"pre_combat_dialogue": "The cave's off limits for a bit, we're doing work in here.",
+			"remove_on_finish": false,
+			"sprite": 14,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_014",
+			"team": [],
+			"x": 14.0,
+			"y": 57.0
 		}
 	],
 	"map_savepoints": [
 		{
 			"is_default": false,
-			"x": 14,
-			"y": 54
+			"x": 14.0,
+			"y": 54.0
 		},
 		{
 			"is_default": true,
-			"x": 42,
-			"y": 29
+			"x": 42.0,
+			"y": 29.0
 		},
 		{
 			"is_default": false,
-			"x": 4,
-			"y": 52
+			"x": 4.0,
+			"y": 52.0
 		}
 	],
 	"map_shops": [
@@ -1022,8 +1069,8 @@
 			"image": "",
 			"special_items": [],
 			"type": "default",
-			"x": 39,
-			"y": 30
+			"x": 39.0,
+			"y": 30.0
 		},
 		{
 			"greeting_dialog": "*Bzzt* Initializing shop mode...",
@@ -1031,84 +1078,84 @@
 			"image": "",
 			"special_items": [],
 			"type": "default",
-			"x": 2,
-			"y": 52
+			"x": 2.0,
+			"y": 52.0
 		}
 	],
 	"map_spawn_zones": [
 		{
-			"height": 22,
+			"height": 22.0,
 			"spawn_slots": [
 				{
-					"max_level": 9,
-					"min_level": 6,
-					"ooch_id": 66
+					"max_level": 9.0,
+					"min_level": 6.0,
+					"ooch_id": 66.0
 				},
 				{
-					"max_level": 9,
-					"min_level": 6,
-					"ooch_id": 17
+					"max_level": 9.0,
+					"min_level": 6.0,
+					"ooch_id": 17.0
 				},
 				{
-					"max_level": 9,
-					"min_level": 6,
-					"ooch_id": 19
+					"max_level": 9.0,
+					"min_level": 6.0,
+					"ooch_id": 19.0
 				}
 			],
-			"width": 12,
-			"x": 17,
-			"y": 34
+			"width": 12.0,
+			"x": 17.0,
+			"y": 34.0
 		},
 		{
-			"height": 13,
+			"height": 13.0,
 			"spawn_slots": [
 				{
-					"max_level": 11,
-					"min_level": 8,
-					"ooch_id": 17
+					"max_level": 11.0,
+					"min_level": 8.0,
+					"ooch_id": 17.0
 				},
 				{
-					"max_level": 11,
-					"min_level": 8,
-					"ooch_id": 91
+					"max_level": 11.0,
+					"min_level": 8.0,
+					"ooch_id": 91.0
 				},
 				{
-					"max_level": 11,
-					"min_level": 8,
-					"ooch_id": 19
+					"max_level": 11.0,
+					"min_level": 8.0,
+					"ooch_id": 19.0
 				}
 			],
-			"width": 17,
-			"x": 22,
-			"y": 10
+			"width": 17.0,
+			"x": 22.0,
+			"y": 10.0
 		},
 		{
-			"height": 2,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"max_level": 12,
-					"min_level": 8,
-					"ooch_id": 19
+					"max_level": 12.0,
+					"min_level": 8.0,
+					"ooch_id": 19.0
 				},
 				{
-					"max_level": 12,
-					"min_level": 8,
-					"ooch_id": 17
+					"max_level": 12.0,
+					"min_level": 8.0,
+					"ooch_id": 17.0
 				},
 				{
-					"max_level": 12,
-					"min_level": 8,
-					"ooch_id": 44
+					"max_level": 12.0,
+					"min_level": 8.0,
+					"ooch_id": 44.0
 				},
 				{
-					"max_level": 12,
-					"min_level": 8,
-					"ooch_id": 66
+					"max_level": 12.0,
+					"min_level": 8.0,
+					"ooch_id": 66.0
 				}
 			],
-			"width": 2,
-			"x": 54,
-			"y": 25
+			"width": 2.0,
+			"x": 54.0,
+			"y": 25.0
 		}
 	],
 	"map_tiles": [
@@ -1432,7 +1479,7 @@
 			"t06_000",
 			"t06_000",
 			"t06_000",
-			"t06_000",
+			"t06_001",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -1495,10 +1542,10 @@
 			"t00_000",
 			"t00_000",
 			"t06_004",
+			"t06_026",
+			"t06_030",
 			"t06_000",
-			"t06_000",
-			"t06_000",
-			"t06_000",
+			"t06_001",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -5340,86 +5387,100 @@
 	"map_transitions": [
 		{
 			"connect_map": "lava_path",
-			"connect_x": 51,
-			"connect_y": 50,
-			"x": 41,
-			"y": 24
+			"connect_x": 51.0,
+			"connect_y": 50.0,
+			"x": 41.0,
+			"y": 24.0
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": 51,
-			"connect_y": 59,
-			"x": 48,
-			"y": 24
+			"connect_x": 51.0,
+			"connect_y": 59.0,
+			"x": 48.0,
+			"y": 24.0
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": 41,
-			"connect_y": 25,
-			"x": 51,
-			"y": 51
+			"connect_x": 41.0,
+			"connect_y": 25.0,
+			"x": 51.0,
+			"y": 51.0
 		},
 		{
 			"connect_map": "lava_path",
-			"connect_x": 48,
-			"connect_y": 25,
-			"x": 51,
-			"y": 60
+			"connect_x": 48.0,
+			"connect_y": 25.0,
+			"x": 51.0,
+			"y": 60.0
 		},
 		{
 			"connect_map": "training_facility",
-			"connect_x": 5,
-			"connect_y": 12,
-			"x": 53,
-			"y": 24
+			"connect_x": 5.0,
+			"connect_y": 12.0,
+			"x": 53.0,
+			"y": 24.0
 		},
 		{
 			"connect_map": "stone_tunnel",
-			"connect_x": 57,
-			"connect_y": 39,
-			"x": 14,
-			"y": 58
+			"connect_x": 57.0,
+			"connect_y": 39.0,
+			"x": 14.0,
+			"y": 58.0
 		},
 		{
 			"connect_map": "",
-			"connect_x": 3,
-			"connect_y": 56,
-			"x": 8,
-			"y": 39
+			"connect_x": 3.0,
+			"connect_y": 56.0,
+			"x": 8.0,
+			"y": 39.0
 		},
 		{
 			"connect_map": "",
-			"connect_x": 8,
-			"connect_y": 40,
-			"x": 3,
-			"y": 56
+			"connect_x": 8.0,
+			"connect_y": 40.0,
+			"x": 3.0,
+			"y": 56.0
 		},
 		{
 			"connect_map": "everchange_cave",
-			"connect_x": -1,
-			"connect_y": -1,
-			"x": 3,
-			"y": 51
+			"connect_x": -1.0,
+			"connect_y": -1.0,
+			"x": 3.0,
+			"y": 51.0
+		},
+		{
+			"connect_map": "thunderpeak",
+			"connect_x": 32.0,
+			"connect_y": 62.0,
+			"x": 10.0,
+			"y": 6.0
+		},
+		{
+			"connect_map": "",
+			"connect_x": 0,
+			"connect_y": 0,
+			"x": 44.0,
+			"y": 36.0
 		}
 	],
 	"map_weather": [
 		{
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 51,
+			"height": 51.0,
 			"weather_name": "heatwave",
-			"width": 36,
-			"x": 9,
-			"y": 6
+			"width": 36.0,
+			"x": 9.0,
+			"y": 6.0
 		},
 		{
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 17,
+			"height": 17.0,
 			"weather_name": "heatwave",
-			"width": 16,
-			"x": 46,
-			"y": 17
+			"width": 16.0,
+			"x": 46.0,
+			"y": 17.0
 		}
 	]
 }

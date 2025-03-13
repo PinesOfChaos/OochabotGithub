@@ -16,6 +16,8 @@ var EVENT_OOCHPICK = 	3
 var EVENT_TRANSITION = 	4
 var EVENT_OBJECTIVE = 	5
 var EVENT_OPTIONS = 	6
+var EVENT_FINISH = 		7 #This should be unused
+var EVENT_WAIT = 		8
 
 var DataEvents = {}
 var DataAbilities = []

@@ -15,6 +15,7 @@ layout_mode = 2
 text = "Map:"
 
 [node name="LineEditMap" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 placeholder_text = "Map"
 
@@ -24,6 +25,8 @@ text = "X:"
 
 [node name="SpinBoxX" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
+tooltip_text = "elevator up: 4
+elevator down: 14"
 
 [node name="Label3" type="Label" parent="HBoxContainer"]
 layout_mode = 2
@@ -31,6 +34,8 @@ text = "Y:"
 
 [node name="SpinBoxY" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
+tooltip_text = "elevator up: 5
+elevator down: 5"
 
 [node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
 layout_mode = 2

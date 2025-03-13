@@ -54,7 +54,8 @@ const EventMode = {
     Transition: 4,
     Objective: 5,
     Options: 6,
-    EventFinish: 7
+    EventFinish: 7,
+    Wait: 8
 }
 
 const DialogueType = {

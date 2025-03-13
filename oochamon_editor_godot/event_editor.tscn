@@ -86,6 +86,10 @@ text = "+ Objective"
 layout_mode = 2
 text = "+ Options"
 
+[node name="NewWait" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Wait"
+
 [connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonNew" to="." method="_on_button_new_pressed"]
@@ -99,3 +103,4 @@ text = "+ Options"
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewTransition" to="." method="_on_new_transition_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewObjective" to="." method="_on_new_objective_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOption" to="." method="_on_new_option_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewWait" to="." method="_on_new_wait_pressed"]
