@@ -1984,6 +1984,10 @@
         58
       ],
       [
+        7,
+        45
+      ],
+      [
         10,
         22
       ],
@@ -1996,20 +2000,36 @@
         53
       ],
       [
+        19,
+        89
+      ],
+      [
         20,
         118
       ],
       [
+        22,
+        4
+      ],
+      [
         24,
-        74
+        84
       ],
       [
         28,
         93
       ],
       [
+        31,
+        12
+      ],
+      [
         34,
         98
+      ],
+      [
+        36,
+        42
       ],
       [
         43,
@@ -2025,7 +2045,7 @@
       1
     ],
     "pre_evo_id": -1,
-    "evo_id": -1,
+    "evo_id": 111,
     "evo_lvl": -1,
     "evo_stage": 0
   },
@@ -8582,17 +8602,852 @@
     "evo_stage": 0
   },
   {
+    "id": 99,
+    "emote": "<:shieldome:1349855425549439036>",
+    "name": "Shieldome",
+    "oochive_entry": "A protective little guy, its body is made of stone and its shield is tough like kevlar.",
+    "type": [
+      "stone",
+      "cloth"
+    ],
+    "hp": 14,
+    "atk": 10,
+    "def": 16,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        5,
+        64
+      ],
+      [
+        7,
+        95
+      ],
+      [
+        9,
+        63
+      ],
+      [
+        12,
+        85
+      ],
+      [
+        15,
+        100
+      ],
+      [
+        18,
+        69
+      ],
+      [
+        21,
+        98
+      ],
+      [
+        25,
+        91
+      ],
+      [
+        26,
+        37
+      ],
+      [
+        30,
+        42
+      ],
+      [
+        33,
+        109
+      ],
+      [
+        36,
+        11
+      ],
+      [
+        40,
+        35
+      ],
+      [
+        44,
+        80
+      ],
+      [
+        -1,
+        49
+      ]
+    ],
+    "abilities": [
+      66,
+      4
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 100,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 100,
+    "emote": "<:rietor:1349855434575581275>",
+    "name": "Rietor",
+    "oochive_entry": "A tough shield covers most of its body, it giddily slams into enemies with all its strength.",
+    "type": [
+      "stone",
+      "cloth"
+    ],
+    "hp": 18,
+    "atk": 16,
+    "def": 21,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        5,
+        64
+      ],
+      [
+        7,
+        95
+      ],
+      [
+        9,
+        63
+      ],
+      [
+        12,
+        85
+      ],
+      [
+        15,
+        100
+      ],
+      [
+        18,
+        69
+      ],
+      [
+        21,
+        98
+      ],
+      [
+        25,
+        91
+      ],
+      [
+        26,
+        37
+      ],
+      [
+        30,
+        42
+      ],
+      [
+        33,
+        109
+      ],
+      [
+        36,
+        11
+      ],
+      [
+        40,
+        35
+      ],
+      [
+        44,
+        80
+      ],
+      [
+        -1,
+        49
+      ]
+    ],
+    "abilities": [
+      66,
+      4
+    ],
+    "pre_evo_id": 99,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 101,
+    "emote": "<:pondorb:1349855444558024774>",
+    "name": "Pondorb",
+    "oochive_entry": "A small octopus-like creature, it constantly peers into an odd crystal ball.",
+    "type": [
+      "magic"
+    ],
+    "hp": 15,
+    "atk": 11,
+    "def": 9,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        30
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        127
+      ],
+      [
+        11,
+        94
+      ],
+      [
+        13,
+        23
+      ],
+      [
+        16,
+        46
+      ],
+      [
+        19,
+        112
+      ],
+      [
+        23,
+        101
+      ],
+      [
+        26,
+        56
+      ],
+      [
+        28,
+        114
+      ],
+      [
+        30,
+        120
+      ],
+      [
+        33,
+        113
+      ],
+      [
+        35,
+        116
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        41,
+        17
+      ],
+      [
+        -1,
+        50
+      ]
+    ],
+    "abilities": [
+      85,
+      83
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 102,
+    "evo_lvl": 33,
+    "evo_stage": 0
+  },
+  {
+    "id": 102,
+    "emote": "<:maglobe:1349855452984250378>",
+    "name": "Maglobe",
+    "oochive_entry": "Maglobe are often compared to old legends due to their ability to form pacts and see into the future.",
+    "type": [
+      "magic",
+      "crystal"
+    ],
+    "hp": 21,
+    "atk": 19,
+    "def": 17,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        30
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        8,
+        127
+      ],
+      [
+        11,
+        94
+      ],
+      [
+        13,
+        23
+      ],
+      [
+        16,
+        46
+      ],
+      [
+        19,
+        112
+      ],
+      [
+        23,
+        101
+      ],
+      [
+        26,
+        56
+      ],
+      [
+        28,
+        114
+      ],
+      [
+        30,
+        120
+      ],
+      [
+        33,
+        113
+      ],
+      [
+        35,
+        116
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        41,
+        17
+      ],
+      [
+        -1,
+        50
+      ]
+    ],
+    "abilities": [
+      85,
+      83
+    ],
+    "pre_evo_id": 101,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 103,
+    "emote": "<:stakulb:1349855461436035093>",
+    "name": "Stakulb",
+    "oochive_entry": "A pair of fungal bulbs, one is always carrying the other.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 13,
+    "atk": 12,
+    "def": 7,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        10,
+        111
+      ],
+      [
+        12,
+        70
+      ],
+      [
+        16,
+        45
+      ],
+      [
+        18,
+        46
+      ],
+      [
+        20,
+        91
+      ],
+      [
+        24,
+        56
+      ],
+      [
+        27,
+        53
+      ],
+      [
+        30,
+        13
+      ],
+      [
+        33,
+        117
+      ],
+      [
+        36,
+        75
+      ],
+      [
+        37,
+        114
+      ],
+      [
+        41,
+        26
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      81,
+      2
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 104,
+    "evo_lvl": 18,
+    "evo_stage": 0
+  },
+  {
+    "id": 104,
+    "emote": "<:matryion:1349855470147342406>",
+    "name": "Matryion",
+    "oochive_entry": "Matryion have layers, lots of them, too many in fact.",
+    "type": [
+      "fungal",
+      "magic"
+    ],
+    "hp": 18,
+    "atk": 14,
+    "def": 10,
+    "spd": 18,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        7,
+        24
+      ],
+      [
+        10,
+        111
+      ],
+      [
+        12,
+        70
+      ],
+      [
+        16,
+        45
+      ],
+      [
+        18,
+        46
+      ],
+      [
+        20,
+        91
+      ],
+      [
+        24,
+        56
+      ],
+      [
+        27,
+        53
+      ],
+      [
+        30,
+        13
+      ],
+      [
+        33,
+        117
+      ],
+      [
+        36,
+        75
+      ],
+      [
+        37,
+        114
+      ],
+      [
+        41,
+        26
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      68,
+      2
+    ],
+    "pre_evo_id": 103,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
     "id": 105,
+    "emote": "<:lacerize:1349855484584267796>",
+    "name": "Lacerize",
+    "oochive_entry": "Lacerize catch the breeze and float near the tops of mountains.",
+    "type": [
+      "cloth"
+    ],
+    "hp": 12,
+    "atk": 11,
+    "def": 7,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        95
+      ],
+      [
+        5,
+        62
+      ],
+      [
+        7,
+        127
+      ],
+      [
+        11,
+        5
+      ],
+      [
+        14,
+        98
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        19,
+        102
+      ],
+      [
+        22,
+        67
+      ],
+      [
+        26,
+        119
+      ],
+      [
+        29,
+        117
+      ],
+      [
+        31,
+        116
+      ],
+      [
+        34,
+        114
+      ],
+      [
+        36,
+        123
+      ],
+      [
+        39,
+        48
+      ],
+      [
+        42,
+        55
+      ],
+      [
+        45,
+        106
+      ],
+      [
+        -1,
+        49
+      ]
+    ],
+    "abilities": [
+      81,
+      2
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 106,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 106,
+    "emote": "<:rendive:1349855495523139615>",
+    "name": "Rendive",
+    "oochive_entry": "Rendive are said to be Lacerize that have decended to the very bottom of the world, they aim to rise to the top once again.",
+    "type": [
+      "cloth"
+    ],
+    "hp": 15,
+    "atk": 17,
+    "def": 13,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        95
+      ],
+      [
+        5,
+        62
+      ],
+      [
+        7,
+        127
+      ],
+      [
+        11,
+        5
+      ],
+      [
+        14,
+        98
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        19,
+        102
+      ],
+      [
+        22,
+        67
+      ],
+      [
+        26,
+        119
+      ],
+      [
+        29,
+        117
+      ],
+      [
+        31,
+        116
+      ],
+      [
+        34,
+        114
+      ],
+      [
+        36,
+        123
+      ],
+      [
+        39,
+        48
+      ],
+      [
+        42,
+        55
+      ],
+      [
+        45,
+        106
+      ],
+      [
+        -1,
+        49
+      ]
+    ],
+    "abilities": [
+      68,
+      2
+    ],
+    "pre_evo_id": 105,
+    "evo_id": 107,
+    "evo_lvl": 40,
+    "evo_stage": 1
+  },
+  {
+    "id": 107,
+    "emote": "<:drascend:1349855507061670029>",
+    "name": "Drascend",
+    "oochive_entry": "A dragon-like Oochamon, these creatures have returned from the depths of the world to attain new power!",
+    "type": [
+      "cloth"
+    ],
+    "hp": 20,
+    "atk": 22,
+    "def": 17,
+    "spd": 21,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        95
+      ],
+      [
+        5,
+        62
+      ],
+      [
+        7,
+        127
+      ],
+      [
+        11,
+        5
+      ],
+      [
+        14,
+        98
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        19,
+        102
+      ],
+      [
+        22,
+        67
+      ],
+      [
+        26,
+        119
+      ],
+      [
+        29,
+        117
+      ],
+      [
+        31,
+        116
+      ],
+      [
+        34,
+        114
+      ],
+      [
+        36,
+        123
+      ],
+      [
+        39,
+        48
+      ],
+      [
+        42,
+        55
+      ],
+      [
+        45,
+        106
+      ],
+      [
+        -1,
+        49
+      ]
+    ],
+    "abilities": [
+      68,
+      2
+    ],
+    "pre_evo_id": 106,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 108,
     "emote": "<:nullifly:1274937872524378112>",
     "name": "Nullifly",
     "oochive_entry": "Strange creatures which begin to swarm where pockets of Void appear.",
     "type": [
       "void"
     ],
-    "hp": 20,
-    "atk": 20,
-    "def": 20,
-    "spd": 20,
+    "hp": 15,
+    "atk": 15,
+    "def": 15,
+    "spd": 15,
     "move_list": [
       [
         1,
@@ -8646,6 +9501,1125 @@
     "evo_id": -1,
     "evo_lvl": -1,
     "evo_stage": 0
+  },
+  {
+    "id": 109,
+    "emote": "<:gnayme:1349855518763651132>",
+    "name": "Gnayme",
+    "oochive_entry": "They never speak, but when near humans they'll often point to the tag on top of their head.",
+    "type": [
+      "magic"
+    ],
+    "hp": 13,
+    "atk": 12,
+    "def": 7,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        86
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        9,
+        87
+      ],
+      [
+        12,
+        69
+      ],
+      [
+        14,
+        56
+      ],
+      [
+        17,
+        112
+      ],
+      [
+        19,
+        85
+      ],
+      [
+        21,
+        96
+      ],
+      [
+        23,
+        68
+      ],
+      [
+        26,
+        98
+      ],
+      [
+        30,
+        107
+      ],
+      [
+        32,
+        13
+      ],
+      [
+        35,
+        114
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        42,
+        117
+      ],
+      [
+        46,
+        19
+      ],
+      [
+        -1,
+        103
+      ]
+    ],
+    "abilities": [
+      25,
+      75
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 110,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 110,
+    "emote": "<:mysnome:1349855530088136844>",
+    "name": "Mysnome",
+    "oochive_entry": "Mysnome are often seen stealing the tags off Gnaymes' heads and attaching the tags to their own.",
+    "type": [
+      "magic"
+    ],
+    "hp": 21,
+    "atk": 18,
+    "def": 17,
+    "spd": 19,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        86
+      ],
+      [
+        5,
+        24
+      ],
+      [
+        9,
+        87
+      ],
+      [
+        12,
+        69
+      ],
+      [
+        14,
+        56
+      ],
+      [
+        17,
+        112
+      ],
+      [
+        19,
+        85
+      ],
+      [
+        21,
+        96
+      ],
+      [
+        23,
+        68
+      ],
+      [
+        26,
+        98
+      ],
+      [
+        30,
+        107
+      ],
+      [
+        32,
+        13
+      ],
+      [
+        35,
+        114
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        42,
+        117
+      ],
+      [
+        46,
+        19
+      ],
+      [
+        -1,
+        103
+      ]
+    ],
+    "abilities": [
+      76,
+      75
+    ],
+    "pre_evo_id": 109,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 111,
+    "emote": "<:shellamp:1349855394587086948>",
+    "name": "Shellamp",
+    "oochive_entry": "It's believed that Shellamp use the crystal bulb on its tail to communicate with others.",
+    "type": [
+      "tech",
+      "crystal"
+    ],
+    "hp": 20,
+    "atk": 14,
+    "def": 15,
+    "spd": 16,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        7,
+        45
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        71
+      ],
+      [
+        16,
+        53
+      ],
+      [
+        19,
+        89
+      ],
+      [
+        20,
+        118
+      ],
+      [
+        22,
+        4
+      ],
+      [
+        24,
+        84
+      ],
+      [
+        28,
+        93
+      ],
+      [
+        31,
+        12
+      ],
+      [
+        34,
+        98
+      ],
+      [
+        36,
+        42
+      ],
+      [
+        43,
+        81
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      52,
+      1
+    ],
+    "pre_evo_id": 21,
+    "evo_id": 112,
+    "evo_lvl": 40,
+    "evo_stage": 1
+  },
+  {
+    "id": 112,
+    "emote": "<:caracar:1349855408973414432>",
+    "name": "Caracar",
+    "oochive_entry": "Caracar are shockingly fast for what seems to just be a giant snail. The generator on their backs produces extreme amounts of energy.",
+    "type": [
+      "tech",
+      "crystal"
+    ],
+    "hp": 21,
+    "atk": 18,
+    "def": 18,
+    "spd": 23,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        60
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        7,
+        45
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        71
+      ],
+      [
+        16,
+        53
+      ],
+      [
+        19,
+        89
+      ],
+      [
+        20,
+        118
+      ],
+      [
+        22,
+        4
+      ],
+      [
+        24,
+        84
+      ],
+      [
+        28,
+        93
+      ],
+      [
+        31,
+        12
+      ],
+      [
+        34,
+        98
+      ],
+      [
+        36,
+        42
+      ],
+      [
+        43,
+        81
+      ],
+      [
+        -1,
+        38
+      ]
+    ],
+    "abilities": [
+      82,
+      19
+    ],
+    "pre_evo_id": 111,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 113,
+    "emote": "<:larvibe:1349855541744373870>",
+    "name": "Larvibe",
+    "oochive_entry": "Larvibe are often found relaxing near calming, rythmic sounds.",
+    "type": [
+      "sound"
+    ],
+    "hp": 12,
+    "atk": 12,
+    "def": 7,
+    "spd": 9,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        96
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        6,
+        41
+      ],
+      [
+        9,
+        45
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        14,
+        99
+      ],
+      [
+        17,
+        53
+      ],
+      [
+        20,
+        102
+      ],
+      [
+        22,
+        6
+      ],
+      [
+        25,
+        9
+      ],
+      [
+        28,
+        110
+      ],
+      [
+        30,
+        77
+      ],
+      [
+        34,
+        122
+      ],
+      [
+        36,
+        117
+      ],
+      [
+        39,
+        16
+      ],
+      [
+        44,
+        116
+      ],
+      [
+        -1,
+        76
+      ]
+    ],
+    "abilities": [
+      25,
+      8
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 114,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 114,
+    "emote": "<:virtuito:1349855554155315255>",
+    "name": "Virtuito",
+    "oochive_entry": "Capable of making a calming melody or a screeching cacophony, these creatures are known for their audio versatility.",
+    "type": [
+      "fungal",
+      "sound"
+    ],
+    "hp": 16,
+    "atk": 18,
+    "def": 17,
+    "spd": 19,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        96
+      ],
+      [
+        4,
+        60
+      ],
+      [
+        6,
+        41
+      ],
+      [
+        9,
+        45
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        14,
+        99
+      ],
+      [
+        17,
+        53
+      ],
+      [
+        20,
+        102
+      ],
+      [
+        22,
+        6
+      ],
+      [
+        25,
+        9
+      ],
+      [
+        28,
+        110
+      ],
+      [
+        30,
+        77
+      ],
+      [
+        34,
+        122
+      ],
+      [
+        36,
+        117
+      ],
+      [
+        39,
+        16
+      ],
+      [
+        44,
+        116
+      ],
+      [
+        -1,
+        76
+      ]
+    ],
+    "abilities": [
+      73,
+      76
+    ],
+    "pre_evo_id": 113,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 115,
+    "emote": "<:parmanyan:1349855563323936872>",
+    "name": "Parmanyan",
+    "oochive_entry": "They frequently approach and befriend humans and as well as Oochamon.",
+    "type": [
+      "fungal"
+    ],
+    "hp": 10,
+    "atk": 9,
+    "def": 8,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        61
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        9,
+        88
+      ],
+      [
+        11,
+        32
+      ],
+      [
+        13,
+        77
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        19,
+        104
+      ],
+      [
+        22,
+        5
+      ],
+      [
+        25,
+        101
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        31,
+        42
+      ],
+      [
+        34,
+        66
+      ],
+      [
+        37,
+        17
+      ],
+      [
+        40,
+        75
+      ],
+      [
+        45,
+        93
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      79,
+      8
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 116,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 116,
+    "emote": "<:regulush:1349855575223177216>",
+    "name": "Regulush",
+    "oochive_entry": "Despite its more intimidating appearance, Regulush remains very friendly towards others after evolving from Parmanyan.",
+    "type": [
+      "fungal",
+      "crystal"
+    ],
+    "hp": 19,
+    "atk": 16,
+    "def": 18,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        61
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        9,
+        88
+      ],
+      [
+        11,
+        32
+      ],
+      [
+        13,
+        77
+      ],
+      [
+        17,
+        86
+      ],
+      [
+        19,
+        104
+      ],
+      [
+        22,
+        5
+      ],
+      [
+        25,
+        101
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        31,
+        42
+      ],
+      [
+        34,
+        66
+      ],
+      [
+        37,
+        17
+      ],
+      [
+        40,
+        75
+      ],
+      [
+        45,
+        93
+      ],
+      [
+        -1,
+        78
+      ]
+    ],
+    "abilities": [
+      81,
+      78
+    ],
+    "pre_evo_id": 115,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 117,
+    "emote": "<:chewdee:1349855586983874561>",
+    "name": "Chewdee",
+    "oochive_entry": "Their perfectly flat bodies are capable of slipping through the thinnest cracks. Researchers are unsure how they manage to be alive and so flat at the same time.",
+    "type": [
+      "tech"
+    ],
+    "hp": 13,
+    "atk": 11,
+    "def": 10,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        5,
+        62
+      ],
+      [
+        8,
+        41
+      ],
+      [
+        11,
+        59
+      ],
+      [
+        14,
+        5
+      ],
+      [
+        16,
+        86
+      ],
+      [
+        19,
+        22
+      ],
+      [
+        22,
+        112
+      ],
+      [
+        27,
+        118
+      ],
+      [
+        30,
+        123
+      ],
+      [
+        34,
+        74
+      ],
+      [
+        36,
+        84
+      ],
+      [
+        39,
+        114
+      ],
+      [
+        43,
+        27
+      ],
+      [
+        46,
+        90
+      ],
+      [
+        -1,
+        81
+      ]
+    ],
+    "abilities": [
+      67,
+      5
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 118,
+    "evo_lvl": 30,
+    "evo_stage": 0
+  },
+  {
+    "id": 118,
+    "emote": "<:rhodent:1349855596366663750>",
+    "name": "Rhodent",
+    "oochive_entry": "Its body seems to be some sort of digital construct which allows it to phase through walls at will.",
+    "type": [
+      "tech"
+    ],
+    "hp": 21,
+    "atk": 18,
+    "def": 16,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        58
+      ],
+      [
+        5,
+        62
+      ],
+      [
+        8,
+        41
+      ],
+      [
+        11,
+        59
+      ],
+      [
+        14,
+        5
+      ],
+      [
+        16,
+        86
+      ],
+      [
+        19,
+        22
+      ],
+      [
+        22,
+        112
+      ],
+      [
+        27,
+        118
+      ],
+      [
+        30,
+        123
+      ],
+      [
+        34,
+        74
+      ],
+      [
+        36,
+        84
+      ],
+      [
+        39,
+        114
+      ],
+      [
+        43,
+        27
+      ],
+      [
+        46,
+        90
+      ],
+      [
+        -1,
+        81
+      ]
+    ],
+    "abilities": [
+      67,
+      5
+    ],
+    "pre_evo_id": 117,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": 119,
+    "emote": "<:coimble:1349855608462905365>",
+    "name": "Coimble",
+    "oochive_entry": "When attacking they often end up flipped on their backs, requiring assistance to get back up.",
+    "type": [
+      "tech"
+    ],
+    "hp": 12,
+    "atk": 8,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        5,
+        79
+      ],
+      [
+        8,
+        23
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        15,
+        100
+      ],
+      [
+        19,
+        71
+      ],
+      [
+        22,
+        58
+      ],
+      [
+        25,
+        112
+      ],
+      [
+        27,
+        124
+      ],
+      [
+        30,
+        102
+      ],
+      [
+        33,
+        118
+      ],
+      [
+        35,
+        89
+      ],
+      [
+        38,
+        8
+      ],
+      [
+        42,
+        120
+      ],
+      [
+        -1,
+        52
+      ]
+    ],
+    "abilities": [
+      80
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 120,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 120,
+    "emote": "<:crabandit:1349855619963682897>",
+    "name": "Crabandit",
+    "oochive_entry": "Crabandit often use old slot machines as shells. It's currently unknown where they got the machines from.",
+    "type": [
+      "stone",
+      "tech"
+    ],
+    "hp": 21,
+    "atk": 18,
+    "def": 16,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        5,
+        79
+      ],
+      [
+        8,
+        23
+      ],
+      [
+        11,
+        66
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        15,
+        100
+      ],
+      [
+        19,
+        71
+      ],
+      [
+        22,
+        58
+      ],
+      [
+        25,
+        112
+      ],
+      [
+        27,
+        124
+      ],
+      [
+        30,
+        102
+      ],
+      [
+        33,
+        118
+      ],
+      [
+        35,
+        89
+      ],
+      [
+        38,
+        8
+      ],
+      [
+        42,
+        120
+      ],
+      [
+        -1,
+        52
+      ]
+    ],
+    "abilities": [
+      80
+    ],
+    "pre_evo_id": 119,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
   },
   {
     "id": -1,

@@ -1835,12 +1835,12 @@ module.exports = {
             type: [OochType.Tech],
             hp: 11, atk: 12, def: 12, spd: 14, //total 50
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [3, Move.ByteBite], [10, Move.Digitize], [12, Move.Torque],
-                [16, Move.SyncStrike], [20, Move.Lagspike], [24, Move.BlindingBeam], [28, Move.HighImpact], 
-                [34, Move.Bind], [43, Move.PlasmaCannon], [-1, Move.Laminate]
+                [1, Move.Bash], [2, Move.Limber], [3, Move.ByteBite], [7, Move.Siphon], [10, Move.Digitize], [12, Move.Torque],
+                [16, Move.SyncStrike], [19, Move.Reset], [20, Move.Lagspike], [22, Move.Fireball], [24, Move.Radiate], [28, Move.HighImpact], 
+                [31, Move.Torch], [34, Move.Bind], [36, Move.Barrage], [43, Move.PlasmaCannon], [-1, Move.Laminate]
             ],
             abilities: [Ability.Leech, Ability.Icky],
-            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+            pre_evo_id: -1, evo_id: 111, evo_lvl: -1, evo_stage: 0
         })
 
         // Jellime
@@ -3201,8 +3201,399 @@ module.exports = {
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
 
-        //#region LEGENDARY HERE
-        //#endregion
+        // Shieldome
+        create_monster({
+            id: 99,
+            emote: get_emote_string(applicationEmojis, 'shieldome'),
+            name: 'Shieldome',
+            oochive_entry: 'A protective little guy, its body is made of stone and its shield is tough like kevlar.',
+            type: [OochType.Stone, OochType.Cloth],
+            hp: 14, atk: 10, def: 16, spd: 10, // total 50
+            move_list: [
+                [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.Intimidate], [7, Move.RagWhip], [9, Move.Brittle],
+                [12, Move.Caltrops], [15, Move.RallyingCry], [18, Move.Suplex], [21, Move.Bind], [25, Move.Entrench],
+                [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [36, Move.Boulderdash],
+                [40, Move.Grind], [44, Move.Sedimentation], [-1, Move.CrashLanding]       
+            ],
+            abilities: [Ability.Protector, Ability.Tough],
+            pre_evo_id: -1, evo_id: 100, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Rietor
+        create_monster({
+            id: 100,
+            emote: get_emote_string(applicationEmojis, 'rietor'),
+            name: 'Rietor',
+            oochive_entry: 'A tough shield covers most of its body, it giddily slams into enemies with all its strength.',
+            type: [OochType.Stone, OochType.Cloth],
+            hp: 18, atk: 16, def: 21, spd: 15, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.Intimidate], [7, Move.RagWhip], [9, Move.Brittle],
+                [12, Move.Caltrops], [15, Move.RallyingCry], [18, Move.Suplex], [21, Move.Bind], [25, Move.Entrench],
+                [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [36, Move.Boulderdash],
+                [40, Move.Grind], [44, Move.Sedimentation], [-1, Move.CrashLanding]  
+            ],
+            abilities: [Ability.Protector, Ability.Tough],
+            pre_evo_id: 99, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Pondorb
+        create_monster({
+            id: 101,
+            emote: get_emote_string(applicationEmojis, 'pondorb'),
+            name: 'Pondorb',
+            oochive_entry: 'A small octopus-like creature, it constantly peers into an odd crystal ball.',
+            type: [OochType.Magic],
+            hp: 15, atk: 11, def: 9, spd: 10, // total 45
+            move_list: [
+                [1, Move.Bash], [3, Move.Blink], [5, Move.MagicBolt], [8, Move.HawkEye], [11, Move.Shards],
+                [13, Move.ClampDown], [16, Move.DrainLife], [19, Move.TwistedReality], [23, Move.CrystalBall], [26, Move.Gravitate],
+                [28, Move.Thunderstorm], [30, Move.GuidedSpire], [33, Move.Heatwave], [35, Move.PressureWave], [39, Move.ArcaStrike],
+                [41, Move.GemBash], [-1, Move.SolarBlast]         
+            ],
+            abilities: [Ability.Seer, Ability.Pact],
+            pre_evo_id: -1, evo_id: 102, evo_lvl: 33, evo_stage: 0
+        });
+
+        // Maglobe
+        create_monster({
+            id: 102,
+            emote: get_emote_string(applicationEmojis, 'maglobe'),
+            name: 'Maglobe',
+            oochive_entry: 'Maglobe are often compared to old legends due to their ability to form pacts and see into the future.',
+            type: [OochType.Magic, OochType.Crystal],
+            hp: 21, atk: 19, def: 17, spd: 18, // total 75
+            move_list: [
+                [1, Move.Bash], [3, Move.Blink], [5, Move.MagicBolt], [8, Move.HawkEye], [11, Move.Shards],
+                [13, Move.ClampDown], [16, Move.DrainLife], [19, Move.TwistedReality], [23, Move.CrystalBall], [26, Move.Gravitate],
+                [28, Move.Thunderstorm], [30, Move.GuidedSpire], [33, Move.Heatwave], [35, Move.PressureWave], [39, Move.ArcaStrike],
+                [41, Move.GemBash], [-1, Move.SolarBlast]   
+            ],
+            abilities: [Ability.Seer, Ability.Pact],
+            pre_evo_id: 101, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Stakulb
+        create_monster({
+            id: 103,
+            emote: get_emote_string(applicationEmojis, 'stakulb'),
+            name: 'Stakulb',
+            oochive_entry: 'A pair of fungal bulbs, one is always carrying the other.',
+            type: [OochType.Fungal],
+            hp: 13, atk: 12, def: 7, spd: 8, // total 40
+            move_list: [
+                [1, Move.Bash], [3, Move.SporeShot], [5, Move.Embolden], [7, Move.MagicBolt], [10, Move.Wetlands],
+                [12, Move.EnfeeblingSpore], [16, Move.Siphon], [18, Move.DrainLife], [20, Move.Entrench], [24, Move.Gravitate],
+                [27, Move.SyncStrike], [30, Move.Blight], [33, Move.HeldStrike], [36, Move.Overgrowth], [37, Move.Thunderstorm],
+                [41, Move.ArcaStrike], [-1, Move.SlurpUp]        
+            ],
+            abilities: [Ability.Vigorous, Ability.Burdened],
+            pre_evo_id: -1, evo_id: 104, evo_lvl: 18, evo_stage: 0
+        });
+
+        // Matryion
+        create_monster({
+            id: 104,
+            emote: get_emote_string(applicationEmojis, 'matryion'),
+            name: 'Matryion',
+            oochive_entry: 'Matryion have layers, lots of them, too many in fact.',
+            type: [OochType.Fungal, OochType.Magic],
+            hp: 18, atk: 14, def: 10, spd: 18, // total 60
+            move_list: [
+                [1, Move.Bash], [3, Move.SporeShot], [5, Move.Embolden], [7, Move.MagicBolt], [10, Move.Wetlands],
+                [12, Move.EnfeeblingSpore], [16, Move.Siphon], [18, Move.DrainLife], [20, Move.Entrench], [24, Move.Gravitate],
+                [27, Move.SyncStrike], [30, Move.Blight], [33, Move.HeldStrike], [36, Move.Overgrowth], [37, Move.Thunderstorm],
+                [41, Move.ArcaStrike], [-1, Move.SlurpUp]  
+            ],
+            abilities: [Ability.Matryoshka, Ability.Burdened],
+            pre_evo_id: 103, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Lacerize
+        create_monster({
+            id: 105,
+            emote: get_emote_string(applicationEmojis, 'lacerize'),
+            name: 'Lacerize',
+            oochive_entry: 'Lacerize catch the breeze and float near the tops of mountains.',
+            type: [OochType.Cloth],
+            hp: 12, atk: 11, def: 7, spd: 10, // total 40
+            move_list: [
+                [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash], 
+                [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
+                [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry], 
+                [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]   
+            ],
+            abilities: [Ability.Vigorous, Ability.Burdened],
+            pre_evo_id: -1, evo_id: 106, evo_lvl: 30, evo_stage: 0
+        });
+
+        // Rendive
+        create_monster({
+            id: 106,
+            emote: get_emote_string(applicationEmojis, 'rendive'),
+            name: 'Rendive',
+            oochive_entry: 'Rendive are said to be Lacerize that have decended to the very bottom of the world, they aim to rise to the top once again.',
+            type: [OochType.Cloth],
+            hp: 15, atk: 17, def: 13, spd: 15, // total 60
+            move_list: [
+                [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash], 
+                [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
+                [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry], 
+                [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]  
+            ],
+            abilities: [Ability.Matryoshka, Ability.Burdened],
+            pre_evo_id: 105, evo_id: 107, evo_lvl: 40, evo_stage: 1
+        });
+
+        // Drascend
+        create_monster({
+            id: 107,
+            emote: get_emote_string(applicationEmojis, 'drascend'),
+            name: 'Drascend',
+            oochive_entry: 'A dragon-like Oochamon, these creatures have returned from the depths of the world to attain new power!',
+            type: [OochType.Cloth],
+            hp: 20, atk: 22, def: 17, spd: 21, // total 80
+            move_list: [
+                [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash], 
+                [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
+                [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry], 
+                [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]  
+            ],
+            abilities: [Ability.Matryoshka, Ability.Burdened],
+            pre_evo_id: 106, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
+
+        // Nullifly
+        create_monster({
+            id: 108,
+            emote: get_emote_string(applicationEmojis, 'nullifly'),
+            name: 'Nullifly',
+            oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
+            type: [OochType.Void],
+            hp: 15, atk: 15, def: 15, spd: 15, // total 60
+            move_list: [
+                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],
+                [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode],
+                [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]
+            ],
+            abilities: [Ability.Nullify],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Gnayme
+        create_monster({
+            id: 109,
+            emote: get_emote_string(applicationEmojis, 'gnayme'),
+            name: 'Gnayme',
+            oochive_entry: 'They never speak, but when near humans they\'ll often point to the tag on top of their head.',
+            type: [OochType.Magic],
+            hp: 13, atk: 12, def: 7, spd: 8, // total 40
+            move_list: [
+                [1, Move.Bash], [3, Move.Lurk], [5, Move.MagicBolt], [9, Move.Fog], [12, Move.Suplex],  
+                [14, Move.Gravitate], [17, Move.TwistedReality], [19, Move.Caltrops], [21, Move.Screech], [23, Move.CursedEye],
+                [26, Move.Bind], [30, Move.Mummify], [32, Move.Blight], [35, Move.Thunderstorm], [39, Move.ArcaStrike], [42, Move.HeldStrike],
+                [46, Move.Pulverize], [-1, Move.EarShatter]            
+            ],
+            abilities: [Ability.Apprentice, Ability.Pursuer],
+            pre_evo_id: -1, evo_id: 110, evo_lvl: 30, evo_stage: 0
+        });
+
+        // Mysnome
+        create_monster({
+            id: 110,
+            emote: get_emote_string(applicationEmojis, 'mysnome'),
+            name: 'Mysnome',
+            oochive_entry: 'Mysnome are often seen stealing the tags off Gnaymes\' heads and attaching the tags to their own.',
+            type: [OochType.Magic],
+            hp: 21, atk: 18, def: 17, spd: 19, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.Lurk], [5, Move.MagicBolt], [9, Move.Fog], [12, Move.Suplex],  
+                [14, Move.Gravitate], [17, Move.TwistedReality], [19, Move.Caltrops], [21, Move.Screech], [23, Move.CursedEye],
+                [26, Move.Bind], [30, Move.Mummify], [32, Move.Blight], [35, Move.Thunderstorm], [39, Move.ArcaStrike], [42, Move.HeldStrike],
+                [46, Move.Pulverize], [-1, Move.EarShatter]  
+            ],
+            abilities: [Ability.Bloodrush, Ability.Pursuer],
+            pre_evo_id: 109, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Shellamp
+        create_monster({
+            id: 111,
+            emote: get_emote_string(applicationEmojis, 'shellamp'),
+            name: 'Shellamp',
+            oochive_entry: 'It\'s believed that Shellamp use the crystal bulb on its tail to communicate with others.',
+            type: [OochType.Tech, OochType.Crystal],
+            hp: 20, atk: 14, def: 15, spd: 16, // total 65
+            move_list: [
+                [1, Move.Bash], [2, Move.Limber], [3, Move.ByteBite], [7, Move.Siphon], [10, Move.Digitize], [12, Move.Torque],
+                [16, Move.SyncStrike], [19, Move.Reset], [20, Move.Lagspike], [22, Move.Fireball], [24, Move.Radiate], [28, Move.HighImpact], 
+                [31, Move.Torch], [34, Move.Bind], [36, Move.Barrage], [43, Move.PlasmaCannon], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Energized, Ability.Icky],
+            pre_evo_id: 21, evo_id: 112, evo_lvl: 40, evo_stage: 1
+        });
+
+        // Caracar
+        create_monster({
+            id: 112,
+            emote: get_emote_string(applicationEmojis, 'caracar'),
+            name: 'Caracar',
+            oochive_entry: 'Caracar are shockingly fast for what seems to just be a giant snail. The generator on their backs produces extreme amounts of energy.',
+            type: [OochType.Tech, OochType.Crystal],
+            hp: 21, atk: 18, def: 18, spd: 23, // total 80
+            move_list: [
+                [1, Move.Bash], [2, Move.Limber], [3, Move.ByteBite], [7, Move.Siphon], [10, Move.Digitize], [12, Move.Torque],
+                [16, Move.SyncStrike], [19, Move.Reset], [20, Move.Lagspike], [22, Move.Fireball], [24, Move.Radiate], [28, Move.HighImpact], 
+                [31, Move.Torch], [34, Move.Bind], [36, Move.Barrage], [43, Move.PlasmaCannon], [-1, Move.Laminate]
+            ],
+            abilities: [Ability.Turbine, Ability.Efficient],
+            pre_evo_id: 111, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
+
+        // Larvibe
+        create_monster({
+            id: 113,
+            emote: get_emote_string(applicationEmojis, 'larvibe'),
+            name: 'Larvibe',
+            oochive_entry: 'Larvibe are often found relaxing near calming, rythmic sounds.',
+            type: [OochType.Sound],
+            hp: 12, atk: 12, def: 7, spd: 9, // total 40
+            move_list: [
+                [1, Move.Bash], [3, Move.Screech], [4, Move.Limber], [6, Move.PrecisionStrike], [9, Move.Siphon],
+                [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.TakeOver],
+                [25, Move.Impale], [28, Move.EchoChamber], [30, Move.ThornShot], [34, Move.EarSplitter], [36, Move.HeldStrike],
+                [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.MycoBurst]    
+            ],
+            abilities: [Ability.Apprentice, Ability.Gentle],
+            pre_evo_id: -1, evo_id: 114, evo_lvl: 30, evo_stage: 0
+        });
+
+        // Virtuito
+        create_monster({
+            id: 114,
+            emote: get_emote_string(applicationEmojis, 'virtuito'),
+            name: 'Virtuito',
+            oochive_entry: 'Capable of making a calming melody or a screeching cacophony, these creatures are known for their audio versatility.',
+            type: [OochType.Fungal, OochType.Sound],
+            hp: 16, atk: 18, def: 17, spd: 19, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.Screech], [4, Move.Limber], [6, Move.PrecisionStrike], [9, Move.Siphon],
+                [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.TakeOver],
+                [25, Move.Impale], [28, Move.EchoChamber], [30, Move.ThornShot], [34, Move.EarSplitter], [36, Move.HeldStrike],
+                [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.MycoBurst]  
+            ],
+            abilities: [Ability.BassBoost, Ability.Bloodrush],
+            pre_evo_id: 113, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Parmanyan
+        create_monster({
+            id: 115,
+            emote: get_emote_string(applicationEmojis, 'parmanyan'),
+            name: 'Parmanyan',
+            oochive_entry: 'They frequently approach and befriend humans and as well as Oochamon.',
+            type: [OochType.Fungal],
+            hp: 10, atk: 9, def: 8, spd: 8, // total 35
+            move_list: [
+                [1, Move.Bash], [3, Move.Embolden], [5, Move.SporeShot], [7, Move.ClampDown], [9, Move.Purify],  
+                [11, Move.MyceliumWhip], [13, Move.ThornShot],  [17, Move.Lurk], [19, Move.HealingGems], [22, Move.Slash],
+                [25, Move.CrystalBall], [28, Move.Bloom], [31, Move.Barrage], [34, Move.HypeUp], [37, Move.GemBash],        
+                [40, Move.Overgrowth], [45, Move.HighImpact], [-1, Move.SlurpUp] 
+            ],
+            abilities: [Ability.Condiment, Ability.Gentle],
+            pre_evo_id: -1, evo_id: 116, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Regulush
+        create_monster({
+            id: 116,
+            emote: get_emote_string(applicationEmojis, 'regulush'),
+            name: 'Regulush',
+            oochive_entry: 'Despite its more intimidating appearance, Regulush remains very friendly towards others after evolving from Parmanyan.',
+            type: [OochType.Fungal, OochType.Crystal],
+            hp: 19, atk: 16, def: 18, spd: 17, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.Embolden], [5, Move.SporeShot], [7, Move.ClampDown], [9, Move.Purify],  
+                [11, Move.MyceliumWhip], [13, Move.ThornShot],  [17, Move.Lurk], [19, Move.HealingGems], [22, Move.Slash],
+                [25, Move.CrystalBall], [28, Move.Bloom], [31, Move.Barrage], [34, Move.HypeUp], [37, Move.GemBash],        
+                [40, Move.Overgrowth], [45, Move.HighImpact], [-1, Move.SlurpUp] 
+            ],
+            abilities: [Ability.Vigorous, Ability.Martyr],
+            pre_evo_id: 115, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Chewdee
+        create_monster({
+            id: 117,
+            emote: get_emote_string(applicationEmojis, 'chewdee'),
+            name: 'Chewdee',
+            oochive_entry: 'Their perfectly flat bodies are capable of slipping through the thinnest cracks. Researchers are unsure how they manage to be alive and so flat at the same time.',
+            type: [OochType.Tech],
+            hp: 13, atk: 11, def: 10, spd: 11, // total 45
+            move_list: [
+                [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
+                [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
+                [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+                [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
+            ],
+            abilities: [Ability.Phantasmal, Ability.Shadow],
+            pre_evo_id: -1, evo_id: 118, evo_lvl: 30, evo_stage: 0
+        });
+
+        // Rhodent
+        create_monster({
+            id: 118,
+            emote: get_emote_string(applicationEmojis, 'rhodent'),
+            name: 'Rhodent',
+            oochive_entry: 'Its body seems to be some sort of digital construct which allows it to phase through walls at will.',
+            type: [OochType.Tech],
+            hp: 21, atk: 18, def: 16, spd: 15, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
+                [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
+                [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+                [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
+            ],
+            abilities: [Ability.Phantasmal, Ability.Shadow],
+            pre_evo_id: 117, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
+        // Coimble
+        create_monster({
+            id: 119,
+            emote: get_emote_string(applicationEmojis, 'coimble'),
+            name: 'Coimble',
+            oochive_entry: 'When attacking they often end up flipped on their backs, requiring assistance to get back up.',
+            type: [OochType.Tech],
+            hp: 12, atk: 8, def: 10, spd: 10, // total 40
+            move_list: [
+                [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.DigitalGamble], [8, Move.ClampDown], [11, Move.HypeUp],
+                [13, Move.DustStorm], [15, Move.RallyingCry], [19, Move.Torque], [22, Move.ByteBite], [25, Move.TwistedReality],
+                [27, Move.AsbestosBomb], [30, Move.SonicBoom], [33, Move.Lagspike], [35, Move.Reset], [38, Move.Engulf],
+                [42, Move.GuidedSpire], [-1, Move.FatedThreads]    
+            ],
+            abilities: [Ability.DoubleOrNothing],
+            pre_evo_id: -1, evo_id: 120, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Crabandit
+        create_monster({
+            id: 120,
+            emote: get_emote_string(applicationEmojis, 'crabandit'),
+            name: 'Crabandit',
+            oochive_entry: 'Crabandit often use old slot machines as shells. It\'s currently unknown where they got the machines from.',
+            type: [OochType.Stone, OochType.Tech],
+            hp: 21, atk: 18, def: 16, spd: 15, // total 70
+            move_list: [
+                [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.DigitalGamble], [8, Move.ClampDown], [11, Move.HypeUp],
+                [13, Move.DustStorm], [15, Move.RallyingCry], [19, Move.Torque], [22, Move.ByteBite], [25, Move.TwistedReality],
+                [27, Move.AsbestosBomb], [30, Move.SonicBoom], [33, Move.Lagspike], [35, Move.Reset], [38, Move.Engulf],
+                [42, Move.GuidedSpire], [-1, Move.FatedThreads]
+            ],
+            abilities: [Ability.DoubleOrNothing],
+            pre_evo_id: 119, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+        
 
         // // Rosun
         // create_monster({
@@ -3279,22 +3670,7 @@ module.exports = {
         //     pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 2
         // })
 
-        // Nullifly
-        create_monster({
-            id: 105,
-            emote: get_emote_string(applicationEmojis, 'nullifly'),
-            name: 'Nullifly',
-            oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
-            type: [OochType.Void],
-            hp: 20, atk: 20, def: 20, spd: 20, // total 80
-            move_list: [
-                [1, Move.Bash], [2, Move.Embolden], [5, Move.MagicBolt], [7, Move.Intimidate],
-                [11, Move.ArcaStrike], [17, Move.NullSphere], [22, Move.Lurk], [27, Move.Corrode],
-                [32, Move.DebugBomb], [43, Move.SyncStrike], [-1, Move.PhantomBullet]
-            ],
-            abilities: [Ability.Nullify],
-            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
-        });
+        
 
         //#endregion
 
