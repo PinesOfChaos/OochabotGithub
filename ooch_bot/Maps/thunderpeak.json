@@ -567,6 +567,16 @@
 					"max_level": 18.0,
 					"min_level": 13.0,
 					"ooch_id": 72.0
+				},
+				{
+					"max_level": 19.0,
+					"min_level": 15.0,
+					"ooch_id": 105
+				},
+				{
+					"max_level": 17.0,
+					"min_level": 13.0,
+					"ooch_id": 25
 				}
 			],
 			"width": 2.0,

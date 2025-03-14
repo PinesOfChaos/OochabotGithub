@@ -388,7 +388,7 @@
 	],
 	"ev_moldire_boss": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*arrreeeeaaaawwwww*",
 				"dialogue_portrait": "",
@@ -401,28 +401,28 @@
 			}
 		],
 		[
-			1,
+			1.0,
 			{
-				"coin": 0,
+				"coin": 0.0,
 				"is_catchable": false,
 				"name": "",
-				"sprite": 13,
+				"sprite": 13.0,
 				"sprite_combat": "",
 				"sprite_id": "c00_013",
 				"team": [
 					{
-						"ability": 13,
+						"ability": 13.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
-						"id": 16,
-						"item": -1,
+						"id": 16.0,
+						"item": -1.0,
 						"level": 28.0,
 						"moveset": [
-							78,
-							24,
-							106,
-							6
+							78.0,
+							24.0,
+							106.0,
+							6.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -432,7 +432,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*Moldire left something behind*",
 				"dialogue_portrait": "",
@@ -441,7 +441,7 @@
 				"items": [
 					{
 						"count": 1.0,
-						"id": 0
+						"id": 0.0
 					}
 				],
 				"money": 0.0,
@@ -450,7 +450,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*radio static*",
 				"dialogue_portrait": "",
@@ -463,7 +463,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Ah, hello, you've got a flower sample have you? And a rather strange one at that?",
 				"dialogue_portrait": "portrait_engineer_radio",
@@ -476,7 +476,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Well, bring it on down to the the Lavapath Settlement and we'll see what can be done with it!",
 				"dialogue_portrait": "portrait_engineer_radio",
@@ -489,13 +489,13 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "moldire_boss_defeated"
 			}
 		],
 		[
-			6,
+			6.0,
 			{
 				"description": "Return to the Lavapath Settlement?",
 				"dialogue_portrait": "",
@@ -505,16 +505,16 @@
 						"emote": "",
 						"event": "ev_moldire_boss_fast_travel",
 						"flag": "",
-						"price": 0,
-						"style": 0,
+						"price": 0.0,
+						"style": 0.0,
 						"text": "Yes"
 					},
 					{
 						"emote": "",
 						"event": "",
 						"flag": "",
-						"price": 0,
-						"style": 0,
+						"price": 0.0,
+						"style": 0.0,
 						"text": "No"
 					}
 				],
@@ -524,7 +524,7 @@
 	],
 	"ev_moldire_boss_fast_travel": [
 		[
-			4,
+			4.0,
 			{
 				"default_tp": true,
 				"map_to": "lava_path",
@@ -752,6 +752,131 @@
 				"map_to": "thunderpeak",
 				"x_to": 32.0,
 				"y_to": 48.0
+			}
+		]
+	],
+	"ev_trapped_in_tunnel": [
+		[
+			0,
+			{
+				"description": "*Radio Static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "What was that horrid noise? Are you alright, dear?",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh my, the tunnel's collapsed? That is a bit of a bother...",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Well, I think we can figure something out here... Hmm...",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "There should be an elevator nearby, it'll take you a bit out of the way, but I think it'll be worth your time!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "A team of scientists went missing down there, but they were on the verge of finishing our teleporter network!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "If you find the team, someone should be carrying a Displacement Disk, the final part needed. Oh, I do hope they're all okay.",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Travel to Goo Lake and retrieve the Displacement Disk.",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Be safe! I'll check in with you and Cade again soon!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "*Click*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			2,
+			{
+				"text": "trapped_in_tunnel_dialog"
 			}
 		]
 	],
