@@ -181,8 +181,20 @@ let functions = {
 
         async function flagEvent(obj_content) {
             let flags = db.profile.get(user_id, 'flags');
-            if (!flags.includes(obj_content.text)) {
-                db.profile.push(user_id, obj_content.text, 'flags');
+            if (!flags.includes(obj_content.text) || obj_content.text.includes('toggle')) {
+                if (!obj_content.text.includes('toggle')) {
+                    db.profile.push(user_id, obj_content.text, 'flags');
+                } else {
+                    let index = flags.indexOf(obj_content.text);
+                    
+                    if (index === -1) {
+                        db.profile.push(user_id, obj_content.text, 'flags');
+                    } else {
+                        flags.splice(index, 1);
+                        db.profile.set(user_id, flags, 'flags');
+                    }
+                }
+
                 let globalShopItems = db.profile.get(user_id, 'global_shop_items');
 
                 // Add global shop items
@@ -298,6 +310,10 @@ let functions = {
             }
         }
 
+        async function waitEvent(obj_content) {
+            await wait(obj_content.duration * 1000);
+        }
+
         while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
@@ -333,6 +349,10 @@ let functions = {
                 case EventMode.Options:
                     optionsEvent(obj_content);
                     quit_init_loop = true;
+                break;
+
+                case EventMode.Wait:
+                    await waitEvent(obj_content);
                 break;
             }
 
@@ -474,6 +494,10 @@ let functions = {
                         quit = true;
                         optionsEvent(obj_content);
                         sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
+                    break;
+
+                    case EventMode.Wait:
+                        await waitEvent(obj_content);
                     break;
                 }
 

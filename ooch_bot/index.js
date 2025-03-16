@@ -72,26 +72,14 @@ client.on('ready', async () => {
         //     // Update all oochamon's stats
         //     for (let i = 0; i < user_profile.ooch_party.length; i++) {
         //         let ooch = user_profile.ooch_party[i];
-        //         let newStats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
-        //         ooch.stats.hp = newStats[0];
-        //         ooch.stats.atk = newStats[1];
-        //         ooch.stats.def = newStats[2];
-        //         ooch.stats.spd = newStats[3];
-        //         ooch.current_hp = ooch.stats.hp;
-        //         user_profile.ooch_party[i] = ooch;
+        //         ooch.tame_value = 0;
         //     }
         //     db.profile.set(user, user_profile.ooch_party, 'ooch_party');
 
         //     // Update all oochamon's stats
         //     for (let i = 0; i < user_profile.ooch_pc.length; i++) {
         //         let ooch = user_profile.ooch_pc[i];
-        //         let newStats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
-        //         ooch.stats.hp = newStats[0];
-        //         ooch.stats.atk = newStats[1];
-        //         ooch.stats.def = newStats[2];
-        //         ooch.stats.spd = newStats[3];
-        //         ooch.current_hp = ooch.stats.hp;
-        //         user_profile.ooch_pc[i] = ooch;
+        //         ooch.tame_value = 0;
         //     }
         //     db.profile.set(user, user_profile.ooch_pc, 'ooch_pc');
         // }

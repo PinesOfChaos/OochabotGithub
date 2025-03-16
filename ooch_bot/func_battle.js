@@ -1987,6 +1987,7 @@ let functions = {
         // Get the players active oochamon, check if they are alive
         for(let user of battle_data.users) {
             let exp_given = 0;
+            let tame_given = 0;
             let active_ooch = user.party[user.active_slot];
             let user_defeated = true;
             let user_next_slot = 999;
@@ -2001,12 +2002,13 @@ let functions = {
             else if (active_ooch.current_hp <= 0 && active_ooch.alive == true) {
                 string_to_send += `\n--- 🪦 ${user.name_possessive} ${active_ooch.emote} **${active_ooch.nickname}** fainted!`
                 
-                if(battle_data.give_rewards){
+                if (battle_data.give_rewards) {
                     exp_given += Math.round(functions.battle_calc_exp(active_ooch, bonus_multiplier));
                 }
 
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
+                active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
             }
 
             for(let [i, party_ooch] of user.party.entries()){
@@ -2055,6 +2057,7 @@ let functions = {
                         for (let i = 0; i < ooch_party.length; i++) {
                             if (i == other_user.active_slot) { 
                                 ooch_party[i].current_exp += exp_main;
+                                ooch_party[i].tame_value = _.clamp(ooch_party[i].tame_value + 2, 0, 200);
                             } 
                             else { 
                                 ooch_party[i].current_exp += exp_given; 
@@ -2421,6 +2424,7 @@ let functions = {
                 let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
+                ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
                 return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
             } else if (in_battle == false) {
                 ooch.alive = true;

@@ -103,7 +103,9 @@ module.exports = {
                 new ButtonBuilder().setCustomId('nickname').setLabel('Edit Nickname').setStyle(ButtonStyle.Primary).setEmoji('📝'),
             ).addComponents(
                 new ButtonBuilder().setCustomId('moves').setLabel('Edit Moves').setStyle(ButtonStyle.Primary).setDisabled(true).setEmoji('💢'),
-            );
+            ).addComponents(
+                new ButtonBuilder().setCustomId('taming').setLabel('Taming Grounds').setStyle(ButtonStyle.Primary).setDisabled(true).setEmoji('❤️')
+            )
 
         let bag_buttons = new ActionRowBuilder()
             .addComponents(

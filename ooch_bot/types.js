@@ -132,6 +132,14 @@ const Weather = {
     Thunderstorm : 'thunderstorm'
 }
 
+const TameStatus = {
+    Hostile : '😡 Hostile',
+    Angry : '😠 Angry',
+    Neutral : '😐 Neutral',
+    Happy: '😄 Happy',
+    Loyal: '😍 Loyal'
+}
+
 const FieldEffect = {
     None : 'none', //No field effect
     Clear : 'clear', //Used to clear field
@@ -489,6 +497,6 @@ module.exports = {
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget, Weather, BattleState, BattleAction, BattleInput,
-    FieldEffect, GenmapTheme
+    MoveTarget, Weather, TameStatus, BattleState, BattleAction, 
+    BattleInput, FieldEffect, GenmapTheme
 };

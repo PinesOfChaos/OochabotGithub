@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_create');
+const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_generate');
 const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect } = require('../types.js');

@@ -1,7 +1,7 @@
 // For functions that don't fit into the other categories
 const db = require("./db")
 const { EmbedBuilder, AttachmentBuilder, Collection, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { TypeEmote, PlayerState, Item } = require('./types.js');
+const { TypeEmote, PlayerState, Item, TameStatus } = require('./types.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
 
@@ -108,6 +108,19 @@ let functions = {
         let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
         let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
 
+        let tame_status = ooch.tame_value;
+        if (_.inRange(tame_status, 0, 40)){
+            tame_status = TameStatus.Hostile;
+        } else if (_.inRange(tame_status, 41, 80)) {
+            tame_status = TameStatus.Angry;
+        } else if (_.inRange(tame_status, 81, 120)) {
+            tame_status = TameStatus.Neutral;
+        } else if (_.inRange(tame_status, 121, 160)) {
+            tame_status = TameStatus.Happy;
+        } else if (_.inRange(tame_status, 161, 200) || tame_status > 200) {
+            tame_status = TameStatus.Loyal;
+        }
+
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
         infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** (${functions.get_iv_stars(iv_hp)})` + 
             `\nATK: **${ooch.stats.atk}** (${functions.get_iv_stars(iv_atk)})\nDEF: **${ooch.stats.def}** (${functions.get_iv_stars(iv_def)})` + 
@@ -115,6 +128,8 @@ let functions = {
         if (ooch.level != 50) {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
+
+        infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
 
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
             // TODO: Hide this if you haven't caught it.
@@ -192,6 +207,47 @@ let functions = {
 
     reset_oochamon: async function(user_id) {
         // Setup user data
+        let profile = {
+            player_sprite : 'c_000',
+            ooch_pc : [],
+            ooch_active_slot : 0,
+            other_inv : {},
+            prism_inv : {},
+            heal_inv : {},
+
+            oochabux : 0,
+            repel_steps : 0,
+            player_state : PlayerState.Intro,
+            location_data : false,
+            checkpoint_data : false,
+            display_msg_id : false,
+            play_thread_id : false,
+            play_guild_id : false,
+
+            oochadex : [],
+            flags : [],
+            ooch_party : [],
+            friends_list : [],
+            move_speed : 1,
+            objective : 'Talk to the professor.',
+
+            cur_event_name : false,
+            cur_event_array : [],
+            cur_event_pos : 0,
+            cur_battle_id : false,
+
+            settings : {
+                controls_msg: false,
+                battle_cleanup: true,
+                zoom: '9_7',
+                battle_speed: 2500,
+                discord_move_buttons: true,
+                objective: true,
+            }
+        }
+
+        db.profile.set(user_id, profile);
+
         db.profile.set(user_id, 'c_000', 'player_sprite');
         db.profile.set(user_id, [], 'ooch_pc')
         db.profile.set(user_id, 0, 'ooch_active_slot')
@@ -234,6 +290,8 @@ let functions = {
             discord_move_buttons: true,
             objective: true,
         }, 'settings');
+
+        
 
         // Setup Oochadex template
         for (ooch_id in db.monster_data.keyArray()) {
