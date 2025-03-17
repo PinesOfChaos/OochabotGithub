@@ -2,6 +2,7 @@
 const db = require("./db")
 const { EmbedBuilder, AttachmentBuilder, Collection, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { TypeEmote, PlayerState, Item, TameStatus } = require('./types.js');
+const { get_blank_profile } = require('./func_modernize.js');
 const _ = require('lodash');
 const progressbar = require('string-progressbar');
 
@@ -207,46 +208,9 @@ let functions = {
 
     reset_oochamon: async function(user_id) {
         // Setup user data
-        let profile = {
-            player_sprite : 'c_000',
-            ooch_pc : [],
-            ooch_active_slot : 0,
-            other_inv : {},
-            prism_inv : {},
-            heal_inv : {},
-
-            oochabux : 0,
-            repel_steps : 0,
-            player_state : PlayerState.Intro,
-            location_data : false,
-            checkpoint_data : false,
-            display_msg_id : false,
-            play_thread_id : false,
-            play_guild_id : false,
-
-            oochadex : [],
-            flags : [],
-            ooch_party : [],
-            friends_list : [],
-            move_speed : 1,
-            objective : 'Talk to the professor.',
-
-            cur_event_name : false,
-            cur_event_array : [],
-            cur_event_pos : 0,
-            cur_battle_id : false,
-
-            settings : {
-                controls_msg: false,
-                battle_cleanup: true,
-                zoom: '9_7',
-                battle_speed: 2500,
-                discord_move_buttons: true,
-                objective: true,
-            }
-        }
-
+        let profile = get_blank_profile();
         db.profile.set(user_id, profile);
+        //TO DO, once we confirm this works, replace the below db.profile.set lines
 
         db.profile.set(user_id, 'c_000', 'player_sprite');
         db.profile.set(user_id, [], 'ooch_pc')
