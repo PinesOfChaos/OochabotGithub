@@ -1,7 +1,7 @@
 {
 	"map_events": [],
 	"map_info": {
-		"map_battleback": "",
+		"map_battleback": "battle_bg_goo_lake",
 		"map_generated": false,
 		"map_name": "Goo Lake"
 	},

@@ -11,7 +11,7 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "",
+		"map_battleback": "battle_bg_flower_fields",
 		"map_generated": false,
 		"map_name": "Flower Fields"
 	},

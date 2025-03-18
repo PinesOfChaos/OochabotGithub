@@ -1,7 +1,7 @@
 {
 	"map_events": [],
 	"map_info": {
-		"map_battleback": "",
+		"map_battleback": "battle_bg_tutorial",
 		"map_generated": false,
 		"map_name": "Elevator"
 	},

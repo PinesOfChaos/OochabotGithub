@@ -20,7 +20,7 @@
 		}
 	],
 	"map_info": {
-		"map_battleback": "",
+		"map_battleback": "battle_bg_access_tunnel",
 		"map_generated": false,
 		"map_name": "Access Tunnel"
 	},
