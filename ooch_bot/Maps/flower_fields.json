@@ -442,17 +442,17 @@
 				{
 					"max_level": 20.0,
 					"min_level": 17.0,
-					"ooch_id": 115
+					"ooch_id": 115.0
 				},
 				{
 					"max_level": 20.0,
 					"min_level": 17.0,
-					"ooch_id": 13
+					"ooch_id": 13.0
 				},
 				{
 					"max_level": 21.0,
 					"min_level": 18.0,
-					"ooch_id": 14
+					"ooch_id": 14.0
 				}
 			],
 			"width": 18.0,
@@ -480,7 +480,7 @@
 				{
 					"max_level": 20.0,
 					"min_level": 17.0,
-					"ooch_id": 103
+					"ooch_id": 103.0
 				}
 			],
 			"width": 4.0,
@@ -513,7 +513,7 @@
 				{
 					"max_level": 20.0,
 					"min_level": 15.0,
-					"ooch_id": 113
+					"ooch_id": 113.0
 				}
 			],
 			"width": 13.0,
@@ -546,7 +546,7 @@
 				{
 					"max_level": 20.0,
 					"min_level": 15.0,
-					"ooch_id": 105
+					"ooch_id": 105.0
 				}
 			],
 			"width": 14.0,

@@ -571,12 +571,12 @@
 				{
 					"max_level": 19.0,
 					"min_level": 15.0,
-					"ooch_id": 105
+					"ooch_id": 105.0
 				},
 				{
 					"max_level": 17.0,
 					"min_level": 13.0,
-					"ooch_id": 25
+					"ooch_id": 25.0
 				}
 			],
 			"width": 2.0,
