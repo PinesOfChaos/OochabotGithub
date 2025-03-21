@@ -1004,7 +1004,7 @@
 			"y": 54.0
 		},
 		{
-			"aggro_range": 3,
+			"aggro_range": 3.0,
 			"coin": 2500.0,
 			"flag_given": "flower_sample_delivered_al",
 			"flag_kill": "",
@@ -1016,7 +1016,7 @@
 			"post_combat_dialogue": "Do be safe, the tunnel itself may be completed, but we still have to finish adding some supports!",
 			"pre_combat_dialogue": "Perfect timing! We've just recieved word that the Access Tunnel has been completed.\nCould you deliver that Strange Flower Sample to Professor Lyra?\nIf you head South through this tunnel you'll reach her in no time! \n{objective:Travel South through the Access Tunnel, and deliver the Flower Sample to Professor Lyra.}\nAh, and don't think I've forgotten about your reward, here you are!",
 			"remove_on_finish": false,
-			"sprite": 9,
+			"sprite": 9.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
@@ -1025,8 +1025,8 @@
 			"y": 29.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "flower_sample_delivered_al",
@@ -1037,7 +1037,7 @@
 			"post_combat_dialogue": "Oh, if you intend to return to the Hub you can use the Access Tunnel.\nIt's directly south of the settlement here.",
 			"pre_combat_dialogue": "The cave's off limits for a bit, we're doing work in here.",
 			"remove_on_finish": false,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
@@ -5457,8 +5457,8 @@
 		},
 		{
 			"connect_map": "",
-			"connect_x": 0,
-			"connect_y": 0,
+			"connect_x": 0.0,
+			"connect_y": 0.0,
 			"x": 44.0,
 			"y": 36.0
 		}
