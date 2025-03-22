@@ -4,49 +4,51 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, A
 const wait = require('wait');
 const _ = require('lodash');
 
-functions = {
+m_functions = {
     modernize_all : async function() {
 
         //Modernizes the profiles
         let user_ids = await db.profile.keys()
         for (let user_id of user_ids) { 
-            modernize_profile(user_id);
+            await m_functions.modernize_profile(user_id);
         }
 
         //Modernizes the battle ids
         let battle_ids = await db.battle_data.keys()
         for (let battle_id of battle_ids) {
-            modernize_battle_info(battle_id);
+            await m_functions.modernize_battle_info(battle_id);
         }
     },
 
 
     modernize_profile : async function(user_id) {
-        let profile = db.profile.get(user_id);
-        let blank_profile = functions.get_blank_profile();
+        let profile = await db.profile.get(user_id);
+        let blank_profile = m_functions.get_blank_profile();
         _.merge(blank_profile, profile);
         profile = blank_profile;
 
 
-        functions.modernize_box(profile.ooch_pc);
-        functions.modernize_party(profile.ooch_party);
-        functions.modernize_oochadex(profile.oochadex)
+        profile.ooch_pc = await m_functions.modernize_box(profile.ooch_pc);
+        profile.ooch_party = await m_functions.modernize_party(profile.ooch_party);
+        profile.oochadex = await m_functions.modernize_oochadex(profile.oochadex);
 
-        console.log(profile)
-        
+
         //TODO SET THE Profile Info in the database, this is todo so that nothing breaks
+        db.profile.set(user_id, profile);
     },
 
     modernize_box : async function(box_data) {
-        for(let ooch of box_data){
-            functions.modernize_mon_data(ooch);
+        for(let i = 0; i < box_data.length; i++){
+            box_data[i] = await m_functions.modernize_mon_data(box_data[i]);
         }
+        return box_data;
     },
 
     modernize_party : async function(party_data) {
-        for(let ooch of party_data){
-            functions.modernize_mon_data(ooch);
+        for(let i = 0; i < party_data.length; i++){
+            party_data[i] = await m_functions.modernize_mon_data(party_data[i]);
         }
+        return party_data;
     },
 
     modernize_oochadex : async function(oochadex_current){
@@ -66,31 +68,34 @@ functions = {
                 oochadex.push(oochadex_current[index]);
             }
         }
+        return oochadex;
     },
 
     modernize_mon_data : async function(mon_data) {
-        let blank_ooch = functions.get_blank_oochamon();
+        let blank_ooch = m_functions.get_blank_oochamon();
         _.merge(blank_ooch, mon_data);
         mon_data = blank_ooch;
+
+        return mon_data;
     },
 
     modernize_battle_info : async function(battle_id) {
-        let battle_info = db.battle_data.get(battle_id);
-        let battle_info_blank = functions.get_blank_battle_info();
+        let battle_info = await db.battle_data.get(battle_id);
+        let battle_info_blank = m_functions.get_blank_battle_info();
         _.merge(battle_info_blank, battle_info);
         battle_info = battle_info_blank;
 
         for(let user of battle_info.users){
-            let user_blank = functions.get_blank_battle_user();
+            let user_blank = m_functions.get_blank_battle_user();
             _.merge(user_blank, user);
             user = user_blank;
 
             for(let ooch of user.party){
-                functions.modernize_mon_data(ooch);
+                m_functions.modernize_mon_data(ooch);
             }
 
             for(let slot_actions of user.slot_actions){
-                let slot_actions_blank = functions.get_blank_slot_actions();
+                let slot_actions_blank = m_functions.get_blank_slot_actions();
                 _.merge(slot_actions_blank, slot_actions);
                 slot_actions = slot_actions_blank;
             }
@@ -284,4 +289,4 @@ functions = {
     }
 }
 
-module.exports = functions;
+module.exports = m_functions;

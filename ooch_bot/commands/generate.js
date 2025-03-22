@@ -1,11 +1,12 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { create_monster, create_move, create_item, create_ability, create_tile, create_status } = require('../func_generate');
+const { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } = require('../func_generate');
 const fs = require('fs');
 const db = require('../db.js');
 const { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect } = require('../types.js');
 const { type_to_string } = require('../func_battle.js');
 const { get_emote_string } = require('../func_other.js');
-const { refresh_global_variables } = require('../func_global_data.js')
+const { refresh_global_variables } = require('../func_global_data.js');
+const { modernize_all } = require('../func_modernize.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -557,6 +558,90 @@ module.exports = {
             category : 'other_inv', type : 'teleport', price : 300, potency : 1, 
             description : 'An emergency button that uses unknown systems to relocate the user. It\'s mildly painful to use, but it gets you where you\'re going quick!',
             description_short : 'Brings you to your last used Save Station.'
+        })
+        create_item({
+            id : 24, name : 'Map: Hub', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'hub', 
+            description : 'Dave\'s hand drawn map of the Hub and surrounding area.',
+            description_short : 'A map of the Hub.'
+        })
+        create_item({
+            id : 25, name : 'Map: Stone Tunnel', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'stone_tunnel', 
+            description : 'Dave\'s hand drawn map of the Stone Tunnel.',
+            description_short : 'A map of the Stone Tunnel.'
+        })
+        create_item({
+            id : 26, name : 'Map: Fungal Caves', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'fungal_cave', 
+            description : 'Dave\'s hand drawn map of the Fungal Caves.',
+            description_short : 'A map of the Fungal Caves.'
+        })
+        create_item({
+            id : 27, name : 'Map: Lava Path', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'lava_path', 
+            description : 'Dave\'s hand drawn map of the Lava Path and the settlement there.',
+            description_short : 'A map of the Lava Path.'
+        })
+        create_item({
+            id : 28, name : 'Map: Old Training Facility', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'training_facility', 
+            description : 'Dave\'s hand drawn map of the Old Training Facility.',
+            description_short : 'A map of the Old Training Facility.'
+        })
+        create_item({
+            id : 29, name : 'Map: Thunder Peak', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'thunderpeak', 
+            description : 'Dave\'s hand drawn map of Thunder Peak.',
+            description_short : 'A map of Thunder Peak.'
+        })
+        create_item({
+            id : 30, name : 'Map: Ancient Bridge', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'ancient_bridge', 
+            description : 'Less a map, and more of a sketch of the Ancient Bridge.',
+            description_short : 'A map of the Ancient Bridge.'
+        })
+        create_item({
+            id : 31, name : 'Map: Flower Fields', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'flower_fields', 
+            description : 'Dave\'s hand drawn map of the Flower Fields.',
+            description_short : 'A map of the Flower Fields.'
+        })
+        create_item({
+            id : 32, name : 'Map: Access Tunnel', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'access_tunnel', 
+            description : 'Dave\'s hand drawn map of the Access Tunnel connecting the Lava Path settlement and the Hub.',
+            description_short : 'A map of the Access Tunnel.'
+        })
+        create_item({
+            id : 33, name : 'Map: Scaffolds', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'scaffolds', 
+            description : 'Dave\'s hand drawn...map? The Scaffolds seem to have affected him.',
+            description_short : 'A map of the Scaffolds.'
+        })
+        create_item({
+            id : 34, name : 'Map: Goo Lake', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'goo_lake', 
+            description : 'Dave\'s hand drawn map of the Goo Lake and its beaches.',
+            description_short : 'A map of the Goo Lake.'
+        })
+        create_item({
+            id : 35, name : 'Map: Old Powerplant', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'old_power_station', 
+            description : 'Dave\'s hand drawn map of the Old Powerplant and some of its interior.',
+            description_short : 'A map of the Old Powerplant.'
+        })
+        create_item({
+            id : 36, name : 'Map: Restricted Area', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'restricted_area', 
+            description : 'Dave\'s hand drawn map of the Restricted Area.',
+            description_short : 'A map of the Restricted Area.'
+        })
+        create_item({
+            id : 37, name : 'Map: Crystal Caves', emote : '<:item_map:1353073455825944596>',
+            category : 'other_inv', type : 'map', price : -1, potency : 'crystal_caves', 
+            description : 'Dave\'s hand drawn map of the Crystal Caves.',
+            description_short : 'A map of the Crystal Caves.'
         })
 
         //#endregion
@@ -1477,12 +1562,12 @@ module.exports = {
 
         // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
         //#region Stance Data
-        //            ID,  NAME,        DESCRIPTION                                                                      SHORT DESCRIPTION
-        create_status(0,   'Base',      'The basic Oochamon stance. Does nothing.',                                      'Does nothing.');
-        create_status(1,   'Attack',    'The attack Oochamon stance. Increases attack, but at the cost of defense.',     'Increases attack, lowers defense.');                                                                   
-        create_status(2,   'Defense',   'The defensive Oochamon stance. Increases defense, but at the cost of attack.',  'Increases defense, lowers attack.');
-        create_status(3,   'Speed',     'The speedy Oochamon stance. Increases speed, but at the cost of accuracy.',     'Increases speed, lowers accuracy.');
-        create_status(4,   'Sniper',    'The sniper Oochamon stance. Increases accuracy, but at the cost of speed.',     'Increases accuracy, lowers speed.');
+        //            ID,  NAME,        DESCRIPTION                                                                      DESCRIPTION SHORT
+        create_stance(0,   'Base',      'The basic Oochamon stance. Does nothing.',                                      'Does nothing.');
+        create_stance(1,   'Attack',    'The attack Oochamon stance. Increases attack, but at the cost of defense.',     'Increases attack, lowers defense.');                                                                   
+        create_stance(2,   'Defense',   'The defensive Oochamon stance. Increases defense, but at the cost of attack.',  'Increases defense, lowers attack.');
+        create_stance(3,   'Speed',     'The speedy Oochamon stance. Increases speed, but at the cost of accuracy.',     'Increases speed, lowers accuracy.');
+        create_stance(4,   'Sniper',    'The sniper Oochamon stance. Increases accuracy, but at the cost of speed.',     'Increases accuracy, lowers speed.');
         
         //#endregion
 
@@ -3827,6 +3912,8 @@ module.exports = {
 
         //Add in any new global variables we've created, this is *not* a hard reset
         await refresh_global_variables(false);
+
+        await modernize_all();
         
         await interaction.editReply('Generated game data.');
 

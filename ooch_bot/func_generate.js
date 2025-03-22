@@ -233,11 +233,13 @@ module.exports = {
      * @param {Number} id The ID of the stance
      * @param {String} name The name of the stance
      * @param {String} description The description of the stance
+     * @param {String} description_short The short description of the stance
      */
-    create_stance: function(id, name, description) {
+    create_stance: function(id, name, description, description_short) {
         let key_id = id.toString();
         db.stance_data.set(key_id, id, 'id');
         db.stance_data.set(key_id, name, 'name');
         db.stance_data.set(key_id, description, 'description');
+        db.stance_data.set(key_id, description_short, 'description_short');
     }
 }

@@ -68,26 +68,6 @@ client.on('ready', async () => {
 
         let user_profile = db.profile.get(user);
 
-        
-
-        // if (user_profile != undefined) {
-        //     // Update all oochamon's stats
-        //     for (let i = 0; i < user_profile.ooch_party.length; i++) {
-        //         let ooch = user_profile.ooch_party[i];
-        //         ooch.tame_value = 0;
-        //     }
-        //     db.profile.set(user, user_profile.ooch_party, 'ooch_party');
-
-        //     // Update all oochamon's stats
-        //     for (let i = 0; i < user_profile.ooch_pc.length; i++) {
-        //         let ooch = user_profile.ooch_pc[i];
-        //         ooch.tame_value = 0;
-        //     }
-        //     db.profile.set(user, user_profile.ooch_pc, 'ooch_pc');
-        // }
-
-        // user_profile = db.profile.get(user);
-
         // UNCOMMENT THIS IF DOING DEV STUFF!!
         //if (user != '122568101995872256' && user != '145342159724347393' && user != '156859982778859520' && user != '791144786685067274') continue;
 

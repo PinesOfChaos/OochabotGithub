@@ -4,7 +4,7 @@ const db = require("./db.js")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder, ActionRow } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect } = require("./types.js");
+const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms } = require("./types.js");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -377,6 +377,25 @@ let functions = {
     },
 
     /**
+     * Create an Stance Change action
+     * @param {Object} battle_data The battle data object
+     * @param {Number} user_index The user which is causing this action
+     * @param {Number} stance_to The id of the stance to shift to
+     * @returns returns a battle action object
+     */
+    new_battle_action_stance_change : function(battle_data, user_index, stance_to) {
+
+        let action = {
+            action_type : BattleAction.StanceChange,
+            priority : BattleAction.StanceChange,
+            user_index : user_index,
+            stance_to : stance_to
+        }
+
+        battle_data.battle_action_queue.push(action);
+    },
+
+    /**
      * Create a Run action
      * @param {Object} battle_data The battle data object
      * @param {Number} user_index The user which is causing this action
@@ -577,6 +596,8 @@ let functions = {
 
             //Priority based on Oochamon Speed stat
             let speed = ooch_obj.stats.spd * (ooch_obj.stats.spd_mul + 1);
+            if (ooch_obj.stance == StanceForms.Speed) speed *= 1.5;
+            if (ooch_obj.stance == StanceForms.Sniper) speed *= 0.66;
 
             //Priority based on whether the move has the "priority" effect
             let move_priority = 0;
@@ -780,14 +801,15 @@ let functions = {
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji('🗒️'),
             )
-            
+
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('shift_stance')
-                    .setLabel('Change Stance')
+                    .setLabel(`Change Stance`)
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('🤺'),
             )
+            
         //#endregion
 
         // Handle users
@@ -872,9 +894,11 @@ let functions = {
                                     .setEmoji(`${functions.type_to_emote(move_type)}`)
                             )
                         }
+
+                        moveBackButton.components[2].setDisabled((activeOoch.stance_cooldown != 0))
         
                         // Switch message to be about using the move input
-                        await i.update({ content: `Select a move to use!`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
+                        await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
                     } else if (customId.includes('atk_')) {
                         if (battle_data.users.length == 2) {
                             let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
@@ -945,39 +969,39 @@ let functions = {
                         }
 
                     } else if (customId == 'shift_stance') {
-
-                        i.update({ content: 'Select the new stance to shift your Oochamon to!\n**Current Stance'})
-
-                        // Get the Oochamon's Attack options
-                        for (let i = 0; i < activeOoch.moveset.length; i++) {
-                            let move_id = activeOoch.moveset[i];
-                            let move_data = db.move_data.get(move_id);
-                            if (move_data.accuracy == -1) move_data.accuracy = 100;
-                            let move_string = `
-                            ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
-                                *${move_data.description}*
-                            `;
-                            
-                            moveInfoFields.push({
-                                name: `${functions.type_to_emote([move_data.type])} ${move_data.name}`,
-                                value: move_string,
-                                inline: true
-                             });
+                        let stance_list = functions.get_stance_options(activeOoch);
+                        
+                        stanceSelectMenu = new ActionRowBuilder();
+                        let stanceSelectOptions = [];
+                        
+                        for (let stance of stance_list) {
+                            stanceSelectOptions.push({ 
+                                label: `${stance.name}`,
+                                description: stance.description_short.slice(0, 100),
+                                value: `stance_sel_${stance.id}`
+                            })
                         }
 
-                        moveInfoFields.splice(2, 0, { name: '\u200B', value: '\u200B', inline: true });
-                        moveInfoFields.splice(5, 0, { name: '\u200B', value: '\u200B', inline: true });
-                        moveInfoEmbed.addFields(moveInfoFields);
+                        stanceSelectMenu.addComponents(
+                            new StringSelectMenuBuilder()
+                                .setCustomId('stance_shift_select')
+                                .setPlaceholder('Select a stance to shift to.')
+                                .addOptions(stanceSelectOptions),
+                        );
 
-                        if (moveInfoViewing == true) {
-                            moveBackButton.components[1].setLabel('View Move Info');
-                            i.update({ embeds: [], components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-                            moveInfoViewing = false;
-                        } else {
-                            moveBackButton.components[1].setLabel('Close Move Info');
-                            i.update({ embeds: [moveInfoEmbed],  components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-                            moveInfoViewing = true;
-                        }
+                        await i.update({ content: `**Select the new stance to shift to! (You will be unable to switch off of this for the next 2 turns)**\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: [stanceSelectMenu, backButton] });
+
+                    } else if (customId == 'stance_shift_select') {
+
+                        let stance_id = i.values[0].split('_')[2];
+                        activeOoch.stance = stance_id;
+                        activeOoch.stance_cooldown = 3;
+
+                        functions.new_battle_action_stance_change(battle_data, user.user_index, stance_id);
+                        moveBackButton.components[2].setDisabled(true)
+        
+                        // Switch message to be about using the move input
+                        await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
 
                     } else if (customId == BattleInput.Switch) {
 
@@ -1392,6 +1416,9 @@ let functions = {
                 end_of_round_text += faint_check.text;
                 finish_battle = finish_battle || faint_check.finish_battle;
 
+                // Take down stance cooldown timer
+                if (ooch.stance_cooldown > 0) ooch.stance_cooldown -= 1;
+
                 // Handle status effects ORDER HERE MATTERS!!!
                 let status_checks = []
                 if (ooch.status_effects.includes(Status.Sleep))     {status_checks.push(Status.Sleep)};
@@ -1583,6 +1610,9 @@ let functions = {
             break;
             case BattleAction.Prism:
                 turn_data = await functions.action_process_prism(battle_data, action);
+            break;
+            case BattleAction.StanceChange:
+                turn_data = await functions.action_process_stance_change(battle_data, action);
             break;
             case BattleAction.Other:
                 //TODO
@@ -1978,6 +2008,32 @@ let functions = {
             return_string : return_string,
             turn_emote : `❤️`,
             embed_color : '#02ff2c',
+        }
+    },
+
+
+    /**
+     * Changes Oochamon stance
+     * @param {Object} battle_data the current battle data
+     * @param {Object} action the action data to process {user_index, stance_to}
+     * @returns Turn data {finish_battle : Boolean, return_string : String}
+     */
+    action_process_stance_change : async function(battle_data, action){
+        let user = battle_data.users[action.user_index];
+        let finish_battle = false;
+        let stance_to = action.stance_to;
+
+        user.party[user.active_slot].stance = parseInt(stance_to);
+        user.party[user.active_slot].stance_cooldown = 3; // 2 turns essentially
+        let active_ooch = user.party[user.active_slot];
+
+        let return_string = `${active_ooch.emote} **${active_ooch.nickname}** shifted its stance to the **${db.stance_data.get(stance_to, 'name')} Stance!**`;
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string,
+            turn_emote : `🤺`,
+            embed_color : '#767674',
         }
     },
 
@@ -2548,7 +2604,7 @@ let functions = {
             break;
             case Ability.Riposte:
                 ooch.ability = Ability.Parry;
-                ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its stance, and shifted its ability to **Parry**!`;
+                ability_text = `\n${ooch.emote} **${ooch.nickname}** changed its positioning, and shifted its ability to **Parry**!`;
             break;
             case Ability.HoleDweller:
                 if (battle_data.turn_counter % 2 === 0) {
@@ -2688,6 +2744,13 @@ let functions = {
         * (ooch_attacker.ability == Ability.Hearty && ooch_attacker.current_hp > ooch_attacker.stats.hp / 2 ? 1.15 : 1)
         * (ooch_attacker.ability == Ability.Riposte ? 1.2 : 1)
         * (ooch_defender.ability == Ability.Parry ? 0.8 : 1)
+
+        * (ooch_attacker.stance == StanceForms.Attack ? 1.5 : 1)
+        * (ooch_defender.stance == StanceForms.Attack ? 1.5 : 1)
+    
+        * (ooch_attacker.stance == StanceForms.Defense ? 0.66 : 1)
+        * (ooch_defender.stance == StanceForms.Defense ? 0.66 : 1)
+        
         * attacker_atk_stat / defender_def_stat) 
         / 50 + 2);
 
@@ -2902,6 +2965,9 @@ let functions = {
 
         // If the defender has Vanish AND the attack is not self targeting, it should fail
         let chance_to_hit = move_accuracy/100 * functions.get_stat_multiplier(attacker.stats.acc_mul - defender.stats.eva_mul, 4) * status_blind
+        if (attacker.stance == StanceForms.Speed) chance_to_hit *= 0.75;
+        if (attacker.stance == StanceForms.Sniper) chance_to_hit *= 1.5;
+
         //These modify the chance to hit ORDER MATTERS [0 = 0% chance, 1 = 100% chance]
         if(defender.ability == Ability.Immense){ chance_to_hit = 1; }
         if(defender.status_effects.includes(Status.Vanish)){ chance_to_hit = 0; }
@@ -3024,7 +3090,7 @@ let functions = {
                     break;
                     case Ability.Parry:
                         defender.ability = Ability.Riposte;
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** changed its stance, and shifted its ability to **Riposte**!`;
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** changed its positioning, and shifted its ability to **Riposte**!`;
                     break;
                     case Ability.Bloodrush:
                         functions.modify_stat(defender, 'spd', 1);
@@ -3728,6 +3794,8 @@ let functions = {
                 ooch.ability = ooch.og_ability;
                 ooch.type = ooch.og_type;
                 ooch.doom_timer = 4;
+                ooch.stance = StanceForms.Base;
+                ooch.stance_cooldown = 0;
                 
                 ooch.status_effects = [];
                 if (battle_won === false) {

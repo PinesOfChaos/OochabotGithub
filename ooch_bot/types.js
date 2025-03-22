@@ -145,7 +145,11 @@ const StanceForms = {
     Attack: 1,
     Defense: 2,
     Speed: 3,
-    Sniper: 4
+    Sniper: 4,
+    //TODO: stances below this line probably don't work yet if this message is still here
+    Corrupt: 5,
+    Pure: 6,
+    Elemental : 7
 }
 
 const FieldEffect = {
@@ -444,7 +448,9 @@ const BattleAction = { //These double as the base priority values for actions
 
     Prism :     3_000_000,
     Heal :      4_000_000,
-    Other :     5_000_000
+    Other :     5_000_000,
+
+    StanceChange : 10_000_000
     
 }
 
