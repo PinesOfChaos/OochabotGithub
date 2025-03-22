@@ -7,7 +7,7 @@
 	},
 	"map_npcs": [
 		{
-			"aggro_range": 3.0,
+			"aggro_range": 1.0,
 			"coin": 2000.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -23,6 +23,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 53.0,
@@ -43,7 +46,7 @@
 					"spd_iv": 3.0
 				},
 				{
-					"ability": 0.0,
+					"ability": 13,
 					"atk_iv": 2.0,
 					"def_iv": 1.0,
 					"hp_iv": 1.0,
@@ -83,8 +86,8 @@
 			"y": 23.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -92,7 +95,7 @@
 			"items": [
 				{
 					"count": 2.0,
-					"id": 15
+					"id": 15.0
 				}
 			],
 			"name": "Chest",
@@ -100,10 +103,13 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 26.0,
 			"y": 19.0

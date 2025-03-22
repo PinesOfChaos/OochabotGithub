@@ -34,6 +34,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 19.0,
 			"y": 58.0
@@ -56,6 +59,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_015",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 55.0,
@@ -132,6 +138,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -170,6 +179,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -228,6 +240,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 29.0,
@@ -267,6 +282,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -324,6 +342,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -382,6 +403,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -421,6 +445,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -461,6 +488,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 34.0,
@@ -501,6 +531,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0.0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -545,6 +578,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 12.0,
 			"y": 5.0
@@ -571,6 +607,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 31.0,
 			"y": 6.0
@@ -597,6 +636,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 36.0,
 			"y": 18.0
@@ -623,6 +665,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 51.0,
 			"y": 4.0
@@ -649,6 +694,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 38.0,
 			"y": 52.0
@@ -675,6 +723,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 3.0,
 			"y": 32.0
@@ -701,6 +752,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 23.0,
 			"y": 33.0
@@ -722,6 +776,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 9.0,
 			"y": 9.0
@@ -743,9 +800,78 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0.0
+			],
 			"team": [],
 			"x": 49.0,
 			"y": 11.0
+		},
+		{
+			"aggro_range": 3.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 28.0
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "036405394169811212",
+			"post_combat_dialogue": "Still tough as ever, huh?\nTake this, and stay safe out there!",
+			"pre_combat_dialogue": "So, just a fair warning, those buildings up ahead are a tiny bit...not safe.\nLuckily they're Oochamon free if you need a break from the wild 'mons around here.\nI can see you don't need a break though, so how about another battle, just for fun!",
+			"remove_on_finish": true,
+			"sprite": 39.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0.0
+			],
+			"team": [
+				{
+					"ability": 19,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 18,
+					"item": -1,
+					"level": 14.0,
+					"moveset": [
+						84,
+						4,
+						7,
+						64
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				},
+				{
+					"ability": 30,
+					"atk_iv": 6.0,
+					"def_iv": 4.0,
+					"hp_iv": 1.0,
+					"id": 35,
+					"item": -1,
+					"level": 13.0,
+					"moveset": [
+						3,
+						56,
+						23,
+						62
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 6.0
+				}
+			],
+			"x": 34.0,
+			"y": 18.0
 		}
 	],
 	"map_savepoints": [
@@ -819,8 +945,8 @@
 					"ooch_id": 74.0
 				}
 			],
-			"width": 13.0,
-			"x": 27.0,
+			"width": 14.0,
+			"x": 26.0,
 			"y": 5.0
 		},
 		{

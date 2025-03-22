@@ -33,6 +33,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 52.0,
 			"y": 57.0
@@ -55,6 +58,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 53.0,
 			"y": 25.0
@@ -77,6 +83,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 48.0,
 			"y": 26.0
@@ -99,6 +108,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 9999.0,
@@ -157,6 +169,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 24.0,
@@ -216,6 +231,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 0.0,
@@ -273,6 +291,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 4.0,
@@ -331,6 +352,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 20.0,
@@ -406,6 +430,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 52.0,
 			"y": 25.0
@@ -433,6 +460,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 11.0,
 			"y": 8.0
@@ -455,6 +485,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 44.0,
 			"y": 35.0
@@ -477,6 +510,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 4.0,
@@ -539,6 +575,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 40.0,
 			"y": 25.0
@@ -565,6 +604,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 13.0,
@@ -641,6 +683,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 48.0,
 			"y": 26.0
@@ -662,6 +707,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 13.0,
 			"y": 27.0
@@ -700,6 +748,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_018",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 54.0,
@@ -745,6 +796,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 19.0,
 			"y": 15.0
@@ -771,6 +825,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 27.0,
 			"y": 16.0
@@ -797,6 +854,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 23.0,
 			"y": 40.0
@@ -823,6 +883,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 42.0,
 			"y": 12.0
@@ -844,6 +907,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_011",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 0.0,
@@ -889,6 +955,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 53.0,
 			"y": 49.0
@@ -915,6 +984,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 29.0,
 			"y": 55.0
@@ -936,6 +1008,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 43.0,
 			"y": 25.0
@@ -957,6 +1032,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 25.0,
 			"y": 54.0
@@ -978,6 +1056,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 8.0,
 			"y": 40.0
@@ -999,6 +1080,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 4.0,
 			"y": 54.0
@@ -1020,6 +1104,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_009",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 45.0,
 			"y": 29.0
@@ -1041,9 +1128,41 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 14.0,
 			"y": 57.0
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 27
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "311990767489563479",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Whew, it sure is hot around here, my map of the area nearly caught fire!\nWatch your step around here, it's super not-safe!",
+			"remove_on_finish": true,
+			"sprite": 39,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 31.0,
+			"y": 11.0
 		}
 	],
 	"map_savepoints": [

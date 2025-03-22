@@ -34,6 +34,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 8.0,
@@ -108,6 +111,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 41.0,
 			"y": 32.0
@@ -130,6 +136,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 38.0,
@@ -171,6 +180,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 14.0,
@@ -228,6 +240,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 0.0,
@@ -285,6 +300,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_010",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 8.0,
@@ -347,6 +365,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 32.0,
 			"y": 31.0
@@ -373,6 +394,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 31.0,
 			"y": 11.0
@@ -399,6 +423,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 16.0,
 			"y": 18.0
@@ -420,6 +447,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 8.0,
@@ -464,9 +494,45 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 46.0,
 			"y": 31.0
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 25
+				},
+				{
+					"count": 1.0,
+					"id": 26
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "294055411862850673",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Ah, hello again!\nThese caves sure are vibrant, though it's odd...\nIt feels like the walls are practically alive here!\nPerfect timing though, I've just finished a couple more pages of my notebook.\nSee ya around!",
+			"remove_on_finish": true,
+			"sprite": 39,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 19.0,
+			"y": 29.0
 		}
 	],
 	"map_savepoints": [

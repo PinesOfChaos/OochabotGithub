@@ -26,6 +26,14 @@ extends Control
 @onready var o_aggro_range = $"npc_tab_container/Basic Info/addt_settings/aggro_range"
 @onready var o_wild_encounter = $"npc_tab_container/Basic Info/addt_settings/wild_encounter"
 
+@onready var stance_atk: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceAtk"
+@onready var stance_def: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceDef"
+@onready var stance_spd: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceSpd"
+@onready var stance_snipe: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceSnipe"
+@onready var stance_corrupt: CheckBox = $"npc_tab_container/Basic Info/Stances2/StanceCorrupt"
+@onready var stance_pure: CheckBox = $"npc_tab_container/Basic Info/Stances2/StancePure"
+@onready var stance_elemental: CheckBox = $"npc_tab_container/Basic Info/Stances2/StanceElemental"
+
 var npc_data_base = {
 	"x" : 0,
 	"y" : 0,
@@ -45,7 +53,8 @@ var npc_data_base = {
 	"team" : [],
 	"aggro_range" : 3,
 	"is_catchable" : false,
-	"npc_id" : generate_npc_id()
+	"npc_id" : generate_npc_id(),
+	"stance_list" : [0]
 }
 
 var npc_data = {}
@@ -72,6 +81,8 @@ var npc_sprite_id = "c00_000"
 var npc_aggro_range = 3
 var npc_is_wild = false
 
+
+
 func generate_npc_id():
 	var pt1 = ("000000" + str(randi_range(0, 999999))).right(6)
 	var pt2 = ("000000" + str(randi_range(0, 999999))).right(6)
@@ -82,6 +93,22 @@ func generate_npc_id():
 func _ready():
 	npc_data.merge(npc_data_base)
 	
+	#stances
+	var stance_boxes = [
+		null, 				#0
+		stance_atk,			#1
+		stance_def,			#2
+		stance_spd,			#3
+		stance_snipe,		#4
+		stance_corrupt,		#5
+		stance_pure,		#6
+		stance_elemental	#7
+	]
+	for stance in npc_data.stance_list:
+		if stance_boxes[stance] != null:
+			stance_boxes[stance].button_pressed = true
+	
+	#sprite info
 	var tile_data
 	var tile_string
 	for i in Global.DataNPCs.size():
@@ -222,3 +249,44 @@ func _on_button_new_item_pressed() -> void:
 	_obj.owner = items_list
 	_obj.o_item_price.visible = false
 	_obj.o_item_count.visible = true
+
+func update_stances():
+	#stances
+	var stance_boxes = [
+		null, 				#0 (base)
+		stance_atk,			#1
+		stance_def,			#2
+		stance_spd,			#3
+		stance_snipe,		#4
+		stance_corrupt,		#5
+		stance_pure,		#6
+		stance_elemental	#7
+	]
+	
+	npc_data.stance_list = [0]
+	for i in stance_boxes.size():
+		var stance = stance_boxes[i]
+		if stance != null and stance.button_pressed:
+			npc_data.stance_list.push_back(i)
+	
+
+func _on_stance_atk_pressed() -> void:
+	update_stances()
+		
+func _on_stance_def_pressed() -> void:
+	update_stances()
+
+func _on_stance_spd_pressed() -> void:
+	update_stances()
+	
+func _on_stance_snipe_pressed() -> void:
+	update_stances()
+
+func _on_stance_corrupt_pressed() -> void:
+	update_stances()
+
+func _on_stance_pure_pressed() -> void:
+	update_stances()
+
+func _on_stance_elemental_pressed() -> void:
+	update_stances()

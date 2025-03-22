@@ -458,8 +458,8 @@
 			"y": 9.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "toggle_ps_lever1",
 			"flag_required": "",
@@ -470,7 +470,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 37,
+			"sprite": 37.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
@@ -479,8 +479,8 @@
 			"y": 21.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "toggle_ps_lever2",
 			"flag_required": "",
@@ -491,7 +491,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 37,
+			"sprite": 37.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
@@ -500,8 +500,8 @@
 			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "toggle_ps_lever3",
 			"flag_required": "",
@@ -512,7 +512,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 37,
+			"sprite": 37.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
@@ -521,8 +521,8 @@
 			"y": 28.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "toggle_ps_lever4",
 			"flag_required": "",
@@ -533,7 +533,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 37,
+			"sprite": 37.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
@@ -542,8 +542,8 @@
 			"y": 15.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "",
 			"flag_required": "toggle_ps_lever1",
@@ -554,7 +554,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 38,
+			"sprite": 38.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
@@ -563,8 +563,8 @@
 			"y": 21.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "",
 			"flag_required": "toggle_ps_lever2",
@@ -575,7 +575,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 38,
+			"sprite": 38.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
@@ -584,8 +584,8 @@
 			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "",
 			"flag_required": "toggle_ps_lever3",
@@ -596,7 +596,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 38,
+			"sprite": 38.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
@@ -605,8 +605,8 @@
 			"y": 28.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "",
 			"flag_required": "toggle_ps_lever4",
@@ -617,7 +617,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 38,
+			"sprite": 38.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",

@@ -434,14 +434,14 @@
 		[
 			0.0,
 			{
-				"description": "*Moldire left something behind*",
+				"description": "*Moldire left something behind...*",
 				"dialogue_portrait": "",
 				"flags": [],
 				"image": "",
 				"items": [
 					{
 						"count": 1.0,
-						"id": 0.0
+						"id": 38
 					}
 				],
 				"money": 0.0,
@@ -484,7 +484,7 @@
 				"image": "",
 				"items": [],
 				"money": 0.0,
-				"objective": "",
+				"objective": "Deliver the Flower Sample to Al",
 				"title": "Engineer Al"
 			}
 		],
@@ -757,7 +757,7 @@
 	],
 	"ev_trapped_in_tunnel": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*Radio Static*",
 				"dialogue_portrait": "",
@@ -770,7 +770,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "What was that horrid noise? Are you alright, dear?",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -783,7 +783,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Oh my, the tunnel's collapsed? That is a bit of a bother...",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -796,7 +796,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Well, I think we can figure something out here... Hmm...",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -809,7 +809,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "There should be an elevator nearby, it'll take you a bit out of the way, but I think it'll be worth your time!",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -822,7 +822,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "A team of scientists went missing down there, but they were on the verge of finishing our teleporter network!",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -835,7 +835,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "If you find the team, someone should be carrying a Displacement Disk, the final part needed. Oh, I do hope they're all okay.",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -848,7 +848,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Be safe! I'll check in with you and Cade again soon!",
 				"dialogue_portrait": "portrait_prof_radio",
@@ -861,7 +861,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*Click*",
 				"dialogue_portrait": "",
@@ -874,7 +874,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "trapped_in_tunnel_dialog"
 			}

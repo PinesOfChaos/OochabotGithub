@@ -457,5 +457,41 @@
     "description": "Dave's hand drawn map of the Crystal Caves.",
     "description_short": "A map of the Crystal Caves.",
     "tags": []
+  },
+  {
+    "id": 38,
+    "name": "Flower Sample",
+    "emote": "<:item_flower_sample:1353128546985312379>",
+    "category": "other_inv",
+    "type": "key",
+    "price": -1,
+    "potency": 1,
+    "description": "A sample of a large flower. It seems to be crystalline, with a mote of red energy at its very core.",
+    "description_short": "A sample of the large growth in the Flower Fields.",
+    "tags": []
+  },
+  {
+    "id": 39,
+    "name": "Data Disc",
+    "emote": "<:item_data_disc:1353132155009765487>",
+    "category": "other_inv",
+    "type": "key",
+    "price": -1,
+    "potency": 1,
+    "description": "A disc containing the finalized teleportation protocols. It should plug in to the large machine at the edge of Goo Lake.",
+    "description_short": "A data disc. Inserts somewhere.",
+    "tags": []
+  },
+  {
+    "id": 40,
+    "name": "Old Disc",
+    "emote": "<:item_old_disc:1353132170004135967>",
+    "category": "other_inv",
+    "type": "key",
+    "price": -1,
+    "potency": 1,
+    "description": "A disc of unknown purpose. You get the feeling you shouldn't have it though. It probably plugs into something old...",
+    "description_short": "A data disc. Inserts somewhere.",
+    "tags": []
   }
 ]

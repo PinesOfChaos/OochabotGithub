@@ -19,6 +19,16 @@ var EVENT_OPTIONS = 	6
 var EVENT_FINISH = 		7 #This should be unused
 var EVENT_WAIT = 		8
 
+var STANCE_BASE = 		0
+var STANCE_ATK = 		1
+var STANCE_DEF = 		2
+var STANCE_SPD = 		3
+var STANCE_SNIPE = 		4
+var STANCE_CORRUPT = 	5
+var STANCE_PURE = 		6
+var STANCE_ELEMENTAL = 	7
+
+
 var DataEvents = {}
 var DataAbilities = []
 var DataItems = []

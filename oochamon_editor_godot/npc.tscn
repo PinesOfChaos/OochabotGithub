@@ -122,6 +122,53 @@ layout_mode = 2
 max_value = 99999.0
 prefix = "Coin: x"
 
+[node name="Label" type="Label" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+text = "Stances: "
+
+[node name="Stances1" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="StanceAtk" type="CheckBox" parent="npc_tab_container/Basic Info/Stances1"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "ATK"
+
+[node name="StanceDef" type="CheckBox" parent="npc_tab_container/Basic Info/Stances1"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "DEF"
+
+[node name="StanceSpd" type="CheckBox" parent="npc_tab_container/Basic Info/Stances1"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "SPD
+"
+
+[node name="StanceSnipe" type="CheckBox" parent="npc_tab_container/Basic Info/Stances1"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "ACC
+"
+
+[node name="Stances2" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="StanceCorrupt" type="CheckBox" parent="npc_tab_container/Basic Info/Stances2"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "Corrupt"
+
+[node name="StancePure" type="CheckBox" parent="npc_tab_container/Basic Info/Stances2"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "Pure"
+
+[node name="StanceElemental" type="CheckBox" parent="npc_tab_container/Basic Info/Stances2"]
+layout_mode = 2
+tooltip_text = "Enable/Disable this Stance for the NPC"
+text = "Elemental"
+
 [node name="text_pre_combat" type="TextEdit" parent="npc_tab_container/Basic Info"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
@@ -165,8 +212,8 @@ metadata/_tab_index = 4
 [connection signal="item_rect_changed" from="npc_object" to="." method="_on_npc_object_item_rect_changed"]
 [connection signal="item_selected" from="npc_tab_container/Basic Info/general_info/npc_sprite" to="." method="_on_npc_sprite_item_selected"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_combat" to="." method="_on_npc_sprite_combat_text_changed"]
-[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_combat_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_dialog_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_combat_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_name" to="." method="_on_npc_name_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_changed"]
 [connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_submitted"]
@@ -179,5 +226,12 @@ metadata/_tab_index = 4
 [connection signal="toggled" from="npc_tab_container/Basic Info/addt_settings/wild_encounter" to="." method="_on_wild_encounter_toggled"]
 [connection signal="pressed" from="npc_tab_container/Basic Info/items/button_new_item" to="." method="_on_button_new_item_pressed"]
 [connection signal="value_changed" from="npc_tab_container/Basic Info/coin/coin_count" to="." method="_on_coin_count_value_changed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceAtk" to="." method="_on_stance_atk_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceDef" to="." method="_on_stance_def_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceSpd" to="." method="_on_stance_spd_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceSnipe" to="." method="_on_stance_snipe_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances2/StanceCorrupt" to="." method="_on_stance_corrupt_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances2/StancePure" to="." method="_on_stance_pure_pressed"]
+[connection signal="pressed" from="npc_tab_container/Basic Info/Stances2/StanceElemental" to="." method="_on_stance_elemental_pressed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/text_pre_combat" to="." method="_on_text_pre_combat_text_changed"]
 [connection signal="text_changed" from="npc_tab_container/Basic Info/text_post_combat" to="." method="_on_text_post_combat_text_changed"]

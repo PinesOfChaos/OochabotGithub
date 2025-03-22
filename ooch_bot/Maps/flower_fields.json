@@ -33,6 +33,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 50.0,
@@ -126,6 +129,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 23.0,
 			"y": 11.0
@@ -152,6 +158,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 40.0,
 			"y": 20.0
@@ -173,6 +182,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 10.0,
@@ -230,6 +242,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 21.0,
@@ -287,6 +302,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_011",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 1.0,
@@ -350,6 +368,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 31.0,
 			"y": 5.0
@@ -376,6 +397,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 8.0,
 			"y": 18.0
@@ -402,9 +426,45 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 52.0,
 			"y": 17.0
+		},
+		{
+			"aggro_range": 3,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 30
+				},
+				{
+					"count": 1.0,
+					"id": 31
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "141901979585266393",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "*yawn*\nI could just... take a nap here...\nDon't worry, I'll catch up with ya pal...\nOh... and these... *yawn*",
+			"remove_on_finish": true,
+			"sprite": 39,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 12.0,
+			"y": 23.0
 		}
 	],
 	"map_savepoints": [

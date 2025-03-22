@@ -42,6 +42,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 34.0,
@@ -82,6 +85,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_024",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 17.0,
 			"y": 12.0
@@ -103,6 +109,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_025",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 5.0,
 			"y": 31.0
@@ -124,6 +133,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_026",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 25.0,
 			"y": 31.0
@@ -154,6 +166,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 28.0,
 			"y": 5.0
@@ -180,6 +195,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 25.0,
 			"y": 42.0
@@ -201,6 +219,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 33.0,
 			"y": 16.0
@@ -222,6 +243,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 19.0,
 			"y": 24.0
@@ -243,6 +267,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 18.0,
 			"y": 23.0
@@ -264,6 +291,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 20.0,
 			"y": 23.0
@@ -285,6 +315,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 14.0,
@@ -341,6 +374,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 37.0,
@@ -399,6 +435,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_008",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 0.0,
@@ -459,6 +498,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 55.0,
 			"y": 30.0
@@ -480,6 +522,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
 					"ability": 33.0,
