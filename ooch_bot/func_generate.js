@@ -226,5 +226,18 @@ module.exports = {
         db.status_data.set(key_id, emote, 'emote');
         db.status_data.set(key_id, description, 'description');
         db.status_data.set(key_id, emote != '', 'visible'); //whether the status effect is displayed when making the healthbars
+    },
+
+    /**
+     * Create a stance data object and add it to the database.
+     * @param {Number} id The ID of the stance
+     * @param {String} name The name of the stance
+     * @param {String} description The description of the stance
+     */
+    create_stance: function(id, name, description) {
+        let key_id = id.toString();
+        db.stance_data.set(key_id, id, 'id');
+        db.stance_data.set(key_id, name, 'name');
+        db.stance_data.set(key_id, description, 'description');
     }
 }

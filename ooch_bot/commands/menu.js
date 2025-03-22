@@ -5,7 +5,7 @@ const wait = require('wait');
 const { setup_playspace_str, create_ooch } = require('../func_play');
 const { PlayerState, TypeEmote, ItemType } = require('../types.js');
 const { type_to_emote, item_use } = require('../func_battle.js');
-const { ooch_info_embed, get_ooch_art } = require('../func_other.js');
+const { ooch_info_embed, get_ooch_art, get_art_file } = require('../func_other.js');
  
 module.exports = {
     data: new SlashCommandBuilder()
@@ -41,7 +41,7 @@ module.exports = {
 
         let settings_row_2 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('🗺️').setDisabled(true),
+                new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('<:item_map:1353073455825944596>'),
             )
             .addComponents(
                 new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'),
@@ -977,7 +977,8 @@ module.exports = {
             //#region Map Submenu
             // Map
             else if (selected == 'map') {
-               // TODO: Figure this out later!
+                let mapImage = get_art_file(`./Art/MapArt/map_${user_profile.location_data.area}.png`);
+                i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
             } 
             //#endregion
 

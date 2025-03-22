@@ -408,7 +408,7 @@ module.exports = {
         create_tile(`c_036`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
         create_tile(`c_037`,       Tile.Int,      applicationEmojis ); // Switch (Red)
         create_tile(`c_038`,       Tile.Int,      applicationEmojis ); // Switch (Blue)
-        
+        create_tile(`c_039`,       Tile.Npc,      applicationEmojis ); // Explorer Dave
 
 
         //#endregion
@@ -1475,6 +1475,18 @@ module.exports = {
         //#endregion
 
 
+        // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
+        //#region Stance Data
+        //            ID,  NAME,        DESCRIPTION                                                                      SHORT DESCRIPTION
+        create_status(0,   'Base',      'The basic Oochamon stance. Does nothing.',                                      'Does nothing.');
+        create_status(1,   'Attack',    'The attack Oochamon stance. Increases attack, but at the cost of defense.',     'Increases attack, lowers defense.');                                                                   
+        create_status(2,   'Defense',   'The defensive Oochamon stance. Increases defense, but at the cost of attack.',  'Increases defense, lowers attack.');
+        create_status(3,   'Speed',     'The speedy Oochamon stance. Increases speed, but at the cost of accuracy.',     'Increases speed, lowers accuracy.');
+        create_status(4,   'Sniper',    'The sniper Oochamon stance. Increases accuracy, but at the cost of speed.',     'Increases accuracy, lowers speed.');
+        
+        //#endregion
+
+        
         //#region Creature Data
         //ID, Emote, Name, Image, 
         //Description, Type, HP, ATK, DEF, SPD,

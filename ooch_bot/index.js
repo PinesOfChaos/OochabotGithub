@@ -68,6 +68,8 @@ client.on('ready', async () => {
 
         let user_profile = db.profile.get(user);
 
+        
+
         // if (user_profile != undefined) {
         //     // Update all oochamon's stats
         //     for (let i = 0; i < user_profile.ooch_party.length; i++) {

@@ -10,6 +10,7 @@ module.exports = {
   item_data: new Enmap({ name: "item_data" }),
   ability_data: new Enmap({ name: "ability_data" }),
   status_data: new Enmap({ name: "status_data" }),
+  stance_data: new Enmap({ name: "stance_data" }),
   tile_data: new Enmap({ name: "tile_data" }),
   events_data: new Enmap({ name: "events_data" }),
   global_data: new Enmap({ name: "global_data" }),

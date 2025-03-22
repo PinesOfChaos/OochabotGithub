@@ -140,6 +140,14 @@ const TameStatus = {
     Loyal: '😍 Loyal'
 }
 
+const StanceForms = {
+    Base: 0,
+    Attack: 1,
+    Defense: 2,
+    Speed: 3,
+    Sniper: 4
+}
+
 const FieldEffect = {
     None : 'none', //No field effect
     Clear : 'clear', //Used to clear field
@@ -497,6 +505,6 @@ module.exports = {
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
-    MoveTarget, Weather, TameStatus, BattleState, BattleAction, 
-    BattleInput, FieldEffect, GenmapTheme
+    MoveTarget, Weather, TameStatus, StanceForms, BattleState,
+    BattleAction, BattleInput, FieldEffect, GenmapTheme
 };

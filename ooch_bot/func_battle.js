@@ -780,6 +780,14 @@ let functions = {
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji('🗒️'),
             )
+            
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('shift_stance')
+                    .setLabel('Change Stance')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('🤺'),
+            )
         //#endregion
 
         // Handle users
@@ -904,6 +912,41 @@ let functions = {
                         let moveInfoEmbed = new EmbedBuilder()
                             .setTitle('Move Info');
                         let moveInfoFields = [];
+
+                        // Get the Oochamon's Attack options
+                        for (let i = 0; i < activeOoch.moveset.length; i++) {
+                            let move_id = activeOoch.moveset[i];
+                            let move_data = db.move_data.get(move_id);
+                            if (move_data.accuracy == -1) move_data.accuracy = 100;
+                            let move_string = `
+                            ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
+                                *${move_data.description}*
+                            `;
+                            
+                            moveInfoFields.push({
+                                name: `${functions.type_to_emote([move_data.type])} ${move_data.name}`,
+                                value: move_string,
+                                inline: true
+                             });
+                        }
+
+                        moveInfoFields.splice(2, 0, { name: '\u200B', value: '\u200B', inline: true });
+                        moveInfoFields.splice(5, 0, { name: '\u200B', value: '\u200B', inline: true });
+                        moveInfoEmbed.addFields(moveInfoFields);
+
+                        if (moveInfoViewing == true) {
+                            moveBackButton.components[1].setLabel('View Move Info');
+                            i.update({ embeds: [], components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
+                            moveInfoViewing = false;
+                        } else {
+                            moveBackButton.components[1].setLabel('Close Move Info');
+                            i.update({ embeds: [moveInfoEmbed],  components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
+                            moveInfoViewing = true;
+                        }
+
+                    } else if (customId == 'shift_stance') {
+
+                        i.update({ content: 'Select the new stance to shift your Oochamon to!\n**Current Stance'})
 
                         // Get the Oochamon's Attack options
                         for (let i = 0; i < activeOoch.moveset.length; i++) {
@@ -3812,9 +3855,28 @@ let functions = {
     /**
      * Supply a status id, returns its emote if applicable
      */
-    status_to_emote : function(status){
+    status_to_emote : function(status) {
         return(db.status_data.get(`${status}`, "emote"));
     },
+
+    /**
+     * Get a list of all available stances an Oochamon can use.
+     * @param {Object} ooch The Oochamon to get stance data for
+     * @returns All available stances.
+     */
+    get_stance_options : function(ooch) {
+        // TODO: This currently allows all stances to be used except for the one
+        // that the Oochamon is using. This should be changed to only allow a set
+        // that we manually set.
+        let stances = db.stance_data.keyArray();
+        let available_stances = [];
+        for (let stance of stances) {
+            if (ooch.stance == stance) continue;
+            available_stances.push(db.stance_data.get(stance));
+        }
+
+        return available_stances;
+    }
 }
 
 module.exports = functions;

@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather, FieldEffect } = require('./types.js');
+const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather, FieldEffect, StanceForms } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder, User } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -136,8 +136,9 @@ functions = {
             cur_event_pos : 0,
             cur_battle_id : false,
 
-            areas_visited : [], //TO DO
-            notifications : [], //TO DO
+            areas_visited : [], //TODO
+            notifications : [], //TODO
+            stance_list   : [], //TODO
 
             settings : {
                 controls_msg: false,
@@ -188,6 +189,8 @@ functions = {
             og_type: 0,
             doom_timer: 4, // Used for the doomed status effect
             emote: "",
+            stance: StanceForms.Base,
+            stance_cooldown: 0,
             
             tame_value: 0,
             tame_treat_cooldown: 0,
