@@ -24,7 +24,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -46,7 +46,7 @@
 					"spd_iv": 3.0
 				},
 				{
-					"ability": 13,
+					"ability": 13.0,
 					"atk_iv": 2.0,
 					"def_iv": 1.0,
 					"hp_iv": 1.0,
@@ -108,7 +108,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 26.0,
