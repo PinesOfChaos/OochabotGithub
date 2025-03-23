@@ -529,26 +529,30 @@ let functions = {
             "Oh how nice, you came all the way here just to lose!",
             "Shh, I'm being sneaky.",
             "Never give up, never surrender!",
-            "I know your IP address, I bet it's 192.168.1.1!",
             "Sometimes I like to stand in the middle of empty rooms and contemplate life.",
             "Oh, hi there, fighty fighty time?",
             "Don't think about the lore implications of this area, okay?",
             "I've done it, I finally know how to breathe!",
             "Ok, but don't run away this time!",
-            "I refused to read signs for years and the avatar of sign smited me from existence.",
-            "You ever meet Mr. Nice? He sure is a very real person that I didn't just make up now!",
             "Hello, yes, I would like to purchase one battle please!",
             "Today's episode is sponsored by the letter 3.",
             "Martial-type? No, I don't think that's a thing.",
             "I have never known defeat!",
             "Every time you run away from a battle I get a little closer.",
-            "You ever encounter an inky-black Oochamon that looks like it's glitching? Weird little thing.",
             "Did you know that giraffes are, in fact, real animals?",
             "Why have lunch when we can have battle?",
             "This is *not* what I signed up for.",
             "Elbows are best not thought about...",
             "This isn't even my final form!",
-            "If not supposed to eat battery, why battery taste good?"
+            "If not supposed to eat battery, why battery taste good?",
+            "Is playing the triangle supposed to be this hard!?",
+            _.sample([ //Rare quotes, these appear incredibly rarely
+                "You ever encounter an inky-black Oochamon that looks like it's glitching? Weird little thing.",
+                "I know your IP address, I bet it's 192.168.1.1!",
+                "You ever meet Mr. Nice? He sure is a very real person that I didn't just make up now!",
+                "I refused to read signs for years and the avatar of sign smited me from existence.",
+                "Tamagoochi 👌"
+            ])
         ])
         npc.post_combat_dialogue = "*The trainer suddenly vanishes...*"
         npc.remove_on_finish = true;
