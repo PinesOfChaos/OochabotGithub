@@ -41,7 +41,7 @@ module.exports = {
 
         let settings_row_2 = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('<:item_map:1353073455825944596>'),
+                new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('<:item_map:1353128506535706754>'),
             )
             .addComponents(
                 new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'),
@@ -977,8 +977,19 @@ module.exports = {
             //#region Map Submenu
             // Map
             else if (selected == 'map') {
-                let mapImage = get_art_file(`./Art/MapArt/map_${user_profile.location_data.area}.png`);
-                i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
+                let map_name = user_profile.location_data.area;
+                let map_item = db.item_data.find('potency', map_name);
+
+                console.log(user_profile.other_inv)
+                console.log(map_item)
+
+                if(user_profile.other_inv.hasOwnProperty(`${map_item.id}`)){
+                    let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
+                    i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
+                }
+                else{
+                    i.update({ content: `**You don't have the map for this area yet...**`, components: [back_button] });
+                }
             } 
             //#endregion
 
