@@ -16,7 +16,7 @@ func _ready() -> void:
 	line_edit_map.text = event_data.map_to
 	spin_box_x.value = event_data.x_to
 	spin_box_y.value = event_data.y_to
-	check_box.toggle_mode = event_data.default_tp
+	check_box.button_pressed = event_data.default_tp
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -26,4 +26,4 @@ func save():
 	event_data.map_to = line_edit_map.text
 	event_data.x_to = spin_box_x.value
 	event_data.y_to = spin_box_y.value
-	event_data.default_tp = check_box.toggle_mode
+	event_data.default_tp = check_box.button_pressed

@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { PlayerState, EventMode, Flags, UserType, Weather } = require('./types.js');
 const { get_art_file } = require('./func_other.js');
 const { generate_battle_user, setup_battle } = require('./func_battle.js');
-const {wait} = require('wait');
+const { wait } = require('wait');
 
 let functions = {
     /**
@@ -242,11 +242,11 @@ let functions = {
             let mapData = db.maps.get(obj_content.map_to);
             let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
             if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-                map_default = [mapData.map_savepoints[0]];                
+                map_default = [mapData.map_savepoints[0]];
             }
 
             db.profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
-            
+
             if (obj_content.default_tp === true) {
                 obj_content.x_to = map_default[0].x;
                 obj_content.y_to = map_default[0].y;
@@ -319,6 +319,8 @@ let functions = {
         while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
+
+            console.log(obj_content)
 
             switch (event_mode) {
                 //Basic Text Event
@@ -458,6 +460,8 @@ let functions = {
             while (!quit) {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
+
+                console.log(obj_content)
 
                 //Customize Embed
                 switch (event_mode) {

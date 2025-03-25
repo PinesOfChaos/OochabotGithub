@@ -707,7 +707,7 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "elevator",
 				"x_to": 14.0,
 				"y_to": 5.0
@@ -722,7 +722,7 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "thunderpeak",
 				"x_to": 32.0,
 				"y_to": 61.0
@@ -733,7 +733,7 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "elevator",
 				"x_to": 4.0,
 				"y_to": 5.0
@@ -748,7 +748,7 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "thunderpeak",
 				"x_to": 32.0,
 				"y_to": 48.0
