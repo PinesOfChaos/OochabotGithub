@@ -10,7 +10,7 @@ extends Control
 
 var event_name = ""
 var event_data = {}
-var event_repeatable = false
+var event_repeatable = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -18,10 +18,20 @@ func _ready() -> void:
 	get_tree().get_root().size_changed.connect(resize)
 	refresh_events_list()
 	
+	
 	if Global.DataEvents.has(event_name):
+		check_button_repeatable.button_pressed = true
 		event_data = Global.DataEvents[event_name]
+		
 		for part in event_data:
-			new_node(part[0], part[1])
+			if(part.has("text") and part.text == event_name):
+				event_repeatable = false
+				check_button_repeatable.button_pressed = false
+			else:
+				new_node(part[0], part[1])
+			
+			
+			
 			print(part[0])
 			print(part[1])
 	else: #set a default event name, leave everything else alone
@@ -98,6 +108,8 @@ func _on_button_save_pressed() -> void:
 			child_data.push_back(child.event_data)
 			data.push_back(child_data)
 			
+	if(!event_repeatable):
+		data.push_back([Global.EVENT_FLAG, event_name])
 	Global.DataEvents[event_name] = data
 	
 	var path = Global.WorkingDir.split('/Maps')[0] + "/global_events.json"
@@ -107,7 +119,7 @@ func _on_button_save_pressed() -> void:
 	print(Global.DataEvents)
 	
 func _on_check_button_repeatable_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.
+	event_repeatable = toggled_on
 
 func _on_button_load_item_selected(index: int) -> void:
 	var _main = get_parent()

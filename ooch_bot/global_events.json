@@ -70,6 +70,10 @@
 			{
 				"text": "caves_quest_end"
 			}
+		],
+		[
+			2,
+			"ev_corrupt_fungal_defeat"
 		]
 	],
 	"ev_corrupt_tech_defeat": [
@@ -156,6 +160,10 @@
 			{
 				"text": "lavaboard_quest_end"
 			}
+		],
+		[
+			2,
+			"ev_corrupt_tech_defeat"
 		]
 	],
 	"ev_cromet_defeated": [
@@ -242,6 +250,10 @@
 			{
 				"text": "caves_quest_begin"
 			}
+		],
+		[
+			2,
+			"ev_cromet_defeated"
 		]
 	],
 	"ev_intro": [
@@ -384,6 +396,10 @@
 				"x_to": 0.0,
 				"y_to": 0.0
 			}
+		],
+		[
+			2,
+			"ev_intro"
 		]
 	],
 	"ev_moldire_boss": [
@@ -520,6 +536,10 @@
 				],
 				"title": ""
 			}
+		],
+		[
+			2,
+			"ev_moldire_boss"
 		]
 	],
 	"ev_moldire_boss_fast_travel": [
@@ -531,6 +551,10 @@
 				"x_to": 0.0,
 				"y_to": 0.0
 			}
+		],
+		[
+			2,
+			"ev_moldire_boss_fast_travel"
 		]
 	],
 	"ev_rival_intro": [
@@ -654,6 +678,10 @@
 			{
 				"text": "rival_intro_complete"
 			}
+		],
+		[
+			2,
+			"ev_rival_intro"
 		]
 	],
 	"ev_save_tutorial": [
@@ -701,6 +729,10 @@
 			{
 				"text": "save_tutorial_complete"
 			}
+		],
+		[
+			2,
+			"ev_save_tutorial"
 		]
 	],
 	"ev_thunderpeak_down": [
@@ -878,6 +910,10 @@
 			{
 				"text": "trapped_in_tunnel_dialog"
 			}
+		],
+		[
+			2,
+			"ev_trapped_in_tunnel"
 		]
 	],
 	"ev_tutorial_1": [
@@ -886,6 +922,7 @@
 			{
 				"description": "Welcome to the world of Oochamon! I am a disembodied voice, I don't have a name, but you can call me the Tutorial Master!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -898,12 +935,17 @@
 			{
 				"description": "To start, let's teach you how to properly move. Use the arrow buttons to move, and move up to the door!\n\nThe other 2 buttons on the top left and top right will be explained soon, so don't worry too much about them yet.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "Proceed to the next door.",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_1"
 		]
 	],
 	"ev_tutorial_2": [
@@ -912,6 +954,7 @@
 			{
 				"description": "Let's also show you how to use *advanced movement tech!* (oooh, ahhh)",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -924,6 +967,7 @@
 			{
 				"description": "You can **jump** ahead tiles by clicking the number on the top left of the buttons to change your speed.\nYou can also type a number in chat to quickly change this number, when not in dialogue.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -936,12 +980,17 @@
 			{
 				"description": "For example, if you type in \"3\" in the chat after this chat, it will change your tile jump to 3!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_2"
 		]
 	],
 	"ev_tutorial_3": [
@@ -950,6 +999,7 @@
 			{
 				"description": "On top of discord buttons for movement, you also have the option to do **message based movement!**",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -962,6 +1012,7 @@
 			{
 				"description": "To do this, you can type `w`, `a`, `s` or `d` in the chat to move in one of the 4 directions.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -974,6 +1025,7 @@
 			{
 				"description": "You can also jump ahead tiles by putting a number after the direction, something like `w2` or `d4`.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -986,6 +1038,7 @@
 			{
 				"description": "Finally, you can chain these together to move lots of spaces at once. For example, you can do `w2d4` to move up 2 then right 4\nOr you could do something like `wwwdd` to move up 3 then right 2. There's a lot of possibility with it!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -998,12 +1051,17 @@
 			{
 				"description": "Try out some things, then move on. If you'd like more information on controls, run `/lookup controls` for a detailed explanation of text based movement!\n\n**Note: Text message based movement may be a bit laggier than using the buttons. This is not a bug, just an unavoidable Discord problem.**",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_3"
 		]
 	],
 	"ev_tutorial_4": [
@@ -1012,6 +1070,7 @@
 			{
 				"description": "Great work!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1024,6 +1083,7 @@
 			{
 				"description": "Now, check out your menu with `/menu`, or by clicking the 3 horizontal lines on the top left of the discord buttons.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1036,6 +1096,7 @@
 			{
 				"description": "Go check it out, and play around in the menu to learn about it a little bit. There's even a settings menu where you can disable discord move buttons, text popups, and more!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1048,12 +1109,17 @@
 			{
 				"description": "Head over to the next door upwards as soon as you are ready to move on.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "Check out the menu, then move on.",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_4"
 		]
 	],
 	"ev_tutorial_5": [
@@ -1062,6 +1128,7 @@
 			{
 				"description": "Let's get you a few items to start with. Here's a few Potions and a Perfect Prism, which can catch any Oochamon at a 100% chance.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [
 					{
@@ -1083,6 +1150,7 @@
 			{
 				"description": "Prisms are our way of capturing and taming the wild Oochamon of the world. It's very painless for them, I assure you.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1095,6 +1163,7 @@
 			{
 				"description": "Let's try out catching an Oochamon now. I've created a simulated Oochamon for you to learn catching with! It's inside the chest.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1107,6 +1176,7 @@
 			{
 				"description": "You won't be able to keep this Oochamon after the tutorial, this is just to teach you how to capture things.\nYou will have ample opportunity to catch more on the planet.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1119,12 +1189,17 @@
 			{
 				"description": "Now go catch that Oochamon, then move on!\nAlso, please don't try to fight it. It's quite powerful!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "Catch the Oochamon, and move on to the next door.",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_5"
 		]
 	],
 	"ev_tutorial_6": [
@@ -1133,6 +1208,7 @@
 			{
 				"description": "Great work! If you look at that new Oochamon in your menu, you'll find its information, alongside some stars next to its stats.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1145,6 +1221,7 @@
 			{
 				"description": "The stars are extra bonus stats, which are a special power an Oochamon has, unique to itself, that increase its various stats based on random chance.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1157,6 +1234,7 @@
 			{
 				"description": "The best bonus an Oochamon can have is 5 stars towards a stat. Every Oochamon is unique, so make sure to check your stat bonuses when you catch an Oochamon!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1169,6 +1247,7 @@
 			{
 				"description": "The researchers on base have been researching a special type of crystal to increase these bonuses after an Oochamon is born, but I don't know much about that.\nYou'll have to find out about it on your own!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1181,6 +1260,7 @@
 			{
 				"description": "Oochamon also have special abilities! You can view what your Oochamon ability does using `/lookup ability`.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1193,6 +1273,7 @@
 			{
 				"description": "On that note, `/lookup` has a few other things to view as well, so keep the command in mind!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1205,12 +1286,17 @@
 			{
 				"description": "Move to the next door when you are ready.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "Move to the next door.",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_6"
 		]
 	],
 	"ev_tutorial_7": [
@@ -1219,6 +1305,7 @@
 			{
 				"description": "Let's learn about the bread and butter of Oochamon. Trainer fights!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1231,6 +1318,7 @@
 			{
 				"description": "I've created a simulated trainer for you to fight. It's not a real person, but it still has feelings.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1243,6 +1331,7 @@
 			{
 				"description": "One useful tip! If your move is super effective or not very effective, it'll be green or red respectively.\nIf it doesn't do damage and instead has a different effect, it'll be grey, and if its neutral effective, it'll be blue!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1255,12 +1344,17 @@
 			{
 				"description": "Anyways, go beat him up! This will be a good way for you to learn how to fight.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
 				"objective": "Defeat the Oochamon SimTrainer!",
 				"title": "Tutorial Master"
 			}
+		],
+		[
+			2,
+			"ev_tutorial_7"
 		]
 	],
 	"ev_tutorial_8": [
@@ -1269,6 +1363,7 @@
 			{
 				"description": "Great work. I knew you could do it! I'll give SimTrainer a cyber cookie later to make him feel better.",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1281,6 +1376,7 @@
 			{
 				"description": "That's basically how the game works. Catch Oochamon, beat up people's teams of Oochamon, and save the world!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1293,6 +1389,7 @@
 			{
 				"description": "Or something. I'm not your parent. See ya, and enjoy the grand world of Oochamon!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1305,6 +1402,7 @@
 			{
 				"description": "Oh! I almost forgot, you can also trade with other players using `/trade`. Try it out sometime with your friends!\nBye bye!",
 				"dialogue_portrait": "",
+				"flags": [],
 				"image": "",
 				"items": [],
 				"money": 0.0,
@@ -1326,6 +1424,10 @@
 				"x_to": 0.0,
 				"y_to": 0.0
 			}
+		],
+		[
+			2,
+			"ev_tutorial_8"
 		]
 	],
 	"ev_tutorial_begin": [
@@ -1337,6 +1439,10 @@
 				"x_to": 0.0,
 				"y_to": 0.0
 			}
+		],
+		[
+			2,
+			"ev_tutorial_begin"
 		]
 	]
 }

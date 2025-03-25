@@ -352,7 +352,7 @@ module.exports = {
         create_tile(`t${zTu}_041`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_042`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_050`,  Tile.Wall,     applicationEmojis ); //Elevator
-        create_tile(`t${zTu}_051`,  Tile.Wall,     applicationEmojis ); //Elevator
+        create_tile(`t${zTu}_051`,  Tile.Floor,    applicationEmojis ); //Elevator
         create_tile(`t${zTu}_052`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_060`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_061`,  Tile.Wall,     applicationEmojis ); //Elevator
@@ -3918,12 +3918,14 @@ module.exports = {
             const events = JSON.parse(data); 
             // Generate the global events
             for (let event of Object.entries(events)) {
+                /* no longer needed, commenting it out
                 event[1].push([
                     2,
                     {
                         "text": event[0]
                     }
                 ])
+                */
                 db.events_data.set(event[0], event[1]);
             }
         }); 
