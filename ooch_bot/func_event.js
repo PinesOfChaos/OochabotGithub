@@ -4,6 +4,7 @@ const _ = require('lodash');
 const { PlayerState, EventMode, Flags, UserType, Weather } = require('./types.js');
 const { get_art_file } = require('./func_other.js');
 const { generate_battle_user, setup_battle } = require('./func_battle.js');
+const {wait} = require('wait');
 
 let functions = {
     /**
@@ -310,11 +311,10 @@ let functions = {
             }
         }
 
-        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay * 1000))
 
         async function waitEvent(obj_content) {
             setTimeout()
-            await _.delay(obj_content.duration * 1000);
+            await wait(obj_content.duration * 1000);
         }
 
         while (!quit_init_loop) {
@@ -355,7 +355,7 @@ let functions = {
                 break;
 
                 case EventMode.Wait:
-                    await sleep(obj_content);
+                    await waitEvent(obj_content);
                 break;
             }
 
