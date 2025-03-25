@@ -313,7 +313,6 @@ let functions = {
 
 
         async function waitEvent(obj_content) {
-            setTimeout()
             await wait(obj_content.duration * 1000);
         }
 
