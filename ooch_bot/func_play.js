@@ -376,6 +376,7 @@ functions = {
                     let shopSelectOptions = [];
                     if (obj.type == 'default' || obj.type == null) {
                         shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
+                        //TODO make this add values depending on the user's flags (this allows for more control over the order of the items offered)
                     }
                     if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
                     shopSelectOptions = shopSelectOptions.flat(1);

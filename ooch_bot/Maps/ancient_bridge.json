@@ -117,7 +117,7 @@
 	],
 	"map_savepoints": [
 		{
-			"is_default": false,
+			"is_default": true,
 			"x": 14.0,
 			"y": 22.0
 		}

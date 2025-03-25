@@ -560,85 +560,85 @@ module.exports = {
             description_short : 'Brings you to your last used Save Station.'
         })
         create_item({
-            id : 24, name : 'Map: Hub', emote : '<:item_map:1353073455825944596>',
+            id : 24, name : 'Map: Hub', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'hub', 
             description : 'Dave\'s hand drawn map of the Hub and surrounding area.',
             description_short : 'A map of the Hub.'
         })
         create_item({
-            id : 25, name : 'Map: Stone Tunnel', emote : '<:item_map:1353073455825944596>',
+            id : 25, name : 'Map: Stone Tunnel', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'stone_tunnel', 
             description : 'Dave\'s hand drawn map of the Stone Tunnel.',
             description_short : 'A map of the Stone Tunnel.'
         })
         create_item({
-            id : 26, name : 'Map: Fungal Caves', emote : '<:item_map:1353073455825944596>',
+            id : 26, name : 'Map: Fungal Caves', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'fungal_cave', 
             description : 'Dave\'s hand drawn map of the Fungal Caves.',
             description_short : 'A map of the Fungal Caves.'
         })
         create_item({
-            id : 27, name : 'Map: Lava Path', emote : '<:item_map:1353073455825944596>',
+            id : 27, name : 'Map: Lava Path', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'lava_path', 
             description : 'Dave\'s hand drawn map of the Lava Path and the settlement there.',
             description_short : 'A map of the Lava Path.'
         })
         create_item({
-            id : 28, name : 'Map: Old Training Facility', emote : '<:item_map:1353073455825944596>',
+            id : 28, name : 'Map: Old Training Facility', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'training_facility', 
             description : 'Dave\'s hand drawn map of the Old Training Facility.',
             description_short : 'A map of the Old Training Facility.'
         })
         create_item({
-            id : 29, name : 'Map: Thunder Peak', emote : '<:item_map:1353073455825944596>',
+            id : 29, name : 'Map: Thunder Peak', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'thunderpeak', 
             description : 'Dave\'s hand drawn map of Thunder Peak.',
             description_short : 'A map of Thunder Peak.'
         })
         create_item({
-            id : 30, name : 'Map: Ancient Bridge', emote : '<:item_map:1353073455825944596>',
+            id : 30, name : 'Map: Ancient Bridge', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'ancient_bridge', 
             description : 'Less a map, and more of a sketch of the Ancient Bridge.',
             description_short : 'A map of the Ancient Bridge.'
         })
         create_item({
-            id : 31, name : 'Map: Flower Fields', emote : '<:item_map:1353073455825944596>',
+            id : 31, name : 'Map: Flower Fields', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'flower_fields', 
             description : 'Dave\'s hand drawn map of the Flower Fields.',
             description_short : 'A map of the Flower Fields.'
         })
         create_item({
-            id : 32, name : 'Map: Access Tunnel', emote : '<:item_map:1353073455825944596>',
+            id : 32, name : 'Map: Access Tunnel', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'access_tunnel', 
             description : 'Dave\'s hand drawn map of the Access Tunnel connecting the Lava Path settlement and the Hub.',
             description_short : 'A map of the Access Tunnel.'
         })
         create_item({
-            id : 33, name : 'Map: Scaffolds', emote : '<:item_map:1353073455825944596>',
+            id : 33, name : 'Map: Scaffolds', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'scaffolds', 
             description : 'Dave\'s hand drawn...map? The Scaffolds seem to have affected him.',
             description_short : 'A map of the Scaffolds.'
         })
         create_item({
-            id : 34, name : 'Map: Goo Lake', emote : '<:item_map:1353073455825944596>',
+            id : 34, name : 'Map: Goo Lake', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'goo_lake', 
             description : 'Dave\'s hand drawn map of the Goo Lake and its beaches.',
             description_short : 'A map of the Goo Lake.'
         })
         create_item({
-            id : 35, name : 'Map: Old Powerplant', emote : '<:item_map:1353073455825944596>',
+            id : 35, name : 'Map: Old Powerplant', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'old_power_station', 
             description : 'Dave\'s hand drawn map of the Old Powerplant and some of its interior.',
             description_short : 'A map of the Old Powerplant.'
         })
         create_item({
-            id : 36, name : 'Map: Restricted Area', emote : '<:item_map:1353073455825944596>',
+            id : 36, name : 'Map: Restricted Area', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'restricted_area', 
             description : 'Dave\'s hand drawn map of the Restricted Area.',
             description_short : 'A map of the Restricted Area.'
         })
         create_item({
-            id : 37, name : 'Map: Crystal Caves', emote : '<:item_map:1353073455825944596>',
+            id : 37, name : 'Map: Crystal Caves', emote : '<:item_map:1353128506535706754>',
             category : 'other_inv', type : 'map', price : -1, potency : 'crystal_caves', 
             description : 'Dave\'s hand drawn map of the Crystal Caves.',
             description_short : 'A map of the Crystal Caves.'

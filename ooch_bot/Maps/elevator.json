@@ -6,7 +6,13 @@
 		"map_name": "Elevator"
 	},
 	"map_npcs": [],
-	"map_savepoints": [],
+	"map_savepoints": [
+		{
+			"is_default": true,
+			"x": 25.0,
+			"y": 4.0
+		}
+	],
 	"map_shops": [],
 	"map_spawn_zones": [],
 	"map_tiles": [

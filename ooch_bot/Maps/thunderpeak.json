@@ -43,7 +43,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -86,7 +86,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_024",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 17.0,
@@ -110,7 +110,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_025",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 5.0,
@@ -134,7 +134,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_026",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 25.0,
@@ -167,7 +167,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 28.0,
@@ -196,7 +196,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 25.0,
@@ -220,7 +220,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 33.0,
@@ -244,7 +244,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 19.0,
@@ -268,7 +268,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
@@ -292,7 +292,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_004",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 20.0,
@@ -316,7 +316,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -375,7 +375,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -436,7 +436,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_008",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -499,7 +499,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 55.0,
@@ -523,7 +523,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
