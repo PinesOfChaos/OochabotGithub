@@ -37,8 +37,9 @@ module.exports = {
         } else {
             let emoji = emojis.find(emoji => emoji.name === id)
             if (emoji != undefined) {
+                let gif_str = emoji.animated ? 'a' : '';
                 db.tile_data.set(id, emoji.id, 'emote_id');
-                db.tile_data.set(id, `<:${id}:${emoji.id}>`, 'emote');
+                db.tile_data.set(id, `<${gif_str}:${id}:${emoji.id}>`, 'emote');
                 db.tile_data.set(id, `${id}.png`, 'file');
             }
         } 

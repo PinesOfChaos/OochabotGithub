@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { PlayerState, EventMode, Flags, UserType, Weather } = require('./types.js');
 const { get_art_file } = require('./func_other.js');
 const { generate_battle_user, setup_battle } = require('./func_battle.js');
-const { wait } = require('wait');
+const wait = require('wait');
 
 let functions = {
     /**
