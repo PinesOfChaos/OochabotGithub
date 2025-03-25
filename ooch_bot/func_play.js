@@ -209,11 +209,21 @@ functions = {
                             }
 
                             stop_moving = true;
-                            moveDisable = true;
+                            //moveDisable = true; to do we need to update the buttons *during* the event, this doesn't disable them until after it
                             await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
+
+                            //updat the profile information as it has likely changed since the event_process
+                            profile_data = await db.profile.get(user_id); 
+                            player_location = profile_data.location_data;
+                            map_name = player_location.area;
+                            px = player_location.x;
+                            py = player_location.y;
+                            playerx = player_location.x;
+                            playery = player_location.y;
                         }
                     }
                 }
+                if(stop_moving){ break; }
             }
 
             //NPCs
