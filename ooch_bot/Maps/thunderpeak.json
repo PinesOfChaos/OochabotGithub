@@ -4857,9 +4857,9 @@
 	],
 	"map_transitions": [
 		{
-			"connect_map": "",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_map": "lava_path",
+			"connect_x": 10.0,
+			"connect_y": 7.0,
 			"x": 32.0,
 			"y": 63.0
 		},

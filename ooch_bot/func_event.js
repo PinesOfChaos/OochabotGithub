@@ -240,22 +240,15 @@ let functions = {
             if (obj_content.map_to == false) obj_content.map_to = ogBiome;
             let mapData = db.maps.get(obj_content.map_to);
             let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
-            if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0 && mapData.map_savepoints.length != 0) {
-                map_default = [mapData.map_savepoints[0]];
-                db.profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
-
-                if (obj_content.default_tp === true) {
-                    obj_content.x_to = map_default[0].x;
-                    obj_content.y_to = map_default[0].y;
-                }
+            if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
+                map_default = [mapData.map_savepoints[0]];                
             }
-            else { //Extra failsafe to prevent crashing if we go to a map without a default location
-                db.profile.set(user_id, { area: obj_content.map_to, x: 0, y: 0 }, 'checkpoint_data');
 
-                if (obj_content.default_tp === true) {
-                    obj_content.x_to = 0;
-                    obj_content.y_to = 0;
-                }
+            db.profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
+            
+            if (obj_content.default_tp === true) {
+                obj_content.x_to = map_default[0].x;
+                obj_content.y_to = map_default[0].y;
             }
 
             db.player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
