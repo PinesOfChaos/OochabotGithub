@@ -53,7 +53,7 @@ let functions = {
         let thread_id = false;
         let guild_id = false;
         let user_id = false;
-        let heal_inv = [], prism_inv = [], other_inv = [];
+        let heal_inv = [], prism_inv = [], other_inv = [], stance_list = [StanceForms.Base];
         
         switch (type) {
             case UserType.Wild:
@@ -543,13 +543,21 @@ let functions = {
                     //Switch if there are no acceptable attacking moves and there is a mon we can switch to
                     functions.new_battle_action_switch(battle_data, user_obj.user_index, party_alive_slots[_.random(party_alive_slots.length - 1)]);
                 }
-                else if(good_moves.length > 0 || okay_moves.length > 0){
-                    move_id = _.random(10) < 7 ? good_moves[0] : okay_moves[0];
-                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
-                }
                 else{
-                    move_id = move_intentions[_.random(move_intentions.length - 1)];
-                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                    let stance_options = functions.get_stance_options(active_mon);
+                    if((stance_options.length > 0) && (user_obj.stance_cooldown <= 0)){
+                        let stance_to = _.sample(stance_options).id;
+                        functions.new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);
+                    }
+
+                    if(good_moves.length > 0 || okay_moves.length > 0){
+                        move_id = _.random(10) < 7 ? good_moves[0] : okay_moves[0];
+                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                    }
+                    else{
+                        move_id = move_intentions[_.random(move_intentions.length - 1)];
+                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                    }
                 }
             break;
         }

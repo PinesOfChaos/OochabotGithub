@@ -143,7 +143,7 @@ m_functions = {
 
             areas_visited : [], //TODO
             notifications : [], //TODO
-            stance_list   : [], //TODO
+            stance_list   : [StanceForms.Base], //TODO
 
             settings : {
                 controls_msg: false,
@@ -259,7 +259,9 @@ m_functions = {
                 is_player: false,
                 display_msg_id: '',
                 defeated : false,
-                oochabux: 0
+                oochabux: 0,
+                stance_list : [StanceForms.Base]
+
         }
 
         return(battle_user_obj);
