@@ -557,8 +557,6 @@ let functions = {
                     let okay_moves = move_intentions.filter((move) => move.priority == 1);
                     let okay_moves_damage = okay_moves.filter((move) => move.damage > 0)
                     let stat_stages = active_mon.stats.atk_mul + active_mon.stats.def_mul + active_mon.stats.spd_mul;
-
-                    console.log(good_moves, okay_moves, okay_moves_damage)
                     
                     if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
                         //Switch if there are no acceptable attacking moves and there is a mon we can switch to
@@ -566,7 +564,6 @@ let functions = {
                     }
                     else{
                         let stance_options = functions.get_stance_options(active_mon);
-                        console.log(active_mon);
                         if((stance_options.length > 0) && (active_mon.stance_cooldown <= 0)){
                             let stance_to = _.sample(stance_options).id;
                             functions.new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);

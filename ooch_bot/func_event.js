@@ -39,6 +39,7 @@ let functions = {
         let filter = i => i.user.id == user_id;
         let oochamonPicks = new ActionRowBuilder();
         let optionsRow = new ActionRowBuilder();
+        let event_buttons = next_buttons
     
         let event_embed = new EmbedBuilder()
             .setColor('#808080')
@@ -168,7 +169,6 @@ let functions = {
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                     imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
                 } else {
-                    //console.log(obj_content.dialogue_portrait);
                     event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
                     imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
                 }
@@ -178,6 +178,8 @@ let functions = {
                 event_embed.setImage(`attachment://${obj_content.image}`)
                 imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
             }
+
+            event_buttons = oochamonPicks;
 
         }
 
@@ -292,8 +294,8 @@ let functions = {
                 }
             }
 
-            event_embed.setTitle(obj_content.title);
-            event_embed.setDescription(obj_content.description);
+            if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+            if (obj_content.description != '') event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
             if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
@@ -310,6 +312,8 @@ let functions = {
                 event_embed.setImage(`attachment://${obj_content.image}`)
                 imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
             }
+
+            if (initial) event_buttons = optionsRow;
         }
 
 
@@ -320,8 +324,6 @@ let functions = {
         while (!quit_init_loop) {
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
-
-            console.log(obj_content)
 
             switch (event_mode) {
                 //Basic Text Event
@@ -352,7 +354,7 @@ let functions = {
                 break;
 
                 case EventMode.Options:
-                    optionsEvent(obj_content);
+                    optionsEvent(obj_content, true);
                     quit_init_loop = true;
                 break;
 
@@ -384,7 +386,7 @@ let functions = {
         }
 
         //Send Embed and Await user input before proceeding
-        let msg = await thread.send({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
+        let msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
         if (msg_to_edit == false) {
             await db.profile.set(user_id, msg.id, 'display_msg_id');
             profile_data = await db.profile.get(user_id);
@@ -461,8 +463,6 @@ let functions = {
             while (!quit) {
                 event_mode = event_array[current_place][0];
                 obj_content = event_array[current_place][1];
-
-                console.log(obj_content)
 
                 //Customize Embed
                 switch (event_mode) {
