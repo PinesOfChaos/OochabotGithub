@@ -72,7 +72,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_corrupt_fungal_defeat"
 			}
@@ -164,7 +164,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_corrupt_tech_defeat"
 			}
@@ -256,7 +256,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_cromet_defeated"
 			}
@@ -404,7 +404,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_intro"
 			}
@@ -519,53 +519,9 @@
 			}
 		],
 		[
-			6.0,
-			{
-				"description": "Return to the Lavapath Settlement?",
-				"dialogue_portrait": "",
-				"image": "",
-				"options": [
-					{
-						"emote": "",
-						"event": "ev_moldire_boss_fast_travel",
-						"flag": "",
-						"price": 0.0,
-						"style": 0.0,
-						"text": "Yes"
-					},
-					{
-						"emote": "",
-						"event": "",
-						"flag": "",
-						"price": 0.0,
-						"style": 0.0,
-						"text": "No"
-					}
-				],
-				"title": ""
-			}
-		],
-		[
-			2,
+			2.0,
 			{
 				"text": "ev_moldire_boss"
-			}
-		]
-	],
-	"ev_moldire_boss_fast_travel": [
-		[
-			4.0,
-			{
-				"default_tp": true,
-				"map_to": "lava_path",
-				"x_to": 0.0,
-				"y_to": 0.0
-			}
-		],
-		[
-			2,
-			{
-				"text": "ev_moldire_boss_fast_travel"
 			}
 		]
 	],
@@ -692,7 +648,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_rival_intro"
 			}
@@ -745,7 +701,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_save_tutorial"
 			}
@@ -928,7 +884,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_trapped_in_tunnel"
 			}
@@ -962,7 +918,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_1"
 			}
@@ -1009,7 +965,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_2"
 			}
@@ -1082,7 +1038,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_3"
 			}
@@ -1142,7 +1098,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_4"
 			}
@@ -1224,7 +1180,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_5"
 			}
@@ -1323,7 +1279,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_6"
 			}
@@ -1383,7 +1339,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_7"
 			}
@@ -1458,7 +1414,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_8"
 			}
@@ -1475,9 +1431,89 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_tutorial_begin"
+			}
+		]
+	],
+	"ev_warp_hub": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "hub",
+				"x_to": 0.0,
+				"y_to": 0.0
+			}
+		]
+	],
+	"ev_warp_hub_confirm": [
+		[
+			6.0,
+			{
+				"description": "Return to the Hub?",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"emote": "",
+						"event": "ev_warp_hub",
+						"flag": "",
+						"price": 0.0,
+						"style": 2,
+						"text": "Yes"
+					},
+					{
+						"emote": "",
+						"event": "",
+						"flag": "",
+						"price": 0,
+						"style": 3,
+						"text": "No"
+					}
+				],
+				"title": ""
+			}
+		]
+	],
+	"ev_warp_lava_path": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "lava_path",
+				"x_to": 0.0,
+				"y_to": 0.0
+			}
+		]
+	],
+	"ev_warp_lava_path_confirm": [
+		[
+			6.0,
+			{
+				"description": "Return to Lava Path Settlement?",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"emote": "",
+						"event": "ev_warp_lava_path",
+						"flag": "",
+						"price": 0.0,
+						"style": 2,
+						"text": "Yes"
+					},
+					{
+						"emote": "",
+						"event": "",
+						"flag": "",
+						"price": 0,
+						"style": 3,
+						"text": "No"
+					}
+				],
+				"title": ""
 			}
 		]
 	]

@@ -65,6 +65,7 @@ selected = 0
 item_count = 4
 popup/item_0/text = "Primary"
 popup/item_0/icon = ExtResource("2_3ipo0")
+popup/item_0/id = 0
 popup/item_1/text = "Secondary"
 popup/item_1/icon = ExtResource("3_dkb0q")
 popup/item_1/id = 1

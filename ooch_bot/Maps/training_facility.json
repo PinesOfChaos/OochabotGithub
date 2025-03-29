@@ -8,6 +8,15 @@
 			"width": 2.0,
 			"x": 34.0,
 			"y": 31.0
+		},
+		{
+			"event_name": "ev_warp_lava_path_confirm",
+			"flag_kill": "",
+			"flag_required": "defeat_corrupted_tech",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 35.0,
+			"y": 31.0
 		}
 	],
 	"map_info": {
@@ -18,7 +27,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -44,7 +53,7 @@
 		},
 		{
 			"aggro_range": 0.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 2600.0,
 			"flag_given": "defeat_corrupted_tech",
 			"flag_kill": "",
@@ -125,7 +134,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -167,7 +176,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -229,7 +238,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -272,7 +281,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -333,7 +342,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -395,7 +404,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 172.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -438,7 +447,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -482,7 +491,7 @@
 		},
 		{
 			"aggro_range": 0.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "seer_heatri",
 			"flag_kill": "",
@@ -526,7 +535,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -569,7 +578,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -599,7 +608,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -629,7 +638,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -659,7 +668,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -689,7 +698,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -719,7 +728,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -749,7 +758,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -779,7 +788,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -804,7 +813,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -829,7 +838,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -893,6 +902,31 @@
 			],
 			"x": 34.0,
 			"y": 18.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "defeat_corrupted_tech",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "333958757854567683",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 40,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_040",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 35.0,
+			"y": 31.0
 		}
 	],
 	"map_savepoints": [
@@ -3298,7 +3332,7 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
+			"t06_000",
 			"t06_000",
 			"t06_000",
 			"t06_000",
@@ -3364,8 +3398,8 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
 			"t06_000",
+			"t00_012",
 			"t06_000",
 			"t06_000",
 			"t06_000",
@@ -3430,7 +3464,7 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
+			"t06_000",
 			"t06_000",
 			"t06_000",
 			"t06_000",

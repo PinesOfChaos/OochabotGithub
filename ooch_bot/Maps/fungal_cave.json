@@ -8,6 +8,15 @@
 			"width": 2.0,
 			"x": 45.0,
 			"y": 25.0
+		},
+		{
+			"event_name": "ev_warp_hub_confirm",
+			"flag_kill": "",
+			"flag_required": "corrupt_fungal_defeat",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 46.0,
+			"y": 24.0
 		}
 	],
 	"map_info": {
@@ -18,7 +27,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 320.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -96,7 +105,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "caves_quest_end",
@@ -122,7 +131,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 230.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -167,7 +176,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 197.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -228,7 +237,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -289,7 +298,7 @@
 		},
 		{
 			"aggro_range": 0.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "corrupt_fungal_defeat",
 			"flag_kill": "",
@@ -351,7 +360,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -381,7 +390,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -411,7 +420,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "obtained_sporefeather",
 			"flag_kill": "",
@@ -441,7 +450,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -484,7 +493,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -514,7 +523,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -545,6 +554,31 @@
 			"team": [],
 			"x": 19.0,
 			"y": 29.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "corrupt_fungal_defeat",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "485987465776454421",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 40,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_040",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 24.0
 		}
 	],
 	"map_savepoints": [
@@ -3683,8 +3717,8 @@
 			"t01_006",
 			"t01_006",
 			"t01_006",
-			"t01_006",
 			"t01_003",
+			"t01_000",
 			"t01_001",
 			"t01_000",
 			"t01_000",
@@ -3748,8 +3782,8 @@
 			"t01_006",
 			"t01_006",
 			"t01_006",
-			"t01_006",
 			"t01_003",
+			"t00_012",
 			"t01_000",
 			"t01_000",
 			"t01_000",
@@ -3815,8 +3849,8 @@
 			"t01_006",
 			"t01_006",
 			"t01_006",
-			"t01_006",
 			"t01_003",
+			"t01_000",
 			"t01_001",
 			"t01_000",
 			"t01_000",

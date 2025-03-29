@@ -410,7 +410,7 @@ module.exports = {
         create_tile(`c_037`,       Tile.Int,      applicationEmojis ); // Switch (Red)
         create_tile(`c_038`,       Tile.Int,      applicationEmojis ); // Switch (Blue)
         create_tile(`c_039`,       Tile.Npc,      applicationEmojis ); // Explorer Dave
-
+        create_tile(`c_040`,       Tile.Int,      applicationEmojis ); // Inactive Teleporter
 
         //#endregion
 
