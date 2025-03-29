@@ -308,7 +308,7 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Shopkeeper Paula",
 			"npc_id": "661049068811300240",
 			"post_combat_dialogue": "Ah, that's better.\nI think I'll go bother her after I get some rest in!",
 			"pre_combat_dialogue": "My coworker is acting all weird!\nHave you seen how she's running that shop?\nI need to cool my head. How about a quick battle to pass the time?",
@@ -486,9 +486,9 @@
 			"y": 23.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "ev_moldire_boss",
 			"flag_required": "",
@@ -499,12 +499,12 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 40,
+			"sprite": 40.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_040",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 56.0,
