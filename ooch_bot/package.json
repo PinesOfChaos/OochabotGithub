@@ -16,6 +16,10 @@
     "allowJs": true,
     "checkJs": false
   },
+  "scripts": {
+    "start": "node .",
+    "start_playtest": "./win_start.bat"
+  },
   "devDependencies": {
     "typescript": "^5.2.2"
   }

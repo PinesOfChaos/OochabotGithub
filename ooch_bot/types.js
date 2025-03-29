@@ -137,7 +137,8 @@ const TameStatus = {
     Angry : '😠 Angry',
     Neutral : '😐 Neutral',
     Happy: '😄 Happy',
-    Loyal: '😍 Loyal'
+    Loyal: '🫡 Loyal',
+    BestFriend: '😍 Best Friends'
 }
 
 const StanceForms = {
@@ -499,18 +500,16 @@ const MoveTarget = {
     None :  3
 }
 
-const TileEmoteGuildsArray = [
-    '1023031950878965812',
-    '1096230798149025825',
-    '1251726480652632114',
-    '1256328235122167949'
-]
+const BattleAi = {
+    Basic : 0,
+    Smart : 1
+}
 
 module.exports = { 
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
-    ItemType, Tile, Zone, TileEmoteGuildsArray, MoveTag,
+    ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
     BattleAction, BattleInput, FieldEffect, GenmapTheme
 };

@@ -1,5 +1,5 @@
 const db = require("./db")
-const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather, Item } = require('./types.js');
+const { Flags, PlayerState, Tile, Zone, ItemType, UserType, Weather, Item, StanceForms } = require('./types.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const wait = require('wait');
 const _ = require('lodash');
@@ -384,18 +384,17 @@ functions = {
                     playery -= ymove;
                     db.profile.set(user_id, PlayerState.Shop, 'player_state');
 
-
                     let profile_flags = db.profile.get(user_id, 'flags');
                     let shopBuildOptions = [
                         //Potions
-                        [Item.Potion,           false] //Potion
+                        [Item.Potion,           false], //Potion
                         [Item.HiPotion,         'to_lava_town_begin'], //Med Potion
-                        [Item.MaxPotion,        'PLACEHOLDER']//Hi Potion
+                        [Item.MaxPotion,        'PLACEHOLDER'], //Hi Potion
 
                         //Prisms
-                        [Item.Prism,            false] //Prism
+                        [Item.Prism,            false], //Prism
                         [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
-                        [Item.GrandPrism,       'PLACEHOLDER'] //Grand Prism
+                        [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
 
                         //Status Clear
                         [Item.Eyedrops,         'cromet_quest_end'], //Eyedrops
@@ -418,15 +417,6 @@ functions = {
                             }
                         }
                     }
-
-                    /* Old code, this used the global_shop_items which made things disorganized
-                    if (obj.type == 'default' || obj.type == null) {
-                        shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
-                        //TODO make this add values depending on the user's flags (this allows for more control over the order of the items offered)
-                    }
-                    if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
-                    */
-
                     
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = [...new Set(shopSelectOptions)];
@@ -550,12 +540,16 @@ functions = {
                                 
                                 await m.delete().catch(() => {});
                                 let followUpMsg;
-
-                                shopSelectOptions = [];
-                                if (obj.type == 'default' || obj.type == null) {
-                                    shopSelectOptions = db.profile.get(user_id, 'global_shop_items');
-                                }
+                                    
+                                let shopSelectOptions = [];
                                 if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
+                                if (obj.type == 'default' || obj.type == null) {
+                                    for(let shopOption of shopBuildOptions){
+                                        if(profile_flags.includes(shopOption[1]) || shopOption[1] === false){
+                                            shopSelectOptions.push(shopOption[0]);
+                                        }
+                                    }
+                                }
                                 shopSelectOptions = shopSelectOptions.flat(1);
                                 shopSelectOptions = [...new Set(shopSelectOptions)];
 
@@ -996,7 +990,16 @@ functions = {
             type: db.monster_data.get(ooch_id, 'type'),
             og_type: db.monster_data.get(ooch_id, 'type'),
             doom_timer: 4, // Used for the doomed status effect
-            emote: db.monster_data.get(ooch_id, 'emote')
+            emote: db.monster_data.get(ooch_id, 'emote'),
+
+            stance: StanceForms.Base,
+            stance_cooldown: 0,
+            
+            tame_value: 0,
+            tame_treat_cooldown: 0,
+            tame_pet_cooldown: 0,
+            tame_walk_cooldown: 0,
+            tame_play_cooldown: 0
             
         }
 

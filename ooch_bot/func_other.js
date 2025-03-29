@@ -96,7 +96,7 @@ let functions = {
         for (let move_id of ooch.moveset) {
             let move = db.move_data.get(move_id)
             move.accuracy = Math.abs(move.accuracy);
-            if (move.accuracy == -1) move.accuracy = 100;
+            if (move.accuracy == 1) move.accuracy = 100;
             if (move.damage !== 0) {
                 moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
             } else {
@@ -118,8 +118,10 @@ let functions = {
             tame_status = TameStatus.Neutral;
         } else if (_.inRange(tame_status, 121, 160)) {
             tame_status = TameStatus.Happy;
-        } else if (_.inRange(tame_status, 161, 200) || tame_status > 200) {
+        } else if (_.inRange(tame_status, 161, 199)) {
             tame_status = TameStatus.Loyal;
+        } else if (tame_value >= 200) {
+            tame_status = TameStatus.BestFriend;
         }
 
         infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
@@ -133,7 +135,6 @@ let functions = {
         infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
 
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
-            // TODO: Hide this if you haven't caught it.
             infoEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
         }
 

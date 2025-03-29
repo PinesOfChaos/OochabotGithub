@@ -226,9 +226,16 @@ module.exports = {
             for (let i = 0; i < ooch_party.length; i++) {
                 let evoLvl = db.monster_data.get(ooch_party[i].id, 'evo_lvl');
                 let canEvolve = false;
+
                 if (ooch_party[i].level >= evoLvl && evoLvl != -1) {
                     canEvolve = true;
                 }
+
+                // Special condition for Gnayme, must have a nickname to evolve
+                if (ooch_party[i].id == 109 && ooch_party[i].name == ooch_party[i].nickname) { 
+                    canEvolve = false;
+                }
+
                 // If i is 0 or 1, add components to party
                 // If i is 2 or 3, add components to party_2
                 // This is to make a 2x2 table of buttons, lol
@@ -536,6 +543,11 @@ module.exports = {
                 if (selected_ooch.level >= evoLvl && evoLvl != -1) {
                     party_extra_buttons.components[2].setDisabled(false);
                 } else {
+                    party_extra_buttons.components[2].setDisabled(true);
+                }
+
+                // Special condition for Gnayme, must have a nickname to evolve
+                if (selected_ooch.id == 109 && selected_ooch.name == selected_ooch.nickname) { 
                     party_extra_buttons.components[2].setDisabled(true);
                 }
 

@@ -4363,9 +4363,9 @@
 			"y": 23.0
 		},
 		{
-			"connect_map": "",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_map": "flower_fields",
+			"connect_x": 6.0,
+			"connect_y": 15.0,
 			"x": 38.0,
 			"y": 23.0
 		}

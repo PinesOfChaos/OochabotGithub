@@ -2,11 +2,11 @@
 
 const db = require("./db.js")
 const wait = require('wait');
-const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder, ActionRow } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder, ActionRow, AttachmentBuilder, Attachment } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms } = require("./types.js");
+const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi } = require("./types.js");
 const { Status } = require('./types.js');
-const { ooch_info_embed, check_chance } = require("./func_other.js");
+const { ooch_info_embed, check_chance, get_ooch_art } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 const closeButton = new ActionRowBuilder()
     .addComponents(
@@ -54,6 +54,7 @@ let functions = {
         let guild_id = false;
         let user_id = false;
         let heal_inv = [], prism_inv = [], other_inv = [], stance_list = [StanceForms.Base];
+        let battle_ai = BattleAi.Basic;
         
         switch (type) {
             case UserType.Wild:
@@ -77,6 +78,7 @@ let functions = {
                     party_generated.push(ooch);  
                 }
 
+                battle_ai = options.battle_ai;
                 name = options.name;
                 oochabux = options.coin;
                 if (oochabux == 0) {
@@ -154,6 +156,7 @@ let functions = {
             name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
             battle_sprite: battle_sprite,
             user_id: user_id,
+            battle_ai : battle_ai,
             heal_inv: heal_inv,
             prism_inv: prism_inv,
             other_inv: other_inv,
@@ -526,39 +529,47 @@ let functions = {
                 target_user = _.sample(users_enemy);
                 target_mon = target_user.party[target_user.active_slot];
                 move_intentions = functions.get_move_intention(moves, target_mon.type);
-                move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)];
-                
-                functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
-            break;
-            case UserType.NPCSmart:
-                target_user = _.sample(users_enemy);
-                target_mon = target_user.party[target_user.active_slot];
-                move_intentions = functions.get_move_intention(moves, target_mon.type);
-                let good_moves = move_intentions.filter((move) => move.priority > 1);
-                let okay_moves = move_intentions.filter((move) => move.priority == 1);
-                let okay_moves_damage = okay_moves.filter((move) => move.damge > 0)
-                let stat_stages = active_mon.stats.atk_mul + active_mon.stats.def_mul + active_mon.stats.spd_mul;
-                
-                if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
-                    //Switch if there are no acceptable attacking moves and there is a mon we can switch to
-                    functions.new_battle_action_switch(battle_data, user_obj.user_index, party_alive_slots[_.random(party_alive_slots.length - 1)]);
-                }
-                else{
-                    let stance_options = functions.get_stance_options(active_mon);
-                    if((stance_options.length > 0) && (user_obj.stance_cooldown <= 0)){
-                        let stance_to = _.sample(stance_options).id;
-                        functions.new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);
-                    }
 
-                    if(good_moves.length > 0 || okay_moves.length > 0){
-                        move_id = _.random(10) < 7 ? good_moves[0] : okay_moves[0];
-                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                switch (user_obj.battle_ai) {
+                case BattleAi.Basic: 
+                    move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)].move_id;
+                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                break;
+                case BattleAi.Smart:
+                    let good_moves = move_intentions.filter((move) => move.priority > 1);
+                    let okay_moves = move_intentions.filter((move) => move.priority == 1);
+                    let okay_moves_damage = okay_moves.filter((move) => move.damage > 0)
+                    let stat_stages = active_mon.stats.atk_mul + active_mon.stats.def_mul + active_mon.stats.spd_mul;
+
+                    console.log(good_moves, okay_moves, okay_moves_damage)
+                    
+                    if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
+                        //Switch if there are no acceptable attacking moves and there is a mon we can switch to
+                        functions.new_battle_action_switch(battle_data, user_obj.user_index, party_alive_slots[_.random(party_alive_slots.length - 1)]);
                     }
                     else{
-                        move_id = move_intentions[_.random(move_intentions.length - 1)];
-                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        let stance_options = functions.get_stance_options(active_mon);
+                        console.log(active_mon);
+                        if((stance_options.length > 0) && (active_mon.stance_cooldown <= 0)){
+                            let stance_to = _.sample(stance_options).id;
+                            functions.new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);
+                        }
+
+                        
+                        if(good_moves.length > 0 && (_.random(10) < 7)) {
+                            move_id =  good_moves[0].move_id;
+                            functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        } else if (okay_moves.length > 0) {
+                            move_id = okay_moves[0].move_id;
+                            functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        } else {
+                            move_id = move_intentions[_.random(move_intentions.length - 1)].move_id;
+                            functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        }
                     }
-                }
+                break;
+            }
+            
             break;
         }
     },
@@ -581,7 +592,6 @@ let functions = {
         
         moves_to_sort = _.shuffle(moves_to_sort);
         let moves_sorted = moves_to_sort.sort((a, b) => b.priority - a.priority);
-        moves_sorted = moves_sorted.map(mv => mv.move_id);
 
         return(moves_sorted);
     },
@@ -759,8 +769,14 @@ let functions = {
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId('info')
-                        .setLabel('View Battle Info')
+                        .setLabel('Info')
                         .setEmoji('📒')
+                        .setStyle(ButtonStyle.Secondary),
+                ) .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('shift_stance')
+                        .setLabel('Stance')
+                        .setEmoji('🤺')
                         .setStyle(ButtonStyle.Secondary),
                 )
                 
@@ -808,14 +824,6 @@ let functions = {
                     .setLabel('View Moves Info')
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji('🗒️'),
-            )
-
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('shift_stance')
-                    .setLabel(`Change Stance`)
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji('🤺'),
             )
             
         //#endregion
@@ -903,7 +911,7 @@ let functions = {
                             )
                         }
 
-                        moveBackButton.components[2].setDisabled((activeOoch.stance_cooldown != 0))
+                        inputRow3.components[1].setDisabled((activeOoch.stance_cooldown != 0))
         
                         // Switch message to be about using the move input
                         await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
@@ -1006,10 +1014,9 @@ let functions = {
                         activeOoch.stance_cooldown = 3;
 
                         functions.new_battle_action_stance_change(battle_data, user.user_index, stance_id);
-                        moveBackButton.components[2].setDisabled(true)
-        
-                        // Switch message to be about using the move input
-                        await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
+                        inputRow3.components[1].setDisabled(true)
+
+                        await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
 
                     } else if (customId == BattleInput.Switch) {
 
@@ -1365,14 +1372,26 @@ let functions = {
 
             //Send the text to each of the user's threads
             let author_obj = false;
+            let battle_sprite_icon = null;
+            let battle_sprite_files = [];
+
             if (user.is_player) {
                 let user_data = await botClient.users.fetch(user.user_id);
                 author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, iconURL: `${user_data.displayAvatarURL()}`}
             } else {
-                author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}` }
+                if (user.battle_sprite != undefined && user.battle_sprite != false) {
+                    battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
+                    battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
+                } else {
+                    battle_sprite_files = [get_ooch_art(user.party[user.active_slot].name)]
+                    battle_sprite_icon = `attachment://${_.toLower(user.party[user.active_slot].name)}.png`;
+                }
+
+                author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, 
+                            iconURL: battle_sprite_icon }
             }
 
-            await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)]});
+            await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)], files: battle_sprite_files });
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
@@ -2115,7 +2134,15 @@ let functions = {
 
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
-                active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
+                if (active_ooch.tame_value < 200) {
+                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
+                    if (active_ooch.tame_value == 200) {
+                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
+                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
+                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
+                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
+                    }
+                }
             }
 
             for(let [i, party_ooch] of user.party.entries()){
@@ -2165,6 +2192,15 @@ let functions = {
                             if (i == other_user.active_slot) { 
                                 ooch_party[i].current_exp += exp_main;
                                 ooch_party[i].tame_value = _.clamp(ooch_party[i].tame_value + 2, 0, 200);
+                                if (active_ooch.tame_value < 200) {
+                                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
+                                    if (active_ooch.tame_value == 200) {
+                                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
+                                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
+                                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
+                                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
+                                    }
+                                }
                             } 
                             else { 
                                 ooch_party[i].current_exp += exp_given; 
@@ -2532,6 +2568,16 @@ let functions = {
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
                 ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
+                if (active_ooch.tame_value < 200) {
+                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
+                    if (active_ooch.tame_value == 200) {
+                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
+                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
+                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
+                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
+                    }
+                }
+
                 return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
             } else if (in_battle == false) {
                 ooch.alive = true;
@@ -2559,8 +2605,7 @@ let functions = {
             let return_string = false;
             if (item_data.potency !== 'All') {
                 ooch.status_effects = ooch.status_effects.filter(v => v != item_data.potency);
-                return_string = `\n${ooch.emote} ${ooch.nickname} recovered from its ${item.potency}.`
-                    
+                return_string = `\n${ooch.emote} ${ooch.nickname} recovered from its ${item_data.potency}.`
             } else {
                 ooch.status_effects = [];
                 return_string = `\n${ooch.emote} ${ooch.nickname} had its status effects removed.`
@@ -3406,6 +3451,8 @@ let functions = {
             active_ooch = user.party[user.active_slot];
             hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`;
             hp_string += functions.generate_hp_bar(active_ooch, 'plr');
+            hp_string += `\n`;
+            hp_string += `\`Stance: ${db.stance_data.get(active_ooch.stance, 'name')}\``
             hp_string += `\n`;
         }
 
