@@ -6,13 +6,18 @@ var event_data = {
 	"sprite_combat" : "", #previously sprite_special
 	"team" : [], #previously party
 	"coin" : 0,
-	"is_catchable" : false
+	"is_catchable" : false,
+	"battle_ai" : Global.BATTLE_AI_BASIC,
+	"user_type" : 2 #npc trainer by default
 }
 
 @onready var line_edit_name: LineEdit = $HBoxContainer/LineEditName
 @onready var option_button_sprite: OptionButton = $HBoxContainer/OptionButtonSprite
 @onready var line_edit_sprite_special: LineEdit = $HBoxContainer/LineEditSpriteSpecial
 @onready var tab_container: TabContainer = $TabContainer
+@onready var check_button_catchable: CheckButton = $HBoxContainer2/CheckButtonCatchable
+@onready var option_button_battle_ai: OptionButton = $HBoxContainer2/OptionButtonBattleAI
+@onready var option_button_user_type: OptionButton = $HBoxContainer2/OptionButtonUserType
 
 @onready var slot_0: VBoxContainer = $TabContainer/Slot0
 @onready var slot_1: VBoxContainer = $TabContainer/Slot1
@@ -32,6 +37,10 @@ func _ready() -> void:
 	var slots = [slot_0, slot_1, slot_2, slot_3]
 	line_edit_name.text = event_data.name
 	line_edit_sprite_special.text = event_data.sprite_combat
+	
+	check_button_catchable.button_pressed = event_data.is_catchable
+	option_button_battle_ai.selected = event_data.battle_ai
+	
 	
 	var tile_data
 	var tile_string
@@ -71,3 +80,15 @@ func save():
 		if slot.slot_data.slot_enabled:
 			event_data.team.push_back(slot.slot_data)
 		
+
+
+func _on_option_button_battle_ai_item_selected(index: int) -> void:
+	event_data.battle_ai = index
+
+
+func _on_check_button_catchable_toggled(toggled_on: bool) -> void:
+	event_data.is_catchable = toggled_on
+
+
+func _on_option_button_user_type_item_selected(index: int) -> void:
+	event_data.user_type = index

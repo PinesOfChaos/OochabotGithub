@@ -58,11 +58,28 @@ let functions = {
         
         switch (type) {
             case UserType.Wild:
-                let ooch = create_ooch(options.ooch_id, options.ooch_level);
-                party = [ooch];
-                is_catchable = true;
-                team_id = options.team_id;
-                oochabux = _.random(5, 40);
+                
+                if(options.hasOwnProperty("team")){ //This mon is created via an event
+                    let ooch_base = options.team[0];
+                    let ooch = create_ooch(
+                        ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
+                        ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv );
+                    party = [ooch];
+                    is_catchable = true;
+                    oochabux = options.coin;
+                    team_id = options.team_id;
+
+                }
+                else{
+                    let ooch = create_ooch(options.ooch_id, options.ooch_level);
+                    party = [ooch];
+                    is_catchable = true;
+                    team_id = options.team_id;
+                    oochabux = _.random(5, 40);
+                }
+                
+                    
+                
             break;
             case UserType.NPCTrainer:
                 let party_base = options.team;

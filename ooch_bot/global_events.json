@@ -427,8 +427,9 @@
 		[
 			1.0,
 			{
+				"battle_ai": 0.0,
 				"coin": 0.0,
-				"is_catchable": false,
+				"is_catchable": true,
 				"name": "",
 				"sprite": 13.0,
 				"sprite_combat": "",
@@ -452,7 +453,8 @@
 						"slot_enabled": true,
 						"spd_iv": 5.0
 					}
-				]
+				],
+				"user_type": 1
 			}
 		],
 		[
@@ -519,7 +521,7 @@
 			}
 		],
 		[
-			2.0,
+			2,
 			{
 				"text": "ev_moldire_boss"
 			}
@@ -1461,15 +1463,15 @@
 						"event": "ev_warp_hub",
 						"flag": "",
 						"price": 0.0,
-						"style": 2,
+						"style": 2.0,
 						"text": "Yes"
 					},
 					{
 						"emote": "",
 						"event": "",
 						"flag": "",
-						"price": 0,
-						"style": 3,
+						"price": 0.0,
+						"style": 3.0,
 						"text": "No"
 					}
 				],
@@ -1501,15 +1503,15 @@
 						"event": "ev_warp_lava_path",
 						"flag": "",
 						"price": 0.0,
-						"style": 2,
+						"style": 2.0,
 						"text": "Yes"
 					},
 					{
 						"emote": "",
 						"event": "",
 						"flag": "",
-						"price": 0,
-						"style": 3,
+						"price": 0.0,
+						"style": 3.0,
 						"text": "No"
 					}
 				],

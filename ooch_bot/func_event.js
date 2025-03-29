@@ -130,7 +130,8 @@ let functions = {
             }
 
             obj_content.team_id = 1;
-            let trainerObj = await generate_battle_user(UserType.NPCTrainer, obj_content);
+            let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
+            let trainerObj = await generate_battle_user(user_type, obj_content);
             let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
             let map_data = db.maps.get(profile_data.location_data.area);
             let battle_bg = map_data.map_info.map_battleback;
