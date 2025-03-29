@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://br25d337c8pqg" path="res://event_editor.gd" id="1_llprn"]
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" groups=["root"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,6 +43,7 @@ layout_mode = 2
 
 [node name="CheckButtonRepeatable" type="CheckButton" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+button_pressed = true
 text = "Repeatable:"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]

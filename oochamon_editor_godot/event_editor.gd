@@ -14,23 +14,22 @@ var event_repeatable = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
+	resize()
 	get_tree().get_root().size_changed.connect(resize)
 	refresh_events_list()
 	
 	
 	if Global.DataEvents.has(event_name):
-		check_button_repeatable.button_pressed = true
 		event_data = Global.DataEvents[event_name]
 		
 		for part in event_data:
-			if(part.has("text") and part.text == event_name):
+			if(typeof(part[1]) == TYPE_STRING) or (part[1].has("text") and part[1].text == event_name):
+				print("event not repeatable")
+				#this node tells the event to be not repeatable, but should not create segment
 				event_repeatable = false
-				check_button_repeatable.button_pressed = false
+				check_button_repeatable.set_pressed_no_signal(false)
 			else:
 				new_node(part[0], part[1])
-			
-			
 			
 			print(part[0])
 			print(part[1])
@@ -95,7 +94,9 @@ func _on_new_objective_pressed() -> void:
 
 func _on_new_option_pressed() -> void:
 	new_node(Global.EVENT_OPTIONS)
-
+	
+func _on_new_wait_pressed() -> void:
+	new_node(Global.EVENT_WAIT)
 
 func _on_button_save_pressed() -> void:
 	var data = []
@@ -109,7 +110,7 @@ func _on_button_save_pressed() -> void:
 			data.push_back(child_data)
 			
 	if(!event_repeatable):
-		data.push_back([Global.EVENT_FLAG, event_name])
+		data.push_back([Global.EVENT_FLAG, {"text" : event_name}])
 	Global.DataEvents[event_name] = data
 	
 	var path = Global.WorkingDir.split('/Maps')[0] + "/global_events.json"
@@ -139,7 +140,3 @@ func _on_button_new_pressed() -> void:
 	_on_button_save_pressed()
 	get_tree().change_scene_to_file("res://event_editor.tscn")
 	queue_free()
-
-
-func _on_new_wait_pressed() -> void:
-	new_node(Global.EVENT_WAIT)

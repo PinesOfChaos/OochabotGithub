@@ -73,7 +73,9 @@
 		],
 		[
 			2,
-			"ev_corrupt_fungal_defeat"
+			{
+				"text": "ev_corrupt_fungal_defeat"
+			}
 		]
 	],
 	"ev_corrupt_tech_defeat": [
@@ -163,7 +165,9 @@
 		],
 		[
 			2,
-			"ev_corrupt_tech_defeat"
+			{
+				"text": "ev_corrupt_tech_defeat"
+			}
 		]
 	],
 	"ev_cromet_defeated": [
@@ -253,7 +257,9 @@
 		],
 		[
 			2,
-			"ev_cromet_defeated"
+			{
+				"text": "ev_cromet_defeated"
+			}
 		]
 	],
 	"ev_intro": [
@@ -399,7 +405,9 @@
 		],
 		[
 			2,
-			"ev_intro"
+			{
+				"text": "ev_intro"
+			}
 		]
 	],
 	"ev_moldire_boss": [
@@ -539,7 +547,9 @@
 		],
 		[
 			2,
-			"ev_moldire_boss"
+			{
+				"text": "ev_moldire_boss"
+			}
 		]
 	],
 	"ev_moldire_boss_fast_travel": [
@@ -554,7 +564,9 @@
 		],
 		[
 			2,
-			"ev_moldire_boss_fast_travel"
+			{
+				"text": "ev_moldire_boss_fast_travel"
+			}
 		]
 	],
 	"ev_rival_intro": [
@@ -681,7 +693,9 @@
 		],
 		[
 			2,
-			"ev_rival_intro"
+			{
+				"text": "ev_rival_intro"
+			}
 		]
 	],
 	"ev_save_tutorial": [
@@ -732,7 +746,9 @@
 		],
 		[
 			2,
-			"ev_save_tutorial"
+			{
+				"text": "ev_save_tutorial"
+			}
 		]
 	],
 	"ev_thunderpeak_down": [
@@ -913,7 +929,9 @@
 		],
 		[
 			2,
-			"ev_trapped_in_tunnel"
+			{
+				"text": "ev_trapped_in_tunnel"
+			}
 		]
 	],
 	"ev_tutorial_1": [
@@ -945,7 +963,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_1"
+			{
+				"text": "ev_tutorial_1"
+			}
 		]
 	],
 	"ev_tutorial_2": [
@@ -990,7 +1010,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_2"
+			{
+				"text": "ev_tutorial_2"
+			}
 		]
 	],
 	"ev_tutorial_3": [
@@ -1061,7 +1083,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_3"
+			{
+				"text": "ev_tutorial_3"
+			}
 		]
 	],
 	"ev_tutorial_4": [
@@ -1119,7 +1143,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_4"
+			{
+				"text": "ev_tutorial_4"
+			}
 		]
 	],
 	"ev_tutorial_5": [
@@ -1199,7 +1225,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_5"
+			{
+				"text": "ev_tutorial_5"
+			}
 		]
 	],
 	"ev_tutorial_6": [
@@ -1296,7 +1324,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_6"
+			{
+				"text": "ev_tutorial_6"
+			}
 		]
 	],
 	"ev_tutorial_7": [
@@ -1354,7 +1384,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_7"
+			{
+				"text": "ev_tutorial_7"
+			}
 		]
 	],
 	"ev_tutorial_8": [
@@ -1427,7 +1459,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_8"
+			{
+				"text": "ev_tutorial_8"
+			}
 		]
 	],
 	"ev_tutorial_begin": [
@@ -1442,7 +1476,9 @@
 		],
 		[
 			2,
-			"ev_tutorial_begin"
+			{
+				"text": "ev_tutorial_begin"
+			}
 		]
 	]
 }

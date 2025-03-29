@@ -12,8 +12,6 @@ func _ready() -> void:
 	print(event_slot_type == Global.EVENT_DIALOG)
 	print([event_slot_type, Global.EVENT_DIALOG])
 	var spawn_child = ""
-	
-
 	if event_slot_type == Global.EVENT_DIALOG:
 		label.text = "Dialog"
 		spawn_child = "res://event_type_dialog.tscn"
@@ -39,13 +37,19 @@ func _ready() -> void:
 		label.text = "Wait"
 		spawn_child = "res://event_type_wait.tscn"
 	
-	print(label.text)
 	if(spawn_child != ""):
-		var _load = load(spawn_child)
-		child_node = _load.instantiate()
-		child_node.event_data.merge(event_data, true)
-		child_node.owner = box_info
-		box_info.add_child(child_node)
+		if typeof(event_data) == TYPE_STRING:
+			event_data = {"text" : event_data}
+			
+		if event_data.has("text") and event_data.text.left(3) == "ev_":
+			get_tree().get_nodes_in_group("root")[0].check_button_repeatable.set_pressed_no_signal(false)
+			queue_free()
+		else:
+			var _load = load(spawn_child)
+			child_node = _load.instantiate()
+			child_node.event_data.merge(event_data, true)
+			child_node.owner = box_info
+			box_info.add_child(child_node)
 	
 	box_container.queue_sort()
 	queue_sort()
