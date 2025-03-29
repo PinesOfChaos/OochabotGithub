@@ -1,1066 +1,1118 @@
 {
 	"map_events": [],
+	"map_info": {
+		"map_battleback": "battle_bg_lava_fields",
+		"map_generated": false,
+		"map_name": "Everchange Cave"
+	},
 	"map_npcs": [
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "804601556438008808Everchange Cave",
-			"pre_combat_dialogue": "Ok, but don't run away this time!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Ok, but don't run away this time!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 72,
-					"level": 18,
-					"nickname": "Durble",
-					"ability": 8,
+					"ability": 8.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 72.0,
+					"item": -1.0,
+					"level": 18.0,
 					"moveset": [
-						1,
-						3,
-						85,
-						41
+						1.0,
+						3.0,
+						85.0,
+						41.0
 					],
-					"hp_iv": 15,
-					"atk_iv": 12,
-					"def_iv": 15,
-					"spd_iv": 20,
+					"nickname": "Durble",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 23,
-					"level": 19,
-					"nickname": "Meduslime",
-					"ability": 22,
+					"ability": 22.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 23.0,
+					"item": -1.0,
+					"level": 19.0,
 					"moveset": [
-						1,
-						29,
-						24,
-						116
+						1.0,
+						29.0,
+						24.0,
+						116.0
 					],
-					"hp_iv": 15,
-					"atk_iv": 11,
-					"def_iv": 17,
-					"spd_iv": 14,
+					"nickname": "Meduslime",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 44,
-			"y": 12
+			"x": 44.0,
+			"y": 12.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "467551444482103298Everchange Cave",
-			"pre_combat_dialogue": "I know your IP address, I bet it's 192.168.1.1!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "I know your IP address, I bet it's 192.168.1.1!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 29,
-					"level": 20,
-					"nickname": "Nucleorb",
-					"ability": 8,
+					"ability": 8.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 29.0,
+					"item": -1.0,
+					"level": 20.0,
 					"moveset": [
-						29,
-						68,
-						111,
-						34
+						29.0,
+						68.0,
+						111.0,
+						34.0
 					],
-					"hp_iv": 14,
-					"atk_iv": 14,
-					"def_iv": 13,
-					"spd_iv": 20,
+					"nickname": "Nucleorb",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 39,
-			"y": 42
+			"x": 39.0,
+			"y": 42.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "487975295391088942Everchange Cave",
-			"pre_combat_dialogue": "*Is too busy consuming fistfuls of sand to say anything*",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "*Is too busy consuming fistfuls of sand to say anything*",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 19,
-					"level": 21,
-					"nickname": "Torchoir",
-					"ability": 20,
+					"ability": 20.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 19.0,
+					"item": -1.0,
+					"level": 21.0,
 					"moveset": [
-						4,
-						61,
-						96,
-						110
+						4.0,
+						61.0,
+						96.0,
+						110.0
 					],
-					"hp_iv": 14,
-					"atk_iv": 17,
-					"def_iv": 11,
-					"spd_iv": 13,
+					"nickname": "Torchoir",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 27,
-			"y": 16
+			"x": 27.0,
+			"y": 16.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "354703928204399804Everchange Cave",
-			"pre_combat_dialogue": "Ok, but don't run away this time!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Ok, but don't run away this time!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 44,
-					"level": 17,
+					"ability": 9.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 44.0,
+					"item": -1.0,
+					"level": 17.0,
+					"moveset": [
+						1.0,
+						47.0,
+						109.0,
+						5.0
+					],
 					"nickname": "Solidifyr",
-					"ability": 9,
-					"moveset": [
-						1,
-						47,
-						109,
-						5
-					],
-					"hp_iv": 19,
-					"atk_iv": 10,
-					"def_iv": 20,
-					"spd_iv": 14,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 21,
-					"level": 18,
+					"ability": 1.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 21.0,
+					"item": -1.0,
+					"level": 18.0,
+					"moveset": [
+						58.0,
+						45.0,
+						22.0,
+						53.0
+					],
 					"nickname": "Eluslug",
-					"ability": 1,
-					"moveset": [
-						58,
-						45,
-						22,
-						53
-					],
-					"hp_iv": 20,
-					"atk_iv": 17,
-					"def_iv": 15,
-					"spd_iv": 15,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 64,
-					"level": 17,
-					"nickname": "Phaegrim",
-					"ability": 1,
+					"ability": 1.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 64.0,
+					"item": -1.0,
+					"level": 17.0,
 					"moveset": [
-						1,
-						29,
-						18,
-						70
+						1.0,
+						29.0,
+						18.0,
+						70.0
 					],
-					"hp_iv": 14,
-					"atk_iv": 11,
-					"def_iv": 19,
-					"spd_iv": 16,
+					"nickname": "Phaegrim",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 26,
-			"y": 52
+			"x": 26.0,
+			"y": 52.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "543507561942359707Everchange Cave",
-			"pre_combat_dialogue": "It's a me, and I'm your problem now!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "It's a me, and I'm your problem now!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 10,
-					"level": 21,
-					"nickname": "Sparafura",
-					"ability": 13,
+					"ability": 13.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 10.0,
+					"item": -1.0,
+					"level": 21.0,
 					"moveset": [
-						64,
-						80,
-						35,
-						97
+						64.0,
+						80.0,
+						35.0,
+						97.0
 					],
-					"hp_iv": 10,
-					"atk_iv": 20,
-					"def_iv": 19,
-					"spd_iv": 14,
+					"nickname": "Sparafura",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 25,
-			"y": 28
+			"x": 25.0,
+			"y": 28.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "311730199746572617Everchange Cave",
-			"pre_combat_dialogue": "Never give up, never surrender!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Never give up, never surrender!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 67,
-					"level": 17,
+					"ability": 15.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 67.0,
+					"item": -1.0,
+					"level": 17.0,
+					"moveset": [
+						1.0,
+						94.0,
+						95.0,
+						16.0
+					],
 					"nickname": "Culcoon",
-					"ability": 15,
-					"moveset": [
-						1,
-						94,
-						95,
-						16
-					],
-					"hp_iv": 14,
-					"atk_iv": 11,
-					"def_iv": 12,
-					"spd_iv": 19,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 115,
-					"level": 18,
+					"ability": 8.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 115.0,
+					"item": -1.0,
+					"level": 18.0,
+					"moveset": [
+						2.0,
+						88.0,
+						32.0,
+						77.0
+					],
 					"nickname": "Parmanyan",
-					"ability": 8,
-					"moveset": [
-						2,
-						88,
-						32,
-						77
-					],
-					"hp_iv": 14,
-					"atk_iv": 19,
-					"def_iv": 11,
-					"spd_iv": 15,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 25,
-					"level": 17,
-					"nickname": "Wizzap",
-					"ability": 26,
+					"ability": 26.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 25.0,
+					"item": -1.0,
+					"level": 17.0,
 					"moveset": [
-						1,
-						24,
-						4,
-						56
+						1.0,
+						24.0,
+						4.0,
+						56.0
 					],
-					"hp_iv": 16,
-					"atk_iv": 10,
-					"def_iv": 14,
-					"spd_iv": 14,
+					"nickname": "Wizzap",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 14,
-			"y": 17
+			"x": 14.0,
+			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "912313201504485170Everchange Cave",
-			"pre_combat_dialogue": "This isn't even my final form!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "This isn't even my final form!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_002",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 109,
-					"level": 20,
-					"nickname": "Gnayme",
-					"ability": 25,
+					"ability": 25.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 109.0,
+					"item": -1.0,
+					"level": 20.0,
 					"moveset": [
-						69,
-						56,
-						112,
-						85
+						69.0,
+						56.0,
+						112.0,
+						85.0
 					],
-					"hp_iv": 19,
-					"atk_iv": 17,
-					"def_iv": 11,
-					"spd_iv": 15,
+					"nickname": "Gnayme",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 54,
-			"y": 44
+			"x": 54.0,
+			"y": 44.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "563624085582731975Everchange Cave",
-			"pre_combat_dialogue": "Oh yeah, it's all Oochin' together!",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Oh yeah, it's all Oochin' together!",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 48,
-					"level": 19,
-					"nickname": "Polyplute",
-					"ability": 22,
+					"ability": 22.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 48.0,
+					"item": -1.0,
+					"level": 19.0,
 					"moveset": [
-						1,
-						60,
-						34,
-						70
+						1.0,
+						60.0,
+						34.0,
+						70.0
 					],
-					"hp_iv": 15,
-					"atk_iv": 11,
-					"def_iv": 12,
-					"spd_iv": 20,
+					"nickname": "Polyplute",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 78,
-					"level": 19,
-					"nickname": "Sapler",
-					"ability": 55,
+					"ability": 55.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 78.0,
+					"item": -1.0,
+					"level": 19.0,
 					"moveset": [
-						1,
-						58,
-						45,
-						61
+						1.0,
+						58.0,
+						45.0,
+						61.0
 					],
-					"hp_iv": 10,
-					"atk_iv": 19,
-					"def_iv": 19,
-					"spd_iv": 20,
+					"nickname": "Sapler",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 17,
-			"y": 38
+			"x": 17.0,
+			"y": 38.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "953882334381921815Everchange Cave",
-			"pre_combat_dialogue": "If not supposed to eat battery, why battery taste good?",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "If not supposed to eat battery, why battery taste good?",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 74,
-					"level": 19,
-					"nickname": "Rustail",
-					"ability": 35,
+					"ability": 35.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 74.0,
+					"item": -1.0,
+					"level": 19.0,
 					"moveset": [
-						1,
-						59,
-						41,
-						4
+						1.0,
+						59.0,
+						41.0,
+						4.0
 					],
-					"hp_iv": 13,
-					"atk_iv": 15,
-					"def_iv": 19,
-					"spd_iv": 19,
+					"nickname": "Rustail",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 37,
-			"y": 55
+			"x": 37.0,
+			"y": 55.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "591189734906243345Everchange Cave",
-			"pre_combat_dialogue": "Sometimes I like to stand in the middle of empty rooms and contemplate life.",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Sometimes I like to stand in the middle of empty rooms and contemplate life.",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_001",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 76,
-					"level": 18,
+					"ability": 52.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 76.0,
+					"item": -1.0,
+					"level": 18.0,
+					"moveset": [
+						1.0,
+						61.0,
+						59.0,
+						30.0
+					],
 					"nickname": "Chakreye",
-					"ability": 52,
-					"moveset": [
-						1,
-						61,
-						59,
-						30
-					],
-					"hp_iv": 11,
-					"atk_iv": 11,
-					"def_iv": 18,
-					"spd_iv": 18,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 113,
-					"level": 18,
+					"ability": 25.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 113.0,
+					"item": -1.0,
+					"level": 18.0,
+					"moveset": [
+						1.0,
+						96.0,
+						45.0,
+						99.0
+					],
 					"nickname": "Larvibe",
-					"ability": 25,
-					"moveset": [
-						1,
-						96,
-						45,
-						99
-					],
-					"hp_iv": 15,
-					"atk_iv": 18,
-					"def_iv": 12,
-					"spd_iv": 16,
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				},
 				{
-					"id": 67,
-					"level": 18,
-					"nickname": "Culcoon",
-					"ability": 45,
+					"ability": 45.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 67.0,
+					"item": -1.0,
+					"level": 18.0,
 					"moveset": [
-						63,
-						95,
-						87,
-						16
+						63.0,
+						95.0,
+						87.0,
+						16.0
 					],
-					"hp_iv": 19,
-					"atk_iv": 19,
-					"def_iv": 15,
-					"spd_iv": 13,
+					"nickname": "Culcoon",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 42,
-			"y": 32
+			"x": 42.0,
+			"y": 32.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Wandering Trainer",
 			"npc_id": "587504483994387911Everchange Cave",
-			"pre_combat_dialogue": "Hey, so I might be a little lost.",
 			"post_combat_dialogue": "*The trainer suddenly vanishes...*",
-			"sprite": 0,
+			"pre_combat_dialogue": "Hey, so I might be a little lost.",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"id": 117,
-					"level": 21,
-					"nickname": "Chewdee",
-					"ability": 67,
+					"ability": 67.0,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 117.0,
+					"item": -1.0,
+					"level": 21.0,
 					"moveset": [
-						1,
-						41,
-						59,
-						86
+						1.0,
+						41.0,
+						59.0,
+						86.0
 					],
-					"hp_iv": 15,
-					"atk_iv": 18,
-					"def_iv": 16,
-					"spd_iv": 13,
+					"nickname": "Chewdee",
 					"slot_enabled": true,
-					"item": -1
+					"spd_iv": 10.0
 				}
 			],
-			"x": 29,
-			"y": 42
+			"x": 29.0,
+			"y": 42.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 2,
-					"id": 14
+					"count": 2.0,
+					"id": 14.0
 				}
 			],
 			"name": "Chest",
 			"npc_id": "269330479710456853Everchange Cave",
-			"pre_combat_dialogue": "You opened the chest...",
 			"post_combat_dialogue": "",
-			"sprite": 0,
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 55,
-			"y": 30
+			"x": 55.0,
+			"y": 30.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 2,
-					"id": 11
+					"count": 2.0,
+					"id": 11.0
 				},
 				{
-					"count": 3,
-					"id": 3
+					"count": 3.0,
+					"id": 3.0
 				}
 			],
 			"name": "Chest",
 			"npc_id": "406152252459637222Everchange Cave",
-			"pre_combat_dialogue": "You opened the chest...",
 			"post_combat_dialogue": "",
-			"sprite": 0,
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 18,
-			"y": 30
+			"x": 18.0,
+			"y": 30.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
+			"dialogue_portrait": "",
 			"flag_given": "",
-			"flag_required": "",
 			"flag_kill": "",
-			"remove_on_finish": true,
+			"flag_required": "",
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 3,
-					"id": 3
+					"count": 3.0,
+					"id": 3.0
 				}
 			],
 			"name": "Chest",
 			"npc_id": "338618679426054976Everchange Cave",
-			"pre_combat_dialogue": "You opened the chest...",
 			"post_combat_dialogue": "",
-			"sprite": 0,
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 0.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
-			"dialogue_portrait": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 58,
-			"y": 54
+			"x": 58.0,
+			"y": 54.0
 		}
 	],
 	"map_savepoints": [],
 	"map_shops": [],
 	"map_spawn_zones": [
 		{
-			"x": 28,
-			"y": 28,
-			"height": 2,
-			"width": 2,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 10
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 10.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 72
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 72.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 35
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 35.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 28.0,
+			"y": 28.0
 		},
 		{
-			"x": 18,
-			"y": 49,
-			"height": 4,
-			"width": 2,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 109
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 109.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 23
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 23.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 15
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 15.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 18.0,
+			"y": 49.0
 		},
 		{
-			"x": 25,
-			"y": 39,
-			"height": 2,
-			"width": 2,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 81
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 81.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 119
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 119.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 74
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 74.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 25.0,
+			"y": 39.0
 		},
 		{
-			"x": 52,
-			"y": 32,
-			"height": 4,
-			"width": 4,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 14
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 14.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 37
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 37.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 38
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 38.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 52.0,
+			"y": 32.0
 		},
 		{
-			"x": 16,
-			"y": 39,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 85
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 85.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 99
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 99.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 83
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 83.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 16.0,
+			"y": 39.0
 		},
 		{
-			"x": 26,
-			"y": 39,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 111
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 111.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 24
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 24.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 76
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 76.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 26.0,
+			"y": 39.0
 		},
 		{
-			"x": 41,
-			"y": 12,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 91
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 91.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 80
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 80.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 38
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 38.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 41.0,
+			"y": 12.0
 		},
 		{
-			"x": 52,
-			"y": 43,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 108
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 108.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 48
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 48.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 64
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 64.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 52.0,
+			"y": 43.0
 		},
 		{
-			"x": 18,
-			"y": 30,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 85
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 85.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 10
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 10.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 55
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 55.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 18.0,
+			"y": 30.0
 		},
 		{
-			"x": 54,
-			"y": 22,
-			"height": 4,
-			"width": 4,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 30
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 30.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 76
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 76.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 13
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 13.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 54.0,
+			"y": 22.0
 		},
 		{
-			"x": 17,
-			"y": 47,
-			"height": 2,
-			"width": 2,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 101
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 101.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 66
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 66.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 72
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 72.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 17.0,
+			"y": 47.0
 		},
 		{
-			"x": 38,
-			"y": 26,
-			"height": 4,
-			"width": 2,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 23
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 23.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 87
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 87.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 72
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 72.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 38.0,
+			"y": 26.0
 		},
 		{
-			"x": 26,
-			"y": 14,
-			"height": 4,
-			"width": 4,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 38
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 38.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 9
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 9.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 93
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 93.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 26.0,
+			"y": 14.0
 		},
 		{
-			"x": 57,
-			"y": 11,
-			"height": 4,
-			"width": 2,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 60
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 60.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 87
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 87.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 111
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 111.0
 				}
-			]
+			],
+			"width": 2.0,
+			"x": 57.0,
+			"y": 11.0
 		},
 		{
-			"x": 52,
-			"y": 14,
-			"height": 2,
-			"width": 4,
+			"height": 2.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 109
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 109.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 50
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 50.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 15
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 15.0
 				}
-			]
+			],
+			"width": 4.0,
+			"x": 52.0,
+			"y": 14.0
 		},
 		{
-			"x": 53,
-			"y": 11,
-			"height": 4,
-			"width": 4,
+			"height": 4.0,
 			"spawn_slots": [
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 115
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 115.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 91
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 91.0
 				},
 				{
-					"min_level": 15,
-					"max_level": 20,
-					"ooch_id": 46
+					"max_level": 20.0,
+					"min_level": 15.0,
+					"ooch_id": 46.0
 				}
-			]
-		}
-	],
-	"map_transitions": [
-		{
-			"connect_map": "lava_path",
-			"connect_x": 3,
-			"connect_y": 52,
-			"x": 19,
-			"y": 52
+			],
+			"width": 4.0,
+			"x": 53.0,
+			"y": 11.0
 		}
 	],
 	"map_tiles": [
@@ -5289,14 +5341,14 @@
 			"t04_004"
 		]
 	],
-	"map_weather": [],
-	"map_info": {
-		"map_battleback": "battle_bg_lava_fields",
-		"map_name": "Everchange Cave",
-		"map_generated": true,
-		"map_failsafe_pos": {
-			"x": 56,
-			"y": 15
+	"map_transitions": [
+		{
+			"connect_map": "lava_path",
+			"connect_x": 3.0,
+			"connect_y": 52.0,
+			"x": 19.0,
+			"y": 52.0
 		}
-	}
+	],
+	"map_weather": []
 }

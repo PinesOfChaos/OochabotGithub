@@ -28,6 +28,8 @@ var STANCE_CORRUPT = 	5
 var STANCE_PURE = 		6
 var STANCE_ELEMENTAL = 	7
 
+var BATTLE_AI_BASIC = 0
+var BATTLE_AI_SMART = 1
 
 var DataEvents = {}
 var DataAbilities = []

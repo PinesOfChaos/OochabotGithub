@@ -18,6 +18,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -43,6 +44,7 @@
 		},
 		{
 			"aggro_range": 0.0,
+			"battle_ai": 0,
 			"coin": 2600.0,
 			"flag_given": "defeat_corrupted_tech",
 			"flag_kill": "",
@@ -123,6 +125,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -164,6 +167,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -225,6 +229,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -267,6 +272,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -327,6 +333,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -388,6 +395,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 172.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -430,6 +438,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -473,6 +482,7 @@
 		},
 		{
 			"aggro_range": 0.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "seer_heatri",
 			"flag_kill": "",
@@ -516,6 +526,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -558,6 +569,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -587,6 +599,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -616,6 +629,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -645,6 +659,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -674,6 +689,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -703,6 +719,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -732,6 +749,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -761,6 +779,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -785,6 +804,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -809,6 +829,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -834,36 +855,36 @@
 			],
 			"team": [
 				{
-					"ability": 19,
+					"ability": 19.0,
 					"atk_iv": 5.0,
 					"def_iv": 5.0,
 					"hp_iv": 5.0,
-					"id": 18,
-					"item": -1,
+					"id": 18.0,
+					"item": -1.0,
 					"level": 14.0,
 					"moveset": [
-						84,
-						4,
-						7,
-						64
+						84.0,
+						4.0,
+						7.0,
+						64.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
 					"spd_iv": 5.0
 				},
 				{
-					"ability": 30,
+					"ability": 30.0,
 					"atk_iv": 6.0,
 					"def_iv": 4.0,
 					"hp_iv": 1.0,
-					"id": 35,
-					"item": -1,
+					"id": 35.0,
+					"item": -1.0,
 					"level": 13.0,
 					"moveset": [
-						3,
-						56,
-						23,
-						62
+						3.0,
+						56.0,
+						23.0,
+						62.0
 					],
 					"nickname": "",
 					"slot_enabled": true,

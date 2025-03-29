@@ -4,84 +4,85 @@
 			"event_name": "ev_tutorial_8",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 6
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 6.0
 		},
 		{
 			"event_name": "ev_tutorial_7",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 15
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 15.0
 		},
 		{
 			"event_name": "ev_tutorial_6",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 22
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 22.0
 		},
 		{
 			"event_name": "ev_tutorial_5",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 29
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 29.0
 		},
 		{
 			"event_name": "ev_tutorial_4",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 36
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 36.0
 		},
 		{
 			"event_name": "ev_tutorial_3",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 43
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 43.0
 		},
 		{
 			"event_name": "ev_tutorial_2",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 0,
-			"width": 0,
-			"x": 8,
-			"y": 50
+			"height": 0.0,
+			"width": 0.0,
+			"x": 8.0,
+			"y": 50.0
 		},
 		{
 			"event_name": "ev_tutorial_1",
 			"flag_kill": "",
 			"flag_required": "",
-			"height": 4,
-			"width": 6,
-			"x": 5,
-			"y": 53
+			"height": 4.0,
+			"width": 6.0,
+			"x": 5.0,
+			"y": 53.0
 		}
 	],
 	"map_info": {
 		"map_battleback": "battle_bg_tutorial",
-		"map_name": "Tutorial",
-		"map_generated": false
+		"map_generated": false,
+		"map_name": "Tutorial"
 	},
 	"map_npcs": [
 		{
-			"aggro_range": 2,
-			"coin": 0,
+			"aggro_range": 2.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "ev_tutorial_7",
@@ -93,34 +94,37 @@
 			"post_combat_dialogue": "Ouch. Granting access to door.\nPlease proceed.",
 			"pre_combat_dialogue": "Initiating battle sequence.",
 			"remove_on_finish": false,
-			"sprite": 3,
+			"sprite": 3.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"ability": 0,
-					"atk_iv": 9,
-					"def_iv": 5,
-					"hp_iv": 3,
-					"id": 0,
-					"item": -1,
-					"level": 1,
+					"ability": 0.0,
+					"atk_iv": 9.0,
+					"def_iv": 5.0,
+					"hp_iv": 3.0,
+					"id": 0.0,
+					"item": -1.0,
+					"level": 1.0,
 					"moveset": [
-						1,
-						2
+						1.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 3
+					"spd_iv": 3.0
 				}
 			],
-			"x": 8,
-			"y": 13
+			"x": 8.0,
+			"y": 13.0
 		},
 		{
-			"aggro_range": 2,
-			"coin": 0,
+			"aggro_range": 2.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -132,35 +136,38 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "An Oochamon pops out!",
 			"remove_on_finish": true,
-			"sprite": 13,
+			"sprite": 13.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [
 				{
-					"ability": 9999,
-					"atk_iv": 9,
-					"def_iv": 0,
-					"hp_iv": 8,
-					"id": 52,
-					"item": -1,
-					"level": 5,
+					"ability": 9999.0,
+					"atk_iv": 9.0,
+					"def_iv": 0.0,
+					"hp_iv": 8.0,
+					"id": 52.0,
+					"item": -1.0,
+					"level": 5.0,
 					"moveset": [
-						1,
-						59,
-						27
+						1.0,
+						27.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
-					"spd_iv": 6
+					"spd_iv": 6.0
 				}
 			],
-			"x": 8,
-			"y": 27
+			"x": 8.0,
+			"y": 27.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -172,17 +179,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 10
+			"x": 8.0,
+			"y": 10.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -194,17 +205,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 17
+			"x": 8.0,
+			"y": 17.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -216,17 +231,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 24
+			"x": 8.0,
+			"y": 24.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -238,17 +257,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 31
+			"x": 8.0,
+			"y": 31.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -260,17 +283,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 38
+			"x": 8.0,
+			"y": 38.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -282,17 +309,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 45
+			"x": 8.0,
+			"y": 45.0
 		},
 		{
-			"aggro_range": 0,
-			"coin": 0,
+			"aggro_range": 0.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -304,20 +335,23 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 17,
+			"sprite": 17.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_017",
+			"stance_list": [
+				0
+			],
 			"team": [],
-			"x": 8,
-			"y": 52
+			"x": 8.0,
+			"y": 52.0
 		}
 	],
 	"map_savepoints": [
 		{
 			"is_default": true,
-			"x": 8,
-			"y": 57
+			"x": 8.0,
+			"y": 57.0
 		}
 	],
 	"map_shops": [],

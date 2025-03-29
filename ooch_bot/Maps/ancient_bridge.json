@@ -8,6 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 1.0,
+			"battle_ai": 1,
 			"coin": 2000.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -24,7 +25,9 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_016",
 			"stance_list": [
-				0.0
+				0,
+				3,
+				4
 			],
 			"team": [
 				{
@@ -87,6 +90,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",

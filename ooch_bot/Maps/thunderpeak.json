@@ -27,6 +27,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 850.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -70,6 +71,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -94,6 +96,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -118,6 +121,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -142,6 +146,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -175,6 +180,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -204,6 +210,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -228,6 +235,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -252,6 +260,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -276,6 +285,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -300,6 +310,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -359,6 +370,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -420,6 +432,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -478,6 +491,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -507,6 +521,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",

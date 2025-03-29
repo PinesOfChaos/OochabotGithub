@@ -26,6 +26,8 @@ extends Control
 @onready var o_aggro_range = $"npc_tab_container/Basic Info/addt_settings/aggro_range"
 @onready var o_wild_encounter = $"npc_tab_container/Basic Info/addt_settings/wild_encounter"
 
+@onready var option_button_ai: OptionButton = $"npc_tab_container/Basic Info/HBoxContainer/OptionButtonAI"
+
 @onready var stance_atk: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceAtk"
 @onready var stance_def: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceDef"
 @onready var stance_spd: CheckBox = $"npc_tab_container/Basic Info/Stances1/StanceSpd"
@@ -54,7 +56,8 @@ var npc_data_base = {
 	"aggro_range" : 3,
 	"is_catchable" : false,
 	"npc_id" : generate_npc_id(),
-	"stance_list" : [0]
+	"stance_list" : [Global.STANCE_BASE],
+	"battle_ai" : 0
 }
 
 var npc_data = {}
@@ -122,7 +125,7 @@ func _ready():
 	
 	#print(["NPC SPRITE AND ITEM ID", npc_sprite, npc_item_id])
 	
-	
+	option_button_ai.select(npc_data.battle_ai)
 	
 	o_npc_name.text = npc_data.name
 	
@@ -290,3 +293,6 @@ func _on_stance_pure_pressed() -> void:
 
 func _on_stance_elemental_pressed() -> void:
 	update_stances()
+
+func _on_option_button_item_selected(index: int) -> void:
+	npc_data.battle_ai = option_button_ai.get_item_id(index)

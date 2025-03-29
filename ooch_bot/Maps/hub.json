@@ -36,6 +36,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 0.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "cromet_quest_end",
 			"flag_kill": "",
@@ -79,6 +80,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 153.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -137,6 +139,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 73.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -196,6 +199,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -238,6 +242,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "caves_quest_begin",
@@ -263,6 +268,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -322,6 +328,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "met_head_researcher",
 			"flag_kill": "get_id_card",
@@ -346,6 +353,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "get_id_card",
 			"flag_kill": "",
@@ -375,6 +383,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "save_tutorial",
 			"flag_kill": "save_tutorial_complete",
@@ -399,6 +408,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "cromet_quest_begin",
 			"flag_kill": "caves_quest_end",
@@ -432,6 +442,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -461,6 +472,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -490,6 +502,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "cromet_quest_begin",
@@ -514,6 +527,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "cromet_quest_begin",
@@ -538,6 +552,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -562,6 +577,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -586,6 +602,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "WHY_DO_YOU_HAVE_THIS",
 			"flag_kill": "rival_intro_complete",
@@ -610,6 +627,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 600.0,
 			"flag_given": "to_lava_town_begin",
 			"flag_kill": "",
@@ -643,6 +661,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -684,6 +703,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -713,6 +733,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -742,6 +763,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -766,6 +788,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -774,7 +797,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 24
+					"id": 24.0
 				}
 			],
 			"name": "Explorer Dave",
@@ -782,7 +805,7 @@
 			"post_combat_dialogue": "Well, well, you sure are strong, care to adventure with me?\nAs we travel, I'll offer you copies of my notebook's pages, surely they can be of use!\nUntil we meet again!",
 			"pre_combat_dialogue": "Ah, hello there, I've been adventuring around these parts for a while.\nCare for a friendly battle?",
 			"remove_on_finish": true,
-			"sprite": 39,
+			"sprite": 39.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_039",

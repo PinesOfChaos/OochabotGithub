@@ -18,6 +18,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 320.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -35,7 +36,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -95,6 +96,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "caves_quest_end",
@@ -112,7 +114,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 41.0,
@@ -120,6 +122,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 230.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -137,7 +140,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -164,6 +167,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 197.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -181,7 +185,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -224,6 +228,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -241,7 +246,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -284,6 +289,7 @@
 		},
 		{
 			"aggro_range": 0.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "corrupt_fungal_defeat",
 			"flag_kill": "",
@@ -301,7 +307,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_010",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -345,6 +351,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -366,7 +373,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 32.0,
@@ -374,6 +381,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -395,7 +403,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 31.0,
@@ -403,6 +411,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "obtained_sporefeather",
 			"flag_kill": "",
@@ -424,7 +433,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 16.0,
@@ -432,6 +441,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -448,7 +458,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_001",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -474,6 +484,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -495,15 +506,16 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 46.0,
 			"y": 31.0
 		},
 		{
-			"aggro_range": 3,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -511,11 +523,11 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 25
+					"id": 25.0
 				},
 				{
 					"count": 1.0,
-					"id": 26
+					"id": 26.0
 				}
 			],
 			"name": "Explorer Dave",
@@ -523,12 +535,12 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Ah, hello again!\nThese caves sure are vibrant, though it's odd...\nIt feels like the walls are practically alive here!\nPerfect timing though, I've just finished a couple more pages of my notebook.\nSee ya around!",
 			"remove_on_finish": true,
-			"sprite": 39,
+			"sprite": 39.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_039",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 19.0,

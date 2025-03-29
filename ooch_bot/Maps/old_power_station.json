@@ -8,6 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever1",
@@ -23,12 +24,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 27.0,
 			"y": 21.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever2",
@@ -44,12 +49,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 43.0,
 			"y": 17.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -65,12 +74,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 17.0,
 			"y": 24.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -86,12 +99,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 18.0,
 			"y": 24.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -107,12 +124,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 17.0,
 			"y": 18.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -128,12 +149,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 18.0,
 			"y": 18.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever4",
@@ -149,12 +174,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 16.0,
 			"y": 14.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever4",
@@ -170,12 +199,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 16.0,
 			"y": 13.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -191,12 +224,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 13.0,
 			"y": 57.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -212,12 +249,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 8.0,
 			"y": 13.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -233,12 +274,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 8.0,
 			"y": 14.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -254,12 +299,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 41.0,
 			"y": 28.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -275,12 +324,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 42.0,
 			"y": 28.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -296,12 +349,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 49.0,
 			"y": 45.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -317,12 +374,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 51.0,
 			"y": 46.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -338,12 +399,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 43.0,
 			"y": 4.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -359,12 +424,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 54.0,
 			"y": 7.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -380,12 +449,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 54.0,
 			"y": 8.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -401,12 +474,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 56.0,
 			"y": 7.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -427,12 +504,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 23.0,
 			"y": 30.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -453,12 +534,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 3.0,
 			"y": 9.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "toggle_ps_lever1",
@@ -474,12 +559,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 25.0,
 			"y": 21.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "toggle_ps_lever2",
@@ -495,12 +584,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 36.0,
 			"y": 17.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "toggle_ps_lever3",
@@ -516,12 +609,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 16.0,
 			"y": 28.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "toggle_ps_lever4",
@@ -537,12 +634,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 13.0,
 			"y": 15.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "",
@@ -558,12 +659,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 25.0,
 			"y": 21.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "",
@@ -579,12 +684,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 36.0,
 			"y": 17.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "",
@@ -600,12 +709,16 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 16.0,
 			"y": 28.0
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "",
@@ -621,6 +734,9 @@
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
+			"stance_list": [
+				0
+			],
 			"team": [],
 			"x": 13.0,
 			"y": 15.0

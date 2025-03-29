@@ -8,6 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "to_lava_town_begin",
@@ -25,7 +26,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 55.0,
@@ -33,6 +34,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 212.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -50,7 +52,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -93,6 +95,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -110,7 +113,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_002",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -136,6 +139,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "spawn_nice1",
 			"flag_kill": "spawn_nice1",
@@ -152,7 +156,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 49.0,
@@ -160,6 +164,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "talk_nice1",
 			"flag_kill": "",
@@ -181,7 +186,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_018",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 49.0,
@@ -189,6 +194,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 400.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -205,7 +211,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -249,6 +255,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -270,7 +277,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 34.0,
@@ -278,6 +285,7 @@
 		},
 		{
 			"aggro_range": 3.0,
+			"battle_ai": 0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -294,7 +302,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 52.0,

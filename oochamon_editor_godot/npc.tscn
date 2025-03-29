@@ -122,6 +122,22 @@ layout_mode = 2
 max_value = 99999.0
 prefix = "Coin: x"
 
+[node name="HBoxContainer" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="npc_tab_container/Basic Info/HBoxContainer"]
+layout_mode = 2
+text = "Battle AI"
+
+[node name="OptionButtonAI" type="OptionButton" parent="npc_tab_container/Basic Info/HBoxContainer"]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Basic"
+popup/item_0/id = 0
+popup/item_1/text = "Smart"
+popup/item_1/id = 1
+
 [node name="Label" type="Label" parent="npc_tab_container/Basic Info"]
 layout_mode = 2
 text = "Stances: "
@@ -226,6 +242,7 @@ metadata/_tab_index = 4
 [connection signal="toggled" from="npc_tab_container/Basic Info/addt_settings/wild_encounter" to="." method="_on_wild_encounter_toggled"]
 [connection signal="pressed" from="npc_tab_container/Basic Info/items/button_new_item" to="." method="_on_button_new_item_pressed"]
 [connection signal="value_changed" from="npc_tab_container/Basic Info/coin/coin_count" to="." method="_on_coin_count_value_changed"]
+[connection signal="item_selected" from="npc_tab_container/Basic Info/HBoxContainer/OptionButtonAI" to="." method="_on_option_button_item_selected"]
 [connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceAtk" to="." method="_on_stance_atk_pressed"]
 [connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceDef" to="." method="_on_stance_def_pressed"]
 [connection signal="pressed" from="npc_tab_container/Basic Info/Stances1/StanceSpd" to="." method="_on_stance_spd_pressed"]
