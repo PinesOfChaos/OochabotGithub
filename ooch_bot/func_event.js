@@ -160,8 +160,8 @@ let functions = {
                 );
             }
 
-            event_embed.setTitle(obj_content.title);
-            event_embed.setDescription(obj_content.description);
+            if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+            if (obj_content.description != '') event_embed.setDescription(obj_content.description);
 
             // Set NPC dialogue portrait
             if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
