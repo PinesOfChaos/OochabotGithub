@@ -27,7 +27,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -49,7 +49,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 21.0,
@@ -57,7 +57,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -79,7 +79,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 11.0,
@@ -87,7 +87,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "cade_battle_tunnel",
 			"flag_kill": "cade_battle_tunnel",
@@ -104,7 +104,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -167,7 +167,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -189,7 +189,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 22.0,
@@ -197,7 +197,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -214,7 +214,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -277,7 +277,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -299,7 +299,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 6.0,
@@ -307,7 +307,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 3270.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -324,7 +324,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
@@ -350,7 +350,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -367,7 +367,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_029",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 24.0,
@@ -375,7 +375,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -392,7 +392,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_029",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 23.0,
@@ -400,7 +400,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -417,7 +417,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_029",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 22.0,
@@ -425,7 +425,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -442,7 +442,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_029",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 21.0,
@@ -450,7 +450,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -467,7 +467,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_029",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 22.0,
@@ -475,7 +475,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -492,11 +492,36 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 40.0,
 			"y": 27.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "811753566694869809",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Access Tunnel Construction completed.\nAwaiting final inspection:\nETA 1-2 Months",
+			"remove_on_finish": false,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 23.0,
+			"y": 15.0
 		}
 	],
 	"map_savepoints": [
@@ -1911,7 +1936,7 @@
 			"t11_000",
 			"t11_009",
 			"t11_000",
-			"t11_000",
+			"t11_009",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -1977,7 +2002,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_000",
+			"t11_009",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -2109,7 +2134,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_000",
+			"t11_009",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -2175,7 +2200,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_000",
+			"t11_009",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -4750,9 +4775,9 @@
 			"y": 13.0
 		},
 		{
-			"connect_map": "",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_map": "lava_path",
+			"connect_x": 44.0,
+			"connect_y": 35.0,
 			"x": 23.0,
 			"y": 8.0
 		},

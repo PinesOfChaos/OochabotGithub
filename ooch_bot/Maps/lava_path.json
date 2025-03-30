@@ -8,7 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -43,7 +43,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "lavaboard_quest_begin",
@@ -69,7 +69,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "lavaboard_quest_begin",
 			"flag_kill": "lavaboard_quest_end",
@@ -95,7 +95,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -157,7 +157,7 @@
 		},
 		{
 			"aggro_range": 1.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 2000.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -220,7 +220,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -281,7 +281,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -343,7 +343,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -422,7 +422,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -448,7 +448,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -479,7 +479,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "flower_sample_delivered_al",
@@ -505,7 +505,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 517.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -566,7 +566,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -597,7 +597,7 @@
 		},
 		{
 			"aggro_range": 0.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 1800.0,
 			"flag_given": "lavaboard_get",
 			"flag_kill": "",
@@ -682,7 +682,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "moldire_boss_defeated",
@@ -707,7 +707,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "spawn_nice2",
 			"flag_kill": "spawn_nice2",
@@ -732,7 +732,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 777.0,
 			"flag_given": "talk_nice2",
 			"flag_kill": "",
@@ -793,7 +793,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -823,7 +823,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -853,7 +853,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -883,7 +883,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -913,7 +913,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -957,7 +957,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -987,7 +987,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -1017,7 +1017,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -1042,7 +1042,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -1067,7 +1067,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "lavaboard_get",
@@ -1092,7 +1092,7 @@
 		},
 		{
 			"aggro_range": 1.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -1117,7 +1117,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 2500.0,
 			"flag_given": "flower_sample_delivered_al",
 			"flag_kill": "",
@@ -1142,7 +1142,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -1167,7 +1167,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -5606,9 +5606,9 @@
 			"y": 6.0
 		},
 		{
-			"connect_map": "",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_map": "access_tunnel",
+			"connect_x": 23.0,
+			"connect_y": 9.0,
 			"x": 44.0,
 			"y": 36.0
 		}

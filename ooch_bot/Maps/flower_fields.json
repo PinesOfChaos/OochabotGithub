@@ -133,7 +133,7 @@
 			],
 			"name": "Relaxing Crew",
 			"npc_id": "965433076591269913",
-			"post_combat_dialogue": "",
+			"post_combat_dialogue": "Come, stay a while...\nBask in the flowers...",
 			"pre_combat_dialogue": "Ah, won't you come bask with us?\nNo? That's fine, take these...",
 			"remove_on_finish": false,
 			"sprite": 14.0,
