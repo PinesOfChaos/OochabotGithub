@@ -290,7 +290,7 @@ module.exports = {
                 let amount = db.profile.get(interaction.user.id, `other_inv.${other_inv_keys[i]}`)
 
                 if (amount != 0) {
-                    if (db.item_data.get(id, 'type') != 'key') {
+                    if (db.item_data.get(id, 'type') != 'key' && db.item_data.get(id, 'type') != 'map') {
                         other_select_options.push({ 
                             label: `${db.item_data.get(id, 'name')} (${amount})`,
                             description: db.item_data.get(id, 'description_short'),

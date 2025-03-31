@@ -204,7 +204,6 @@ module.exports = {
                     
                     else if (selected.customId.includes('box')) {
                         otherIsReady = await box_collector_event(otherBattleUser.id, selected, otherPageNum, otherProfile, true);
-                        console.log(intIsReady, otherIsReady);
 
                         if (otherIsReady) {
                             otherIsReady = true;

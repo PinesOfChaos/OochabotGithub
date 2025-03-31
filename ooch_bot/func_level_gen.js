@@ -1,8 +1,10 @@
 const _ = require('lodash');
-const { OochType, GenmapTheme, Weather } = require("./types");
+const { OochType, GenmapTheme, Weather, BattleAi, StanceForms } = require("./types");
 const { create_ooch, setup_playspace_str } = require('./func_play.js');
 const db = require("./db.js")
 const fs = require('fs');
+
+
 
 let functions = {
 
@@ -276,8 +278,9 @@ let functions = {
         let pt3 = (`000000${_.random(0, 999999)}`).slice(-6);
         let npc_id = `${pt1}${pt2}${pt3}`;
 
-        return({
+        let empty_npc = {
             aggro_range : 0,
+            battle_ai : BattleAi.Basic,
             coin : 0,
             flag_given : "",
             flag_required : "",
@@ -296,10 +299,14 @@ let functions = {
             sprite_dialog : "",
             dialogue_portrait : "",
             sprite_id : "",
+            stance_list : [StanceForms.Base],
             team : [],
             x : 0,
             y : 0
-        })
+        }
+
+
+        return(empty_npc)
     },
 
     /**

@@ -25,7 +25,7 @@ let box_buttons = new ActionRowBuilder()
 // Create box action rows
 let box_battle_buttons = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('box_finalize_team').setLabel('Ready Up').setStyle(ButtonStyle.Success)
+        new ButtonBuilder().setCustomId('box_finalize_team').setLabel('Ready').setStyle(ButtonStyle.Success)
     ).addComponents(
         new ButtonBuilder().setCustomId('box_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
     ).addComponents(
@@ -1081,6 +1081,8 @@ functions = {
         }
         // Add Oochamon to Box
         else if (selected.customId == 'box_add_to_box') {
+            bottom_buttons.components[3].setLabel(`${page_num+1}`);
+
             // Put the specified oochamon into the box.
             user_profile.ooch_pc.push(ooch_user_data);
             user_profile.ooch_party.splice(slot_num, 1);
@@ -1091,6 +1093,8 @@ functions = {
         } 
         // Add Oochamon to team
         else if (selected.customId == 'box_add_ooch') {
+            bottom_buttons.components[3].setLabel(`${page_num+1}`);
+
             // Put the specified oochamon into our team
             user_profile.ooch_party.push(ooch_user_data);
             user_profile.ooch_pc.splice(slot_num, 1);
@@ -1106,6 +1110,8 @@ functions = {
         }
         // Confirm to release an Oochamon
         else if (selected.customId == 'box_yes') {
+            bottom_buttons.components[3].setLabel(`${page_num+1}`);
+
             user_profile.ooch_pc.splice(slot_num, 1);
             // Build new PC button rows
             box_row = buildBoxData(user_profile, page_num);
@@ -1114,6 +1120,8 @@ functions = {
         }
         // Confirm to not release an Oochamon
         else if (selected.customId == 'box_no') {
+            bottom_buttons.components[3].setLabel(`${page_num+1}`);
+
             selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
         }
         

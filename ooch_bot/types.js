@@ -444,15 +444,15 @@ const BattleAction = { //These double as the base priority values for actions
     EndOfRound : -1_000_000,
 
     Attack :    0,
-    Run :       1_000_000,
-    Switch :    2_000_000,
 
-    Prism :     3_000_000,
-    Heal :      4_000_000,
-    Other :     5_000_000,
+    StanceChange : 1_000_000,
 
-    StanceChange : 10_000_000
+    Run :       2_000_000,
+    Switch :    3_000_000,
     
+    Prism :     4_000_000,
+    Heal :      5_000_000,
+    Other :     6_000_000
 }
 
 const Tile = {

@@ -478,15 +478,15 @@
     "name": "Corrode",
     "type": "ooze",
     "damage": 40,
-    "accuracy": 70,
+    "accuracy": 65,
     "effect": [
       {
-        "status": "-_def_1",
+        "status": "-_def_2",
         "chance": 100,
         "target": 1
       }
     ],
-    "description": "Powerful acids damage the target, lowering its DEF.",
+    "description": "Powerful acids damage the target, greatly lowering its DEF.",
     "tags": []
   },
   {

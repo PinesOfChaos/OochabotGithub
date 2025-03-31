@@ -549,8 +549,20 @@ let functions = {
 
                 switch (user_obj.battle_ai) {
                 case BattleAi.Basic: 
-                    move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)].move_id;
-                    functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                    if (battle_data.turn_counter % _.random(2, 3) == 0) { //Allow Setup
+                        move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)].move_id;
+                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                    } else { 
+                        let damage_moves = move_intentions.filter((move) => move.damage > 0);
+                        if(damage_moves.length > 0){
+                            move_id = damage_moves[_.random(10) < 6 ? 0 : _.random(damage_moves.length - 1)].move_id;
+                        } else {
+                            move_id = move_intentions[_.random(10) < 6 ? 0 : _.random(move_intentions.length - 1)].move_id;
+                        }
+
+                        functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                        
+                    }
                 break;
                 case BattleAi.Smart:
                     let good_moves = move_intentions.filter((move) => move.priority > 1);
@@ -568,7 +580,6 @@ let functions = {
                             let stance_to = _.sample(stance_options).id;
                             functions.new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);
                         }
-
                         
                         if(good_moves.length > 0 && (_.random(10) < 7)) {
                             move_id =  good_moves[0].move_id;
@@ -661,20 +672,21 @@ let functions = {
                 if(ooch_obj.ability == Ability.Chronomancy){
                     move_priority += move.damage > 0 ? -10_000 : 10_000;
                 }
+
+                //Non-ooze mons lose priority in the Wetlands field effect
+                if((battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
+                    action.priority -= 10_000;
+                }
+
+                //Reverse the attack order if the Twisted Reality field effect is active
+                if(battle_data.field_effect == FieldEffect.TwistedReality){
+                    action.priority *= -1;
+                }
             }
             
             //Combine the priorities to get the final value
             action.priority = base_priority + move_priority + speed;
-
-            //Reverse the attack order if the Twisted Reality field effect is active
-            if(battle_data.field_effect == FieldEffect.TwistedReality){
-                action.priority *= -1;
-            }
-
-            //Non-ooze mons lose priority in the Wetlands field effect
-            if((battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
-                action.priority -= 10_000;
-            }
+            
         }
 
         //Sort the actions in descending order by priority, then set it in the database
@@ -720,10 +732,15 @@ let functions = {
     delete_messages_in_threads : async function(battle_data, num_to_delete) {
         const { botClient } = require("./index.js");
 
+        let temp_num_to_delete;
         for(let user of battle_data.users) {
+            temp_num_to_delete = num_to_delete;
             if(user.is_player){
                 let thread = botClient.channels.cache.get(user.thread_id);
-                await thread.bulkDelete(num_to_delete);
+                do {
+                    await thread.bulkDelete(100);
+                    temp_num_to_delete -= 100;
+                } while (temp_num_to_delete > 0);
             }
         }
     },
@@ -791,7 +808,7 @@ let functions = {
                         .setCustomId('shift_stance')
                         .setLabel('Stance')
                         .setEmoji('🤺')
-                        .setStyle(ButtonStyle.Secondary),
+                        .setStyle(ButtonStyle.Secondary)
                 )
                 
         let moveButtons1 = new ActionRowBuilder();
@@ -865,6 +882,14 @@ let functions = {
             } else {
                 let userThread = botClient.channels.cache.get(user.thread_id);
                 if (userThread == undefined) return;
+
+                let activeOoch = user.party[user.active_slot];
+                if (activeOoch.stance_cooldown != 0) {
+                    inputRow3.components[1].setDisabled(true);
+                } else {
+                    inputRow3.components[1].setDisabled(false);
+                }
+
                 await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
 
                 const inputFilter = async i => {
@@ -877,7 +902,7 @@ let functions = {
                 
                 await inputCollector.on('collect', async i => {
                     let customId = i.customId;
-                    let activeOoch = user.party[user.active_slot];
+                    activeOoch = user.party[user.active_slot];
 
                     if (customId == BattleInput.Back) {
                         await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
@@ -1439,9 +1464,7 @@ let functions = {
             for(let user of battle_data.users) {
                 ooch = user.party[user.active_slot];
                 slot = user.slot_actions[user.active_slot];
-                if(!ooch.alive){ continue; } //Skip this one if it's dead
-
-                
+                if(!ooch.alive){ continue; } //Skip this one if it's dead                
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
                 eot_result = functions.use_eot_ability(battle_data, user.user_index); 
@@ -1718,6 +1741,8 @@ let functions = {
         ooch_from.ability = ooch_from.og_ability;
         ooch_from.type = ooch_from.og_type;
         ooch_from.doom_timer = 4;
+        ooch_from.stance_cooldown = 0;
+        ooch_from.stance = StanceForms.Base;
 
         return_string += functions.use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
  
@@ -2149,7 +2174,7 @@ let functions = {
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
                 if (active_ooch.tame_value < 200) {
-                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
+                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - _.random(10, 20), 0, 200);
                     if (active_ooch.tame_value == 200) {
                         active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
                         active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
@@ -2205,14 +2230,13 @@ let functions = {
                         for (let i = 0; i < ooch_party.length; i++) {
                             if (i == other_user.active_slot) { 
                                 ooch_party[i].current_exp += exp_main;
-                                ooch_party[i].tame_value = _.clamp(ooch_party[i].tame_value + 2, 0, 200);
-                                if (active_ooch.tame_value < 200) {
-                                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
-                                    if (active_ooch.tame_value == 200) {
-                                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
-                                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
-                                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
-                                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
+                                if (ooch_party[i].tame_value < 200) {
+                                    ooch_party[i].tame_value = _.clamp(ooch_party[i].tame_value + _.random(1, 3), 0, 200);
+                                    if (ooch_party[i].tame_value == 200) {
+                                        ooch_party[i].stats.hp_iv = _.clamp(ooch_party[i].stats.hp_iv + 1, 0, 10);
+                                        ooch_party[i].stats.atk_iv = _.clamp(ooch_party[i].stats.atk_iv + 1, 0, 10);
+                                        ooch_party[i].stats.def_iv = _.clamp(ooch_party[i].stats.def_iv + 1, 0, 10);
+                                        ooch_party[i].stats.spd_iv = _.clamp(ooch_party[i].stats.spd_iv + 1, 0, 10);
                                     }
                                 }
                             } 
@@ -2581,9 +2605,8 @@ let functions = {
                 let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
                 if (ooch.tame_value < 200) {
-                    ooch.tame_value = _.clamp(ooch.tame_value - 1, 0, 200);
+                    ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
                     if (ooch.tame_value == 200) {
                         ooch.stats.hp_iv = _.clamp(ooch.stats.hp_iv + 1, 0, 10);
                         ooch.stats.atk_iv = _.clamp(ooch.stats.atk_iv + 1, 0, 10);
@@ -3098,8 +3121,9 @@ let functions = {
                         }
                     break;
                     case Ability.Lacerating:
-                        defender.current_hp = _.clamp(defender.current_hp + Math.round(dmg * 0.05), 0, defender.stats.hp);
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost 5% of their HP from the ability **Lacerating** from ${attacker_emote} **${atkOochName}**!`;
+                        let hp_lost = defender.current_hp + Math.round(dmg * 0.05)
+                        defender.current_hp = _.clamp(hp_lost, 0, defender.stats.hp);
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost ${hp_lost} HP due to ${attacker_emote} **${atkOochName}**'s **Lacerating**!`;
                     break;
                     case Ability.Frostbite:
                         functions.modify_stat(defender, Stats.Speed, -1);
@@ -3878,6 +3902,7 @@ let functions = {
             db.profile.set(user_id, user_info.prism_inv, `prism_inv`);
             db.profile.set(user_id, user_info.heal_inv, `heal_inv`);
             db.profile.set(user_id, user_info.other_inv, `other_inv`);
+            db.profile.set(user_id, 0, 'ooch_active_slot');
 
             // If we lost, go back to the teleporter location.
             if (battle_won === false) {
