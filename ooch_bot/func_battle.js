@@ -3121,7 +3121,7 @@ let functions = {
                         }
                     break;
                     case Ability.Lacerating:
-                        let damage_taken = Math.round(dmg * 0.05);
+                        let damage_taken = Math.round(defender.stats.hp * 0.05);
                         defender.current_hp = _.clamp(defender.current_hp - damage_taken, 0, defender.stats.hp);
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost ${damage_taken} HP due to ${attacker_emote} **${atkOochName}**'s **Lacerating**!`;
                     break;
