@@ -55,7 +55,7 @@ m_functions = {
         let oochadex = [];
         let  i = 0;
         for (ooch_id in db.monster_data.keyArray()) {
-            let index = oochadex_current.findIndex((o) => o.ooch_id == ooch_id);
+            let index = oochadex_current.findIndex((o) => o.id == ooch_id);
             let base_info = { //if anything else ever needs to be tracked in the oochadex, add it here
                 id : ooch_id, 
                 caught : 0

@@ -478,7 +478,7 @@
     "name": "Corrode",
     "type": "ooze",
     "damage": 40,
-    "accuracy": 50,
+    "accuracy": 70,
     "effect": [
       {
         "status": "-_def_1",

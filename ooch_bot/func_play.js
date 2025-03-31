@@ -180,7 +180,6 @@ functions = {
                 profile_data.repel_steps -= 1;
                 if (profile_data.repel_steps == 0) repel_ran_out = true;
             } 
-            
 
             let tile_id = map_tiles[playerx][playery]
             var tile = db.tile_data.get(tile_id.toString());

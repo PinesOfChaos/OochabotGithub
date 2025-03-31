@@ -1441,11 +1441,7 @@ let functions = {
                 slot = user.slot_actions[user.active_slot];
                 if(!ooch.alive){ continue; } //Skip this one if it's dead
 
-                let remove_reveal = true;
-                if(slot.this_turn_revealed){ 
-                    remove_reveal = false;
-                    slot.this_turn_revealed = false;
-                }
+                
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
                 eot_result = functions.use_eot_ability(battle_data, user.user_index); 
@@ -1481,7 +1477,10 @@ let functions = {
                             ooch = functions.add_status_effect(ooch, Status.Revealed);
                         break;
                         case Status.Revealed:
-                            if(remove_reveal){
+                            if (slot.this_turn_revealed) { 
+                                slot.this_turn_revealed = false;
+                            }
+                            else {
                                 end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
                                 ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
                             }
@@ -1538,6 +1537,7 @@ let functions = {
                     end_of_round_text += faint_check.text;
                     finish_battle = finish_battle || faint_check.finish_battle;
                 }
+                
             }
 
             if(end_of_round_text != ''){
@@ -2582,13 +2582,13 @@ let functions = {
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
                 ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
-                if (active_ooch.tame_value < 200) {
-                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - 1, 0, 200);
-                    if (active_ooch.tame_value == 200) {
-                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
-                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
-                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
-                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
+                if (ooch.tame_value < 200) {
+                    ooch.tame_value = _.clamp(ooch.tame_value - 1, 0, 200);
+                    if (ooch.tame_value == 200) {
+                        ooch.stats.hp_iv = _.clamp(ooch.stats.hp_iv + 1, 0, 10);
+                        ooch.stats.atk_iv = _.clamp(ooch.stats.atk_iv + 1, 0, 10);
+                        ooch.stats.def_iv = _.clamp(ooch.stats.def_iv + 1, 0, 10);
+                        ooch.stats.spd_iv = _.clamp(ooch.stats.spd_iv + 1, 0, 10);
                     }
                 }
 

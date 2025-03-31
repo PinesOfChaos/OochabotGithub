@@ -269,7 +269,7 @@ module.exports = {
         create_tile(`t${zTP}_004`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
         create_tile(`t${zTP}_010`,  Tile.Grass,    applicationEmojis ); //Thunder Peak Grass
         create_tile(`t${zTP}_011`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Wall
-        create_tile(`t${zTP}_012`,  Tile.Floor,    applicationEmojis ); //Thunder Peak Floor (Spiky Bits)
+        create_tile(`t${zTP}_012`,  Tile.Wall,     applicationEmojis ); //Thunder Peak Tiny Spikes
         create_tile(`t${zTP}_013`,  Tile.Ice,      applicationEmojis ); //Thunder Peak Ice
         create_tile(`t${zTP}_020`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Lower Edge
         create_tile(`t${zTP}_021`,  Tile.Wall,      applicationEmojis ); //Thunder Peak Bridge Part
@@ -877,7 +877,7 @@ module.exports = {
         });
         create_move({
             id : 34, name : 'Corrode', type : OochType.Ooze,
-            damage : 40, accuracy: 50,
+            damage : 40, accuracy: 70,
             effect : [{status : '-_def_1', chance : 100, target : MoveTarget.Enemy}],
             description : 'Powerful acids damage the target, lowering its DEF.',
         });
