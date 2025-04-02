@@ -3121,9 +3121,9 @@ let functions = {
                         }
                     break;
                     case Ability.Lacerating:
-                        let hp_lost = defender.current_hp + Math.round(dmg * 0.05)
-                        defender.current_hp = _.clamp(hp_lost, 0, defender.stats.hp);
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost ${hp_lost} HP due to ${attacker_emote} **${atkOochName}**'s **Lacerating**!`;
+                        let damage_taken = Math.round(defender.stats.hp * 0.05);
+                        defender.current_hp = _.clamp(defender.current_hp - damage_taken, 0, defender.stats.hp);
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}** lost ${damage_taken} HP due to ${attacker_emote} **${atkOochName}**'s **Lacerating**!`;
                     break;
                     case Ability.Frostbite:
                         functions.modify_stat(defender, Stats.Speed, -1);
