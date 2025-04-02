@@ -270,7 +270,7 @@ let functions = {
 
         let curBattleId = db.profile.get(user_id, 'cur_battle_id');
         if (curBattleId != false && db.battle_data.has(curBattleId)) {
-            await interaction.deleteReply().catch(() => {});
+            if (interaction != undefined) await interaction.deleteReply().catch(() => {});
             
             let battleData = db.battle_data.get(curBattleId);
             await db.battle_data.delete(curBattleId);
