@@ -120,7 +120,7 @@ let functions = {
             tame_status = TameStatus.Happy;
         } else if (_.inRange(tame_status, 161, 199)) {
             tame_status = TameStatus.Loyal;
-        } else if (tame_value >= 200) {
+        } else if (ooch.tame_value >= 200) {
             tame_status = TameStatus.BestFriend;
         }
 
