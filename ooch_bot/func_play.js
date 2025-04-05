@@ -729,6 +729,9 @@ functions = {
 
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
+        for(let ooch of player_info.party){
+            player_flags.push(`ooch_id_${ooch.id}`)
+        }
         let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {

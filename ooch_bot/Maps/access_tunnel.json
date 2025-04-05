@@ -314,7 +314,7 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Researcher Marcus",
 			"npc_id": "732642194204236039",
 			"post_combat_dialogue": "Oh, you're not here to collect? Well why didn't you say so?\nTake some cash anyway, to keep my location our little secret...",
 			"pre_combat_dialogue": "Ah, you've come to my little corner of this tunnel.\nNow, let's let not be hasty...\nHA, SURPRISE BATTLE, GO!",
@@ -497,31 +497,6 @@
 			"team": [],
 			"x": 40.0,
 			"y": 27.0
-		},
-		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
-			"flag_given": "read_a_sign",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [],
-			"name": "Sign",
-			"npc_id": "811753566694869809",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "Access Tunnel Construction completed.\nAwaiting final inspection:\nETA 1-2 Months",
-			"remove_on_finish": false,
-			"sprite": 2,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_020",
-			"stance_list": [
-				0
-			],
-			"team": [],
-			"x": 23.0,
-			"y": 15.0
 		}
 	],
 	"map_savepoints": [
@@ -1936,7 +1911,7 @@
 			"t11_000",
 			"t11_009",
 			"t11_000",
-			"t11_009",
+			"t11_000",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -2002,7 +1977,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_009",
+			"t11_000",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -2134,7 +2109,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_009",
+			"t11_000",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -2200,7 +2175,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t11_009",
+			"t11_000",
 			"t11_000",
 			"t11_000",
 			"t11_000",
@@ -4782,9 +4757,9 @@
 			"y": 8.0
 		},
 		{
-			"connect_map": "",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_map": "hub",
+			"connect_x": 39.0,
+			"connect_y": 36.0,
 			"x": 23.0,
 			"y": 34.0
 		}

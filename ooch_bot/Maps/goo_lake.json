@@ -1,11 +1,246 @@
 {
-	"map_events": [],
+	"map_events": [
+		{
+			"event_name": "ev_get_moistri",
+			"flag_kill": "ev_get_moistri",
+			"flag_required": "seer_crystri",
+			"height": 3.0,
+			"width": 4.0,
+			"x": 7.0,
+			"y": 32.0
+		}
+	],
 	"map_info": {
 		"map_battleback": "battle_bg_goo_lake",
 		"map_generated": false,
 		"map_name": "Goo Lake"
 	},
-	"map_npcs": [],
+	"map_npcs": [
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "018603066529968258",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 31.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_031",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 26.0,
+			"y": 33.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "557190425671356308",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 32.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_032",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 27.0,
+			"y": 33.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "278134838496754209",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 33.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_033",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 28.0,
+			"y": 33.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "600533705053527778",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 34.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_034",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 26.0,
+			"y": 34.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "202244758928134582",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 35.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_035",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 27.0,
+			"y": 34.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "909428312406937875",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 36.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_036",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 28.0,
+			"y": 34.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 34.0
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "460894896559739893",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Oh, hey there, you trapped down here too buddy?\nThe cave back here houses some sort of weird machine.\nIt looks like it's missing a component though.\nI'll do some searching myself, here's a map of what I've found so far! Stay safe!",
+			"remove_on_finish": true,
+			"sprite": 39.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 35.0,
+			"y": 8.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "seer_crystri",
+			"flag_kill": "",
+			"flag_required": "seer_heatri",
+			"is_catchable": false,
+			"items": [],
+			"name": "Seer Sister Laurel",
+			"npc_id": "986943853513112703",
+			"post_combat_dialogue": "Though the path has been treacherous, you've made it this far.\nReturn to Thunder Peak. There, we shall await your challenge.",
+			"pre_combat_dialogue": "I am one of the Seer Sisters.\nThis lake is rather calming isn't it?\nI shall test your skill.",
+			"remove_on_finish": true,
+			"sprite": 4.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_004",
+			"stance_list": [
+				0.0
+			],
+			"team": [
+				{
+					"ability": 34.0,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 43.0,
+					"item": -1.0,
+					"level": 30.0,
+					"moveset": [
+						16.0,
+						24.0,
+						54.0,
+						7.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				}
+			],
+			"x": 9.0,
+			"y": 32.0
+		}
+	],
 	"map_savepoints": [
 		{
 			"is_default": false,

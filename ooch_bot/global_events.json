@@ -262,6 +262,43 @@
 			}
 		]
 	],
+	"ev_get_moistri": [
+		[
+			3,
+			{
+				"description": "As the Seer Sister departs, a strange Oochamon begins to form from the lake itself...",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"ability": 34,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 42,
+						"item": -1,
+						"level": 20.0,
+						"moveset": [
+							60,
+							29,
+							54,
+							9
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"title": ""
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_get_moistri"
+			}
+		]
+	],
 	"ev_intro": [
 		[
 			0.0,
@@ -454,7 +491,7 @@
 						"spd_iv": 5.0
 					}
 				],
-				"user_type": 1
+				"user_type": 1.0
 			}
 		],
 		[
@@ -521,7 +558,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_moldire_boss"
 			}

@@ -8,7 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever1",
@@ -25,7 +25,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 27.0,
@@ -33,7 +33,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever2",
@@ -50,7 +50,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 43.0,
@@ -58,7 +58,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -75,7 +75,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 17.0,
@@ -83,7 +83,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -100,7 +100,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
@@ -108,7 +108,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -125,7 +125,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 17.0,
@@ -133,7 +133,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever3",
@@ -150,7 +150,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
@@ -158,7 +158,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever4",
@@ -175,7 +175,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 16.0,
@@ -183,7 +183,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "toggle_ps_lever4",
@@ -200,7 +200,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 16.0,
@@ -208,7 +208,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
@@ -225,7 +225,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 13.0,
@@ -233,7 +233,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -250,7 +250,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 8.0,
@@ -258,7 +258,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -275,7 +275,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 8.0,
@@ -283,7 +283,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -300,7 +300,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 41.0,
@@ -308,7 +308,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -325,7 +325,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_021",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 42.0,
@@ -333,7 +333,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -350,7 +350,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 49.0,
@@ -358,7 +358,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -375,7 +375,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 51.0,
@@ -383,7 +383,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -400,7 +400,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 43.0,
@@ -408,7 +408,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -425,7 +425,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 54.0,
@@ -433,7 +433,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -450,7 +450,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 54.0,
@@ -458,7 +458,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -475,7 +475,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_019",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 56.0,
@@ -483,7 +483,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -505,7 +505,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 23.0,
@@ -513,7 +513,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -535,7 +535,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 3.0,
@@ -543,7 +543,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "toggle_ps_lever1",
@@ -560,7 +560,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 25.0,
@@ -568,7 +568,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "toggle_ps_lever2",
@@ -585,7 +585,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 36.0,
@@ -593,7 +593,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "toggle_ps_lever3",
@@ -610,7 +610,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 16.0,
@@ -618,7 +618,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "toggle_ps_lever4",
@@ -635,7 +635,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_037",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 13.0,
@@ -643,7 +643,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever1",
 			"flag_kill": "",
@@ -660,7 +660,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 25.0,
@@ -668,7 +668,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever2",
 			"flag_kill": "",
@@ -685,7 +685,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 36.0,
@@ -693,7 +693,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever3",
 			"flag_kill": "",
@@ -710,7 +710,7 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 16.0,
@@ -718,7 +718,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "toggle_ps_lever4",
 			"flag_kill": "",
@@ -735,11 +735,111 @@
 			"sprite_dialog": "",
 			"sprite_id": "c00_038",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 13.0,
 			"y": 15.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "320898899371445088",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 41,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_041",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 49.0,
+			"y": 55.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "879374930396164926",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 41,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_041",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 57.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "750296415290839507",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 41,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_041",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 59.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "333597210420153240",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 41,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_041",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 49.0,
+			"y": 59.0
 		}
 	],
 	"map_savepoints": [
@@ -3844,7 +3944,7 @@
 			"t00_000",
 			"t00_000",
 			"t15_004",
-			"t15_000",
+			"t15_012",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -3959,11 +4059,11 @@
 			"t00_000",
 			"t15_001",
 			"t15_080",
+			"t15_005",
+			"t15_015",
 			"t15_000",
-			"t15_000",
-			"t15_000",
-			"t15_000",
-			"t15_000",
+			"t15_005",
+			"t15_015",
 			"t15_090",
 			"t00_000",
 			"t00_000",
@@ -4023,8 +4123,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_001",
-			"t15_080",
-			"t15_000",
+			"t15_006",
+			"t15_016",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4044,7 +4144,7 @@
 			"t15_004",
 			"t15_000",
 			"t15_000",
-			"t15_000",
+			"t15_012",
 			"t15_000",
 			"t15_000",
 			"t00_000",
@@ -4089,8 +4189,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_004",
-			"t15_000",
-			"t15_000",
+			"t15_007",
+			"t15_017",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4155,8 +4255,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_002",
-			"t15_081",
-			"t15_000",
+			"t15_008",
+			"t15_018",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4223,11 +4323,11 @@
 			"t00_000",
 			"t15_001",
 			"t15_081",
+			"t15_005",
+			"t15_015",
 			"t15_000",
-			"t15_000",
-			"t15_000",
-			"t15_000",
-			"t15_000",
+			"t15_005",
+			"t15_015",
 			"t15_091",
 			"t00_000",
 			"t00_000",
