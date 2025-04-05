@@ -1189,7 +1189,7 @@
     "effect": [
       {
         "status": "heal",
-        "chance": 50,
+        "chance": 35,
         "target": 0
       }
     ],

@@ -384,39 +384,8 @@ functions = {
                     db.profile.set(user_id, PlayerState.Shop, 'player_state');
 
                     let profile_flags = db.profile.get(user_id, 'flags');
-                    let shopBuildOptions = [
-                        //Potions
-                        [Item.Potion,           false], //Potion
-                        [Item.HiPotion,         'to_lava_town_begin'], //Med Potion
-                        [Item.MaxPotion,        'PLACEHOLDER'], //Hi Potion
+                    let shopSelectOptions = await functions.shop_list_from_flags(obj, profile_flags)
 
-                        //Prisms
-                        [Item.Prism,            false], //Prism
-                        [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
-                        [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
-
-                        //Status Clear
-                        [Item.Eyedrops,         'cromet_quest_end'], //Eyedrops
-                        [Item.Shears,           'cromet_quest_end'], //Shears
-                        [Item.Daylily,          'cromet_quest_end'], //Daylily
-                        [Item.Antiparasite,     'cromet_quest_end'], //Antiparasite
-                        [Item.DebugChip,        'cromet_quest_end'], //Debug Chip
-                        [Item.CoolingBalm,      'cromet_quest_end'], //Cooling Balm
-
-                        //Evolution Items
-                        [Item.SporeFeather,     'obtained_sporefeather'],
-                    ];
-                        
-                    let shopSelectOptions = [];
-                    if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
-                    if (obj.type == 'default' || obj.type == null) {
-                        for(let shopOption of shopBuildOptions){
-                            if(profile_flags.includes(shopOption[1]) || shopOption[1] === false){
-                                shopSelectOptions.push(shopOption[0]);
-                            }
-                        }
-                    }
-                    
                     shopSelectOptions = shopSelectOptions.flat(1);
                     shopSelectOptions = [...new Set(shopSelectOptions)];
                     shopSelectOptions = shopSelectOptions.map(id => {
@@ -540,16 +509,9 @@ functions = {
                                 await m.delete().catch(() => {});
                                 let followUpMsg;
                                     
-                                let shopSelectOptions = [];
-                                if (obj.special_items.length != 0) shopSelectOptions.push(obj.special_items);
-                                if (obj.type == 'default' || obj.type == null) {
-                                    for(let shopOption of shopBuildOptions){
-                                        if(profile_flags.includes(shopOption[1]) || shopOption[1] === false){
-                                            shopSelectOptions.push(shopOption[0]);
-                                        }
-                                    }
-                                }
-                                shopSelectOptions = shopSelectOptions.flat(1);
+                                let profile_flags = db.profile.get(user_id, 'flags');
+                                let shopSelectOptions = await functions.shop_list_from_flags(obj, profile_flags);
+
                                 shopSelectOptions = [...new Set(shopSelectOptions)];
 
                                 shopSelectOptions = shopSelectOptions.map(id => {
@@ -1126,6 +1088,45 @@ functions = {
         }
         
         return false;
+    },
+
+    shop_list_from_flags : async function(shop_obj, profile_flags){
+        let shopBuildOptions = [
+            //Potions
+            [Item.Potion,           false], //Potion
+            [Item.HiPotion,         'to_lava_town_begin'], //Med Potion
+            [Item.MaxPotion,        'PLACEHOLDER'], //Hi Potion
+
+            //Prisms
+            [Item.Prism,            false], //Prism
+            [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
+            [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
+
+            //Status Clear
+            [Item.Eyedrops,         'cromet_quest_end'], //Eyedrops
+            [Item.Shears,           'cromet_quest_end'], //Shears
+            [Item.Daylily,          'cromet_quest_end'], //Daylily
+            [Item.Antiparasite,     'cromet_quest_end'], //Antiparasite
+            [Item.DebugChip,        'cromet_quest_end'], //Debug Chip
+            [Item.CoolingBalm,      'cromet_quest_end'], //Cooling Balm
+
+            //Evolution Items
+            [Item.SporeFeather,     'obtained_sporefeather'],
+        ];
+            
+        let shopSelectOptions = [];
+        if (shop_obj.special_items.length != 0) shopSelectOptions.push(shop_obj.special_items);
+        if (shop_obj.type == 'default' || shop_obj.type == null) {
+            for(let shopOption of shopBuildOptions){
+                if(profile_flags.includes(shopOption[1]) || shopOption[1] === false){
+                    shopSelectOptions.push(shopOption[0]);
+                }
+            }
+        }
+
+        shopSelectOptions = shopSelectOptions.flat(1)
+
+        return(shopSelectOptions);
     }
 
 }

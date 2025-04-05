@@ -196,6 +196,25 @@ module.exports = {
         create_tile(`t${zT}_041`,  Tile.Wall,     applicationEmojis ); //Training Fence
         create_tile(`t${zT}_042`,  Tile.Wall,     applicationEmojis ); //Training Fence
         create_tile(`t${zT}_043`,  Tile.Wall,     applicationEmojis ); //Training Wall (crate)
+        
+        create_tile(`t${zT}_050`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_051`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_052`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_053`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_060`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_061`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_062`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_063`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_070`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_071`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_072`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_073`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_080`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_081`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_082`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+        create_tile(`t${zT}_083`,  Tile.Wall,     applicationEmojis ); //Verdant Wall
+
+
 
         //Building Interior
         create_tile(`t${zB}_000`,  Tile.Floor,    applicationEmojis ); //Interior Floor
@@ -340,8 +359,17 @@ module.exports = {
         create_tile(`t${zTu}_002`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_003`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_004`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_005`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_006`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_007`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_008`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_011`,  Tile.Floor,    applicationEmojis ); //Tutorial Door Open
+        create_tile(`t${zTu}_012`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_013`,  Tile.Floor,    applicationEmojis ); //Spike Floor Deactivated
+        create_tile(`t${zTu}_015`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_016`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_017`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
+        create_tile(`t${zTu}_018`,  Tile.Wall,     applicationEmojis ); //Tutorial Wall
         create_tile(`t${zTu}_020`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_021`,  Tile.Wall,     applicationEmojis ); //Elevator
         create_tile(`t${zTu}_022`,  Tile.Wall,     applicationEmojis ); //Elevator
@@ -411,6 +439,14 @@ module.exports = {
         create_tile(`c_038`,       Tile.Int,      applicationEmojis ); // Switch (Blue)
         create_tile(`c_039`,       Tile.Npc,      applicationEmojis ); // Explorer Dave
         create_tile(`c_040`,       Tile.Int,      applicationEmojis ); // Inactive Teleporter
+        create_tile(`c_041`,       Tile.Int,      applicationEmojis ); // Active Computer
+        create_tile(`c_042`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_043`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_044`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_045`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_046`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_047`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_048`,       Tile.Int,      applicationEmojis ); // Security Boss
 
         //#endregion
 
@@ -1145,7 +1181,7 @@ module.exports = {
         create_move({
             id : 78, name : 'Slurp Up', type : OochType.Ooze,
             damage : 0, accuracy: 100,
-            effect : [{status : 'heal', chance : 50, target : MoveTarget.Self}],
+            effect : [{status : 'heal', chance : 35, target : MoveTarget.Self}],
             description : 'The user gathers missing parts of its body to restore half its HP.'
         });
         create_move({
