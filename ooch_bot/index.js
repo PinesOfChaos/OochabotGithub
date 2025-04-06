@@ -316,8 +316,16 @@ client.on('interactionCreate', async interaction => {
     if (db.profile.has(interaction.user.id)) {
         let curSpeed = db.profile.get(interaction.user.id, 'move_speed');
         if (db.profile.get(interaction.user.id, 'settings.discord_move_buttons') === true && interaction.isButton()) {
-            if(['SB_ROSWIER'].includes(_.toUpper(interaction.customId))){ //Passwords for certain events
-                //TODO Check the player's position and add certain flag(s)
+            let str_upper = _.toUpper(interaction.customId)
+            if(['SB_ROSWIER'].includes(str_upper)){ //Passwords for certain events
+                let loc_data = db.profile.get(interaction.user.id, 'location_data');
+                switch(str_upper){
+                    case 'SB_ROSWIER':
+                        if(loc_data.area == 'training_facility' && loc_data.x == 18 && loc_data.y == 58){
+                            //To do, add a flag to the player that allows progress
+                        }
+                    break;
+                }
             }
             else if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
                 await interaction.update({ embeds: [] });

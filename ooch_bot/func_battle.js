@@ -375,6 +375,76 @@ let functions = {
         }
     },
 
+
+    /**
+     * Creates a battle action where a user joins the battle
+     * @param {Object} battle_data the battle data to join
+     * @param {String} name the name of the user
+     * @param {String} battle_sprite the sprite to show for the user
+     * @param {Number} team_id the team for the user to join
+     * @param {Array} party the user's party of oochamon
+     */
+    new_action_add_user: function(battle_data, text_to_show, name, battle_sprite, team_id, party){
+        let slot_actions = [];
+        for(let slot of party){
+            slot_actions.push({
+                move_used_first : false,
+                move_used_last : false,
+
+                this_turn_did_attack : false,
+                this_turn_did_damage : false,
+                this_turn_was_attacked : false,
+                this_turn_was_damaged : false,
+                this_turn_switched_in : false,
+
+                this_turn_revealed : false,
+
+                used_ability_matryoshka : false,
+
+                counter_thunderstorm : 0,
+
+                status_counter_infect : 0
+            })
+            
+        }
+
+        let user_options = {
+            name: name,
+            name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
+            battle_sprite: battle_sprite,
+            user_id: false,
+            battle_ai : BattleAi.Basic,
+            heal_inv: [],
+            prism_inv: [],
+            other_inv: [],
+            team_id: team_id,
+            user_type: UserType.Wild,
+            thread_id: false,
+            guild_id: false,
+            active_slot: 0, 
+            is_catchable: false,
+            party: party,
+            action_selected: false,
+            slot_actions : slot_actions,
+            is_player: false,
+            display_msg_id: false,
+            defeated : false,
+            oochabux: 0
+        }
+
+        let user = functions.generate_battle_user(type, user_options)
+
+        let action = {
+            action_type : BattleAction.UserJoin,
+            priority : BattleAction.UserJoin,
+            text_to_show : text_to_show,
+            user : user
+        }
+
+        battle_data.battle_action_queue.push(action);
+    },
+
+
     /**
      * Create an Attack action
      * @param {Object} battle_data The battle data object
