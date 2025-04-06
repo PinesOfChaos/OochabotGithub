@@ -75,7 +75,7 @@ func refresh_data():
 	Global.DataAbilities = []
 	Global.DataItems = []
 	Global.DataMoves = []
-	Global.DataOochamon = []
+	Global.DataOochamon = {}
 	Global.DataTiles = []
 	Global.DataNPCs = []
 	
@@ -144,14 +144,23 @@ func refresh_data():
 				move_index = _move[1]
 			})
 		
+		var mon_id =  _mon.id
+		if(mon_id < 0):
+			mon_id = 10_000 + abs(_mon.id)
+		
 		#Download related image
 		var emoji_id = _mon.emote.split(":")[2].replace(">","")
 		var link = "https://cdn.discordapp.com/emojis/" + emoji_id + ".png?size=32&quality=lossless"
-		var png_name = "oochamon/" + ("00" + str(int(_mon.id))).right(3) + ".png"
+		var png_short = str(int(mon_id))
+		var png_name = "oochamon/" + ("00" + str(int(mon_id))).right(3) + ".png"
+		if(png_short.length() > 4):
+			png_name = "oochamon/" + png_short + ".png"
 		download_texture(link, png_name)
 		#print(png_name)
 		
-		Global.DataOochamon.push_back({
+		var key = str(int(mon_id))
+		print([mon_id, _mon.id])
+		Global.DataOochamon[key] =  {
 			ooch_index = _mon.id,
 			ooch_emote = _mon.emote,
 			ooch_link_image = link,
@@ -168,7 +177,9 @@ func refresh_data():
 			ooch_evo_lv = _mon.evo_lvl,
 			ooch_sprite = -1,
 			ooch_texture = -1
-		})
+		}
+		
+		print(Global.DataOochamon[key].ooch_index)
 	
 	#Tiles
 	var f_tiles = FileAccess.open(data_location + "/tiles_data.txt", FileAccess.READ)
@@ -226,14 +237,17 @@ func refresh_data():
 	while file_name != "":
 		if !file_name.begins_with("."):
 			file_num = int(file_name.split(".")[0])
-			for i in Global.DataOochamon.size():
-				ooch_id = Global.DataOochamon[i].ooch_index
+			for key in Global.DataOochamon:
+				ooch_id = Global.DataOochamon[key].ooch_index
+				if(ooch_id < 0):
+					ooch_id = 10_000 + abs(ooch_id)
+				
 				if ooch_id == file_num:
 					var image = Image.new()
 					var err = image.load(path + file_name)
 					if !err:
-						Global.DataOochamon[i].ooch_sprite = load(path + file_name)	
-						Global.DataOochamon[i].ooch_texture = Global.DataOochamon[i].ooch_sprite			
+						Global.DataOochamon[key].ooch_sprite = load(path + file_name)	
+						Global.DataOochamon[key].ooch_texture = Global.DataOochamon[key].ooch_sprite			
 		file_name = dir.get_next()
 	dir.list_dir_end()
 

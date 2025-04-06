@@ -239,6 +239,47 @@
 			],
 			"x": 9.0,
 			"y": 32.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Gooey Head",
+			"npc_id": "732393065107717814",
+			"post_combat_dialogue": "*glrbbllll...*",
+			"pre_combat_dialogue": "*bblrgblr*",
+			"remove_on_finish": false,
+			"sprite": 27,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_027",
+			"stance_list": [
+				0
+			],
+			"team": [
+				{
+					"ability": 0.0,
+					"atk_iv": 0,
+					"def_iv": 0,
+					"hp_iv": 0,
+					"id": 0,
+					"item": -1,
+					"level": 5,
+					"moveset": [
+						1
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 0
+				}
+			],
+			"x": 29.0,
+			"y": 29.0
 		}
 	],
 	"map_savepoints": [

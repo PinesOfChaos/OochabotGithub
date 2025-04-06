@@ -79,8 +79,6 @@ func save():
 	for slot in slots:	
 		if slot.slot_data.slot_enabled:
 			event_data.team.push_back(slot.slot_data)
-		
-
 
 func _on_option_button_battle_ai_item_selected(index: int) -> void:
 	event_data.battle_ai = index

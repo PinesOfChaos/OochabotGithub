@@ -2,13 +2,27 @@
 	"map_events": [],
 	"map_info": {
 		"map_battleback": "",
-		"map_name": "",
-		"map_generated": false
+		"map_generated": false,
+		"map_name": ""
 	},
 	"map_npcs": [],
 	"map_savepoints": [],
 	"map_shops": [],
-	"map_spawn_zones": [],
+	"map_spawn_zones": [
+		{
+			"height": 0.0,
+			"spawn_slots": [
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": 10002
+				}
+			],
+			"width": 0.0,
+			"x": 10.0,
+			"y": 6.0
+		}
+	],
 	"map_tiles": [
 		[
 			"t00_000",
@@ -4236,15 +4250,5 @@
 		]
 	],
 	"map_transitions": [],
-	"map_weather": [
-		{
-			"flag_kill": "",
-			"flag_required": "",
-			"height": 5,
-			"weather_name": "",
-			"width": 9,
-			"x": 7,
-			"y": 1
-		}
-	]
+	"map_weather": []
 }

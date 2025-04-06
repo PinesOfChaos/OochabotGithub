@@ -447,6 +447,7 @@ module.exports = {
         create_tile(`c_046`,       Tile.Int,      applicationEmojis ); // Security Boss
         create_tile(`c_047`,       Tile.Int,      applicationEmojis ); // Security Boss
         create_tile(`c_048`,       Tile.Int,      applicationEmojis ); // Security Boss
+        create_tile(`c_049`,       Tile.Int,      applicationEmojis ); // TP Network Chip
 
         //#endregion
 
@@ -694,8 +695,8 @@ module.exports = {
         create_item({
             id : 40, name : 'Old Disc', emote : '<:item_old_disc:1353132170004135967>',
             category : 'other_inv', type : 'key', price : -1, potency : 1, 
-            description : 'A disc of unknown purpose. You get the feeling you shouldn\'t have it though. It probably plugs into something old...',
-            description_short : 'A data disc. Inserts somewhere.'
+            description : 'A weathered data disc, its purpose is unknown. There\'s some text etched into its side:\n"Passphrase: SB_ROSWIER"',
+            description_short : 'A weathered data disc.'
         })
 
         //#endregion

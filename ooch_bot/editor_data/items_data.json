@@ -490,8 +490,8 @@
     "type": "key",
     "price": -1,
     "potency": 1,
-    "description": "A disc of unknown purpose. You get the feeling you shouldn't have it though. It probably plugs into something old...",
-    "description_short": "A data disc. Inserts somewhere.",
+    "description": "A weathered data disc, its purpose is unknown. There's some text etched into its side:\n\"Passphrase: SB_ROSWIER\"",
+    "description_short": "A weathered data disc.",
     "tags": []
   }
 ]

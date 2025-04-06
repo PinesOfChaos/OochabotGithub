@@ -13,29 +13,36 @@ var spawn_slot_data = {
 	"max_level" : 1
 }
 
+func index_js2gd(index):
+	if(index < 0):
+		index = 10_000 + abs(index)
+	index = int(index)
+	return index
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in Global.DataOochamon.size():
-		var ooch = Global.DataOochamon[i]
-		
-		if ooch.ooch_index >= 0:
-			o_button_slot_species.add_icon_item(
-				ooch.ooch_texture,
-				ooch.ooch_name,
-				ooch.ooch_index
-			)
+	for key in Global.DataOochamon:
+		var ooch = Global.DataOochamon[key]
+		var ooch_index = index_js2gd(ooch.ooch_index)
+		o_button_slot_species.add_icon_item(
+			ooch.ooch_texture,
+			ooch.ooch_name,
+			ooch_index
+		)
 		
 	
 	o_lv_min.value = spawn_slot_data.min_level
 	o_lv_max.value = spawn_slot_data.max_level
-	o_button_slot_species.selected = spawn_slot_data.ooch_id
+	o_button_slot_species.select(o_button_slot_species.get_item_index(index_js2gd(spawn_slot_data.ooch_id)))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
 func _on_button_slot_species_item_selected(index):
-	spawn_slot_data.ooch_id = o_button_slot_species.get_item_id(index)
+	var key = index_js2gd(o_button_slot_species.get_item_id(index))
+	var mon_data = Global.DataOochamon[key]
+	spawn_slot_data.ooch_id = mon_data.id
 
 func _on_lv_min_value_changed(value):
 	spawn_slot_data.min_level = value
