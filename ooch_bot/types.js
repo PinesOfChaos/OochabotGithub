@@ -381,7 +381,9 @@ const Ability = {
     Turbine: 82,
     Pact: 83,
     Exploiter: 84,
-    Seer: 85
+    Seer: 85,
+    EscalationProtocol: 86,
+    SpreadingSludge: 87
 }
 
 const Item = {

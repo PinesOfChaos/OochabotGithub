@@ -698,6 +698,12 @@ module.exports = {
             description : 'A weathered data disc, its purpose is unknown. There\'s some text etched into its side:\n"Passphrase: SB_ROSWIER"',
             description_short : 'A weathered data disc.'
         })
+        create_item({
+            id : 41, name : 'Ability Sphere', emote : '<:item_ability_sphere:1358552929908555776>',
+            category : 'other_inv', type : 'ability_swap', price : 15000, potency : 1, 
+            description : 'A near perfect sphere crafted from crystals at the planet\'s core. Allows an Oochamon to change its ability.',
+            description_short : 'Allows an Oochamon to change its ability.'
+        })
 
         //#endregion
 
@@ -1591,6 +1597,8 @@ module.exports = {
         create_ability(83, 'Pact',             'Raises the damage of the user\'s first move by 30% on repeated uses.');
         create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.');
         create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
+        create_ability(86, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.');
+        create_ability(87, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.');
         
 
         //#endregion

@@ -168,6 +168,7 @@ m_functions = {
             og_ability: 0,
             level: 0,
             moveset: [],
+            unlocked_special_move : false,
             stats: {
                 hp: 1,
                 atk: 0,
@@ -284,7 +285,9 @@ m_functions = {
 
             counter_thunderstorm : 0,
 
-            status_counter_infect : 0
+            status_counter_infect : 0,
+            
+            hp_starting : 0
         }
 
         return(slot_actions_obj);

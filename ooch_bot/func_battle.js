@@ -8,6 +8,9 @@ const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, Mov
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance, get_ooch_art } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
+const { get_blank_slot_actions, get_blank_battle_user } = require('./func_modernize.js')
+
+
 const closeButton = new ActionRowBuilder()
     .addComponents(
         new ButtonBuilder()
@@ -41,20 +44,22 @@ let functions = {
         const { create_ooch, move } = require('./func_play.js');
         const { botClient } = require("./index.js");
 
+        let user_info = get_blank_battle_user();
         let party = [];
-        let battle_sprite = false;
-        let team_id = false;
         let active_slot = 0;
-        let is_catchable = false;
-        let oochabux = 0;
-        let name = 'Wild Oochamon';
-        let is_player = false;
-        let display_msg_id = false;
-        let thread_id = false;
-        let guild_id = false;
-        let user_id = false;
-        let heal_inv = [], prism_inv = [], other_inv = [], stance_list = [StanceForms.Base];
-        let battle_ai = BattleAi.Basic;
+
+        //let battle_sprite = false;
+        //let team_id = false;
+        //let is_catchable = false;
+        //let oochabux = 0;
+        //let name = 'Wild Oochamon';
+        //let is_player = false;
+        //let display_msg_id = false;
+        //let thread_id = false;
+        //let guild_id = false;
+        //let user_id = false;
+        //let heal_inv = [], prism_inv = [], other_inv = [], stance_list = [StanceForms.Base];
+        //let battle_ai = BattleAi.Basic;
         
         switch (type) {
             case UserType.Wild:
@@ -64,18 +69,19 @@ let functions = {
                     let ooch = create_ooch(
                         ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
                         ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv );
+
                     party = [ooch];
-                    is_catchable = true;
-                    oochabux = options.coin;
-                    team_id = options.team_id;
+                    user_info.is_catchable = true;
+                    user_info.oochabux = options.coin;
+                    user_info.team_id = options.team_id;
 
                 }
                 else{
                     let ooch = create_ooch(options.ooch_id, options.ooch_level);
                     party = [ooch];
-                    is_catchable = true;
-                    team_id = options.team_id;
-                    oochabux = _.random(5, 40);
+                    user_info.is_catchable = true;
+                    user_info.team_id = options.team_id;
+                    user_info.oochabux = _.random(5, 40);
                 }
                 
                     
@@ -95,40 +101,40 @@ let functions = {
                     party_generated.push(ooch);  
                 }
 
-                battle_ai = options.battle_ai;
-                name = options.name;
-                oochabux = options.coin;
-                if (oochabux == 0) {
-                    oochabux = (party_base.reduce((sum, ooch) => sum + ooch.level, 0)) * 15;
+                user_info.battle_ai = options.battle_ai;
+                user_info.name = options.name;
+                user_info.oochabux = options.coin;
+                if (user_info.oochabux == 0) {
+                    user_info.oochabux = (party_base.reduce((sum, ooch) => sum + ooch.level, 0)) * 15;
                 }
                 party = party_generated;
-                is_catchable = options.is_catchable;
-                team_id = options.team_id;
-                battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
+                user_info.is_catchable = options.is_catchable;
+                user_info.team_id = options.team_id;
+                user_info.battle_sprite = options.sprite_combat == false ? options.sprite_id.slice(0, 1) + options.sprite_id.slice(3) : options.sprite_combat;
             break;
             case UserType.Player:
-                is_player = true;
-                user_id = options.user_id;
-                team_id = options.team_id;
-                thread_id = options.thread_id;
-                guild_id = options.guild_id;
+                user_info.is_player = true;
+                user_info.user_id = options.user_id;
+                user_info.team_id = options.team_id;
+                user_info.thread_id = options.thread_id;
+                user_info.guild_id = options.guild_id;
 
-                let profile = db.profile.get(user_id)
+                let profile = db.profile.get(user_info.user_id)
                 if (options.profile != undefined && options.profile != false) {
                     profile = options.profile;
                 }
                 
-                let guild = botClient.guilds.cache.get(guild_id);
-                let member = await guild.members.fetch(user_id);
-                name = member.displayName;
+                let guild = botClient.guilds.cache.get(user_info.guild_id);
+                let member = await guild.members.fetch(user_info.user_id);
+                user_info.name = member.displayName;
                 
-                battle_sprite = profile.player_sprite;
+                user_info.battle_sprite = profile.player_sprite;
                 party = profile.ooch_party;
                 active_slot = profile.ooch_active_slot;
-                display_msg_id = profile.display_msg_id;
-                heal_inv = profile.heal_inv;
-                prism_inv = profile.prism_inv;
-                other_inv = profile.other_inv;
+                user_info.display_msg_id = profile.display_msg_id;
+                user_info.heal_inv = profile.heal_inv;
+                user_info.prism_inv = profile.prism_inv;
+                user_info.other_inv = profile.other_inv;
             break;
         }
 
@@ -143,54 +149,22 @@ let functions = {
             }
         }
         
-
+        
+        
         //Set battle-specific values/triggers here
         let slot_actions = [];
         for(let slot of party){
-            slot_actions.push({
-                move_used_first : false,
-                move_used_last : false,
-
-                this_turn_did_attack : false,
-                this_turn_did_damage : false,
-                this_turn_was_attacked : false,
-                this_turn_was_damaged : false,
-                this_turn_switched_in : false,
-
-                this_turn_revealed : false,
-
-                used_ability_matryoshka : false,
-
-                counter_thunderstorm : 0,
-
-                status_counter_infect : 0
-            })
-            
+            let temp_slot = get_blank_slot_actions()
+            temp_slot.hp_starting = slot.current_hp
+            slot_actions.push(temp_slot)
         }
 
-        return {
-            name: name,
-            name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
-            battle_sprite: battle_sprite,
-            user_id: user_id,
-            battle_ai : battle_ai,
-            heal_inv: heal_inv,
-            prism_inv: prism_inv,
-            other_inv: other_inv,
-            team_id: team_id,
-            user_type: type,
-            thread_id: thread_id,
-            guild_id: guild_id,
-            active_slot: active_slot, 
-            is_catchable: is_catchable,
-            party: party,
-            action_selected: false,
-            slot_actions : slot_actions,
-            is_player: is_player,
-            display_msg_id: display_msg_id,
-            defeated : false,
-            oochabux: oochabux
-        }
+        user_info.party = party;
+        user_info.active_slot = active_slot;
+        user_info.slot_actions = slot_actions;
+        user_info.name_possessive = user_info.name == 'Wild ' ? 'Wild' : user_info.name + '\'s';
+
+        return { user_info }
     },
 
     /**
@@ -199,7 +173,9 @@ let functions = {
      */
     reset_this_turn_triggers(battle_data){
         for(let user of battle_data.users){
-            for(let slot of user.slot_actions){
+            for(let [i, slot] of user.slot_actions.entries()){
+                slot.hp_starting = user.party[i].hp_current;
+
                 for (const [key, value] of Object.entries(slot)) {
                     if(key.includes('this_turn')){
                         slot[key] = false;
@@ -375,6 +351,8 @@ let functions = {
         }
     },
 
+    // #region Battle Action New
+    // #endregion
 
     /**
      * Creates a battle action where a user joins the battle
@@ -408,31 +386,19 @@ let functions = {
             
         }
 
-        let user_options = {
-            name: name,
-            name_possessive: name == 'Wild Oochamon' ? 'Wild' : name + '\'s',
-            battle_sprite: battle_sprite,
-            user_id: false,
-            battle_ai : BattleAi.Basic,
-            heal_inv: [],
-            prism_inv: [],
-            other_inv: [],
-            team_id: team_id,
-            user_type: UserType.Wild,
-            thread_id: false,
-            guild_id: false,
-            active_slot: 0, 
-            is_catchable: false,
-            party: party,
-            action_selected: false,
-            slot_actions : slot_actions,
-            is_player: false,
-            display_msg_id: false,
-            defeated : false,
-            oochabux: 0
-        }
+        let user_options = get_blank_battle_user();
+        user_options.name = name;
+        user_options.name_possessive = (name == 'Wild Oochamon' ? 'Wild' : name + '\'s');
+        user_options.battle_sprite = battle_sprite;
+        user_options.battle_ai = BattleAi.Basic;
+        user_options.user_type = UserType.Wild;
+        user_options.team_id = team_id;
+        user_options.is_catchable = false;
+        user_options.party = party;
+        user_options.slot_actions = slot_actions;
+        
 
-        let user = functions.generate_battle_user(type, user_options)
+        let user = functions.generate_battle_user(type, user_options);
 
         let action = {
             action_type : BattleAction.UserJoin,
@@ -1723,6 +1689,9 @@ let functions = {
         return embed;
     },
 
+    // #region Battle Action Process
+    // #endregion
+
     /**
      * Processes an action inside of a battle
      * @param {Object} battle_data the current battle_data
@@ -1749,11 +1718,48 @@ let functions = {
             case BattleAction.StanceChange:
                 turn_data = await functions.action_process_stance_change(battle_data, action);
             break;
+            case BattleAction.UserJoin:
+                turn_data = await functions.action_process_user_join(battle_data, action);
+            break;
             case BattleAction.Other:
                 //TODO
             break;
         }
         return turn_data;
+    },
+
+    /**
+     * Lets a user dynamically join the battle
+     * @param {*} battle_data the current battle data
+     * @param {*} action the action data to process
+     * @returns Turn data {finish_battle : Boolean, return_string : String}
+     */
+    action_process_user_join : async function(battle_data, action){
+        let user = action.user;
+        let finish_battle = false;
+        let return_string = ``;
+        let active_ooch = user.party[user.active_slot];
+        user.user_index = battle_data.users.length;
+       
+        if(action.text_to_show != ''){
+            return_string = action.text_to_show;
+        }
+        else if(user.user_type != UserType.Wild){
+            return_string += `A Wild ${active_ooch.emote} ${active_ooch.nickname} has joined the battle!`
+        }
+        else{
+            return_string += `${user.name} has joined the battle!`
+        }
+
+        battle_data.users.push(user);
+        functions.new_battle_action_switch(battle_data, user.user_index, user.active_slot, false);
+
+        return {
+            finish_battle : finish_battle,
+            return_string : return_string,
+            turn_emote : '❕',
+            embed_color : '#ffaa00',
+        }
     },
 
     /**
