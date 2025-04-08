@@ -694,6 +694,8 @@ functions = {
 
     map_emote_string: function(map_name, map_tiles, x_pos, y_pos, user_id) {
 
+        let player_info = db.profile.get(user_id);
+
         // Window size can either be 5x5 or 7x7 or 7x9
         let window_size = db.profile.get(user_id, 'settings.zoom');
         let x_window_size = window_size.split('_')[0];
@@ -729,7 +731,7 @@ functions = {
 
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
-        for(let ooch of player_info.party){
+        for(let ooch of player_info.ooch_party){
             player_flags.push(`ooch_id_${ooch.id}`)
         }
         let map_npcs = map_obj.map_npcs;

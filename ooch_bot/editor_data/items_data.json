@@ -493,5 +493,17 @@
     "description": "A weathered data disc, its purpose is unknown. There's some text etched into its side:\n\"Passphrase: SB_ROSWIER\"",
     "description_short": "A weathered data disc.",
     "tags": []
+  },
+  {
+    "id": 41,
+    "name": "Ability Sphere",
+    "emote": "<:item_ability_sphere:1358552929908555776>",
+    "category": "other_inv",
+    "type": "ability_swap",
+    "price": 15000,
+    "potency": 1,
+    "description": "A near perfect sphere crafted from crystals at the planet's core. Allows an Oochamon to change its ability.",
+    "description_short": "Allows an Oochamon to change its ability.",
+    "tags": []
   }
 ]

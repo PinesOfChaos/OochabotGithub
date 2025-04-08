@@ -262,7 +262,6 @@ m_functions = {
                 defeated : false,
                 oochabux: 0,
                 stance_list : [StanceForms.Base]
-
         }
 
         return(battle_user_obj);

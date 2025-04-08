@@ -428,5 +428,15 @@
     "id": 85,
     "name": "Seer",
     "description": "If the Oochamon would be EXPOSED it instead gains +1 SPD."
+  },
+  {
+    "id": 86,
+    "name": "Escalation Protocol",
+    "description": "Gets +1 ATK, DEF, & SPD per 20% HP lost."
+  },
+  {
+    "id": 87,
+    "name": "Spreading Sludge",
+    "description": "Spawns a helpful Slime Head per 20% HP lost."
   }
 ]

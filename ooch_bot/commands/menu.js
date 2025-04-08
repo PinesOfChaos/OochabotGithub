@@ -226,6 +226,7 @@ module.exports = {
             for (let i = 0; i < ooch_party.length; i++) {
                 let evoLvl = db.monster_data.get(ooch_party[i].id, 'evo_lvl');
                 let canEvolve = false;
+                let disableOochButton = false;
 
                 if (ooch_party[i].level >= evoLvl && evoLvl != -1) {
                     canEvolve = true;
@@ -248,13 +249,23 @@ module.exports = {
                         .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
                     )
                 } else {
+                    if (item.type == 'iv'){
+                        if (ooch_party[i].stats[`${item.potency}_iv`] == 1.5) disableOochButton = true;
+                    } else if (item.type == 'evolve') {
+                        if (item.potency[0] != ooch_party[i].id) disableOochButton = true;
+                    } else if (item.type == 'move_unlock') {
+                        if (db.monster_data.get(ooch_party[i].id, 'move_list').filter(mv => mv[0] == -1).length == 0 || ooch_party[i].unlocked_special_move == true) disableOochButton = true;  
+                    } else if (item.type == 'ability_swap') {
+                        if (db.monster_data.get(ooch_party[i].id, 'abilities').length == 1) disableOochButton = true;
+                    }
+                
                     ((i <= 1) ? party : party_2).addComponents(
                         new ButtonBuilder()
                         .setCustomId(`item_ooch_id_${i}_${item.id}`)
                         .setLabel(`${ooch_party[i].nickname}${item.type == 'iv' ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
-                        .setDisabled((item.type == 'iv' ? Boolean(ooch_party[i].stats[`${item.potency}_iv`] == 1.5) : Boolean(item.potency[0] != ooch_party[i].id)))
+                        .setDisabled(disableOochButton)
                     )
                 }
             }
@@ -723,7 +734,8 @@ module.exports = {
                     let move_sel_id = selected_ooch.moveset[parseInt(selected.replace('move_', ''))];
 
                     for (let move_data of db.monster_data.get(selected_ooch.id, 'move_list')) {
-                        if (move_data[0] <= selected_ooch.level && move_data[0] != -1 && !selected_ooch.moveset.includes(move_data[1])) {
+                        if (move_data[0] <= selected_ooch.level && !selected_ooch.moveset.includes(move_data[1])) {
+                            if (move_data[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
                             let db_move_data = db.move_data.get(move_data[1]);
                             move_list_select_options.push(
                                 new StringSelectMenuOptionBuilder()
@@ -965,6 +977,19 @@ module.exports = {
                         db.profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].caught`);
 
                         item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.name}** into ${newOoch.emote} **${newOoch.name}**!`;
+                    break;
+                    case 'move_unlock':
+                        user_profile.ooch_party[selData[0]].unlocked_special_move = true;
+                        item_usage_text = `Used the **${selItem.name}**, and unlocked the latent potential of ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**. It can now learn special moves!`;
+                    break;
+                    case 'ability_swap':
+                        let abilityList = db.monster_data.get(user_profile.ooch_party[selData[0]].id, 'abilities');
+                        let currentAbility = user_profile.ooch_party[selData[0]].ability;
+                    
+                        let newAbility = abilityList.find(ability => ability !== currentAbility);
+                        user_profile.ooch_party[selData[0]].ability = newAbility;
+                    
+                        item_usage_text = `Swapped ability from **${db.ability_data.get(currentAbility, 'name')}** to **${db.ability_data.get(newAbility, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
                     break;
                 }
 

@@ -45,6 +45,7 @@ let functions = {
         const { botClient } = require("./index.js");
 
         let user_info = get_blank_battle_user();
+        user_info.user_type = type;
         let party = [];
         let active_slot = 0;
 
@@ -83,8 +84,6 @@ let functions = {
                     user_info.team_id = options.team_id;
                     user_info.oochabux = _.random(5, 40);
                 }
-                
-                    
                 
             break;
             case UserType.NPCTrainer:
@@ -164,7 +163,7 @@ let functions = {
         user_info.slot_actions = slot_actions;
         user_info.name_possessive = user_info.name == 'Wild ' ? 'Wild' : user_info.name + '\'s';
 
-        return { user_info }
+        return user_info
     },
 
     /**
