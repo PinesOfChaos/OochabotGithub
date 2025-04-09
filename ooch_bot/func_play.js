@@ -599,33 +599,54 @@ functions = {
 
                             if(x1 && y1 && x2 && y2){
                                 stop_moving = true;
-                                let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
-                                let slot = spawn_zone.spawn_slots[slot_index];
                                 
-                                if(_.random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/10,000 battles)
-                                    let new_slot = {
-                                        ooch_id : -1,
-                                        min_level : slot.min_level,
-                                        max_level : slot.max_level,
+
+                                let mons_to_add = [];
+                                let mon_count = 2;
+                                for(let m = 0; m < mon_count; m++){
+                                    let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
+                                    let slot = spawn_zone.spawn_slots[slot_index];
+
+                                    if(_.random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/1,000 battles)
+                                        let new_slot = {
+                                            ooch_id : -1,
+                                            min_level : slot.min_level,
+                                            max_level : slot.max_level,
+                                        }
+                                        slot = new_slot;
+                                        mons_to_add = [slot]
+                                        break;
+                                    } 
+                                    else{
+                                        mons_to_add.push(slot);
                                     }
-                                    slot = new_slot;
-                                } 
+                                }
                                 
-                                let mon_level = _.random(slot.min_level, slot.max_level);
-                                let mon_name = db.monster_data.get(slot.ooch_id.toString(), 'name');
-                                let mon_emote = db.monster_data.get(slot.ooch_id.toString(), 'emote');
+                                let mon_level = _.random(mons_to_add[0].min_level, mons_to_add[0].max_level);
+                                let mon_name = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'name');
+                                let mon_emote = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'emote');
                                 
-                                //use slot .ooch_id, .min_level, .max_level to setup the encounter
+                                //use mons_to_add .ooch_id, .min_level, .max_level to setup the encounter
                                 await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
                                     await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
-                                        let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : slot.ooch_id.toString(), ooch_level : mon_level, team_id : 1})
+
+                                        //Add the wild mon and the user
                                         let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+                                        let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[0].ooch_id.toString(), ooch_level : mon_level, team_id : 1})
+                                        let battle_user_array = [userObj, oochObj]
+
+                                        //Add additional mons
+                                        for(let m = 1; m < mons_to_add.length; m++){
+                                            mon_level = _.random(mons_to_add[m].min_level, mons_to_add[m].max_level);
+                                            oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[m].ooch_id.toString(), ooch_level : mon_level, team_id : 1})
+                                            battle_user_array.push(oochObj)
+                                        }
 
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
-                                            await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
+                                            await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                         }
                                         else {
                                             let run_chance = .6;

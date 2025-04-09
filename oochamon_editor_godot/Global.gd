@@ -18,6 +18,9 @@ var EVENT_OBJECTIVE = 	5
 var EVENT_OPTIONS = 	6
 var EVENT_FINISH = 		7 #This should be unused
 var EVENT_WAIT = 		8
+var EVENT_ADD_ALLY =	9
+var EVENT_BATTLEGROUP_START = 	10
+var EVENT_BATTLEGROUP_END = 	11
 
 var STANCE_BASE = 		0
 var STANCE_ATK = 		1

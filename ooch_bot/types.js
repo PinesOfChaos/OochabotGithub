@@ -55,7 +55,10 @@ const EventMode = {
     Objective: 5,
     Options: 6,
     EventFinish: 7,
-    Wait: 8
+    Wait: 8,
+    AddAlly: 9,
+    BattleGroupStart: 10,
+    BattleGroupEnd: 11
 }
 
 const DialogueType = {
