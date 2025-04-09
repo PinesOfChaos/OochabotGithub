@@ -449,6 +449,9 @@ module.exports = {
         create_tile(`c_048`,       Tile.Int,      applicationEmojis ); // Security Boss
         create_tile(`c_049`,       Tile.Int,      applicationEmojis ); // TP Network Chip
 
+        create_tile(`c_900`,       Tile.Int,      applicationEmojis ); // BIG Ooze
+        create_tile(`c_901`,       Tile.Int,      applicationEmojis ); // Enforcement System Delta
+
         //#endregion
 
         //#region Item Data
@@ -1504,7 +1507,25 @@ module.exports = {
             description : 'Frosty jaws lunge forward, SNARING the target.',
             tags : [MoveTag.Cold]
         });
-        
+        create_move({
+            id : 129, name : 'Laser Sweep', type : OochType.Flame,
+            damage : 40, accuracy: 100,
+            effect : [{status : Status.SweepDamage, chance : 5, target : MoveTarget.Enemy}],
+            description : 'An array of lasers sweep the area, it even damages Oochamon in their prisms.',
+            tags : [MoveTag.Light]
+        });
+        create_move({
+            id : 130, name : 'Annihilate', type : OochType.Neutral,
+            damage : 150, accuracy: 100,
+            effect : [{status : Status.Drained, chance : 100, target : MoveTarget.Self}],
+            description : 'Bombards the area with high damage, the user must recharge after using this attack.'
+        });
+        create_move({
+            id : 131, name : 'Target Lock', type : OochType.Neutral,
+            damage : 0, accuracy: -1,
+            effect : [{status : Status.Revealed, chance : 100, target : MoveTarget.Enemy}, {status : Status.Expose, chance : 100, target : MoveTarget.Enemy}],
+            description : 'Carefullly on to the target, REVEALING and EXPOSING them.'
+        });
 
         //#endregionF
 
@@ -1619,6 +1640,7 @@ module.exports = {
         create_status(10,  'Petrified', '<:status_petrify:1335446218393784454>',    'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
         create_status(11,  'Weakened',  '<:status_weak:1335452472881315872>',       'Reduces the power of the Oochamon\'s damaging moves.');
         create_status(12,  'Revealed',  '<:status_reveal:1339448769871220866>',     'The Oochamon is guaranteed to be hit, it is also unable to gain the <:status_vanish:1274938531864776735> VANISHED status.');
+        create_status(13,  'Drained',   '😓',       'The Oochamon is Drained and must spend the turn recharging.');
         
         //#endregion
 
@@ -3881,6 +3903,50 @@ module.exports = {
             pre_evo_id: -2, evo_id: -1, evo_lvl: -1, evo_stage: 1
         })
 
+        // Slime Head
+        create_monster({
+            id: -4,
+            emote: get_emote_string(applicationEmojis, 'c_027'),
+            name: 'Slime Head',
+            oochive_entry: 'An oddly human head made of Ooze, it looks like it has Prisms embedded in its eye.',
+            type: [OochType.Ooze],
+            hp: 10, atk: 10, def: 10, spd: 10, // total 40
+            move_list: [
+                [1, Move.MagicBolt], [1, Move.Glob], [1, Move.Siphon], [1, Move.Mud], [-1, Move.Bash]
+            ],
+            abilities: [Ability.Icky],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Giant Slime Head
+        create_monster({
+            id: -5,
+            emote: get_emote_string(applicationEmojis, 'c_900'),
+            name: 'Giant Slime Head',
+            oochive_entry: 'A large formation of Ooze. It\'s currently unknown whether this is an Oochamon or not.',
+            type: [OochType.Ooze],
+            hp: 55, atk: 10, def: 20, spd: 15, // total 100
+            move_list: [
+                [1, Move.Glob], [1, Move.Siphon], [1, Move.Bash], [1, Move.Laminate], [-1, Move.Bash]
+            ],
+            abilities: [Ability.SpreadingSludge],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 1
+        });
+
+        // Giant Slime Head
+        create_monster({
+            id: -6,
+            emote: get_emote_string(applicationEmojis, 'c_901'),
+            name: 'Enforcement System Δ',
+            oochive_entry: 'A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...',
+            type: [OochType.Tech],
+            hp: 50, atk: 15, def: 20, spd: 15, // total 100
+            move_list: [
+                [1, Move.Heatseeker], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
+            ],
+            abilities: [Ability.EscalationProtocol],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
         //#endregion
 

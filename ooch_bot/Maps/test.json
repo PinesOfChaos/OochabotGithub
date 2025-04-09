@@ -15,12 +15,22 @@
 				{
 					"max_level": 1,
 					"min_level": 1,
-					"ooch_id": 10002
+					"ooch_id": 4.0
+				},
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": -1.0
+				},
+				{
+					"max_level": 1,
+					"min_level": 1,
+					"ooch_id": -3.0
 				}
 			],
 			"width": 0.0,
-			"x": 10.0,
-			"y": 6.0
+			"x": 16.0,
+			"y": 9.0
 		}
 	],
 	"map_tiles": [

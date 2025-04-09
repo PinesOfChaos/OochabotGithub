@@ -96,6 +96,7 @@ const Status = {
     Petrify: 10,
     Weak: 11,
     Revealed: 12,
+    Drained: 13,
 
     //Special Status Types that affect how the move itself works
     Weather: 'weather',
@@ -108,6 +109,7 @@ const Status = {
     GoingFirstBonus: 'going_first',
     GoingLastBonus: 'going_last',
     TrueDamage: 'true_damage',
+    SweepDamage: 'sweep_damage'
 }
 
 const OochType = {
@@ -291,8 +293,10 @@ const Move = {
     TrueReflection: 125,
     GorgonEye: 126,
     HawkEye: 127,
-    Frostbite: 128
-
+    Frostbite: 128,
+    LaserSweep: 129,
+    Annihilate: 130,
+    TargetLock: 131
 }
 
 const Ability = {

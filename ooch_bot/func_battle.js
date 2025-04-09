@@ -4,7 +4,7 @@ const db = require("./db.js")
 const wait = require('wait');
 const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, EmbedBuilder, ActionRow, AttachmentBuilder, Attachment } = require('discord.js');
 const _ = require('lodash');
-const { PlayerState, UserType, Stats, Ability, OochType, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi } = require("./types.js");
+const { PlayerState, UserType, Stats, Ability, OochType, Move, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi } = require("./types.js");
 const { Status } = require('./types.js');
 const { ooch_info_embed, check_chance, get_ooch_art } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
@@ -2766,13 +2766,54 @@ let functions = {
         
     },
 
+    hp_chunks_lost : function(hp_before, hp_current, chunk_percentage){
+        let chunks_lost = 0;
+        for(let threshold = 1; threshold > 0; threshold -= chunk_percentage/100){
+            if(hp_before > threshold && hp_current <= threshold){
+                chunks_lost++;
+            }
+        }
+        return chunks_lost;
+    },
+
     use_eot_ability : function(battle_data, user_index) {
+
+        const { create_ooch } = require('./func_play.js');
+
         let ability_text = ``;
         let user = battle_data.users[user_index];
         let ooch = user.party[user.active_slot];
         let slot_info = user.slot_actions[user.active_slot];
 
+        //Used for checking how much HP was lost
+        let hp_before = slot_info.hp_starting;
+        let hp_current = ooch.current_hp;
+        let chunks_lost = 0;
+
         switch(ooch.ability) {
+            case Ability.EscalationProtocol:
+                chunks_lost = functions.hp_chunks_lost(hp_before, hp_current, 20);
+                if(chunks_lost > 0){
+                    ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Escalation Protocol**:`
+                    ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Attack, chunks_lost)}`;
+                    ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Defense, chunks_lost)}`;
+                    ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Speed, chunks_lost)}\n`;
+                }
+            break;
+            case Ability.SpreadingSludge:
+                chunks_lost = functions.hp_chunks_lost(hp_before, hp_current, 20);
+                if(chunks_lost > 0){
+                    ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Spreading Sludge**:`
+                    //Spawn a Slime Head for each
+                    for(let i = 0; i < chunks_lost; i++){
+                        ability_text += `A <:c_027:1347440606204399707> **Slime Head** breaks off from the main body and joins the battle!`
+                        functions.new_action_add_user(battle_data, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
+                            "Slime Head", "c_027", user.team_id, [
+                            create_ooch(-4, ooch.level, [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], false, 0, Ability.Icky, 0, 0, 0, 0)
+                        ])
+                    }
+                }
+            break;
             case Ability.Stealthy:
                 if(!slot_info.this_turn_did_damage){
                     ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Stealthy**:`
@@ -3184,9 +3225,16 @@ let functions = {
         //Text for if we try to do a thing but fail
         let tried_to_text = `${attacker_emote} **${atkOochName}**\'s tried to use **${move_name}**, but`
 
+        //Hey, chat, are we asleep? Or do we un-sleep'th'st've?
         let do_wakeup = (.3 > Math.random()) && (attacker.status_effects.includes(Status.Sleep));
-        if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
-            string_to_send += `\n${attacker_emote} **${atkOochName}** is <:status_sleep:1335446202275070034> SLEEPING...`;
+
+        //Some failstates and then actually attacking
+        if(attacker.status_effects.includes(Status.Drained)){
+            string_to_send = `\n${attacker_emote} **${atkOochName}** is 😓 **DRAINED** and must recharge this turn...`;
+            attacker.status_effects = attacker.status_effects.filter(v => v != Status.Drained);
+        }
+        else if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
+            string_to_send = `\n${attacker_emote} **${atkOochName}** is <:status_sleep:1335446202275070034> SLEEPING...`;
         }
         else if(first_last_failed_text != ''){
             string_to_send += `${tried_to_text} ${first_last_failed_text}`;

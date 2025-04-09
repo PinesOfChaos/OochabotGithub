@@ -39,6 +39,7 @@ layout_mode = 2
 [node name="npc_sprite" type="OptionButton" parent="npc_tab_container/Basic Info/general_info"]
 layout_mode = 2
 focus_mode = 0
+expand_icon = true
 
 [node name="npc_sprite_combat" type="LineEdit" parent="npc_tab_container/Basic Info/general_info"]
 layout_mode = 2

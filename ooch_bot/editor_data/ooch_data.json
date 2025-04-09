@@ -10698,5 +10698,131 @@
     "evo_id": -1,
     "evo_lvl": -1,
     "evo_stage": 1
+  },
+  {
+    "id": -4,
+    "emote": "<:c_027:1347440606204399707>",
+    "name": "Slime Head",
+    "oochive_entry": "An oddly human head made of Ooze, it looks like it has Prisms embedded in its eye.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 10,
+    "atk": 10,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        24
+      ],
+      [
+        1,
+        29
+      ],
+      [
+        1,
+        45
+      ],
+      [
+        1,
+        65
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      1
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": -5,
+    "emote": "<:c_900:1358880747070423192>",
+    "name": "Giant Slime Head",
+    "oochive_entry": "A large formation of Ooze. It's currently unknown whether this is an Oochamon or not.",
+    "type": [
+      "ooze"
+    ],
+    "hp": 55,
+    "atk": 10,
+    "def": 20,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        29
+      ],
+      [
+        1,
+        45
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        38
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      87
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 1
+  },
+  {
+    "id": -6,
+    "emote": "<:c_901:1358880761104568340>",
+    "name": "Enforcement System Δ",
+    "oochive_entry": "A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...",
+    "type": [
+      "tech"
+    ],
+    "hp": 50,
+    "atk": 15,
+    "def": 20,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        121
+      ],
+      [
+        1,
+        129
+      ],
+      [
+        1,
+        130
+      ],
+      [
+        1,
+        131
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      86
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
   }
 ]

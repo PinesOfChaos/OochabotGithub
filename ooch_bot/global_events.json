@@ -264,25 +264,25 @@
 	],
 	"ev_get_moistri": [
 		[
-			3,
+			3.0,
 			{
 				"description": "As the Seer Sister departs, a strange Oochamon begins to form from the lake itself...",
 				"dialogue_portrait": "",
 				"image": "",
 				"options": [
 					{
-						"ability": 34,
+						"ability": 34.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
-						"id": 42,
-						"item": -1,
+						"id": 42.0,
+						"item": -1.0,
 						"level": 20.0,
 						"moveset": [
-							60,
-							29,
-							54,
-							9
+							60.0,
+							29.0,
+							54.0,
+							9.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -293,7 +293,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_get_moistri"
 			}
@@ -743,6 +743,54 @@
 			2.0,
 			{
 				"text": "ev_save_tutorial"
+			}
+		]
+	],
+	"ev_slimehead_big": [
+		[
+			0,
+			{
+				"description": "*heblrblmerlmblr*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			1,
+			{
+				"battle_ai": 0,
+				"coin": 0,
+				"is_catchable": false,
+				"name": "",
+				"sprite": 36,
+				"sprite_combat": "c_031_c_036",
+				"sprite_id": "c00_036",
+				"team": [
+					{
+						"ability": 0.0,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 0,
+						"id": 0,
+						"item": -1,
+						"level": 5,
+						"moveset": [
+							1,
+							9999,
+							9999,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0
+					}
+				],
+				"user_type": 3
 			}
 		]
 	],

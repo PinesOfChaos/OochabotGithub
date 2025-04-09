@@ -26,6 +26,7 @@ text = "Sprite:"
 
 [node name="OptionButtonSprite" type="OptionButton" parent="HBoxContainer"]
 layout_mode = 2
+expand_icon = true
 
 [node name="Label3" type="Label" parent="HBoxContainer"]
 layout_mode = 2

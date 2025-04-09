@@ -40,9 +40,10 @@ func _process(delta):
 	pass
 
 func _on_button_slot_species_item_selected(index):
-	var key = index_js2gd(o_button_slot_species.get_item_id(index))
+	var key = str(index_js2gd(o_button_slot_species.get_item_id(index)))
 	var mon_data = Global.DataOochamon[key]
-	spawn_slot_data.ooch_id = mon_data.id
+	print(mon_data)
+	spawn_slot_data.ooch_id = mon_data.ooch_index
 
 func _on_lv_min_value_changed(value):
 	spawn_slot_data.min_level = value

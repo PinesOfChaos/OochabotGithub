@@ -2014,5 +2014,60 @@
     "tags": [
       3
     ]
+  },
+  {
+    "id": 129,
+    "name": "Laser Sweep",
+    "type": "flame",
+    "damage": 40,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "sweep_damage",
+        "chance": 5,
+        "target": 1
+      }
+    ],
+    "description": "An array of lasers sweep the area, it even damages Oochamon in their prisms.",
+    "tags": [
+      0
+    ]
+  },
+  {
+    "id": 130,
+    "name": "Annihilate",
+    "type": "neutral",
+    "damage": 150,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": 13,
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Bombards the area with high damage, the user must recharge after using this attack.",
+    "tags": []
+  },
+  {
+    "id": 131,
+    "name": "Target Lock",
+    "type": "neutral",
+    "damage": 0,
+    "accuracy": -1,
+    "effect": [
+      {
+        "status": 12,
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": 7,
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Carefullly on to the target, REVEALING and EXPOSING them.",
+    "tags": []
   }
 ]
