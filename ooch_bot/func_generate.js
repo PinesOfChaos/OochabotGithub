@@ -153,6 +153,7 @@ module.exports = {
         ];
 
         if (move.tags === undefined) move.tags = [];
+        if (move.self_target === undefined) move.self_target = false;
     
         // Check if all required attributes are present
         for (let attr of requiredAttributes) {

@@ -7,7 +7,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "The user hits the target to deal damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 1,
@@ -17,7 +18,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "The target is dealt some blunt damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 2,
@@ -27,7 +29,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "A puff of spore burst from the user's body.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 3,
@@ -37,7 +40,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fires a barrage of small pebbles.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 4,
@@ -47,7 +51,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Shoots a ball of fire at the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 5,
@@ -57,7 +62,8 @@
     "accuracy": 95,
     "effect": [],
     "description": "The user slashes at the target with sharp appendages.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 6,
@@ -73,7 +79,8 @@
       }
     ],
     "description": "Fungal spores are launched which INFECT the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 7,
@@ -89,7 +96,8 @@
       }
     ],
     "description": "A storm is whipped up which leaves the target BLINDED.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 8,
@@ -105,7 +113,8 @@
       }
     ],
     "description": "The target is BURNED by red-hot flames.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 9,
@@ -115,7 +124,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Impales the target with a spike.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 10,
@@ -125,7 +135,8 @@
     "accuracy": 90,
     "effect": [],
     "description": "Explosive spores are launched at the target to deal damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 11,
@@ -141,7 +152,8 @@
       }
     ],
     "description": "Flings a boulder at the target before it has a chance to do anything.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 12,
@@ -151,7 +163,8 @@
     "accuracy": 90,
     "effect": [],
     "description": "The user bashes the target with a firey appendage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 13,
@@ -167,7 +180,8 @@
       }
     ],
     "description": "If the infection takes hold, the target is BLINDED.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 14,
@@ -183,7 +197,8 @@
       }
     ],
     "description": "Red-hot stone is launched to BURN the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 15,
@@ -199,7 +214,8 @@
       }
     ],
     "description": "The user creates radiation in order to INFECT the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 16,
@@ -217,7 +233,8 @@
     "description": "Refracts light in an attempt to BLIND the target.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 17,
@@ -227,7 +244,8 @@
     "accuracy": 70,
     "effect": [],
     "description": "Massive crystals are swung wildly to inflict damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 18,
@@ -243,7 +261,8 @@
       }
     ],
     "description": "A ball of caustic goo is launched with a high chance of BURNING.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 19,
@@ -259,7 +278,8 @@
       }
     ],
     "description": "The target is slammed to deal massive damage, but the user exausts itself, losing ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 20,
@@ -275,7 +295,8 @@
       }
     ],
     "description": "Hot ashes are launched at the target with a high chance to BLIND.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 21,
@@ -291,7 +312,8 @@
       }
     ],
     "description": "A blazing inferno afflicts all targets with a BURN.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 22,
@@ -307,7 +329,8 @@
       }
     ],
     "description": "The target becomes DIGITIZED when hit by this strange beam.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 23,
@@ -323,7 +346,8 @@
       }
     ],
     "description": "Clamps down tight on the target to deal damage and SNARE them if you get lucky.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 24,
@@ -333,7 +357,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fires a bolt of magic energy.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 25,
@@ -349,7 +374,8 @@
       }
     ],
     "description": "Shoots bright sparks with the potential to BLIND the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 26,
@@ -359,7 +385,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fires a powerful burst of magic.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 27,
@@ -377,7 +404,8 @@
     "description": "Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.",
     "tags": [
       1
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 28,
@@ -393,7 +421,8 @@
       }
     ],
     "description": "Fling a orb of goo that can SNARE the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 29,
@@ -403,7 +432,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Pelts the target with a viscous ooze.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 30,
@@ -421,7 +451,8 @@
     "description": "Travels to a different time, EXPOSING the target's weaknesses.",
     "tags": [
       2
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 31,
@@ -439,7 +470,8 @@
     "description": "Warps spacetime around the target, with a chance to EXPOSE the target.",
     "tags": [
       2
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 32,
@@ -455,7 +487,8 @@
       }
     ],
     "description": "Shoots whips made of mycelium in an attempt to SNARE the opponent.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 33,
@@ -471,7 +504,8 @@
       }
     ],
     "description": "Parasitic bodies are launched at the target potentially INFECTING them.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 34,
@@ -487,7 +521,8 @@
       }
     ],
     "description": "Powerful acids damage the target, greatly lowering its DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 35,
@@ -497,7 +532,8 @@
     "accuracy": 90,
     "effect": [],
     "description": "Grinds against the opponent with rough, jagged edges.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 36,
@@ -507,7 +543,8 @@
     "accuracy": 90,
     "effect": [],
     "description": "Stabs the opponent with a metallic object.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 37,
@@ -517,7 +554,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "A heavy, metal object is hammered against the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 38,
@@ -533,7 +571,8 @@
       }
     ],
     "description": "Covers the target in a tough plastic substance to SNARE them.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 39,
@@ -549,7 +588,8 @@
       }
     ],
     "description": "Stones fall onto the target, leaving them SNARED if they get trapped.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 40,
@@ -559,7 +599,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "TEST MOVE",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 41,
@@ -575,7 +616,8 @@
       }
     ],
     "description": "A targeted strike that is likely to land a Critical Hit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 42,
@@ -591,7 +633,8 @@
       }
     ],
     "description": "Devastating blasts damage the target, the user is hit with Recoil.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 43,
@@ -607,7 +650,8 @@
       }
     ],
     "description": "Blazing heat erupts from the user, dealing high damage but also being hit with Recoil.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 44,
@@ -624,7 +668,8 @@
     ],
     "description": "The user self destructs to inflict massive damage.",
     "battle_desc": "USER detonates violently!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 45,
@@ -640,7 +685,8 @@
       }
     ],
     "description": "The user damages the opponent, slightly Healing itself in the process.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 46,
@@ -656,7 +702,8 @@
       }
     ],
     "description": "A horribly innacurate move with the potential to greatly heal the user.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 47,
@@ -672,7 +719,8 @@
       }
     ],
     "description": "Stones are reorganized in the user's body to restore some HP.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 48,
@@ -688,7 +736,8 @@
       }
     ],
     "description": "A flurry of steel blades shred the target, with a high chance to land a Critical Hit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 49,
@@ -704,7 +753,8 @@
       }
     ],
     "description": "The user falls down from the sky inflicting high damage, but injuring itself.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 50,
@@ -720,7 +770,8 @@
       }
     ],
     "description": "Lob a brilliant ball of flame, potentially BLINDING the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 51,
@@ -736,7 +787,8 @@
       }
     ],
     "description": "Threads are shot at the target dealing damage with a chance to SNARE them.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 52,
@@ -752,7 +804,8 @@
       }
     ],
     "description": "Crimson threads fly at the target, with a chance to EXPOSE the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 53,
@@ -768,7 +821,8 @@
       }
     ],
     "description": "Launch a ball of energy synchronized with the user's type.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 54,
@@ -784,7 +838,8 @@
       }
     ],
     "description": "The target is struck repeatedly, leaving it open to Critical Hits.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 55,
@@ -800,7 +855,8 @@
       }
     ],
     "description": "Brittle blades are used to strike at the opponent's weak spots with a high chance to Crit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 56,
@@ -810,7 +866,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "The user manipulates gravity to fling itself at the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 57,
@@ -826,7 +883,8 @@
       }
     ],
     "description": "The user slams its body into the opponent, but is hit with recoil.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 58,
@@ -836,7 +894,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Form digital jaws that clamp down on the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 59,
@@ -846,7 +905,8 @@
     "accuracy": 95,
     "effect": [],
     "description": "The user hits the target with a metal blade.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 60,
@@ -862,7 +922,8 @@
       }
     ],
     "description": "Softens the body making it harder to damage, increasing its DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 61,
@@ -878,7 +939,8 @@
       }
     ],
     "description": "Prepares the user to fight with all its strength, increasing its ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 62,
@@ -894,7 +956,8 @@
       }
     ],
     "description": "The user readies itself to move quickly, increasing its SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 63,
@@ -910,7 +973,8 @@
       }
     ],
     "description": "Makes the opponent's body brittle, lowering its DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 64,
@@ -926,7 +990,8 @@
       }
     ],
     "description": "Glare at the opponent, lowering its ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 65,
@@ -942,7 +1007,8 @@
       }
     ],
     "description": "Throw mud on the opponent, lowering its SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 66,
@@ -963,7 +1029,8 @@
       }
     ],
     "description": "Hypes up the user, increasing its ATK and SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 67,
@@ -979,7 +1046,8 @@
       }
     ],
     "description": "Sharpens any edges the user has, greatly increasing its ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 68,
@@ -1000,7 +1068,8 @@
       }
     ],
     "description": "Shoot a beam that curses the opponent, applying BLINDED and BURNED.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 69,
@@ -1016,7 +1085,8 @@
       }
     ],
     "description": "Suplex the opponent, damaging them and reducing DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 70,
@@ -1037,7 +1107,8 @@
       }
     ],
     "description": "Launch a damaging spore at the opponent which lowers ATK and SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 71,
@@ -1058,7 +1129,8 @@
       }
     ],
     "description": "Reduce the user's SPD to massively increase ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 72,
@@ -1079,7 +1151,8 @@
       }
     ],
     "description": "Reduces the user's heat, greatly increasing DEF at the cost of some SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 73,
@@ -1102,7 +1175,8 @@
     "description": "Disorient the opponent in a room that BLINDS and SNARES.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 74,
@@ -1120,7 +1194,8 @@
     "description": "Fire a brilliant beam of light that BLINDS the opponent.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 75,
@@ -1146,7 +1221,8 @@
       }
     ],
     "description": "Rapid fungal growth Raises ATK, DEF, and SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 76,
@@ -1162,7 +1238,8 @@
       }
     ],
     "description": "Fire a spore-filled bomb which BLINDS the opponent.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 77,
@@ -1178,7 +1255,8 @@
       }
     ],
     "description": "Shoot a condensed fungal thorn with a high critical chance.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 78,
@@ -1194,7 +1272,8 @@
       }
     ],
     "description": "The user gathers missing parts of its body to restore half its HP.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 79,
@@ -1211,7 +1290,8 @@
     ],
     "description": "The user randomly uses a move.",
     "battle_desc": "Let's go gambling!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 80,
@@ -1227,7 +1307,8 @@
       }
     ],
     "description": "Spend the turn gathering stone to greatly increase DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 81,
@@ -1243,7 +1324,8 @@
       }
     ],
     "description": "A high damage blast of extreme heat, but lowers the user's SPD afterward.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 82,
@@ -1259,7 +1341,8 @@
       }
     ],
     "description": "Fire a highly accurate ghost bullet that always Crits.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 83,
@@ -1275,7 +1358,8 @@
       }
     ],
     "description": "Attack with blazing horns that have a chance to BURN the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 84,
@@ -1298,7 +1382,8 @@
     "description": "Release stored-up radiation to BURN the target and reduce its ATK.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 85,
@@ -1314,7 +1399,8 @@
       }
     ],
     "description": "Scatter damaging spikes that damage and reduce the target's SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 86,
@@ -1335,7 +1421,8 @@
       }
     ],
     "description": "Lurk in the shadows boosting ATK and makes the user FOCUSED.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 87,
@@ -1357,7 +1444,8 @@
     ],
     "description": "Spray thick fog which heavily reduces Accuracy on both sides.",
     "battle_desc": "The air begins to thicken!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 88,
@@ -1373,7 +1461,8 @@
       }
     ],
     "description": "Removes all status effects from the user.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 89,
@@ -1389,7 +1478,8 @@
       }
     ],
     "description": "Clears all stat changes from the user.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 90,
@@ -1405,7 +1495,8 @@
       }
     ],
     "description": "Fire a high-damage bomb that clears any status effects from its target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 91,
@@ -1426,7 +1517,8 @@
       }
     ],
     "description": "The user roots into the ground, becoming SNARED, but greatly boosting its DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 92,
@@ -1436,7 +1528,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Fire a sphere of dark matter.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 93,
@@ -1452,7 +1545,8 @@
       }
     ],
     "description": "Hit the opponent so hard they get launched and VANISH.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 94,
@@ -1462,7 +1556,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Shoot several small shards of crystal at the enemy to deal damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 95,
@@ -1472,7 +1567,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Pummel the opponent with cloth whips.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 96,
@@ -1482,7 +1578,8 @@
     "accuracy": 100,
     "effect": [],
     "description": "Emit a high-pitched screech that shatters objects.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 97,
@@ -1500,7 +1597,8 @@
     "description": "Fire an incredibly bright gem at the opponenet with a chance to reduce their Accuracy.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 98,
@@ -1516,7 +1614,8 @@
       }
     ],
     "description": "Tightly wraps the enemy with cloth reducing its SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 99,
@@ -1532,7 +1631,8 @@
       }
     ],
     "description": "Fire a booming sound which has a chance to reduce the target's ATK.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 100,
@@ -1558,7 +1658,8 @@
       }
     ],
     "description": "Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 101,
@@ -1574,7 +1675,8 @@
       }
     ],
     "description": "Launch a future-seeing crystal ball at the enemy, it might just forsee a future where the target's weakness is EXPOSED.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 102,
@@ -1590,7 +1692,8 @@
       }
     ],
     "description": "Quickly launch a blast of sound, this move always goes first.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 103,
@@ -1606,7 +1709,8 @@
       }
     ],
     "description": "Shout so loud that it shatters eardrums, has a chance to reduce DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 104,
@@ -1627,7 +1731,8 @@
       }
     ],
     "description": "Heals the user a little while slightly bolstering their DEF.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 105,
@@ -1648,7 +1753,8 @@
       }
     ],
     "description": "Catch the emeny off guard with a spooky cloth, dropping their DEF and SPD.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 106,
@@ -1664,7 +1770,8 @@
       }
     ],
     "description": "Slashes the target with highly compressed fibers, has a high chance to Crit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 107,
@@ -1680,7 +1787,8 @@
       }
     ],
     "description": "Wraps the target in cursed cloths, DOOMING the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 108,
@@ -1691,7 +1799,8 @@
     "effect": [],
     "description": "You hit the jackpot!!!",
     "battle_desc": "USER hit the jackpot!!!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 109,
@@ -1708,7 +1817,8 @@
     ],
     "description": "Jagged spikes erupt from the ground, any non-Stone-types that switch-in will take some damage.",
     "battle_desc": "Jagged spikes erupt from the ground!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 110,
@@ -1725,7 +1835,8 @@
     ],
     "description": "Sound-type attacks harshly reverbrate in the area and can apply EXPOSED.",
     "battle_desc": "Sounds begin to echo around the area!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 111,
@@ -1742,7 +1853,8 @@
     ],
     "description": "Viscous goo spreads across the area, non-Ooze-types move slower.",
     "battle_desc": "Strange goo floods the battlefield!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 112,
@@ -1759,7 +1871,8 @@
     ],
     "description": "Reality becomes twisted in the surrounding area, Weaknesses and Resistances are flipped.",
     "battle_desc": "Reality itself twists and contorts!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 113,
@@ -1776,7 +1889,8 @@
     ],
     "description": "The atmosphere is superheated! Non-Flame-type Oochamon will take damage at the end of each round.",
     "battle_desc": "The local temperature begins to skyrocket!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 114,
@@ -1793,7 +1907,8 @@
     ],
     "description": "Creates a magical thunderstorm. Oochamon that stay in battle too long will be struck by lightning.",
     "battle_desc": "Dark stormclouds swirl above the battlefield!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 115,
@@ -1810,7 +1925,8 @@
     ],
     "description": "Clears any weather affecting the battle.",
     "battle_desc": "The weather begins to clear!",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 116,
@@ -1826,7 +1942,8 @@
       }
     ],
     "description": "Launches a wave of compressed air at the target. The move's type and status effects change depending on the current Weather.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 117,
@@ -1842,7 +1959,8 @@
       }
     ],
     "description": "An incredibly powerful strike that goes second.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 118,
@@ -1863,7 +1981,8 @@
       }
     ],
     "description": "A high-damage move that fails if the user doesn't go last. Has 150 damage and lowers the target's DEF 2 stages if it hits.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 119,
@@ -1879,7 +1998,8 @@
       }
     ],
     "description": "Rapidly lash out at the target. Deals double damage if it goes first.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 120,
@@ -1889,7 +2009,8 @@
     "accuracy": -1,
     "effect": [],
     "description": "Fires a crystal that relentlessly pursues the target. Guaranteed to hit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 121,
@@ -1899,7 +2020,8 @@
     "accuracy": -1,
     "effect": [],
     "description": "Fires a guieded missile at the target. Guaranteed to hit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 122,
@@ -1915,7 +2037,8 @@
       }
     ],
     "description": "A painful screech that always deals 30 damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 123,
@@ -1931,7 +2054,8 @@
       }
     ],
     "description": "A particle-splitting net that always deals 50 damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 124,
@@ -1947,7 +2071,8 @@
       }
     ],
     "description": "A dangerous blast of asbestos that INFECTS the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 125,
@@ -1963,7 +2088,8 @@
       }
     ],
     "description": "Creates a mirror image of the enemy that viciously attacks them. This move will always deal at least 50 damage.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 126,
@@ -1979,7 +2105,8 @@
       }
     ],
     "description": "Blasts the enemy with dark magic. Has a chance to PETRIFY the target.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 127,
@@ -1995,7 +2122,8 @@
       }
     ],
     "description": "REVEALS the enemy Oochamon, guaranteeing the next attack against it to hit.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 128,
@@ -2013,7 +2141,8 @@
     "description": "Frosty jaws lunge forward, SNARING the target.",
     "tags": [
       3
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 129,
@@ -2031,7 +2160,8 @@
     "description": "An array of lasers sweep the area, it even damages Oochamon in their prisms.",
     "tags": [
       0
-    ]
+    ],
+    "self_target": false
   },
   {
     "id": 130,
@@ -2047,7 +2177,8 @@
       }
     ],
     "description": "Bombards the area with high damage, the user must recharge after using this attack.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   },
   {
     "id": 131,
@@ -2068,6 +2199,7 @@
       }
     ],
     "description": "Carefullly on to the target, REVEALING and EXPOSING them.",
-    "tags": []
+    "tags": [],
+    "self_target": false
   }
 ]

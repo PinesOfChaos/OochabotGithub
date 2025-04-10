@@ -849,6 +849,9 @@ let functions = {
         let moveButtons1 = new ActionRowBuilder();
         let moveButtons2 = new ActionRowBuilder();
         let moveInfoViewing = false;
+
+        let targetButtons1 = new ActionRowBuilder();
+        let targetButtons2 = new ActionRowBuilder();
         
         let switchButtons1 = new ActionRowBuilder();
         let switchButtons2 = new ActionRowBuilder();
@@ -956,7 +959,7 @@ let functions = {
                             move_type = db.move_data.get(`${move_id}`, 'type')
                             move_damage = db.move_data.get(`${move_id}`, 'damage')
 
-                            if (battle_data.users.length == 2) { //TODO TO DO UPDATE THIS THING!
+                            if (battle_data.users.length == 2) {
                                 let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
                                 move_effective_emote = functions.type_effectiveness(move_type, enemy_user.party[enemy_user.active_slot].type);
                                 if (move_effective_emote[0] > 1) {
@@ -990,14 +993,77 @@ let functions = {
                         // Switch message to be about using the move input
                         await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
                     } else if (customId.includes('atk_')) {
-                        if (battle_data.users.length == 2) {
+                        let move_id = customId.replace('atk_', '');
+                        let self_target = db.move_data.get(move_id, 'self_target');
+
+                        if (battle_data.users.length == 2 || self_target == true) {
                             let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
-                            let move_id = customId.replace('atk_', '');
                             user.action_selected = true;
                             functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
+
+                            // Continue on if everyone has selected (which should happen at the end)
+                            if (battle_data.users.every(u => u.action_selected !== false)) {
+                                battle_data.battle_msg_counter -= 1;
+                                db.battle_data.set(battle_id, battle_data);
+                                inputCollector.stop();
+                                await i.update({ content: `Waiting for other players...` }).catch(() => {});
+
+                                // Delete all input messages
+                                for (let user of battle_data.users) {
+                                    if (user.is_player) {
+                                        let thread = botClient.channels.cache.get(user.thread_id);
+                                        await thread.bulkDelete(1).catch(() => {});
+                                    }
+                                }
+
+                                await inputCollector.stop();
+                                functions.process_battle_actions(battle_id);
+                            } else {
+                                await inputCollector.stop();
+                                await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
+                            }
+
                         } else {
-                            // TODO: Handle more than 1 user, this needs a new submenu
+                            // Select an Oochamon to attack
+                            let user_list = battle_data.users.filter(usr => usr.team_id != user.team_id);
+                            let ooch_options = user_list.map(usr => [usr.party[usr.active_slot], usr]);
+                            let ooch_check, ooch_emote, ooch_name, ooch_hp;
+                            
+                            targetButtons1 = new ActionRowBuilder();
+                            targetButtons2 = new ActionRowBuilder();
+    
+                            for (let i = 0; i < ooch_options.length; i++) {
+                                ooch_check = ooch_options[i][0];
+                                ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                                ooch_name = ooch_check.nickname;
+                                ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
+                                ooch_disable = false;
+
+                                if (ooch_check.alive == false) ooch_disable = true;
+            
+                                ((i <= 1) ? targetButtons1 : targetButtons2).addComponents(
+                                    new ButtonBuilder()
+                                        // target_teamId_userId_atkId
+                                        .setCustomId(`target_${ooch_options[i][1].team_id}_${ooch_options[i][1].user_id}_${move_id}`)
+                                        .setLabel(`${ooch_name} (${ooch_hp})`)
+                                        .setStyle(ButtonStyle.Primary)
+                                        .setEmoji(ooch_emote)
+                                        .setDisabled(ooch_disable),
+                                )
+                            }
+    
+                            await i.update({ content: `**-- Select An Oochamon To Use Move On --**`, components: (targetButtons2.components.length != 0) ? [targetButtons1, targetButtons2, backButton] : [targetButtons1, backButton] });
                         }
+                    } else if (customId.includes('target')) {
+                        
+                        let parts = customId.split('_');
+                        let team_id = parts[1]; 
+                        let user_id = parts[2];
+                        let move_id = parts[3];
+
+                        let enemy_user = battle_data.users.filter(u => u.team_id == team_id && u.user_id == user_id)[0];
+                        user.action_selected = true;
+                        functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
 
                         // Continue on if everyone has selected (which should happen at the end)
                         if (battle_data.users.every(u => u.action_selected !== false)) {

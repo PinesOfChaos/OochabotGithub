@@ -244,7 +244,7 @@ m_functions = {
                 name: 'name',
                 name_possessive: '',
                 battle_sprite: '',
-                user_id: '',
+                user_id: `${_.random(5, 1_000_000)}`,
                 heal_inv: [],
                 prism_inv: [],
                 other_inv: [],
