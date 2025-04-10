@@ -1,12 +1,12 @@
 [gd_scene load_steps=2 format=3 uid="uid://brsk2kvcfme75"]
 
-[ext_resource type="Script" uid="uid://dgw8012a3vi5l" path="res://event_type_flag.gd" id="1_jc1ag"]
+[ext_resource type="Script" uid="uid://dq5y4x0hr3wmr" path="res://event_type_battle_group_end.gd" id="1_jc1ag"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_jc1ag")
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="Label" type="Label" parent="."]
 layout_mode = 2
-placeholder_text = "Flag"
+text = "▲ Battle Group End"

@@ -602,7 +602,7 @@ functions = {
                                 
 
                                 let mons_to_add = [];
-                                let mon_count = 2;
+                                let mon_count = 1;
                                 for(let m = 0; m < mon_count; m++){
                                     let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                     let slot = spawn_zone.spawn_slots[slot_index];

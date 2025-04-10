@@ -40,7 +40,6 @@ let functions = {
      * @returns 
      */
     generate_battle_user: async function(type, options) {
-
         const { create_ooch, move } = require('./func_play.js');
         const { botClient } = require("./index.js");
 
@@ -49,24 +48,16 @@ let functions = {
         let party = [];
         let active_slot = 0;
 
-        //let battle_sprite = false;
-        //let team_id = false;
-        //let is_catchable = false;
-        //let oochabux = 0;
-        //let name = 'Wild Oochamon';
-        //let is_player = false;
-        //let display_msg_id = false;
-        //let thread_id = false;
-        //let guild_id = false;
-        //let user_id = false;
-        //let heal_inv = [], prism_inv = [], other_inv = [], stance_list = [StanceForms.Base];
-        //let battle_ai = BattleAi.Basic;
+        if(options.hasOwnProperty("user_index")){
+            user_info.user_index = options.user_index;
+        }
         
         switch (type) {
             case UserType.Wild:
                 
-                if(options.hasOwnProperty("team")){ //This mon is created via an event
-                    let ooch_base = options.team[0];
+                if(options.hasOwnProperty("party")){ //This mon is created via an event/ability
+                    
+                    let ooch_base = options.party[0];
                     let ooch = create_ooch(
                         ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
                         ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv );
@@ -75,6 +66,8 @@ let functions = {
                     user_info.is_catchable = true;
                     user_info.oochabux = options.coin;
                     user_info.team_id = options.team_id;
+                    user_info.name = `${ooch.name}`;
+                    user_info.name_possessive = `${ooch.name}'s`
 
                 }
                 else{
@@ -83,6 +76,8 @@ let functions = {
                     user_info.is_catchable = true;
                     user_info.team_id = options.team_id;
                     user_info.oochabux = _.random(5, 40);
+                    user_info.name = `Wild ${ooch.name}`;
+                    user_info.name_possessive = `${ooch.name}'s`
                 }
                 
             break;
@@ -173,7 +168,7 @@ let functions = {
     reset_this_turn_triggers(battle_data){
         for(let user of battle_data.users){
             for(let [i, slot] of user.slot_actions.entries()){
-                slot.hp_starting = user.party[i].hp_current;
+                slot.hp_starting = user.party[i].current_hp;
 
                 for (const [key, value] of Object.entries(slot)) {
                     if(key.includes('this_turn')){
@@ -355,37 +350,17 @@ let functions = {
 
     /**
      * Creates a battle action where a user joins the battle
-     * @param {Object} battle_data the battle data to join
-     * @param {String} name the name of the user
-     * @param {String} battle_sprite the sprite to show for the user
-     * @param {Number} team_id the team for the user to join
-     * @param {Array} party the user's party of oochamon
+     * @param {Object} battle_data 
+     * @param {String} user_index 
+     * @param {String} text_to_show 
+     * @param {Number} name 
+     * @param {Array} battle_sprite 
+     * @param {Array} team_id 
+     * @param {Array} party 
      */
-    new_action_add_user: function(battle_data, text_to_show, name, battle_sprite, team_id, party){
-        let slot_actions = [];
-        for(let slot of party){
-            slot_actions.push({
-                move_used_first : false,
-                move_used_last : false,
-
-                this_turn_did_attack : false,
-                this_turn_did_damage : false,
-                this_turn_was_attacked : false,
-                this_turn_was_damaged : false,
-                this_turn_switched_in : false,
-
-                this_turn_revealed : false,
-
-                used_ability_matryoshka : false,
-
-                counter_thunderstorm : 0,
-
-                status_counter_infect : 0
-            })
-            
-        }
-
+    new_battle_action_add_user: async function(battle_data, user_index, text_to_show, name, battle_sprite, team_id, party){
         let user_options = get_blank_battle_user();
+
         user_options.name = name;
         user_options.name_possessive = (name == 'Wild Oochamon' ? 'Wild' : name + '\'s');
         user_options.battle_sprite = battle_sprite;
@@ -394,14 +369,17 @@ let functions = {
         user_options.team_id = team_id;
         user_options.is_catchable = false;
         user_options.party = party;
-        user_options.slot_actions = slot_actions;
+        user_options.user_index = user_index
         
-
-        let user = functions.generate_battle_user(type, user_options);
+        
+        let user = await functions.generate_battle_user(user_options.user_type, user_options);
+        battle_data.users.push(user);
+        console.log(`New User: ${user.user_index}`);
 
         let action = {
             action_type : BattleAction.UserJoin,
             priority : BattleAction.UserJoin,
+            user_index : user_index,
             text_to_show : text_to_show,
             user : user
         }
@@ -667,7 +645,11 @@ let functions = {
             
             let user_index = action.user_index;
             let user = battle_data.users[user_index];
+            console.log(action)
+            console.log(user)
+
             let ooch_obj = user.party[user.active_slot];
+            
 
             //Priority based on action type
             let base_priority = action.action_type;
@@ -1523,14 +1505,15 @@ let functions = {
                     battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
                     battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
                 } else {
-                    battle_sprite_files = [get_ooch_art(user.party[user.active_slot].name)]
-                    battle_sprite_icon = `attachment://${_.toLower(user.party[user.active_slot].name)}.png`;
+                    let name_space_replaced = `${_.replace(_.toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                    battle_sprite_files = [get_ooch_art(name_space_replaced)]
+                    battle_sprite_icon = `attachment://${name_space_replaced}.png`;
                 }
 
                 author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, 
                             iconURL: battle_sprite_icon }
             }
-
+            
             await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)], files: battle_sprite_files });
 
             //Clear any remaining actions if we're meant to finish the battle
@@ -1568,7 +1551,7 @@ let functions = {
                 if(!ooch.alive){ continue; } //Skip this one if it's dead                
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
-                eot_result = functions.use_eot_ability(battle_data, user.user_index); 
+                eot_result = await functions.use_eot_ability(battle_data, user.user_index); 
                 ooch = eot_result.ooch;
                 end_of_round_text += eot_result.text;
 
@@ -1665,7 +1648,7 @@ let functions = {
                 
             }
 
-            if(end_of_round_text != ''){
+            if(end_of_round_text.replaceAll("\n","") != ''){
                 await wait(battle_data.battle_speed);
                 await functions.distribute_messages(battle_data, { content: end_of_round_header, embeds: [functions.battle_embed_create(end_of_round_text)]});
             }
@@ -1784,7 +1767,7 @@ let functions = {
                 turn_data = await functions.action_process_stance_change(battle_data, action);
             break;
             case BattleAction.UserJoin:
-                turn_data = await functions.action_process_user_join(battle_data, action);
+                turn_data = await functions.action_process_add_user(battle_data, action);
             break;
             case BattleAction.Other:
                 //TODO
@@ -1799,12 +1782,11 @@ let functions = {
      * @param {*} action the action data to process
      * @returns Turn data {finish_battle : Boolean, return_string : String}
      */
-    action_process_user_join : async function(battle_data, action){
+    action_process_add_user : async function(battle_data, action){
         let user = action.user;
         let finish_battle = false;
         let return_string = ``;
         let active_ooch = user.party[user.active_slot];
-        user.user_index = battle_data.users.length;
        
         if(action.text_to_show != ''){
             return_string = action.text_to_show;
@@ -1816,7 +1798,6 @@ let functions = {
             return_string += `${user.name} has joined the battle!`
         }
 
-        battle_data.users.push(user);
         functions.new_battle_action_switch(battle_data, user.user_index, user.active_slot, false);
 
         return {
@@ -2807,8 +2788,6 @@ let functions = {
             let prism_chance = prism_multiplier / (ooch.level) * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
             let throw_chance = Math.random();
             let prism_wiggles = (throw_chance - prism_chance > 0.5 ? 0 : (throw_chance - prism_chance > 0.3 ? 1 : 2 ))
-
-            //console.log(throw_chance, prism_chance, throw_chance - prism_chance);
     
             if (throw_chance < prism_chance) {
                 return [true, 2];
@@ -2832,8 +2811,10 @@ let functions = {
         
     },
 
-    hp_chunks_lost : function(hp_before, hp_current, chunk_percentage){
+    hp_chunks_lost : function(hp_max, hp_before, hp_current, chunk_percentage){
         let chunks_lost = 0;
+        hp_before /= hp_max;
+        hp_current /= hp_max;
         for(let threshold = 1; threshold > 0; threshold -= chunk_percentage/100){
             if(hp_before > threshold && hp_current <= threshold){
                 chunks_lost++;
@@ -2842,14 +2823,17 @@ let functions = {
         return chunks_lost;
     },
 
-    use_eot_ability : function(battle_data, user_index) {
+    use_eot_ability : async function(battle_data, user_index) {
 
         const { create_ooch } = require('./func_play.js');
 
         let ability_text = ``;
         let user = battle_data.users[user_index];
+        
+
         let ooch = user.party[user.active_slot];
         let slot_info = user.slot_actions[user.active_slot];
+        
 
         //Used for checking how much HP was lost
         let hp_before = slot_info.hp_starting;
@@ -2858,8 +2842,8 @@ let functions = {
 
         switch(ooch.ability) {
             case Ability.EscalationProtocol:
-                chunks_lost = functions.hp_chunks_lost(hp_before, hp_current, 20);
-                if(chunks_lost > 0){
+                chunks_lost = functions.hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
+                if(chunks_lost > 0 && ooch.current_hp > 0){
                     ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Escalation Protocol**:`
                     ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Attack, chunks_lost)}`;
                     ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Defense, chunks_lost)}`;
@@ -2867,15 +2851,17 @@ let functions = {
                 }
             break;
             case Ability.SpreadingSludge:
-                chunks_lost = functions.hp_chunks_lost(hp_before, hp_current, 20);
-                if(chunks_lost > 0){
+                chunks_lost = functions.hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 25);
+                if(chunks_lost > 0 && ooch.current_hp > 0){
                     ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Spreading Sludge**:`
+                    let user_num = battle_data.users.length
                     //Spawn a Slime Head for each
                     for(let i = 0; i < chunks_lost; i++){
-                        ability_text += `A <:c_027:1347440606204399707> **Slime Head** breaks off from the main body and joins the battle!`
-                        functions.new_action_add_user(battle_data, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
+                        ability_text += `\n--- A strange <:c_027:1347440606204399707> **Slime Head** breaks off from the main body...`
+                        await functions.new_battle_action_add_user(battle_data, user_num + i, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
                             "Slime Head", "c_027", user.team_id, [
-                            create_ooch(-4, ooch.level, [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], false, 0, Ability.Icky, 0, 0, 0, 0)
+                            {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
+                                ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
                         ])
                     }
                 }
@@ -2931,6 +2917,8 @@ let functions = {
             break;
         }
     
+        slot_info.hp_starting = hp_current
+
         if (!ooch.status_effects.includes(Status.Digitize) && !ooch.status_effects.includes(Status.Petrify)) {
             switch (ooch.ability) {
                 case Ability.Spectral:
@@ -2991,6 +2979,8 @@ let functions = {
         }
 
         ability_text += "\n";
+
+
 
         return {ooch : ooch, text : ability_text};
     },
@@ -3885,7 +3875,7 @@ let functions = {
                     y : ooch_y,
                     origin_x : 32,
                     origin_y : 64,
-                    sprite : `./Art/ResizedArt/${_.lowerCase(ooch_info.name)}.png`,
+                    sprite : `./Art/ResizedArt/${_.lowerCase(ooch_info.name).replaceAll(" ", "_")}.png`,
                     x_scale : ooch_x < center_x ? -1 : 1,
                     y_scale : 1,
                     ooch_info : ooch_info,

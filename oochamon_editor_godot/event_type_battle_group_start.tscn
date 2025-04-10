@@ -1,12 +1,12 @@
 [gd_scene load_steps=2 format=3 uid="uid://bat4oienr0eq1"]
 
-[ext_resource type="Script" uid="uid://dgw8012a3vi5l" path="res://event_type_flag.gd" id="1_hawn8"]
+[ext_resource type="Script" uid="uid://bfpp5iqjak071" path="res://event_type_battle_group_start.gd" id="1_hawn8"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_hawn8")
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="Label" type="Label" parent="."]
 layout_mode = 2
-placeholder_text = "Flag"
+text = "▼ Battle Group Start"

@@ -167,7 +167,9 @@ let functions = {
      * @returns The attachment file object.
      */
     get_ooch_art: function(ooch_name) {
-        let file = new AttachmentBuilder(`./Art/ResizedArt/${_.toLower(ooch_name)}.png`);
+        let file_name = `./Art/ResizedArt/${_.replace(_.toLower(ooch_name), RegExp(" ", "g"), "_")}.png`
+        let file = new AttachmentBuilder(file_name);
+        
         return file;
     },
 

@@ -13,3 +13,5 @@ module.exports = {
         await quit_oochamon(thread, interaction.user.id);
     },
 };
+
+//ඞ
