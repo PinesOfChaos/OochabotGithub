@@ -1061,7 +1061,7 @@ functions = {
             // Disable the "add to party" button if we have 4 party members.
             box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
 
-            dexEmbed = ooch_info_embed(ooch_user_data);
+            dexEmbed = ooch_info_embed(ooch_user_data, user_id);
             dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
 

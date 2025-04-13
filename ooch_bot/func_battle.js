@@ -6,7 +6,7 @@ const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, C
 const _ = require('lodash');
 const { PlayerState, UserType, Stats, Ability, OochType, Move, TypeEmote, MoveTag, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi } = require("./types.js");
 const { Status } = require('./types.js');
-const { ooch_info_embed, check_chance, get_ooch_art } = require("./func_other.js");
+const { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar } = require("./func_other.js");
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 const { get_blank_slot_actions, get_blank_battle_user } = require('./func_modernize.js')
 
@@ -731,8 +731,8 @@ let functions = {
                     const collector = thread.createMessageComponentCollector({ max: 1 });
 
                     collector.on('collect', async i => {
-                        await i.update({ content: 'Ending battle...', components: [] });
-                        await i.deleteReply();
+                        await i.update({ content: 'Ending battle...', components: [] }).catch(() => {});
+                        await i.deleteReply().catch(() => {});
 
                         await functions.finish_battle(battle_data, user.user_index);
                     })
@@ -879,6 +879,30 @@ let functions = {
             
         //#endregion
 
+        // Sub-function for handling end of input
+        async function end_prompt_input(battle_data, i, inputCollector) {
+            if (battle_data.users.every(u => u.action_selected !== false)) {
+                battle_data.battle_msg_counter -= 1;
+                db.battle_data.set(battle_id, battle_data);
+                inputCollector.stop();
+                await i.update({ content: `Waiting for other players...` }).catch(() => {});
+
+                // Delete all input messages
+                for (let user of battle_data.users) {
+                    if (user.is_player) {
+                        let thread = botClient.channels.cache.get(user.thread_id);
+                        await thread.bulkDelete(1).catch(() => {});
+                    }
+                }
+
+                await inputCollector.stop();
+                functions.process_battle_actions(battle_id);
+            } else {
+                await inputCollector.stop();
+                await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
+            }
+        }
+
         // Handle users
         await battle_data.users.forEach(async (user) => {
             if (user.user_type != UserType.Player) {
@@ -984,26 +1008,7 @@ let functions = {
                             functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
 
                             // Continue on if everyone has selected (which should happen at the end)
-                            if (battle_data.users.every(u => u.action_selected !== false)) {
-                                battle_data.battle_msg_counter -= 1;
-                                db.battle_data.set(battle_id, battle_data);
-                                inputCollector.stop();
-                                await i.update({ content: `Waiting for other players...` }).catch(() => {});
-
-                                // Delete all input messages
-                                for (let user of battle_data.users) {
-                                    if (user.is_player) {
-                                        let thread = botClient.channels.cache.get(user.thread_id);
-                                        await thread.bulkDelete(1).catch(() => {});
-                                    }
-                                }
-
-                                await inputCollector.stop();
-                                functions.process_battle_actions(battle_id);
-                            } else {
-                                await inputCollector.stop();
-                                await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
-                            }
+                            end_prompt_input(battle_data, i, inputCollector);
 
                         } else {
                             // Select an Oochamon to attack
@@ -1048,26 +1053,7 @@ let functions = {
                         functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        if (battle_data.users.every(u => u.action_selected !== false)) {
-                            battle_data.battle_msg_counter -= 1;
-                            db.battle_data.set(battle_id, battle_data);
-                            inputCollector.stop();
-                            await i.update({ content: `Waiting for other players...` }).catch(() => {});
-
-                            // Delete all input messages
-                            for (let user of battle_data.users) {
-                                if (user.is_player) {
-                                    let thread = botClient.channels.cache.get(user.thread_id);
-                                    await thread.bulkDelete(1).catch(() => {});
-                                }
-                            }
-
-                            await inputCollector.stop();
-                            functions.process_battle_actions(battle_id);
-                        } else {
-                            await inputCollector.stop();
-                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
-                        }
+                        end_prompt_input(battle_data, i, inputCollector);
 
                     } else if (customId == 'view_move_info') {
 
@@ -1178,31 +1164,10 @@ let functions = {
                         await i.update({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2, backButton] : [switchButtons1, backButton] });
 
                     } else if (customId.includes('switch_')) {
-
                         user.action_selected = functions.new_battle_action_switch(battle_data, user.user_index, customId.replace('switch_', ''), true, false);
 
-                        // Continue on if everyone has selected (which should happen at the end)
-                        if (battle_data.users.every(u => u.action_selected !== false)) {
-                            battle_data.battle_msg_counter -= 1;
-                            db.battle_data.set(battle_id, battle_data);
-                            inputCollector.stop();
-                            await i.update({ content: `Waiting for other players...` });
-                            await i.deleteReply();
-
-                            // Delete all input messages
-                            for (let user of battle_data.users) {
-                                if (user.is_player) {
-                                    let thread = botClient.channels.cache.get(user.thread_id);
-                                    await thread.bulkDelete(1);
-                                }
-                            }
-
-                            await inputCollector.stop();
-                            functions.process_battle_actions(battle_id);
-                        } else {
-                            await inputCollector.stop();
-                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-                        }
+                        // Continue on if everyone has selected (which should happen at the end
+                        end_prompt_input(battle_data, i, inputCollector);
 
                     } else if (customId == BattleInput.Bag) {
                         await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
@@ -1319,78 +1284,19 @@ let functions = {
                             user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
     
                             // Continue on if everyone has selected (which should happen at the end)
-                            if (battle_data.users.every(u => u.action_selected !== false)) {
-                                battle_data.battle_msg_counter -= 1;
-                                db.battle_data.set(battle_id, battle_data);
-                                inputCollector.stop();
-                                await i.update({ content: `` });
-                                await i.deleteReply();
-    
-                                // Delete all input messages
-                                for (let user of battle_data.users) {
-                                    if (user.is_player) {
-                                        let thread = botClient.channels.cache.get(user.thread_id);
-                                        await thread.bulkDelete(1);
-                                    }
-                                }
-    
-                                await inputCollector.stop();
-                                functions.process_battle_actions(battle_id);
-                            } else {
-                                await inputCollector.stop();
-                                await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-                            }                                
+                            end_prompt_input(battle_data, i, inputCollector);                                
                         }
                     } else if (customId.includes('_item_sel_target')) {
                         let custom_id_data = customId.split('_');
                         user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        if (battle_data.users.every(u => u.action_selected !== false)) {
-                            db.battle_data.set(battle_id, battle_data);
-                            inputCollector.stop();
-                            await i.update({ content: `` });
-                            await i.deleteReply();
-
-                            // Delete all input messages
-                            for (let user of battle_data.users) {
-                                if (user.is_player) {
-                                    let thread = botClient.channels.cache.get(user.thread_id);
-                                    await thread.bulkDelete(1);
-                                }
-                            }
-
-                            await inputCollector.stop();
-                            functions.process_battle_actions(battle_id);
-                        } else {
-                            await inputCollector.stop();
-                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-                        }             
+                        end_prompt_input(battle_data, i, inputCollector); 
                     } else if (customId == BattleInput.Run) {
                         user.action_selected = functions.new_battle_action_run(battle_data, user.user_index);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        if (battle_data.users.every(u => u.action_selected !== false)) {
-                            battle_data.battle_msg_counter -= 1;
-                            db.battle_data.set(battle_id, battle_data);
-                            inputCollector.stop();
-                            await i.update({ content: `` });
-                            await i.deleteReply();
-
-                            // Delete all input messages
-                            for (let user of battle_data.users) {
-                                if (user.is_player) {
-                                    let thread = botClient.channels.cache.get(user.thread_id);
-                                    await thread.bulkDelete(1);
-                                }
-                            }
-
-                            await inputCollector.stop();
-                            functions.process_battle_actions(battle_id);
-                        } else {
-                            await inputCollector.stop();
-                            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] });
-                        }
+                        end_prompt_input(battle_data, i, inputCollector);  
                         
                     } else if (customId == BattleInput.Info) {
                         // TODO: Make this a page system to show enemy data
@@ -1401,9 +1307,6 @@ let functions = {
                         }
         
                         let oochInfoFields = [];
-                        const formatStatBar = (stat) => {
-                            return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
-                        };
         
                         // Setup field info for the embed about both oochamon
                         for (let ooch of [user.party[user.active_slot]]) {
@@ -2307,15 +2210,7 @@ let functions = {
 
                 active_ooch.current_hp = 0;
                 active_ooch.alive = false;
-                if (active_ooch.tame_value < 200) {
-                    active_ooch.tame_value = _.clamp(active_ooch.tame_value - _.random(10, 20), 0, 200);
-                    if (active_ooch.tame_value == 200) {
-                        active_ooch.stats.hp_iv = _.clamp(active_ooch.stats.hp_iv + 1, 0, 10);
-                        active_ooch.stats.atk_iv = _.clamp(active_ooch.stats.atk_iv + 1, 0, 10);
-                        active_ooch.stats.def_iv = _.clamp(active_ooch.stats.def_iv + 1, 0, 10);
-                        active_ooch.stats.spd_iv = _.clamp(active_ooch.stats.spd_iv + 1, 0, 10);
-                    }
-                }
+                active_ooch = update_tame_value(active_ooch, _.random(-20, -10));
             }
 
             for(let [i, party_ooch] of user.party.entries()){
@@ -2364,15 +2259,7 @@ let functions = {
                         for (let i = 0; i < ooch_party.length; i++) {
                             if (i == other_user.active_slot) { 
                                 ooch_party[i].current_exp += exp_main;
-                                if (ooch_party[i].tame_value < 200) {
-                                    ooch_party[i].tame_value = _.clamp(ooch_party[i].tame_value + _.random(1, 3), 0, 200);
-                                    if (ooch_party[i].tame_value == 200) {
-                                        ooch_party[i].stats.hp_iv = _.clamp(ooch_party[i].stats.hp_iv + 1, 0, 10);
-                                        ooch_party[i].stats.atk_iv = _.clamp(ooch_party[i].stats.atk_iv + 1, 0, 10);
-                                        ooch_party[i].stats.def_iv = _.clamp(ooch_party[i].stats.def_iv + 1, 0, 10);
-                                        ooch_party[i].stats.spd_iv = _.clamp(ooch_party[i].stats.spd_iv + 1, 0, 10);
-                                    }
-                                }
+                                ooch_party[i] = update_tame_value(ooch_party[i], _.random(1, 3));
                             } 
                             else { 
                                 ooch_party[i].current_exp += exp_given; 
@@ -2763,15 +2650,7 @@ let functions = {
                 let prev_hp = ooch.current_hp;
                 ooch.current_hp += item_data.potency;
                 ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                if (ooch.tame_value < 200) {
-                    ooch.tame_value = _.clamp(ooch.tame_value + 3, 0, 200);
-                    if (ooch.tame_value == 200) {
-                        ooch.stats.hp_iv = _.clamp(ooch.stats.hp_iv + 1, 0, 10);
-                        ooch.stats.atk_iv = _.clamp(ooch.stats.atk_iv + 1, 0, 10);
-                        ooch.stats.def_iv = _.clamp(ooch.stats.def_iv + 1, 0, 10);
-                        ooch.stats.spd_iv = _.clamp(ooch.stats.spd_iv + 1, 0, 10);
-                    }
-                }
+                ooch = update_tame_value(ooch, 3);
 
                 return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
             } else if (in_battle == false) {
@@ -2844,7 +2723,7 @@ let functions = {
             case Ability.EscalationProtocol:
                 chunks_lost = functions.hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
                 if(chunks_lost > 0 && ooch.current_hp > 0){
-                    ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Escalation Protocol**:`
+                    ability_text += `${ooch.emote} **${ooch.nickname}**'s **Escalation Protocol**:`
                     ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Attack, chunks_lost)}`;
                     ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Defense, chunks_lost)}`;
                     ability_text += `\n--- ${functions.modify_stat(ooch, Stats.Speed, chunks_lost)}\n`;
@@ -2853,7 +2732,7 @@ let functions = {
             case Ability.SpreadingSludge:
                 chunks_lost = functions.hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 25);
                 if(chunks_lost > 0 && ooch.current_hp > 0){
-                    ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Spreading Sludge**:`
+                    ability_text += `${ooch.emote} **${ooch.nickname}**'s **Spreading Sludge**:`
                     let user_num = battle_data.users.length
                     //Spawn a Slime Head for each
                     for(let i = 0; i < chunks_lost; i++){
@@ -2868,7 +2747,7 @@ let functions = {
             break;
             case Ability.Stealthy:
                 if(!slot_info.this_turn_did_damage){
-                    ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Stealthy**:`
+                    ability_text += `${ooch.emote} **${ooch.nickname}**'s **Stealthy**:`
                     ability_text += `\n--- ${functions.add_status_effect(ooch, Status.Focus)}\n`;
                 }
             break;
@@ -3698,7 +3577,7 @@ let functions = {
             if      (val_get == -8 && stage < 0){ text += " won't go any lower!" }
             else if (val_get ==  8 && stage > 0){ text += " won't go any higher!" }
             else {
-                text += ` ${stage < 0 ? "decreased" : "increased"} by **${Math.abs(stage)}**. (**${val_set < 0 ? '-' : '+'}${Math.abs(val_set)}**)`
+                text += ` ${stage < 0 ? "decreased" : "increased"} by **${Math.abs(stage)}**.\n--- (${formatStatBar(stage)})`
             }
         }   
 
@@ -4094,7 +3973,7 @@ let functions = {
         } else {
             let message_count = battle_data.battle_msg_counter;
             do {
-                await thread.bulkDelete(100);
+                await thread.bulkDelete(100).catch(() => {});
                 message_count -= 100;
             }
             while(message_count > thread.memberCount);

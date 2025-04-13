@@ -433,7 +433,7 @@ module.exports = {
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
-                let dexEmbed = ooch_info_embed(selected_ooch);
+                let dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
                 await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
@@ -562,7 +562,7 @@ module.exports = {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
 
-                dexEmbed = ooch_info_embed(selected_ooch);
+                dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
 
@@ -627,7 +627,7 @@ module.exports = {
                 party_extra_buttons.components[1].setDisabled((Object.keys(db.profile.get(interaction.user.id, 'heal_inv')).length == 0) ? true : false);
                 
                 if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
-                let dexEmbed = ooch_info_embed(selected_ooch);
+                let dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
                 await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
@@ -647,7 +647,7 @@ module.exports = {
                                           (selected_ooch.stats.atk_iv - 1) * 20, 
                                           (selected_ooch.stats.def_iv - 1) * 20, 
                                           (selected_ooch.stats.spd_iv - 1) * 20);
-                let dexEmbed = ooch_info_embed(newEvoOoch);
+                let dexEmbed = ooch_info_embed(newEvoOoch, user_profile.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
 
@@ -1030,7 +1030,7 @@ module.exports = {
             } 
             //#endregion
 
-            //#region Oochadex / Oochadex Submenu
+            //#region Dex Menu
             // Oochadex Menu Button
             else if (selected == 'oochadex') {
                 let dexData = await buildDexData(1, 0);
@@ -1044,7 +1044,7 @@ module.exports = {
                     embeds: [], components: [dexData.sel_row, dex_arrows], files: [] })
                 }
             }
-            // Oochadex Select Menus
+            // Dex Select Menus
             else if (selected.includes('dex_left') || selected.includes('dex_right')) {
                 selected == 'dex_left' ? dex_page_num -= 1 : dex_page_num += 1;
                 if (dex_page_num > 5) {

@@ -73,9 +73,10 @@ let functions = {
      * Creates and returns an info embed based on the Oochamon you pass in
      * For use with box/oochamon party menu systems, and after you catch an Oochamon.
      * @param {Number} ooch The oochamon to make an info embed for
+     * @param {String} user_id The user ID who owns the Oochamon
      * @returns The Ooch Embed, as well as the file related to the Oochamon, in an array of the 2.
      */
-    ooch_info_embed: function(ooch) {
+    ooch_info_embed: function(ooch, user_id=false) {
         const { type_to_emote } = require('./func_battle');
         const { get_ooch_art } = require('./func_other');
 
@@ -84,6 +85,10 @@ let functions = {
             : ooch_title += ` [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[_.capitalize(v)]).join('')}`;
         let moveset_str = ``;
         let ooch_data = db.monster_data.get(ooch.id);
+        let user_data = false;
+        if (user_id) {
+            user_data = db.profile.get(user_id);
+        }
 
         let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
 
@@ -134,8 +139,12 @@ let functions = {
 
         infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
 
-        if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
-            infoEmbed.setFooter({ text: `Evolves into ${db.monster_data.get(ooch_data.evo_id, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
+        if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
+            oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
+            if (oochadex_check == undefined){
+                oochadex_check = { caught: 0 }
+            } 
+            infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? db.monster_data.get(ooch_data.evo_id, 'name') : `???`} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });
         }
 
         return [infoEmbed, get_ooch_art(ooch.name)];
@@ -209,6 +218,29 @@ let functions = {
         return stars.join("");
     },
 
+    /**
+     * Change an Oochamon's tame value
+     * @param {Object} ooch 
+     * @param {Number} tame_value 
+     * @returns The oochamon being edited
+     */
+    update_tame_value: async function(ooch, tame_value) {
+        if (ooch.tame_value < 200) {
+            ooch.tame_value = _.clamp(ooch.tame_value + tame_value, 0, 200);
+            if (ooch.tame_value == 200) {
+                ooch.stats.hp_iv = _.clamp(ooch.stats.hp_iv + 1, 0, 10);
+                ooch.stats.atk_iv = _.clamp(ooch.stats.atk_iv + 1, 0, 10);
+                ooch.stats.def_iv = _.clamp(ooch.stats.def_iv + 1, 0, 10);
+                ooch.stats.spd_iv = _.clamp(ooch.stats.spd_iv + 1, 0, 10);
+            }
+        }
+        return ooch;
+    },
+
+    formatStatBar: function(stat) {
+        return `${stat > 0 ? '▲' : '▼'}`.repeat(Math.abs(stat)) + '○'.repeat(8 - Math.abs(stat));
+    },
+
     reset_oochamon: async function(user_id) {
         // Setup user data
         let profile = get_blank_profile();
@@ -266,15 +298,15 @@ let functions = {
         }
     },
 
-    quit_oochamon: async function(thread, user_id) {
+    quit_oochamon: async function(thread, user_id, client) {
 
         const { finish_battle } = require('./func_battle.js');
 
         let curBattleId = db.profile.get(user_id, 'cur_battle_id');
-        if (curBattleId != false && db.battle_data.has(curBattleId)) {
+        if (curBattleId != false && curBattleId != undefined && curBattleId != null && db.battle_data.has(curBattleId)) {
             
             let battleData = db.battle_data.get(curBattleId);
-            await db.battle_data.delete(curBattleId);
+            await db.battle_data.delete(`${curBattleId}`);
 
             for (let user of battleData.users) {
                 db.profile.set(user.user_id, 0, 'cur_event_pos');
