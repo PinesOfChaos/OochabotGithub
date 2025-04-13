@@ -116,7 +116,7 @@ module.exports = {
         // Setup trade display for interaction user
         let intPages = 9; // Number of pages, starts at 0
         let intPageNum = 0;
-        let intBoxRow = await buildBoxData(intTradeUser, intPageNum);
+        let intBoxRow = await buildBoxData(db.profile.get(intTradeUser.id), intPageNum);
         let intUserPageData = {
             type: 'int',
             user: intTradeUser,
@@ -137,7 +137,7 @@ module.exports = {
         // Setup trade display for other user
         let otherPages = 9; // Number of pages, starts at 0
         let otherPageNum = 0;
-        let otherBoxRow = await buildBoxData(otherTradeUser, otherPageNum);
+        let otherBoxRow = await buildBoxData(db.profile.get(otherTradeUser.id), otherPageNum);
         let otherUserPageData = {
             type: 'other',
             user: otherTradeUser,
@@ -286,8 +286,8 @@ module.exports = {
                 await db.profile.set(userPageData.other_user.id, oppUserProfile);
 
                 // Cleanup
-                userPageData.box_row = buildBoxData(userPageData.user, userPageData.page_num);
-                oppUserPageData.box_row = buildBoxData(oppUserPageData.user, oppUserPageData.page_num);
+                userPageData.box_row = buildBoxData(db.profile.get(userPageData.user.id), userPageData.page_num);
+                oppUserPageData.box_row = buildBoxData(db.profile.get(oppUserPageData.user.id), oppUserPageData.page_num);
 
                 await i.update({ content: `**Trade with ${userPageData.other_member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
                 await oppTradeMsg.edit({ content: `**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [oppUserPageData.box_row[0], oppUserPageData.box_row[1], oppUserPageData.box_row[2], oppUserPageData.box_row[3], oppUserPageData.box_buttons] });
