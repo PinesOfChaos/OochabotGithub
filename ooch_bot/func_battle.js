@@ -10,7 +10,6 @@ const { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatSt
 const { Canvas, loadImage, FontLibrary } = require('skia-canvas');
 const { get_blank_slot_actions, get_blank_battle_user } = require('./func_modernize.js')
 
-
 const closeButton = new ActionRowBuilder()
     .addComponents(
         new ButtonBuilder()
@@ -375,7 +374,6 @@ let functions = {
         user_options.is_catchable = false;
         user_options.party = party;
         user_options.user_index = user_index
-        
         
         let user = await functions.generate_battle_user(user_options.user_type, user_options);
         battle_data.users.push(user);
@@ -898,7 +896,7 @@ let functions = {
                 }
 
                 await inputCollector.stop();
-                functions.process_battle_actions(battle_id);
+                await functions.process_battle_actions(battle_id);
             } else {
                 await inputCollector.stop();
                 await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
@@ -1010,7 +1008,7 @@ let functions = {
                             functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
 
                             // Continue on if everyone has selected (which should happen at the end)
-                            end_prompt_input(battle_data, i, inputCollector);
+                            await end_prompt_input(battle_data, i, inputCollector);
 
                         } else {
                             // Select an Oochamon to attack
@@ -1055,7 +1053,7 @@ let functions = {
                         functions.new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        end_prompt_input(battle_data, i, inputCollector);
+                        await end_prompt_input(battle_data, i, inputCollector);
 
                     } else if (customId == 'view_move_info') {
 
@@ -1169,7 +1167,7 @@ let functions = {
                         user.action_selected = functions.new_battle_action_switch(battle_data, user.user_index, customId.replace('switch_', ''), true, false);
 
                         // Continue on if everyone has selected (which should happen at the end
-                        end_prompt_input(battle_data, i, inputCollector);
+                        await end_prompt_input(battle_data, i, inputCollector);
 
                     } else if (customId == BattleInput.Bag) {
                         await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
@@ -1286,19 +1284,19 @@ let functions = {
                             user.action_selected = functions.new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
     
                             // Continue on if everyone has selected (which should happen at the end)
-                            end_prompt_input(battle_data, i, inputCollector);                                
+                            await end_prompt_input(battle_data, i, inputCollector);                                
                         }
                     } else if (customId.includes('_item_sel_target')) {
                         let custom_id_data = customId.split('_');
                         user.action_selected = functions.new_battle_action_heal(battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        end_prompt_input(battle_data, i, inputCollector); 
+                        await end_prompt_input(battle_data, i, inputCollector); 
                     } else if (customId == BattleInput.Run) {
                         user.action_selected = functions.new_battle_action_run(battle_data, user.user_index);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        end_prompt_input(battle_data, i, inputCollector);  
+                        await end_prompt_input(battle_data, i, inputCollector);  
                         
                     } else if (customId == BattleInput.Info) {
                         // TODO: Make this a page system to show enemy data
@@ -1370,6 +1368,7 @@ let functions = {
         let finish_battle = false;
         let action, header, text, faint_check;
 
+        console.log('MESSAGE ROUND START')
         await functions.distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
 
         //Reset all battle triggers
@@ -1393,7 +1392,9 @@ let functions = {
             finish_battle = turn_data.finish_battle;
             
             //Check if anything fainted
-            faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+            console.log(user.party[0]);
+            faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
+            console.log(user.party[0]);
             text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
             if (!finish_battle) text += faint_check.finish_text;
@@ -1420,6 +1421,7 @@ let functions = {
                             iconURL: battle_sprite_icon }
             }
             
+            console.log('MESSAGE FIRST DISTRIBUTE')
             await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)], files: battle_sprite_files });
 
             //Clear any remaining actions if we're meant to finish the battle
@@ -1432,6 +1434,7 @@ let functions = {
                             let embed = turn_data.finish_data.info_embed;
                             let png = turn_data.finish_data.ooch_png
 
+                            console.log('CAPTURE DISTRIBUTE')
                             await functions.distribute_messages(battle_data, { embeds: [embed], files: [png] });
                         break;
                     }
@@ -1462,7 +1465,7 @@ let functions = {
                 end_of_round_text += eot_result.text;
 
                 //Check if anything fainted from abilities
-                faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+                faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
                 end_of_round_text += faint_check.text;
                 finish_battle = finish_battle || faint_check.finish_battle;
 
@@ -1547,7 +1550,7 @@ let functions = {
                     }
 
                     //Check if anything fainted from status effects
-                    faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+                    faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
                     end_of_round_text += faint_check.text;
                     finish_battle = finish_battle || faint_check.finish_battle;
                 }
@@ -1556,6 +1559,7 @@ let functions = {
 
             if(end_of_round_text.replaceAll("\n","") != ''){
                 await wait(battle_data.battle_speed);
+                console.log('END ROUND DISTRIBUTE')
                 await functions.distribute_messages(battle_data, { content: end_of_round_header, embeds: [functions.battle_embed_create(end_of_round_text)]});
             }
 
@@ -1572,12 +1576,13 @@ let functions = {
                 faint_switch_text += turn_data.return_string;
 
                 //Check if anything fainted as a result of the actions
-                faint_check = await functions.battle_faint_check(battle_data) //.text, .finish_battle
+                faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
                 faint_switch_text += faint_check.text;
                 finish_battle = finish_battle || faint_check.finish_battle;
             }
             
             if(faint_switch_text != ''){
+                console.log('FAINT SWITCH DISTRIBUTE')
                 await functions.distribute_messages(battle_data, { content: faint_switch_header, embeds: [functions.battle_embed_create(faint_switch_text)]});
             }
 
@@ -2184,7 +2189,7 @@ let functions = {
      * Checks if any oochamon have been fainted
      * @param {Object} battle_data The current battle_data
      */
-    battle_faint_check: async function(battle_data) {
+    battle_faint_check: function(battle_data) {
         let string_to_send = '';
         let finish_string_to_send = '';
         let active_teams = [];
@@ -2193,7 +2198,6 @@ let functions = {
         // Get the players active oochamon, check if they are alive
         for(let user of battle_data.users) {
             let exp_given = 0;
-            let tame_given = 0;
             let active_ooch = user.party[user.active_slot];
             let user_defeated = true;
             let user_next_slot = 999;
@@ -2245,7 +2249,7 @@ let functions = {
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given * 1.25);
-                        let max_level = await db.global_data.get("max_level");
+                        let max_level = db.global_data.get("max_level");
                         if (max_level == false || max_level == undefined) max_level = 50;
 
                         if (user.oochabux) {

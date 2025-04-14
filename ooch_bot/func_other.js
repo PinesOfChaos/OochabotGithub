@@ -224,7 +224,7 @@ let functions = {
      * @param {Number} tame_value 
      * @returns The oochamon being edited
      */
-    update_tame_value: async function(ooch, tame_value) {
+    update_tame_value: function(ooch, tame_value) {
         if (ooch.tame_value < 200) {
             ooch.tame_value = _.clamp(ooch.tame_value + tame_value, 0, 200);
             if (ooch.tame_value == 200) {
