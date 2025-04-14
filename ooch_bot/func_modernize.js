@@ -80,7 +80,7 @@ m_functions = {
     },
 
     modernize_battle_info : async function(battle_id) {
-        let battle_info = await db.battle_data.get(battle_id);
+        let battle_info = db.battle_data.get(battle_id);
         let battle_info_blank = m_functions.get_blank_battle_info();
         _.merge(battle_info_blank, battle_info);
         battle_info = battle_info_blank;

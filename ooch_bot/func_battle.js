@@ -63,6 +63,8 @@ let functions = {
                         ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv );
 
                     party = [ooch];
+                    user_info.name = ooch.name
+                    user_info.name_possessive = `${ooch.name}'s`
                     user_info.is_catchable = true;
                     user_info.oochabux = options.coin;
                     user_info.team_id = options.team_id;
@@ -73,6 +75,8 @@ let functions = {
                 else{
                     let ooch = create_ooch(options.ooch_id, options.ooch_level);
                     party = [ooch];
+                    user_info.name = ooch.name
+                    user_info.name_possessive = `${ooch.name}'s`
                     user_info.is_catchable = true;
                     user_info.team_id = options.team_id;
                     user_info.oochabux = _.random(5, 40);
@@ -97,6 +101,7 @@ let functions = {
 
                 user_info.battle_ai = options.battle_ai;
                 user_info.name = options.name;
+                user_info.name_possessive = `${options.name}'s`
                 user_info.oochabux = options.coin;
                 if (user_info.oochabux == 0) {
                     user_info.oochabux = (party_base.reduce((sum, ooch) => sum + ooch.level, 0)) * 15;
@@ -121,7 +126,7 @@ let functions = {
                 let guild = botClient.guilds.cache.get(user_info.guild_id);
                 let member = await guild.members.fetch(user_info.user_id);
                 user_info.name = member.displayName;
-                
+                user_info.name_possessive = `${user_info.name}'s`
                 user_info.battle_sprite = profile.player_sprite;
                 party = profile.ooch_party;
                 active_slot = profile.ooch_active_slot;
@@ -374,7 +379,6 @@ let functions = {
         
         let user = await functions.generate_battle_user(user_options.user_type, user_options);
         battle_data.users.push(user);
-        console.log(`New User: ${user.user_index}`);
 
         let action = {
             action_type : BattleAction.UserJoin,
@@ -645,8 +649,6 @@ let functions = {
             
             let user_index = action.user_index;
             let user = battle_data.users[user_index];
-            console.log(action)
-            console.log(user)
 
             let ooch_obj = user.party[user.active_slot];
             
@@ -1041,7 +1043,7 @@ let functions = {
     
                             await i.update({ content: `**-- Select An Oochamon To Use Move On --**`, components: (targetButtons2.components.length != 0) ? [targetButtons1, targetButtons2, backButton] : [targetButtons1, backButton] });
                         }
-                    } else if (customId.includes('target')) {
+                    } else if (customId.includes('target_')) {
                         
                         let parts = customId.split('_');
                         let team_id = parts[1]; 
@@ -1325,7 +1327,7 @@ let functions = {
         
                             let moveset_str = ``;
                             for (let move_id of ooch.moveset) {
-                                let move = db.move_data.get(move_id);
+                                let move = await db.move_data.get(move_id);
                                 move.accuracy = Math.abs(move.accuracy);
                                 if (move.damage !== 0) {
                                     moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
@@ -1384,6 +1386,7 @@ let functions = {
 
             text = ``;
 
+            
             //Perform the action for the turn
             let turn_data = await functions.action_process(battle_data, action);
             text += turn_data.return_string;
@@ -1755,9 +1758,10 @@ let functions = {
         
         let return_string = (action.is_switching
             ? `\n${user.name} switched from ${db.monster_data.get(ooch_from.id, 'emote')} **${ooch_from.nickname}** to ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
-            : `\n${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
+            : `\n${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.\n`
         )
-        if (action.skip_text) {return_string = '';}
+
+        if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
 
         ooch_from.stats.atk_mul = 0;
         ooch_from.stats.def_mul = 0;
@@ -2241,7 +2245,7 @@ let functions = {
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(exp_given * 1.25);
-                        let max_level = db.global_data.get("max_level");
+                        let max_level = await db.global_data.get("max_level");
                         if (max_level == false || max_level == undefined) max_level = 50;
 
                         if (user.oochabux) {
@@ -2316,12 +2320,12 @@ let functions = {
         let users = battle_data.users;
         let next_slot = 9999;
         let notify_death = false;
-        
         for(let user of users){
 
             if(!user.party[user.active_slot].alive && !user.defeated){
                 switch(user.user_type){
                     case UserType.Player:
+
                         notify_death = true;
                         users_to_wait_for.push(user.user_id);
                         let ooch_inv = user.party;
@@ -2329,10 +2333,10 @@ let functions = {
                         
                         switchButtons1 = new ActionRowBuilder();
                         switchButtons2 = new ActionRowBuilder();
-
+                        
                         for (let i = 0; i < ooch_inv.length; i++) {
                             ooch_check = ooch_inv[i];
-                            ooch_emote = db.monster_data.get([ooch_check.id], 'emote');
+                            ooch_emote = db.monster_data.get(ooch_check.id, 'emote');
                             ooch_name = ooch_check.nickname;
                             ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                             ooch_button_color = ButtonStyle.Primary;
@@ -3003,17 +3007,17 @@ let functions = {
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
 
-        let move_info = db.move_data.get(atk_id);
+        let move_info = await db.move_data.get(atk_id);
 
         let move_effects =   move_info.effect;
         let ogMoveId = atk_id;
         if (move_effects.some(effect => effect.status === 'random')) {
-            let moveList = db.move_data.keyArray();
+            let moveList = await db.move_data.keyArray();
             // Remove some moves that shouldn't be obtained with random
             moveList = moveList.filter(v => !([40, 92].includes(parseInt(v))))
 
             atk_id = _.sample(db.move_data.keyArray());
-            move_info = db.move_data.get(atk_id);
+            move_info = await db.move_data.get(atk_id);
             move_effects =   move_info.effect;
         }
         let move_name =     move_info.name;
@@ -3314,7 +3318,7 @@ let functions = {
             }
 
             //Add one of the battle description flavor texts if applicable
-            let move_battle_desc = db.move_data.get(atk_id, 'battle_desc');
+            let move_battle_desc = await db.move_data.get(atk_id, 'battle_desc');
             if(typeof move_battle_desc == "string") {
                 move_battle_desc = move_battle_desc.replaceAll("USER", `${attacker_emote} ${atkOochName}`);
                 move_battle_desc = move_battle_desc.replaceAll("TARGET", `${defender_emote} ${defOochName}`);
@@ -3409,7 +3413,7 @@ let functions = {
                         let status_adds = [eff.status];
 
                         if (typeof eff.status == "number") {
-                            let statusData = db.status_data.get(eff.status);
+                            let statusData = await db.status_data.get(eff.status);
                             // Setup list of status effects to add
                             switch (status_target.ability) {
                                 case Ability.Darkbright:
@@ -3577,7 +3581,7 @@ let functions = {
             if      (val_get == -8 && stage < 0){ text += " won't go any lower!" }
             else if (val_get ==  8 && stage > 0){ text += " won't go any higher!" }
             else {
-                text += ` ${stage < 0 ? "decreased" : "increased"} by **${Math.abs(stage)}**.\n--- (${formatStatBar(stage)})`
+                text += ` ${stage < 0 ? "decreased" : "increased"} by **${Math.abs(stage)}**.\n--- (${formatStatBar(val_set)})`
             }
         }   
 
@@ -4032,7 +4036,7 @@ let functions = {
         
         if (battle_won === true && is_online == false && play_end == false) {
             // If we won the battle
-            let cur_event_array = db.profile.get(user_id, 'cur_event_array');
+            let cur_event_array = await db.profile.get(user_id, 'cur_event_array');
             let cur_event_pos = parseInt(db.profile.get(user_id, 'cur_event_pos'));
 
             if (cur_event_array.length != 0) {
