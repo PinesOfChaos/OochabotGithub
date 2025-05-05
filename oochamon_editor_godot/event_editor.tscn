@@ -93,15 +93,19 @@ text = "+ Wait"
 
 [node name="NewAddAlly" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
 layout_mode = 2
-text = "+ Wait"
+text = "+ Add Ally"
+
+[node name="NewRemoveAlly" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Remove Ally"
 
 [node name="NewBGroupStart" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
 layout_mode = 2
-text = "+ Wait"
+text = "+ BattleGroupStart"
 
 [node name="NewBGroupEnd" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
 layout_mode = 2
-text = "+ Wait"
+text = "+ Battlegroup End"
 
 [connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
@@ -117,6 +121,7 @@ text = "+ Wait"
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewObjective" to="." method="_on_new_objective_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOption" to="." method="_on_new_option_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewWait" to="." method="_on_new_wait_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewAddAlly" to="." method="_on_new_wait_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupStart" to="." method="_on_new_wait_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupEnd" to="." method="_on_new_wait_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewAddAlly" to="." method="_on_new_add_ally_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewRemoveAlly" to="." method="_on_new_remove_ally_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupStart" to="." method="_on_new_b_group_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupEnd" to="." method="_on_new_b_group_end_pressed"]

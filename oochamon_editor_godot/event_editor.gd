@@ -97,6 +97,18 @@ func _on_new_option_pressed() -> void:
 	
 func _on_new_wait_pressed() -> void:
 	new_node(Global.EVENT_WAIT)
+	
+func _on_new_add_ally_pressed() -> void:
+	new_node(Global.EVENT_ADD_ALLY)
+
+func _on_new_remove_ally_pressed() -> void:
+	new_node(Global.EVENT_REMOVE_ALLY)
+
+func _on_new_b_group_start_pressed() -> void:
+	new_node(Global.EVENT_BATTLEGROUP_START)
+
+func _on_new_b_group_end_pressed() -> void:
+	new_node(Global.EVENT_BATTLEGROUP_END)
 
 func _on_button_save_pressed() -> void:
 	var data = []

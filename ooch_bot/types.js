@@ -57,8 +57,9 @@ const EventMode = {
     EventFinish: 7,
     Wait: 8,
     AddAlly: 9,
-    BattleGroupStart: 10,
-    BattleGroupEnd: 11
+    RemoveAlly: 10,
+    BattleGroupStart: 11,
+    BattleGroupEnd: 12
 }
 
 const DialogueType = {

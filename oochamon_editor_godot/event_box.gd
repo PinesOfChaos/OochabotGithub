@@ -36,6 +36,18 @@ func _ready() -> void:
 	elif event_slot_type == Global.EVENT_WAIT:
 		label.text = "Wait"
 		spawn_child = "res://event_type_wait.tscn"
+	elif event_slot_type == Global.EVENT_ADD_ALLY:
+		label.text = "Add Ally"
+		spawn_child = "res://event_type_wait.tscn"
+	elif event_slot_type == Global.EVENT_REMOVE_ALLY:
+		label.text = "Remove Ally"
+		spawn_child = "res://event_type_remove_ally.tscn"
+	elif event_slot_type == Global.EVENT_BATTLEGROUP_START:
+		label.text = "Battle Group Start"
+		spawn_child = "res://event_type_battle_group_start.tscn"
+	elif event_slot_type == Global.EVENT_BATTLEGROUP_END:
+		label.text = "Battle Group End"
+		spawn_child = "res://event_type_battle_group_end.tscn"
 	
 	if(spawn_child != ""):
 		if typeof(event_data) == TYPE_STRING:
