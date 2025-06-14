@@ -38,7 +38,7 @@ func _ready() -> void:
 		spawn_child = "res://event_type_wait.tscn"
 	elif event_slot_type == Global.EVENT_ADD_ALLY:
 		label.text = "Add Ally"
-		spawn_child = "res://event_type_wait.tscn"
+		spawn_child = "res://event_type_ally_add.tscn"
 	elif event_slot_type == Global.EVENT_REMOVE_ALLY:
 		label.text = "Remove Ally"
 		spawn_child = "res://event_type_remove_ally.tscn"

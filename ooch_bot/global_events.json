@@ -757,7 +757,7 @@
 				"items": [],
 				"money": 0.0,
 				"objective": "",
-				"title": ""
+				"title": "Giant Slime Head"
 			}
 		],
 		[
@@ -772,43 +772,269 @@
 				"sprite_id": "c00_036",
 				"team": [
 					{
-						"ability": 0.0,
-						"atk_iv": 0.0,
-						"def_iv": 0.0,
-						"hp_iv": 0.0,
-						"id": 0.0,
+						"ability": 87,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": -5.0,
 						"item": -1.0,
-						"level": 5.0,
+						"level": 29.0,
 						"moveset": [
-							1.0,
-							9999.0,
-							9999.0,
-							9999.0
+							29,
+							45,
+							1,
+							38
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 0.0
+						"spd_iv": 5.0
 					}
 				],
 				"user_type": 3.0
+			}
+		],
+		[
+			0,
+			{
+				"description": "*ghbrtrbhllrbll...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [
+					{
+						"count": 1.0,
+						"id": 39
+					}
+				],
+				"money": 2500.0,
+				"objective": "",
+				"title": "Giant Slime Head"
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "*radio static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh, thank goodness, I've finally reached you!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "We've been trying to reach you and Cade for what feels like ages!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "*thud*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "Hey! You're down in the Goo Lake aren't ya?",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "If you happen across a researcher holding a Data Disk, the guy was *supposed* to be-",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh what's that? You found it? Well that's just perfect! There should be a small cave near the shore around there.",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "If ya use the Data Disk on the machine inside that cave it *should* enable our teleporter network, and we can finally get you guys outta there!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Use the Data Disk on the Machine inside a cave near the coast..",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Back to you Prof!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Well I suppose that settles that, doesn't it, please return safely!",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I'll make sure to relay the good news to Cade, the poor thing must be scared.",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "See you soon! \n*click*",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2,
+			{
+				"text": "slimehead_big_defeated"
 			}
 		]
 	],
 	"ev_test": [
 		[
-			11,
+			11.0,
 			{
 
 			}
 		],
 		[
-			12,
+			12.0,
 			{
 
 			}
 		],
 		[
-			10,
+			9,
+			{
+				"battle_ai": 0,
+				"coin": 0,
+				"is_catchable": false,
+				"name": "pizzalad",
+				"sprite": 2,
+				"sprite_combat": "",
+				"sprite_id": "",
+				"team": [
+					{
+						"ability": 50,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 9.0,
+						"item": -1,
+						"level": 5.0,
+						"moveset": [
+							1,
+							64,
+							3,
+							9999
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 2
+			}
+		],
+		[
+			10.0,
 			{
 
 			}
@@ -1541,6 +1767,137 @@
 			2.0,
 			{
 				"text": "ev_tutorial_begin"
+			}
+		]
+	],
+	"ev_used_data_disk": [
+		[
+			0,
+			{
+				"description": "*you insert the data disk*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			2,
+			{
+				"text": "data_disk_inserted"
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "*ding*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "`---Teleportation Systems Enabled---`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "`---Registering New Profile: {player}`---",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "`---Registration Complete---`\n",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0,
+			{
+				"description": "`---Please access the nearest Save Station to access the Teleportation Network---`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Use a Save Station to teleport back to the Hub.",
+				"title": ""
+			}
+		],
+		[
+			2,
+			{
+				"text": "teleport_enabled"
 			}
 		]
 	],
