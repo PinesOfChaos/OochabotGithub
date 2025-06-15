@@ -141,7 +141,7 @@ let functions = {
 
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
             oochadex_check = db.profile.get(interaction.user.id, `oochadex[${i}]`);
-            if (oochadex_check == undefined){
+            if (oochadex_check == undefined) {
                 oochadex_check = { caught: 0 }
             } 
             infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? db.monster_data.get(ooch_data.evo_id, 'name') : `???`} at level ${ooch_data.evo_lvl}`, iconURL: db.monster_data.get(ooch_data.evo_id, 'image') });

@@ -270,7 +270,7 @@ let functions = {
                 let my_team_id = users[id].team_id;
                 for (let id2 in users) {
                     //All other players in combat
-                    if(id2 != id){ 
+                    if(id2 != id) { 
                         let user2 = users[id2];
                         active_ooch = user2.party[user2.active_slot];
                         types_string = ` ${functions.type_to_emote(active_ooch.type)}`;

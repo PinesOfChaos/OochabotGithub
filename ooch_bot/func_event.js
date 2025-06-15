@@ -17,7 +17,7 @@ let functions = {
      */
     event_process: async function(user_id, thread, event_array, start_pos = 0, event_name = false) {
         
-        const { give_item, setup_playspace_str, create_ooch, move } = require('./func_play.js');
+        const { give_item, setup_playspace_str, create_ooch, move, get_map_weather } = require('./func_play.js');
 
         let next_buttons = new ActionRowBuilder()
             .addComponents(
@@ -36,6 +36,7 @@ let functions = {
         let profile_data = db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
         let imageFiles = [];
+        let battleGroupBattleArr = [];
         let filter = i => i.user.id == user_id;
         let oochamonPicks = new ActionRowBuilder();
         let optionsRow = new ActionRowBuilder();
@@ -122,8 +123,7 @@ let functions = {
             }
         }
 
-        async function battleEvent(obj_content, initial=false) {    
-
+        async function battleEvent(obj_content, initial=false, battle_group_arr = []) {    
             if (initial == false) {
                 // Delete the embed message to prep for battle, and kill the collector as well.
                 await msg.delete();
@@ -131,18 +131,51 @@ let functions = {
             }
 
             obj_content.team_id = 1;
-            let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
-            let trainerObj = await generate_battle_user(user_type, obj_content);
+            if (battle_group_arr.length == 0) {
+                let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
+                let trainerObj = await generate_battle_user(user_type, obj_content);
+                battleGroupBattleArr = [trainerObj];
+            }
+
             let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+            let allyList = [];
+            for (let ally of profile_data.allies_list) {
+                ally.team_id = 0;
+                let user_type = UserType.NPCTrainer;
+                let trainerObj = await generate_battle_user(user_type, ally);
+                allyList.push(trainerObj);
+            }
+
+            allyList.unshift(userObj);
+
+            battleGroupBattleArr.unshift(allyList);
+            battleGroupBattleArr = battleGroupBattleArr.flat(1);
             let map_data = db.maps.get(profile_data.location_data.area);
             let battle_bg = map_data.map_info.map_battleback;
 
             // Setup the battle for trainers
-            if (obj_content.battle_weather == undefined) obj_content.battle_weather = Weather.None;
-            await setup_battle([userObj, trainerObj], obj_content.battle_weather, obj_content.coin, 0, true, true, false, false, false, battle_bg);
+            await setup_battle(battleGroupBattleArr, get_map_weather(map_data.map_weather, profile_data.location_data), obj_content.coin, 0, true, true, false, false, false, battle_bg);
 
             // Increment by one so that after the battle we end up in the next part of the event.
             db.profile.set(user_id, current_place+1, 'cur_event_pos');
+        }
+
+        async function battleGroupEvent() {
+            battleGroupBattleArr = [];
+            let event_mode = event_array[current_place][0];
+            let obj_content;
+            while (event_mode != EventMode.BattleGroupEnd) {
+                current_place++;
+                event_mode = event_array[current_place][0];
+                obj_content = event_array[current_place][1];
+
+                obj_content.team_id = 1;
+                if (event_mode == EventMode.Battle) {
+                    let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
+                    let trainerObj = await generate_battle_user(user_type, obj_content);
+                    battleGroupBattleArr.push(trainerObj)
+                }
+            }
         }
 
         async function oochPickEvent(obj_content, initial=false) {
@@ -316,9 +349,13 @@ let functions = {
             if (initial) event_buttons = optionsRow;
         }
 
-
         async function waitEvent(obj_content) {
             await wait(obj_content.duration * 1000);
+        }
+
+        function allyChangeEvent(obj_content, event) {
+            if (event == EventMode.AddAlly) db.profile.push(user_id, obj_content, 'allies_list');
+            if (event == EventMode.RemoveAlly) db.profile.set(user_id, [], 'allies_list');
         }
 
         while (!quit_init_loop) {
@@ -360,6 +397,19 @@ let functions = {
 
                 case EventMode.Wait:
                     await waitEvent(obj_content);
+                break;
+
+                case EventMode.AddAlly:
+                case EventMode.RemoveAlly:
+                    allyChangeEvent(obj_content, event_mode);
+                break;
+
+                case EventMode.BattleGroupStart:
+                    battleGroupEvent();
+                break;
+
+                case EventMode.BattleGroupEnd:
+                    battleEvent(obj_content, false, battleGroupBattleArr)
                 break;
             }
 
@@ -506,9 +556,23 @@ let functions = {
                     case EventMode.Wait:
                         await waitEvent(obj_content);
                     break;
+
+                    case EventMode.AddAlly:
+                    case EventMode.RemoveAlly:
+                        allyChangeEvent(obj_content, event_mode);
+                        console.log('test');
+                    break;
+
+                    case EventMode.BattleGroupStart:
+                        battleGroupEvent();
+                    break;
+
+                    case EventMode.BattleGroupEnd:
+                        battleEvent(obj_content, false, battleGroupBattleArr)
+                    break;
                 }
 
-                if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
+                if ([EventMode.Transition, EventMode.Flags, EventMode.Objective, EventMode.AddAlly, EventMode.RemoveAlly, EventMode.BattleGroupStart].includes(event_mode)) {
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         // Manual event check just to help reset us back for the tutorial

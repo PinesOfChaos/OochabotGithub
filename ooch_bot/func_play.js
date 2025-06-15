@@ -90,6 +90,21 @@ let qty_back_button = new ActionRowBuilder()
 
 functions = {
 
+    get_map_weather: function(map_weather, location_data) {
+        let weather_options = []
+        let px = location_data.x;
+        let py = location_data.y;
+        for(let w of map_weather) {
+            if(px >= w.x && py >= w.y &&
+                px <= w.x + w.width && py <= w.y + w.height
+            ){
+                weather_options.push(w.weather_name);
+            }
+        }
+        
+        return weather_options.length > 0 ? _.sample(weather_options) : Weather.None
+    },
+
     move: async function(thread, user_id, direction, dist = 1, encounter_chance = false) {
         /*
             db.player_positions.set(user_id, interaction.member.displayName, 'player_name');
@@ -122,8 +137,13 @@ functions = {
         let playerx = player_location.x;
         let playery = player_location.y;
         let player_flags = profile_data.flags;
+        
         let moveDisable = false;
         let repel_ran_out = false;
+
+        let allies = profile_data.allies_list;
+        let previous_positions = profile_data.previous_positions;
+
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
@@ -138,19 +158,8 @@ functions = {
         let map_bg =            map_obj.map_info.map_battleback;
         let map_weather =       map_obj.map_weather;
         if (map_shops == undefined || map_shops == null) map_shops = [];   
-        
-        let weather_options = []
-        let px = player_location.x;
-        let py = player_location.y;
-        for(let w of map_weather) {
-            if(px >= w.x && py >= w.y &&
-                px <= w.x + w.width && py <= w.y + w.height
-            ){
-                weather_options.push(w.weather_name);
-            }
-        }
-        
-        let battle_weather = weather_options.length > 0 ? _.sample(weather_options) : Weather.None
+
+        battle_weather = functions.get_map_weather(map_weather, player_location);
         
         //set where the player is going to move
         switch(direction.toLowerCase()){
@@ -170,8 +179,11 @@ functions = {
 
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
+        
         for(let i = 0; i < dist; i++){
-
+            let x_start = playerx;
+            let y_start = playery;
+            
             if(stop_moving){ break; }
             playerx += xmove;
             playery += ymove;
@@ -302,6 +314,7 @@ functions = {
                         map_shops =         map_obj.map_shops;
                         map_info =          map_obj.map_info;
                         if (map_shops == undefined || map_shops == null) map_shops = []; 
+                        previous_positions = [];
 
                         //If the map has a failsafe pos and the position to is invalid, go to the failsafe pos
                         //This should only occur in generated maps, as their connection positions may change
@@ -666,12 +679,18 @@ functions = {
                                 })
 
                             }
-;                        }
+                        }
                     }
                 break;
                 default:
                     
                 break;
+            }
+
+            if(x_start != playerx || y_start != playery){
+                previous_positions.unshift({x : x_start, y: y_start})
+                if(previous_positions.length > 3){ previous_positions.pop(); }
+                db.profile.set(user_id, previous_positions, 'previous_positions')
             }
 
             //if the player has run into anything that would cause them to stop moving, make them stop
@@ -730,6 +749,8 @@ functions = {
         let emote_map_array = [];
         let emote_map_array_base = [];
         let player_sprite_id = db.profile.get(user_id, 'player_sprite');
+        let allies_list = player_info.allies_list;
+        let previous_positions = player_info.previous_positions;
 
         //Plain map tiles
         for (let i = -x_center; i < x_center + 1; i++) {
@@ -776,6 +797,19 @@ functions = {
                     }
                 }
             }
+        }
+
+        for(let i = 0; i < allies_list.length; i++){
+            if(previous_positions.length <= i){ break; }
+            
+            let ally = allies_list[i];
+            xx = previous_positions[i].x - x_pos + x_center;
+            yy = previous_positions[i].y - y_pos + y_center;
+            
+            let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
+            let tile = db.tile_data.get(ally.sprite_id.slice(0, 1) + ally.sprite_id.slice(3));
+            if (tile.use === Tile.Int) npcZoneId = 0;
+            emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
         }
 
         //Savepoint tiles

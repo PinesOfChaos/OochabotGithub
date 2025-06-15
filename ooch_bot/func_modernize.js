@@ -133,6 +133,8 @@ m_functions = {
             flags : [],
             ooch_party : [],
             friends_list : [],
+            allies_list: [],
+            previous_positions: [],
             move_speed : 1,
             objective : 'Talk to the professor.',
 
