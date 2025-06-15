@@ -37,9 +37,9 @@
 			"y": 12.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -50,21 +50,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Uhm, yeah, I am... not a fan of this haha... ha...\nThese pathways are so narrow and the surroundings are so dark....\nLet's just... stick together, okay?",
 			"remove_on_finish": true,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 9.0,
 			"y": 9.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -75,21 +75,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Finally, some solid ground!\nIt seems like there've been eyes following us the whole time...\nI don't think I can take this much longer...\nNo, no, it'll be fine...",
 			"remove_on_finish": true,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 41.0,
 			"y": 14.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -100,21 +100,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Aha! I think I see some light up ahead!\nI knew we would make it!\nCatch you on the other side!",
 			"remove_on_finish": true,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 27.0,
 			"y": 51.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -125,21 +125,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "I don't want to do this anymore...\nI'm tired of this dark, awful cave...\nSurely we can't be too far from the exit now...\nRight?",
 			"remove_on_finish": true,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 34.0,
 			"y": 30.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "tryptid_1",
 			"flag_kill": "",
 			"flag_required": "",
@@ -150,21 +150,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 45.0,
 			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "tryptid_2",
 			"flag_kill": "",
 			"flag_required": "tryptid_1",
@@ -175,21 +175,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 27.0,
 			"y": 25.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "tryptid_3",
 			"flag_kill": "",
 			"flag_required": "tryptid_2",
@@ -200,21 +200,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 34.0,
 			"y": 8.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "tryptid_4",
 			"flag_kill": "",
 			"flag_required": "tryptid_3",
@@ -225,21 +225,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
 			"y": 29.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "tryptid_5",
 			"flag_kill": "",
 			"flag_required": "tryptid_4",
@@ -250,21 +250,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 26.0,
 			"y": 35.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "tryptid_5",
@@ -275,27 +275,27 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "*kshoool*",
 			"remove_on_finish": true,
-			"sprite": 30,
+			"sprite": 30.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_030",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
-					"ability": 57,
+					"ability": 57.0,
 					"atk_iv": 5.0,
 					"def_iv": 5.0,
 					"hp_iv": 5.0,
-					"id": 96,
-					"item": -1,
+					"id": 96.0,
+					"item": -1.0,
 					"level": 30.0,
 					"moveset": [
-						35,
-						47,
-						77,
-						68
+						35.0,
+						47.0,
+						77.0,
+						68.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -306,9 +306,9 @@
 			"y": 27.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "spawn_nice3",
 			"flag_kill": "spawn_nice3",
 			"flag_required": "talk_nice2",
@@ -319,21 +319,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
 			"y": 41.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "talk_nice3",
 			"flag_kill": "talk_nice3",
 			"flag_required": "spawn_nice3",
@@ -341,7 +341,7 @@
 			"items": [
 				{
 					"count": 2.0,
-					"id": 7
+					"id": 7.0
 				}
 			],
 			"name": "Mr. Nice",
@@ -349,21 +349,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Ohoho, how nice to see you again my friend!\nI was most certainly not cowering within this chest!\nYour bravery in traversing this abyss is most admirable!\nI must away, but first, I have something for you!",
 			"remove_on_finish": false,
-			"sprite": 18,
+			"sprite": 18.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_018",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 18.0,
 			"y": 41.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -371,7 +371,7 @@
 			"items": [
 				{
 					"count": 3.0,
-					"id": 5
+					"id": 5.0
 				}
 			],
 			"name": "Chest",
@@ -379,21 +379,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 10.0,
 			"y": 23.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",
 			"flag_required": "",
@@ -404,12 +404,12 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "WARNING:\nU▮e cau▮▮on wh▮n cros▮i▮g.\n▮▮w▮ys--\n*the rest of the sign is too damaged to read*",
 			"remove_on_finish": false,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_020",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 11.0,
@@ -441,17 +441,17 @@
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 81
+					"ooch_id": 81.0
 				},
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 57
+					"ooch_id": 57.0
 				},
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 89
+					"ooch_id": 89.0
 				}
 			],
 			"width": 9.0,
@@ -464,17 +464,17 @@
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 64
+					"ooch_id": 64.0
 				},
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 57
+					"ooch_id": 57.0
 				},
 				{
 					"max_level": 21.0,
 					"min_level": 19.0,
-					"ooch_id": 81
+					"ooch_id": 81.0
 				}
 			],
 			"width": 22.0,
@@ -487,22 +487,22 @@
 				{
 					"max_level": 22.0,
 					"min_level": 19.0,
-					"ooch_id": 57
+					"ooch_id": 57.0
 				},
 				{
 					"max_level": 22.0,
 					"min_level": 19.0,
-					"ooch_id": 81
+					"ooch_id": 81.0
 				},
 				{
 					"max_level": 22.0,
 					"min_level": 19.0,
-					"ooch_id": 32
+					"ooch_id": 32.0
 				},
 				{
 					"max_level": 22.0,
 					"min_level": 19.0,
-					"ooch_id": 99
+					"ooch_id": 99.0
 				}
 			],
 			"width": 28.0,

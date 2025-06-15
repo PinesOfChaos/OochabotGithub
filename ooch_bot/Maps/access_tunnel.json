@@ -474,28 +474,28 @@
 			"y": 18.0
 		},
 		{
-			"aggro_range": 3.0,
-			"battle_ai": 0.0,
-			"coin": 0.0,
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "trapped_in_tunnel_dialog",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Rival Cade",
-			"npc_id": "276605251641204422",
+			"npc_id": "347172505099803009",
 			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "Ugh, finally, a way out!\nCome on, lets take the elevator.\nHurry, hurry!",
-			"remove_on_finish": true,
-			"sprite": 7.0,
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 7,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0.0
+				0
 			],
 			"team": [],
-			"x": 40.0,
+			"x": 32.0,
 			"y": 27.0
 		}
 	],
@@ -507,21 +507,7 @@
 		}
 	],
 	"map_shops": [],
-	"map_spawn_zones": [
-		{
-			"height": 0.0,
-			"spawn_slots": [
-				{
-					"max_level": 25.0,
-					"min_level": 25.0,
-					"ooch_id": -5.0
-				}
-			],
-			"width": 0.0,
-			"x": 24.0,
-			"y": 13.0
-		}
-	],
+	"map_spawn_zones": [],
 	"map_tiles": [
 		[
 			"t00_000",
@@ -2121,7 +2107,7 @@
 			"t11_000",
 			"t11_000",
 			"t11_000",
-			"t01_002",
+			"t11_000",
 			"t11_000",
 			"t11_000",
 			"t11_000",
