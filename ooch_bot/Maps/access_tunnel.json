@@ -1,7 +1,7 @@
 {
 	"map_events": [
 		{
-			"event_name": "ev_access_tunnel_down",
+			"event_name": "ev_scaffolds_down",
 			"flag_kill": "",
 			"flag_required": "",
 			"height": 0.0,
@@ -338,7 +338,8 @@
 					"moveset": [
 						43.0,
 						121.0,
-						34.0
+						34.0,
+						35
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -474,9 +475,9 @@
 			"y": 18.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "trapped_in_tunnel_dialog",
 			"flag_required": "",
@@ -487,12 +488,12 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 32.0,

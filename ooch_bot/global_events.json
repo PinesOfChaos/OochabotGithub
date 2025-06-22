@@ -746,6 +746,291 @@
 			}
 		]
 	],
+	"ev_scaffolds_1": [
+		[
+			0.0,
+			{
+				"description": "Huh? Oh, you can lead...",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I'll make sure nothing sneaks up on us.",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Just, y'know, make sure you stick close by... for your safety of course, I'm totally fine.",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_scaffolds_1"
+			}
+		]
+	],
+	"ev_scaffolds_2": [
+		[
+			0.0,
+			{
+				"description": "Hey, so...",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Do you get the feeling something's watching us out there?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Every now and then I swear there's some sort of eye in the corner of my vision...",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And then it disappears...",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It's probably nothing, right?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_scaffolds_2"
+			}
+		]
+	],
+	"ev_scaffolds_3": [
+		[
+			0.0,
+			{
+				"description": "...",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_scaffolds_3"
+			}
+		]
+	],
+	"ev_scaffolds_4": [
+		[
+			0,
+			{
+				"description": "Aha! I think I see some light up ahead!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I knew we would make it, I totally wasn't nervous at all!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Catch you on the other side!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			10,
+			{
+
+			}
+		],
+		[
+			0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "..."
+			}
+		],
+		[
+			0,
+			{
+				"description": "*You can't shake the feeling that something's still watching you from within the shadows.*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "..."
+			}
+		],
+		[
+			0,
+			{
+				"description": "*It's probably nothing though...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "..."
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_scaffolds_4"
+			}
+		]
+	],
+	"ev_scaffolds_down": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 14.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "scaffolds",
+				"x_to": 9.0,
+				"y_to": 7.0
+			}
+		]
+	],
+	"ev_scaffolds_up": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 4.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "access_tunnel",
+				"x_to": 40.0,
+				"y_to": 27.0
+			}
+		]
+	],
 	"ev_slimehead_big": [
 		[
 			0.0,
@@ -1217,7 +1502,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Ok, so we're stuck with eachother then? *Great...*",
 				"dialogue_portrait": "portrait_rival",
@@ -1230,7 +1515,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Well, lets go check out that elevator Lyra mentioned. Hopefully we're not stuck with eachother for too long.",
 				"dialogue_portrait": "portrait_rival",
@@ -1243,76 +1528,76 @@
 			}
 		],
 		[
-			9,
+			9.0,
 			{
-				"battle_ai": 1,
-				"coin": 0,
+				"battle_ai": 1.0,
+				"coin": 0.0,
 				"is_catchable": true,
 				"name": "Rival Cade",
-				"sprite": 7,
+				"sprite": 7.0,
 				"sprite_combat": "c_007",
 				"sprite_id": "c00_007",
 				"team": [
 					{
-						"ability": 13,
+						"ability": 13.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
 						"id": 27.0,
-						"item": -1,
+						"item": -1.0,
 						"level": 27.0,
 						"moveset": [
-							116,
-							112,
-							9,
-							30
+							116.0,
+							112.0,
+							9.0,
+							30.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 5.0
 					},
 					{
-						"ability": 73,
+						"ability": 73.0,
 						"atk_iv": 6.0,
 						"def_iv": 6.0,
 						"hp_iv": 7.0,
 						"id": 56.0,
-						"item": -1,
+						"item": -1.0,
 						"level": 25.0,
 						"moveset": [
-							99,
-							122,
-							41,
-							85
+							99.0,
+							122.0,
+							41.0,
+							85.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 8.0
 					},
 					{
-						"ability": 76,
+						"ability": 76.0,
 						"atk_iv": 5.0,
 						"def_iv": 4.0,
 						"hp_iv": 6.0,
 						"id": 110.0,
-						"item": -1,
+						"item": -1.0,
 						"level": 25.0,
 						"moveset": [
-							56,
-							103,
-							69,
-							85
+							56.0,
+							103.0,
+							69.0,
+							85.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 2.0
 					}
 				],
-				"user_type": 2
+				"user_type": 2.0
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Come on, lets get going...\n*[Rival Cade has joined the party]*",
 				"dialogue_portrait": "portrait_rival",
@@ -1325,7 +1610,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_trapped_in_tunnel"
 			}

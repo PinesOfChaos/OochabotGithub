@@ -699,6 +699,7 @@ functions = {
 
         //Update the player's profile with their new x & y positions
         db.profile.set(user_id, { area: map_name, x: playerx, y: playery }, 'location_data');
+        db.profile.set(user_id, previous_positions, 'previous_positions')
 
         // Update player position
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
@@ -771,11 +772,16 @@ functions = {
             }
         }
 
+        function getUnique(value, index, array){
+            return array.indexOf(value) === index;
+        }
+
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
         for(let ooch of player_info.ooch_party){
             player_flags.push(`ooch_id_${ooch.id}`)
         }
+        player_flags.filter(getUnique) //This should set the player flags to be unique values only
         let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {

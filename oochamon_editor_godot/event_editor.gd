@@ -129,7 +129,7 @@ func _on_button_save_pressed() -> void:
 	var save_json = FileAccess.open(path, FileAccess.WRITE)
 	save_json.store_line(JSON.stringify(Global.DataEvents,"\t"))
 	refresh_events_list()
-	print(Global.DataEvents)
+	#print(Global.DataEvents)
 	
 func _on_check_button_repeatable_toggled(toggled_on: bool) -> void:
 	event_repeatable = toggled_on

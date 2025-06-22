@@ -282,6 +282,7 @@ let functions = {
             }
 
             db.profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
+            db.profile.set(user_id, [], 'previous_positions')
 
             if (obj_content.default_tp === true) {
                 obj_content.x_to = map_default[0].x;
@@ -291,6 +292,7 @@ let functions = {
             db.player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
             db.player_positions.delete(ogBiome, user_id);
             db.profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
+            
 
             let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
             let playspace_str = setup_playspace_str(user_id);
