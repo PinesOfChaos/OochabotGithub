@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cv1mjwmik5k8e"
-path="res://.godot/imported/t03_022.png-c04c5b45894259ae148a320b082c27ad.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://tiles/t03_022.png"
-dest_files=["res://.godot/imported/t03_022.png-c04c5b45894259ae148a320b082c27ad.ctex"]
 
 [params]
 

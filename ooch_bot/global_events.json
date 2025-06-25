@@ -889,7 +889,7 @@
 	],
 	"ev_scaffolds_4": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Aha! I think I see some light up ahead!",
 				"dialogue_portrait": "portrait_rival",
@@ -902,7 +902,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "I knew we would make it, I totally wasn't nervous at all!",
 				"dialogue_portrait": "portrait_rival",
@@ -915,7 +915,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Catch you on the other side!",
 				"dialogue_portrait": "portrait_rival",
@@ -928,13 +928,13 @@
 			}
 		],
 		[
-			10,
+			10.0,
 			{
 
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "...",
 				"dialogue_portrait": "",
@@ -947,7 +947,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*You can't shake the feeling that something's still watching you from within the shadows.*",
 				"dialogue_portrait": "",
@@ -960,7 +960,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*It's probably nothing though...*",
 				"dialogue_portrait": "",
@@ -1539,58 +1539,58 @@
 				"sprite_id": "c00_007",
 				"team": [
 					{
-						"ability": 13.0,
+						"ability": 27,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 0.0,
+						"id": 56.0,
+						"item": -1.0,
+						"level": 22.0,
+						"moveset": [
+							122,
+							85,
+							99,
+							41
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					},
+					{
+						"ability": 4,
+						"atk_iv": 8.0,
+						"def_iv": 4.0,
+						"hp_iv": 4.0,
+						"id": 99.0,
+						"item": -1.0,
+						"level": 24.0,
+						"moveset": [
+							98,
+							85,
+							100,
+							69
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					},
+					{
+						"ability": 18,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
 						"id": 27.0,
 						"item": -1.0,
-						"level": 27.0,
+						"level": 26.0,
 						"moveset": [
-							116.0,
-							112.0,
-							9.0,
-							30.0
+							112,
+							9,
+							66,
+							41
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 5.0
-					},
-					{
-						"ability": 73.0,
-						"atk_iv": 6.0,
-						"def_iv": 6.0,
-						"hp_iv": 7.0,
-						"id": 56.0,
-						"item": -1.0,
-						"level": 25.0,
-						"moveset": [
-							99.0,
-							122.0,
-							41.0,
-							85.0
-						],
-						"nickname": "",
-						"slot_enabled": true,
-						"spd_iv": 8.0
-					},
-					{
-						"ability": 76.0,
-						"atk_iv": 5.0,
-						"def_iv": 4.0,
-						"hp_iv": 6.0,
-						"id": 110.0,
-						"item": -1.0,
-						"level": 25.0,
-						"moveset": [
-							56.0,
-							103.0,
-							69.0,
-							85.0
-						],
-						"nickname": "",
-						"slot_enabled": true,
-						"spd_iv": 2.0
 					}
 				],
 				"user_type": 2.0
@@ -1610,7 +1610,7 @@
 			}
 		],
 		[
-			2.0,
+			2,
 			{
 				"text": "ev_trapped_in_tunnel"
 			}
