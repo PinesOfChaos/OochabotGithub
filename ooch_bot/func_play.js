@@ -137,6 +137,10 @@ functions = {
         let playerx = player_location.x;
         let playery = player_location.y;
         let player_flags = profile_data.flags;
+        let all_flags = [...player_flags];
+        for(let ooch of profile_data.ooch_party){
+            all_flags.push(`ooch_id_${ooch.id}`)
+        }
         
         let moveDisable = false;
         let repel_ran_out = false;
@@ -212,7 +216,7 @@ functions = {
                     x2 = (obj.x + obj.width) >= playerx;
                     y2 = (obj.y + obj.height) >= playery;
                     if (x1 && y1 && x2 && y2) {
-                        if ((obj.flag_required == false || player_flags.includes(obj.flag_required)) && !player_flags.includes(obj.event_name)) {
+                        if ((obj.flag_required == false || all_flags.includes(obj.flag_required)) && !all_flags.includes(obj.event_name)) {
 
                             if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
                                 playerx -= xmove;
@@ -245,9 +249,9 @@ functions = {
                     let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
 
                     //Skip NPCs if they meet any of these conditions
-                    if( (player_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
-                        (obj.flag_required != "" && !player_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
-                        (obj.remove_on_finish && player_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
+                    if( (all_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
+                        (obj.flag_required != "" && !all_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
+                        (obj.remove_on_finish && all_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
                     if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
                     
                     
@@ -260,7 +264,7 @@ functions = {
                         //console.log(npc_event_obj);
                         event_process(user_id, thread, npc_event_obj);
                     }
-                    else if ((obj.team.length > 0) && (!player_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
+                    else if ((obj.team.length > 0) && (!all_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                         let quarter_circle_radians = 90 * Math.PI / 180;
                         let steps = obj.aggro_range;
                         let stop_check = false;
@@ -613,9 +617,9 @@ functions = {
                             if(x1 && y1 && x2 && y2){
                                 stop_moving = true;
                                 
-
+                                let battle_user_array = []
                                 let mons_to_add = [];
-                                let mon_count = 1;
+                                let mon_count = 1 + profile_data.allies_list.length;
                                 for(let m = 0; m < mon_count; m++){
                                     let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                     let slot = spawn_zone.spawn_slots[slot_index];
@@ -645,13 +649,20 @@ functions = {
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
 
-                                        //Add the wild mon and the user
-                                        let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
-                                        let oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[0].ooch_id.toString(), ooch_level : mon_level, team_id : 1})
-                                        let battle_user_array = [userObj, oochObj]
+                                        //Add the user and any allies
+                                        for (let ally of profile_data.allies_list) {
+                                            ally.team_id = 0;
+                                            let user_type = UserType.NPCTrainer;
+                                            let trainerObj = await generate_battle_user(user_type, ally);
+                                            battle_user_array.push(trainerObj);
+                                        }
 
+                                        //Inserts the player first on the list
+                                        let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+                                        battle_user_array.unshift(userObj);
+                                        
                                         //Add additional mons
-                                        for(let m = 1; m < mons_to_add.length; m++){
+                                        for(let m = 0; m < mons_to_add.length; m++){
                                             mon_level = _.random(mons_to_add[m].min_level, mons_to_add[m].max_level);
                                             oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[m].ooch_id.toString(), ooch_level : mon_level, team_id : 1})
                                             battle_user_array.push(oochObj)
@@ -667,7 +678,7 @@ functions = {
                                             if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
 
                                             if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
-                                                await setup_battle([oochObj, userObj], battle_weather, 0, 0, true, true, true, false, false, map_bg);
+                                                await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                                 await msg.delete();
                                             }
                                             else { // If we fail the 60/40, ignore the input*/
@@ -772,16 +783,13 @@ functions = {
             }
         }
 
-        function getUnique(value, index, array){
-            return array.indexOf(value) === index;
-        }
-
         //NPC tiles
         let player_flags = db.profile.get(user_id, 'flags');
+        let all_flags = [...player_flags];
         for(let ooch of player_info.ooch_party){
-            player_flags.push(`ooch_id_${ooch.id}`)
+            all_flags.push(`ooch_id_${ooch.id}`)
         }
-        player_flags.filter(getUnique) //This should set the player flags to be unique values only
+
         let map_npcs = map_obj.map_npcs;
         
         for (let obj of map_npcs) {
@@ -789,8 +797,8 @@ functions = {
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
             if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
-                if (obj.flag_required == '' || obj.flag_required == false || player_flags.includes(obj.flag_required)) {
-                    let plr_interacted = player_flags.includes(npc_flag); //check if the player has defeated this npc
+                if (obj.flag_required == '' || obj.flag_required == false || all_flags.includes(obj.flag_required)) {
+                    let plr_interacted = all_flags.includes(npc_flag); //check if the player has defeated this npc
                     let plain_tile = emote_map_array_base[xx][yy];
                     let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
                     tile = db.tile_data.get(obj.sprite_id.slice(0, 1) + obj.sprite_id.slice(3));
@@ -798,7 +806,7 @@ functions = {
                     emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
 
                     //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
-                    if ((plr_interacted && obj.remove_on_finish) || (player_flags.includes(obj.flag_kill))) { 
+                    if ((plr_interacted && obj.remove_on_finish) || (all_flags.includes(obj.flag_kill))) { 
                         emote_map_array[xx][yy] = plain_tile;
                     }
                 }

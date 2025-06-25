@@ -356,7 +356,10 @@ let functions = {
         }
 
         function allyChangeEvent(obj_content, event) {
-            if (event == EventMode.AddAlly) db.profile.push(user_id, obj_content, 'allies_list');
+            if (event == EventMode.AddAlly) {
+                obj_content.coin = 5;
+                db.profile.push(user_id, obj_content, 'allies_list');
+            }
             if (event == EventMode.RemoveAlly) db.profile.set(user_id, [], 'allies_list');
         }
 
@@ -417,6 +420,7 @@ let functions = {
 
             // If we are at the end of the event_array, quit out entirely
             if ([EventMode.Transition, EventMode.Flags, EventMode.Objective].includes(event_mode)) {
+
                 if (current_place + 1 == event_array.length) {
                     db.profile.set(user_id, PlayerState.Playspace, 'player_state');
                     db.profile.set(user_id, false, 'cur_event_name');

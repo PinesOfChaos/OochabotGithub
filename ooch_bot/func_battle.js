@@ -2193,102 +2193,143 @@ let functions = {
         let string_to_send = '';
         let finish_string_to_send = '';
         let active_teams = [];
+        let player_teams = [];
         let finish_battle = false;
+        let has_living_player = false;
         
+        //Figure out how many players there are and which teams they're on
+        let player_count = 0;
+        for(let user of battle_data.users) {
+            player_count += (user.user_type == UserType.Player ? 1 : 0);
+            player_teams.push(user.team_id);
+        }
+        let total_oochabux = 0;
+        
+
+
         // Get the players active oochamon, check if they are alive
         for(let user of battle_data.users) {
-            let exp_given = 0;
-            let active_ooch = user.party[user.active_slot];
-            let user_defeated = true;
-            let user_next_slot = 999;
+            let user_just_defeated = true;
             let bonus_multiplier = user.type != UserType.Wild ? 2 : 1;
+            let total_exp = 0;
+
+            total_oochabux += user.oochabux;
+
+            if(user.defeated){
+                //Skip already defeated users
+            }
+            else{
+                let active_ooch = user.party[user.active_slot];
             
-            if(active_ooch.current_hp > 0){
-                user_defeated = false;
-                if(!active_teams.includes(user.team_id)){
-                    active_teams.push(user.team_id);
+                if(active_ooch.current_hp > 0){
+                    user_just_defeated = false;
+                    if(user.user_type == UserType.Player){
+                        has_living_player = true;
+                    }
+                    if(!active_teams.includes(user.team_id)){
+                        active_teams.push(user.team_id);
+                    }
                 }
-            }
-            else if (active_ooch.current_hp <= 0 && active_ooch.alive == true) {
-                string_to_send += `\n--- 🪦 ${user.name_possessive} ${active_ooch.emote} **${active_ooch.nickname}** fainted!`
-                
-                if (battle_data.give_rewards) {
-                    exp_given += Math.round(functions.battle_calc_exp(active_ooch, bonus_multiplier));
+                else if (active_ooch.current_hp <= 0 && active_ooch.alive == true) {
+                    string_to_send += `\n--- 🪦 ${user.name_possessive} ${active_ooch.emote} **${active_ooch.nickname}** fainted!`
+                    
+                    if (battle_data.give_rewards && active_ooch.alive) {
+                        total_exp += Math.round(functions.battle_calc_exp(active_ooch, bonus_multiplier));
+                    }
+
+                    active_ooch.current_hp = 0;
+                    active_ooch.alive = false;
+                    active_ooch = update_tame_value(active_ooch, _.random(-20, -10));
                 }
 
-                active_ooch.current_hp = 0;
-                active_ooch.alive = false;
-                active_ooch = update_tame_value(active_ooch, _.random(-20, -10));
-            }
-
-            for(let [i, party_ooch] of user.party.entries()){
-                if(party_ooch.current_hp > 0) {
-                    user_defeated = false;
-                    user_next_slot = Math.min(user_next_slot, i);
-                }
-            }
-
-            if (user_defeated) {
-                if (user.user_type !== UserType.Wild) string_to_send += `\n--- **${user.name}'s party was wiped out!**`;
-                if (user.oochabux !== 0) {
-                    finish_string_to_send += `\nReceived **${user.oochabux} oochabux** for winning the battle!`
-                }
-                user.defeated = true;
-            } else {
-                battle_data.end_of_turn_switch_queue.push(user.user_index);
-                if(!active_teams.includes(user.team_id)){
-                    active_teams.push(user.team_id);
-                }
-            }
-
-            //Distribute EXP to other users' mons & level them up if possible
-            if(exp_given > 0){
-                for(let other_user of battle_data.users){
-                    if((other_user.user_type == UserType.Player) && (other_user.user_index != user.user_index)){
-
-                        let ooch_party = other_user.party;
-                        let other_ooch = ooch_party[other_user.active_slot];
-                        let exp_main = Math.floor(exp_given * 1.25);
-                        let max_level = db.global_data.get("max_level");
-                        if (max_level == false || max_level == undefined) max_level = 50;
-
-                        if (user.oochabux) {
-                            db.profile.math(other_user.user_id, '+', user.oochabux, 'oochabux');
+                //Check if the user is defeated or not
+                //Also check if this is a player that's still alive
+                for(let [i, party_ooch] of user.party.entries()){
+                    if(party_ooch.current_hp > 0) {
+                        user_just_defeated = false;
+                        if(user.user_type == UserType.Player){
+                            has_living_player = true;
                         }
+                    }
+                }
 
-                        if (other_ooch.level < max_level) { 
-                            finish_string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
-                                                ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
-                        }
-                        if (other_user.party.length > 1) {
-                            finish_string_to_send += `\nThe rest of the team earned **${exp_given}** exp.\n`;
-                        }
+                //Only do this to newly defeated users (they will be just_defeated, but their data will not say defeated)
+                if (user_just_defeated && !user.defeated) { 
+                    if (user.user_type !== UserType.Wild){
+                        string_to_send += `\n--- **${user.name}'s party was wiped out!**`;
+                    } 
+                    user.defeated = true;
+                } 
+                else {
+                    battle_data.end_of_turn_switch_queue.push(user.user_index);
+                    if(!active_teams.includes(user.team_id)){
+                        active_teams.push(user.team_id);
+                    }
+                }
 
-                        for (let i = 0; i < ooch_party.length; i++) {
-                            if (i == other_user.active_slot) { 
-                                ooch_party[i].current_exp += exp_main;
-                                ooch_party[i] = update_tame_value(ooch_party[i], _.random(1, 3));
-                            } 
-                            else { 
-                                ooch_party[i].current_exp += exp_given; 
+                //If there's exp to give give it out here
+                if(total_exp > 0){
+                    for(let other_user of battle_data.users){
+                        if((other_user.user_type == UserType.Player) && (other_user.user_index != user.user_index)){
+
+                            let ooch_party = other_user.party;
+                            let other_ooch = ooch_party[other_user.active_slot];
+                            let exp_main = Math.floor(total_exp * 1.25);
+                            let max_level = db.global_data.get("max_level");
+                            if (max_level == false || max_level == undefined) max_level = 50;
+
+                            if (user.oochabux) {
+                                db.profile.math(other_user.user_id, '+', user.oochabux, 'oochabux');
                             }
-                            
-                            // Check for level ups
-                            let ooch_data = ooch_party[i];
-                            if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
-                                ooch_data = functions.level_up(ooch_data);
-                                string_to_send += ooch_data[1];
+
+                            if (other_ooch.level < max_level) { 
+                                finish_string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
+                                                    ` (EXP: **${_.clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
+                            }
+                            if (other_user.party.length > 1) {
+                                finish_string_to_send += `\nThe rest of the team earned **${total_exp}** exp.\n`;
+                            }
+
+                            for (let i = 0; i < ooch_party.length; i++) {
+                                if (i == other_user.active_slot) { 
+                                    ooch_party[i].current_exp += exp_main;
+                                    ooch_party[i] = update_tame_value(ooch_party[i], _.random(1, 3));
+                                } 
+                                else { 
+                                    ooch_party[i].current_exp += total_exp; 
+                                }
+                                
+                                // Check for level ups
+                                let ooch_data = ooch_party[i];
+                                if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
+                                    ooch_data = functions.level_up(ooch_data);
+                                    string_to_send += ooch_data[1];
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
+
 
         //If there's 0 - 1 remaining teams finish the battle
         if(active_teams.length < 2){
             finish_battle = true;
         }
+
+        //If there are no surviving players the battle should end
+        if(!has_living_player){
+            finish_battle = true;
+        }
+
+        //Distribute EXP and rewards to users
+        if(finish_battle){
+            finish_string_to_send += `\nReceived **${total_oochabux} oochabux** for winning the battle!`
+        }
+        
+        
         
         return({
             text : string_to_send, 
