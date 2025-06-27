@@ -654,6 +654,7 @@ functions = {
                                             ally.team_id = 0;
                                             let user_type = UserType.NPCTrainer;
                                             let trainerObj = await generate_battle_user(user_type, ally);
+                                            trainerObj.is_catchable = false;
                                             battle_user_array.push(trainerObj);
                                         }
 

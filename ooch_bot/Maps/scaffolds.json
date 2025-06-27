@@ -4682,6 +4682,14 @@
 			"t00_000"
 		]
 	],
-	"map_transitions": [],
+	"map_transitions": [
+		{
+			"connect_map": "goo_lake",
+			"connect_x": 17.0,
+			"connect_y": 7.0,
+			"x": 27.0,
+			"y": 52.0
+		}
+	],
 	"map_weather": []
 }

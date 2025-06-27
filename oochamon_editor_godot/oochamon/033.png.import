@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vk4k36aiyey7"
-valid=false
+uid="uid://dyl7616tk186a"
+path="res://.godot/imported/033.png-e58e991f4c5e5db34c6b2f125c41a274.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://oochamon/033.png"
+dest_files=["res://.godot/imported/033.png-e58e991f4c5e5db34c6b2f125c41a274.ctex"]
 
 [params]
 

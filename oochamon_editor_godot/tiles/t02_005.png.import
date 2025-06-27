@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://do5mi4lc4sixj"
-valid=false
+uid="uid://blfqcmd1ql73s"
+path="res://.godot/imported/t02_005.png-0c79adeb06b1f7ba9d40eb853dd5a11e.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://tiles/t02_005.png"
+dest_files=["res://.godot/imported/t02_005.png-0c79adeb06b1f7ba9d40eb853dd5a11e.ctex"]
 
 [params]
 

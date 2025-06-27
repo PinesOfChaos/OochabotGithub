@@ -16,7 +16,7 @@ module.exports = {
         if (!db.profile.has(target)) {
             return interaction.reply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
         } else if (db.profile.get(target, 'player_state') == PlayerState.BattleSetup || db.profile.get(target, 'player_state') == PlayerState.Encounter) {
-            return interaction.reply({ content: 'You cannot run `/play` right now.', ephemeral: true });
+            //return interaction.reply({ content: 'You cannot run `/play` right now.', ephemeral: true });
         }
 
         if (!interaction.deferred && !interaction.replied) {

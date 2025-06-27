@@ -780,6 +780,7 @@ let functions = {
         let battle_data = db.battle_data.get(battle_id);
         db.battle_data.set(battle_id, 1, 'turn_msg_counter');
 
+
         //#region Setup buttons and select menus
         const inputRow = new ActionRowBuilder()
             .addComponents(
@@ -904,13 +905,17 @@ let functions = {
         }
 
         // Handle users
+        let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
         await battle_data.users.forEach(async (user) => {
+            console.log([user.name, num_catchable])
             if (user.user_type != UserType.Player) {
                 functions.get_ai_action(user, battle_data);
                 user.action_selected = true;
 
-                if(user.is_catchable && user.party[user.active_slot].id >= 0){
-                    bagButtons.components[1].setDisabled(false);
+                if(user.is_catchable && user.party[user.active_slot].id >= 0 && user.party[user.active_slot].current_hp > 0){
+                    num_catchable++;
+                    
+                    bagButtons.components[1].setDisabled(num_catchable != 1);
                 }
 
                 // Can't run from void enemy battles, whose IDs are less than 0
@@ -1276,7 +1281,7 @@ let functions = {
                         } else {
                             let user_to_catch;
                             for(let catch_target of battle_data.users){
-                                if(catch_target.is_catchable){
+                                if(catch_target.is_catchable && catch_target.party[catch_target.active_slot].current_hp > 0){
                                     user_to_catch = catch_target.user_index;
                                 }
                             }
@@ -1368,7 +1373,7 @@ let functions = {
         let finish_battle = false;
         let action, header, text, faint_check;
 
-        console.log('MESSAGE ROUND START')
+        //console.log('MESSAGE ROUND START')
         await functions.distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
 
         //Reset all battle triggers
@@ -1392,9 +1397,9 @@ let functions = {
             finish_battle = turn_data.finish_battle;
             
             //Check if anything fainted
-            console.log(user.party[0]);
+            //console.log(user.party[0]);
             faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
-            console.log(user.party[0]);
+            //console.log(user.party[0]);
             text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
             if (!finish_battle) text += faint_check.finish_text;
@@ -1421,7 +1426,7 @@ let functions = {
                             iconURL: battle_sprite_icon }
             }
             
-            console.log('MESSAGE FIRST DISTRIBUTE')
+            //console.log('MESSAGE FIRST DISTRIBUTE')
             await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)], files: battle_sprite_files });
 
             //Clear any remaining actions if we're meant to finish the battle
@@ -1434,7 +1439,7 @@ let functions = {
                             let embed = turn_data.finish_data.info_embed;
                             let png = turn_data.finish_data.ooch_png
 
-                            console.log('CAPTURE DISTRIBUTE')
+                            //console.log('CAPTURE DISTRIBUTE')
                             await functions.distribute_messages(battle_data, { embeds: [embed], files: [png] });
                         break;
                     }
@@ -1559,7 +1564,7 @@ let functions = {
 
             if(end_of_round_text.replaceAll("\n","") != ''){
                 await wait(battle_data.battle_speed);
-                console.log('END ROUND DISTRIBUTE')
+                //console.log('END ROUND DISTRIBUTE')
                 await functions.distribute_messages(battle_data, { content: end_of_round_header, embeds: [functions.battle_embed_create(end_of_round_text)]});
             }
 
@@ -1582,7 +1587,7 @@ let functions = {
             }
             
             if(faint_switch_text != ''){
-                console.log('FAINT SWITCH DISTRIBUTE')
+                //console.log('FAINT SWITCH DISTRIBUTE')
                 await functions.distribute_messages(battle_data, { content: faint_switch_header, embeds: [functions.battle_embed_create(faint_switch_text)]});
             }
 
@@ -1874,7 +1879,7 @@ let functions = {
             case Ability.Broodmother:
                 incAmount = 0;
                 for (let ooch_i of user.party) {
-                    if (ooch_i.type[0] === ooch.type[0] && ooch_i.id != ooch.id) {
+                    if (ooch_i.type[0] === ooch_to.type[0] && ooch_i.id != ooch_to.id) {
                         incAmount += 1;
                     }
                 } 
@@ -2962,7 +2967,7 @@ let functions = {
         let defender_def_stat = ooch_defender.stats.def * functions.get_stat_multiplier(ooch_defender.stats.def_mul);
 
         if (ooch_attacker.ability == Ability.Bipolar) {
-            attacker_atk_stat = ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def);
+            attacker_atk_stat = ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def_mul);
         }
         if (ooch_attacker.ability == Ability.Thorned) {
             attacker_atk_stat += ooch_attacker.stats.def * functions.get_stat_multiplier(ooch_attacker.stats.def_mul) / 4;
