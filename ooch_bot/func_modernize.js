@@ -263,7 +263,9 @@ m_functions = {
                 display_msg_id: '',
                 defeated : false,
                 oochabux: 0,
-                stance_list : [StanceForms.Base]
+                stance_list : [StanceForms.Base],
+                ooch_overwrites_name : false,
+                custom_start_text : ''
         }
 
         return(battle_user_obj);

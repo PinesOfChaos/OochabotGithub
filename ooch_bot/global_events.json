@@ -1053,7 +1053,9 @@
 				"info": {
 					"draw_trainer_sprite": false,
 					"name": "Giant Slime Head",
-					"name_possessive": "Wild "
+					"name_possessive": "Wild ",
+					"ooch_overwrites_name" : true,
+					"custom_start_text" : "A Giant Slime Head emerges before you!"
 				},
 				"is_catchable": false,
 				"name": "Giant Slime Head",

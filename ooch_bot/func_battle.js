@@ -169,8 +169,6 @@ let functions = {
         //Piles on any additional info to the user
         _.merge(user_info, extra_info);
 
-        console.log(user_info)
-
         return user_info
     },
 
@@ -284,7 +282,10 @@ let functions = {
                         active_ooch = user2.party[user2.active_slot];
                         types_string = ` ${functions.type_to_emote(active_ooch.type)}`;
                         
-                        if (user2.is_catchable) { //Wild oochamon
+                        if(user2.custom_start_text != ''){
+                            battleStartText += `## ${user2.custom_start_text}\n`;
+                        }
+                        else if (user2.is_catchable) { //Wild oochamon
                             battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
                             if (db.profile.get(user.user_id, `oochadex[${active_ooch.id}].caught`) == 0) {
                                 battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
@@ -3652,7 +3653,7 @@ let functions = {
         let hp_string = ``;
         let user_name, active_ooch;
         for(let user of battle_data.users){
-            user_name = user.is_catchable ? 'Wild' : `${user.name}'s`
+            user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
             active_ooch = user.party[user.active_slot];
             hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`;
             hp_string += functions.generate_hp_bar(active_ooch, 'plr');
