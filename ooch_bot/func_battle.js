@@ -51,7 +51,7 @@ let functions = {
         if(options.hasOwnProperty("user_index")){
             user_info.user_index = options.user_index;
         }
-        console.log(user_info)
+        //console.log(user_info)
         switch (type) {
             case UserType.Wild:
                 if(options.hasOwnProperty("party")){ //This mon is created via an event/ability
@@ -168,6 +168,8 @@ let functions = {
 
         //Piles on any additional info to the user
         _.merge(user_info, extra_info);
+
+        console.log(user_info)
 
         return user_info
     },
