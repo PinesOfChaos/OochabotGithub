@@ -1051,7 +1051,7 @@
 				"battle_ai": 0.0,
 				"coin": 0.0,
 				"is_catchable": false,
-				"name": "",
+				"name": "Giant Slime Head",
 				"sprite": 36.0,
 				"sprite_combat": "c_031_c_036",
 				"sprite_id": "c00_036",

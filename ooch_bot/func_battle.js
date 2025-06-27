@@ -50,10 +50,9 @@ let functions = {
         if(options.hasOwnProperty("user_index")){
             user_info.user_index = options.user_index;
         }
-        
+        console.log(user_info)
         switch (type) {
             case UserType.Wild:
-                
                 if(options.hasOwnProperty("party")){ //This mon is created via an event/ability
                     
                     let ooch_base = options.party[0];
@@ -84,6 +83,7 @@ let functions = {
                 }
                 
             break;
+            case UserType.NPCSmart:
             case UserType.NPCTrainer:
                 let party_base = options.team;
                 let party_generated = [];
