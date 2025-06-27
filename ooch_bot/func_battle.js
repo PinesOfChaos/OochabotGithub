@@ -46,6 +46,7 @@ let functions = {
         user_info.user_type = type;
         let party = [];
         let active_slot = 0;
+        let extra_info =  _.isUndefined(options.info) ? {} : options.info;
 
         if(options.hasOwnProperty("user_index")){
             user_info.user_index = options.user_index;
@@ -136,6 +137,8 @@ let functions = {
             break;
         }
 
+        
+
         //Force swap to another slot if the active one's hp is 0
         if(party[active_slot].current_hp <= 0){
             active_slot = 0;
@@ -161,6 +164,10 @@ let functions = {
         user_info.active_slot = active_slot;
         user_info.slot_actions = slot_actions;
         user_info.name_possessive = user_info.name == 'Wild ' ? 'Wild' : user_info.name + '\'s';
+        user_info.draw_trainer_sprite = true; //This should be true unless the extra info changes it
+
+        //Piles on any additional info to the user
+        _.merge(user_info, extra_info);
 
         return user_info
     },
@@ -557,6 +564,7 @@ let functions = {
                 move_id = _.sample(moves);
                 functions.new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
             break;
+            case UserType.NPCSmart:
             case UserType.NPCTrainer:
                 target_user = _.sample(users_enemy);
                 target_mon = target_user.party[target_user.active_slot];
@@ -3828,7 +3836,7 @@ let functions = {
                 avg_y += ooch_y;
                 avg_num++;
                 
-                if(user.battle_sprite != false){ //User Sprite
+                if(user.battle_sprite != false && user.draw_trainer_sprite){ //User Sprite
                     let user_sprite = {
                         x : user_x + team_step,
                         y : user_y,

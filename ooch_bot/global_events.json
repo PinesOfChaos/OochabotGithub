@@ -1050,6 +1050,11 @@
 			{
 				"battle_ai": 0.0,
 				"coin": 0.0,
+				"info": {
+					"draw_trainer_sprite": false,
+					"name": "Giant Slime Head",
+					"name_possessive": "Wild"
+				},
 				"is_catchable": false,
 				"name": "Giant Slime Head",
 				"sprite": 36.0,
@@ -1106,7 +1111,7 @@
 				"items": [],
 				"money": 0.0,
 				"objective": "",
-				"title": ""
+				"title": "..."
 			}
 		],
 		[
@@ -1119,7 +1124,7 @@
 				"items": [],
 				"money": 0.0,
 				"objective": "",
-				"title": ""
+				"title": "..."
 			}
 		],
 		[
@@ -1158,7 +1163,7 @@
 				"items": [],
 				"money": 0.0,
 				"objective": "",
-				"title": ""
+				"title": "..."
 			}
 		],
 		[
@@ -1539,7 +1544,7 @@
 				"sprite_id": "c00_007",
 				"team": [
 					{
-						"ability": 27,
+						"ability": 27.0,
 						"atk_iv": 0.0,
 						"def_iv": 0.0,
 						"hp_iv": 0.0,
@@ -1547,17 +1552,17 @@
 						"item": -1.0,
 						"level": 22.0,
 						"moveset": [
-							122,
-							85,
-							99,
-							41
+							122.0,
+							85.0,
+							99.0,
+							41.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 0.0
 					},
 					{
-						"ability": 4,
+						"ability": 4.0,
 						"atk_iv": 8.0,
 						"def_iv": 4.0,
 						"hp_iv": 4.0,
@@ -1565,17 +1570,17 @@
 						"item": -1.0,
 						"level": 24.0,
 						"moveset": [
-							98,
-							85,
-							100,
-							69
+							98.0,
+							85.0,
+							100.0,
+							69.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 0.0
 					},
 					{
-						"ability": 18,
+						"ability": 18.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
@@ -1583,10 +1588,10 @@
 						"item": -1.0,
 						"level": 26.0,
 						"moveset": [
-							112,
-							9,
-							66,
-							41
+							112.0,
+							9.0,
+							66.0,
+							41.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -1610,7 +1615,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_trapped_in_tunnel"
 			}
