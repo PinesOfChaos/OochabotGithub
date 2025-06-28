@@ -383,7 +383,9 @@ let functions = {
         user_options.team_id = team_id;
         user_options.is_catchable = false;
         user_options.party = party;
-        user_options.user_index = user_index
+        user_options.user_index = user_index;
+        user_options.oochabux = 0;
+        user_options.coin = 0;
         
         let user = await functions.generate_battle_user(user_options.user_type, user_options);
         battle_data.users.push(user);
@@ -3655,13 +3657,15 @@ let functions = {
         for(let user of battle_data.users){
             user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
             active_ooch = user.party[user.active_slot];
-            hp_string += `\n\`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`;
+            hp_string += `\n\`` + _.trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`);
             hp_string += functions.generate_hp_bar(active_ooch, 'plr');
             hp_string += `\n`;
             hp_string += `\`Stance: ${db.stance_data.get(active_ooch.stance, 'name')}\``
             hp_string += `\n`;
         }
 
+        
+        
         let embed = functions.battle_embed_create(hp_string)
         return(embed);
     },
