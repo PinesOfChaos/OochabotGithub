@@ -1506,10 +1506,20 @@ let functions = {
 
                     switch(effect){ //Status effects
                         case Status.Vanish:
-                            end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared!`;
-                            end_of_round_text +=  `\nfunctions.add_status_effect(ooch, Status.Revealed)`;
-                            ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
                             
+                            if(slot_info.this_turn_vanished){
+                                slot_info.this_turn_vanished = false;
+                            }
+                            else{
+                                end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared!`;
+                                end_of_round_text +=  `\n${functions.add_status_effect(ooch, Status.Revealed)}`;
+                                slot_info.this_turn_vanished = true;
+                                ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
+                            }
+                            
+                            
+
+
                         break;
                         case Status.Revealed:
                             if (slot.this_turn_revealed) { 
@@ -2214,18 +2224,21 @@ let functions = {
         let player_teams = [];
         let finish_battle = false;
         let has_living_player = false;
-        
-        //Figure out how many players there are and which teams they're on
-        let player_count = 0;
-        for(let user of battle_data.users) {
-            player_count += (user.user_type == UserType.Player ? 1 : 0);
-            player_teams.push(user.team_id);
-        }
         let total_oochabux = 0;
         
+        //Figure out how many human players there are and which teams they're on
+        let player_count = 0;
+        let first_player = null;
+        for(let user of battle_data.users) {
+            if(user.user_type == UserType.Player){
+                player_count ++;
+                player_teams.push(user.team_id);
+                if(first_player == null){ first_player = user; }
+            }
+            
+        }
 
-
-        // Get the players active oochamon, check if they are alive
+        // Get the players' active oochamon, check if they are alive
         for(let user of battle_data.users) {
             let user_just_defeated = true;
             let bonus_multiplier = user.type != UserType.Wild ? 2 : 1;
@@ -2296,9 +2309,7 @@ let functions = {
                             let max_level = db.global_data.get("max_level");
                             if (max_level == false || max_level == undefined) max_level = 50;
 
-                            if (user.oochabux) {
-                                db.profile.math(other_user.user_id, '+', user.oochabux, 'oochabux');
-                            }
+                            
 
                             if (other_ooch.level < max_level) { 
                                 finish_string_to_send += `\n\n${db.monster_data.get(other_ooch.id, 'emote')} **${other_ooch.nickname}** earned **${exp_main} EXP!**` + 
@@ -2342,12 +2353,17 @@ let functions = {
             finish_battle = true;
         }
 
-        //Distribute EXP and rewards to users
-        if(finish_battle){
-            finish_string_to_send += `\nReceived **${total_oochabux} oochabux** for winning the battle!`
+        //Distribute oochabux to the player
+        if(finish_battle && player_count == 1 && !first_player.defeated){
+            if(!_.isNumber(total_oochabux)){ total_oochabux = 1000; } //placeholder fix for weird oochabux issue
+            if (total_oochabux > 0) {
+                db.profile.math(first_player.user_id, '+', total_oochabux, 'oochabux');
+                finish_string_to_send += `\nReceived **${total_oochabux} oochabux** for winning the battle!`
+            }
         }
-        
-        
+        else{
+            total_oochabux = 0;
+        }
         
         return({
             text : string_to_send, 
@@ -3511,6 +3527,8 @@ let functions = {
                             
                         } else if (eff.status == 'clear_status') {
                             status_target.status_effects = [];
+                            slot_defender.this_turn_revealed = false;
+                            slot_defender.this_turn_vanished = true;
                             defender_field_text += `\n--- ${status_target.emote} **${status_target.nickname}** had its status effects cleared!`;
                         } else if (eff.status == 'clear_stat_stages') {
                             status_target.stats.atk_mul = 0;

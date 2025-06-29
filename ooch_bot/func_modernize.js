@@ -282,6 +282,7 @@ m_functions = {
             this_turn_was_damaged : false,
             this_turn_switched_in : false,
 
+            this_turn_vanished : true, //needs to be true at battle start
             this_turn_revealed : false,
 
             used_ability_matryoshka : false,
