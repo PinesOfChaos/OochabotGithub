@@ -17,6 +17,15 @@
 			"width": 2.0,
 			"x": 26.0,
 			"y": 34.0
+		},
+		{
+			"event_name": "ev_disk_placed",
+			"flag_kill": "ev_disk_placed",
+			"flag_required": "slimehead_big_defeated",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 57.0,
+			"y": 7.0
 		}
 	],
 	"map_info": {
@@ -527,6 +536,111 @@
 			"team": [],
 			"x": 20.0,
 			"y": 12.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 5.0,
+					"id": 2
+				}
+			],
+			"name": "Chest",
+			"npc_id": "813969730041752917",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 43.0,
+			"y": 14.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "disk_place_sprite",
+			"is_catchable": false,
+			"items": [],
+			"name": "Computer Terminal",
+			"npc_id": "728027914153794751",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 49,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_049",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 57.0,
+			"y": 6.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "slimehead_big_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Rival Cade",
+			"npc_id": "115069606438334097",
+			"post_combat_dialogue": "Come back if you find that missing piece.\nI'll, uh, keep watch...",
+			"pre_combat_dialogue": "Hey, {player}, Al told me this hunk of junk is supposed to get us back to the surface.\nI've patched it up, but it looks like it's still missing a component...",
+			"remove_on_finish": false,
+			"sprite": 7,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_007",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 56.0,
+			"y": 7.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "ev_disk_placed",
+			"flag_required": "slimehead_big_defeated",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "296975329520067150",
+			"post_combat_dialogue": "Go ahead and insert the disk to the slot on the machine.",
+			"pre_combat_dialogue": "Well it's about time!\nWhat was I going to do if you died out there?\nGo ahead and insert the disk to the slot on the machine.",
+			"remove_on_finish": false,
+			"sprite": 7,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_007",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 56.0,
+			"y": 7.0
 		}
 	],
 	"map_savepoints": [

@@ -262,6 +262,71 @@
 			}
 		]
 	],
+	"ev_disk_placed": [
+		[
+			0,
+			{
+				"description": "*The Data Disk clicks as you insert it into the old machine*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "..."
+			}
+		],
+		[
+			2,
+			{
+				"text": "disk_place_sprite"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Finally we can get outta here!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Catch ya topside, I'm tired of this cave!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			5,
+			{
+				"text": "Use your Map to teleport to the Hub, then meet with Professor Lyra"
+			}
+		],
+		[
+			2,
+			{
+				"text": "teleport_enable "
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_disk_placed"
+			}
+		]
+	],
 	"ev_get_moistri": [
 		[
 			3.0,
@@ -1051,11 +1116,11 @@
 				"battle_ai": 0.0,
 				"coin": 0.0,
 				"info": {
+					"custom_start_text": "A Giant Slime Head emerges before you!",
 					"draw_trainer_sprite": false,
 					"name": "Giant Slime Head",
 					"name_possessive": "Wild ",
-					"ooch_overwrites_name" : true,
-					"custom_start_text" : "A Giant Slime Head emerges before you!"
+					"ooch_overwrites_name": true
 				},
 				"is_catchable": false,
 				"name": "Giant Slime Head",

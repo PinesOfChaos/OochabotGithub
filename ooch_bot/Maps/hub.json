@@ -271,7 +271,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "trapped_in_tunnel_dialog",
+			"flag_kill": "returned_to_surface",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -356,7 +356,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "get_id_card",
-			"flag_kill": "",
+			"flag_kill": "find_lyra",
 			"flag_required": "met_head_researcher",
 			"is_catchable": false,
 			"items": [
@@ -555,7 +555,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "go_to_powerplant",
 			"flag_required": "cromet_quest_begin",
 			"is_catchable": false,
 			"items": [],
@@ -630,7 +630,7 @@
 			"battle_ai": 0.0,
 			"coin": 600.0,
 			"flag_given": "to_lava_town_begin",
-			"flag_kill": "",
+			"flag_kill": "teleport_enable",
 			"flag_required": "caves_quest_end",
 			"is_catchable": false,
 			"items": [
@@ -833,6 +833,81 @@
 			],
 			"x": 22.0,
 			"y": 41.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 5000.0,
+			"flag_given": "returned_to_surface",
+			"flag_kill": "",
+			"flag_required": "teleport_enable",
+			"is_catchable": false,
+			"items": [],
+			"name": "Professor Lyra",
+			"npc_id": "739372246386435383",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Oh thank goodness, you're back, {player}!\nCade's already checked in with me and it seems he may be taking a little break to recover.\nThat misadventure below the access tunnel really took a toll on him.\nSpeaking of which, Al and his team will be working to clear the access tunnel of any debris.\nI'll be off investigating some issues with the Powerplant nearby.\nBut, oh, don't you worry about me, I'm quite capable of defending myself.\nAs for yourself, relax as you see fit for the time being. {objective:Relax}\nExplore, catch some Oochamon, do some shopping, get some rest. Our work will only get busier from here.",
+			"remove_on_finish": true,
+			"sprite": 6,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 48.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "go_to_powerplant",
+			"flag_kill": "",
+			"flag_required": "find_lyra",
+			"is_catchable": false,
+			"items": [],
+			"name": "Researcher David",
+			"npc_id": "871780141169457299",
+			"post_combat_dialogue": "You... do know what direction east is, right?\nOh, good, well get going! Who knows what kind of danger the professor could be in!",
+			"pre_combat_dialogue": "Hm...\nHmmm...\nNo, no, I obviously couldn't...\n...\nAh, you haven't seen Professor Lyra yet either?\nLast I heard she was headed to the old Powerplant just east of here.\nPlease check on her, I'm not exactly equipped for battle.\nI'll message the guard so he knows to let you through. {objective:Travel East to find Professor Lyra at the Powerplant}",
+			"remove_on_finish": false,
+			"sprite": 5,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_005",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 47.0,
+			"y": 50.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "go_to_powerplant",
+			"is_catchable": false,
+			"items": [],
+			"name": "Guard Bob",
+			"npc_id": "396447901277015875",
+			"post_combat_dialogue": "Well, get moving...\nIs what I would say if this weren't the end of this playtest session.\n`This is the end of this part of the playtest. But there's plenty of other stuff to do in the meantime.`",
+			"pre_combat_dialogue": "You've been granted temporary permission to enter the powerplant.\nDo yourself a favor and don't cause any trouble in there.",
+			"remove_on_finish": false,
+			"sprite": 3,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_003",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 55.0,
+			"y": 42.0
 		}
 	],
 	"map_savepoints": [
@@ -4661,9 +4736,9 @@
 			"t02_019",
 			"t02_019",
 			"t02_019",
-			"t02_019",
-			"t02_019",
-			"t02_019",
+			"t02_015",
+			"t02_014",
+			"t00_003",
 			"t02_019",
 			"t02_019",
 			"t02_019",
@@ -5163,6 +5238,13 @@
 			"connect_y": 33.0,
 			"x": 39.0,
 			"y": 35.0
+		},
+		{
+			"connect_map": "old_power_station",
+			"connect_x": 0.0,
+			"connect_y": 0.0,
+			"x": 56.0,
+			"y": 42.0
 		}
 	],
 	"map_weather": []

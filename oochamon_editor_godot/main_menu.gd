@@ -1,6 +1,8 @@
 extends Control
 @onready var fd_path: FileDialog = $FileDialogSetFilePaths
 
+var redownload = false;
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	load_preferences()
@@ -13,9 +15,9 @@ func _ready() -> void:
 		
 		#Load Event Data
 		var path = Global.DataPath.split("Maps")[0] + "global_events.json"
-		print(path)
+		#print(path)
 		var f = FileAccess.open(path, FileAccess.READ)
-		print(f)
+		#print(f)
 		var _text = f.get_as_text(true)
 		Global.DataEvents = JSON.parse_string(_text)
 
