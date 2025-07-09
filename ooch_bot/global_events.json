@@ -1,4 +1,5 @@
 {
+	"ev_": [],
 	"ev_corrupt_fungal_defeat": [
 		[
 			0.0,
@@ -264,7 +265,7 @@
 	],
 	"ev_disk_placed": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*The Data Disk clicks as you insert it into the old machine*",
 				"dialogue_portrait": "",
@@ -277,13 +278,13 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "disk_place_sprite"
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Finally we can get outta here!",
 				"dialogue_portrait": "portrait_rival",
@@ -296,7 +297,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Catch ya topside, I'm tired of this cave!",
 				"dialogue_portrait": "portrait_rival",
@@ -309,19 +310,19 @@
 			}
 		],
 		[
-			5,
+			5.0,
 			{
 				"text": "Use your Map to teleport to the Hub, then meet with Professor Lyra"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "teleport_enable "
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_disk_placed"
 			}
@@ -1093,6 +1094,248 @@
 				"map_to": "access_tunnel",
 				"x_to": 40.0,
 				"y_to": 27.0
+			}
+		]
+	],
+	"ev_seer_battle": [
+		[
+			0.0,
+			{
+				"description": "You've reached the highest peak...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister Aira"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And the depest depths...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister  Laurel"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And you've returned to see us...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister Anna"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And now, we fight as one!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sisters"
+			}
+		],
+		[
+			11.0,
+			{
+
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Seer Sister Aira",
+				"sprite": 4.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_004",
+				"team": [
+					{
+						"ability": 34.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 0.0,
+						"id": 41.0,
+						"item": -1.0,
+						"level": 30.0,
+						"moveset": [
+							8.0,
+							54.0,
+							14.0,
+							1.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 2.0
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Seer Sister  Laurel",
+				"sprite": 4.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_004",
+				"team": [
+					{
+						"ability": 0.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 0.0,
+						"id": 43.0,
+						"item": -1.0,
+						"level": 30.0,
+						"moveset": [
+							16.0,
+							24.0,
+							30.0,
+							1.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 2.0
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Seer Sister Anna",
+				"sprite": 4.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_004",
+				"team": [
+					{
+						"ability": 0.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 0.0,
+						"id": 42.0,
+						"item": -1.0,
+						"level": 30.0,
+						"moveset": [
+							78.0,
+							77.0,
+							29.0,
+							9.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 2.0
+			}
+		],
+		[
+			12.0,
+			{
+
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And together...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister Aira"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "We have...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister Laurel"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Been defeated...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sister Anna"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "You have proven yourself worthy.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sisters"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Go forth, and challenge the master of Thunder Peak.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Seer Sisters"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "seer_sisters_defeated"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_seer_battle"
 			}
 		]
 	],

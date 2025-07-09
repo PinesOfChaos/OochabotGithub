@@ -17,6 +17,15 @@
 			"width": 0.0,
 			"x": 32.0,
 			"y": 60.0
+		},
+		{
+			"event_name": "ev_seer_battle",
+			"flag_kill": "seer_sisters_defeated",
+			"flag_required": "",
+			"height": 0.0,
+			"width": 2.0,
+			"x": 18.0,
+			"y": 23.0
 		}
 	],
 	"map_info": {
@@ -78,10 +87,10 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Ball Lightning",
 			"npc_id": "261449185099677484",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"post_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
+			"pre_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
 			"remove_on_finish": false,
 			"sprite": 24.0,
 			"sprite_combat": "",
@@ -103,10 +112,10 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Ball Lightning",
 			"npc_id": "223172547729335512",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"post_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
+			"pre_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
 			"remove_on_finish": false,
 			"sprite": 25.0,
 			"sprite_combat": "",
@@ -128,10 +137,10 @@
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Ball Lightning",
 			"npc_id": "384085560778415820",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"post_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
+			"pre_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
 			"remove_on_finish": false,
 			"sprite": 26.0,
 			"sprite_combat": "",
@@ -190,6 +199,10 @@
 				{
 					"count": 2.0,
 					"id": 17.0
+				},
+				{
+					"count": 5.0,
+					"id": 5
 				}
 			],
 			"name": "Chest",
@@ -238,7 +251,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "seer_sisters_defeated",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -256,14 +269,14 @@
 			],
 			"team": [],
 			"x": 19.0,
-			"y": 24.0
+			"y": 23.0
 		},
 		{
 			"aggro_range": 3.0,
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "seer_sisters_defeated",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -288,7 +301,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "seer_sisters_defeated",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -397,12 +410,12 @@
 					"hp_iv": 8.0,
 					"id": 48.0,
 					"item": -1.0,
-					"level": 15.0,
+					"level": 28.0,
 					"moveset": [
-						70.0,
-						23.0,
-						34.0,
-						38.0
+						1,
+						70,
+						18,
+						38
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -415,12 +428,12 @@
 					"hp_iv": 4.0,
 					"id": 70.0,
 					"item": -1.0,
-					"level": 19.0,
+					"level": 29.0,
 					"moveset": [
-						111.0,
-						100.0,
-						18.0,
-						78.0
+						111,
+						51,
+						18,
+						24
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -438,54 +451,25 @@
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
-			"items": [],
+			"items": [
+				{
+					"count": 1.0,
+					"id": 29
+				}
+			],
 			"name": "Explorer Dave",
 			"npc_id": "948894447417228507",
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Have you noticed it too?\nThose weird balls of electricity seem to disappear when the Seer Sisters walk by them?\nMe? I just managed to sneak in!\nNot that I think you'll need it, but here's a map of what I've found so far...",
-			"remove_on_finish": false,
-			"sprite": 39,
+			"remove_on_finish": true,
+			"sprite": 39.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_039",
 			"stance_list": [
 				0.0
 			],
-			"team": [
-				{
-					"ability": 0.0,
-					"atk_iv": 0.0,
-					"def_iv": 0.0,
-					"hp_iv": 0.0,
-					"id": 0.0,
-					"item": -1.0,
-					"level": 20.0,
-					"moveset": [
-						1.0,
-						45.0,
-						6.0,
-						10.0
-					],
-					"nickname": "",
-					"slot_enabled": true,
-					"spd_iv": 0.0
-				},
-				{
-					"ability": 0.0,
-					"atk_iv": 0.0,
-					"def_iv": 0.0,
-					"hp_iv": 0.0,
-					"id": 14.0,
-					"item": -1.0,
-					"level": 50.0,
-					"moveset": [
-						0.0
-					],
-					"nickname": "",
-					"slot_enabled": true,
-					"spd_iv": 0.0
-				}
-			],
+			"team": [],
 			"x": 24.0,
 			"y": 11.0
 		},
@@ -563,29 +547,135 @@
 			"y": 28.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "ooch_id_42",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Ball Lightning",
 			"npc_id": "135712556903051772",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"post_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
+			"pre_combat_dialogue": "*a seemingly impassible ball of lighting blocks your way*",
 			"remove_on_finish": false,
-			"sprite": 25,
+			"sprite": 25.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_025",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 30.0,
 			"y": 17.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": true,
+			"items": [],
+			"name": "Chemerai",
+			"npc_id": "135905178290712928",
+			"post_combat_dialogue": "*vvvvvvrow*",
+			"pre_combat_dialogue": "*vvvvvvtang*",
+			"remove_on_finish": true,
+			"sprite": 50,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_050",
+			"stance_list": [
+				0
+			],
+			"team": [
+				{
+					"ability": 58,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 98.0,
+					"item": -1,
+					"level": 35.0,
+					"moveset": [
+						74,
+						46,
+						21,
+						66
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				}
+			],
+			"x": 19.0,
+			"y": 18.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Crew Chadwick",
+			"npc_id": "197972665090996187",
+			"post_combat_dialogue": "Oh, right guess I could just climb down. See ya.",
+			"pre_combat_dialogue": "Well, looks like I'm stuck, guess I've got some time to battle.",
+			"remove_on_finish": true,
+			"sprite": 14,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_014",
+			"stance_list": [
+				0
+			],
+			"team": [
+				{
+					"ability": 85,
+					"atk_iv": 5.0,
+					"def_iv": 9.0,
+					"hp_iv": 3.0,
+					"id": 101.0,
+					"item": -1,
+					"level": 30.0,
+					"moveset": [
+						120,
+						114,
+						56,
+						30
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 3.0
+				},
+				{
+					"ability": 1,
+					"atk_iv": 8.0,
+					"def_iv": 7.0,
+					"hp_iv": 5.0,
+					"id": 111.0,
+					"item": -1,
+					"level": 30.0,
+					"moveset": [
+						84,
+						118,
+						53,
+						45
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 1.0
+				}
+			],
+			"x": 4.0,
+			"y": 22.0
 		}
 	],
 	"map_savepoints": [
@@ -636,7 +726,7 @@
 			"y": 33.0
 		},
 		{
-			"height": 2.0,
+			"height": 8.0,
 			"spawn_slots": [
 				{
 					"max_level": 19.0,
@@ -664,32 +754,60 @@
 					"ooch_id": 25.0
 				}
 			],
-			"width": 2.0,
-			"x": 48.0,
-			"y": 28.0
-		},
-		{
-			"height": 3.0,
-			"spawn_slots": [
-				{
-					"max_level": 19.0,
-					"min_level": 18.0,
-					"ooch_id": 72
-				},
-				{
-					"max_level": 20.0,
-					"min_level": 18.0,
-					"ooch_id": 21
-				},
-				{
-					"max_level": 20.0,
-					"min_level": 18.0,
-					"ooch_id": 103
-				}
-			],
-			"width": 3.0,
+			"width": 16.0,
 			"x": 34.0,
 			"y": 22.0
+		},
+		{
+			"height": 15.0,
+			"spawn_slots": [
+				{
+					"max_level": 27.0,
+					"min_level": 24.0,
+					"ooch_id": 72.0
+				},
+				{
+					"max_level": 28.0,
+					"min_level": 24.0,
+					"ooch_id": 21.0
+				},
+				{
+					"max_level": 29.0,
+					"min_level": 25.0,
+					"ooch_id": 103.0
+				},
+				{
+					"max_level": 31.0,
+					"min_level": 30.0,
+					"ooch_id": 106.0
+				}
+			],
+			"width": 21.0,
+			"x": 2.0,
+			"y": 22.0
+		},
+		{
+			"height": 10.0,
+			"spawn_slots": [
+				{
+					"max_level": 25.0,
+					"min_level": 23.0,
+					"ooch_id": 24.0
+				},
+				{
+					"max_level": 27.0,
+					"min_level": 23.0,
+					"ooch_id": 85.0
+				},
+				{
+					"max_level": 26.0,
+					"min_level": 23.0,
+					"ooch_id": 72.0
+				}
+			],
+			"width": 19.0,
+			"x": 10.0,
+			"y": 6.0
 		}
 	],
 	"map_tiles": [
