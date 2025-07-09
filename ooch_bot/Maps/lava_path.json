@@ -5592,7 +5592,7 @@
 			"y": 56.0
 		},
 		{
-			"connect_map": "everchange_cave",
+			"connect_map": "everchange_cave_-_floor_1",
 			"connect_x": -1.0,
 			"connect_y": -1.0,
 			"x": 3.0,

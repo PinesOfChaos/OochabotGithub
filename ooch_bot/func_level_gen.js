@@ -3,6 +3,7 @@ const { OochType, GenmapTheme, Weather, BattleAi, StanceForms } = require("./typ
 const { create_ooch, setup_playspace_str } = require('./func_play.js');
 const db = require("./db.js")
 const fs = require('fs');
+const { start } = require('repl');
 
 
 
@@ -10,8 +11,22 @@ let functions = {
 
     genmap_allmaps : async function(client){
         
-        let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
+        let everchange_cave_themes = [];
+        for(let i = 0; i < 2; i++){
+            everchange_cave_themes.push(_.sample([
+                GenmapTheme.ObsidianPath,
+                GenmapTheme.FungalCave,
+                GenmapTheme.Powerplant
+            ]))
+        }
+        functions.genmap_dungeon("Everchange Cave", 48, 64, everchange_cave_themes, 22, 30, 'lava_path', 3, 52)
 
+        
+        console.log('Generated daily maps.');
+
+        /*
+
+        let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
         //Everchange Cave (daily)
         let level_name = "Everchange Cave";
         let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
@@ -42,7 +57,77 @@ let functions = {
                 }
             }
         }
-        console.log('Generated daily maps.');
+            */
+    },
+
+    genmap_dungeon : function(area_name, start_size, end_size, themes_array = [], level_min, level_max, exit_map, exit_x, exit_y){
+        let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
+        console.log(`Generating Dungeon: ${area_name}`)
+
+        for(let i = 0; i < themes_array.length; i++){
+            let level_name = `${area_name} - Floor ${i+1}`;
+            if(themes_array.length == 1) { level_name = area_name}
+            let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
+            let level_filename = './Maps/' + level_lowername + '.json'
+            
+            //
+            let em = `${area_name} - Floor ${i+2}`.toLowerCase().replaceAll(' ', '_')
+            let ex = -1;
+            let ey = -1;
+            if(i == themes_array.length - 1){
+                em = exit_map;
+                ex = exit_x;
+                ey = exit_y;
+            }
+
+            //The deeper in the dungeon we go, the closer the more it steps from start size to end size
+            let size = start_size;
+            if(themes_array.length > 1){
+                let alpha = i / (themes_array.length - 1);
+                size = _.round(start_size + (alpha * (end_size - start_size)));
+            }
+
+            let lv_min = level_min;
+            let lv_max = level_max;
+            if(themes_array.length > 1){
+                let alpha1 = (i) / (themes_array.length);
+                let alpha2 = (i + 1) / (themes_array.length);
+                lv_min = _.round(level_min + (alpha1 * (level_max - level_min)));
+                lv_max = _.round(level_min + (alpha2 * (level_max - level_min)));
+            }
+
+            
+
+            
+            let new_level = functions.genmap_new(level_name, size, size, functions.genmap_theme(themes_array[i]), lv_min, lv_max, em, ex, ey);
+            fs.writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
+            db.maps.set(level_lowername, new_level);
+            kickout_list.push(level_lowername);
+
+            console.log(`Generated: ${level_name}`)
+        }
+        
+        //Kick players back to their last checkpoint if they're in one of the generated levels
+        for (let key of db.profile.keyArray()) { 
+            let profile = db.profile.get(key);
+            let loc_data = profile.location_data;
+
+            for(let level of kickout_list){
+                if(loc_data.area == level){
+                    let checkpoint = profile.checkpoint_data;
+                    db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
+                    let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + setup_playspace_str(key);
+                    let thread = client.channels.cache.get(profile.play_thread_id);
+                    let msg_to_edit = db.profile.get(key, 'display_msg_id');
+
+                    if (thread != undefined && thread != false) {
+                        await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
+                            await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                        }).catch(() => {});
+                    }
+                }
+            }
+        }
     },
 
     /**
@@ -84,6 +169,23 @@ let functions = {
 
                     weather_options : [Weather.None, Weather.Heatwave],
                     battle_bg : "battle_bg_lava_fields"
+                })
+            break;
+            case GenmapTheme.Powerplant: //Powerplant
+                return({
+                    tile_floor : ["t06_000", "t06_000", "t06_000", "t06_000", "t06_000", "t06_008"],
+                    tile_wall : ["t00_000"],
+                    tile_edge : ["t06_010", "t06_010", "t06_010", "t06_010", "t06_010", "t06_010", "t06_010", "t06_010", "t06_012", "t06_011"],
+                    tile_decor : ["t06_026", "t06_030", "t06_031", "t06_032", "t06_001"],
+                    tile_grass : ["t06_007"],
+
+                    types_primary : [OochType.Tech],
+                    types_secondary : [OochType.Cloth, OochType.Stone],
+
+                    map_naturalness : 0.1,
+
+                    weather_options : [],
+                    battle_bg : "battle_bg_powerstation"
                 })
             break;
         }

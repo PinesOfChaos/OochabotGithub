@@ -7,6 +7,7 @@ const { type_to_string } = require('../func_battle.js');
 const { get_emote_string } = require('../func_other.js');
 const { refresh_global_variables } = require('../func_global_data.js');
 const { modernize_all } = require('../func_modernize.js');
+const { genmap_allmaps } = require('../func_level_gen.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -4003,6 +4004,12 @@ module.exports = {
         //Comment/Uncomment this as needed
         //console.log(move_info);
 
+        //#endregion
+
+        //#region Generated Maps
+        if(true){
+            genmap_allmaps()
+        }
         //#endregion
 
         //#region Create Maps
