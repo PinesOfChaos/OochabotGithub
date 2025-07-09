@@ -66,10 +66,17 @@ let confirm_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
     );
 
-let oochabox_button = new ActionRowBuilder()
+let confirm_buttons_tp = new ActionRowBuilder()
     .addComponents(
+        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Set Checkpoint').setEmoji('🏳️').setStyle(ButtonStyle.Success),
+    ).addComponents(
         new ButtonBuilder().setCustomId('box_oochabox').setLabel('Oochabox').setEmoji('🎒').setStyle(ButtonStyle.Primary),
+    ).addComponents(
+        new ButtonBuilder().setCustomId('back').setLabel('Exit').setStyle(ButtonStyle.Danger)
     )
+
+let teleport_menu = new ActionRowBuilder();    
+let savepoint_options = [confirm_buttons_tp]
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
@@ -340,8 +347,31 @@ functions = {
                         moveDisable = true;
                         let page_num = 0;
                         let pages = 9;
+                        let savepoint_options = [confirm_buttons_tp];
 
-                        thread.send({ content: `Would you like to heal your Oochamon and set a checkpoint here?\n*You can access your box here as well.*`, components: [confirm_buttons, oochabox_button] }).then(async msg => {
+                        // Setup teleport menu
+                        if (profile_data.areas_visited.length > 0 && db.profile.get(user_id, 'flags').includes('teleport_enable')) {
+                            teleport_menu = new ActionRowBuilder();
+                            let teleport_select_options = profile_data.areas_visited.map(name => 
+                                {
+                                    let map_data = db.maps.get(name);
+                                    return { 
+                                        label: `${map_data.map_info.map_name}`,
+                                        value: `${name}`
+                                    }
+                                });
+
+                            teleport_menu.addComponents(
+                                new StringSelectMenuBuilder()
+                                    .setCustomId('teleport_menu')
+                                    .setPlaceholder(`Teleport To Visited Area`)
+                                    .addOptions(teleport_select_options),
+                            );
+                            
+                            savepoint_options.push(teleport_menu);
+                        }
+
+                        thread.send({ content: `\n## Checkpoint`, components: savepoint_options }).then(async msg => {
                             db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                             confirm_collector = msg.createMessageComponentCollector();
 
@@ -360,9 +390,48 @@ functions = {
                                 else if (selected.customId.includes('box')) {
                                     functions.box_collector_event(user_id, selected, page_num, profile_data)
                                 } 
+
+                                else if (selected.customId.includes('teleport_menu')) {
+                                    let biome_from = db.profile.get(user_id, 'location_data.area');
+                                    let biome_to = selected.values[0];
+                                    map_name = biome_to;
+                                    let biome_to_data = db.maps.get(biome_to);
+                                    let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);
+                                    if (biome_to_data.map_savepoints.filter(v => v.is_default !== false).length == 0) {
+                                        map_default = [mapData.map_savepoints[0]];
+                                    }
+
+                                    obj.x = map_default[0].x;
+                                    obj.y = map_default[0].y;
+        
+                                    //remove the player's info from the old biome and add it to the new one
+                                    db.player_positions.set(biome_to, { x: map_default[0].x, y: map_default[0].y }, user_id);
+                                    db.player_positions.delete(biome_from, user_id);
+                                    db.profile.set(user_id, { area: biome_to, x: map_default[0].x, y: map_default[0].y }, 'location_data')
+        
+                                    for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
+                                        db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+                                        db.profile.set(user_id, true, `ooch_party[${i}].alive`);
+                                    }
+        
+                                    db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+                                    let playspace_str = functions.setup_playspace_str(user_id);
+
+                                    profile_data = db.profile.get(user_id);
+
+                                    selected.update({ content: `## Checkpoint\n\n**Warped to ${biome_to_data.map_info.map_name}!**`})
+
+                                    await thread.messages.fetch(msg_to_edit).then((msg) => {
+                                        msg.edit({ content: playspace_str[0] }).catch(() => {});
+                                    });
+                                }
                                 
-                                else if (selected.customId == 'yes') {
+                                else if (selected.customId == 'set_checkpoint') {
                                     db.profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
+                                    if (!db.profile.get(user_id, 'areas_visited').includes(map_name)) {
+                                        db.profile.push(user_id, map_name, 'areas_visited');
+                                    }
+
                                     for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
                                         db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                         db.profile.set(user_id, true, `ooch_party[${i}].alive`);
@@ -1079,7 +1148,30 @@ functions = {
         // Back to save (exit)
         else if (selected.customId == 'box_back_to_save') {
             db.profile.set(user_id, user_profile);
-            selected.update({ content: `Would you like to heal your Oochamon and set a checkpoint here?\n*You can access your box here as well.*`, components: [confirm_buttons, oochabox_button] });
+            let options = [confirm_buttons_tp];
+
+            if (user_profile.areas_visited.length > 0 && user_profile.flags.includes('teleport_enable')) { 
+            teleport_menu = new ActionRowBuilder();
+                let teleport_select_options = user_profile.areas_visited.map(name => 
+                    {
+                        let map_data = db.maps.get(name);
+                        return { 
+                            label: `${map_data.map_info.map_name}`,
+                            value: `${name}`
+                        }
+                    });
+
+                teleport_menu.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('teleport_menu')
+                        .setPlaceholder(`Teleport To Visited Area`)
+                        .addOptions(teleport_select_options),
+                );
+
+                options.push(teleport_menu);
+            }
+
+            selected.update({ content: `## Checkpoint`, components: options });
         } 
 
         // Finalize team for box in pvp
@@ -1176,6 +1268,11 @@ functions = {
             [Item.Prism,            false], //Prism
             [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
             [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
+
+            //Other
+            [Item.Repulsor,         'to_lava_town_begin'], // Repulsor
+            [Item.Teleporter,       'to_lava_town_begin'], // Emergency Teleporter
+
 
             //Status Clear
             [Item.Eyedrops,         'cromet_quest_end'], //Eyedrops

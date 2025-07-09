@@ -3004,7 +3004,7 @@ let functions = {
 
         let damage = Math.round(Math.ceil((.8 * ooch_attacker.level + 2) // Level Adjustment
         * (move_damage + _.random(-5, 5)) // Damage with random damage variance
-        * (ooch_attacker.type.has(move_type) ? 1.35 : 1) //STAB (same type attack bonus)
+        * (ooch_attacker.type.includes(move_type) ? 1.25 : 1) //STAB (same type attack bonus)
 
         * (ooch_attacker.ability == Ability.Gravity ? (turn_count / 100) + 1 : 1)
         * (ooch_attacker.ability == Ability.Hexiply ? ((Math.floor((ooch_attacker.current_hp / ooch_attacker.stats.hp) * 6) * 6) / 100) + 1 : 1)

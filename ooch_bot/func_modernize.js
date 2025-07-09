@@ -143,7 +143,7 @@ m_functions = {
             cur_event_pos : 0,
             cur_battle_id : false,
 
-            areas_visited : [], //TODO
+            areas_visited : ["hub"], //TODO
             notifications : [], //TODO
             stance_list   : [StanceForms.Base], //TODO
 

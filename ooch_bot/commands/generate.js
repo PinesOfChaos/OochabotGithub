@@ -448,6 +448,7 @@ module.exports = {
         create_tile(`c_047`,       Tile.Int,      applicationEmojis ); // Security Boss
         create_tile(`c_048`,       Tile.Int,      applicationEmojis ); // Security Boss
         create_tile(`c_049`,       Tile.Int,      applicationEmojis ); // TP Network Chip
+        create_tile(`c_050`,       Tile.Int,      applicationEmojis ); // Chemerai NPC
 
         create_tile(`c_900`,       Tile.Int,      applicationEmojis ); // BIG Ooze
         create_tile(`c_901`,       Tile.Int,      applicationEmojis ); // Enforcement System Delta
