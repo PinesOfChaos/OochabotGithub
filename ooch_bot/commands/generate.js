@@ -708,6 +708,30 @@ module.exports = {
             description : 'A near perfect sphere crafted from crystals at the planet\'s core. Allows an Oochamon to change its ability.',
             description_short : 'Allows an Oochamon to change its ability.'
         })
+        create_item({
+            id: 42, name: 'Rare Candy', emote: '',
+            category : 'other_inv', type: 'level_up', price: -1, potency: 1,
+            description : 'Levels up an Oochamon',
+            description_short : 'Levels up an Oochamon'
+        })
+        create_item({
+            id: 43, name: 'Candy Bit S', emote: '',
+            category : 'other_inv', type: 'give_exp', price: -1, potency: 500,
+            description : 'Gives a small amount of EXP to an Oochamon',
+            description_short : 'Gives a small amount of EXP to an Oochamon'
+        })
+        create_item({
+            id: 44, name: 'Candy Bit M', emote: '',
+            category : 'other_inv', type: 'give_exp', price: -1, potency: 5000,
+            description : 'Gives a medium amount of EXP to an Oochamon',
+            description_short : 'Gives a medium amount of EXP to an Oochamon'
+        })
+        create_item({
+            id: 45, name: 'Candy Bit L', emote: '',
+            category : 'other_inv', type: 'give_exp', price: -1, potency: 50000,
+            description : 'Gives a large amount of EXP to an Oochamon',
+            description_short : 'Gives a large amount of EXP to an Oochamon'
+        })
 
         //#endregion
 

@@ -2769,7 +2769,21 @@ let functions = {
             return return_string == false ? ooch : return_string;
         } else if (item_data.type == 'repel') {
             db.profile.set(user_id, item_data.potency, 'repel_steps'); 
-        } 
+        } else if (item_data.type == 'level_up') {
+            ooch = functions.level_up(ooch);
+            return ooch; // [ooch, output_text]
+        } else if (item_data.type == 'give_exp') {
+            ooch.current_exp += Math.round(item_data.potency);
+            let output = [ooch, `${ooch.emote} **${ooch.nickname}** gained ${item_data.potency} exp!`];
+            
+            // Check for level ups
+            if (ooch.current_exp >= ooch.next_lvl_exp) { // If we can level up
+                ooch = functions.level_up(ooch);
+                output = ooch;
+            }
+
+            return ooch;
+        }
         
     },
 
