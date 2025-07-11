@@ -418,8 +418,12 @@ const Item = {
     SporeFeather: 20,
     Lavaboard: 21,
     Repulsor: 22,
-    Teleporter: 23
+    Teleporter: 23,
 
+    EssenceMonolith: 42,
+    EssenceFragment: 43,
+    EssenceShard: 44,
+    EssenceChunk: 45
 }
 
 const ItemType = {

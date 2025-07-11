@@ -8,7 +8,7 @@
 	"map_npcs": [
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "to_lava_town_begin",
@@ -34,7 +34,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 212.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -95,7 +95,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -139,7 +139,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "spawn_nice1",
 			"flag_kill": "spawn_nice1",
@@ -164,7 +164,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "talk_nice1",
 			"flag_kill": "",
@@ -194,7 +194,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 400.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -255,7 +255,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -265,6 +265,10 @@
 				{
 					"count": 2.0,
 					"id": 0.0
+				},
+				{
+					"count": 2.0,
+					"id": 43
 				}
 			],
 			"name": "Chest",
@@ -285,7 +289,7 @@
 		},
 		{
 			"aggro_range": 3.0,
-			"battle_ai": 0,
+			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "read_a_sign",
 			"flag_kill": "",

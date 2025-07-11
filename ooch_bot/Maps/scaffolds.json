@@ -360,6 +360,66 @@
 			"team": [],
 			"x": 11.0,
 			"y": 9.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 42
+				}
+			],
+			"name": "Chest",
+			"npc_id": "874884337752932280",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 16.0,
+			"y": 30.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "ev_scaffolds_4",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 33
+				}
+			],
+			"name": "Chest",
+			"npc_id": "925117549801506621",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 40.0,
+			"y": 33.0
 		}
 	],
 	"map_savepoints": [

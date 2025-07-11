@@ -443,7 +443,11 @@ let functions = {
                 {count : 1, id : 18}, //blue boostgem
                 {count : 1, id : 19}, //yellow boostgem
                 {count : 1, id : 22}, //repulsor
-                {count : 1, id : 23}, //emergency teleporter  
+                {count : 1, id : 23}, //emergency teleporter
+                {count : 2, id : 43}, //essence fragment
+                {count : 2, id : 44}, //essence shard
+                {count : 1, id : 44}, //essence shard
+                
             ])
         }
         if(chest_level > 20){
@@ -459,7 +463,9 @@ let functions = {
                 {count : 2, id : 13}, //debug chip
                 {count : 2, id : 14}, //cooling balm
                 {count : 2, id : 15}, //nullifying sphere
-                {count : 2, id : 23}, //emergency teleporter  
+                {count : 2, id : 23}, //emergency teleporter
+                {count : 5, id : 44}, //essence shard
+                
             ])
         }
         if(chest_level >= 30){
@@ -473,6 +479,9 @@ let functions = {
                 {count : 2, id : 17}, //red boostgem
                 {count : 2, id : 18}, //blue boostgem
                 {count : 2, id : 19}, //yellow boostgem
+                {count : 1, id : 45}, //essence chunk
+                {count : 1, id : 42}, //essence monolith
+                
             ])
         }
         if(chest_level >= 40){
@@ -481,6 +490,8 @@ let functions = {
                 {count : 5, id :  5}, //grand prism
                 {count : 1, id :  6}, //perfect prism
                 {count : 1, id :  7}, //attack crystal
+                {count : 2, id : 42}, //essence monolith
+                {count : 2, id : 45}, //essence chunk
             ])
         }
 

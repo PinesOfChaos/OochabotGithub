@@ -202,7 +202,7 @@
 				},
 				{
 					"count": 5.0,
-					"id": 5
+					"id": 5.0
 				}
 			],
 			"name": "Chest",
@@ -412,10 +412,10 @@
 					"item": -1.0,
 					"level": 28.0,
 					"moveset": [
-						1,
-						70,
-						18,
-						38
+						1.0,
+						70.0,
+						18.0,
+						38.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -430,10 +430,10 @@
 					"item": -1.0,
 					"level": 29.0,
 					"moveset": [
-						111,
-						51,
-						18,
-						24
+						111.0,
+						51.0,
+						18.0,
+						24.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -454,7 +454,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 29
+					"id": 29.0
 				}
 			],
 			"name": "Explorer Dave",
@@ -572,9 +572,9 @@
 			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -585,27 +585,27 @@
 			"post_combat_dialogue": "*vvvvvvrow*",
 			"pre_combat_dialogue": "*vvvvvvtang*",
 			"remove_on_finish": true,
-			"sprite": 50,
+			"sprite": 50.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_050",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
-					"ability": 58,
+					"ability": 58.0,
 					"atk_iv": 5.0,
 					"def_iv": 5.0,
 					"hp_iv": 5.0,
 					"id": 98.0,
-					"item": -1,
+					"item": -1.0,
 					"level": 35.0,
 					"moveset": [
-						74,
-						46,
-						21,
-						66
+						74.0,
+						46.0,
+						21.0,
+						66.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -616,9 +616,9 @@
 			"y": 18.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -629,45 +629,45 @@
 			"post_combat_dialogue": "Oh, right guess I could just climb down. See ya.",
 			"pre_combat_dialogue": "Well, looks like I'm stuck, guess I've got some time to battle.",
 			"remove_on_finish": true,
-			"sprite": 14,
+			"sprite": 14.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_014",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
-					"ability": 85,
+					"ability": 85.0,
 					"atk_iv": 5.0,
 					"def_iv": 9.0,
 					"hp_iv": 3.0,
 					"id": 101.0,
-					"item": -1,
+					"item": -1.0,
 					"level": 30.0,
 					"moveset": [
-						120,
-						114,
-						56,
-						30
+						120.0,
+						114.0,
+						56.0,
+						30.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
 					"spd_iv": 3.0
 				},
 				{
-					"ability": 1,
+					"ability": 1.0,
 					"atk_iv": 8.0,
 					"def_iv": 7.0,
 					"hp_iv": 5.0,
 					"id": 111.0,
-					"item": -1,
+					"item": -1.0,
 					"level": 30.0,
 					"moveset": [
-						84,
-						118,
-						53,
-						45
+						84.0,
+						118.0,
+						53.0,
+						45.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -676,6 +676,36 @@
 			],
 			"x": 4.0,
 			"y": 22.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 2.0,
+					"id": 44
+				}
+			],
+			"name": "Chest",
+			"npc_id": "759436117330777348",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 35.0,
+			"y": 18.0
 		}
 	],
 	"map_savepoints": [

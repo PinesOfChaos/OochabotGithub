@@ -710,27 +710,27 @@ module.exports = {
             description_short : 'Allows an Oochamon to change its ability.'
         })
         create_item({
-            id: 42, name: 'Rare Candy', emote: '',
+            id: 42, name: 'Essense Monolith', emote: '<:item_xp_x:1392998087588319273>',
             category : 'other_inv', type: 'level_up', price: -1, potency: 1,
-            description : 'Levels up an Oochamon',
+            description : 'A pitch black monolith of eyes, only visible to those destined peer into the void. Levels up an Oochamon',
             description_short : 'Levels up an Oochamon'
         })
         create_item({
-            id: 43, name: 'Candy Bit S', emote: '',
+            id: 43, name: 'Essense Fragment', emote: '<:item_xp_s:1392998035641991189>',
             category : 'other_inv', type: 'give_exp', price: -1, potency: 500,
-            description : 'Gives a small amount of EXP to an Oochamon',
+            description : 'A sliver of knowledge trapped within an inky void. Gives a small amount of EXP to an Oochamon',
             description_short : 'Gives a small amount of EXP to an Oochamon'
         })
         create_item({
-            id: 44, name: 'Candy Bit M', emote: '',
+            id: 44, name: 'Essense Shard', emote: '<:item_xp_m:1392998053983686917>',
             category : 'other_inv', type: 'give_exp', price: -1, potency: 5000,
-            description : 'Gives a medium amount of EXP to an Oochamon',
+            description : 'A sizeable shard of knowledge. Gives a medium amount of EXP to an Oochamon',
             description_short : 'Gives a medium amount of EXP to an Oochamon'
         })
         create_item({
-            id: 45, name: 'Candy Bit L', emote: '',
+            id: 45, name: 'Essence Chunk', emote: '<:item_xp_l:1392998069095895080>',
             category : 'other_inv', type: 'give_exp', price: -1, potency: 50000,
-            description : 'Gives a large amount of EXP to an Oochamon',
+            description : 'A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon',
             description_short : 'Gives a large amount of EXP to an Oochamon'
         })
 
