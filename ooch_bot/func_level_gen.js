@@ -444,7 +444,7 @@ let functions = {
                 {count : 1, id : 19}, //yellow boostgem
                 {count : 1, id : 22}, //repulsor
                 {count : 1, id : 23}, //emergency teleporter
-                {count : 2, id : 43}, //essence fragment
+                {count : 4, id : 43}, //essence fragment
                 {count : 2, id : 44}, //essence shard
                 {count : 1, id : 44}, //essence shard
                 

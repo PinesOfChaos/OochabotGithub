@@ -140,7 +140,7 @@ let functions = {
         infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
 
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
-            oochadex_check = db.profile.get(user_id, `oochadex[${i}]`);
+            oochadex_check = db.profile.get(user_id, `oochadex[${ooch_data.evo_id}]`);
             if (oochadex_check == undefined) {
                 oochadex_check = { caught: 0 }
             } 
