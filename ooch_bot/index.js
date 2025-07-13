@@ -309,6 +309,20 @@ client.on('interactionCreate', async interaction => {
                     interaction.respond(item_names);
                 }
             break;
+            case 'quick_use':
+                if (db.profile.has(interaction.user.id)) {
+                    let item_ids = Object.entries(db.profile.get(interaction.user.id, 'other_inv'));
+                    item_ids = item_ids.filter(v => v[0] == 22 || v[0] == 23)
+                    item_names = item_ids.map(v => {
+                        let item_data = db.item_data.get(v[0]);
+                        return `${v[0]}:${_.startCase(item_data.name)} (${v[1]}/50 Held)`;
+                    })
+
+                    item_names = item_names.slice(0, 25);
+                    item_names = item_names.map(v => v = { name: v.split(':')[1], value: v.split(':')[0] });
+                    interaction.respond(item_names);
+                }
+            break;
         }
     }
 

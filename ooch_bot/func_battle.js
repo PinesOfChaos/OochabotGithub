@@ -1248,7 +1248,7 @@ let functions = {
                         bag_select.addComponents(
                             new StringSelectMenuBuilder()
                                 .setCustomId('prism_item_select')
-                                .setPlaceholder('Select an item in your iventory to use!')
+                                .setPlaceholder('Select an item in your inventory to use!')
                                 .addOptions(prism_select_options),
                         );
 
@@ -1402,7 +1402,6 @@ let functions = {
             if(user.party[user.active_slot].alive == false){ continue; }
 
             text = ``;
-
             
             //Perform the action for the turn
             let turn_data = await functions.action_process(battle_data, action);
@@ -1516,9 +1515,6 @@ let functions = {
                                 slot_info.this_turn_vanished = true;
                                 ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
                             }
-                            
-                            
-
 
                         break;
                         case Status.Revealed:
@@ -2769,6 +2765,24 @@ let functions = {
             return return_string == false ? ooch : return_string;
         } else if (item_data.type == 'repel') {
             db.profile.set(user_id, item_data.potency, 'repel_steps'); 
+        } else if (item_data.type == 'teleport') {
+            let biome_from = db.profile.get(user_id, 'location_data.area');
+            let checkpoint = db.profile.get(user_id, 'checkpoint_data');
+            let biome_to = checkpoint.area;
+
+            //remove the player's info from the old biome and add it to the new one
+            db.player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, user_id);
+            db.player_positions.delete(biome_from, user_id);
+            db.profile.set(user_id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
+
+            for (let i = 0; i < db.profile.get(user_id, 'ooch_party').length; i++) {
+                db.profile.set(user_id, db.profile.get(user_id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+                db.profile.set(user_id, true, `ooch_party[${i}].alive`);
+            }
+
+            db.profile.set(user_id, PlayerState.Playspace, 'player_state');
+            return;
+
         } else if (item_data.type == 'level_up') {
             ooch = functions.level_up(ooch);
             return ooch; // [ooch, output_text]
@@ -3877,7 +3891,7 @@ let functions = {
                 avg_y += ooch_y;
                 avg_num++;
                 
-                if(user.battle_sprite != false && user.draw_trainer_sprite){ //User Sprite
+                if(user.battle_sprite != false && user.draw_trainer_sprite && user.is_catchable == false){ //User Sprite
                     let user_sprite = {
                         x : user_x + team_step,
                         y : user_y,

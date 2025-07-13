@@ -907,21 +907,7 @@ module.exports = {
                             await item_use(interaction.user.id, selected_ooch, selected);
                         break;
                         case 'teleport':
-                            let biome_from = db.profile.get(interaction.user.id, 'location_data.area');
-                            let checkpoint = db.profile.get(interaction.user.id, 'checkpoint_data');
-                            let biome_to = checkpoint.area;
-
-                            //remove the player's info from the old biome and add it to the new one
-                            db.player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, interaction.user.id);
-                            db.player_positions.delete(biome_from, interaction.user.id);
-                            db.profile.set(interaction.user.id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
-
-                            for (let i = 0; i < db.profile.get(interaction.user.id, 'ooch_party').length; i++) {
-                                db.profile.set(interaction.user.id, db.profile.get(interaction.user.id, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                db.profile.set(interaction.user.id, true, `ooch_party[${i}].alive`);
-                            }
-
-                            db.profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+                            await item_use(interaction.user.id, selected_ooch, selected);
                             let playspace_str = setup_playspace_str(interaction.user.id);
                             await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                                 db.profile.set(interaction.user.id, msg.id, 'display_msg_id');

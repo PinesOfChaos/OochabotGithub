@@ -161,21 +161,25 @@ let functions = {
         }
 
         async function battleGroupEvent() {
+            current_place++;
             battleGroupBattleArr = [];
             let event_mode = event_array[current_place][0];
-            let obj_content;
+            let obj_content  = event_array[current_place][1];
             while (event_mode != EventMode.BattleGroupEnd) {
-                current_place++;
-                event_mode = event_array[current_place][0];
-                obj_content = event_array[current_place][1];
-
                 obj_content.team_id = 1;
                 if (event_mode == EventMode.Battle) {
                     let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
                     let trainerObj = await generate_battle_user(user_type, obj_content);
                     battleGroupBattleArr.push(trainerObj)
+                    console.log(battleGroupBattleArr);
                 }
+
+                current_place++;
+                event_mode = event_array[current_place][0];
+                obj_content = event_array[current_place][1];
             }
+
+            await battleEvent(obj_content, false, battleGroupBattleArr)
         }
 
         async function oochPickEvent(obj_content, initial=false) {
@@ -410,11 +414,7 @@ let functions = {
                 break;
 
                 case EventMode.BattleGroupStart:
-                    battleGroupEvent();
-                break;
-
-                case EventMode.BattleGroupEnd:
-                    battleEvent(obj_content, false, battleGroupBattleArr)
+                    await battleGroupEvent();
                 break;
             }
 
@@ -566,19 +566,15 @@ let functions = {
                     case EventMode.AddAlly:
                     case EventMode.RemoveAlly:
                         allyChangeEvent(obj_content, event_mode);
-                        console.log('test');
                     break;
 
                     case EventMode.BattleGroupStart:
+                        quit = true;
                         battleGroupEvent();
-                    break;
-
-                    case EventMode.BattleGroupEnd:
-                        battleEvent(obj_content, false, battleGroupBattleArr)
                     break;
                 }
 
-                if ([EventMode.Transition, EventMode.Flags, EventMode.Objective, EventMode.AddAlly, EventMode.RemoveAlly, EventMode.BattleGroupStart].includes(event_mode)) {
+                if ([EventMode.Transition, EventMode.Flags, EventMode.Objective, EventMode.AddAlly, EventMode.RemoveAlly].includes(event_mode)) {
                     // If we are at the end of the event_array, quit out entirely
                     if (current_place + 1 == event_array.length) {
                         // Manual event check just to help reset us back for the tutorial
