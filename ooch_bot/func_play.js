@@ -118,6 +118,11 @@ functions = {
         */
         const { generate_wild_battle, setup_battle, level_up, exp_to_next_level, generate_battle_user } = require("./func_battle.js");
 
+        async function update_position(_uid, _map_name, _x, _y, _prev_positions){
+            db.profile.set(_uid, { area: _map_name, x: _x, y: _y }, 'location_data');
+            db.profile.set(_uid, _prev_positions, 'previous_positions')
+        }
+
         let checkPlrState = db.profile.get(user_id, 'player_state')
         if (checkPlrState !== PlayerState.Playspace) {
             return;
@@ -190,8 +195,9 @@ functions = {
 
         //0 path, 1 block, 2 spawn, 3 chest
         let stop_moving = false;
-        
-        for(let i = 0; i < dist; i++){
+        let step = 0;
+        while(step < dist){
+            step++;
             let x_start = playerx;
             let y_start = playery;
             
@@ -231,6 +237,8 @@ functions = {
                             }
 
                             stop_moving = true;
+                            await update_position(user_id, map_name, playerx, playery, previous_positions);
+
                             //moveDisable = true; to do we need to update the buttons *during* the event, this doesn't disable them until after it
                             await event_process(user_id, thread, db.events_data.get(obj.event_name), 0, obj.event_name);
 
@@ -266,6 +274,8 @@ functions = {
                         stop_moving = true;
                         playerx -= xmove;
                         playery -= ymove;
+                        
+                        await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                         let npc_event_obj = await event_from_npc(obj, user_id);
                         //console.log(npc_event_obj);
@@ -292,6 +302,7 @@ functions = {
                                     stop_moving = true;
                                     stop_check = true;
                                     
+                                    await update_position(user_id, map_name, playerx, playery, previous_positions);
                                     let npc_event_obj = await event_from_npc(obj, user_id)
                                     event_process(user_id, thread, npc_event_obj);
                                     break;
@@ -345,6 +356,10 @@ functions = {
                         //prompt the player 
                         stop_moving = true;
                         moveDisable = true;
+
+                        
+                        await update_position(user_id, map_name, playerx, playery, previous_positions);
+
                         let page_num = 0;
                         let pages = 9;
                         let savepoint_options = [confirm_buttons_tp];
@@ -467,6 +482,9 @@ functions = {
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
+
+                    
+                    await update_position(user_id, map_name, playerx, playery, previous_positions);
                     db.profile.set(user_id, PlayerState.Shop, 'player_state');
 
                     let profile_flags = db.profile.get(user_id, 'flags');
@@ -685,7 +703,8 @@ functions = {
 
                             if(x1 && y1 && x2 && y2){
                                 stop_moving = true;
-                                
+                                await update_position(user_id, map_name, playerx, playery, previous_positions);
+
                                 let battle_user_array = []
                                 let mons_to_add = [];
                                 let mon_count = 1 + profile_data.allies_list.length;
@@ -775,12 +794,15 @@ functions = {
             }
 
             //if the player has run into anything that would cause them to stop moving, make them stop
-            if(stop_moving){ break; }
+            if(stop_moving){ 
+                await update_position(user_id, map_name, playerx, playery, previous_positions);
+                break; 
+            }
         }
 
+
         //Update the player's profile with their new x & y positions
-        db.profile.set(user_id, { area: map_name, x: playerx, y: playery }, 'location_data');
-        db.profile.set(user_id, previous_positions, 'previous_positions')
+        await update_position(user_id, map_name, playerx, playery, previous_positions);
 
         // Update player position
         db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);

@@ -1201,7 +1201,7 @@
 				"sprite_id": "c00_004",
 				"team": [
 					{
-						"ability": 0.0,
+						"ability": 34.0,
 						"atk_iv": 0.0,
 						"def_iv": 0.0,
 						"hp_iv": 0.0,
@@ -1234,7 +1234,7 @@
 				"sprite_id": "c00_004",
 				"team": [
 					{
-						"ability": 0.0,
+						"ability": 34.0,
 						"atk_iv": 0.0,
 						"def_iv": 0.0,
 						"hp_iv": 0.0,
