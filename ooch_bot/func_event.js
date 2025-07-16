@@ -236,33 +236,10 @@ let functions = {
                     }
                 }
 
-                let globalShopItems = db.profile.get(user_id, 'global_shop_items');
-
-                // Add global shop items
-                switch(obj_content.text) {
-                    case 'cromet_quest_end':
-                        globalShopItems.push(
-                            9,  //Eyedrops
-                            10, //Shears
-                            11, //Daylily
-                            12, //Antiparasite
-                            13, //Debug Chip
-                            14, //Cooling Balm
-                        )
-                    break;
-                    case 'to_lava_town_begin':
-                        globalShopItems.push(
-                            1, //Med-Potion
-                            4  //Greater Prism
-                        )
-                    break;
-                    case 'obtained_sporefeather':
-                        globalShopItems.push(
-                            20  //Sporefeather
-                        )
-                    break;
+                //Trap the player in the Access Tunnel after Cade battle
+                if(obj_content.text == 'cade_battle_tunnel'){
+                    db.profile.set(user_id, {area: 'access_tunnel', x : 23, y : 22}, 'checkpoint_data')
                 }
-                db.profile.set(user_id, globalShopItems, 'global_shop_items');
 
                 if (!obj_content.text.includes('NPC|')) {
                     let msg_to_edit = db.profile.get(user_id, 'display_msg_id');
