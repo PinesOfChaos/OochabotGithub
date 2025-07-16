@@ -24,7 +24,7 @@ module.exports = {
         }
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+        // if (target != '122568101995872256' && target != '145342159724347393' && target != '156859982778859520' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
 
         let thread = interaction.channel;
 

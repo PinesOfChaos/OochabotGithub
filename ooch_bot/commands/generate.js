@@ -4052,9 +4052,9 @@ module.exports = {
         //#endregion
 
         //#region Generated Maps
-        if(true){
-            genmap_allmaps()
-        }
+        // if(true){
+        //     genmap_allmaps()
+        // }
         //#endregion
 
         //#region Create Maps
