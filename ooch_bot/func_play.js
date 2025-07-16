@@ -128,8 +128,7 @@ functions = {
             return;
         }
 
-        let xmove = 0;
-        let ymove = 0;
+
         let profile_data = await db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
         let profile_arr = db.profile.keyArray();
@@ -177,7 +176,9 @@ functions = {
 
         battle_weather = functions.get_map_weather(map_weather, player_location);
         
-        //set where the player is going to move
+        //set the vector of player movement
+        let xmove = 0;
+        let ymove = 0;
         switch(direction.toLowerCase()){
             case('a'):
                 xmove = -1;
@@ -197,13 +198,17 @@ functions = {
         let stop_moving = false;
         let step = 0;
         while(step < dist){
+            
+            if(stop_moving){ break; }
+
+            //Move the player forward
             step++;
             let x_start = playerx;
             let y_start = playery;
-            
-            if(stop_moving){ break; }
             playerx += xmove;
             playery += ymove;
+
+            //Track Repulsor steps remaining
             if (profile_data.repel_steps != 0) {
                 db.profile.math(user_id, '-', 1, 'repel_steps');
                 profile_data.repel_steps -= 1;
@@ -231,6 +236,7 @@ functions = {
                     if (x1 && y1 && x2 && y2) {
                         if ((obj.flag_required == false || all_flags.includes(obj.flag_required)) && !all_flags.includes(obj.event_name)) {
 
+                            //Push the player back 1 step if they collide with an NPC to trigger this event
                             if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
                                 playerx -= xmove;
                                 playery -= ymove;
@@ -804,8 +810,8 @@ functions = {
         //Update the player's profile with their new x & y positions
         await update_position(user_id, map_name, playerx, playery, previous_positions);
 
-        // Update player position
-        db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
+        // Update player position in the player positions array (don't do this right now)
+        //db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
         let playspace_str = functions.setup_playspace_str(user_id);
         playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
