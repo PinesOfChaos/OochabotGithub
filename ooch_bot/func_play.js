@@ -121,6 +121,8 @@ functions = {
         async function update_position(_uid, _map_name, _x, _y, _prev_positions){
             db.profile.set(_uid, { area: _map_name, x: _x, y: _y }, 'location_data');
             db.profile.set(_uid, _prev_positions, 'previous_positions')
+            profile_data.location_data = { area: _map_name, x: _x, y: _y };
+            profile_data.previous_positions = _prev_positions;
         }
 
         let checkPlrState = db.profile.get(user_id, 'player_state')
@@ -363,7 +365,6 @@ functions = {
                         stop_moving = true;
                         moveDisable = true;
 
-                        
                         await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                         let page_num = 0;
