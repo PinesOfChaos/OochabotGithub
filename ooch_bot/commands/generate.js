@@ -306,9 +306,9 @@ module.exports = {
         create_tile(`t${zTn}_005`,  Tile.Floor,    applicationEmojis ); //Tunnel Door Upper
         create_tile(`t${zTn}_006`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_007`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
-        create_tile(`t${zTn}_008`,  Tile.Floor,    applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_008`,  Tile.Floor,    applicationEmojis ); //Tunnel Entrance Lower
         create_tile(`t${zTn}_009`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
-        create_tile(`t${zTn}_010`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor
+        create_tile(`t${zTn}_010`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_011`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_012`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_013`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
@@ -596,7 +596,7 @@ module.exports = {
             description_short : 'Repels Oochamon for 75 steps.'
         })
         create_item({
-            id : 23, name : 'Emergency Teleporter', emote : '<:item_tp_device:1306488228383031296>',
+            id : 23, name : 'Teleporter', emote : '<:item_tp_device:1306488228383031296>',
             category : 'other_inv', type : 'teleport', price : 1000, potency : 1, 
             description : 'An emergency button that uses unknown systems to relocate the user. It\'s mildly painful to use, but it gets you where you\'re going quick!',
             description_short : 'Brings you to your last used Save Station.'

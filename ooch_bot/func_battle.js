@@ -916,7 +916,7 @@ let functions = {
         // Handle users
         let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
         await battle_data.users.forEach(async (user) => {
-            console.log([user.name, num_catchable])
+            //console.log([user.name, num_catchable])
             if (user.user_type != UserType.Player) {
                 functions.get_ai_action(user, battle_data);
                 user.action_selected = true;
@@ -2849,11 +2849,10 @@ let functions = {
             
             // Check for level ups
             if (ooch.current_exp >= ooch.next_lvl_exp) { // If we can level up
-                ooch = functions.level_up(ooch);
-                output = ooch;
+                output = functions.level_up(ooch);
             }
 
-            return ooch;
+            return output;  // [ooch, output_text]
         }
         
     },
@@ -3163,12 +3162,11 @@ let functions = {
         //Figure out whether we're going first or last for misc values
         let going_first = true;
         let going_last = true;
-        for(let user of battle_data.users){
-            if(user.slot_actions[user.active_slot].this_turn_did_attack){ going_first = false}
-            else { going_last = false}
+        for(let user of battle_data.users) {
+            if (user.user_index == user_index_attacker) continue;
+            if (user.slot_actions[user.active_slot].this_turn_did_attack) going_first = false
+            else going_last = false
         }
-
-        
 
         slot_attacker.this_turn_did_attack = true;
         slot_defender.this_turn_was_attacked = true;
@@ -3206,6 +3204,7 @@ let functions = {
                 first_last_failed_text += `it missed its chance!`
             }
         }
+
         if(move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
             if(going_last){
                 move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))

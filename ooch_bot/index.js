@@ -69,7 +69,7 @@ client.on('ready', async () => {
         let user_profile = db.profile.get(user);
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
+        // if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
 
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
@@ -435,6 +435,7 @@ client.on('messageCreate', async message => {
                 if (message.channel.id == db.profile.get(message.author.id, 'play_thread_id')) {
                     if (message.content == 'b') {
                         await move(message.channel, message.author.id, '', 1, 1);
+                        player_state = db.profile.get(message.author.id, 'player_state');
                         await message.delete().catch(() => {});
                     } else if (speedMatch && db.profile.get(message.author.id, 'settings.discord_move_buttons') === true) {
                         const speedMultiplier = parseInt(speedMatch[1]) - 1;

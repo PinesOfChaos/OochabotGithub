@@ -85,6 +85,11 @@ let wild_encounter_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
     );
 
+let wild_encounter_instakill_btn = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
+    )
+
 let back_button = new ActionRowBuilder()
     .addComponents(
         new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
@@ -722,12 +727,12 @@ functions = {
                                 for(let m = 0; m < mon_count; m++){
                                     let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                     let slot = spawn_zone.spawn_slots[slot_index];
+                                    slot.level = _.random(slot.min_level, slot.max_level);
 
                                     if(_.random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/1,000 battles)
                                         let new_slot = {
                                             ooch_id : -1,
-                                            min_level : slot.min_level,
-                                            max_level : slot.max_level,
+                                            level : _.random(slot.min_level, slot.max_level)
                                         }
                                         slot = new_slot;
                                         mons_to_add = [slot]
@@ -738,12 +743,16 @@ functions = {
                                     }
                                 }
                                 
-                                let mon_level = _.random(mons_to_add[0].min_level, mons_to_add[0].max_level);
+                                let mon_level = mons_to_add[0].level;
                                 let mon_name = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'name');
                                 let mon_emote = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'emote');
+
+                                let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
+                                let encounter_buttons = [wild_encounter_buttons];
+                                // if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
                                 
-                                //use mons_to_add .ooch_id, .min_level, .max_level to setup the encounter
-                                await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: [wild_encounter_buttons]}).then(async msg =>{
+                                //use mons_to_add .ooch_id, .level to setup the encounter
+                                await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
                                     await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                     wild_encounter_collector.on('collect', async sel => {
@@ -763,16 +772,16 @@ functions = {
                                         
                                         //Add additional mons
                                         for(let m = 0; m < mons_to_add.length; m++){
-                                            mon_level = _.random(mons_to_add[m].min_level, mons_to_add[m].max_level);
-                                            oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[m].ooch_id.toString(), ooch_level : mon_level, team_id : 1})
+                                            oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[m].ooch_id.toString(), ooch_level : mons_to_add[m].level, team_id : 1})
                                             battle_user_array.push(oochObj)
                                         }
 
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
-                                        }
-                                        else {
+                                        } else if (sel.customId = 'autofight') {
+                                            // TODO: Add autofight
+                                        } else {
                                             let run_chance = .6;
                                             // If the Oochamon is 10 levels lower or more than our main Oochamon, guarantee run
                                             if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
@@ -922,11 +931,12 @@ functions = {
             let ally = allies_list[i];
             xx = previous_positions[i].x - x_pos + x_center;
             yy = previous_positions[i].y - y_pos + y_center;
-            
-            let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
-            let tile = db.tile_data.get(ally.sprite_id.slice(0, 1) + ally.sprite_id.slice(3));
-            if (tile.use === Tile.Int) npcZoneId = 0;
-            emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
+            if(xx >= 0 && yy >= 0 && xx < x_window_size && yy < y_window_size){
+                let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
+                let tile = db.tile_data.get(ally.sprite_id.slice(0, 1) + ally.sprite_id.slice(3));
+                if (tile.use === Tile.Int) npcZoneId = 0;
+                emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
+            }
         }
 
         //Savepoint tiles

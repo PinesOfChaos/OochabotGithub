@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 const db = require('../db.js');
 const _ = require('lodash');
+const wait = require('wait');
+const { setup_playspace_str } = require('../func_play.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,7 +25,7 @@ module.exports = {
             option.setName('move_y')
                 .setDescription('Y position to move to.')
                 .setRequired(true))
-    .addIntegerOption(option => 
+    .addBooleanOption(option => 
             option.setName('set_checkpoint')
                 .setDescription('Make this the user\'s checkpoint?')
                 .setRequired(true)),
@@ -32,18 +34,26 @@ module.exports = {
         
         let move_user = interaction.options.getUser('move_user');
         let move_map = interaction.options.getString('move_map');
-        let move_x = parseInt(interaction.options.getString('move_x'));
-        let move_y = parseInt(interaction.options.getString('move_y'));
-        let set_checkpoint = parseInt(interaction.options.getString('set_checkpoint'));
+        let move_x = interaction.options.getInteger('move_x');
+        let move_y = interaction.options.getInteger('move_y');
+        let set_checkpoint = interaction.options.getBoolean('set_checkpoint');
 
-        db.profile.set(move_user, {area : move_map, x : move_x, y : move_y}, 'location_data')
+        db.profile.set(move_user.id, {area : move_map, x : move_x, y : move_y}, 'location_data')
         let string_to_send = `Moved user ${move_user} to ${move_map} [x : ${move_x}, y : ${move_y}].`;
 
-        if(set_checkpoint > 0){
-            db.profile.set(move_user, {area : move_map, x : move_x, y : move_y}, 'checkpoint_data')
+        if(set_checkpoint){
+            db.profile.set(move_user.id, {area : move_map, x : move_x, y : move_y}, 'checkpoint_data')
             string_to_send += ` Also set their Checkpoint to this location.`
         }
-        
-        interaction.reply({ content: string_to_send, ephemeral: false });
+    
+        let playspace_str = setup_playspace_str(interaction.user.id);
+        let msg_to_edit = db.profile.get(interaction.user.id, 'display_msg_id');
+        await interaction.channel.messages.fetch(msg_to_edit).then((msg) => {
+            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+        }).catch(() => {});
+
+        let reply_msg = await interaction.reply({ content: string_to_send });
+        await wait(5000);
+        await reply_msg.delete().catch(() => {});
     },
 };

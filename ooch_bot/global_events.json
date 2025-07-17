@@ -1586,6 +1586,12 @@
 			{
 				"text": "slimehead_big_defeated"
 			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_slimehead_big"
+			}
 		]
 	],
 	"ev_test": [

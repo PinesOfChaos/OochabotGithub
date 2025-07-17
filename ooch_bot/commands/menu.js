@@ -433,7 +433,7 @@ module.exports = {
             } 
             // Back to Oochamon View
             else if (selected == 'back_to_ooch') {
-                let dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
+                let dexEmbed = ooch_info_embed(selected_ooch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
                 await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
@@ -562,7 +562,7 @@ module.exports = {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
 
-                dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
+                dexEmbed = ooch_info_embed(selected_ooch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
 
@@ -570,6 +570,7 @@ module.exports = {
             }
             // Set to Primary Button
             else if (selected == 'primary') {
+                ooch_party = db.profile.get(interaction.user.id, 'ooch_party');
                 // Swap the position of the selected ooch and the ooch in position 0.
                 [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
                 db.profile.set(interaction.user.id, ooch_party, 'ooch_party');
@@ -627,7 +628,7 @@ module.exports = {
                 party_extra_buttons.components[1].setDisabled((Object.keys(db.profile.get(interaction.user.id, 'heal_inv')).length == 0) ? true : false);
                 
                 if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
-                let dexEmbed = ooch_info_embed(selected_ooch, user_profile.id);
+                let dexEmbed = ooch_info_embed(selected_ooch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
                 await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
@@ -647,7 +648,7 @@ module.exports = {
                                           (selected_ooch.stats.atk_iv - 1) * 20, 
                                           (selected_ooch.stats.def_iv - 1) * 20, 
                                           (selected_ooch.stats.spd_iv - 1) * 20);
-                let dexEmbed = ooch_info_embed(newEvoOoch, user_profile.id);
+                let dexEmbed = ooch_info_embed(newEvoOoch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
 
@@ -985,12 +986,26 @@ module.exports = {
                         item_usage_text = `Swapped ability from **${db.ability_data.get(currentAbility, 'name')}** to **${db.ability_data.get(newAbility, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
                     break;
                     case 'give_exp':
+                        if (user_profile.ooch_party[selData[0]].level >= 50) {
+                            let keyData = await buildItemData();
+                            bagEmbed.setDescription(keyData[0]);
+                            i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                            return;
+                        }
+
                         let exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
                         
                         user_profile.ooch_party[selData[0]] = exp_given_ooch[0];
                         item_usage_text = exp_given_ooch[1];
                     break;
                     case 'level_up':
+                        if (user_profile.ooch_party[selData[0]].level >= 50) {
+                            let keyData = await buildItemData();
+                            bagEmbed.setDescription(keyData[0]);
+                            i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                            return;
+                        }
+
                         let level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
                         
                         user_profile.ooch_party[selData[0]] = level_ooch[0];
