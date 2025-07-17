@@ -1542,7 +1542,7 @@ module.exports = {
         create_move({
             id : 124, name : 'Asbestos Bomb', type : OochType.Stone,
             damage : 20, accuracy: 100,
-            effect : [{status : Status.Infect, chance : 100, target : MoveTarget.None}],
+            effect : [{status : Status.Infect, chance : 100, target : MoveTarget.Enemy}],
             description : 'A dangerous blast of asbestos that INFECTS the target.',
             self_target : false,
         });

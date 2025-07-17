@@ -727,11 +727,12 @@ functions = {
                                 for(let m = 0; m < mon_count; m++){
                                     let slot_index = Math.floor(_.random(0, spawn_zone.spawn_slots.length - 1));
                                     let slot = spawn_zone.spawn_slots[slot_index];
+                                    slot.id = slot.ooch_id;
                                     slot.level = _.random(slot.min_level, slot.max_level);
 
                                     if(_.random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/1,000 battles)
                                         let new_slot = {
-                                            ooch_id : -1,
+                                            id : -1,
                                             level : _.random(slot.min_level, slot.max_level)
                                         }
                                         slot = new_slot;
@@ -744,14 +745,15 @@ functions = {
                                 }
                                 
                                 let mon_level = mons_to_add[0].level;
-                                let mon_name = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'name');
-                                let mon_emote = db.monster_data.get(mons_to_add[0].ooch_id.toString(), 'emote');
+                                console.log(mons_to_add[0]);
+                                let mon_name = db.monster_data.get(mons_to_add[0].id.toString(), 'name');
+                                let mon_emote = db.monster_data.get(mons_to_add[0].id.toString(), 'emote');
 
                                 let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
                                 let encounter_buttons = [wild_encounter_buttons];
                                 // if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
                                 
-                                //use mons_to_add .ooch_id, .level to setup the encounter
+                                //use mons_to_add .id, .level to setup the encounter
                                 await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
                                     await db.profile.set(user_id, PlayerState.Encounter, 'player_state');
                                     wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
@@ -772,15 +774,13 @@ functions = {
                                         
                                         //Add additional mons
                                         for(let m = 0; m < mons_to_add.length; m++){
-                                            oochObj = await generate_battle_user(UserType.Wild, {ooch_id : mons_to_add[m].ooch_id.toString(), ooch_level : mons_to_add[m].level, team_id : 1})
+                                            oochObj = await generate_battle_user(UserType.Wild, { id : mons_to_add[m].id.toString(), level : mons_to_add[m].level, team_id : 1})
                                             battle_user_array.push(oochObj)
                                         }
 
                                         if (sel.customId == 'fight') {
                                             await msg.delete();
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
-                                        } else if (sel.customId = 'autofight') {
-                                            // TODO: Add autofight
                                         } else {
                                             let run_chance = .6;
                                             // If the Oochamon is 10 levels lower or more than our main Oochamon, guarantee run
@@ -1091,9 +1091,12 @@ functions = {
         spd_iv = (spd_iv/20) + 1;
 
         // Setup ooch_id data
+        console.log(`OOCH ID: ` + ooch_id)
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
         let ability_list = db.monster_data.get(ooch_id, 'abilities');
         if (nickname == false) nickname = db.monster_data.get(ooch_id, 'name');
+        console.log(typeof ability_list)
+        console.log(ability_list)
 
         // Pick a random ability (unless we specify, then force one)
         let rand_ability = ability_list[_.random(0, ability_list.length - 1)]

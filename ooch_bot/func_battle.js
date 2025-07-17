@@ -72,7 +72,8 @@ let functions = {
 
                 }
                 else{
-                    let ooch = create_ooch(options.ooch_id, options.ooch_level);
+                    console.log(options.team);
+                    let ooch = create_ooch(options.id, options.level);
                     party = [ooch];
                     user_info.name = ooch.name
                     user_info.name_possessive = `${ooch.name}'s`
@@ -3242,7 +3243,6 @@ let functions = {
         let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
         let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
         let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
-        let reflect_dmg = 0;
         let defender_field_text = ``;
         let ability_dmg_multiplier = 1;
         let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
@@ -3437,7 +3437,7 @@ let functions = {
                     break;
                     case Ability.Reactive:
                         let prev_hp = attacker.current_hp;
-                        attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp)
+                        attacker.current_hp = _.clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp);
                         let reflect_dmg = prev_hp - attacker.current_hp;
 
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Reactive**:`
