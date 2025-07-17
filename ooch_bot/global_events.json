@@ -692,6 +692,7 @@
 		[
 			1.0,
 			{
+				"battle_ai": 0.0,
 				"coin": 0.0,
 				"is_catchable": false,
 				"name": "Rival Cade",

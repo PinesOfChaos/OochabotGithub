@@ -3,21 +3,21 @@
 	"map_info": {
 		"map_battleback": "battle_bg_ancient_bridge",
 		"map_generated": false,
-		"map_name": ""
+		"map_name": "Ancient Bridge"
 	},
 	"map_npcs": [
 		{
 			"aggro_range": 1.0,
 			"battle_ai": 1.0,
 			"coin": 2000.0,
-			"flag_given": "",
+			"flag_given": "stances_enable",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "CFO Katerina",
 			"npc_id": "850962454651915513",
-			"post_combat_dialogue": "Ah, excellent, you continue to meet expectations.\nHave you, too, begun to wonder why this ancient bridge is here?\nSurely it isn't Oochcorp's doing, it must have been here for centuries, if not millenia!\nI have my theories...\n...\nOh, yes, how rude of me. You have work to be doing.\nContinue to the east of here, you'll find the material you're looking for within a large flower.{objective:Find the large flower to the east of the Ancient Bridge}\nNow, I must be on my way, I have much to prepare for.",
+			"post_combat_dialogue": "Ah, excellent, you continue to meet expectations, you even bested me without access to Stances.\nHere, now you should be able to use Stances as well.\nHave you, too, begun to wonder why this ancient bridge is here?\nSurely it isn't Oochcorp's doing, it must have been here for centuries, if not millenia!\nI have my theories...\n...\nOh, yes, how rude of me. You have work to be doing.\nContinue to the east of here, you'll find the material you're looking for within a large flower.{objective:Find the large flower to the east of the Ancient Bridge}\nNow, I must be on my way, I have much to prepare for.",
 			"pre_combat_dialogue": "My apologies, it appears I never introduced myself when we first met. I am Katerina, Oochcorp's CFO.\nNow, if you don't mind, I believe its time I checked on your progress.",
 			"remove_on_finish": true,
 			"sprite": 16.0,

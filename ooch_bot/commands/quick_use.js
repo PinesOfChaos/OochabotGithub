@@ -31,6 +31,10 @@ module.exports = {
         if (!db.item_data.has(item_id)) return interaction.editReply({ content: 'Invalid item id!', ephemeral: true });
         let item_data = db.item_data.get(item_id);
 
+        if (item_data.type == 'teleport' && db.profile.get(interaction.user.id, 'allies_list').length != 0) {
+          return interaction.editReply({ content: 'You cannot use a teleport right now.', ephemeral: true })
+        }
+
         let item_usage_text = '';
         switch (item_data.type) {
             case 'repel': item_usage_text = `Used a **${item_data.name}**, you will no longer have wild encounters for ${item_data.potency} more steps.`; break;

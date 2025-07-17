@@ -508,7 +508,7 @@
   },
   {
     "id": 42,
-    "name": "Essense Monolith",
+    "name": "Essence Monolith",
     "emote": "<:item_xp_x:1392998087588319273>",
     "category": "other_inv",
     "type": "level_up",
@@ -520,7 +520,7 @@
   },
   {
     "id": 43,
-    "name": "Essense Fragment",
+    "name": "Essence Fragment",
     "emote": "<:item_xp_s:1392998035641991189>",
     "category": "other_inv",
     "type": "give_exp",
@@ -532,7 +532,7 @@
   },
   {
     "id": 44,
-    "name": "Essense Shard",
+    "name": "Essence Shard",
     "emote": "<:item_xp_m:1392998053983686917>",
     "category": "other_inv",
     "type": "give_exp",

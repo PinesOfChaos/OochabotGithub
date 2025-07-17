@@ -130,7 +130,6 @@ functions = {
             return;
         }
 
-
         let profile_data = await db.profile.get(user_id);
         let msg_to_edit = profile_data.display_msg_id;
         let profile_arr = db.profile.keyArray();
@@ -223,6 +222,11 @@ functions = {
             if (encounter_chance === false) {
                 encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
                 if (profile_data.repel_steps != 0) encounter_chance = 0;
+            }
+            
+            // Disable encounters for same tile movement that isn't through the battle keyword
+            if (dist == 1 && encounter_chance === false) {
+                encounter_chance = 0;
             }
 
             //Events
@@ -420,7 +424,7 @@ functions = {
                                     let biome_to_data = db.maps.get(biome_to);
                                     let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);
                                     if (biome_to_data.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-                                        map_default = [mapData.map_savepoints[0]];
+                                        map_default = [biome_to_data.map_savepoints[0]];
                                     }
 
                                     obj.x = map_default[0].x;

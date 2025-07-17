@@ -895,6 +895,13 @@ module.exports = {
                 }
                 let item_data = db.item_data.get(selected);
 
+                if (item_data.type == 'teleport' && db.profile.get(interaction.user.id, 'allies_list').length != 0) {
+                    let keyData = await buildItemData();
+                    bagEmbed.setDescription(keyData[0]);
+                    i.update({ content: `Can\'t use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                    return;
+                } 
+
                 let item_usage_text = '';
                 switch (item_data.type) {
                     case 'repel': item_usage_text = `Used a **${item_data.name}**, you will no longer have wild encounters for ${item_data.potency} more steps.`; break;
@@ -976,6 +983,18 @@ module.exports = {
                         user_profile.ooch_party[selData[0]].ability = newAbility;
                     
                         item_usage_text = `Swapped ability from **${db.ability_data.get(currentAbility, 'name')}** to **${db.ability_data.get(newAbility, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
+                    break;
+                    case 'give_exp':
+                        let exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                        
+                        user_profile.ooch_party[selData[0]] = exp_given_ooch[0];
+                        item_usage_text = exp_given_ooch[1];
+                    break;
+                    case 'level_up':
+                        let level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                        
+                        user_profile.ooch_party[selData[0]] = level_ooch[0];
+                        item_usage_text = level_ooch[1];
                     break;
                 }
 

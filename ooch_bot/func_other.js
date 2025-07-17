@@ -76,7 +76,7 @@ let functions = {
      * @param {String} user_id The user ID who owns the Oochamon
      * @returns The Ooch Embed, as well as the file related to the Oochamon, in an array of the 2.
      */
-    ooch_info_embed: function(ooch, user_id=false) {
+    ooch_info_embed: function(ooch, user_id=false, caught_embed=false) {
         const { type_to_emote } = require('./func_battle');
         const { get_ooch_art } = require('./func_other');
 
@@ -90,6 +90,7 @@ let functions = {
             user_data = db.profile.get(user_id);
         }
 
+        console.log(ooch.next_lvl_exp, ooch.current_exp);
         let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
 
         let infoEmbed = new EmbedBuilder()
@@ -133,12 +134,14 @@ let functions = {
         infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** (${functions.get_iv_stars(iv_hp)})` + 
             `\nATK: **${ooch.stats.atk}** (${functions.get_iv_stars(iv_atk)})\nDEF: **${ooch.stats.def}** (${functions.get_iv_stars(iv_def)})` + 
             `\nSPD: **${ooch.stats.spd}** (${functions.get_iv_stars(iv_spd)})`, inline: true }]);
-        if (ooch.level != 50) {
+        if (ooch.level != 50 && caught_embed == false) {
             infoEmbed.addFields([{ name: `EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):`, value: `${expBar}` }]);
         }
 
-        infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
-
+        if (caught_embed == false) {
+            infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
+        }
+        
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
             oochadex_check = db.profile.get(user_id, `oochadex[${ooch_data.evo_id}]`);
             if (oochadex_check == undefined) {

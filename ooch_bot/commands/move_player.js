@@ -32,9 +32,9 @@ module.exports = {
         
         let move_user = interaction.options.getUser('move_user');
         let move_map = interaction.options.getString('move_map');
-        let move_x = interaction.options.getNumber('move_x');
-        let move_y = interaction.options.getNumber('move_y');
-        let set_checkpoint = interaction.options.getNumber('set_checkpoint');
+        let move_x = parseInt(interaction.options.getString('move_x'));
+        let move_y = parseInt(interaction.options.getString('move_y'));
+        let set_checkpoint = parseInt(interaction.options.getString('set_checkpoint'));
 
         db.profile.set(move_user, {area : move_map, x : move_x, y : move_y}, 'location_data')
         let string_to_send = `Moved user ${move_user} to ${move_map} [x : ${move_x}, y : ${move_y}].`;
@@ -43,7 +43,6 @@ module.exports = {
             db.profile.set(move_user, {area : move_map, x : move_x, y : move_y}, 'checkpoint_data')
             string_to_send += ` Also set their Checkpoint to this location.`
         }
-
         
         interaction.reply({ content: string_to_send, ephemeral: false });
     },

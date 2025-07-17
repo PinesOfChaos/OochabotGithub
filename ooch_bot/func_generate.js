@@ -10,12 +10,14 @@ module.exports = {
      * @param {String} use The use of the tile
      * @param {Collection} emojis The emojis collection to use.
      */
-    create_tile: function(id, use, emojis) {
+    create_tile: function(id, use, emojis, is_GIF = false) {
 
         // This line IDs the ID so I can set the ID
         db.tile_data.set(id, id, 'id');
         db.tile_data.set(id, use, 'use');
         
+        
+
         // Set specific IDs
         if (id.includes('c')) {
             db.tile_data.set(id, false, 'zone_id');
@@ -28,10 +30,11 @@ module.exports = {
         let zoneEmoteIds = {};
         if (id.includes('c')) {
             for (let zoneId of Object.values(Zone)) {
+                let gif_str = is_GIF ? 'a' : '';
                 zoneId = zoneId < 10 ? `0${zoneId}` : zoneId; 
                 let emoji = emojis.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`)
                 if (emoji != undefined) {
-                    zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote: `<:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
+                    zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote: `<${gif_str}:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
                 }
             }
         } else {

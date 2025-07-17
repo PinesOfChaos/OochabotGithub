@@ -260,8 +260,28 @@ let functions = {
         }
 
         // Handle all the text
-        let battleStartText, sendOutText, active_ooch, types_string;
+        let battleStartText, sendOutText, active_ooch, types_string, stancesEnabled = true;
         battleDataObj.battle_msg_counter += 2;
+
+         //Handle switch-in abilities
+        let switch_in_text = '';
+        let switch_in_embed = false;
+        for(let user of battleDataObj.users){
+            switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
+        }
+
+        switch(weather){
+            case Weather.Heatwave: 
+                switch_in_text += '\n☀️ *The extreme heat of the area makes the Oochamon start to sweat...*'
+            break;
+            case Weather.Thunderstorm:
+                switch_in_text += '\n⛈️ *A thunderstorm starts to brew...*'
+            break;
+        }
+
+        if(switch_in_text != ''){
+            switch_in_embed = functions.battle_embed_create(switch_in_text)
+        }
         
         for (let [id, user] of battleDataObj.users.entries()) {
             //Reset text messages per player
@@ -274,6 +294,7 @@ let functions = {
             sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
 
             if (users[id].is_player) {
+                if (!(db.profile.get(user.user_id, 'flags').includes('stances_enable'))) stancesEnabled = false;
                 let my_team_id = users[id].team_id;
                 for (let id2 in users) {
                     //All other players in combat
@@ -318,34 +339,13 @@ let functions = {
                     files: [battle_image]
                 });
                 await wait(battleDataObj.delay);
-                await thread.send({content: '## ------ Battle Start ------', embeds : [functions.battle_embed_create(`${sendOutText}`)]});
 
+                let startBattleEmbeds = [functions.battle_embed_create(`${sendOutText}`)];
+                if (switch_in_embed != false) startBattleEmbeds.push(switch_in_embed);
+                startBattleEmbeds.push(functions.generate_round_start_embed(battleDataObj, stancesEnabled));
+                await thread.send({content: '## ------ Battle Start ------', embeds : startBattleEmbeds});
             }
         }
-
-        //Handle switch-in abilities
-        let switch_in_text = '';
-        for(let user of battleDataObj.users){
-            switch_in_text += functions.use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
-        }
-
-        db.battle_data.set(battleId, battleDataObj);
-
-        switch(weather){
-            case Weather.Heatwave: 
-                switch_in_text += '\n☀️ *The extreme heat of the area makes the Oochamon start to sweat...*'
-            break;
-            case Weather.Thunderstorm:
-                switch_in_text += '\n⛈️ *A thunderstorm starts to brew...*'
-            break;
-        }
-
-        if(switch_in_text != ''){
-            await functions.distribute_messages(battleDataObj, { embeds : [functions.battle_embed_create(switch_in_text)]});
-        }
-
-        //Send the round start message
-        await functions.distribute_messages(battleDataObj, { embeds : [functions.generate_round_start_embed(battleDataObj)]});
 
         db.battle_data.set(battleId, battleDataObj);
 
@@ -571,7 +571,9 @@ let functions = {
             break;
             case UserType.NPCSmart:
             case UserType.NPCTrainer:
-                target_user = _.sample(users_enemy);
+                //move_intentions.filter((move) => move.priority > 1);
+                let users_to_choose = users_enemy.filter((u) => u.defeated == false)
+                target_user = _.sample(users_to_choose);
                 target_mon = target_user.party[target_user.active_slot];
                 move_intentions = functions.get_move_intention(moves, target_mon.type);
 
@@ -767,10 +769,17 @@ let functions = {
             temp_num_to_delete = num_to_delete;
             if(user.is_player){
                 let thread = botClient.channels.cache.get(user.thread_id);
-                do {
-                    await thread.bulkDelete(100);
-                    temp_num_to_delete -= 100;
-                } while (temp_num_to_delete > 0);
+                if (num_to_delete >= 100) {
+                    do {
+                        await thread.bulkDelete(100);
+                        temp_num_to_delete -= 100;
+                    } while (temp_num_to_delete > 0);
+                } else {
+                    do {
+                        await thread.bulkDelete(num_to_delete);
+                        temp_num_to_delete -= num_to_delete;
+                    } while (temp_num_to_delete > 0);
+                }
             }
         }
     },
@@ -826,21 +835,8 @@ let functions = {
                     .setEmoji('🏃‍♂️')
                     .setDisabled(!battle_data.allow_run),
             );
-    
-        const inputRow3 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('info')
-                        .setLabel('Info')
-                        .setEmoji('📒')
-                        .setStyle(ButtonStyle.Secondary),
-                ) .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('shift_stance')
-                        .setLabel('Stance')
-                        .setEmoji('🤺')
-                        .setStyle(ButtonStyle.Secondary)
-                )
+
+        let inputRow3 = new ActionRowBuilder();
                 
         let moveButtons1 = new ActionRowBuilder();
         let moveButtons2 = new ActionRowBuilder();
@@ -946,10 +942,39 @@ let functions = {
                 if (userThread == undefined) return;
 
                 let activeOoch = user.party[user.active_slot];
-                if (activeOoch.stance_cooldown != 0) {
-                    inputRow3.components[1].setDisabled(true);
+                let stancesEnabled = true;
+
+                inputRow3 = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('info')
+                        .setLabel('Info')
+                        .setEmoji('📒')
+                        .setStyle(ButtonStyle.Secondary),
+                ) .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('shift_stance')
+                        .setLabel('Stance')
+                        .setEmoji('🤺')
+                        .setStyle(ButtonStyle.Secondary)
+                )
+
+                if (!(db.profile.get(user.user_id, 'flags').includes('stances_enable'))) {   
+                    stancesEnabled = false;    
+                    inputRow3 = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('info')
+                            .setLabel('View Battle Info')
+                            .setEmoji('📒')
+                            .setStyle(ButtonStyle.Secondary),
+                    )
                 } else {
-                    inputRow3.components[1].setDisabled(false);
+                    if (activeOoch.stance_cooldown != 0) {
+                        inputRow3.components[1].setDisabled(true);
+                    } else {
+                        inputRow3.components[1].setDisabled(false);
+                    }
                 }
 
                 await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
@@ -1012,10 +1037,12 @@ let functions = {
                             )
                         }
 
-                        inputRow3.components[1].setDisabled((activeOoch.stance_cooldown != 0))
+                        if (stancesEnabled) inputRow3.components[1].setDisabled((activeOoch.stance_cooldown != 0))
         
                         // Switch message to be about using the move input
-                        await i.update({ content: `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
+                        let moveSelMsg = `Select a move to use!\n**Current Stance: ${db.stance_data.get(activeOoch.stance, 'name')}**`;
+                        if (!stancesEnabled) moveSelMsg = `Select a move to use!`;
+                        await i.update({ content: moveSelMsg, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
                     } else if (customId.includes('atk_')) {
                         let move_id = customId.replace('atk_', '');
                         let self_target = db.move_data.get(move_id, 'self_target');
@@ -1341,17 +1368,17 @@ let functions = {
                                         `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
                                         `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
         
-                            let moveset_str = ``;
-                            for (let move_id of ooch.moveset) {
-                                let move = await db.move_data.get(move_id);
-                                move.accuracy = Math.abs(move.accuracy);
-                                if (move.damage !== 0) {
-                                    moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                                } else {
-                                    moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                                }
-                            }
-                            infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
+                            // let moveset_str = ``;
+                            // for (let move_id of ooch.moveset) {
+                            //     let move = await db.move_data.get(move_id);
+                            //     move.accuracy = Math.abs(move.accuracy);
+                            //     if (move.damage !== 0) {
+                            //         moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
+                            //     } else {
+                            //         moveset_str += `${functions.type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
+                            //     }
+                            // }
+                            // infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
         
                             oochInfoFields.push({
                                 name: `${user.name_possessive} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
@@ -1420,26 +1447,44 @@ let functions = {
             let author_obj = false;
             let battle_sprite_icon = null;
             let battle_sprite_files = [];
+            let battle_thumbnail = null;
+            let ooch_sprite_icon = false;
 
             if (user.is_player) {
                 let user_data = await botClient.users.fetch(user.user_id);
                 author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, iconURL: `${user_data.displayAvatarURL()}`}
+                if (action.action_type == BattleAction.Attack) {
+                    let name_space_replaced = `${_.replace(_.toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                    battle_sprite_files.push(get_ooch_art(name_space_replaced));
+                    battle_thumbnail = `attachment://${name_space_replaced}.png`;
+                }
+                
             } else {
                 if (user.battle_sprite != undefined && user.battle_sprite != false) {
+
                     battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
                     battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
+
+                    if (action.action_type == BattleAction.Attack) {
+                        let name_space_replaced = `${_.replace(_.toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                        battle_sprite_files.push(get_ooch_art(name_space_replaced));
+                        ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
+                    }
+
                 } else {
                     let name_space_replaced = `${_.replace(_.toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
                     battle_sprite_files = [get_ooch_art(name_space_replaced)]
                     battle_sprite_icon = `attachment://${name_space_replaced}.png`;
+                    if (action.action_type == BattleAction.Attack) ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
                 }
 
                 author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, 
                             iconURL: battle_sprite_icon }
+                battle_thumbnail = ooch_sprite_icon;
             }
             
             //console.log('MESSAGE FIRST DISTRIBUTE')
-            await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj)], files: battle_sprite_files });
+            await functions.distribute_messages(battle_data, { embeds: [functions.battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)], files: battle_sprite_files });
 
             //Clear any remaining actions if we're meant to finish the battle
             //Also send any final messages for the action
@@ -1506,13 +1551,12 @@ let functions = {
                     switch(effect){ //Status effects
                         case Status.Vanish:
                             
-                            if(slot_info.this_turn_vanished){
-                                slot_info.this_turn_vanished = false;
+                            if(slot.this_turn_vanished){
+                                slot.this_turn_vanished = false;
                             }
                             else{
                                 end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared!`;
-                                end_of_round_text +=  `\n${functions.add_status_effect(ooch, Status.Revealed)}`;
-                                slot_info.this_turn_vanished = true;
+                                end_of_round_text +=  `\n${functions.add_status_effect(ooch, Status.Revealed, slot)}`;
                                 ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
                             }
 
@@ -1660,14 +1704,16 @@ let functions = {
      * @param {Color} color the color along the edge of the embed
      * @param {Object} author the setAuthor object
      * @param {String} header the text to display at the top of the embed
+     * @param {String} thumbnail the thumbnail to display on the embed to the side
      * @returns a simple embed
      */
-    battle_embed_create : function(text, color = '#808080', author = false, header = false) {
+    battle_embed_create : function(text, color = '#808080', author = false, header = false, thumbnail = false,) {
         let embed = new EmbedBuilder()
             .setColor(color)
             .setDescription(text);
         if (header != false) embed.setTitle(header)
         if (author != false) embed.setAuthor(author);
+        if (thumbnail != false) embed.setThumbnail(thumbnail);
             
         return embed;
     },
@@ -2058,13 +2104,13 @@ let functions = {
                 let ooch_plr = ooch_party[user.active_slot]
                 let exp_earned_main = Math.round(exp_earned * 1.25);
                 if (ooch_plr.level != 50) {
-                    return_string += `\n\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${exp_earned_main} exp!**`
+                    return_string += `\n\n${db.monster_data.get(ooch_plr.id, 'emote')} **${ooch_plr.nickname}** earned **${exp_earned_main} exp!**`;
+                    if (is_first_catch) return_string += ` (✨ bonus EXP for first catch!)`
                                         //` (EXP: **${_.clamp(ooch_plr.current_exp + exp_earned_main, 0, ooch_plr.next_lvl_exp)}/${ooch_plr.next_lvl_exp})**`
                 }
                 if (ooch_party.length > 1) {
                     return_string += `\nThe rest of your team earned **${exp_earned}** exp.\n`;
                 }
-                if(is_first_catch) return_string += `\n✨ *Gained 2x Experience from catching a New Oochamon!*`;
 
                 for (let i = 0; i < ooch_party.length; i++) {
                     let ooch = ooch_party[i];
@@ -2096,7 +2142,7 @@ let functions = {
                 }
                 db.profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
 
-                let info_embed = ooch_info_embed(ooch_target);
+                let info_embed = ooch_info_embed(ooch_target, false, true);
                 let ooch_png = info_embed[1];
                 info_embed = info_embed[0];
                 info_embed.setAuthor({ name: 'Here\'s some information about the Oochamon you just caught!' })
@@ -2216,6 +2262,7 @@ let functions = {
     battle_faint_check: function(battle_data) {
         let string_to_send = '';
         let finish_string_to_send = '';
+        let level_up_string = '';
         let active_teams = [];
         let player_teams = [];
         let finish_battle = false;
@@ -2328,7 +2375,7 @@ let functions = {
                                 let ooch_data = ooch_party[i];
                                 if (ooch_data.current_exp >= ooch_data.next_lvl_exp) { // If we can level up
                                     ooch_data = functions.level_up(ooch_data);
-                                    string_to_send += ooch_data[1];
+                                    level_up_string += ooch_data[1];
                                 }
                             }
                         }
@@ -2351,6 +2398,7 @@ let functions = {
 
         //Distribute oochabux to the player
         if(finish_battle && player_count == 1 && !first_player.defeated){
+            finish_string_to_send += `${level_up_string}\n`;
             if(!_.isNumber(total_oochabux)){ total_oochabux = 1000; } //placeholder fix for weird oochabux issue
             if (total_oochabux > 0) {
                 db.profile.math(first_player.user_id, '+', total_oochabux, 'oochabux');
@@ -2359,6 +2407,7 @@ let functions = {
         }
         else{
             total_oochabux = 0;
+            string_to_send += level_up_string;
         }
         
         return({
@@ -2547,7 +2596,7 @@ let functions = {
      * @param {String} status The status effect to add
      * @returns The affected Oochamon object, with its status added
      */
-    add_status_effect: function(ooch, status) {
+    add_status_effect: function(ooch, status, slot) {
         let return_string = '';
         let statusData = db.status_data.get(status);
         let statusEmote = functions.status_to_emote(status);
@@ -2560,10 +2609,16 @@ let functions = {
         }
 
         //Ignore if we already have this status
-        if (ooch.status_effects.includes(Status.Revealed) && status == Status.Vanish) {
-            return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is <:status_reveal:1339448769871220866> **REVEALED**!`
-            return return_string;
+        if(status == Status.Vanish){
+            if (ooch.status_effects.includes(Status.Revealed)) {
+                return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is <:status_reveal:1339448769871220866> **REVEALED**!`
+                return return_string;
+            }
+            else{
+                slot.this_turn_vanished = true;
+            }
         }
+        
 
         //Mundane ignores status effects
         if (ooch.ability == Ability.Mundane){
@@ -2784,6 +2839,8 @@ let functions = {
             return;
 
         } else if (item_data.type == 'level_up') {
+            let exp_to_give = functions.exp_to_next_level(ooch.level);
+            ooch.current_exp += exp_to_give;
             ooch = functions.level_up(ooch);
             return ooch; // [ooch, output_text]
         } else if (item_data.type == 'give_exp') {
@@ -2859,7 +2916,7 @@ let functions = {
             case Ability.Stealthy:
                 if(!slot_info.this_turn_did_damage){
                     ability_text += `${ooch.emote} **${ooch.nickname}**'s **Stealthy**:`
-                    ability_text += `\n--- ${functions.add_status_effect(ooch, Status.Focus)}\n`;
+                    ability_text += `\n--- ${functions.add_status_effect(ooch, Status.Focus, slot_info)}\n`;
                 }
             break;
             case Ability.Fleeting:
@@ -2897,7 +2954,7 @@ let functions = {
             case Ability.HoleDweller:
                 if (battle_data.turn_counter % 2 === 0) {
                     ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Hole Dweller**:`
-                    ability_text += `\n--- ${functions.add_status_effect(ooch, Status.Vanish)}\n`;
+                    ability_text += `\n--- ${functions.add_status_effect(ooch, Status.Vanish, slot_info)}\n`;
                 }
             break;
             case Ability.DownwardSpiral:
@@ -3337,7 +3394,7 @@ let functions = {
                     case Ability.Ensnare:
                         if (check_chance(30) && !defender.status_effects.includes(Status.Vanish)) {
                             defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Ensnare**:`
-                            defender_field_text += `\n--- ${functions.add_status_effect(defender, Status.Snare)}\n`;
+                            defender_field_text += `\n--- ${functions.add_status_effect(defender, Status.Snare, slot_defender)}\n`;
                         }
                     break;
                     case Ability.Lacerating:
@@ -3355,7 +3412,7 @@ let functions = {
                         if (check_chance(20)) {
                             defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Strings Attached**:`
                             let randomStatus = _.sample([Status.Burn, Status.Blind, Status.Infect, Status.Snare]);
-                            defender_field_text += `\n--- ${functions.add_status_effect(defender, randomStatus)}\n`;
+                            defender_field_text += `\n--- ${functions.add_status_effect(defender, randomStatus, slot_defender)}\n`;
                         }
                     break;
                     case Ability.Riposte:
@@ -3391,12 +3448,12 @@ let functions = {
                     case Ability.Shadow:
                         if (check_chance(20)) {
                             defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Shadow**:`
-                            defender_field_text += `\n--- ${functions.add_status_effect(defender, Status.Vanish)}\n`;
+                            defender_field_text += `\n--- ${functions.add_status_effect(defender, Status.Vanish, slot_defender)}\n`;
                         }
                     break;
                     case Ability.Tangled:
                         defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Tangled**:`
-                        defender_field_text += `\n--- ${functions.add_status_effect(defender, Status.Snare)}\n`;
+                        defender_field_text += `\n--- ${functions.add_status_effect(attacker, Status.Snare, slot_attacker)}\n`;
                     break;
                     case Ability.Flammable:
                         if (move_type === OochType.Flame) {
@@ -3546,7 +3603,7 @@ let functions = {
                             }
 
                             for(let s of status_adds){
-                                defender_field_text += `\n--- ${functions.add_status_effect(status_target, s)}`;
+                                defender_field_text += `\n--- ${functions.add_status_effect(status_target, s, slot_defender)}`;
                             }
                                  
                         }
@@ -3618,11 +3675,11 @@ let functions = {
             switch (defender.ability) {
                 case Ability.Haunted:
                     defender_field_text += `\n${defender_emote} **${defOochName}**'s **Haunted**:`
-                    defender_field_text += `\n--- ${functions.add_status_effect(attacker, Status.Doom)}`
+                    defender_field_text += `\n--- ${functions.add_status_effect(attacker, Status.Doom, slot_attacker)}`
                 break;
                 case Ability.Sporespray:
                     defender_field_text += `\n${defender_emote} **${defOochName}**'s **Sporespray**:`
-                    defender_field_text += `\n--- ${functions.add_status_effect(attacker, Status.Infect)}`
+                    defender_field_text += `\n--- ${functions.add_status_effect(attacker, Status.Infect, slot_attacker)}`
                 break;
                 case Ability.InvalidEntry:
                     // -1 is the ID of i_
@@ -3699,20 +3756,20 @@ let functions = {
         return text;
     },
 
-    generate_round_start_embed(battle_data) {
+    generate_round_start_embed(battle_data, stances_enabled) {
         let hp_string = ``;
         let user_name, active_ooch;
         for(let user of battle_data.users){
             user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
             active_ooch = user.party[user.active_slot];
             hp_string += `\n\`` + _.trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${functions.type_to_emote(active_ooch.type)}`);
-            hp_string += functions.generate_hp_bar(active_ooch, 'plr');
-            hp_string += `\n`;
-            hp_string += `\`Stance: ${db.stance_data.get(active_ooch.stance, 'name')}\``
+            hp_string += functions.generate_hp_bar(active_ooch, 'plr'); 
+            if (stances_enabled) {
+                hp_string += `\n`;
+                hp_string += `\`Stance: ${db.stance_data.get(active_ooch.stance, 'name')}\``
+            }
             hp_string += `\n`;
         }
-
-        
         
         let embed = functions.battle_embed_create(hp_string)
         return(embed);

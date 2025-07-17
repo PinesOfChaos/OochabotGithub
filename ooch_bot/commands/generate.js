@@ -429,7 +429,7 @@ module.exports = {
         create_tile(`c_027`,       Tile.Npc,      applicationEmojis ); // Corrupted NPC (Ooze)
         create_tile(`c_028`,       Tile.Npc,      applicationEmojis ); // Corrupted CFO
         create_tile(`c_029`,       Tile.Int,      applicationEmojis ); // Access Tunnel Boulder
-        create_tile(`c_030`,       Tile.Int,      applicationEmojis ); // Scaffold Red Dot
+        create_tile(`c_030`,       Tile.Int,      applicationEmojis , true); // Scaffold Red Dot
         create_tile(`c_031`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
         create_tile(`c_032`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
         create_tile(`c_033`,       Tile.Int,      applicationEmojis ); // Corrupted NPC (BIG Ooze)
@@ -710,19 +710,19 @@ module.exports = {
             description_short : 'Allows an Oochamon to change its ability.'
         })
         create_item({
-            id: 42, name: 'Essense Monolith', emote: '<:item_xp_x:1392998087588319273>',
+            id: 42, name: 'Essence Monolith', emote: '<:item_xp_x:1392998087588319273>',
             category : 'other_inv', type: 'level_up', price: -1, potency: 1,
             description : 'A pitch black monolith of eyes, only visible to those destined peer into the void. Levels up an Oochamon',
             description_short : 'Levels up an Oochamon'
         })
         create_item({
-            id: 43, name: 'Essense Fragment', emote: '<:item_xp_s:1392998035641991189>',
+            id: 43, name: 'Essence Fragment', emote: '<:item_xp_s:1392998035641991189>',
             category : 'other_inv', type: 'give_exp', price: -1, potency: 500,
             description : 'A sliver of knowledge trapped within an inky void. Gives a small amount of EXP to an Oochamon',
             description_short : 'Gives a small amount of EXP to an Oochamon'
         })
         create_item({
-            id: 44, name: 'Essense Shard', emote: '<:item_xp_m:1392998053983686917>',
+            id: 44, name: 'Essence Shard', emote: '<:item_xp_m:1392998053983686917>',
             category : 'other_inv', type: 'give_exp', price: -1, potency: 5000,
             description : 'A sizeable shard of knowledge. Gives a medium amount of EXP to an Oochamon',
             description_short : 'Gives a medium amount of EXP to an Oochamon'
