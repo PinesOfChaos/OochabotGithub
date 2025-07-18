@@ -3785,7 +3785,8 @@
     "pre_evo_id": 43,
     "evo_id": 42,
     "evo_lvl": 33,
-    "evo_stage": 1
+    "evo_stage": 1,
+    "form_change_evo": true
   },
   {
     "id": 42,
@@ -3847,7 +3848,8 @@
     "pre_evo_id": 41,
     "evo_id": 43,
     "evo_lvl": 33,
-    "evo_stage": 1
+    "evo_stage": 1,
+    "form_change_evo": true
   },
   {
     "id": 43,
@@ -3909,7 +3911,8 @@
     "pre_evo_id": 42,
     "evo_id": 41,
     "evo_lvl": 33,
-    "evo_stage": 1
+    "evo_stage": 1,
+    "form_change_evo": true
   },
   {
     "id": 44,
@@ -5489,10 +5492,6 @@
       [
         44,
         6
-      ],
-      [
-        -1,
-        75
       ]
     ],
     "abilities": [
@@ -5580,10 +5579,6 @@
       [
         44,
         6
-      ],
-      [
-        -1,
-        75
       ]
     ],
     "abilities": [

@@ -237,6 +237,11 @@ module.exports = {
                     canEvolve = false;
                 }
 
+                // Special condition for form change evos
+                if (db.monster_data.get(ooch_party[i].id, 'form_change_evo') == true) {
+                    canEvolve = false;
+                }
+
                 // If i is 0 or 1, add components to party
                 // If i is 2 or 3, add components to party_2
                 // This is to make a 2x2 table of buttons, lol
@@ -557,6 +562,13 @@ module.exports = {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
 
+                // Change evo button to form change if available
+                if (db.monster_data.get(selected_ooch.id, 'form_change_evo') == true) {
+                    party_extra_buttons.components[2].setLabel('Change Form').setEmoji('🔁');
+                } else {
+                    party_extra_buttons.components[2].setLabel('Evolve').setEmoji('⬆️');
+                }
+
                 // Special condition for Gnayme, must have a nickname to evolve
                 if (selected_ooch.id == 109 && selected_ooch.name == selected_ooch.nickname) { 
                     party_extra_buttons.components[2].setDisabled(true);
@@ -653,7 +665,7 @@ module.exports = {
                 dexEmbed = dexEmbed[0];
 
                 oochData = db.monster_data.get(newEvoOoch.id);
-                
+
                 if (oochData.evo_id == -1 || oochData.evo_lvl == -1 || newEvoOoch.level < oochData.evo_lvl) {
                     party_extra_buttons.components[2].setDisabled(true);
                 }
@@ -1035,10 +1047,9 @@ module.exports = {
             // Map
             else if (selected == 'map') {
                 let map_name = user_profile.location_data.area;
+                if (map_name.includes('everchange')) return i.update({ content: `**Everchange Cave does not have a map!**` });
                 let map_item = db.item_data.find('potency', map_name);
-
-                console.log(user_profile.other_inv)
-                console.log(map_item)
+                if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**` });
 
                 if(user_profile.other_inv.hasOwnProperty(`${map_item.id}`)){
                     let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);

@@ -1105,8 +1105,6 @@ functions = {
         let learn_list = db.monster_data.get(ooch_id, 'move_list');
         let ability_list = db.monster_data.get(ooch_id, 'abilities');
         if (nickname == false) nickname = db.monster_data.get(ooch_id, 'name');
-        console.log(typeof ability_list)
-        console.log(ability_list)
 
         // Pick a random ability (unless we specify, then force one)
         let rand_ability = ability_list[_.random(0, ability_list.length - 1)]

@@ -306,6 +306,7 @@ let functions = {
     quit_oochamon: async function(thread, user_id, client) {
 
         const { finish_battle } = require('./func_battle.js');
+        const { move } = require('./func_play.js'); 
 
         let curBattleId = db.profile.get(user_id, 'cur_battle_id');
         if (curBattleId != false && curBattleId != undefined && curBattleId != null && db.battle_data.has(curBattleId)) {

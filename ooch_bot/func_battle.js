@@ -51,11 +51,16 @@ let functions = {
         if(options.hasOwnProperty("user_index")){
             user_info.user_index = options.user_index;
         }
-        //console.log(user_info)
+
+        // Pines why did you make it be called team for event battles Im going to scream
+        if (options.hasOwnProperty("team")) {
+            options.party = options.team;
+        }
+
         switch (type) {
             case UserType.Wild:
                 if(options.hasOwnProperty("party")){ //This mon is created via an event/ability
-                    
+                    console.log(options);
                     let ooch_base = options.party[0];
                     let ooch = create_ooch(
                         ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
@@ -72,7 +77,6 @@ let functions = {
 
                 }
                 else{
-                    console.log(options.team);
                     let ooch = create_ooch(options.id, options.level);
                     party = [ooch];
                     user_info.name = ooch.name
@@ -3197,6 +3201,7 @@ let functions = {
 
         //For moves that match the user's type
         if (move_effects.some(effect => effect.status === 'typematch')) {
+            console.log(attacker.type[0]);
             let type_to = attacker.type[0];
             move_type = type_to;
             move_type_emote =      functions.type_to_emote(move_type);
@@ -4285,7 +4290,7 @@ let functions = {
             })
     
             // Determine if it can evolve
-            if (ooch.level >= db.monster_data.get(ooch.id, `evo_lvl`) && db.monster_data.get(ooch.id, 'evo_id') != -1) {
+            if (ooch.level == db.monster_data.get(ooch.id, `evo_lvl`) && db.monster_data.get(ooch.id, 'evo_id') != -1) {
                 evoData = db.monster_data.get(db.monster_data.get(ooch.id, 'evo_id'));
             }
     

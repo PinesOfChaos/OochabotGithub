@@ -2449,7 +2449,7 @@ module.exports = {
                 [40, Move.SolarBlast], [-1, Move.SlowBurn]
             ],
             abilities: [Ability.Crystallize],
-            pre_evo_id: 43, evo_id: 42, evo_lvl: 33, evo_stage: 1
+            pre_evo_id: 43, evo_id: 42, evo_lvl: 33, evo_stage: 1, form_change_evo: true
         });
         
         // Moistri
@@ -2466,7 +2466,7 @@ module.exports = {
                 [40, Move.BlindingBeam], [-1, Move.Blight]
             ],
             abilities: [Ability.Crystallize],
-            pre_evo_id: 41, evo_id: 43, evo_lvl: 33, evo_stage: 1
+            pre_evo_id: 41, evo_id: 43, evo_lvl: 33, evo_stage: 1, form_change_evo: true
         });
         
         // Crystri
@@ -2483,7 +2483,7 @@ module.exports = {
                 [40, Move.GemBash], [-1, Move.GlassBlades]
             ],
             abilities: [Ability.Crystallize],
-            pre_evo_id: 42, evo_id: 41, evo_lvl: 33, evo_stage: 1
+            pre_evo_id: 42, evo_id: 41, evo_lvl: 33, evo_stage: 1, form_change_evo: true
         });
         
         // Solidifyr
@@ -2810,7 +2810,7 @@ module.exports = {
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Overgrowth], [5, Move.Fireball],
                 [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
                 [19, Move.CursedEye], [23, Move.MycoBurst], [26, Move.AsbestosBomb], [29, Move.CausticOrb], [33, Move.DrainLife], 
-                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver], [-1, Move.Overgrowth]
+                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver]
             ],
             abilities: [ Ability.Icky, Ability.Sporespray ],
             pre_evo_id: 59, evo_id: 63, evo_lvl: 28, evo_stage: 1
@@ -2828,7 +2828,7 @@ module.exports = {
                 [1, Move.Bash], [2, Move.Limber], [5, Move.Overgrowth], [5, Move.Fireball],
                 [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
                 [19, Move.CursedEye], [23, Move.MycoBurst], [26, Move.AsbestosBomb], [29, Move.CausticOrb], [33, Move.DrainLife], 
-                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver], [-1, Move.Overgrowth]
+                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver]
             ],
             abilities: [ Ability.Radiant, Ability.Sporespray ],
             pre_evo_id: 62, evo_id: -1, evo_lvl: -1, evo_stage: 2
