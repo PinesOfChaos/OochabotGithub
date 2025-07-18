@@ -2067,7 +2067,7 @@
       {
         "status": 1,
         "chance": 100,
-        "target": 3
+        "target": 1
       }
     ],
     "description": "A dangerous blast of asbestos that INFECTS the target.",

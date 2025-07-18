@@ -128,6 +128,8 @@ functions = {
             db.profile.set(_uid, _prev_positions, 'previous_positions')
             profile_data.location_data = { area: _map_name, x: _x, y: _y };
             profile_data.previous_positions = _prev_positions;
+            xmove = 0;
+            ymove = 0;
         }
 
         let checkPlrState = db.profile.get(user_id, 'player_state')
@@ -941,6 +943,7 @@ functions = {
 
         //Savepoint tiles
         let map_savepoints = map_obj.map_savepoints;
+        let savepoint_pos = {x : -1, y: -1}
         for(let obj of map_savepoints){
             xx = obj.x - x_pos + x_center;
             yy = obj.y - y_pos + y_center;
@@ -950,11 +953,18 @@ functions = {
         }
 
         //Put player sprite in center and change it based on the zone ID
-        let zoneId = parseInt(emote_map_array[x_center][y_center].split(':')[1].replace('t', ''));
+        let zoneId = parseInt(emote_map_array_base[x_center][y_center].split(':')[1].replace('t', ''));
         switch (zoneId) {
             case Zone.Global: emote_map_array[x_center][y_center] = db.tile_data.get('c_023', `zone_emote_ids.0.emote`); break;
             case Zone.Lava: emote_map_array[x_center][y_center] = db.tile_data.get('c_022', `zone_emote_ids.0.emote`); break;
-            default: emote_map_array[x_center][y_center] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
+            default:
+                if(parseInt(emote_map_array[x_center][y_center].split(':')[1].replace('t', '')) == Zone.Global){ //check if on a teleporter tile
+                    emote_map_array[x_center][y_center] = db.tile_data.get('c_023', `zone_emote_ids.0.emote`);
+                } 
+                else{
+                    emote_map_array[x_center][y_center] = db.tile_data.get(player_sprite_id, `zone_emote_ids.${zoneId}.emote`);
+                }
+                
         }
         
         //Flips the X/Y axis of the tile data (necessary because of how we read the map data)

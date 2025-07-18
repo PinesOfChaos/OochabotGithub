@@ -88,7 +88,7 @@
 			"coin": 0.0,
 			"flag_given": "tryptid_1",
 			"flag_kill": "",
-			"flag_required": "ev_scaffolds_1",
+			"flag_required": "ev_scaffolds_4",
 			"is_catchable": false,
 			"items": [],
 			"name": "",

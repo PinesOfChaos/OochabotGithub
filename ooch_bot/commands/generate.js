@@ -4052,9 +4052,9 @@ module.exports = {
         //#endregion
 
         //#region Generated Maps
-        // if(true){
-        //     genmap_allmaps()
-        // }
+         if(false){
+             genmap_allmaps()
+         }
         //#endregion
 
         //#region Create Maps
@@ -4063,15 +4063,17 @@ module.exports = {
         for (let file of files) {
             if (!file.includes('.json')) continue;
             let map_name = file.replace('.json', '');
-
+            
             fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
                 if (err) {
                     console.log(`Error reading file: ${file}`);
                     return;
                 }
-
+                console.log(map_name)
                 db.maps.set(map_name, JSON.parse(data));
+
             });
+            
         }
         //#endregion
 

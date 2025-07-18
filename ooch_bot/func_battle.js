@@ -2021,11 +2021,11 @@ let functions = {
                         string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s ability changed to **Null**!\n`
                     break;
                     case Ability.Pursuer:
-                        if(ooch_from.current_hp > 1){
+                        if(ooch_from.current_hp > 1 && slot_from != slot_to && slot_from != -1){
                             string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s **Pursuer**:`;
 
                             let prev_hp = ooch_from.current_hp
-                            ooch_from.current_hp = _.max(Math.floor(ooch_from.current_hp - ooch_from.current_hp / 5), 1); //This should never kill the mon swapping out
+                            ooch_from.current_hp = _.max(Math.floor(ooch_from.current_hp - (ooch_from.stats.hp / 5)), 1); //This should never kill the mon swapping out
                             string_to_send += `\n--- The fleeing ${ooch_from.emote} **${ooch_from.nickname}** lost ${prev_hp - ooch_from.current_hp} HP.\n`;
                         }
                     break;
@@ -3195,6 +3195,14 @@ let functions = {
         let move_type_emote =      functions.type_to_emote(move_type);
 
 
+        //For moves that match the user's type
+        if (move_effects.some(effect => effect.status === 'typematch')) {
+            let type_to = attacker.type[0];
+            move_type = type_to;
+            move_type_emote =      functions.type_to_emote(move_type);
+            string_to_send += `\n✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
+        }
+
         //For interactions that depend on going last/first
         let first_last_failed_text = '' //If the move doesn't have any damage after doing this check we should fail the move
         if(move_effects.some(effect => effect.status === Status.GoingFirstBonus)) {  
@@ -3478,9 +3486,7 @@ let functions = {
                 string_to_send += `\n🎲 **${db.move_data.get(ogMoveId, 'name')}** changed into **${move_name}**!\n`;
             }
 
-            if (move_effects.some(effect => effect.status === 'typematch')) {
-                string_to_send += `\n✨ **${move_name}** changed into the ${defender_emote} **${defOochName}**'s type, **${move_type_emote}** **${_.capitalize(move_type)}**!\n`
-            }
+            
 
             //Add one of the battle description flavor texts if applicable
             let move_battle_desc = await db.move_data.get(atk_id, 'battle_desc');

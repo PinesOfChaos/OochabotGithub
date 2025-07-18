@@ -280,7 +280,7 @@
   },
   {
     "id": 23,
-    "name": "Emergency Teleporter",
+    "name": "Teleporter",
     "emote": "<:item_tp_device:1306488228383031296>",
     "category": "other_inv",
     "type": "teleport",

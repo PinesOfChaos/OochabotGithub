@@ -23,41 +23,6 @@ let functions = {
 
         
         console.log('Generated daily maps.');
-
-        /*
-
-        let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
-        //Everchange Cave (daily)
-        let level_name = "Everchange Cave";
-        let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
-        let level_filename = './Maps/' + level_lowername + '.json'
-        let new_level = functions.genmap_new(level_name, 64, 64, functions.genmap_theme(GenmapTheme.ObsidianPath), 15, 20, 'lava_path', 3, 52);
-        fs.writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
-        db.maps.set(level_lowername, new_level);
-        kickout_list.push(level_lowername);
-
-        //Kick players back to their last checkpoint if they're in one of the generated levels
-        for (let key of db.profile.keyArray()) { 
-            let profile = db.profile.get(key);
-            let loc_data = profile.location_data;
-
-            for(let level of kickout_list){
-                if(loc_data.area == level){
-                    let checkpoint = profile.checkpoint_data;
-                    db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
-                    let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + setup_playspace_str(key);
-                    let thread = client.channels.cache.get(profile.play_thread_id);
-                    let msg_to_edit = db.profile.get(key, 'display_msg_id');
-
-                    if (thread != undefined && thread != false) {
-                        await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
-                            await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                        }).catch(() => {});
-                    }
-                }
-            }
-        }
-            */
     },
 
     genmap_dungeon : function(area_name, start_size, end_size, themes_array = [], level_min, level_max, exit_map, exit_x, exit_y){
@@ -115,6 +80,7 @@ let functions = {
             for(let level of kickout_list){
                 if(loc_data.area == level){
                     let checkpoint = profile.checkpoint_data;
+                    console.log(checkpoint);
                     db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
                     let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + setup_playspace_str(key);
                     let thread = client.channels.cache.get(profile.play_thread_id);
