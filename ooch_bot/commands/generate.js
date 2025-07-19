@@ -2052,7 +2052,7 @@ module.exports = {
             hp: 12, atk: 13, def: 11, spd: 9, //total 45
             move_list: [
                 [1, Move.Bash], [3, Move.Fireball], [4, Move.Embolden], [7, Move.Screech], [10, Move.MagicBolt],
-                [12, Move.SonicBoom], [15, Move.EchoChamber], [17, Move.Torch], [21, Move.ClampDown], [23, Move.SonicBoom], 
+                [15, Move.EchoChamber], [17, Move.Torch], [21, Move.ClampDown], [23, Move.SonicBoom], 
                 [27, Move.EarShatter], [31, Move.RallyingCry], [36, Move.Radiate], [40, Move.DrainLife], [44, Move.Eruption], 
                 [-1, Move.ArcaStrike]
             ],
@@ -2071,7 +2071,7 @@ module.exports = {
             hp: 21, atk: 20, def: 22, spd: 17, //total 80
             move_list: [
                 [1, Move.Bash], [3, Move.Fireball], [4, Move.Embolden], [7, Move.Screech], [10, Move.MagicBolt],
-                [12, Move.SonicBoom], [15, Move.EchoChamber], [17, Move.Torch], [21, Move.ClampDown], [23, Move.SonicBoom], 
+                [15, Move.EchoChamber], [17, Move.Torch], [21, Move.ClampDown], [23, Move.SonicBoom], 
                 [27, Move.EarShatter], [31, Move.RallyingCry], [36, Move.Radiate], [40, Move.DrainLife], [44, Move.Eruption], 
                 [-1, Move.ArcaStrike]
             ],
@@ -2807,10 +2807,10 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 13, atk: 13, def: 18, spd: 21, // total 65
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Overgrowth], [5, Move.Fireball],
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball],
                 [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
                 [19, Move.CursedEye], [23, Move.MycoBurst], [26, Move.AsbestosBomb], [29, Move.CausticOrb], [33, Move.DrainLife], 
-                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver]
+                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver], [-1, Move.Overgrowth]
             ],
             abilities: [ Ability.Icky, Ability.Sporespray ],
             pre_evo_id: 59, evo_id: 63, evo_lvl: 28, evo_stage: 1
@@ -2825,10 +2825,10 @@ module.exports = {
             type: [OochType.Fungal],
             hp: 20, atk: 20, def: 23, spd: 17, // total 80
             move_list: [
-                [1, Move.Bash], [2, Move.Limber], [5, Move.Overgrowth], [5, Move.Fireball],
+                [1, Move.Bash], [2, Move.Limber], [5, Move.Fireball],
                 [7, Move.Blight], [7, Move.SlowBurn], [12, Move.EnfeeblingSpore], [14, Move.Engulf],
                 [19, Move.CursedEye], [23, Move.MycoBurst], [26, Move.AsbestosBomb], [29, Move.CausticOrb], [33, Move.DrainLife], 
-                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver]
+                [35, Move.ThornShot], [39, Move.Impale], [44, Move.TakeOver], [-1, Move.Overgrowth]
             ],
             abilities: [ Ability.Radiant, Ability.Sporespray ],
             pre_evo_id: 62, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -4069,7 +4069,6 @@ module.exports = {
                     console.log(`Error reading file: ${file}`);
                     return;
                 }
-                console.log(map_name)
                 db.maps.set(map_name, JSON.parse(data));
 
             });

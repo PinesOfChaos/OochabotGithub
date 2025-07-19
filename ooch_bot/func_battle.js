@@ -60,7 +60,6 @@ let functions = {
         switch (type) {
             case UserType.Wild:
                 if(options.hasOwnProperty("party")){ //This mon is created via an event/ability
-                    console.log(options);
                     let ooch_base = options.party[0];
                     let ooch = create_ooch(
                         ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
@@ -83,7 +82,7 @@ let functions = {
                     user_info.name_possessive = `${ooch.name}'s`
                     user_info.is_catchable = true;
                     user_info.team_id = options.team_id;
-                    user_info.oochabux = _.random(5, 40);
+                    user_info.oochabux = _.random(0, 25) + (ooch.level * 5);
                     user_info.name = `Wild ${ooch.name}`;
                     user_info.name_possessive = `${ooch.name}'s`
                 }
@@ -1834,12 +1833,16 @@ let functions = {
 
         slot_info_from.status_counter_infect = 0;
 
-        user.active_slot = action.slot_target;
+        
         
         let return_string = (action.is_switching
             ? `\n${user.name} switched from ${db.monster_data.get(ooch_from.id, 'emote')} **${ooch_from.nickname}** to ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.`
             : `\n${user.name} sent out ${db.monster_data.get(ooch_to.id, 'emote')} **${ooch_to.nickname}**.\n`
         )
+
+        
+        return_string += functions.use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+        user.active_slot = action.slot_target;
 
         if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
 
@@ -1854,7 +1857,6 @@ let functions = {
         ooch_from.stance_cooldown = 0;
         ooch_from.stance = StanceForms.Base;
 
-        return_string += functions.use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
  
         return {
             finish_battle : finish_battle,
@@ -2025,11 +2027,12 @@ let functions = {
                         string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s ability changed to **Null**!\n`
                     break;
                     case Ability.Pursuer:
-                        if(ooch_from.current_hp > 1 && slot_from != slot_to && slot_from != -1){
+                        if(ooch_from.current_hp > 1 && slot_from != slot_to && slot_from != -1) {
                             string_to_send += `\n${ooch_enemy.emote} **${ooch_enemy.nickname}**'s **Pursuer**:`;
 
                             let prev_hp = ooch_from.current_hp
-                            ooch_from.current_hp = _.max(Math.floor(ooch_from.current_hp - (ooch_from.stats.hp / 5)), 1); //This should never kill the mon swapping out
+                            ooch_from.current_hp = _.max([Math.floor(ooch_from.current_hp - (ooch_from.stats.hp / 5)), 1]); //This should never kill the mon swapping out
+                            console.log(prev_hp, ooch_from.current_hp);
                             string_to_send += `\n--- The fleeing ${ooch_from.emote} **${ooch_from.nickname}** lost ${prev_hp - ooch_from.current_hp} HP.\n`;
                         }
                     break;
@@ -3201,7 +3204,6 @@ let functions = {
 
         //For moves that match the user's type
         if (move_effects.some(effect => effect.status === 'typematch')) {
-            console.log(attacker.type[0]);
             let type_to = attacker.type[0];
             move_type = type_to;
             move_type_emote =      functions.type_to_emote(move_type);

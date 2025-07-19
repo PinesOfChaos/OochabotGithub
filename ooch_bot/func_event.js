@@ -131,7 +131,6 @@ let functions = {
             }
 
             obj_content.team_id = 1;
-            console.log(obj_content);
             if (battle_group_arr.length == 0) {
                 let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
                 let trainerObj = await generate_battle_user(user_type, obj_content);
@@ -172,7 +171,6 @@ let functions = {
                     let user_type = obj_content.hasOwnProperty("user_type") ? obj_content.user_type : UserType.NPCTrainer
                     let trainerObj = await generate_battle_user(user_type, obj_content);
                     battleGroupBattleArr.push(trainerObj)
-                    console.log(battleGroupBattleArr);
                 }
 
                 current_place++;

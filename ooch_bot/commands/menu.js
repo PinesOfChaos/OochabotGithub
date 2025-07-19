@@ -254,8 +254,8 @@ module.exports = {
                         .setEmoji(db.monster_data.get(ooch_party[i].id, 'emote'))
                     )
                 } else {
-                    if (item.type == 'iv'){
-                        if (ooch_party[i].stats[`${item.potency}_iv`] == 1.5) disableOochButton = true;
+                    if (item.type == 'iv') {
+                        if (ooch_party[i].stats[`${item.potency}_iv`] >= 1.5) disableOochButton = true;
                     } else if (item.type == 'evolve') {
                         if (item.potency[0] != ooch_party[i].id) disableOochButton = true;
                     } else if (item.type == 'move_unlock') {
