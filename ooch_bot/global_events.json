@@ -305,14 +305,8 @@
 				"image": "",
 				"items": [],
 				"money": 0.0,
-				"objective": "",
+				"objective": "Use a Save Station to teleport to the Hub, then meet with Professor Lyra",
 				"title": "Rival Cade"
-			}
-		],
-		[
-			5.0,
-			{
-				"text": "Use your Map to teleport to the Hub, then meet with Professor Lyra"
 			}
 		],
 		[
@@ -343,7 +337,7 @@
 						"hp_iv": 5.0,
 						"id": 42.0,
 						"item": -1.0,
-						"level": 20.0,
+						"level": 30.0,
 						"moveset": [
 							60.0,
 							29.0,

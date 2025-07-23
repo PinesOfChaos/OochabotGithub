@@ -90,7 +90,6 @@ let functions = {
             user_data = db.profile.get(user_id);
         }
 
-        console.log(ooch.next_lvl_exp, ooch.current_exp);
         let expBar = progressbar.filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
 
         let infoEmbed = new EmbedBuilder()
@@ -141,8 +140,6 @@ let functions = {
         if (caught_embed == false) {
             infoEmbed.addFields([{ name: `Taming Status:`, value: `${tame_status}` }]);
         }
-
-        console.log(ooch_data.evo_id, ooch_data.evo_lvl, user_id);
         
         if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
             oochadex_check = db.profile.get(user_id, `oochadex[${ooch_data.evo_id}]`);

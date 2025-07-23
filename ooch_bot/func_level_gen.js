@@ -5,8 +5,6 @@ const db = require("./db.js")
 const fs = require('fs');
 const { start } = require('repl');
 
-
-
 let functions = {
 
     genmap_allmaps : async function(client){
@@ -19,13 +17,13 @@ let functions = {
                 GenmapTheme.Powerplant
             ]))
         }
-        functions.genmap_dungeon("Everchange Cave", 48, 64, everchange_cave_themes, 22, 30, 'lava_path', 3, 52)
+        functions.genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 22, 30, 'lava_path', 3, 52)
 
         
         console.log('Generated daily maps.');
     },
 
-    genmap_dungeon : function(area_name, start_size, end_size, themes_array = [], level_min, level_max, exit_map, exit_x, exit_y){
+    genmap_dungeon : function(client, area_name, start_size, end_size, themes_array = [], level_min, level_max, exit_map, exit_x, exit_y){
         let kickout_list = []; //Used for kicking players back to their last checkpoing if in a generated area
         console.log(`Generating Dungeon: ${area_name}`)
 
@@ -80,7 +78,6 @@ let functions = {
             for(let level of kickout_list){
                 if(loc_data.area == level){
                     let checkpoint = profile.checkpoint_data;
-                    console.log(checkpoint);
                     db.profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
                     let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + setup_playspace_str(key);
                     let thread = client.channels.cache.get(profile.play_thread_id);

@@ -138,15 +138,21 @@ module.exports = {
 
                         case 'weather':             eff_line =  `• Sets the weather to `;
                             switch(eff.chance){ 
-                                case Weather.Clear:         eff_line += 'None.'; break;
-                                case Weather.Heatwave:      eff_line += 'Heatwave.'; break;
-                                case Weather.Thunderstorm:  eff_line += 'Thunderstorm.'; break;
+                                case Weather.Clear:                 eff_line += 'None.'; break;
+                                case Weather.Heatwave:              eff_line += 'Heatwave.'; break;
+                                case Weather.Thunderstorm:          eff_line += 'Thunderstorm.'; break;
                             }
+                            eff_str += eff_line;
                             continue;
-                        case 'field_effect':        eff_line = `• Sets the field effect to `;
+                        case 'field':               eff_line = `• Sets the field effect to `;
                             switch(eff.chance){ 
-                                case FieldEffect.Clear:     eff_line += 'None.'; break;
+                                case FieldEffect.Clear:             eff_line += 'None.'; break;
+                                case FieldEffect.EchoChamber:       eff_line += 'Echo Chamber.'; break;
+                                case FieldEffect.JaggedGround:      eff_line += 'Jagged Ground.'; break;
+                                case FieldEffect.TwistedReality:    eff_line += 'Twisted Reality.'; break;
+                                case FieldEffect.Wetlands:          eff_line += 'Wetlands.'; break;
                             }
+                            eff_str += eff_line;
                             continue;
 
                         default:
@@ -176,7 +182,6 @@ module.exports = {
 
                     eff_str += eff_line;
                 }
-
 
                 let embed_move = new EmbedBuilder()
                     .setColor('#808080')

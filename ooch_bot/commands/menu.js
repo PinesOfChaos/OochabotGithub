@@ -3,8 +3,8 @@ const db = require('../db.js');
 const _ = require('lodash');
 const wait = require('wait');
 const { setup_playspace_str, create_ooch } = require('../func_play');
-const { PlayerState, TypeEmote, ItemType } = require('../types.js');
-const { type_to_emote, item_use } = require('../func_battle.js');
+const { PlayerState, TypeEmote, ItemType, TameStatus } = require('../types.js');
+const { type_to_emote, item_use, get_stance_options } = require('../func_battle.js');
 const { ooch_info_embed, get_ooch_art, get_art_file } = require('../func_other.js');
  
 module.exports = {
@@ -106,6 +106,8 @@ module.exports = {
             ).addComponents(
                 new ButtonBuilder().setCustomId('taming').setLabel('Taming Grounds').setStyle(ButtonStyle.Primary).setDisabled(true).setEmoji('❤️')
             )
+        
+        let party_extra_stance_sel = new ActionRowBuilder();
 
         let bag_buttons = new ActionRowBuilder()
             .addComponents(
@@ -441,7 +443,15 @@ module.exports = {
                 let dexEmbed = ooch_info_embed(selected_ooch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
-                await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                let party_buttons = [party_extra_buttons, party_extra_buttons_2];
+
+                if (_.inRange(selected_ooch.tame_value, 121, 200)) {
+                    party_buttons.push(party_extra_stance_sel)
+                }
+
+                party_buttons.push(party_back_button);
+
+                await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: party_buttons });
             }
             // Back to Box Select
             else if (selected == 'back_to_box') {
@@ -577,8 +587,34 @@ module.exports = {
                 dexEmbed = ooch_info_embed(selected_ooch, interaction.user.id);
                 dexPng = dexEmbed[1];
                 dexEmbed = dexEmbed[0];
+                let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
-                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                if (_.inRange(selected_ooch.tame_value, 121, 201)) {
+                    let available_stances = get_stance_options(selected_ooch, true);
+                    party_extra_stance_sel = new ActionRowBuilder();
+                    let stance_options = [];
+                    
+                    for (let stance of available_stances) {
+                        stance_options.push({ 
+                            label: `${stance.name}`,
+                            description: stance.description_short.slice(0, 100),
+                            value: `stance_sel_${stance.id}`
+                        })
+                    }
+
+                    party_extra_stance_sel.addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId('stance_select')
+                            .setPlaceholder('Select a stance to start in!')
+                            .addOptions(stance_options),
+                    );
+                    party_buttons.push(party_extra_stance_sel)
+                    console.log(party_buttons);
+                }
+
+                party_buttons.push(party_back_button);
+
+                i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: party_buttons });
             }
             // Set to Primary Button
             else if (selected == 'primary') {

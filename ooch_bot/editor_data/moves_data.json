@@ -1869,7 +1869,7 @@
         "target": 3
       }
     ],
-    "description": "Reality becomes twisted in the surrounding area, Weaknesses and Resistances are flipped.",
+    "description": "Reality becomes twisted in the surrounding area, Move order is reversed!.",
     "battle_desc": "Reality itself twists and contorts!",
     "self_target": true,
     "tags": []

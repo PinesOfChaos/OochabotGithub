@@ -10609,6 +10609,168 @@
     "evo_stage": 1
   },
   {
+    "id": 121,
+    "emote": "<:bismote:1396615006178639943>",
+    "name": "Bismote",
+    "oochive_entry": "A fragment of rough crystals come to life, swarms of Bismote will scavenge the cave together to protect eachother.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 12,
+    "atk": 9,
+    "def": 11,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      27,
+      71
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 122,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 122,
+    "emote": "<:iridusk:1396615021189927002>",
+    "name": "Iridusk",
+    "oochive_entry": "During the twilight hours these creatures can occaisionally be seen wandering to the surface.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 17,
+    "atk": 14,
+    "def": 16,
+    "spd": 13,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      85,
+      71
+    ],
+    "pre_evo_id": 121,
+    "evo_id": 123,
+    "evo_lvl": 40,
+    "evo_stage": 1
+  },
+  {
+    "id": 123,
+    "emote": "<:priseroth:1396615036662710292>",
+    "name": "Priseroth",
+    "oochive_entry": "On clear nights Priseroth be seen compltely still, staring into the night sky, almost as if yearning to live among the stars.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 23,
+    "atk": 18,
+    "def": 22,
+    "spd": 17,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      85,
+      71
+    ],
+    "pre_evo_id": 122,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 2
+  },
+  {
+    "id": 124,
+    "emote": "<:talto:1396614949232447619>",
+    "name": "Talto",
+    "oochive_entry": "These gangly fellas stumble around as they chirp like odd birds.",
+    "type": [
+      "sound"
+    ],
+    "hp": 11,
+    "atk": 12,
+    "def": 9,
+    "spd": 8,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      73,
+      63
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 122,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 125,
+    "emote": "<:sectrip:1396614961056317451>",
+    "name": "Sectrip",
+    "oochive_entry": "They'd prefer to wander open plains, but have occaisionally been seen resting inside of abandoned buildings.",
+    "type": [
+      "sound"
+    ],
+    "hp": 15,
+    "atk": 17,
+    "def": 16,
+    "spd": 14,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      73,
+      63
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 122,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
+    "id": 126,
+    "emote": "<:orchestryd:1396614975371350198>",
+    "name": "Orchestryd",
+    "oochive_entry": "Orchestryd will often be seen taking various instruments and adhering them to their bodies in order to the loudest possible shell.",
+    "type": [
+      "sound"
+    ],
+    "hp": 19,
+    "atk": 23,
+    "def": 21,
+    "spd": 19,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      73,
+      63
+    ],
+    "pre_evo_id": -1,
+    "evo_id": 122,
+    "evo_lvl": 25,
+    "evo_stage": 0
+  },
+  {
     "id": -1,
     "emote": "<:i_:1274936236548554763>",
     "name": "i",
@@ -10798,6 +10960,66 @@
       [
         1,
         131
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      86
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": -7,
+    "emote": "<:c_901:1358880761104568340>",
+    "name": "Serpsis",
+    "oochive_entry": "A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...",
+    "type": [
+      "void"
+    ],
+    "hp": 50,
+    "atk": 10,
+    "def": 20,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        92
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      86
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": -8,
+    "emote": "<:c_901:1358880761104568340>",
+    "name": "Ancient Rune",
+    "oochive_entry": "An ancient piece of debris infused with elemental power.",
+    "type": [
+      "neutral"
+    ],
+    "hp": 10,
+    "atk": 10,
+    "def": 10,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        53
       ],
       [
         -1,

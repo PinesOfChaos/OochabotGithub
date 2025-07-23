@@ -1523,7 +1523,13 @@ let functions = {
             for(let user of battle_data.users) {
                 ooch = user.party[user.active_slot];
                 slot = user.slot_actions[user.active_slot];
-                if(!ooch.alive){ continue; } //Skip this one if it's dead                
+                if(!ooch.alive){ continue; } //Skip this one if it's dead       
+                
+                //Check if anything fainted before doing anything
+                faint_check = functions.battle_faint_check(battle_data) //.text, .finish_battle
+                end_of_round_text += faint_check.text;
+                finish_battle = finish_battle || faint_check.finish_battle;
+                if (finish_battle) { break; }
 
                 //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
                 eot_result = await functions.use_eot_ability(battle_data, user.user_index); 
@@ -1591,11 +1597,16 @@ let functions = {
                                 slot.status_counter_infect = 0;
                             }
 
+                            let infect_val = Math.round(slot.status_counter_infect * ooch.stats.hp/20);
                             slot.status_counter_infect += 1;
-                            let infect_val = Math.round(slot.status_counter_infect * ooch.stats.hp/16);
                             ooch.current_hp -= infect_val;
                             ooch.current_hp = _.clamp(ooch.current_hp, 0, ooch.stats.hp);
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;                           
+                            if(infect_val == 0){
+                                end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s doesn't look so good!`;
+                            }
+                            else{
+                                end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
+                            }                         
                         break;
                         case Status.Doom:
                             ooch.doom_timer -= 1;
@@ -2005,7 +2016,9 @@ let functions = {
 
         //Check abilities vs other users
         for(let u of battle_data.users){
-            if(u.team_id != user.team_id && u.party[u.active_slot].alive){
+            let every_target_list = [Ability.Gentle]
+            
+            if((u.team_id != user.team_id || every_target_list.includes(ooch_to.ability)) && u.party[u.active_slot].alive){
                 let ooch_enemy = u.party[u.active_slot];
 
                 //Enemy users' mons that affect the new mon or the mon that switched out
@@ -2032,7 +2045,6 @@ let functions = {
 
                             let prev_hp = ooch_from.current_hp
                             ooch_from.current_hp = _.max([Math.floor(ooch_from.current_hp - (ooch_from.stats.hp / 5)), 1]); //This should never kill the mon swapping out
-                            console.log(prev_hp, ooch_from.current_hp);
                             string_to_send += `\n--- The fleeing ${ooch_from.emote} **${ooch_from.nickname}** lost ${prev_hp - ooch_from.current_hp} HP.\n`;
                         }
                     break;
@@ -3593,7 +3605,7 @@ let functions = {
                         if (typeof eff.status == "number") {
                             let statusData = await db.status_data.get(eff.status);
                             // Setup list of status effects to add
-                            switch (status_target.ability) {
+                            switch (attacker.ability) {
                                 case Ability.Darkbright:
                                     switch (eff.status) {
                                         case Status.Burn: status_adds.push(Status.Blind);
@@ -3771,6 +3783,8 @@ let functions = {
     generate_round_start_embed(battle_data, stances_enabled) {
         let hp_string = ``;
         let user_name, active_ooch;
+        if (battle_data.field_effect != FieldEffect.None && battle_data.field_effect != FieldEffect.Clear) hp_string += `\`Field Effect: ${_.startCase(battle_data.field_effect)}\``;
+        if (battle_data.weather != Weather.None && battle_data.weather != Weather.Clear) hp_string += `\`Weather: ${_.startCase(battle_data.weather)}\``;
         for(let user of battle_data.users){
             user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
             active_ooch = user.party[user.active_slot];
@@ -4313,16 +4327,19 @@ let functions = {
     /**
      * Get a list of all available stances an Oochamon can use.
      * @param {Object} ooch The Oochamon to get stance data for
+     * @param {Boolean} include_base Whether the base stance should be included or not.
      * @returns All available stances.
      */
-    get_stance_options : function(ooch) {
+    get_stance_options : function(ooch, include_base = false) {
         // TODO: This currently allows all stances to be used except for the one
         // that the Oochamon is using. This should be changed to only allow a set
         // that we manually set.
         let stances = db.stance_data.keyArray();
         let available_stances = [];
+        if (include_base) available_stances.push(db.stance_data.get(StanceForms.Base));
         for (let stance of stances) {
             if (ooch.stance == stance) continue;
+            if (available_stances.includes(stance)) continue;
             available_stances.push(db.stance_data.get(stance));
         }
 

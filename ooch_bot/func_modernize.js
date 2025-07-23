@@ -197,6 +197,7 @@ m_functions = {
             og_type: 0,
             doom_timer: 4, // Used for the doomed status effect
             emote: "",
+            starting_stance: StanceForms.Base,
             stance: StanceForms.Base,
             stance_cooldown: 0,
             

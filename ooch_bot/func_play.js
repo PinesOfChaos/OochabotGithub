@@ -170,6 +170,7 @@ functions = {
 
         //Get the map array based on the player's current map
         let map_obj =   db.maps.get(map_name.toLowerCase());
+        if (map_obj == undefined) return;
         let map_info =          map_obj.map_info;
         let map_tiles =         map_obj.map_tiles; 
         let map_npcs =          map_obj.map_npcs;
@@ -371,6 +372,7 @@ functions = {
             if(!stop_moving){
                 for(let obj of map_savepoints){
                     if(stop_moving){ break; }
+                    if (dist == 1 && direction == '') break;
                     if(obj.x == playerx && obj.y == playery){
                         //prompt the player 
                         stop_moving = true;
@@ -747,7 +749,6 @@ functions = {
                                 }
                                 
                                 let mon_level = mons_to_add[0].level;
-                                console.log(mons_to_add[0]);
                                 let mon_name = db.monster_data.get(mons_to_add[0].id.toString(), 'name');
                                 let mon_emote = db.monster_data.get(mons_to_add[0].id.toString(), 'emote');
 
@@ -1008,6 +1009,7 @@ functions = {
 
         //Get the map array based on the player's current biome
         let map_obj = db.maps.get(biome.toLowerCase());
+        if (map_obj == undefined) return ['Error, please run /quit', []]
         let map_arr = map_obj.map_tiles; //this should be the actual map array
 
         // Set player position data into the global multiplayer player position db
@@ -1150,6 +1152,7 @@ functions = {
             og_type: db.monster_data.get(ooch_id, 'type'),
             doom_timer: 4, // Used for the doomed status effect
             emote: db.monster_data.get(ooch_id, 'emote'),
+            og_emote: db.monster_data.get(ooch_id, 'emote'),
 
             stance: StanceForms.Base,
             stance_cooldown: 0,

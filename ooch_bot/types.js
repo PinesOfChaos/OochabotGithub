@@ -391,7 +391,12 @@ const Ability = {
     Exploiter: 84,
     Seer: 85,
     EscalationProtocol: 86,
-    SpreadingSludge: 87
+    SpreadingSludge: 87,
+    AncientPlating: 88,
+    AncientWard: 89,
+    Usurper: 90,
+    PureCore: 91,
+    Lullaby: 92
 }
 
 const Item = {

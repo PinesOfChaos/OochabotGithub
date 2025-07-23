@@ -438,5 +438,25 @@
     "id": 87,
     "name": "Spreading Sludge",
     "description": "Spawns a helpful Slime Head per 20% HP lost."
+  },
+  {
+    "id": 88,
+    "name": "Ancient Plating",
+    "description": "Spawns a Ancient Rune per 20% HP lost."
+  },
+  {
+    "id": 89,
+    "name": "Ancient Ward",
+    "description": "Allied Oochamon take reduced damage for attacks that match this Oochamon's type."
+  },
+  {
+    "id": 90,
+    "name": "Usurper",
+    "description": "Queues the same attack after an enemy Oochamon attacks."
+  },
+  {
+    "id": 91,
+    "name": "Pure Core",
+    "description": "Reduces the damage of incoming non-Super Effective moves."
   }
 ]

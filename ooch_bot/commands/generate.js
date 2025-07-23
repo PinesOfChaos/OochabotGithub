@@ -318,6 +318,8 @@ module.exports = {
         create_tile(`t${zTn}_017`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_018`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_019`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_020`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_021`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor Divot
         create_tile(`t${zTn}_022`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_023`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_025`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
@@ -325,6 +327,12 @@ module.exports = {
         create_tile(`t${zTn}_027`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_028`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
         create_tile(`t${zTn}_029`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_030`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_031`,  Tile.Grass,    applicationEmojis ); //Tunnel Grass
+        create_tile(`t${zTn}_032`,  Tile.Floor,    applicationEmojis ); //Tunnel Floor Transition to crystal
+        create_tile(`t${zTn}_040`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_041`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
+        create_tile(`t${zTn}_042`,  Tile.Wall,     applicationEmojis ); //Tunnel Wall
 
         //Scaffolds
         create_tile(`t${zSc}_000`,  Tile.Floor,    applicationEmojis ); //Scaffolds Floor
@@ -353,6 +361,57 @@ module.exports = {
         create_tile(`t${zGL}_031`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_040`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
         create_tile(`t${zGL}_041`,  Tile.Wall,     applicationEmojis ); //Goo Lake Wall
+
+
+        //Crystal Caves
+        create_tile(`t${zCC}_000`,  Tile.Floor,    applicationEmojis ); //Crystal Caves Floor
+        create_tile(`t${zCC}_001`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_004`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_005`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_006`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_007`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_008`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_009`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_010`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_011`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_014`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_015`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_016`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_017`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Ophicore
+        create_tile(`t${zCC}_018`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_020`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_021`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_024`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_030`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_031`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_034`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_040`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_041`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_044`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_050`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_051`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_054`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_060`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_061`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_064`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_070`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_071`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_072`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_073`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_074`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_075`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Mirror (Top)
+        create_tile(`t${zCC}_080`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_081`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_082`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_083`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_084`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_085`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Mirror (Bottom)
+        create_tile(`t${zCC}_090`,  Tile.Grass,    applicationEmojis ); //Crystal Caves Grass
+        create_tile(`t${zCC}_091`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_092`,  Tile.Floor,    applicationEmojis ); //Crystal Caves Floor
+        create_tile(`t${zCC}_093`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
+        create_tile(`t${zCC}_094`,  Tile.Floor,    applicationEmojis ); //Crystal Caves Floor
+        create_tile(`t${zCC}_095`,  Tile.Wall,     applicationEmojis ); //Crystal Caves Wall
 
         //Tutorial
         create_tile(`t${zTu}_000`,  Tile.Floor,    applicationEmojis ); //Tutorial Floor
@@ -1455,7 +1514,7 @@ module.exports = {
             id : 112, name : 'Twisted Reality', type : OochType.Magic,
             damage : 0, accuracy: -1,
             effect : [{status : Status.Field, chance : FieldEffect.TwistedReality, target : MoveTarget.None}],
-            description : 'Reality becomes twisted in the surrounding area, Weaknesses and Resistances are flipped.',
+            description : 'Reality becomes twisted in the surrounding area, Move order is reversed!.',
             battle_desc : 'Reality itself twists and contorts!',
             self_target : true,
         });
@@ -1660,9 +1719,9 @@ module.exports = {
         create_ability(54, 'Easy Go',           'Heals the rest of the Oochamon Trainer\'s party by 20% of their max HP when defeated.');
         create_ability(55, 'Bomber',            'The Oochamon explodes upon fainting, dealing half of the opposing Oochamon\'s HP on death.');
         create_ability(56, 'Flammable',         'Gains 1 stage of ATK when hit with a FLAME type move.');
-        create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.');
-        create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.');
-        create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.'); 
+        create_ability(57, 'Hole Dweller',      'Gets the Vanished status at the end of every other turn.'); //Unique - Cryptid
+        create_ability(58, 'Power Conduit',     'Boosts the power of FLAME moves against OOZE and TECH types by 50%.'); //Unique - Chemerai
+        create_ability(59, 'Liquid Cooled',     'Prevents BURN and boosts the power of TECH type moves by 25%.'); //Unique - Roswier
         create_ability(60, 'Increment',         'Randomly boosts a stat by 1 stage at the end of each turn.');
         create_ability(61, 'Parry',             'Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte.');
         create_ability(62, 'Riposte',           'Raises damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry.');
@@ -1682,16 +1741,20 @@ module.exports = {
         create_ability(76, 'Bloodrush',        'Taking damage raises SPD by 1 stage.');
         create_ability(77, 'Chronomancy',      'Damaging moves get -1 Priority. Other moves get +1 Priority.');
         create_ability(78, 'Martyr',           'If this Oochamon is swapped out with 0 HP, Raises the ATK of the next mon to switch in.');
-        create_ability(79, 'Condiment',        'Raises the DEF & SPD of Lasangato in the party 1 stage.');
+        create_ability(79, 'Condiment',        'Raises the DEF & SPD of Lasangato in the party 1 stage.'); //Unique - Parmanyan
         create_ability(80, 'Double or Nothing','Attacks damage is either doubled or reduced to 0.');
         create_ability(81, 'Vigorous',         'Raises healing done by moves by 30%.');
         create_ability(82, 'Turbine',          'Raises ATK whenever it uses a Flame-type attack.');
         create_ability(83, 'Pact',             'Raises the damage of the user\'s first move by 30% on repeated uses.');
         create_ability(84, 'Exploiter',        'The EXPOSED status triples damage instead of doubling it.');
         create_ability(85, 'Seer',             'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
-        create_ability(86, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.');
-        create_ability(87, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.');
-        
+        create_ability(86, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.'); //Unique - Security System Boss
+        create_ability(87, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.'); //Unique - Giant Slime Head Boss
+        create_ability(88, 'Ancient Plating',  'Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
+        create_ability(89, 'Ancient Ward',     'Allied Oochamon take reduced damage for attacks that match this Oochamon\'s type.'); //Unique - Ophicore's Rune pieces
+        create_ability(90, 'Usurper',          'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
+        create_ability(91, 'Pure Core',        'Reduces the damage of incoming non-Super Effective moves.') //Unique - Ophicore (Post-game ability)
+        create_ability(92, 'Lullaby',          'Sound-type moves have a chance to put the target to SLEEP.') //Unique - Heraloom
 
         //#endregion
 
@@ -2457,7 +2520,7 @@ module.exports = {
             id: 42,
             emote: get_emote_string(applicationEmojis, 'moistri'),
             name: 'Moistri',
-            oochive_entry: 'Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.', 
+            oochive_entry: 'Researchers studying Moistri have realized that its structure can shift freely, some believe it may be able to change forms at will.', 
             type: [OochType.Ooze],
             hp: 25, atk: 20, def: 10, spd: 10, // total 65
             move_list: [
@@ -2474,7 +2537,7 @@ module.exports = {
             id: 43,
             emote: get_emote_string(applicationEmojis, 'crystri'),
             name: 'Crystri',
-            oochive_entry: 'While its crystals appear rigid they maintain some sort of fluidity.', 
+            oochive_entry: 'Crystri\'s body reveals that it\'s made up of several smaller organisms, linking together to form one larger creature.', 
             type: [OochType.Crystal],
             hp: 25, atk: 10, def: 20, spd: 10, // total 65
             move_list: [
@@ -3847,6 +3910,110 @@ module.exports = {
             pre_evo_id: 119, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
         
+        // Bismote
+        create_monster({
+            id: 121,
+            emote: get_emote_string(applicationEmojis, 'bismote'),
+            name: 'Bismote',
+            oochive_entry: 'A fragment of rough crystals come to life, swarms of Bismote will scavenge the cave together to protect eachother.',
+            type: [OochType.Crystal],
+            hp: 12, atk: 9, def: 11, spd: 8, // total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.Ravenous, Ability.Constructor],
+            pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Iridusk
+        create_monster({
+            id: 122,
+            emote: get_emote_string(applicationEmojis, 'iridusk'),
+            name: 'Iridusk',
+            oochive_entry: 'During the twilight hours these creatures can occaisionally be seen wandering to the surface.',
+            type: [OochType.Crystal],
+            hp: 17, atk: 14, def: 16, spd: 13, // total 60
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.Seer, Ability.Constructor],
+            pre_evo_id: 121, evo_id: 123, evo_lvl: 40, evo_stage: 1
+        });
+
+        // Priseroth
+        create_monster({
+            id: 123,
+            emote: get_emote_string(applicationEmojis, 'priseroth'),
+            name: 'Priseroth',
+            oochive_entry: 'On clear nights Priseroth be seen compltely still, staring into the night sky, almost as if yearning to live among the stars.',
+            type: [OochType.Crystal],
+            hp: 23, atk: 18, def: 22, spd: 17, // total 80
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.Seer, Ability.Constructor],
+            pre_evo_id: 122, evo_id: -1, evo_lvl: -1, evo_stage: 2
+        });
+
+        // Talto
+        create_monster({
+            id: 124,
+            emote: get_emote_string(applicationEmojis, 'talto'),
+            name: 'Talto',
+            oochive_entry: 'These gangly fellas stumble around as they chirp like odd birds.',
+            type: [OochType.Sound],
+            hp: 11, atk: 12, def: 9, spd: 8, // total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.BassBoost, Ability.Swaying],
+            pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Sectrip
+        create_monster({
+            id: 125,
+            emote: get_emote_string(applicationEmojis, 'sectrip'),
+            name: 'Sectrip',
+            oochive_entry: 'They\'d prefer to wander open plains, but have occaisionally been seen resting inside of abandoned buildings.',
+            type: [OochType.Sound],
+            hp: 15, atk: 17, def: 16, spd: 14, // total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.BassBoost, Ability.Swaying],
+            pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Orchestryd
+        create_monster({
+            id: 126,
+            emote: get_emote_string(applicationEmojis, 'orchestryd'),
+            name: 'Orchestryd',
+            oochive_entry: 'Orchestryd will often be seen taking various instruments and adhering them to their bodies in order to the loudest possible shell.',
+            type: [OochType.Sound],
+            hp: 19, atk: 23, def: 21, spd: 19, // total 40
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.BassBoost, Ability.Swaying],
+            pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
+        });
+
+        // Heraloom
+        create_monster({
+            id: 127,
+            emote: get_emote_string(applicationEmojis, 'heraloom'),
+            name: 'Heraloom',
+            oochive_entry: 'The harp on its body is made of many fine hairs; its soothing sound can put foes to sleep when strummed.',
+            type: [OochType.Sound],
+            hp: 22, atk: 14, def: 15, spd: 11, // total 60
+            move_list: [
+                [1, Move.Bash]
+            ],
+            abilities: [Ability.Lullaby],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
 
         // // Rosun
         // create_monster({
@@ -4004,7 +4171,7 @@ module.exports = {
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 1
         });
 
-        // Giant Slime Head
+        // Enforcement System Δ
         create_monster({
             id: -6,
             emote: get_emote_string(applicationEmojis, 'c_901'),
@@ -4016,6 +4183,51 @@ module.exports = {
                 [1, Move.Heatseeker], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
             ],
             abilities: [Ability.EscalationProtocol],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Ophicore Story Boss
+        create_monster({
+            id: -7,
+            emote: get_emote_string(applicationEmojis, 'c_901'),
+            name: 'Ophicorupt',
+            oochive_entry: 'An ancient Oochamon, corrupted by a deep red growth within.',
+            type: [OochType.Crystal],
+            hp: 55, atk: 15, def: 20, spd: 15, // total 105
+            move_list: [
+                [1, Move.Heatseeker], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
+            ],
+            abilities: [Ability.AncientPlating],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Ophicore Story Boss Ward
+        create_monster({
+            id: -8,
+            emote: get_emote_string(applicationEmojis, 'c_901'),
+            name: 'Ancient Rune',
+            oochive_entry: 'An ancient piece of debris infused with elemental power.',
+            type: [OochType.Neutral],
+            hp: 10, atk: 10, def: 10, spd: 10, // total 100
+            move_list: [
+                [1, Move.SyncStrike], [-1, Move.Bash]
+            ],
+            abilities: [Ability.AncientWard],
+            pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        });
+
+        // Serpsis Story Boss
+        create_monster({
+            id: -7,
+            emote: get_emote_string(applicationEmojis, 'c_901'),
+            name: 'Serpsis',
+            oochive_entry: 'A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...',
+            type: [OochType.Void],
+            hp: 50, atk: 10, def: 20, spd: 10, // total 90
+            move_list: [
+                [1, Move.NullSphere], [-1, Move.Bash]
+            ],
+            abilities: [Ability.Usurper],
             pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
         });
 
@@ -4052,9 +4264,7 @@ module.exports = {
         //#endregion
 
         //#region Generated Maps
-         if(false){
-             genmap_allmaps()
-         }
+        genmap_allmaps(client)
         //#endregion
 
         //#region Create Maps
@@ -4063,7 +4273,7 @@ module.exports = {
         for (let file of files) {
             if (!file.includes('.json')) continue;
             let map_name = file.replace('.json', '');
-            
+
             fs.readFile(`./Maps/${file}`, 'utf8', (err, data) => {
                 if (err) {
                     console.log(`Error reading file: ${file}`);
