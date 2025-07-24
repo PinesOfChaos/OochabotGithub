@@ -3784,7 +3784,7 @@
     "id": 42,
     "emote": "<:moistri:1274937725086072883>",
     "name": "Moistri",
-    "oochive_entry": "Researchers studying Moistri tend to fall ill after handling it, despite this some believe it to have some sort of healing properties.",
+    "oochive_entry": "Researchers studying Moistri have realized that its structure can shift freely, some believe it may be able to change forms at will.",
     "type": [
       "ooze"
     ],
@@ -3847,7 +3847,7 @@
     "id": 43,
     "emote": "<:crystri:1274935686805586002>",
     "name": "Crystri",
-    "oochive_entry": "While its crystals appear rigid they maintain some sort of fluidity.",
+    "oochive_entry": "Crystri's body reveals that it's made up of several smaller organisms, linking together to form one larger creature.",
     "type": [
       "crystal"
     ],
@@ -10771,6 +10771,32 @@
     "evo_stage": 0
   },
   {
+    "id": 127,
+    "emote": "<:heraloom:1396628976939827302>",
+    "name": "Heraloom",
+    "oochive_entry": "The harp on its body is made of many fine hairs; its soothing sound can put foes to sleep when strummed.",
+    "type": [
+      "sound"
+    ],
+    "hp": 22,
+    "atk": 14,
+    "def": 15,
+    "spd": 11,
+    "move_list": [
+      [
+        1,
+        1
+      ]
+    ],
+    "abilities": [
+      92
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
     "id": -1,
     "emote": "<:i_:1274936236548554763>",
     "name": "i",
@@ -10997,7 +11023,7 @@
       ]
     ],
     "abilities": [
-      86
+      90
     ],
     "pre_evo_id": -1,
     "evo_id": -1,
@@ -11027,7 +11053,7 @@
       ]
     ],
     "abilities": [
-      86
+      89
     ],
     "pre_evo_id": -1,
     "evo_id": -1,
