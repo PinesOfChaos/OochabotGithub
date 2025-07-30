@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { item_data, profile } from '../db.js';
 
 export const data = new SlashCommandBuilder()
@@ -13,7 +13,7 @@ export const data = new SlashCommandBuilder()
         .setRequired(true));
 export async function execute(interaction) {
 
-    if (interaction.user.id != '145342159724347393' && interaction.user.id != '122568101995872256') return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+    if (interaction.user.id != '145342159724347393' && interaction.user.id != '122568101995872256') return interaction.reply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     let id = interaction.options.getString('item');
     if (isNaN(id)) return interaction.reply('You must input an item ID here.');
     id = parseInt(id);

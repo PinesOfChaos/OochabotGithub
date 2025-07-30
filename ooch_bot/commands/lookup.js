@@ -1,6 +1,5 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from 'discord.js';
 import { move_data, ability_data, status_data, item_data, profile } from '../db.js';
-import _ from 'lodash-es';
 import { type_to_emote, status_to_emote } from '../func_battle.js';
 import { get_art_file } from '../func_other.js';
 import { Status, MoveTarget, Weather, FieldEffect, OochType } from '../types.js';
@@ -76,12 +75,17 @@ export async function execute(interaction) {
         }
     }
 
+    let info_move, eff_str, eff_split, embed_move,
+    info_ability, embed_ability, embed_type_chart, controls_embed,
+    info_status, amtOwned, embed_status, info_item, embed_item,
+    weather_desc, embed_weather, field_desc, embed_field;
+
     switch (selected_db) {
         case 'move':
-            let info_move = move_data.get(`${selected_id}`);
+            info_move = move_data.get(`${selected_id}`);
 
-            let eff_str = ``;
-            for (eff of info_move.effect) {
+            eff_str = ``;
+            for (let eff of info_move.effect) {
                 let eff_line = `\n• ${eff.chance}% `;
 
                 switch (eff.status) {
@@ -94,7 +98,6 @@ export async function execute(interaction) {
                     case Status.Infect: eff_line += `chance to ${status_to_emote(eff.status)} Infect`; break;
                     case Status.Snare: eff_line += `chance to ${status_to_emote(eff.status)} Snare`; break;
                     case Status.Vanish: eff_line += `chance to ${status_to_emote(eff.status)} Vanish`; break;
-                    case Status.Focus: eff_line += `chance to ${status_to_emote(eff.status)} Focus`; break;
                     case Status.Sleep: eff_line += `chance to ${status_to_emote(eff.status)} Sleep`; break;
                     case Status.Petrify: eff_line += `chance to ${status_to_emote(eff.status)} Petrify`; break;
                     case Status.Weak: eff_line += `chance to ${status_to_emote(eff.status)} Weaken`; break;
@@ -140,7 +143,7 @@ export async function execute(interaction) {
                         continue;
 
                     default:
-                        let eff_split = eff.status.split('_');
+                        eff_split = eff.status.split('_');
                         switch (eff_split[0]) {
                             case '-':
                             case '+':
@@ -167,7 +170,7 @@ export async function execute(interaction) {
                 eff_str += eff_line;
             }
 
-            let embed_move = new EmbedBuilder()
+            embed_move = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${type_to_emote(info_move.type)} ${info_move.name}`)
                 .setDescription(info_move.description)
@@ -181,34 +184,31 @@ export async function execute(interaction) {
 
             return interaction.reply({
                 embeds: [embed_move],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
 
-            break;
         case 'ability':
-            let info_ability = ability_data.get(`${selected_id}`);
-            let embed_ability = new EmbedBuilder()
+            info_ability = ability_data.get(`${selected_id}`);
+            embed_ability = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${info_ability.name}`)
                 .setDescription(info_ability.description);
             return interaction.reply({
                 embeds: [embed_ability],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'type_chart':
-            let embed_type_chart = new EmbedBuilder()
+            embed_type_chart = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle('Type Chart')
                 .setImage('attachment://type_chart.png');
             return interaction.reply({
                 embeds: [embed_type_chart],
                 files: [get_art_file('./Art/ArtFiles/type_chart.png')],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'controls':
-            let controls_embed = new EmbedBuilder()
+            controls_embed = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle('Controls')
                 .setDescription('To move, type `w` `a` `s` or `d` in the chat (or click the buttons, if using the discord button setting), and send it as a message. You can use a number after the direction, or something like `www` or `ssss` to jump up to 6 tiles in one direction.\n\n' +
@@ -223,25 +223,23 @@ export async function execute(interaction) {
                     'If you using the discord buttons, the top left button changes your jump speed, and the top right button opens the menu.');
             return interaction.reply({
                 embeds: [controls_embed],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'status':
-            let info_status = status_data.get(`${selected_id}`);
-            let embed_status = new EmbedBuilder()
+            info_status = status_data.get(`${selected_id}`);
+            embed_status = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${info_status.name} ${info_status.emote}`)
                 .setDescription(info_status.description);
             return interaction.reply({
                 embeds: [embed_status],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'item':
-            let info_item = item_data.get(`${selected_id}`);
-            let amtOwned = profile.get(`${interaction.user.id}`, `${info_item.category}.${selected_id}`);
+            info_item = item_data.get(`${selected_id}`);
+            amtOwned = profile.get(`${interaction.user.id}`, `${info_item.category}.${selected_id}`);
             if (amtOwned == undefined) amtOwned = 0;
-            let embed_item = new EmbedBuilder()
+            embed_item = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${info_item.emote} ${info_item.name}`)
                 .setDescription(`*${info_item.description}\n\n${info_item.description_short}*`)
@@ -251,11 +249,10 @@ export async function execute(interaction) {
                 );
             return interaction.reply({
                 embeds: [embed_item],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'weather':
-            let weather_desc = '';
+            weather_desc = '';
             switch (selected_id) {
                 case Weather.Heatwave:
                     weather_desc =
@@ -269,17 +266,16 @@ export async function execute(interaction) {
                                 - ${type_to_emote(OochType.Tech)} TECH-type Oochamon will also have their ATK increased when struck by lightning.`;
                     break;
             }
-            let embed_weather = new EmbedBuilder()
+            embed_weather = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(selected_id)
                 .setDescription(weather_desc);
             return interaction.reply({
                 embeds: [embed_weather],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
         case 'field_effect':
-            let field_desc = '';
+            field_desc = '';
             switch (selected_id) {
                 case FieldEffect.JaggedGround:
                     field_desc =
@@ -302,15 +298,14 @@ export async function execute(interaction) {
                                 - Priority's effects are reversed.`;
                     break;
             }
-            let embed_field = new EmbedBuilder()
+            embed_field = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(selected_id)
                 .setDescription(field_desc);
             return interaction.reply({
                 embeds: [embed_field],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
-            break;
     }
 
 }

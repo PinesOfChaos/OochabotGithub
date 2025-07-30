@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 
 export const data = new SlashCommandBuilder()
     .setName('test')
     .setDescription('Test development stuff!');
 export async function execute(interaction) {
-    if (user != '122568101995872256' && user != '145342159724347393') {
-        interaction.reply({ content: 'This is not for you!', ephemeral: true });
+    if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
+        interaction.reply({ content: 'This is not for you!', flags: MessageFlags.Ephemeral });
         return;
     }
 

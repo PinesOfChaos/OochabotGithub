@@ -75,7 +75,7 @@ export function buildBoxData(user_profile, page_num) {
  * @returns The Ooch Embed, as well as the file related to the Oochamon, in an array of the 2.
  */
 export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
-    const { type_to_emote } = await import('../func_battle.js');
+    const { type_to_emote } = await import('./func_battle.js');
     const { get_ooch_art } = await import('./func_other.js'); // This should ideally be a direct import if func_other.js also uses named exports
 
     let ooch_title = `${ooch.nickname}`;

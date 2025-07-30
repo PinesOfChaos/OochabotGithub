@@ -1,9 +1,9 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags } from 'discord.js';
 import { profile as _profile } from '../db.js';
-import { setup_playspace_str, box_collector_event } from '../func_play.js';
+import { box_collector_event } from '../func_play.js';
 import { PlayerState, UserType, Weather } from '../types.js';
 import wait from 'wait';
-import { ooch_info_embed, buildBoxData } from '../func_other.js';
+import { buildBoxData } from '../func_other.js';
 import { generate_battle_user, setup_battle } from '../func_battle.js';
 import { clamp } from 'lodash-es';
 
@@ -42,7 +42,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
 
     let otherBattleUser = interaction.options.getUser('battle_user');
-    if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', ephemeral: true });
+    if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', flags: MessageFlags.Ephemeral });
     let levelScale = interaction.options.getNumber('level_to_scale');
     if (levelScale == null) levelScale = 25;
     levelScale = clamp(Math.round(levelScale), 1, 50);
@@ -55,21 +55,21 @@ export async function execute(interaction) {
     let otherUserState = _profile.get(`${otherBattleUser.id}`, 'player_state');
 
     if (intUserState == PlayerState.NotPlaying) {
-        return interaction.reply({ content: 'You must be playing the game to battle with other users.', ephemeral: true });
+        return interaction.reply({ content: 'You must be playing the game to battle with other users.', flags: MessageFlags.Ephemeral });
     } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != _profile.get(`${interaction.user.id}`, 'play_thread_id')) {
-        return interaction.reply({ content: 'You can\'t battle here.', ephemeral: true });
+        return interaction.reply({ content: 'You can\'t battle here.', flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Combat) {
-        return interaction.reply({ content: `You are in the middle of a battle. If you are not mid battle, please restart the game by running \`/play\` again.`, ephemeral: true });
+        return interaction.reply({ content: `You are in the middle of a battle. If you are not mid battle, please restart the game by running \`/play\` again.`, flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Invited) {
-        return interaction.reply({ content: `You currently have a battle invitation.`, ephemeral: true });
+        return interaction.reply({ content: `You currently have a battle invitation.`, flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Intro) {
-        return interaction.reply({ content: `You cannot battle in the intro.`, ephemeral: true });
+        return interaction.reply({ content: `You cannot battle in the intro.`, flags: MessageFlags.Ephemeral });
     }
     ``;
     if (otherUserState == PlayerState.NotPlaying) {
-        return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     } else if (otherUserState == PlayerState.Combat) {
-        return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the middle of a battle right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the middle of a battle right now.`, flags: MessageFlags.Ephemeral });
     } else if (otherUserState !== PlayerState.Playspace) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is unable to battle right now, as they are in a different battle or in a menu.` });
     } else if (otherUserState == PlayerState.Invited) {
@@ -81,7 +81,7 @@ export async function execute(interaction) {
     let otherUserThread = _profile.get(`${otherBattleUser.id}`, 'play_thread_id');
     otherUserThread = await interaction.guild.channels.cache.get(`${_profile.get(otherBattleUser.id)}`, 'play_thread_id');
     if (!otherUserThread || !otherUserThread.isThread()) {
-        return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     }
 
     //#region Setup Rows/Functions
@@ -122,8 +122,8 @@ export async function execute(interaction) {
     });
 
     // Start the battle invitation process
-    confirm_collector = otherUserBattleMsg.createMessageComponentCollector({ time: 600000 });
-    cancel_collector = intUserBattleMsg.createMessageComponentCollector({ time: 600000 });
+    let confirm_collector = otherUserBattleMsg.createMessageComponentCollector({ time: 600000 });
+    let cancel_collector = intUserBattleMsg.createMessageComponentCollector({ time: 600000 });
 
     cancel_collector.on('collect', async (i) => {
         if (i.customId == 'cancel') {
@@ -148,13 +148,12 @@ export async function execute(interaction) {
             let intProfile = _profile.get(`${intBattleUser.id}`);
             let otherProfile = _profile.get(`${otherBattleUser.id}`);
             let pages = 9;
-            let intBoxRow = [];
-            let otherBoxRow = [];
 
-            otherBoxCollector = otherUserThread.createMessageComponentCollector();
-            intBoxCollector = intUserThread.createMessageComponentCollector();
+            let otherBoxCollector = otherUserThread.createMessageComponentCollector();
+            let intBoxCollector = intUserThread.createMessageComponentCollector();
 
             intBoxCollector.on('collect', async (selected) => {
+                let intBoxRow;
                 // Page buttons
                 if (selected.customId == 'box_left' || selected.customId == 'box_right') {
                     selected.customId == 'box_left' ? intPageNum -= 1 : intPageNum += 1;
@@ -162,7 +161,7 @@ export async function execute(interaction) {
 
                     intBoxRow = buildBoxData(intProfile, intPageNum);
                     box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
-                    selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
+                    selected.update({ content: `**Oochabox**`, components: [intBoxRow[0], intBoxRow[1], intBoxRow[2], intBoxRow[3], box_battle_buttons], files: [] });
                 }
 
                 else if (selected.customId.includes('box')) {
@@ -184,6 +183,7 @@ export async function execute(interaction) {
             });
 
             otherBoxCollector.on('collect', async (selected) => {
+                let otherBoxRow;
                 // Page buttons
                 if (selected.customId == 'box_left' || selected.customId == 'box_right') {
                     selected.customId == 'box_left' ? otherPageNum -= 1 : otherPageNum += 1;
@@ -191,7 +191,7 @@ export async function execute(interaction) {
 
                     otherBoxRow = buildBoxData(otherProfile, otherPageNum);
                     box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
-                    selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_battle_buttons], files: [] });
+                    selected.update({ content: `**Oochabox**`, components: [otherBoxRow[0], otherBoxRow[1], otherBoxRow[2], otherBoxRow[3], box_battle_buttons], files: [] });
                 }
 
                 else if (selected.customId.includes('box')) {

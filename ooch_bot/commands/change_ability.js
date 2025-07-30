@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { profile, ability_data } from '../db.js';
-import _ from 'lodash-es';
 
 export const data = new SlashCommandBuilder()
 
@@ -10,7 +9,7 @@ export const data = new SlashCommandBuilder()
         .setDescription('Ability to change to')
         .setRequired(true));
 export async function execute(interaction) {
-    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     let ability = interaction.options.getString('ability');
     ability = parseInt(ability);
     let party = profile.get(`${interaction.user.id}`, 'ooch_party');

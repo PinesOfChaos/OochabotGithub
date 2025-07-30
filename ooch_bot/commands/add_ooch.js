@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { profile, monster_data } from '../db.js';
-import _ from 'lodash-es';
 import { create_ooch } from '../func_play.js';
 
 export const data = new SlashCommandBuilder()
@@ -15,7 +14,7 @@ export const data = new SlashCommandBuilder()
         .setRequired(false));
 export async function execute(interaction) {
     await interaction.deferReply();
-    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
+    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.editReply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     let ooch_id = interaction.options.getString('oochamon');
     if (isNaN(ooch_id)) return interaction.editReply('You must input an oochamon ID here.');
     ooch_id = parseInt(ooch_id);

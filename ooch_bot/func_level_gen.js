@@ -1,8 +1,20 @@
-import { sample, round, shuffle, random } from 'lodash-es';
+import { sample, round, shuffle, random, append } from 'lodash-es';
 import { OochType, GenmapTheme, Weather, BattleAi, StanceForms } from "./types.js";
 import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile as _profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
+
+let whitelist_everchange_wild = [
+    0, 3, 6, 9, 11, 13, 15, 17, 19, 
+    22, 24, 26, 29, 32, 35, 37, 39, 
+    44, 46, 48, 50, 52, 55, 57, 59, 
+    64, 66, 70, 72, 74, 76, 78, 80, 
+    81, 83, 85, 87, 89, 91, 93, 99, 
+    101, 103, 105, 113, 115, 117, 
+    119, 121, 124
+]
+
+let whitelist_everchange_trainer = [21, 62, 109].append(whitelist_everchange_wild)
 
 export async function genmap_allmaps(client) {
     
@@ -486,9 +498,8 @@ export function genmap_ooch_list(level) {
             3, //Roocky
             6, //Puppyre
             69, //Nisythe
-            26, //Blipoint
             34, //Purif-i
-            105, //Nullifly
+            108, //Nullifly
             96, //Tryptid
             97, //Roswier
             98, //Chemerai

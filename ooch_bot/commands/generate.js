@@ -1,9 +1,8 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
 import { readdirSync, readFile, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
 import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect } from '../types.js';
-import { type_to_string } from '../func_battle.js';
 import { get_emote_string } from '../func_other.js';
 import { refresh_global_variables } from '../func_global_data.js';
 import { modernize_all } from '../func_modernize.js';
@@ -15,20 +14,20 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction, client) {
     await interaction.deferReply();
     if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
-        return interaction.editReply({ content: 'You can\'t use this!', ephemeral: true });
+        return interaction.editReply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     }
 
     let applicationEmojis = await client.application.emojis.fetch();
 
     // Clear out enmaps before
-    await monster_data.clear();
-    await move_data.clear();
-    await ability_data.clear();
-    await tile_data.clear();
-    await item_data.clear();
-    await status_data.clear();
-    await maps.clear();
-    await events_data.clear();
+    monster_data.clear();
+    move_data.clear();
+    ability_data.clear();
+    tile_data.clear();
+    item_data.clear();
+    status_data.clear();
+    maps.clear();
+    events_data.clear();
 
     //#region Tile Data
     // ZONES IDs

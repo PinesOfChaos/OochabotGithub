@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags } from 'discord.js';
 import { profile } from '../db.js';
 import { PlayerState } from '../types.js';
 import wait from 'wait';
@@ -22,19 +22,19 @@ export async function execute(interaction) {
     let tradeState = 'trading';
 
     if (intUserState == PlayerState.NotPlaying) {
-        return interaction.reply({ content: 'You must be playing the game to trade with other users.', ephemeral: true });
+        return interaction.reply({ content: 'You must be playing the game to trade with other users.', flags: MessageFlags.Ephemeral });
     } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != profile.get(`${interaction.user.id}`, 'play_thread_id')) {
-        return interaction.reply({ content: 'You can\'t trade here.', ephemeral: true });
+        return interaction.reply({ content: 'You can\'t trade here.', flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Trading) {
-        return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`, ephemeral: true });
+        return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`, flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Intro) {
         return interaction.reply({ content: `You are unable to trade right now, as you are in the intro.` });
     }
 
     if (otherUserState == PlayerState.NotPlaying) {
-        return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     } else if (otherUserState == PlayerState.Trading) {
-        return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the middle of a trade right now.`, flags: MessageFlags.Ephemeral });
     } else if (otherUserState !== PlayerState.Playspace) {
         return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` });
     } else if (otherUserState == PlayerState.Intro) {
@@ -44,7 +44,7 @@ export async function execute(interaction) {
     let otherUserThread = profile.get(`${otherTradeUser.id}`, 'play_thread_id');
     otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherTradeUser.id)}`, 'play_thread_id');
     if (!otherUserThread || !otherUserThread.isThread()) {
-        return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, ephemeral: true });
+        return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     }
 
     //#region Setup Rows/Functions
@@ -186,10 +186,11 @@ export async function execute(interaction) {
             userPageData.box_buttons.components[3].setLabel(`${userPageData.page_num + 1}`);
             await i.update({ components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
         } else if (i.customId.includes('box_ooch')) {
-            user_profile = profile.get(`${userPageData.user.id}`);
+            let user_profile = profile.get(`${userPageData.user.id}`);
             let slot_data = i.customId.split('_');
             let slot_num = slot_data[3];
             let party_slot = false;
+            let ooch_user_data;
             if (i.customId.includes('_party')) party_slot = true;
 
             if (party_slot == false) {
@@ -198,8 +199,8 @@ export async function execute(interaction) {
                 ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
             }
 
-            dexEmbed = await ooch_info_embed(ooch_user_data);
-            dexPng = dexEmbed[1];
+            let dexEmbed = await ooch_info_embed(ooch_user_data);
+            let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
             userPageData.ooch_selected = ooch_user_data;
             userPageData.ooch_is_party = party_slot;
@@ -305,7 +306,7 @@ export async function execute(interaction) {
     }
     //#endregion
     // Start the trading invitation process
-    confirm_collector = otherUserTradeMsg.createMessageComponentCollector({ max: 1, time: 60000 });
+    let confirm_collector = otherUserTradeMsg.createMessageComponentCollector({ max: 1, time: 60000 });
 
     confirm_collector.on('collect', async (i) => {
         if (i.customId == 'yes') {
@@ -314,13 +315,13 @@ export async function execute(interaction) {
             profile.set(otherTradeUser.id, PlayerState.Trading, 'player_state');
 
             await intUserTradeMsg.edit({ content: `**Trade with ${otherTradeMember.displayName}:**\nPlease select an Oochamon to trade!`, components: [intBoxRow[0], intBoxRow[1], intBoxRow[2], intBoxRow[3], intBoxButtons] });
-            intTradeMsgCollector = intUserTradeMsg.createMessageComponentCollector({ idle: 300000 });
+            let intTradeMsgCollector = intUserTradeMsg.createMessageComponentCollector({ idle: 300000 });
             intTradeMsgCollector.on('collect', async (i) => {
                 await handleTradeInput(i, intUserPageData);
             });
 
             await otherUserTradeMsg.edit({ content: `**Trade with ${intTradeMember.displayName}:**\nPlease select an Oochamon to trade!`, components: [otherBoxRow[0], otherBoxRow[1], otherBoxRow[2], otherBoxRow[3], otherBoxButtons] });
-            otherTradeMsgCollector = otherUserTradeMsg.createMessageComponentCollector({ idle: 300000 });
+            let otherTradeMsgCollector = otherUserTradeMsg.createMessageComponentCollector({ idle: 300000 });
             otherTradeMsgCollector.on('collect', async (i) => {
                 await handleTradeInput(i, otherUserPageData);
             });

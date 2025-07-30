@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { profile, item_data as _item_data } from '../db.js';
 import { PlayerState } from '../types.js';
 import { item_use } from '../func_battle.js';
@@ -15,22 +15,22 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   await interaction.deferReply();
   if (!profile.has(interaction.user.id)) {
-    return interaction.editReply({ content: `You must be playing the Oochamon to use this command!`, ephemeral: true });
+    return interaction.editReply({ content: `You must be playing the Oochamon to use this command!`, flags: MessageFlags.Ephemeral });
   }
 
   let playerState = profile.get(`${interaction.user.id}`, 'player_state');
   if (playerState === PlayerState.NotPlaying) {
-    return interaction.editReply({ content: 'You must be playing the game to use an item.', ephemeral: true });
+    return interaction.editReply({ content: 'You must be playing the game to use an item.', flags: MessageFlags.Ephemeral });
   } else if (playerState !== PlayerState.Playspace) {
-    return interaction.editReply({ content: 'You cannot use an item here.', ephemeral: true });
+    return interaction.editReply({ content: 'You cannot use an item here.', flags: MessageFlags.Ephemeral });
   }
 
   let item_id = interaction.options.getString('item');
-  if (!_item_data.has(item_id)) return interaction.editReply({ content: 'Invalid item id!', ephemeral: true });
+  if (!_item_data.has(item_id)) return interaction.editReply({ content: 'Invalid item id!', flags: MessageFlags.Ephemeral });
   let item_data = _item_data.get(`${item_id}`);
 
   if (item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
-    return interaction.editReply({ content: 'You cannot use a teleport right now.', ephemeral: true });
+    return interaction.editReply({ content: 'You cannot use a teleport right now.', flags: MessageFlags.Ephemeral });
   }
 
   let item_usage_text = '';
@@ -40,14 +40,15 @@ export async function execute(interaction) {
   }
 
   if (item_data.type == 'repel' || item_data.type == 'teleport') {
+    let playspace_str, msg_to_edit;
     switch (item_data.type) {
       case 'repel':
         await item_use(interaction.user.id, {}, item_id);
         break;
       case 'teleport':
         await item_use(interaction.user.id, {}, item_id);
-        let playspace_str = await setup_playspace_str(interaction.user.id);
-        let msg_to_edit = profile.get(`${interaction.user.id}`, 'display_msg_id');
+        playspace_str = await setup_playspace_str(interaction.user.id);
+        msg_to_edit = profile.get(`${interaction.user.id}`, 'display_msg_id');
         await interaction.channel.messages.fetch(msg_to_edit).then((msg) => {
           msg.edit({ content: playspace_str[0], components: playspace_str[1] });
         }).catch(() => { });

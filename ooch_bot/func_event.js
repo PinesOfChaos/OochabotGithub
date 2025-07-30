@@ -16,7 +16,7 @@ import wait from 'wait';
  */
 export async function event_process(user_id, thread, event_array, start_pos = 0, event_name = false) {
     
-    const { give_item, setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js').default;
+    const { give_item, setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
 
     let next_buttons = new ActionRowBuilder()
         .addComponents(

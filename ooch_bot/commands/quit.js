@@ -1,6 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { profile } from '../db.js';
-import { PlayerState } from '../types.js';
 import { quit_oochamon } from '../func_other.js';
 
 export const data = new SlashCommandBuilder()

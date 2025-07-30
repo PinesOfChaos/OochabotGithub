@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data as _move_data, monster_data, item_data as _item_data, ability_data } from '../db.js';
 import { capitalize, lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
@@ -15,13 +15,13 @@ export async function execute(interaction) {
     let playerState = profile.get(`${interaction.user.id}`, 'player_state');
 
     if (playerState == PlayerState.NotPlaying) {
-        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.', ephemeral: true });
+        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.', flags: MessageFlags.Ephemeral });
     } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != profile.get(`${interaction.user.id}`, 'play_thread_id')) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu here.', ephemeral: true });
+        return interaction.editReply({ content: 'You can\'t pull up the menu here.', flags: MessageFlags.Ephemeral });
     } else if (playerState == PlayerState.Menu) {
-        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, ephemeral: true });
+        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, flags: MessageFlags.Ephemeral });
     } else if (playerState != PlayerState.Playspace) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu right now.', ephemeral: true });
+        return interaction.editReply({ content: 'You can\'t pull up the menu right now.', flags: MessageFlags.Ephemeral });
     }
 
     profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
@@ -152,12 +152,9 @@ export async function execute(interaction) {
                         value: 'objective',
                     }));
 
-
-    let oochadex_sel_1 = new ActionRowBuilder();
-    let oochadex_sel_options_1 = [];
-
     //#endregion End of making action rows
     let user_profile = profile.get(`${interaction.user.id}`);
+    let bag_select;
 
     let menuMsg;
     await interaction.editReply({ content: `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
@@ -324,6 +321,7 @@ export async function execute(interaction) {
         let oochadex_sel_options_1 = [];
         page = parseInt(page);
         let num_max = (25 * page);
+        let ooch_data, oochadex_check;
 
         for (let i = 0 + (25 * (page - 1)); i < (25 * page); i++) {
             ooch_data = monster_data.get(`${i}`);
@@ -376,7 +374,7 @@ export async function execute(interaction) {
 
     // Initialize all variables used across multiple sub menus here
     let selected, collectorId;
-    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, display_inv, page_num, dex_page_num, prefEmbed, pref_data, pref_desc;
+    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
 
     // Enable party healing button if we have healing items
     let healItems = Object.entries(user_profile.heal_inv);
@@ -420,7 +418,7 @@ export async function execute(interaction) {
         // Back to Oochamon View
         else if (selected == 'back_to_ooch') {
             let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-            dexPng = dexEmbed[1];
+            let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
             let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
@@ -433,21 +431,12 @@ export async function execute(interaction) {
             await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: party_buttons });
         }
 
-        // Back to Box Select
-        else if (selected == 'back_to_box') {
-            box_row = buildBoxData(interaction.user, page_num);
-            i.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons] });
-        }
-
-        // Back to Box Select
+        // Back to Item Select
         else if (selected == 'back_to_item') {
-            box_row = await buildItemData();
+            let box_row = await buildItemData();
             bagEmbed.setDescription(box_row[0]);
             i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
         }
-
-
-
 
         //#endregion
         //#region Party / Party Submenu
@@ -571,7 +560,7 @@ export async function execute(interaction) {
             }
 
             dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-            dexPng = dexEmbed[1];
+            let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
             let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
@@ -664,7 +653,7 @@ export async function execute(interaction) {
 
             if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
             let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-            dexPng = dexEmbed[1];
+            let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
             await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
 
@@ -685,7 +674,7 @@ export async function execute(interaction) {
                 (selected_ooch.stats.def_iv - 1) * 20,
                 (selected_ooch.stats.spd_iv - 1) * 20);
             let dexEmbed = await ooch_info_embed(newEvoOoch, interaction.user.id);
-            dexPng = dexEmbed[1];
+            let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
 
             oochData = monster_data.get(`${newEvoOoch.id}`);
@@ -713,28 +702,28 @@ export async function execute(interaction) {
 
                 // Check nickname length
                 if (m.content.length > 16) {
-                    i.followUp({ content: `Nicknames must be 16 characters or less.`, ephemeral: true });
+                    i.followUp({ content: `Nicknames must be 16 characters or less.`, flags: MessageFlags.Ephemeral });
                     m.delete().catch(() => { });
                     return false;
                 }
 
                 // Check for Discord mentions
                 if (/<@!?[0-9]+>/g.test(m.content)) {
-                    i.followUp({ content: `Nicknames cannot contain Discord mentions.`, ephemeral: true });
+                    i.followUp({ content: `Nicknames cannot contain Discord mentions.`, flags: MessageFlags.Ephemeral });
                     m.delete().catch(() => { });
                     return false;
                 }
 
                 // Check for line breaks
                 if (/\n/.test(m.content)) {
-                    i.followUp({ content: `Nicknames cannot contain line breaks.`, ephemeral: true });
+                    i.followUp({ content: `Nicknames cannot contain line breaks.`, flags: MessageFlags.Ephemeral });
                     m.delete().catch(() => { });
                     return false;
                 }
 
                 // Check for Discord timestamps
                 if (/<t:[0-9]+:[a-zA-Z]>/g.test(m.content)) {
-                    i.followUp({ content: `Nicknames cannot contain Discord timestamps.`, ephemeral: true });
+                    i.followUp({ content: `Nicknames cannot contain Discord timestamps.`, flags: MessageFlags.Ephemeral });
                     m.delete().catch(() => { });
                     return false;
                 }
@@ -743,13 +732,13 @@ export async function execute(interaction) {
             };
 
             i.update({ content: `Enter a nickname for your ${selected_ooch.name}! (16 characters max, Type \`reset\` to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
-            nick_msg_collector = menuMsg.channel.createMessageCollector({ filter: nick_filter, max: 1 });
+            let nick_msg_collector = menuMsg.channel.createMessageCollector({ filter: nick_filter, max: 1 });
             nick_msg_collector.on('collect', async (msg) => {
                 let new_nick = (msg.content.toLowerCase() != 'reset' ? msg.content : selected_ooch.name);
                 selected_ooch.nickname = new_nick;
 
                 // Generate a new ooch title to place into our embed
-                ooch_title = `${selected_ooch.nickname}`;
+                let ooch_title = `${selected_ooch.nickname}`;
                 selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${TypeEmote[capitalize(selected_ooch.type)]}` : ooch_title += ` ${TypeEmote[capitalize(selected_ooch.type)]}`;
                 dexEmbed.setTitle(ooch_title);
 
@@ -934,7 +923,7 @@ export async function execute(interaction) {
             if (selected == 'n/a') {
                 let keyData = await buildItemData();
                 bagEmbed.setDescription(keyData[0]);
-                i.update({ content: `Can\'t use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
             }
             let item_data = _item_data.get(`${selected}`);
@@ -942,7 +931,7 @@ export async function execute(interaction) {
             if (item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
                 let keyData = await buildItemData();
                 bagEmbed.setDescription(keyData[0]);
-                i.update({ content: `Can\'t use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                i.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
             }
 
@@ -953,13 +942,14 @@ export async function execute(interaction) {
             }
 
             if (item_data.type == 'repel' || item_data.type == 'teleport') {
+                let playspace_str;
                 switch (item_data.type) {
                     case 'repel':
                         await item_use(interaction.user.id, selected_ooch, selected);
                         break;
                     case 'teleport':
                         await item_use(interaction.user.id, selected_ooch, selected);
-                        let playspace_str = await setup_playspace_str(interaction.user.id);
+                        playspace_str = await setup_playspace_str(interaction.user.id);
                         await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                             profile.set(interaction.user.id, msg.id, 'display_msg_id');
                         });
@@ -992,6 +982,7 @@ export async function execute(interaction) {
             selData = selData.split('_');
             let selItem = _item_data.get(`${selData[1]}`);
             let item_usage_text = '';
+            let oldOoch, nickname, newOoch, abilityList, currentAbility, newAbility, exp_given_ooch, level_ooch;
 
             switch (selItem.type) {
                 case 'iv':
@@ -999,12 +990,12 @@ export async function execute(interaction) {
                     item_usage_text = `Used a **${selItem.name}**, and raised the ${selItem.potency.toUpperCase()} Bonus for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}** by 1.`;
                     break;
                 case 'evolve':
-                    let oldOoch = user_profile.ooch_party[selData[0]];
+                    oldOoch = user_profile.ooch_party[selData[0]];
 
                     // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
-                    let nickname = oldOoch.nickname == oldOoch.name ? false : oldOoch.nickname;
+                    nickname = oldOoch.nickname == oldOoch.name ? false : oldOoch.nickname;
 
-                    let newOoch = await create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, nickname, oldOoch.current_exp, false,
+                    newOoch = await create_ooch(selItem.potency[1], oldOoch.level, oldOoch.moveset, nickname, oldOoch.current_exp, false,
                         (oldOoch.stats.hp_iv - 1) * 20,
                         (oldOoch.stats.atk_iv - 1) * 20,
                         (oldOoch.stats.def_iv - 1) * 20,
@@ -1020,10 +1011,10 @@ export async function execute(interaction) {
                     item_usage_text = `Used the **${selItem.name}**, and unlocked the latent potential of ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**. It can now learn special moves!`;
                     break;
                 case 'ability_swap':
-                    let abilityList = monster_data.get(`${user_profile.ooch_party[selData[0]].id}`, 'abilities');
-                    let currentAbility = user_profile.ooch_party[selData[0]].ability;
+                    abilityList = monster_data.get(`${user_profile.ooch_party[selData[0]].id}`, 'abilities');
+                    currentAbility = user_profile.ooch_party[selData[0]].ability;
 
-                    let newAbility = abilityList.find(ability => ability !== currentAbility);
+                    newAbility = abilityList.find(ability => ability !== currentAbility);
                     user_profile.ooch_party[selData[0]].ability = newAbility;
 
                     item_usage_text = `Swapped ability from **${ability_data.get(`${currentAbility}`, 'name')}** to **${ability_data.get(`${newAbility}`, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
@@ -1036,7 +1027,7 @@ export async function execute(interaction) {
                         return;
                     }
 
-                    let exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
 
                     user_profile.ooch_party[selData[0]] = exp_given_ooch[0];
                     item_usage_text = exp_given_ooch[1];
@@ -1049,7 +1040,7 @@ export async function execute(interaction) {
                         return;
                     }
 
-                    let level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
 
                     user_profile.ooch_party[selData[0]] = level_ooch[0];
                     item_usage_text = level_ooch[1];
@@ -1085,7 +1076,7 @@ export async function execute(interaction) {
             let map_item = _item_data.find('potency', map_name);
             if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**` });
 
-            if (user_profile.other_inv.hasOwnProperty(`${map_item.id}`)) {
+            if (Object.prototype.hasOwnProperty.call(user_profile.other_inv, `${map_item.id}`)) {
                 let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
                 i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
             }

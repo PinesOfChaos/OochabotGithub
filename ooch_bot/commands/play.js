@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType } from 'discord.js';
+import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags } from 'discord.js';
 import { profile, battle_data, events_data } from '../db.js';
 import { setup_playspace_str, move } from '../func_play.js';
 import { PlayerState } from '../types.js';
@@ -13,16 +13,15 @@ export async function execute(interaction, client) {
     let target = interaction.user.id;
 
     if (!profile.has(target)) {
-        return interaction.reply({ content: 'Please run `/start` before you play the game!', ephemeral: true });
-    } else if (profile.get(`${target}`, 'player_state') == PlayerState.BattleSetup || profile.get(`${target}`, 'player_state') == PlayerState.Encounter) {
+        return interaction.reply({ content: 'Please run `/start` before you play the game!', flags: MessageFlags.Ephemeral });
     }
 
     if (!interaction.deferred && !interaction.replied) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     }
 
     // UNCOMMENT THIS IF DOING DEV STUFF!!
-    if (target != '122568101995872256' && target != '145342159724347393' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', ephemeral: true });
+    if (target != '122568101995872256' && target != '145342159724347393' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', flags: MessageFlags.Ephemeral });
 
     let thread = interaction.channel;
 
@@ -108,11 +107,11 @@ export async function execute(interaction, client) {
         if (playspace_str[0] != "**Intro**") {
             if (outputMsg != false) {
                 if (thread != interaction.channel) {
-                    let tipMsg = await thread.send({ content: outputMsg, ephemeral: true });
+                    let tipMsg = await thread.send({ content: outputMsg, flags: MessageFlags.Ephemeral });
                     await wait(15000);
                     await tipMsg.delete().catch(() => { });
                 } else {
-                    await interaction.editReply({ content: outputMsg, ephemeral: true });
+                    await interaction.editReply({ content: outputMsg, flags: MessageFlags.Ephemeral });
                 }
             } else if (thread === interaction.channel) {
                 await interaction.deleteReply().catch(() => { });

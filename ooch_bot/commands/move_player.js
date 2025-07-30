@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { profile } from '../db.js';
-import _ from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str } from '../func_play.js';
 
@@ -24,7 +23,7 @@ export const data = new SlashCommandBuilder()
         .setDescription('Make this the user\'s checkpoint?')
         .setRequired(true));
 export async function execute(interaction) {
-    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', ephemeral: true });
+    if (interaction.user.id != "145342159724347393" && interaction.user.id != "122568101995872256") return interaction.reply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
 
     let move_user = interaction.options.getUser('move_user');
     let move_map = interaction.options.getString('move_map');

@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,12 +9,14 @@ import { startCase, toUpper } from 'lodash-es';
 import { schedule } from 'node-cron';
 
 // create a new Discord client and give it some variables
-import { Client, Partials, GatewayIntentBits, Collection } from 'discord.js';
-import { profile, monster_data, item_data as _item_data, ability_data, move_data, status_data } from './db.js';
+import { Client, Partials, GatewayIntentBits, Collection, MessageFlags } from 'discord.js';
+import { profile, monster_data, item_data as _item_data, ability_data, move_data, status_data, events_data, battle_data as _battle_data } from './db.js';
 import { move, setup_playspace_str } from './func_play.js';
 import { PlayerState } from './types.js';
-import { quit_oochamon } from './func_other.js';
+import { quit_oochamon, reset_oochamon } from './func_other.js';
 import { genmap_allmaps } from './func_level_gen.js';
+import { event_process } from './func_event.js';
+import { prompt_battle_actions } from './func_battle.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
@@ -24,6 +25,7 @@ client.commands = new Collection();
 const registerCommands = [];
 const commandFiles = readdirSync('./commands').filter(file => file.endsWith('.js'));
 const inactivityTrackers = {};
+
 
 //#region 
 for (const file of commandFiles) {
@@ -65,116 +67,116 @@ schedule('00 16 * * *', async () => {
     scheduled: true,
 });
 
-// client.on('ready', async () => {
-//     let userIds = profile.keys();
-//     for (let user of userIds) {
+client.on('ready', async () => {
+    let userIds = profile.keys();
+    for (let user of userIds) {
 
-//         let user_profile = profile.get(`${user}`);
+        let user_profile = profile.get(`${user}`);
 
-//         // UNCOMMENT THIS IF DOING DEV STUFF!!
-//         if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
+        // UNCOMMENT THIS IF DOING DEV STUFF!!
+        if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
 
-//         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
-//         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
-//         let userThread = userGuild.channels.cache.get(`${user_profile.play_thread_id}`);
-//         if (userThread == undefined) continue;
+        if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
+        let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
+        let userThread = userGuild.channels.cache.get(`${user_profile.play_thread_id}`);
+        if (userThread == undefined) continue;
         
-//         // Set inactivity timer
-//         const inactivityTimer = setTimeout(async () => {
-//             await quit_oochamon(userThread, user);
-//         }, 30 * 60 * 1000);
+        // Set inactivity timer
+        const inactivityTimer = setTimeout(async () => {
+            await quit_oochamon(userThread, user);
+        }, 30 * 60 * 1000);
 
-//         inactivityTrackers[user] = inactivityTimer;
+        inactivityTrackers[user] = inactivityTimer;
 
-//         if (user_profile.player_state == PlayerState.Combat) continue;
+        if (user_profile.player_state == PlayerState.Combat) continue;
 
-//         if (user_profile.player_state == PlayerState.Intro) {
-//             await userThread.bulkDelete(100).catch(() => {});
-//             await reset_oochamon(user);
-//             await profile.set(user, userThread.id, 'play_thread_id');
-//             await profile.set(user, userGuild.id, 'play_guild_id');
-//             await event_process(user, userThread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
+        if (user_profile.player_state == PlayerState.Intro) {
+            await userThread.bulkDelete(100).catch(() => {});
+            await reset_oochamon(user);
+            await profile.set(user, userThread.id, 'play_thread_id');
+            await profile.set(user, userGuild.id, 'play_guild_id');
+            await event_process(user, userThread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
 
-//         } else if (user_profile.player_state == PlayerState.Dialogue && user_profile.cur_event_name !== false) {
-//             await userThread.bulkDelete(100).catch(() => {});
+        } else if (user_profile.player_state == PlayerState.Dialogue && user_profile.cur_event_name !== false) {
+            await userThread.bulkDelete(100).catch(() => {});
 
-//             // Setup playspace
-//             let playspace_str = await await setup_playspace_str(user);
-//             await profile.set(user, PlayerState.Playspace, 'player_state');
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user);
+            await profile.set(user, PlayerState.Playspace, 'player_state');
 
-//             await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-//                 profile.set(user, msg.id, 'display_msg_id');
-//             });
+            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                profile.set(user, msg.id, 'display_msg_id');
+            });
 
-//             await event_process(user, userThread, events_data.get(`${user_profile.cur_event_name}`), 0, user_profile.cur_event_name);
-//         } else if (user_profile.player_state == PlayerState.Dialogue) {
-//             await userThread.bulkDelete(100).catch(() => {});
+            await event_process(user, userThread, events_data.get(`${user_profile.cur_event_name}`), 0, user_profile.cur_event_name);
+        } else if (user_profile.player_state == PlayerState.Dialogue) {
+            await userThread.bulkDelete(100).catch(() => {});
 
-//             // Setup playspace
-//             let playspace_str = await await setup_playspace_str(user);
-//             await profile.set(user, PlayerState.Playspace, 'player_state');
+            // Setup playspace
+            let playspace_str = await setup_playspace_str(user);
+            await profile.set(user, PlayerState.Playspace, 'player_state');
 
-//             await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-//                 profile.set(user, msg.id, 'display_msg_id');
-//             });
+            await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                profile.set(user, msg.id, 'display_msg_id');
+            });
 
-//             if (user_profile.cur_event_array.length != 0) {
-//                 await event_process(user, userThread, user_profile.cur_event_array, user_profile.cur_event_pos);
-//             }
+            if (user_profile.cur_event_array.length != 0) {
+                await event_process(user, userThread, user_profile.cur_event_array, user_profile.cur_event_pos);
+            }
 
-//         } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
-//             if (userThread !== undefined) {
-//                 await userThread.bulkDelete(100).catch(() => {});
-//                 // Setup playspace
-//                 let playspace_str = await await setup_playspace_str(user);
-//                 await profile.set(user, PlayerState.Playspace, 'player_state');
+        } else if ((user_profile.player_state !== PlayerState.NotPlaying && user_profile.player_state !== PlayerState.Playspace)) {
+            if (userThread !== undefined) {
+                await userThread.bulkDelete(100).catch(() => {});
+                // Setup playspace
+                let playspace_str = await setup_playspace_str(user);
+                await profile.set(user, PlayerState.Playspace, 'player_state');
 
-//                 await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-//                     profile.set(user, msg.id, 'display_msg_id');
-//                 });
+                await userThread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                    profile.set(user, msg.id, 'display_msg_id');
+                });
 
-//                 await move(userThread, user, '', 1);
-//             }
-//         }
-//     }
+                await move(userThread, user, '', 1);
+            }
+        }
+    }
 
-//     let battleIds = _battle_data.keys();
-//     for (let battle of battleIds) {
-//         let battle_data = _battle_data.get(`${battle}`);
-//         if (battle_data == undefined) continue;
+    let battleIds = _battle_data.keys();
+    for (let battle of battleIds) {
+        let battle_data = _battle_data.get(`${battle}`);
+        if (battle_data == undefined) continue;
 
-//         for (let user of battle_data.users) {
-//             if (user.is_player) {
-//                 let user_profile = profile.get(`${user.user_id}`);
+        for (let user of battle_data.users) {
+            if (user.is_player) {
+                let user_profile = profile.get(`${user.user_id}`);
 
-//                 if (user_profile.cur_battle_id != battle_data.battle_id || user_profile.player_state != PlayerState.Combat) {
-//                     _battle_data.delete(battle_data.battle_id);
-//                     break;
-//                 }
+                if (user_profile.cur_battle_id != battle_data.battle_id || user_profile.player_state != PlayerState.Combat) {
+                    _battle_data.delete(battle_data.battle_id);
+                    break;
+                }
 
-//                 let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
-//                 let userThread = userGuild.channels.cache.get(`${user_profile.play_thread_id}`);
+                let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
+                let userThread = userGuild.channels.cache.get(`${user_profile.play_thread_id}`);
 
-//                 // Delete turn messages
-//                 let msgDeleteCount = _battle_data.get(`${battle}`, 'turn_msg_counter');
-//                 if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
-//                     if (userThread != undefined) await userThread.bulkDelete(msgDeleteCount).catch(() => {});
-//                 }  
+                // Delete turn messages
+                let msgDeleteCount = _battle_data.get(`${battle}`, 'turn_msg_counter');
+                if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
+                    if (userThread != undefined) await userThread.bulkDelete(msgDeleteCount).catch(() => {});
+                }  
                 
-//                 user.action_selected = false;
-//             }
-//         }
+                user.action_selected = false;
+            }
+        }
 
-//         if (_battle_data.has(battle_data.battle_id)) {
-//             battle_data.battle_action_queue = [];
-//             _battle_data.set(battle, battle_data);
+        if (_battle_data.has(battle_data.battle_id)) {
+            battle_data.battle_action_queue = [];
+            _battle_data.set(battle, battle_data);
 
-//             await prompt_battle_actions(battle);
-//         }
-//     }
+            await prompt_battle_actions(battle);
+        }
+    }
 
-//     console.log('Bot Ready')
-// });
+    console.log('Bot Ready')
+});
 
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
@@ -395,12 +397,12 @@ client.on('interactionCreate', async interaction => {
         await command.execute(interaction, client);
     } catch (error) {
         await console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
     }
     
 });
 
-//
+
 client.on('messageCreate', async message => {
 
     if (message.author.id == '397879158962782219') {

@@ -1,5 +1,3 @@
-
-
 import { battle_data as _battle_data, profile as _profile, move_data as _move_data, stance_data, monster_data, item_data as _item_data, status_data as _status_data, ability_data, global_data, player_positions } from "./db.js";
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
@@ -184,7 +182,7 @@ export function reset_this_turn_triggers(battle_data){
         for(let [i, slot] of user.slot_actions.entries()){
             slot.hp_starting = user.party[i].current_hp;
 
-            for (const [key] of Object.key(slot)) {
+            for (const key of Object.keys(slot)) {
                 if(key.includes('this_turn')){
                     slot[key] = false;
                 }
@@ -245,7 +243,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     }
 
     if (fake_battle) {
-        for(let [id, user] of battleDataObj.users.entries()) {
+        for(let user of battleDataObj.users.values()) {
             for (let i = 0; i < user.party.length; i++) {
                 user.party[i].current_hp = user.party[i].stats.hp;
                 user.party[i].alive = true;
@@ -554,17 +552,19 @@ export function get_ai_action(user_obj, battle_data) {
     let moves = active_mon.moveset;
     let users = battle_data.users;
     let target_user = false;
-    let action = false;
     let move_id = false;
     let move_intentions = []
 
     let users_enemy = users.filter(u => u.team_id != user_obj.team_id);
+    // eslint-disable-next-line no-unused-vars
     let users_friendly = users.filter(u => u.team_id == user_obj.team_id && u.user_index != user_obj.user_index);
     let party_alive_slots = [];
     user_obj.party.forEach((mon, i) => {
         if(mon.hp > 0){party_alive_slots.push(i)}
     })
     
+    let users_to_choose, target_mon;
+    let good_moves, okay_moves, okay_moves_damage, stat_stages
 
     switch (user_obj.user_type) {
         case UserType.Wild:
@@ -575,7 +575,7 @@ export function get_ai_action(user_obj, battle_data) {
         case UserType.NPCSmart:
         case UserType.NPCTrainer:
             //move_intentions.filter((move) => move.priority > 1);
-            let users_to_choose = users_enemy.filter((u) => u.defeated == false)
+            users_to_choose = users_enemy.filter((u) => u.defeated == false)
             target_user = sample(users_to_choose);
             target_mon = target_user.party[target_user.active_slot];
             move_intentions = get_move_intention(moves, target_mon.type);
@@ -598,10 +598,10 @@ export function get_ai_action(user_obj, battle_data) {
                 }
             break;
             case BattleAi.Smart:
-                let good_moves = move_intentions.filter((move) => move.priority > 1);
-                let okay_moves = move_intentions.filter((move) => move.priority == 1);
-                let okay_moves_damage = okay_moves.filter((move) => move.damage > 0)
-                let stat_stages = active_mon.stats.atk_mul + active_mon.stats.def_mul + active_mon.stats.spd_mul;
+                good_moves = move_intentions.filter((move) => move.priority > 1);
+                okay_moves = move_intentions.filter((move) => move.priority == 1);
+                okay_moves_damage = okay_moves.filter((move) => move.damage > 0)
+                stat_stages = active_mon.stats.atk_mul + active_mon.stats.def_mul + active_mon.stats.spd_mul;
                 
                 if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
                     //Switch if there are no acceptable attacking moves and there is a mon we can switch to
@@ -806,6 +806,8 @@ export async function prompt_battle_actions(battle_id) {
     _battle_data.set(battle_id, 1, 'turn_msg_counter');
 
 
+    let stanceSelectMenu, healSelectButtons1, healSelectButtons2
+
     //#region Setup buttons and select menus
     const inputRow = new ActionRowBuilder()
         .addComponents(
@@ -920,6 +922,7 @@ export async function prompt_battle_actions(battle_id) {
     let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
     await battle_data.users.forEach(async (user) => {
         //console.log([user.name, num_catchable])
+        let ooch_disable
         if (user.user_type != UserType.Player) {
             get_ai_action(user, battle_data);
             user.action_selected = true;
@@ -1177,7 +1180,7 @@ export async function prompt_battle_actions(battle_id) {
                 } else if (customId == BattleInput.Switch) {
 
                     let ooch_inv = user.party;
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
+                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_disable;
                     
                     switchButtons1 = new ActionRowBuilder();
                     switchButtons2 = new ActionRowBuilder();
@@ -1192,7 +1195,7 @@ export async function prompt_battle_actions(battle_id) {
     
                         if (i == user.active_slot) {
                             ooch_button_color = ButtonStyle.Success;
-                            ooch_prev = ooch_check;
+                            // ooch_prev = ooch_check;
                             ooch_disable = true;
                         }
                         else if (ooch_check.current_hp <= 0) {
@@ -1287,7 +1290,7 @@ export async function prompt_battle_actions(battle_id) {
                 } else if (customId.includes('_item_select')) {
 
                     let ooch_inv = user.party;
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
+                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_disable;
                     
                     healSelectButtons1 = new ActionRowBuilder();
                     healSelectButtons2 = new ActionRowBuilder();
@@ -1303,7 +1306,6 @@ export async function prompt_battle_actions(battle_id) {
         
                             if (i == user.active_slot) {
                                 ooch_button_color = ButtonStyle.Success;
-                                ooch_prev = ooch_check;
                                 ooch_disable = true;
                             }
                             else if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
@@ -1414,7 +1416,7 @@ export async function process_battle_actions(battle_id){
     let battle_data = _battle_data.get(`${battle_id}`);
     let actions = battle_data.battle_action_queue;
     let finish_battle = false;
-    let action, header, text, faint_check;
+    let action, text, faint_check;
 
     //console.log('MESSAGE ROUND START')
     await distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
@@ -1491,13 +1493,14 @@ export async function process_battle_actions(battle_id){
 
         //Clear any remaining actions if we're meant to finish the battle
         //Also send any final messages for the action
+        let embed, png;
         if(finish_battle == true){
             if(('finish_data' in turn_data) && turn_data.finish_data != false){
                 let finish_data = turn_data.finish_data;
                 switch(finish_data.type) {
                     case 'capture':
-                        let embed = turn_data.finish_data.info_embed;
-                        let png = turn_data.finish_data.ooch_png
+                        embed = turn_data.finish_data.info_embed;
+                        png = turn_data.finish_data.ooch_png
 
                         //console.log('CAPTURE DISTRIBUTE')
                         await distribute_messages(battle_data, { embeds: [embed], files: [png] });
@@ -1557,6 +1560,8 @@ export async function process_battle_actions(battle_id){
             for(let effect of status_checks){
                 if(finish_battle){ break; }
 
+                let burn_val, sleep_val, infect_val;
+
                 switch(effect){ //Status effects
                     case Status.Vanish:
                         
@@ -1580,23 +1585,23 @@ export async function process_battle_actions(battle_id){
                         }
                     break;
                     case Status.Sleep:
-                        let sleep_val = Math.round(ooch.stats.hp/10);
+                        sleep_val = Math.round(ooch.stats.hp/10);
                         ooch.current_hp += sleep_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
                         end_of_round_text += `\n<:status_sleep:1335446202275070034> ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
                     break;
                     case Status.Burn:
-                        let burn_val = Math.round(ooch.stats.hp * 0.07);
+                        burn_val = Math.round(ooch.stats.hp * 0.07);
                         ooch.current_hp -= burn_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
                         end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
                     break;
                     case Status.Infect:
-                        if(!slot.hasOwnProperty("status_counter_infect")){
+                        if(!Object.prototype.hasOwnProperty.call(slot, "status_counter_infect")){
                             slot.status_counter_infect = 0;
                         }
 
-                        let infect_val = Math.round(slot.status_counter_infect * ooch.stats.hp/20);
+                        infect_val = Math.round(slot.status_counter_infect * ooch.stats.hp/20);
                         slot.status_counter_infect += 1;
                         ooch.current_hp -= infect_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
@@ -1651,6 +1656,7 @@ export async function process_battle_actions(battle_id){
         await end_of_round_prompt_switch(battle_data);
 
         //Send out any new mons or any other actions that have been moved to the end of turn queue
+        let turn_data;
         while(actions.length > 0 && finish_battle == false){
             sort_action_priority(battle_data);
             action = actions.shift();
@@ -1876,7 +1882,7 @@ export async function action_process_switch(battle_data, action){
     }
 }
 
-export function use_switch_ability(battle_data, user_index, slot_from, slot_to, is_switching) {
+export function use_switch_ability(battle_data, user_index, slot_from, slot_to) {
     let user = battle_data.users[user_index]
     let ooch_to = user.party[slot_to];
     let ooch_from = user.party[slot_from];
@@ -1894,6 +1900,7 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to, 
         ooch_to.type = status_types;
     }
 
+    let incAmount = 0;
     
     //Effects of the mon to switching in
     switch (ooch_to.ability) {
@@ -2050,11 +2057,12 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to, 
             }
 
             //User's new mon abilities that affect all enemies
+            let prev_hp;
             switch (ooch_to.ability) {
                 case Ability.Boisterous: //Enemy loses 10% HP
                     string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Boisterous**:`;
 
-                    let prev_hp = ooch_enemy.current_hp;
+                    prev_hp = ooch_enemy.current_hp;
                     ooch_enemy.current_hp = clamp(Math.floor(ooch_enemy.current_hp - ooch_enemy.stats.hp * 0.1), 1, ooch_enemy.stats.hp);
                     string_to_send += `\n--- ${ooch_enemy.emote} **${ooch_enemy.nickname}** lost ${prev_hp - ooch_enemy.current_hp} HP!\n`;
                 break;
@@ -2089,7 +2097,7 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to, 
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, finish_data : Varying, return_string : String}
  */
-export async function action_process_prism() {
+export async function action_process_prism(battle_data, action) {
     let user = battle_data.users[action.user_index];
     let user_id = user.user_id;
     let finish_battle = false;
@@ -2104,6 +2112,8 @@ export async function action_process_prism() {
     let prism_pulses = prism_result[1];
     prism_result = prism_result[0];
     battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
+
+    let exp_earned = 0;
 
     if(prism_result == true){
         return_string += `\n*The prism pulses once...*\n*The prism pulses twice..!*\n\n**You successfully caught the wild ${ooch_target.nickname}!**`;
@@ -2193,7 +2203,7 @@ export async function action_process_prism() {
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_heal() {
+export async function action_process_heal(battle_data, action) {
     let user = battle_data.users[action.user_index];
     let finish_battle = false;
 
@@ -2219,7 +2229,7 @@ export async function action_process_heal() {
  * @param {Object} action the action data to process {user_index, stance_to}
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_stance_change() {
+export async function action_process_stance_change(battle_data, action) {
     let user = battle_data.users[action.user_index];
     let finish_battle = false;
     let stance_to = action.stance_to;
@@ -2244,7 +2254,7 @@ export async function action_process_stance_change() {
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_run() {
+export async function action_process_run(battle_data, action) {
     let user = battle_data.users[action.user_index];
     let ooch_user = user.party[user.active_slot];
     let ooch_max_check = 0;
@@ -2337,7 +2347,7 @@ export function battle_faint_check(battle_data) {
 
             //Check if the user is defeated or not
             //Also check if this is a player that's still alive
-            for(let [i, party_ooch] of user.party.entries()){
+            for(let party_ooch of user.party.values()){
                 if(party_ooch.current_hp > 0) {
                     user_just_defeated = false;
                     if(user.user_type == UserType.Player){
@@ -2463,6 +2473,8 @@ export async function end_of_round_prompt_switch(battle_data){
     let users = battle_data.users;
     let next_slot = 9999;
     let notify_death = false;
+    let switchButtons1, switchButtons2;
+    let thread, ooch_inv, ooch_check, ooch_button_color, ooch_emote, ooch_name, ooch_hp, ooch_disable, collector;
     for(let user of users){
 
         if(!user.party[user.active_slot].alive && !user.defeated){
@@ -2471,8 +2483,7 @@ export async function end_of_round_prompt_switch(battle_data){
 
                     notify_death = true;
                     users_to_wait_for.push(user.user_id);
-                    let ooch_inv = user.party;
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_prev, ooch_disable;
+                    ooch_inv = user.party;
                     
                     switchButtons1 = new ActionRowBuilder();
                     switchButtons2 = new ActionRowBuilder();
@@ -2487,7 +2498,6 @@ export async function end_of_round_prompt_switch(battle_data){
     
                         if (i == user.active_slot) {
                             ooch_button_color = ButtonStyle.Success;
-                            ooch_prev = ooch_check;
                             ooch_disable = true;
                         } else if (ooch_check.current_hp <= 0) {
                             ooch_disable = true;
@@ -2503,10 +2513,10 @@ export async function end_of_round_prompt_switch(battle_data){
                         )
                     }
 
-                    let thread = botClient.channels.cache.get(`${user.thread_id}`);
+                    thread = botClient.channels.cache.get(`${user.thread_id}`);
                     await thread.send({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2] : [switchButtons1] });
 
-                    const collector = thread.createMessageComponentCollector({ max: 1 });
+                    collector = thread.createMessageComponentCollector({ max: 1 });
 
                     collector.on('collect', async i => {
                         await i.update({ content: 'Sending out new mon...', components: [] });
@@ -2569,7 +2579,7 @@ export function get_random_targets(users, my_team_id, my_user_index, max_num = 1
     }
 
     let targets = []
-    for(let i in max_num){
+    for(let i = 0; i < max_num; i++) {
         targets.push(options[random(options.length)])
     }
 
@@ -2641,7 +2651,7 @@ export function add_status_effect(ooch, status, slot) {
 
     //Mundane ignores status effects
     if (ooch.ability == Ability.Mundane){
-        return_string += `${ooch.emote} **${ooch.nickname}**\'s **Mundane**:`
+        return_string += `${ooch.emote} **${ooch.nickname}**'s **Mundane**:`
         return_string += `\n--- ${ooch.emote} **${ooch.nickname}** is immune to status effects!`;
         return return_string;
     } 
@@ -2660,7 +2670,7 @@ export function add_status_effect(ooch, status, slot) {
 
     //Mons with Seer are immune to Exposed and instead gain +1 spd
     if(ooch.ability == 'Seer' && status == Status.Expose){
-        return_string += `${ooch.emote} **${ooch.nickname}**\'s **Seer**:`
+        return_string += `${ooch.emote} **${ooch.nickname}**'s **Seer**:`
         return_string += `\n--- ${ooch.emote} **${ooch.nickname}** is immune to being ${statusEmote} **${statusUpper}**!`;
         return_string += `\n--- ${modify_stat(ooch, 'spd', 1)}\n`;
         return return_string;
@@ -2808,7 +2818,7 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
             return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
         } else if (in_battle == false) {
             ooch.alive = true;
-            let prev_hp = ooch.current_hp;
+            //let prev_hp = ooch.current_hp;
             ooch.current_hp += item_data.potency;
             ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
             return ooch;
@@ -2903,6 +2913,8 @@ export async function use_eot_ability(battle_data, user_index) {
     let hp_current = ooch.current_hp;
     let chunks_lost = 0;
 
+    let randomStat, randomStatDecrease;
+
     switch(ooch.ability) {
         case Ability.EscalationProtocol:
             chunks_lost = hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
@@ -2936,46 +2948,46 @@ export async function use_eot_ability(battle_data, user_index) {
             }
         break;
         case Ability.Fleeting:
-            ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Fleeting**:`
+            ability_text += `${ooch.emote} **${ooch.nickname}**'s **Fleeting**:`
             ooch.current_hp = Math.floor(ooch.current_hp / 2);
             ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** had its HP halved!\n`;
         break;
         case Ability.Efficient:
             if (battle_data.turn_counter % 2 === 0) {
-                ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Efficient**:`
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Efficient**:`
                 ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}\n`;
             }
         break;
         case Ability.Inertia:
-            ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Inertia**:`
+            ability_text += `${ooch.emote} **${ooch.nickname}**'s **Inertia**:`
             ability_text += `\n--- ${modify_stat(ooch, Stats.Speed, 1)}\n`;
 
         break;
         case Ability.Patient:
             if (battle_data.turn_counter % 2 === 0) {
-                ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Patient**:`
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Patient**:`
                 ability_text += `\n--- ${modify_stat(ooch, Stats.Defense, 1)}\n`;
             }
         break;
         case Ability.Increment:
-            let randomStat = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
-            ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Increment**:`
+            randomStat = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
+            ability_text += `${ooch.emote} **${ooch.nickname}**'s **Increment**:`
             ability_text += `\n--- ${modify_stat(ooch, randomStat, 1)}\n`;
         break;
         case Ability.Riposte:
-            ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Riposte**:`
+            ability_text += `${ooch.emote} **${ooch.nickname}**'s **Riposte**:`
             ooch.ability = Ability.Parry;
             ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** changed its positioning, and shifted its ability to **Parry**!\n`;
         break;
         case Ability.HoleDweller:
             if (battle_data.turn_counter % 2 === 0) {
-                ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Hole Dweller**:`
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Hole Dweller**:`
                 ability_text += `\n--- ${add_status_effect(ooch, Status.Vanish, slot_info)}\n`;
             }
         break;
         case Ability.DownwardSpiral:
-            ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Downward Spiral**:`
-            let randomStatDecrease = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
+            ability_text += `${ooch.emote} **${ooch.nickname}**'s **Downward Spiral**:`
+            randomStatDecrease = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
             ability_text += `\n--- ${modify_stat(ooch, randomStatDecrease, -1)}\n`;
         break;
     }
@@ -2985,7 +2997,7 @@ export async function use_eot_ability(battle_data, user_index) {
     if (!ooch.status_effects.includes(Status.Digitize) && !ooch.status_effects.includes(Status.Petrify)) {
         switch (ooch.ability) {
             case Ability.Spectral:
-                ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Spectral**:`
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Spectral**:`
                 if (ooch.type == ooch.og_type) {
                     ooch.type = [OochType.Magic];
                     ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Magic)} **Magic**!\n`
@@ -2995,7 +3007,7 @@ export async function use_eot_ability(battle_data, user_index) {
                 }
             break;
             case Ability.Radioactive:
-                ability_text += `${ooch.emote} **${ooch.nickname}**\'s **Radioactive**:`
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Radioactive**:`
                 if (ooch.type == ooch.og_type) {
                     ooch.type = [OochType.Flame];
                     ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** changed its type to ${type_to_emote(OochType.Flame)} **Flame**!\n`
@@ -3006,6 +3018,8 @@ export async function use_eot_ability(battle_data, user_index) {
             break;
         }
     }
+
+    let hp_lost;
 
     //Weather effects
     switch(battle_data.weather){
@@ -3028,7 +3042,7 @@ export async function use_eot_ability(battle_data, user_index) {
                     ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
                 break;
                 case 3:
-                    let hp_lost = Math.floor(ooch.stats.hp / 2);
+                    hp_lost = Math.floor(ooch.stats.hp / 2);
                     ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
                     if(ooch.type.includes(OochType.Tech)){
                         ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is energized by the lightning!`;
@@ -3127,23 +3141,30 @@ export function battle_calc_damage(move_damage, move_type, ooch_attacker, ooch_d
     switch (move_type) {
         case OochType.Ooze: 
             if (ooch_attacker.ability == Ability.Icky) damage *= 1.2
-            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; break;
+            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; 
+        break;
         case OochType.Fungal:
-            if (ooch_attacker.ability == Ability.Icky) damage *= 1.2; break;
+            if (ooch_attacker.ability == Ability.Icky) damage *= 1.2; 
+        break;
         case OochType.Flame:
             if (ooch_attacker.ability == Ability.Warm) damage *= 1.1;
             if (ooch_defender.ability == Ability.Moist) damage *= 0.5;
             if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; 
-            if (ooch_attacker.ability == Ability.PowerConduit && (ooch_defender.type.includes(OochType.Ooze) || ooch_defender.type.includes(OochType.Tech))) damage *= 1.5; break;
+            if (ooch_attacker.ability == Ability.PowerConduit && (ooch_defender.type.includes(OochType.Ooze) || ooch_defender.type.includes(OochType.Tech))) damage *= 1.5; 
+        break;
         case OochType.Stone:
             if (ooch_attacker.ability == Ability.Burrower) damage *= 1.1;
             if (ooch_defender.ability == Ability.Armored) damage *= 0.8;
+        break;
         case OochType.Tech:
-            if (ooch_attacker.ability == Ability.LiquidCooled) damage *= 1.25; break;
+            if (ooch_attacker.ability == Ability.LiquidCooled) damage *= 1.25; 
+        break;
         case OochType.Sound:
-            if (ooch_attacker.ability == Ability.BassBoost) damage *= 1.2; break;
+            if (ooch_attacker.ability == Ability.BassBoost) damage *= 1.2; 
+            break;
         case OochType.Crystal:
-            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; break;
+            if (ooch_attacker.ability == Ability.Crystallize) damage *= 1.3; 
+        break;
     }
 
     damage = Math.round(damage);
@@ -3175,6 +3196,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     let atkOochName = attacker.nickname;
     let defOochName = defender.nickname;
     let string_to_send = ``;
+    let moveList;
 
     //Figure out whether we're going first or last for misc values
     let going_first = true;
@@ -3193,11 +3215,11 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     let move_effects =   move_info.effect;
     let ogMoveId = atk_id;
     if (move_effects.some(effect => effect.status === 'random')) {
-        let moveList = await _move_data.keys();
+        moveList = _move_data.keys();
         // Remove some moves that shouldn't be obtained with random
         moveList = moveList.filter(v => !([40, 92].includes(parseInt(v))))
 
-        atk_id = sample(_move_data.keys());
+        atk_id = sample(moveList);
         move_info = await _move_data.get(`${atk_id}`);
         move_effects =   move_info.effect;
     }
@@ -3279,7 +3301,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     
     //Track recently used moves
     let move_matches_first = slot_attacker.move_used_first === atk_id;
-    let move_matches_last = slot_attacker.move_used_last === atk_id;
+    //let move_matches_last = slot_attacker.move_used_last === atk_id;
     if(slot_attacker.move_used_first == false){ slot_attacker.move_used_first = atk_id; }
     slot_attacker.move_used_last = atk_id;
 
@@ -3351,7 +3373,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     if(selfTarget == true){ chance_to_hit = 1; }
     
     //Text for if we try to do a thing but fail
-    let tried_to_text = `${attacker_emote} **${atkOochName}**\'s tried to use **${move_name}**, but`
+    let tried_to_text = `${attacker_emote} **${atkOochName}** tried to use **${move_name}**, but`
 
     //Hey, chat, are we asleep? Or do we un-sleep'th'st've?
     let do_wakeup = (.3 > Math.random()) && (attacker.status_effects.includes(Status.Sleep));
@@ -3368,10 +3390,10 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
         string_to_send += `${tried_to_text} ${first_last_failed_text}`;
     }
     else if(defender.ability == Ability.Phantasmal && move_type == OochType.Neutral && move_damage > 0){ //Neutral type moves are ignored by Phantasmal
-        string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**\'s **Phantasmal** makes it immune to Neutral-type moves!`;
+        string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**'s **Phantasmal** makes it immune to Neutral-type moves!`;
     }
     else if(defender.ability == Ability.Protector && type_multiplier < 1 && slot_defender.this_turn_switched_in){ //Protector mons are immune to damage types they resist the turn they swap in
-        string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**\'s **Protector** makes it immune to moves it resists!`;
+        string_to_send += `\n${tried_to_text} ${defender_emote} **${defOochName}**'s **Protector** makes it immune to moves it resists!`;
     }
     else if(attacker.ability == Ability.DoubleOrNothing && ability_dmg_multiplier < 1 && move_damage > 0){
         string_to_send += `\n${tried_to_text} but its **Double or Nothing** didn't pay off...`;
@@ -3381,7 +3403,6 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
             string_to_send += `\n${attacker_emote} **${atkOochName}** woke up!`;
             attacker.status_effects = attacker.status_effects.filter(v => v != Status.Sleep);
         }
-
 
         //True damage added here
         dmg += (move_effects.find(effect => effect.status === Status.TrueDamage)?.chance || 0);
@@ -3399,53 +3420,54 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
         slot_defender.this_turn_was_damaged = true;
 
         // When the Oochamon attacker hits the defender and we aren't targetting ourself
+        let hp_prev, damage_taken, randomStatus, prev_hp, reflect_dmg;
         if (selfTarget === false && dmg !== 0) {
             switch (attacker.ability) {
                 case Ability.DoubleOrNothing:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Double or Nothing**:`
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Double or Nothing**:`
                     defender_field_text += `\n------ The damage was doubled!\n`
                 break;
                 case Ability.Leech:
-                    let hp_prev = attacker.current_hp;
+                    hp_prev = attacker.current_hp;
                     attacker.current_hp = clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
 
                     if(attacker.current_hp - hp_prev > 0){
-                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Leech**:`
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Leech**:`
                         defender_field_text += `\n------ ${attacker_emote} **${atkOochName}** gained **${attacker.current_hp - hp_prev} HP**\n`
                     }
                 break;
                 case Ability.Ensnare:
                     if (check_chance(30) && !defender.status_effects.includes(Status.Vanish)) {
-                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Ensnare**:`
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Ensnare**:`
                         defender_field_text += `\n--- ${add_status_effect(defender, Status.Snare, slot_defender)}\n`;
                     }
                 break;
                 case Ability.Lacerating:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Lacerating**:`
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Lacerating**:`
 
-                    let damage_taken = Math.round(defender.stats.hp * 0.05);
+                    damage_taken = Math.round(defender.stats.hp * 0.05);
                     defender.current_hp = clamp(defender.current_hp - damage_taken, 0, defender.stats.hp);
                     defender_field_text += `\n------ ${defender_emote} **${defOochName}** lost ${damage_taken} HP!\n`;
                 break;
                 case Ability.Frostbite:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Frostbite**:`
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Frostbite**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, -1)}\n`;
                 break;
                 case Ability.StringsAttached:
                     if (check_chance(20)) {
-                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Strings Attached**:`
-                        let randomStatus = sample([Status.Burn, Status.Blind, Status.Infect, Status.Snare]);
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Strings Attached**:`
+                        randomStatus = sample([Status.Burn, Status.Blind, Status.Infect, Status.Snare]);
                         defender_field_text += `\n--- ${add_status_effect(defender, randomStatus, slot_defender)}\n`;
                     }
                 break;
                 case Ability.Riposte:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Riposte**:`
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Riposte**:`
                     attacker.ability = Ability.Parry;
                     defender_field_text += `\n--- ${attacker_emote} **${atkOochName}** changed its stance, and shifted its ability to **Parry**!\n`;
                 break;
                 case Ability.Turbine:
                     if(move_type == OochType.Flame){
-                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**\'s **Turbine**:`
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Turbine**:`
                         defender_field_text += `\n------ ${modify_stat(attacker, Stats.Attack, 1)}\n`;
                     }
                 break;
@@ -3455,42 +3477,42 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
             switch (defender.ability) {
                 case Ability.Constructor:
                     if(move_type === OochType.Stone){
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Constructor**:`
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Constructor**:`
                         defender_field_text += `\n------ ${modify_stat(defender, Stats.Defense, 1)}\n`;
                     }
                 break;
                 case Ability.Reactive:
-                    let prev_hp = attacker.current_hp;
+                    prev_hp = attacker.current_hp;
                     attacker.current_hp = clamp(attacker.current_hp - Math.round(attacker.stats.hp * 0.1), 0, attacker.stats.hp);
-                    let reflect_dmg = prev_hp - attacker.current_hp;
+                    reflect_dmg = prev_hp - attacker.current_hp;
 
-                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Reactive**:`
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Reactive**:`
                     defender_field_text += `\n------ ${attacker_emote} **${atkOochName}** took **${reflect_dmg}** reflect damage!\n`
                 
                 break;
                 case Ability.Shadow:
                     if (check_chance(20)) {
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Shadow**:`
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Shadow**:`
                         defender_field_text += `\n--- ${add_status_effect(defender, Status.Vanish, slot_defender)}\n`;
                     }
                 break;
                 case Ability.Tangled:
-                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Tangled**:`
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Tangled**:`
                     defender_field_text += `\n--- ${add_status_effect(attacker, Status.Snare, slot_attacker)}\n`;
                 break;
                 case Ability.Flammable:
                     if (move_type === OochType.Flame) {
-                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Flammable**:`
+                        defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Flammable**:`
                         defender_field_text += `\n------ ${modify_stat(defender, Stats.Attack, 1)}\n`;
                     }
                 break;
                 case Ability.Parry:
-                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Parry**:`
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Parry**:`
                     defender.ability = Ability.Riposte;
                     defender_field_text += `\n------ ${defender_emote} **${defOochName}** changed its positioning, and shifted its ability to **Riposte**!\n`;
                 break;
                 case Ability.Bloodrush:
-                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**\'s **Bloodrush**:`
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Bloodrush**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, 1)}\n`;
                 break;
             }
@@ -3567,7 +3589,6 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
                 let status_target = eff.target == MoveTarget.Self ? attacker : defender;
-                let status_target_emote = eff.target == MoveTarget.Self ? attacker_emote : defender_emote;
                 let statStatus = false;
                 if (isNaN(eff.status)) {
                     statStatus = eff.status.includes('+') || eff.status.includes('-');
@@ -3600,19 +3621,26 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
                     let status_adds = [eff.status];
 
                     if (typeof eff.status == "number") {
-                        let statusData = await _status_data.get(`${eff.status}`);
                         // Setup list of status effects to add
                         switch (attacker.ability) {
                             case Ability.Darkbright:
                                 switch (eff.status) {
-                                    case Status.Burn: status_adds.push(Status.Blind);
-                                    case Status.Blind: status_adds.push(Status.Burn);
+                                    case Status.Burn: 
+                                        status_adds.push(Status.Blind);
+                                    break;
+                                    case 
+                                        Status.Blind: status_adds.push(Status.Burn);
+                                    break;
                                 }
                             break;
                             case Ability.Radiant:
                                 switch (eff.status) {
-                                    case Status.Infect: status_adds.push(Status.Burn);
-                                    case Status.Burn: status_adds.push(Status.Infect);
+                                    case Status.Infect: 
+                                        status_adds.push(Status.Burn);
+                                    break;
+                                    case Status.Burn: 
+                                        status_adds.push(Status.Infect);
+                                    break;
                                 }
                             break;
                         }
@@ -3660,7 +3688,8 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     } else {
         string_to_send += `\n${attacker_emote} **${atkOochName}** tried to use ${move_name} but it missed!`
     }
-
+    
+    let hp_prev;
     // Check if opposing Oochamon is dead
     if (defender.current_hp <= 0) {
         //defender_field_text += `\n--- 🪦 ${defender_emote} **${defOochName}** fainted!`
@@ -3681,7 +3710,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
                 monster_data.set('-1', 1, 'hp');
             break;
             case Ability.Ravenous:
-                let hp_prev = attacker.current_hp;
+                hp_prev = attacker.current_hp;
                 attacker.current_hp = clamp(round(attacker.current_hp + (attacker.stats.hp * 0.2)), 0, attacker.stats.hp);
 
                 if(attacker.current_hp - hp_prev > 0){
@@ -3716,7 +3745,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
             break;
             case Ability.Bomber:
                 
-                let hp_prev = attacker.current_hp;
+                hp_prev = attacker.current_hp;
                 attacker.current_hp = ceil(attacker.current_hp / 2);
 
                 if(hp_prev - attacker.current_hp > 0){
@@ -3885,7 +3914,7 @@ export async function generate_battle_image(battle_data, user_index, battle_bg =
     let teams = {};
     for(let user of battle_data.users){
         let team_id_to_text = `${user.team_id}`
-        if(!teams.hasOwnProperty(team_id_to_text)){
+        if(!Object.prototype.hasOwnProperty.call(teams, team_id_to_text)){
             teams[team_id_to_text] = []
         }
         teams[team_id_to_text].push(user);
@@ -4046,7 +4075,6 @@ export async function generate_battle_image(battle_data, user_index, battle_bg =
     //Draw the sprites to the image
     for(let sprite of sprites){
         let horz_check = sprite.horz_check;
-        let vert_check = sprite.vert_check;
         let image = await loadImage(sprite.sprite);
 
         if(horz_check){ 

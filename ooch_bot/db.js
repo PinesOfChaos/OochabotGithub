@@ -1,4 +1,6 @@
 import Enmap from "enmap";
+import process from 'node:process';
+process.setMaxListeners(20);
 
 export const maps = new Enmap({ name: "maps" });
 export const profile = new Enmap({ name: "profile" });
