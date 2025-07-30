@@ -526,7 +526,7 @@ const BattleAi = {
     Smart : 1
 }
 
-module.exports = { 
+export {
     PlayerState, TypeEmote, GraphicsMode, Flags, 
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,

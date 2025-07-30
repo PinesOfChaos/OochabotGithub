@@ -1,26 +1,18 @@
 {
   "dependencies": {
-    "@discordjs/rest": "^0.1.0-canary.0",
-    "discord-api-types": "^0.25.2",
-    "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5",
-    "enmap": "^5.9.8",
-    "lodash": "^4.17.21",
-    "node-cron": "^3.0.3",
-    "node-fetch": "^2.6.7",
-    "skia-canvas": "^1.0.1",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.1",
+    "enmap": "^6.0.5",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "skia-canvas": "^2.0.2",
     "string-progressbar": "^1.0.4",
     "wait": "^0.4.2"
   },
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": false
-  },
-  "scripts": {
-    "start": "node .",
-    "start_playtest": "./win_start.bat"
-  },
+  "type": "module",
   "devDependencies": {
-    "typescript": "^5.2.2"
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0"
   }
 }
