@@ -5,6 +5,7 @@ import { TypeEmote, PlayerState, Item, TameStatus } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
+import { applicationEmojis } from "./index.js";
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -159,14 +160,13 @@ export function check_chance(percent) {
 }
 
 /**
- * Returns the emote text for a specified Oochamon.
- * @param {Collection} applicationEmojis The collection of emojis
- * @param {String} ooch_name Name of the Oochamon to get emote from.
+ * Returns the emote text for a specific thing.
+ * @param {String} name Name of the thing to get emote from.
  */
-export function get_emote_string(applicationEmojis, ooch_name) {
-    let emojiList = applicationEmojis.filter(v => v.name === toLower(ooch_name)); // Changed to 'let'
+export function get_emote_string(name) {
+    let emojiList = applicationEmojis.filter(v => v.name === toLower(name)); // Changed to 'let'
     emojiList = Array.from(emojiList.values());
-    if (emojiList.length === 0) throw Error(`Unable to find Oochamon emote for the name ${ooch_name}!`);
+    if (emojiList.length === 0) throw Error(`Unable to find emote for the name ${name}!`);
     return `<:${emojiList[0].name}:${emojiList[0].id}>`;
 }
 

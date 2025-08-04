@@ -17,6 +17,8 @@ import { quit_oochamon, reset_oochamon } from './func_other.js';
 import { genmap_allmaps } from './func_level_gen.js';
 import { event_process } from './func_event.js';
 import { prompt_battle_actions } from './func_battle.js';
+import branchName from 'current-git-branch';
+let branch = branchName();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
@@ -25,7 +27,7 @@ client.commands = new Collection();
 const registerCommands = [];
 const commandFiles = readdirSync('./commands').filter(file => file.endsWith('.js'));
 const inactivityTrackers = {};
-
+const clientEmojis = await botClient.application.emojis.fetch();
 
 //#region 
 for (const file of commandFiles) {
@@ -42,14 +44,14 @@ for (const file of commandFiles) {
 }
 
 // eslint-disable-next-line no-undef
-const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
+const rest = new REST({ version: '9' }).setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 (async () => {
     try {
         console.log('Started refreshing application (/) commands.');
 
         await rest.put(
             // eslint-disable-next-line no-undef
-            Routes.applicationCommands(process.env.BOT_CLIENT_ID),
+            Routes.applicationCommands(branch != 'dev' ? process.env.BOT_CLIENT_ID : process.env.DEV_CLIENT_ID),
             { body: registerCommands },
         );
 
@@ -516,6 +518,7 @@ client.on('messageCreate', async message => {
 
 //Log Bot in to the Discord
 // eslint-disable-next-line no-undef
-client.login(process.env.BOT_TOKEN);
+client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 
 export const botClient = client; 
+export const applicationEmojis = clientEmojis;

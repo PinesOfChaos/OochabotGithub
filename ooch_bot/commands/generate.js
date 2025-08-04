@@ -17,8 +17,6 @@ export async function execute(interaction, client) {
         return interaction.editReply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     }
 
-    let applicationEmojis = await client.application.emojis.fetch();
-
     // Clear out enmaps before
     monster_data.clear();
     move_data.clear();
@@ -65,468 +63,468 @@ export async function execute(interaction, client) {
 
     //           ID            Use            applicationEmojis
     // Global
-    create_tile(`t${zG}_000`, Tile.Wall, applicationEmojis); //Black 
-    create_tile(`t${zG}_001`, Tile.Floor, applicationEmojis); //Teleporter 
+    create_tile(`t${zG}_000`, Tile.Wall); //Black 
+    create_tile(`t${zG}_001`, Tile.Floor); //Teleporter 
 
     //002 was a chest, but this is an NPC now
-    create_tile(`t${zG}_003`, Tile.Floor, applicationEmojis); //Arrow Left
-    create_tile(`t${zG}_004`, Tile.Floor, applicationEmojis); //Arrow Up
-    create_tile(`t${zG}_005`, Tile.Floor, applicationEmojis); //Arrow Right
-    create_tile(`t${zG}_006`, Tile.Floor, applicationEmojis); //Arrow Down
-    create_tile(`t${zG}_007`, Tile.Wall, applicationEmojis); //Shop Mini
-    create_tile(`t${zG}_008`, Tile.Wall, applicationEmojis); //Shop Upper Left
-    create_tile(`t${zG}_009`, Tile.Wall, applicationEmojis); //Shop Upper Right
-    create_tile(`t${zG}_010`, Tile.Shop, applicationEmojis); //Shop Lower Left (interactable tile)
-    create_tile(`t${zG}_011`, Tile.Wall, applicationEmojis); //Shop Lower Right 
-    create_tile(`t${zG}_012`, Tile.Floor, applicationEmojis); //Dungeon Exit Teleporter
+    create_tile(`t${zG}_003`, Tile.Floor); //Arrow Left
+    create_tile(`t${zG}_004`, Tile.Floor); //Arrow Up
+    create_tile(`t${zG}_005`, Tile.Floor); //Arrow Right
+    create_tile(`t${zG}_006`, Tile.Floor); //Arrow Down
+    create_tile(`t${zG}_007`, Tile.Wall); //Shop Mini
+    create_tile(`t${zG}_008`, Tile.Wall); //Shop Upper Left
+    create_tile(`t${zG}_009`, Tile.Wall); //Shop Upper Right
+    create_tile(`t${zG}_010`, Tile.Shop); //Shop Lower Left (interactable tile)
+    create_tile(`t${zG}_011`, Tile.Wall); //Shop Lower Right 
+    create_tile(`t${zG}_012`, Tile.Floor); //Dungeon Exit Teleporter
 
 
     // Fungal
-    create_tile(`t${zF}_000`, Tile.Floor, applicationEmojis); //Fungal Floor
-    create_tile(`t${zF}_001`, Tile.Wall, applicationEmojis); //Fungal Wall
-    create_tile(`t${zF}_002`, Tile.Grass, applicationEmojis); //Fungal Grass
-    create_tile(`t${zF}_003`, Tile.Wall, applicationEmojis); //Fungal Wall
-    create_tile(`t${zF}_004`, Tile.Floor, applicationEmojis); //Fungal Exit
-    create_tile(`t${zF}_005`, Tile.Floor, applicationEmojis); //Fungal Floor Entrance
-    create_tile(`t${zF}_006`, Tile.Wall, applicationEmojis); //Fungal Inaccessible Area
+    create_tile(`t${zF}_000`, Tile.Floor); //Fungal Floor
+    create_tile(`t${zF}_001`, Tile.Wall); //Fungal Wall
+    create_tile(`t${zF}_002`, Tile.Grass); //Fungal Grass
+    create_tile(`t${zF}_003`, Tile.Wall); //Fungal Wall
+    create_tile(`t${zF}_004`, Tile.Floor); //Fungal Exit
+    create_tile(`t${zF}_005`, Tile.Floor); //Fungal Floor Entrance
+    create_tile(`t${zF}_006`, Tile.Wall); //Fungal Inaccessible Area
 
 
     // Sandy
-    create_tile(`t${zS}_000`, Tile.Floor, applicationEmojis); //Sandy Floor
-    create_tile(`t${zS}_001`, Tile.Wall, applicationEmojis); //Sandy Wall
-    create_tile(`t${zS}_002`, Tile.Grass, applicationEmojis); //Sandy Grass
-    create_tile(`t${zS}_003`, Tile.Wall, applicationEmojis); //HUB Wall Top
-    create_tile(`t${zS}_004`, Tile.Wall, applicationEmojis); //HUB Wall Middle
-    create_tile(`t${zS}_005`, Tile.Wall, applicationEmojis); //Hub Wall Bottom
-    create_tile(`t${zS}_006`, Tile.Wall, applicationEmojis); //Hub Gate Top
-    create_tile(`t${zS}_007`, Tile.Wall, applicationEmojis); //Hub Gate Bottom
-    create_tile(`t${zS}_008`, Tile.Wall, applicationEmojis); //Hub Tent
-    create_tile(`t${zS}_010`, Tile.Wall, applicationEmojis); //Hub Dropship Upper Left
-    create_tile(`t${zS}_011`, Tile.Wall, applicationEmojis); //Hub Dropship Upper Right
-    create_tile(`t${zS}_012`, Tile.Wall, applicationEmojis); //Hub Dropship Lower Left
-    create_tile(`t${zS}_013`, Tile.Wall, applicationEmojis); //Hub Dropship Lower Right
-    create_tile(`t${zS}_014`, Tile.Wall, applicationEmojis); //Desert Wall Lower
-    create_tile(`t${zS}_015`, Tile.Wall, applicationEmojis); //Desert Wall Upper
-    create_tile(`t${zS}_016`, Tile.Floor, applicationEmojis); //Desert Exit
-    create_tile(`t${zS}_017`, Tile.Wall, applicationEmojis); //Hub Barrel
-    create_tile(`t${zS}_018`, Tile.Board, applicationEmojis); //Job Board
-    create_tile(`t${zS}_019`, Tile.Wall, applicationEmojis); //Sandy Inaccessible Area
-    create_tile(`t${zS}_020`, Tile.Floor, applicationEmojis); //Crater
-    create_tile(`t${zS}_021`, Tile.Floor, applicationEmojis); //Crater
-    create_tile(`t${zS}_022`, Tile.Board, applicationEmojis); //Crater (Center)
-    create_tile(`t${zS}_023`, Tile.Floor, applicationEmojis); //Crater
+    create_tile(`t${zS}_000`, Tile.Floor); //Sandy Floor
+    create_tile(`t${zS}_001`, Tile.Wall); //Sandy Wall
+    create_tile(`t${zS}_002`, Tile.Grass); //Sandy Grass
+    create_tile(`t${zS}_003`, Tile.Wall); //HUB Wall Top
+    create_tile(`t${zS}_004`, Tile.Wall); //HUB Wall Middle
+    create_tile(`t${zS}_005`, Tile.Wall); //Hub Wall Bottom
+    create_tile(`t${zS}_006`, Tile.Wall); //Hub Gate Top
+    create_tile(`t${zS}_007`, Tile.Wall); //Hub Gate Bottom
+    create_tile(`t${zS}_008`, Tile.Wall); //Hub Tent
+    create_tile(`t${zS}_010`, Tile.Wall); //Hub Dropship Upper Left
+    create_tile(`t${zS}_011`, Tile.Wall); //Hub Dropship Upper Right
+    create_tile(`t${zS}_012`, Tile.Wall); //Hub Dropship Lower Left
+    create_tile(`t${zS}_013`, Tile.Wall); //Hub Dropship Lower Right
+    create_tile(`t${zS}_014`, Tile.Wall); //Desert Wall Lower
+    create_tile(`t${zS}_015`, Tile.Wall); //Desert Wall Upper
+    create_tile(`t${zS}_016`, Tile.Floor); //Desert Exit
+    create_tile(`t${zS}_017`, Tile.Wall); //Hub Barrel
+    create_tile(`t${zS}_018`, Tile.Board); //Job Board
+    create_tile(`t${zS}_019`, Tile.Wall); //Sandy Inaccessible Area
+    create_tile(`t${zS}_020`, Tile.Floor); //Crater
+    create_tile(`t${zS}_021`, Tile.Floor); //Crater
+    create_tile(`t${zS}_022`, Tile.Board); //Crater (Center)
+    create_tile(`t${zS}_023`, Tile.Floor); //Crater
 
 
 
     // Cave
-    create_tile(`t${zC}_000`, Tile.Grass, applicationEmojis); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
-    create_tile(`t${zC}_001`, Tile.Floor, applicationEmojis); //Cave Floor Entrance
-    create_tile(`t${zC}_002`, Tile.Wall, applicationEmojis); //Cave Wall
-    create_tile(`t${zC}_003`, Tile.Wall, applicationEmojis); //Lava
-    create_tile(`t${zC}_004`, Tile.Floor, applicationEmojis); //Cave Exit
-    create_tile(`t${zC}_005`, Tile.Wall, applicationEmojis); //Cave Stalagtite
-    create_tile(`t${zC}_006`, Tile.Wall, applicationEmojis); //Cave Inaccessible Area
-    create_tile(`t${zC}_010`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_011`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_012`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_020`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_021`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_022`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_030`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_031`, Tile.Wall, applicationEmojis); //Cave Big Machine
-    create_tile(`t${zC}_032`, Tile.Wall, applicationEmojis); //Cave Big Machine
+    create_tile(`t${zC}_000`, Tile.Grass); //Cave Floor - changed to Tile.Grass type so that enemies can spawn anywhere in caves
+    create_tile(`t${zC}_001`, Tile.Floor); //Cave Floor Entrance
+    create_tile(`t${zC}_002`, Tile.Wall); //Cave Wall
+    create_tile(`t${zC}_003`, Tile.Wall); //Lava
+    create_tile(`t${zC}_004`, Tile.Floor); //Cave Exit
+    create_tile(`t${zC}_005`, Tile.Wall); //Cave Stalagtite
+    create_tile(`t${zC}_006`, Tile.Wall); //Cave Inaccessible Area
+    create_tile(`t${zC}_010`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_011`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_012`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_020`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_021`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_022`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_030`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_031`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_032`, Tile.Wall); //Cave Big Machine
 
 
 
     // Obsidian
-    create_tile(`t${zO}_000`, Tile.Floor, applicationEmojis); //Obsidian Floor
-    create_tile(`t${zO}_001`, Tile.Wall, applicationEmojis); //Obsidian Wall
-    create_tile(`t${zO}_002`, Tile.Grass, applicationEmojis); //Obsidian Grass
-    create_tile(`t${zO}_003`, Tile.Wall, applicationEmojis); //Obsidian Wall
-    create_tile(`t${zO}_004`, Tile.Wall, applicationEmojis); //Obsidian Inaccessible Area
-    create_tile(`t${zO}_005`, Tile.Floor, applicationEmojis); //Obsidian Cave Entrance
-    create_tile(`t${zO}_006`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_007`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_008`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_009`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_010`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_011`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_012`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_013`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_014`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_015`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_016`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_017`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_018`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_019`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_020`, Tile.Floor, applicationEmojis); //Obsidian Building Entrance
-    create_tile(`t${zO}_021`, Tile.Wall, applicationEmojis); //Obsidian Building
-    create_tile(`t${zO}_022`, Tile.Wall, applicationEmojis); //Obsidian Wall Torch
+    create_tile(`t${zO}_000`, Tile.Floor); //Obsidian Floor
+    create_tile(`t${zO}_001`, Tile.Wall); //Obsidian Wall
+    create_tile(`t${zO}_002`, Tile.Grass); //Obsidian Grass
+    create_tile(`t${zO}_003`, Tile.Wall); //Obsidian Wall
+    create_tile(`t${zO}_004`, Tile.Wall); //Obsidian Inaccessible Area
+    create_tile(`t${zO}_005`, Tile.Floor); //Obsidian Cave Entrance
+    create_tile(`t${zO}_006`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_007`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_008`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_009`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_010`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_011`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_012`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_013`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_014`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_015`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_016`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_017`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_018`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_019`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_020`, Tile.Floor); //Obsidian Building Entrance
+    create_tile(`t${zO}_021`, Tile.Wall); //Obsidian Building
+    create_tile(`t${zO}_022`, Tile.Wall); //Obsidian Wall Torch
 
 
     //Training Facility
-    create_tile(`t${zT}_000`, Tile.Floor, applicationEmojis); //Training Floor
-    create_tile(`t${zT}_001`, Tile.Wall, applicationEmojis); //Training Wall
-    create_tile(`t${zT}_002`, Tile.Wall, applicationEmojis); //Training Inaccessible Area
-    create_tile(`t${zT}_003`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_004`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_005`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_006`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_007`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_010`, Tile.Grass, applicationEmojis); //Obsidian Grass
-    create_tile(`t${zT}_011`, Tile.Wall, applicationEmojis); //Training Wall
-    create_tile(`t${zT}_012`, Tile.Floor, applicationEmojis); //Training Cave Entrance
-    create_tile(`t${zT}_013`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_014`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_015`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_016`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_017`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_020`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_021`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_022`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_023`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_024`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_025`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_026`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_027`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_030`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_031`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_032`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_033`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_034`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_035`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_036`, Tile.Floor, applicationEmojis); //Training Building Entrance
-    create_tile(`t${zT}_037`, Tile.Wall, applicationEmojis); //Training Building
-    create_tile(`t${zT}_040`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_041`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_042`, Tile.Wall, applicationEmojis); //Training Fence
-    create_tile(`t${zT}_043`, Tile.Wall, applicationEmojis); //Training Wall (crate)
+    create_tile(`t${zT}_000`, Tile.Floor); //Training Floor
+    create_tile(`t${zT}_001`, Tile.Wall); //Training Wall
+    create_tile(`t${zT}_002`, Tile.Wall); //Training Inaccessible Area
+    create_tile(`t${zT}_003`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_004`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_005`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_006`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_007`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_010`, Tile.Grass); //Obsidian Grass
+    create_tile(`t${zT}_011`, Tile.Wall); //Training Wall
+    create_tile(`t${zT}_012`, Tile.Floor); //Training Cave Entrance
+    create_tile(`t${zT}_013`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_014`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_015`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_016`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_017`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_020`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_021`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_022`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_023`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_024`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_025`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_026`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_027`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_030`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_031`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_032`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_033`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_034`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_035`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_036`, Tile.Floor); //Training Building Entrance
+    create_tile(`t${zT}_037`, Tile.Wall); //Training Building
+    create_tile(`t${zT}_040`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_041`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_042`, Tile.Wall); //Training Fence
+    create_tile(`t${zT}_043`, Tile.Wall); //Training Wall (crate)
 
-    create_tile(`t${zT}_050`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_051`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_052`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_053`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_060`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_061`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_062`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_063`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_070`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_071`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_072`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_073`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_080`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_081`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_082`, Tile.Wall, applicationEmojis); //Verdant Wall
-    create_tile(`t${zT}_083`, Tile.Wall, applicationEmojis); //Verdant Wall
+    create_tile(`t${zT}_050`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_051`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_052`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_053`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_060`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_061`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_062`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_063`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_070`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_071`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_072`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_073`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_080`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_081`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_082`, Tile.Wall); //Verdant Wall
+    create_tile(`t${zT}_083`, Tile.Wall); //Verdant Wall
 
 
 
 
     //Building Interior
-    create_tile(`t${zB}_000`, Tile.Floor, applicationEmojis); //Interior Floor
-    create_tile(`t${zB}_001`, Tile.Wall, applicationEmojis); //Interior Barrel
-    create_tile(`t${zB}_002`, Tile.Floor, applicationEmojis); //Interior Entrance (Bottom)
-    create_tile(`t${zB}_003`, Tile.Floor, applicationEmojis); //Interior Entrance (Top)
-    create_tile(`t${zB}_004`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_005`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_006`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_007`, Tile.Grass, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_008`, Tile.Floor, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_010`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_011`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_012`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_013`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_014`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_015`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_016`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_020`, Tile.Floor, applicationEmojis); //Interior Stairs Down
-    create_tile(`t${zB}_021`, Tile.Floor, applicationEmojis); //Interior Stairs Down
-    create_tile(`t${zB}_022`, Tile.Floor, applicationEmojis); //Interior Stairs Down
-    create_tile(`t${zB}_023`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_024`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_025`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_026`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_030`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_031`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_032`, Tile.Floor, applicationEmojis); //Interior Floor
-    create_tile(`t${zB}_033`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_034`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_035`, Tile.Wall, applicationEmojis); //Interior Wall
-    create_tile(`t${zB}_036`, Tile.Wall, applicationEmojis); //Interior Wall
+    create_tile(`t${zB}_000`, Tile.Floor); //Interior Floor
+    create_tile(`t${zB}_001`, Tile.Wall); //Interior Barrel
+    create_tile(`t${zB}_002`, Tile.Floor); //Interior Entrance (Bottom)
+    create_tile(`t${zB}_003`, Tile.Floor); //Interior Entrance (Top)
+    create_tile(`t${zB}_004`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_005`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_006`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_007`, Tile.Grass); //Interior Wall
+    create_tile(`t${zB}_008`, Tile.Floor); //Interior Wall
+    create_tile(`t${zB}_010`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_011`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_012`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_013`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_014`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_015`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_016`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_020`, Tile.Floor); //Interior Stairs Down
+    create_tile(`t${zB}_021`, Tile.Floor); //Interior Stairs Down
+    create_tile(`t${zB}_022`, Tile.Floor); //Interior Stairs Down
+    create_tile(`t${zB}_023`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_024`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_025`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_026`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_030`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_031`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_032`, Tile.Floor); //Interior Floor
+    create_tile(`t${zB}_033`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_034`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_035`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_036`, Tile.Wall); //Interior Wall
 
 
     //Lava
-    create_tile(`t${zL}_000`, Tile.Lava, applicationEmojis); //Lava
+    create_tile(`t${zL}_000`, Tile.Lava); //Lava
 
 
     //Flower Fields
-    create_tile(`t${zFF}_000`, Tile.Floor, applicationEmojis); //Flower Field Floor
-    create_tile(`t${zFF}_001`, Tile.Grass, applicationEmojis); //Flower Field Grass
-    create_tile(`t${zFF}_002`, Tile.Grass, applicationEmojis); //Flower Field Grass
-    create_tile(`t${zFF}_003`, Tile.Grass, applicationEmojis); //Flower Field Grass
-    create_tile(`t${zFF}_004`, Tile.Grass, applicationEmojis); //Flower Field Grass
-    create_tile(`t${zFF}_010`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_011`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_012`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_013`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_014`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_020`, Tile.Wall, applicationEmojis); //Flower Field Inaccessible
-    create_tile(`t${zFF}_021`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_022`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_023`, Tile.Wall, applicationEmojis); //Flower Field Wall
-    create_tile(`t${zFF}_024`, Tile.Floor, applicationEmojis); //Flower Field Wall
+    create_tile(`t${zFF}_000`, Tile.Floor); //Flower Field Floor
+    create_tile(`t${zFF}_001`, Tile.Grass); //Flower Field Grass
+    create_tile(`t${zFF}_002`, Tile.Grass); //Flower Field Grass
+    create_tile(`t${zFF}_003`, Tile.Grass); //Flower Field Grass
+    create_tile(`t${zFF}_004`, Tile.Grass); //Flower Field Grass
+    create_tile(`t${zFF}_010`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_011`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_012`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_013`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_014`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_020`, Tile.Wall); //Flower Field Inaccessible
+    create_tile(`t${zFF}_021`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_022`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_023`, Tile.Wall); //Flower Field Wall
+    create_tile(`t${zFF}_024`, Tile.Floor); //Flower Field Wall
 
 
     //Ancient Bridge
-    create_tile(`t${zAB}_000`, Tile.Floor, applicationEmojis); //Ancient Bridge Floor
-    create_tile(`t${zAB}_001`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_002`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_010`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_011`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_012`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_020`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_021`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_030`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
-    create_tile(`t${zAB}_031`, Tile.Wall, applicationEmojis); //Ancient Bridge Wall
+    create_tile(`t${zAB}_000`, Tile.Floor); //Ancient Bridge Floor
+    create_tile(`t${zAB}_001`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_002`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_010`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_011`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_012`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_020`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_021`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_030`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_031`, Tile.Wall); //Ancient Bridge Wall
 
 
     //Thunder Peak
-    create_tile(`t${zTP}_000`, Tile.Floor, applicationEmojis); //Thunder Peak Floor
-    create_tile(`t${zTP}_001`, Tile.Wall, applicationEmojis); //Thunder Peak Wall
-    create_tile(`t${zTP}_002`, Tile.Wall, applicationEmojis); //Thunder Peak Wall
-    create_tile(`t${zTP}_003`, Tile.Wall, applicationEmojis); //Thunder Peak Wall (Ice)
-    create_tile(`t${zTP}_004`, Tile.Wall, applicationEmojis); //Thunder Peak Wall
-    create_tile(`t${zTP}_010`, Tile.Grass, applicationEmojis); //Thunder Peak Grass
-    create_tile(`t${zTP}_011`, Tile.Wall, applicationEmojis); //Thunder Peak Wall
-    create_tile(`t${zTP}_012`, Tile.Wall, applicationEmojis); //Thunder Peak Tiny Spikes
-    create_tile(`t${zTP}_013`, Tile.Ice, applicationEmojis); //Thunder Peak Ice
-    create_tile(`t${zTP}_020`, Tile.Wall, applicationEmojis); //Thunder Peak Lower Edge
-    create_tile(`t${zTP}_021`, Tile.Wall, applicationEmojis); //Thunder Peak Bridge Part
-    create_tile(`t${zTP}_022`, Tile.Wall, applicationEmojis); //Thunder Peak Bridge Part
-    create_tile(`t${zTP}_023`, Tile.Wall, applicationEmojis); //Thunder Peak Bridge Part
-    create_tile(`t${zTP}_031`, Tile.Wall, applicationEmojis); //Thunder Peak Bridge Part
+    create_tile(`t${zTP}_000`, Tile.Floor); //Thunder Peak Floor
+    create_tile(`t${zTP}_001`, Tile.Wall); //Thunder Peak Wall
+    create_tile(`t${zTP}_002`, Tile.Wall); //Thunder Peak Wall
+    create_tile(`t${zTP}_003`, Tile.Wall); //Thunder Peak Wall (Ice)
+    create_tile(`t${zTP}_004`, Tile.Wall); //Thunder Peak Wall
+    create_tile(`t${zTP}_010`, Tile.Grass); //Thunder Peak Grass
+    create_tile(`t${zTP}_011`, Tile.Wall); //Thunder Peak Wall
+    create_tile(`t${zTP}_012`, Tile.Wall); //Thunder Peak Tiny Spikes
+    create_tile(`t${zTP}_013`, Tile.Ice); //Thunder Peak Ice
+    create_tile(`t${zTP}_020`, Tile.Wall); //Thunder Peak Lower Edge
+    create_tile(`t${zTP}_021`, Tile.Wall); //Thunder Peak Bridge Part
+    create_tile(`t${zTP}_022`, Tile.Wall); //Thunder Peak Bridge Part
+    create_tile(`t${zTP}_023`, Tile.Wall); //Thunder Peak Bridge Part
+    create_tile(`t${zTP}_031`, Tile.Wall); //Thunder Peak Bridge Part
 
 
     //Tunnel
-    create_tile(`t${zTn}_000`, Tile.Floor, applicationEmojis); //Tunnel Floor
-    create_tile(`t${zTn}_001`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_002`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_003`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_004`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_005`, Tile.Floor, applicationEmojis); //Tunnel Door Upper
-    create_tile(`t${zTn}_006`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_007`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_008`, Tile.Floor, applicationEmojis); //Tunnel Entrance Lower
-    create_tile(`t${zTn}_009`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_010`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_011`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_012`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_013`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_014`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_015`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_016`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_017`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_018`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_019`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_020`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_021`, Tile.Floor, applicationEmojis); //Tunnel Floor Divot
-    create_tile(`t${zTn}_022`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_023`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_025`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_026`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_027`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_028`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_029`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_030`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_031`, Tile.Grass, applicationEmojis); //Tunnel Grass
-    create_tile(`t${zTn}_032`, Tile.Floor, applicationEmojis); //Tunnel Floor Transition to crystal
-    create_tile(`t${zTn}_040`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_041`, Tile.Wall, applicationEmojis); //Tunnel Wall
-    create_tile(`t${zTn}_042`, Tile.Wall, applicationEmojis); //Tunnel Wall
+    create_tile(`t${zTn}_000`, Tile.Floor); //Tunnel Floor
+    create_tile(`t${zTn}_001`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_002`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_003`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_004`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_005`, Tile.Floor); //Tunnel Door Upper
+    create_tile(`t${zTn}_006`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_007`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_008`, Tile.Floor); //Tunnel Entrance Lower
+    create_tile(`t${zTn}_009`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_010`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_011`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_012`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_013`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_014`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_015`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_016`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_017`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_018`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_019`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_020`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_021`, Tile.Floor); //Tunnel Floor Divot
+    create_tile(`t${zTn}_022`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_023`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_025`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_026`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_027`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_028`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_029`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_030`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_031`, Tile.Grass); //Tunnel Grass
+    create_tile(`t${zTn}_032`, Tile.Floor); //Tunnel Floor Transition to crystal
+    create_tile(`t${zTn}_040`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_041`, Tile.Wall); //Tunnel Wall
+    create_tile(`t${zTn}_042`, Tile.Wall); //Tunnel Wall
 
 
     //Scaffolds
-    create_tile(`t${zSc}_000`, Tile.Floor, applicationEmojis); //Scaffolds Floor
-    create_tile(`t${zSc}_001`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_002`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_003`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_010`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_011`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_012`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_013`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_020`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_021`, Tile.Wall, applicationEmojis); //Scaffolds Wall
-    create_tile(`t${zSc}_022`, Tile.Wall, applicationEmojis); //Scaffolds Wall
+    create_tile(`t${zSc}_000`, Tile.Floor); //Scaffolds Floor
+    create_tile(`t${zSc}_001`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_002`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_003`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_010`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_011`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_012`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_013`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_020`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_021`, Tile.Wall); //Scaffolds Wall
+    create_tile(`t${zSc}_022`, Tile.Wall); //Scaffolds Wall
 
 
     //Goo Lake
-    create_tile(`t${zGL}_000`, Tile.Floor, applicationEmojis); //Goo Lake Floor
-    create_tile(`t${zGL}_001`, Tile.Grass, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_002`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_003`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_010`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_011`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_012`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_020`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_021`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_030`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_031`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_040`, Tile.Wall, applicationEmojis); //Goo Lake Wall
-    create_tile(`t${zGL}_041`, Tile.Wall, applicationEmojis); //Goo Lake Wall
+    create_tile(`t${zGL}_000`, Tile.Floor); //Goo Lake Floor
+    create_tile(`t${zGL}_001`, Tile.Grass); //Goo Lake Wall
+    create_tile(`t${zGL}_002`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_003`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_010`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_011`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_012`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_020`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_021`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_030`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_031`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_040`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_041`, Tile.Wall); //Goo Lake Wall
 
 
 
     //Crystal Caves
-    create_tile(`t${zCC}_000`, Tile.Floor, applicationEmojis); //Crystal Caves Floor
-    create_tile(`t${zCC}_001`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_004`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_005`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_006`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_007`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_008`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_009`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_010`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_011`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_014`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_015`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_016`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_017`, Tile.Wall, applicationEmojis); //Crystal Caves Ophicore
-    create_tile(`t${zCC}_018`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_020`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_021`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_024`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_030`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_031`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_034`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_040`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_041`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_044`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_050`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_051`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_054`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_060`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_061`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_064`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_070`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_071`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_072`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_073`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_074`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_075`, Tile.Wall, applicationEmojis); //Crystal Caves Mirror (Top)
-    create_tile(`t${zCC}_080`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_081`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_082`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_083`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_084`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_085`, Tile.Wall, applicationEmojis); //Crystal Caves Mirror (Bottom)
-    create_tile(`t${zCC}_090`, Tile.Grass, applicationEmojis); //Crystal Caves Grass
-    create_tile(`t${zCC}_091`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_092`, Tile.Floor, applicationEmojis); //Crystal Caves Floor
-    create_tile(`t${zCC}_093`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
-    create_tile(`t${zCC}_094`, Tile.Floor, applicationEmojis); //Crystal Caves Floor
-    create_tile(`t${zCC}_095`, Tile.Wall, applicationEmojis); //Crystal Caves Wall
+    create_tile(`t${zCC}_000`, Tile.Floor); //Crystal Caves Floor
+    create_tile(`t${zCC}_001`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_004`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_005`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_006`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_007`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_008`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_009`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_010`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_011`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_014`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_015`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_016`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_017`, Tile.Wall); //Crystal Caves Ophicore
+    create_tile(`t${zCC}_018`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_020`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_021`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_024`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_030`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_031`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_034`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_040`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_041`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_044`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_050`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_051`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_054`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_060`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_061`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_064`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_070`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_071`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_072`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_073`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_074`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_075`, Tile.Wall); //Crystal Caves Mirror (Top)
+    create_tile(`t${zCC}_080`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_081`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_082`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_083`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_084`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_085`, Tile.Wall); //Crystal Caves Mirror (Bottom)
+    create_tile(`t${zCC}_090`, Tile.Grass); //Crystal Caves Grass
+    create_tile(`t${zCC}_091`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_092`, Tile.Floor); //Crystal Caves Floor
+    create_tile(`t${zCC}_093`, Tile.Wall); //Crystal Caves Wall
+    create_tile(`t${zCC}_094`, Tile.Floor); //Crystal Caves Floor
+    create_tile(`t${zCC}_095`, Tile.Wall); //Crystal Caves Wall
 
 
     //Tutorial
-    create_tile(`t${zTu}_000`, Tile.Floor, applicationEmojis); //Tutorial Floor
-    create_tile(`t${zTu}_001`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_002`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_003`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_004`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_005`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_006`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_007`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_008`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_011`, Tile.Floor, applicationEmojis); //Tutorial Door Open
-    create_tile(`t${zTu}_012`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_013`, Tile.Floor, applicationEmojis); //Spike Floor Deactivated
-    create_tile(`t${zTu}_015`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_016`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_017`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_018`, Tile.Wall, applicationEmojis); //Tutorial Wall
-    create_tile(`t${zTu}_020`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_021`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_022`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_030`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_031`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_032`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_040`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_041`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_042`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_050`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_051`, Tile.Floor, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_052`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_060`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_061`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_062`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_063`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_070`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_071`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_072`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_073`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_080`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_081`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_082`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_090`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_091`, Tile.Wall, applicationEmojis); //Elevator
-    create_tile(`t${zTu}_092`, Tile.Wall, applicationEmojis); //Elevator
+    create_tile(`t${zTu}_000`, Tile.Floor); //Tutorial Floor
+    create_tile(`t${zTu}_001`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_002`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_003`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_004`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_005`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_006`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_007`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_008`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_011`, Tile.Floor); //Tutorial Door Open
+    create_tile(`t${zTu}_012`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_013`, Tile.Floor); //Spike Floor Deactivated
+    create_tile(`t${zTu}_015`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_016`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_017`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_018`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_020`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_021`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_022`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_030`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_031`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_032`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_040`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_041`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_042`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_050`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_051`, Tile.Floor); //Elevator
+    create_tile(`t${zTu}_052`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_060`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_061`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_062`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_063`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_070`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_071`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_072`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_073`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_080`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_081`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_082`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_090`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_091`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_092`, Tile.Wall); //Elevator
 
 
     // NPCs
-    create_tile(`c_000`, Tile.Npc, applicationEmojis); // Main Character
-    create_tile(`c_001`, Tile.Npc, applicationEmojis); // Basic NPC Obsidian
-    create_tile(`c_002`, Tile.Npc, applicationEmojis); // Basic NPC Desert Rags
-    create_tile(`c_003`, Tile.Npc, applicationEmojis); // Basic NPC Neon Blue
-    create_tile(`c_004`, Tile.Npc, applicationEmojis); // Basic NPC Fungal
-    create_tile(`c_005`, Tile.Npc, applicationEmojis); // Global Scientist
-    create_tile(`c_006`, Tile.Npc, applicationEmojis); // Global Elderly Researcher
-    create_tile(`c_007`, Tile.Npc, applicationEmojis); // Global Rival
-    create_tile(`c_008`, Tile.Npc, applicationEmojis); // Global Desert Raider
-    create_tile(`c_009`, Tile.Npc, applicationEmojis); // Global Department Head
-    create_tile(`c_010`, Tile.Npc, applicationEmojis); // Corrupted NPC (Fungal)
-    create_tile(`c_011`, Tile.Npc, applicationEmojis); // Shopkeeper
-    create_tile(`c_012`, Tile.Int, applicationEmojis); // Crater
-    create_tile(`c_013`, Tile.Int, applicationEmojis); // Chest
-    create_tile(`c_014`, Tile.Npc, applicationEmojis); // Basic NPC Construction Worker
-    create_tile(`c_015`, Tile.Npc, applicationEmojis); // Corrupted NPC (Tech)
-    create_tile(`c_016`, Tile.Npc, applicationEmojis); // Global CFO
-    create_tile(`c_017`, Tile.Int, applicationEmojis); // Tutorial Door Closed
-    create_tile(`c_018`, Tile.Npc, applicationEmojis); // Mr. Nice
-    create_tile(`c_019`, Tile.Int, applicationEmojis); // Tutorial Spikes
-    create_tile(`c_020`, Tile.Npc, applicationEmojis); // Generic Sign
-    create_tile(`c_021`, Tile.Int, applicationEmojis); // Mechanical Wall
-    create_tile(`c_022`, Tile.Int, applicationEmojis); // Character on Lavaboard
-    create_tile(`c_023`, Tile.Int, applicationEmojis); // Character on Teleporter
-    create_tile(`c_024`, Tile.Int, applicationEmojis); // Thunder Peak Thunderball (Amber)
-    create_tile(`c_025`, Tile.Int, applicationEmojis); // Thunder Peak Thunderball (Blue)
-    create_tile(`c_026`, Tile.Int, applicationEmojis); // Thunder Peak Thunderball (Pink)
-    create_tile(`c_027`, Tile.Npc, applicationEmojis); // Corrupted NPC (Ooze)
-    create_tile(`c_028`, Tile.Npc, applicationEmojis); // Corrupted CFO
-    create_tile(`c_029`, Tile.Int, applicationEmojis); // Access Tunnel Boulder
-    create_tile(`c_030`, Tile.Int, applicationEmojis, true); // Scaffold Red Dot
-    create_tile(`c_031`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_032`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_033`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_034`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_035`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_036`, Tile.Int, applicationEmojis); // Corrupted NPC (BIG Ooze)
-    create_tile(`c_037`, Tile.Int, applicationEmojis); // Switch (Red)
-    create_tile(`c_038`, Tile.Int, applicationEmojis); // Switch (Blue)
-    create_tile(`c_039`, Tile.Npc, applicationEmojis); // Explorer Dave
-    create_tile(`c_040`, Tile.Int, applicationEmojis); // Inactive Teleporter
-    create_tile(`c_041`, Tile.Int, applicationEmojis); // Active Computer
-    create_tile(`c_042`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_043`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_044`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_045`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_046`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_047`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_048`, Tile.Int, applicationEmojis); // Security Boss
-    create_tile(`c_049`, Tile.Int, applicationEmojis); // TP Network Chip
-    create_tile(`c_050`, Tile.Int, applicationEmojis); // Chemerai NPC
+    create_tile(`c_000`, Tile.Npc); // Main Character
+    create_tile(`c_001`, Tile.Npc); // Basic NPC Obsidian
+    create_tile(`c_002`, Tile.Npc); // Basic NPC Desert Rags
+    create_tile(`c_003`, Tile.Npc); // Basic NPC Neon Blue
+    create_tile(`c_004`, Tile.Npc); // Basic NPC Fungal
+    create_tile(`c_005`, Tile.Npc); // Global Scientist
+    create_tile(`c_006`, Tile.Npc); // Global Elderly Researcher
+    create_tile(`c_007`, Tile.Npc); // Global Rival
+    create_tile(`c_008`, Tile.Npc); // Global Desert Raider
+    create_tile(`c_009`, Tile.Npc); // Global Department Head
+    create_tile(`c_010`, Tile.Npc); // Corrupted NPC (Fungal)
+    create_tile(`c_011`, Tile.Npc); // Shopkeeper
+    create_tile(`c_012`, Tile.Int); // Crater
+    create_tile(`c_013`, Tile.Int); // Chest
+    create_tile(`c_014`, Tile.Npc); // Basic NPC Construction Worker
+    create_tile(`c_015`, Tile.Npc); // Corrupted NPC (Tech)
+    create_tile(`c_016`, Tile.Npc); // Global CFO
+    create_tile(`c_017`, Tile.Int); // Tutorial Door Closed
+    create_tile(`c_018`, Tile.Npc); // Mr. Nice
+    create_tile(`c_019`, Tile.Int); // Tutorial Spikes
+    create_tile(`c_020`, Tile.Npc); // Generic Sign
+    create_tile(`c_021`, Tile.Int); // Mechanical Wall
+    create_tile(`c_022`, Tile.Int); // Character on Lavaboard
+    create_tile(`c_023`, Tile.Int); // Character on Teleporter
+    create_tile(`c_024`, Tile.Int); // Thunder Peak Thunderball (Amber)
+    create_tile(`c_025`, Tile.Int); // Thunder Peak Thunderball (Blue)
+    create_tile(`c_026`, Tile.Int); // Thunder Peak Thunderball (Pink)
+    create_tile(`c_027`, Tile.Npc); // Corrupted NPC (Ooze)
+    create_tile(`c_028`, Tile.Npc); // Corrupted CFO
+    create_tile(`c_029`, Tile.Int); // Access Tunnel Boulder
+    create_tile(`c_030`, Tile.Int, true); // Scaffold Red Dot
+    create_tile(`c_031`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_032`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_033`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_034`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_035`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_036`, Tile.Int); // Corrupted NPC (BIG Ooze)
+    create_tile(`c_037`, Tile.Int); // Switch (Red)
+    create_tile(`c_038`, Tile.Int); // Switch (Blue)
+    create_tile(`c_039`, Tile.Npc); // Explorer Dave
+    create_tile(`c_040`, Tile.Int); // Inactive Teleporter
+    create_tile(`c_041`, Tile.Int); // Active Computer
+    create_tile(`c_042`, Tile.Int); // Security Boss
+    create_tile(`c_043`, Tile.Int); // Security Boss
+    create_tile(`c_044`, Tile.Int); // Security Boss
+    create_tile(`c_045`, Tile.Int); // Security Boss
+    create_tile(`c_046`, Tile.Int); // Security Boss
+    create_tile(`c_047`, Tile.Int); // Security Boss
+    create_tile(`c_048`, Tile.Int); // Security Boss
+    create_tile(`c_049`, Tile.Int); // TP Network Chip
+    create_tile(`c_050`, Tile.Int); // Chemerai NPC
 
-    create_tile(`c_900`, Tile.Int, applicationEmojis); // BIG Ooze
-    create_tile(`c_901`, Tile.Int, applicationEmojis); // Enforcement System Delta
+    create_tile(`c_900`, Tile.Int); // BIG Ooze
+    create_tile(`c_901`, Tile.Int); // Enforcement System Delta
 
 
 
@@ -1814,7 +1812,7 @@ export async function execute(interaction, client) {
     // Sporbee
     create_monster({
         id: 0,
-        emote: get_emote_string(applicationEmojis, 'sporbee'),
+        emote: get_emote_string('sporbee'),
         name: 'Sporbee',
         oochive_entry: 'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.',
         type: [OochType.Fungal],
@@ -1830,7 +1828,7 @@ export async function execute(interaction, client) {
     // Stingrowth
     create_monster({
         id: 1,
-        emote: get_emote_string(applicationEmojis, 'stingrowth'),
+        emote: get_emote_string('stingrowth'),
         name: 'Stingrowth',
         oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.',
         type: [OochType.Fungal],
@@ -1846,7 +1844,7 @@ export async function execute(interaction, client) {
     // Queenect
     create_monster({
         id: 2,
-        emote: get_emote_string(applicationEmojis, 'queenect'),
+        emote: get_emote_string('queenect'),
         name: 'Queenect',
         oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.',
         type: [OochType.Fungal],
@@ -1862,7 +1860,7 @@ export async function execute(interaction, client) {
     // Roocky
     create_monster({
         id: 3,
-        emote: get_emote_string(applicationEmojis, 'roocky'),
+        emote: get_emote_string('roocky'),
         name: 'Roocky',
         oochive_entry: 'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.',
         type: [OochType.Stone],
@@ -1878,7 +1876,7 @@ export async function execute(interaction, client) {
     // Graknight
     create_monster({
         id: 4,
-        emote: get_emote_string(applicationEmojis, 'graknight'),
+        emote: get_emote_string('graknight'),
         name: 'Graknight',
         oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.',
         type: [OochType.Stone],
@@ -1894,7 +1892,7 @@ export async function execute(interaction, client) {
     // Kracking
     create_monster({
         id: 5,
-        emote: get_emote_string(applicationEmojis, 'kracking'),
+        emote: get_emote_string('kracking'),
         name: 'Kracking',
         oochive_entry: 'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.',
         type: [OochType.Stone, OochType.Magic],
@@ -1910,7 +1908,7 @@ export async function execute(interaction, client) {
     // Puppyre
     create_monster({
         id: 6,
-        emote: get_emote_string(applicationEmojis, 'puppyre'),
+        emote: get_emote_string('puppyre'),
         name: 'Puppyre',
         oochive_entry: 'A very good boy, empowered by the spiraling patterns on its body.',
         type: [OochType.Flame],
@@ -1926,7 +1924,7 @@ export async function execute(interaction, client) {
     // Dogglow
     create_monster({
         id: 7,
-        emote: get_emote_string(applicationEmojis, 'dogglow'),
+        emote: get_emote_string('dogglow'),
         name: 'Dogglow',
         oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.',
         type: [OochType.Flame],
@@ -1942,7 +1940,7 @@ export async function execute(interaction, client) {
     // Hounuke
     create_monster({
         id: 8,
-        emote: get_emote_string(applicationEmojis, 'hounuke'),
+        emote: get_emote_string('hounuke'),
         name: 'Hounuke',
         oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.',
         type: [OochType.Flame],
@@ -1958,7 +1956,7 @@ export async function execute(interaction, client) {
     // Glither
     create_monster({
         id: 9,
-        emote: get_emote_string(applicationEmojis, 'glither'),
+        emote: get_emote_string('glither'),
         name: 'Glither',
         oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.',
         type: [OochType.Stone],
@@ -1974,7 +1972,7 @@ export async function execute(interaction, client) {
     // Sparafura
     create_monster({
         id: 10,
-        emote: get_emote_string(applicationEmojis, 'sparafura'),
+        emote: get_emote_string('sparafura'),
         name: 'Sparafura',
         oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.',
         type: [OochType.Stone],
@@ -1990,7 +1988,7 @@ export async function execute(interaction, client) {
     // Constone
     create_monster({
         id: 11,
-        emote: get_emote_string(applicationEmojis, 'constone'),
+        emote: get_emote_string('constone'),
         name: 'Constone',
         oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.',
         type: [OochType.Stone],
@@ -2006,7 +2004,7 @@ export async function execute(interaction, client) {
     // Amephyst
     create_monster({
         id: 12,
-        emote: get_emote_string(applicationEmojis, 'amephyst'),
+        emote: get_emote_string('amephyst'),
         name: 'Amephyst',
         oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.',
         type: [OochType.Stone, OochType.Crystal],
@@ -2022,7 +2020,7 @@ export async function execute(interaction, client) {
     // Widew
     create_monster({
         id: 13,
-        emote: get_emote_string(applicationEmojis, 'widew'),
+        emote: get_emote_string('widew'),
         name: 'Widew',
         oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.',
         type: [OochType.Fungal],
@@ -2038,7 +2036,7 @@ export async function execute(interaction, client) {
     // Tarotula
     create_monster({
         id: 14,
-        emote: get_emote_string(applicationEmojis, 'tarotula'),
+        emote: get_emote_string('tarotula'),
         name: 'Tarotula',
         oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.',
         type: [OochType.Fungal],
@@ -2054,7 +2052,7 @@ export async function execute(interaction, client) {
     //Moldot
     create_monster({
         id: 15,
-        emote: get_emote_string(applicationEmojis, 'moldot'),
+        emote: get_emote_string('moldot'),
         name: 'Moldot',
         oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
         type: [OochType.Fungal, OochType.Magic],
@@ -2071,7 +2069,7 @@ export async function execute(interaction, client) {
     // Moldire
     create_monster({
         id: 16,
-        emote: get_emote_string(applicationEmojis, 'moldire'),
+        emote: get_emote_string('moldire'),
         name: 'Moldire',
         oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
         type: [OochType.Fungal, OochType.Magic],
@@ -2088,7 +2086,7 @@ export async function execute(interaction, client) {
     // Charlite
     create_monster({
         id: 17,
-        emote: get_emote_string(applicationEmojis, 'charlite'),
+        emote: get_emote_string('charlite'),
         name: 'Charlite',
         oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
         type: [OochType.Flame, OochType.Stone],
@@ -2105,7 +2103,7 @@ export async function execute(interaction, client) {
     // Darcoal
     create_monster({
         id: 18,
-        emote: get_emote_string(applicationEmojis, 'darcoal'),
+        emote: get_emote_string('darcoal'),
         name: 'Darcoal',
         oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
         type: [OochType.Flame, OochType.Stone],
@@ -2122,7 +2120,7 @@ export async function execute(interaction, client) {
     // Torchoir
     create_monster({
         id: 19,
-        emote: get_emote_string(applicationEmojis, 'torchoir'),
+        emote: get_emote_string('torchoir'),
         name: 'Torchoir',
         oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
         type: [OochType.Flame, OochType.Sound],
@@ -2141,7 +2139,7 @@ export async function execute(interaction, client) {
     // Chantern
     create_monster({
         id: 20,
-        emote: get_emote_string(applicationEmojis, 'chantern'),
+        emote: get_emote_string('chantern'),
         name: 'Chantern',
         oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.',
         type: [OochType.Flame, OochType.Sound],
@@ -2159,7 +2157,7 @@ export async function execute(interaction, client) {
     // Eluslug
     create_monster({
         id: 21,
-        emote: get_emote_string(applicationEmojis, 'eluslug'),
+        emote: get_emote_string('eluslug'),
         name: 'Eluslug',
         oochive_entry: 'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.',
         type: [OochType.Tech],
@@ -2176,7 +2174,7 @@ export async function execute(interaction, client) {
     // Jellime
     create_monster({
         id: 22,
-        emote: get_emote_string(applicationEmojis, 'jellime'),
+        emote: get_emote_string('jellime'),
         name: 'Jellime',
         oochive_entry: 'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.',
         type: [OochType.Ooze],
@@ -2194,7 +2192,7 @@ export async function execute(interaction, client) {
     // Meduslime
     create_monster({
         id: 23,
-        emote: get_emote_string(applicationEmojis, 'meduslime'),
+        emote: get_emote_string('meduslime'),
         name: 'Meduslime',
         oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.',
         type: [OochType.Ooze, OochType.Magic],
@@ -2212,7 +2210,7 @@ export async function execute(interaction, client) {
     // Tisparc
     create_monster({
         id: 24,
-        emote: get_emote_string(applicationEmojis, 'tisparc'),
+        emote: get_emote_string('tisparc'),
         name: 'Tisparc',
         oochive_entry: 'The hat-like crystal on its head grants it a magical energy which it cannot quite control.',
         type: [OochType.Magic, OochType.Flame],
@@ -2230,7 +2228,7 @@ export async function execute(interaction, client) {
     // Wizzap
     create_monster({
         id: 25,
-        emote: get_emote_string(applicationEmojis, 'wizzap'),
+        emote: get_emote_string('wizzap'),
         name: 'Wizzap',
         oochive_entry: 'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.',
         type: [OochType.Magic, OochType.Flame],
@@ -2248,7 +2246,7 @@ export async function execute(interaction, client) {
     // Blipoint
     create_monster({
         id: 26,
-        emote: get_emote_string(applicationEmojis, 'blipoint'),
+        emote: get_emote_string('blipoint'),
         name: 'Blipoint',
         oochive_entry: 'An eye peeks through a rift in space-time.',
         type: [OochType.Magic],
@@ -2266,7 +2264,7 @@ export async function execute(interaction, client) {
     // Rerune
     create_monster({
         id: 27,
-        emote: get_emote_string(applicationEmojis, 'rerune'),
+        emote: get_emote_string('rerune'),
         name: 'Rerune',
         oochive_entry: 'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.',
         type: [OochType.Magic],
@@ -2284,7 +2282,7 @@ export async function execute(interaction, client) {
     // Temporath
     create_monster({
         id: 28,
-        emote: get_emote_string(applicationEmojis, 'temporath'),
+        emote: get_emote_string('temporath'),
         name: 'Temporath',
         oochive_entry: 'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.',
         type: [OochType.Magic],
@@ -2302,7 +2300,7 @@ export async function execute(interaction, client) {
     // Nucleorb
     create_monster({
         id: 29,
-        emote: get_emote_string(applicationEmojis, 'nucleorb'),
+        emote: get_emote_string('nucleorb'),
         name: 'Nucleorb',
         oochive_entry: 'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.',
         type: [OochType.Ooze],
@@ -2320,7 +2318,7 @@ export async function execute(interaction, client) {
     // Amebite
     create_monster({
         id: 30,
-        emote: get_emote_string(applicationEmojis, 'amebite'),
+        emote: get_emote_string('amebite'),
         name: 'Amebite',
         oochive_entry: 'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.',
         type: [OochType.Ooze],
@@ -2338,7 +2336,7 @@ export async function execute(interaction, client) {
     // Amalgrime
     create_monster({
         id: 31,
-        emote: get_emote_string(applicationEmojis, 'amalgrime'),
+        emote: get_emote_string('amalgrime'),
         name: 'Amalgrime',
         oochive_entry: 'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.',
         type: [OochType.Ooze],
@@ -2356,7 +2354,7 @@ export async function execute(interaction, client) {
     // Drilline
     create_monster({
         id: 32,
-        emote: get_emote_string(applicationEmojis, 'drilline'),
+        emote: get_emote_string('drilline'),
         name: 'Drilline',
         oochive_entry: 'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.',
         type: [OochType.Tech],
@@ -2373,7 +2371,7 @@ export async function execute(interaction, client) {
     // Erwrek
     create_monster({
         id: 33,
-        emote: get_emote_string(applicationEmojis, 'erwrek'),
+        emote: get_emote_string('erwrek'),
         name: 'Erwrek',
         oochive_entry: 'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.',
         type: [OochType.Tech],
@@ -2390,7 +2388,7 @@ export async function execute(interaction, client) {
     // Purif-i
     create_monster({
         id: 34,
-        emote: get_emote_string(applicationEmojis, 'purifi'),
+        emote: get_emote_string('purifi'),
         name: 'Purif-i',
         oochive_entry: 'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.',
         type: [OochType.Void, OochType.Stone],
@@ -2407,7 +2405,7 @@ export async function execute(interaction, client) {
     // Cromet
     create_monster({
         id: 35,
-        emote: get_emote_string(applicationEmojis, 'cromet'),
+        emote: get_emote_string('cromet'),
         name: 'Cromet',
         oochive_entry: 'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.',
         type: [OochType.Stone],
@@ -2425,7 +2423,7 @@ export async function execute(interaction, client) {
     // Lobstar
     create_monster({
         id: 36,
-        emote: get_emote_string(applicationEmojis, 'lobstar'),
+        emote: get_emote_string('lobstar'),
         name: 'Lobstar',
         oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.',
         type: [OochType.Stone, OochType.Flame],
@@ -2443,7 +2441,7 @@ export async function execute(interaction, client) {
     // Spoolette
     create_monster({
         id: 37,
-        emote: get_emote_string(applicationEmojis, 'spoolette'),
+        emote: get_emote_string('spoolette'),
         name: 'Spoolette',
         oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.',
         type: [OochType.Magic, OochType.Cloth],
@@ -2461,7 +2459,7 @@ export async function execute(interaction, client) {
     // Thimbite
     create_monster({
         id: 38,
-        emote: get_emote_string(applicationEmojis, 'thimbite'),
+        emote: get_emote_string('thimbite'),
         name: 'Thimbite',
         oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.',
         type: [OochType.Magic, OochType.Cloth],
@@ -2479,7 +2477,7 @@ export async function execute(interaction, client) {
     // Digityke
     create_monster({
         id: 39,
-        emote: get_emote_string(applicationEmojis, 'digityke'),
+        emote: get_emote_string('digityke'),
         name: 'Digityke',
         oochive_entry: 'An old model of machine companion, its feeble body prevents it from being of much use.',
         type: [OochType.Tech],
@@ -2497,7 +2495,7 @@ export async function execute(interaction, client) {
     // Codet
     create_monster({
         id: 40,
-        emote: get_emote_string(applicationEmojis, 'codet'),
+        emote: get_emote_string('codet'),
         name: 'Codet',
         oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.',
         type: [OochType.Tech, OochType.Magic],
@@ -2515,7 +2513,7 @@ export async function execute(interaction, client) {
     // Heatri
     create_monster({
         id: 41,
-        emote: get_emote_string(applicationEmojis, 'heatri'),
+        emote: get_emote_string('heatri'),
         name: 'Heatri',
         oochive_entry: 'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.',
         type: [OochType.Flame],
@@ -2532,7 +2530,7 @@ export async function execute(interaction, client) {
     // Moistri
     create_monster({
         id: 42,
-        emote: get_emote_string(applicationEmojis, 'moistri'),
+        emote: get_emote_string('moistri'),
         name: 'Moistri',
         oochive_entry: 'Researchers studying Moistri have realized that its structure can shift freely, some believe it may be able to change forms at will.',
         type: [OochType.Ooze],
@@ -2549,7 +2547,7 @@ export async function execute(interaction, client) {
     // Crystri
     create_monster({
         id: 43,
-        emote: get_emote_string(applicationEmojis, 'crystri'),
+        emote: get_emote_string('crystri'),
         name: 'Crystri',
         oochive_entry: 'Crystri\'s body reveals that it\'s made up of several smaller organisms, linking together to form one larger creature.',
         type: [OochType.Crystal],
@@ -2566,7 +2564,7 @@ export async function execute(interaction, client) {
     // Solidifyr
     create_monster({
         id: 44,
-        emote: get_emote_string(applicationEmojis, 'solidifyr'),
+        emote: get_emote_string('solidifyr'),
         name: 'Solidifyr',
         oochive_entry: 'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.',
         type: [OochType.Flame],
@@ -2584,7 +2582,7 @@ export async function execute(interaction, client) {
     // Obstaggard
     create_monster({
         id: 45,
-        emote: get_emote_string(applicationEmojis, 'obstaggard'),
+        emote: get_emote_string('obstaggard'),
         name: 'Obstaggard',
         oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.',
         type: [OochType.Flame, OochType.Stone],
@@ -2603,7 +2601,7 @@ export async function execute(interaction, client) {
     // Droplunk
     create_monster({
         id: 46,
-        emote: get_emote_string(applicationEmojis, 'droplunk'),
+        emote: get_emote_string('droplunk'),
         name: 'Droplunk',
         oochive_entry: 'Oops, don\'t let this one drop on your head!',
         type: [OochType.Stone],
@@ -2621,7 +2619,7 @@ export async function execute(interaction, client) {
     // Brykurse
     create_monster({
         id: 47,
-        emote: get_emote_string(applicationEmojis, 'brykurse'),
+        emote: get_emote_string('brykurse'),
         name: 'Brykurse',
         oochive_entry: 'Square meatball!',
         type: [OochType.Stone, OochType.Magic],
@@ -2639,7 +2637,7 @@ export async function execute(interaction, client) {
     // Polyplute
     create_monster({
         id: 48,
-        emote: get_emote_string(applicationEmojis, 'polyplute'),
+        emote: get_emote_string('polyplute'),
         name: 'Polyplute',
         oochive_entry: 'Blooms of Polyplute create beautiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.',
         type: [OochType.Fungal],
@@ -2656,7 +2654,7 @@ export async function execute(interaction, client) {
     // Reefest
     create_monster({
         id: 49,
-        emote: get_emote_string(applicationEmojis, 'reefest'),
+        emote: get_emote_string('reefest'),
         name: 'Reefest',
         oochive_entry: 'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.',
         type: [OochType.Fungal],
@@ -2673,7 +2671,7 @@ export async function execute(interaction, client) {
     // Frigook
     create_monster({
         id: 50,
-        emote: get_emote_string(applicationEmojis, 'frigook'),
+        emote: get_emote_string('frigook'),
         name: 'Frigook',
         oochive_entry: 'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.',
         type: [OochType.Ooze, OochType.Crystal],
@@ -2690,7 +2688,7 @@ export async function execute(interaction, client) {
     // Boreyuc
     create_monster({
         id: 51,
-        emote: get_emote_string(applicationEmojis, 'boreyuc'),
+        emote: get_emote_string('boreyuc'),
         name: 'Boreyuc',
         oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.',
         type: [OochType.Ooze, OochType.Crystal],
@@ -2707,7 +2705,7 @@ export async function execute(interaction, client) {
     // Vrumbox
     create_monster({
         id: 52,
-        emote: get_emote_string(applicationEmojis, 'vrumbox'),
+        emote: get_emote_string('vrumbox'),
         name: 'Vrumbox',
         oochive_entry: 'Monowheeled automata built for carrying various pieces of equipment.',
         type: [OochType.Tech],
@@ -2724,7 +2722,7 @@ export async function execute(interaction, client) {
     // Folduo
     create_monster({
         id: 53,
-        emote: get_emote_string(applicationEmojis, 'folduo'),
+        emote: get_emote_string('folduo'),
         name: 'Folduo',
         oochive_entry: 'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.',
         type: [OochType.Tech],
@@ -2741,7 +2739,7 @@ export async function execute(interaction, client) {
     // Hexyclone
     create_monster({
         id: 54,
-        emote: get_emote_string(applicationEmojis, 'hexyclone'),
+        emote: get_emote_string('hexyclone'),
         name: 'Hexyclone',
         oochive_entry: 'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.',
         type: [OochType.Tech],
@@ -2758,7 +2756,7 @@ export async function execute(interaction, client) {
     // Doubud
     create_monster({
         id: 55,
-        emote: get_emote_string(applicationEmojis, 'doubud'),
+        emote: get_emote_string('doubud'),
         name: 'Doubud',
         oochive_entry: 'Discovered when a researcher heard someone screaming. It turned out to be a pair of Doubud shouting back and forth at eachother.',
         type: [OochType.Sound],
@@ -2775,7 +2773,7 @@ export async function execute(interaction, client) {
     // Hedfren
     create_monster({
         id: 56,
-        emote: get_emote_string(applicationEmojis, 'hedfren'),
+        emote: get_emote_string('hedfren'),
         name: 'Hedfren',
         oochive_entry: 'It\'s still not certain whether Hedfren is a true evolution or if it\'s just Doubud after emerging from the ground.',
         type: [OochType.Sound],
@@ -2792,7 +2790,7 @@ export async function execute(interaction, client) {
     // Kindeep
     create_monster({
         id: 57,
-        emote: get_emote_string(applicationEmojis, 'kindeep'),
+        emote: get_emote_string('kindeep'),
         name: 'Kindeep',
         oochive_entry: 'Schools of this fish-like oochamon are often found floating down in the caverns.',
         type: [OochType.Flame],
@@ -2810,7 +2808,7 @@ export async function execute(interaction, client) {
     // Ablayzz
     create_monster({
         id: 58,
-        emote: get_emote_string(applicationEmojis, 'ablayzz'),
+        emote: get_emote_string('ablayzz'),
         name: 'Ablayzz',
         oochive_entry: 'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.',
         type: [OochType.Flame],
@@ -2828,7 +2826,7 @@ export async function execute(interaction, client) {
     // Krakle
     create_monster({
         id: 59,
-        emote: get_emote_string(applicationEmojis, 'krakle'),
+        emote: get_emote_string('krakle'),
         name: 'Krakle',
         oochive_entry: 'This small \'mon has a superheated shell, don\'t touch it.',
         type: [OochType.Flame],
@@ -2844,7 +2842,7 @@ export async function execute(interaction, client) {
     // Lightuft
     create_monster({
         id: 60,
-        emote: get_emote_string(applicationEmojis, 'lightuft'),
+        emote: get_emote_string('lightuft'),
         name: 'Lightuft',
         oochive_entry: 'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.',
         type: [OochType.Flame],
@@ -2861,7 +2859,7 @@ export async function execute(interaction, client) {
     // Infernowl
     create_monster({
         id: 61,
-        emote: get_emote_string(applicationEmojis, 'infernowl'),
+        emote: get_emote_string('infernowl'),
         name: 'Infernowl',
         oochive_entry: 'These apex predators will find a single volcano and make its entirety their hunting ground.',
         type: [OochType.Flame],
@@ -2878,7 +2876,7 @@ export async function execute(interaction, client) {
     // Fluffly
     create_monster({
         id: 62,
-        emote: get_emote_string(applicationEmojis, 'fluffly'),
+        emote: get_emote_string('fluffly'),
         name: 'Fluffly',
         oochive_entry: 'These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.',
         type: [OochType.Fungal],
@@ -2896,7 +2894,7 @@ export async function execute(interaction, client) {
     // Decavian
     create_monster({
         id: 63,
-        emote: get_emote_string(applicationEmojis, 'decavian'),
+        emote: get_emote_string('decavian'),
         name: 'Decavian',
         oochive_entry: 'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.',
         type: [OochType.Fungal],
@@ -2914,7 +2912,7 @@ export async function execute(interaction, client) {
     // Phaegrim
     create_monster({
         id: 64,
-        emote: get_emote_string(applicationEmojis, 'phaegrim'),
+        emote: get_emote_string('phaegrim'),
         name: 'Phaegrim',
         oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
         type: [OochType.Fungal, OochType.Ooze],
@@ -2932,7 +2930,7 @@ export async function execute(interaction, client) {
     // Plaghast
     create_monster({
         id: 65,
-        emote: get_emote_string(applicationEmojis, 'plaghast'),
+        emote: get_emote_string('plaghast'),
         name: 'Plaghast',
         oochive_entry: 'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.',
         type: [OochType.Fungal, OochType.Ooze],
@@ -2950,7 +2948,7 @@ export async function execute(interaction, client) {
     // Grubbit
     create_monster({
         id: 66,
-        emote: get_emote_string(applicationEmojis, 'grubbit'),
+        emote: get_emote_string('grubbit'),
         name: 'Grubbit',
         oochive_entry: 'These small bugs can be found munching on bits of crystal.',
         type: [OochType.Crystal, OochType.Cloth],
@@ -2968,7 +2966,7 @@ export async function execute(interaction, client) {
     // Culcoon
     create_monster({
         id: 67,
-        emote: get_emote_string(applicationEmojis, 'culcoon'),
+        emote: get_emote_string('culcoon'),
         name: 'Culcoon',
         oochive_entry: 'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.',
         type: [OochType.Crystal, OochType.Cloth],
@@ -2986,7 +2984,7 @@ export async function execute(interaction, client) {
     // Speculidae
     create_monster({
         id: 68,
-        emote: get_emote_string(applicationEmojis, 'speculidae'),
+        emote: get_emote_string('speculidae'),
         name: 'Speculidae',
         oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
         type: [OochType.Crystal],
@@ -3004,7 +3002,7 @@ export async function execute(interaction, client) {
     // Nisythe
     create_monster({
         id: 69,
-        emote: get_emote_string(applicationEmojis, 'nisythe'),
+        emote: get_emote_string('nisythe'),
         name: 'Nisythe',
         oochive_entry: 'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.',
         type: [OochType.Magic, OochType.Flame],
@@ -3022,7 +3020,7 @@ export async function execute(interaction, client) {
     // Tidoll
     create_monster({
         id: 70,
-        emote: get_emote_string(applicationEmojis, 'tidoll'),
+        emote: get_emote_string('tidoll'),
         name: 'Tidoll',
         oochive_entry: 'These creatures are barely more than sacks of liquid with no bones supporting them.',
         type: [OochType.Ooze, OochType.Cloth],
@@ -3039,7 +3037,7 @@ export async function execute(interaction, client) {
     // Marinette
     create_monster({
         id: 71,
-        emote: get_emote_string(applicationEmojis, 'marinette'),
+        emote: get_emote_string('marinette'),
         name: 'Marinette',
         oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
         type: [OochType.Ooze, OochType.Cloth],
@@ -3056,7 +3054,7 @@ export async function execute(interaction, client) {
     // Durble
     create_monster({
         id: 72,
-        emote: get_emote_string(applicationEmojis, 'durble'),
+        emote: get_emote_string('durble'),
         name: 'Durble',
         oochive_entry: 'These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.',
         type: [OochType.Stone],
@@ -3073,7 +3071,7 @@ export async function execute(interaction, client) {
     // Durubull
     create_monster({
         id: 73,
-        emote: get_emote_string(applicationEmojis, 'durubull'),
+        emote: get_emote_string('durubull'),
         name: 'Durubull',
         oochive_entry: 'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.',
         type: [OochType.Stone],
@@ -3090,7 +3088,7 @@ export async function execute(interaction, client) {
     // Rustail
     create_monster({
         id: 74,
-        emote: get_emote_string(applicationEmojis, 'rustail'),
+        emote: get_emote_string('rustail'),
         name: 'Rustail',
         oochive_entry: 'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.',
         type: [OochType.Tech],
@@ -3108,7 +3106,7 @@ export async function execute(interaction, client) {
     // Oxydrake
     create_monster({
         id: 75,
-        emote: get_emote_string(applicationEmojis, 'oxydrake'),
+        emote: get_emote_string('oxydrake'),
         name: 'Oxydrake',
         oochive_entry: 'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.',
         type: [OochType.Tech],
@@ -3126,7 +3124,7 @@ export async function execute(interaction, client) {
     // Chakreye
     create_monster({
         id: 76,
-        emote: get_emote_string(applicationEmojis, 'chakreye'),
+        emote: get_emote_string('chakreye'),
         name: 'Chakreye',
         oochive_entry: 'Their body is surrounded by a rapidly spinning disc of plasma.',
         type: [OochType.Tech],
@@ -3144,7 +3142,7 @@ export async function execute(interaction, client) {
     // Sabrink
     create_monster({
         id: 77,
-        emote: get_emote_string(applicationEmojis, 'sabrink'),
+        emote: get_emote_string('sabrink'),
         name: 'Sabrink',
         oochive_entry: 'A grinning energy blade that relentlessly pursues its enemies.',
         type: [OochType.Tech],
@@ -3162,7 +3160,7 @@ export async function execute(interaction, client) {
     // Sapler
     create_monster({
         id: 78,
-        emote: get_emote_string(applicationEmojis, 'sapler'),
+        emote: get_emote_string('sapler'),
         name: 'Sapler',
         oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
         type: [OochType.Tech, OochType.Fungal],
@@ -3180,7 +3178,7 @@ export async function execute(interaction, client) {
     // Radient
     create_monster({
         id: 79,
-        emote: get_emote_string(applicationEmojis, 'radient'),
+        emote: get_emote_string('radient'),
         name: 'Radient',
         oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
         type: [OochType.Tech, OochType.Fungal],
@@ -3198,7 +3196,7 @@ export async function execute(interaction, client) {
     // Lasangato
     create_monster({
         id: 80,
-        emote: get_emote_string(applicationEmojis, 'lasangato'),
+        emote: get_emote_string('lasangato'),
         name: 'Lasangato',
         oochive_entry: 'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.',
         type: [OochType.Stone],
@@ -3215,7 +3213,7 @@ export async function execute(interaction, client) {
     // Crudoil
     create_monster({
         id: 81,
-        emote: get_emote_string(applicationEmojis, 'crudoil'),
+        emote: get_emote_string('crudoil'),
         name: 'Crudoil',
         oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
         type: [OochType.Ooze],
@@ -3233,7 +3231,7 @@ export async function execute(interaction, client) {
     // Oilantern
     create_monster({
         id: 82,
-        emote: get_emote_string(applicationEmojis, 'oilantern'),
+        emote: get_emote_string('oilantern'),
         name: 'Oilantern',
         oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
         type: [OochType.Ooze, OochType.Flame],
@@ -3251,7 +3249,7 @@ export async function execute(interaction, client) {
     // Saporite
     create_monster({
         id: 83,
-        emote: get_emote_string(applicationEmojis, 'saporite'),
+        emote: get_emote_string('saporite'),
         name: 'Saporite',
         oochive_entry: 'Also called mushroom fairies, these small creatures are very peaceful.',
         type: [OochType.Fungal],
@@ -3268,7 +3266,7 @@ export async function execute(interaction, client) {
     // Faering
     create_monster({
         id: 84,
-        emote: get_emote_string(applicationEmojis, 'faering'),
+        emote: get_emote_string('faering'),
         name: 'Faering',
         oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
         type: [OochType.Fungal, OochType.Magic],
@@ -3285,7 +3283,7 @@ export async function execute(interaction, client) {
     // Kerkobble
     create_monster({
         id: 85,
-        emote: get_emote_string(applicationEmojis, 'kercobble'),
+        emote: get_emote_string('kercobble'),
         name: 'Kerkobble',
         oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
         type: [OochType.Stone, OochType.Tech],
@@ -3302,7 +3300,7 @@ export async function execute(interaction, client) {
     // Korkobble
     create_monster({
         id: 86,
-        emote: get_emote_string(applicationEmojis, 'korkobble'),
+        emote: get_emote_string('korkobble'),
         name: 'Korkobble',
         oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
         type: [OochType.Stone, OochType.Tech],
@@ -3319,7 +3317,7 @@ export async function execute(interaction, client) {
     // Ilushand
     create_monster({
         id: 87,
-        emote: get_emote_string(applicationEmojis, 'ilushand'),
+        emote: get_emote_string('ilushand'),
         name: 'Ilushand',
         oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
         type: [OochType.Magic, OochType.Crystal],
@@ -3336,7 +3334,7 @@ export async function execute(interaction, client) {
     // Miroraj
     create_monster({
         id: 88,
-        emote: get_emote_string(applicationEmojis, 'miroraj'),
+        emote: get_emote_string('miroraj'),
         name: 'Miroraj',
         oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
         type: [OochType.Magic, OochType.Crystal],
@@ -3353,7 +3351,7 @@ export async function execute(interaction, client) {
     // Fritarge
     create_monster({
         id: 89,
-        emote: get_emote_string(applicationEmojis, 'fritarge'),
+        emote: get_emote_string('fritarge'),
         name: 'Fritarge',
         oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
         type: [OochType.Tech],
@@ -3371,7 +3369,7 @@ export async function execute(interaction, client) {
     // Wardred
     create_monster({
         id: 90,
-        emote: get_emote_string(applicationEmojis, 'wardred'),
+        emote: get_emote_string('wardred'),
         name: 'Wardred',
         oochive_entry: 'The gaping maw on this creature\'s back echoes metallic whispers.',
         type: [OochType.Tech],
@@ -3389,7 +3387,7 @@ export async function execute(interaction, client) {
     // Congsume
     create_monster({
         id: 91,
-        emote: get_emote_string(applicationEmojis, 'congsume'),
+        emote: get_emote_string('congsume'),
         name: 'Congsume',
         oochive_entry: 'It can\'t stop moving or the flames on its body will eventually catch up.',
         type: [OochType.Flame],
@@ -3407,7 +3405,7 @@ export async function execute(interaction, client) {
     // Fevour
     create_monster({
         id: 92,
-        emote: get_emote_string(applicationEmojis, 'fevour'),
+        emote: get_emote_string('fevour'),
         name: 'Fevour',
         oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
         type: [OochType.Flame],
@@ -3425,7 +3423,7 @@ export async function execute(interaction, client) {
     // Taditty
     create_monster({
         id: 93,
-        emote: get_emote_string(applicationEmojis, 'taditty'),
+        emote: get_emote_string('taditty'),
         name: 'Taditty',
         oochive_entry: 'They can often be found clustered in small circles, covered in blankets and humming tunes to eachother.',
         type: [OochType.Sound, OochType.Cloth],
@@ -3443,7 +3441,7 @@ export async function execute(interaction, client) {
     // Silentoad
     create_monster({
         id: 94,
-        emote: get_emote_string(applicationEmojis, 'silentoad'),
+        emote: get_emote_string('silentoad'),
         name: 'Silentoad',
         oochive_entry: 'Silentoad are quiet, watchful, and relentlessly protective of the Taditty that rest near them.',
         type: [OochType.Sound, OochType.Cloth],
@@ -3461,7 +3459,7 @@ export async function execute(interaction, client) {
     // Bansheet
     create_monster({
         id: 95,
-        emote: get_emote_string(applicationEmojis, 'bansheet'),
+        emote: get_emote_string('bansheet'),
         name: 'Bansheet',
         oochive_entry: 'Hidden beneath a tattered cloth, these creatures often catch unwary adventurers off guard with a head-splittingly loud screech.',
         type: [OochType.Sound, OochType.Cloth],
@@ -3479,7 +3477,7 @@ export async function execute(interaction, client) {
     // Tryptid
     create_monster({
         id: 96,
-        emote: get_emote_string(applicationEmojis, 'tryptid'),
+        emote: get_emote_string('tryptid'),
         name: 'Tryptid',
         oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
         type: [OochType.Stone, OochType.Fungal],
@@ -3497,7 +3495,7 @@ export async function execute(interaction, client) {
     // Roswier
     create_monster({
         id: 97,
-        emote: get_emote_string(applicationEmojis, 'roswier'),
+        emote: get_emote_string('roswier'),
         name: 'Roswier',
         oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
         type: [OochType.Tech, OochType.Ooze],
@@ -3516,7 +3514,7 @@ export async function execute(interaction, client) {
     // Chemerai
     create_monster({
         id: 98,
-        emote: get_emote_string(applicationEmojis, 'chemerai'),
+        emote: get_emote_string('chemerai'),
         name: 'Chemerai',
         oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
         type: [OochType.Crystal, OochType.Flame],
@@ -3534,7 +3532,7 @@ export async function execute(interaction, client) {
     // Shieldome
     create_monster({
         id: 99,
-        emote: get_emote_string(applicationEmojis, 'shieldome'),
+        emote: get_emote_string('shieldome'),
         name: 'Shieldome',
         oochive_entry: 'A protective little guy, its body is made of stone and its shield is tough like kevlar.',
         type: [OochType.Stone, OochType.Cloth],
@@ -3552,7 +3550,7 @@ export async function execute(interaction, client) {
     // Rietor
     create_monster({
         id: 100,
-        emote: get_emote_string(applicationEmojis, 'rietor'),
+        emote: get_emote_string('rietor'),
         name: 'Rietor',
         oochive_entry: 'A tough shield covers most of its body, it giddily slams into enemies with all its strength.',
         type: [OochType.Stone, OochType.Cloth],
@@ -3570,7 +3568,7 @@ export async function execute(interaction, client) {
     // Pondorb
     create_monster({
         id: 101,
-        emote: get_emote_string(applicationEmojis, 'pondorb'),
+        emote: get_emote_string('pondorb'),
         name: 'Pondorb',
         oochive_entry: 'A small octopus-like creature, it constantly peers into an odd crystal ball.',
         type: [OochType.Magic],
@@ -3588,7 +3586,7 @@ export async function execute(interaction, client) {
     // Maglobe
     create_monster({
         id: 102,
-        emote: get_emote_string(applicationEmojis, 'maglobe'),
+        emote: get_emote_string('maglobe'),
         name: 'Maglobe',
         oochive_entry: 'Maglobe are often compared to old legends due to their ability to form pacts and see into the future.',
         type: [OochType.Magic, OochType.Crystal],
@@ -3606,7 +3604,7 @@ export async function execute(interaction, client) {
     // Stakulb
     create_monster({
         id: 103,
-        emote: get_emote_string(applicationEmojis, 'stakulb'),
+        emote: get_emote_string('stakulb'),
         name: 'Stakulb',
         oochive_entry: 'A pair of fungal bulbs, one is always carrying the other.',
         type: [OochType.Fungal],
@@ -3624,7 +3622,7 @@ export async function execute(interaction, client) {
     // Matryion
     create_monster({
         id: 104,
-        emote: get_emote_string(applicationEmojis, 'matryion'),
+        emote: get_emote_string('matryion'),
         name: 'Matryion',
         oochive_entry: 'Matryion have layers, lots of them, too many in fact.',
         type: [OochType.Fungal, OochType.Magic],
@@ -3642,7 +3640,7 @@ export async function execute(interaction, client) {
     // Lacerize
     create_monster({
         id: 105,
-        emote: get_emote_string(applicationEmojis, 'lacerize'),
+        emote: get_emote_string('lacerize'),
         name: 'Lacerize',
         oochive_entry: 'Lacerize catch the breeze and float near the tops of mountains.',
         type: [OochType.Cloth],
@@ -3660,7 +3658,7 @@ export async function execute(interaction, client) {
     // Rendive
     create_monster({
         id: 106,
-        emote: get_emote_string(applicationEmojis, 'rendive'),
+        emote: get_emote_string('rendive'),
         name: 'Rendive',
         oochive_entry: 'Rendive are said to be Lacerize that have decended to the very bottom of the world, they aim to rise to the top once again.',
         type: [OochType.Cloth],
@@ -3678,7 +3676,7 @@ export async function execute(interaction, client) {
     // Drascend
     create_monster({
         id: 107,
-        emote: get_emote_string(applicationEmojis, 'drascend'),
+        emote: get_emote_string('drascend'),
         name: 'Drascend',
         oochive_entry: 'A dragon-like Oochamon, these creatures have returned from the depths of the world to attain new power!',
         type: [OochType.Cloth],
@@ -3696,7 +3694,7 @@ export async function execute(interaction, client) {
     // Nullifly
     create_monster({
         id: 108,
-        emote: get_emote_string(applicationEmojis, 'nullifly'),
+        emote: get_emote_string('nullifly'),
         name: 'Nullifly',
         oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
         type: [OochType.Void],
@@ -3713,7 +3711,7 @@ export async function execute(interaction, client) {
     // Gnayme
     create_monster({
         id: 109,
-        emote: get_emote_string(applicationEmojis, 'gnayme'),
+        emote: get_emote_string('gnayme'),
         name: 'Gnayme',
         oochive_entry: 'They never speak, but when near humans they\'ll often point to the tag on top of their head.',
         type: [OochType.Magic],
@@ -3731,7 +3729,7 @@ export async function execute(interaction, client) {
     // Mysnome
     create_monster({
         id: 110,
-        emote: get_emote_string(applicationEmojis, 'mysnome'),
+        emote: get_emote_string('mysnome'),
         name: 'Mysnome',
         oochive_entry: 'Mysnome are often seen stealing the tags off Gnaymes\' heads and attaching the tags to their own.',
         type: [OochType.Magic],
@@ -3749,7 +3747,7 @@ export async function execute(interaction, client) {
     // Shellamp
     create_monster({
         id: 111,
-        emote: get_emote_string(applicationEmojis, 'shellamp'),
+        emote: get_emote_string('shellamp'),
         name: 'Shellamp',
         oochive_entry: 'It\'s believed that Shellamp use the crystal bulb on its tail to communicate with others.',
         type: [OochType.Tech, OochType.Crystal],
@@ -3766,7 +3764,7 @@ export async function execute(interaction, client) {
     // Caracar
     create_monster({
         id: 112,
-        emote: get_emote_string(applicationEmojis, 'caracar'),
+        emote: get_emote_string('caracar'),
         name: 'Caracar',
         oochive_entry: 'Caracar are shockingly fast for what seems to just be a giant snail. The generator on their backs produces extreme amounts of energy.',
         type: [OochType.Tech, OochType.Crystal],
@@ -3783,7 +3781,7 @@ export async function execute(interaction, client) {
     // Larvibe
     create_monster({
         id: 113,
-        emote: get_emote_string(applicationEmojis, 'larvibe'),
+        emote: get_emote_string('larvibe'),
         name: 'Larvibe',
         oochive_entry: 'Larvibe are often found relaxing near calming, rythmic sounds.',
         type: [OochType.Sound],
@@ -3801,7 +3799,7 @@ export async function execute(interaction, client) {
     // Virtuito
     create_monster({
         id: 114,
-        emote: get_emote_string(applicationEmojis, 'virtuito'),
+        emote: get_emote_string('virtuito'),
         name: 'Virtuito',
         oochive_entry: 'Capable of making a calming melody or a screeching cacophony, these creatures are known for their audio versatility.',
         type: [OochType.Fungal, OochType.Sound],
@@ -3819,7 +3817,7 @@ export async function execute(interaction, client) {
     // Parmanyan
     create_monster({
         id: 115,
-        emote: get_emote_string(applicationEmojis, 'parmanyan'),
+        emote: get_emote_string('parmanyan'),
         name: 'Parmanyan',
         oochive_entry: 'They frequently approach and befriend humans and as well as Oochamon.',
         type: [OochType.Fungal],
@@ -3837,7 +3835,7 @@ export async function execute(interaction, client) {
     // Regulush
     create_monster({
         id: 116,
-        emote: get_emote_string(applicationEmojis, 'regulush'),
+        emote: get_emote_string('regulush'),
         name: 'Regulush',
         oochive_entry: 'Despite its more intimidating appearance, Regulush remains very friendly towards others after evolving from Parmanyan.',
         type: [OochType.Fungal, OochType.Crystal],
@@ -3855,7 +3853,7 @@ export async function execute(interaction, client) {
     // Chewdee
     create_monster({
         id: 117,
-        emote: get_emote_string(applicationEmojis, 'chewdee'),
+        emote: get_emote_string('chewdee'),
         name: 'Chewdee',
         oochive_entry: 'Their perfectly flat bodies are capable of slipping through the thinnest cracks. Researchers are unsure how they manage to be alive and so flat at the same time.',
         type: [OochType.Tech],
@@ -3873,7 +3871,7 @@ export async function execute(interaction, client) {
     // Rhodent
     create_monster({
         id: 118,
-        emote: get_emote_string(applicationEmojis, 'rhodent'),
+        emote: get_emote_string('rhodent'),
         name: 'Rhodent',
         oochive_entry: 'Its body seems to be some sort of digital construct which allows it to phase through walls at will.',
         type: [OochType.Tech],
@@ -3891,7 +3889,7 @@ export async function execute(interaction, client) {
     // Coimble
     create_monster({
         id: 119,
-        emote: get_emote_string(applicationEmojis, 'coimble'),
+        emote: get_emote_string('coimble'),
         name: 'Coimble',
         oochive_entry: 'When attacking they often end up flipped on their backs, requiring assistance to get back up.',
         type: [OochType.Tech],
@@ -3909,7 +3907,7 @@ export async function execute(interaction, client) {
     // Crabandit
     create_monster({
         id: 120,
-        emote: get_emote_string(applicationEmojis, 'crabandit'),
+        emote: get_emote_string('crabandit'),
         name: 'Crabandit',
         oochive_entry: 'Crabandit often use old slot machines as shells. It\'s currently unknown where they got the machines from.',
         type: [OochType.Stone, OochType.Tech],
@@ -3927,7 +3925,7 @@ export async function execute(interaction, client) {
     // Bismote
     create_monster({
         id: 121,
-        emote: get_emote_string(applicationEmojis, 'bismote'),
+        emote: get_emote_string('bismote'),
         name: 'Bismote',
         oochive_entry: 'A fragment of rough crystals come to life, swarms of Bismote will scavenge the cave together to protect eachother.',
         type: [OochType.Crystal],
@@ -3942,7 +3940,7 @@ export async function execute(interaction, client) {
     // Iridusk
     create_monster({
         id: 122,
-        emote: get_emote_string(applicationEmojis, 'iridusk'),
+        emote: get_emote_string('iridusk'),
         name: 'Iridusk',
         oochive_entry: 'During the twilight hours these creatures can occaisionally be seen wandering to the surface.',
         type: [OochType.Crystal],
@@ -3957,7 +3955,7 @@ export async function execute(interaction, client) {
     // Priseroth
     create_monster({
         id: 123,
-        emote: get_emote_string(applicationEmojis, 'priseroth'),
+        emote: get_emote_string('priseroth'),
         name: 'Priseroth',
         oochive_entry: 'On clear nights Priseroth be seen compltely still, staring into the night sky, almost as if yearning to live among the stars.',
         type: [OochType.Crystal],
@@ -3972,7 +3970,7 @@ export async function execute(interaction, client) {
     // Talto
     create_monster({
         id: 124,
-        emote: get_emote_string(applicationEmojis, 'talto'),
+        emote: get_emote_string('talto'),
         name: 'Talto',
         oochive_entry: 'These gangly fellas stumble around as they chirp like odd birds.',
         type: [OochType.Sound],
@@ -3987,7 +3985,7 @@ export async function execute(interaction, client) {
     // Sectrip
     create_monster({
         id: 125,
-        emote: get_emote_string(applicationEmojis, 'sectrip'),
+        emote: get_emote_string('sectrip'),
         name: 'Sectrip',
         oochive_entry: 'They\'d prefer to wander open plains, but have occaisionally been seen resting inside of abandoned buildings.',
         type: [OochType.Sound],
@@ -4002,7 +4000,7 @@ export async function execute(interaction, client) {
     // Orchestryd
     create_monster({
         id: 126,
-        emote: get_emote_string(applicationEmojis, 'orchestryd'),
+        emote: get_emote_string('orchestryd'),
         name: 'Orchestryd',
         oochive_entry: 'Orchestryd will often be seen taking various instruments and adhering them to their bodies in order to the loudest possible shell.',
         type: [OochType.Sound],
@@ -4017,7 +4015,7 @@ export async function execute(interaction, client) {
     // Heraloom
     create_monster({
         id: 127,
-        emote: get_emote_string(applicationEmojis, 'heraloom'),
+        emote: get_emote_string('heraloom'),
         name: 'Heraloom',
         oochive_entry: 'The harp on its body is made of many fine hairs; its soothing sound can put foes to sleep when strummed.',
         type: [OochType.Sound],
@@ -4032,7 +4030,7 @@ export async function execute(interaction, client) {
     // // Rosun
     // create_monster({
     //     id: 100,
-    //     emote: get_emote_string(applicationEmojis, 'rosun'),
+    //     emote: get_emote_string('rosun'),
     //     name: 'Rosun',
     //     oochive_entry: 'It aimlessly drifts to and fro, and yet never seems to collide with anything.',
     //     type: [OochType.Crystal],
@@ -4046,7 +4044,7 @@ export async function execute(interaction, client) {
     // // Morgoun
     // create_monster({
     //     id: 101,
-    //     emote: get_emote_string(applicationEmojis, 'morgoun'),
+    //     emote: get_emote_string('morgoun'),
     //     name: 'Morgoun',
     //     oochive_entry: 'Morgoun\'s body is composed of several layers of crystal, making it incedibly difficult to damage.',
     //     type: [OochType.Crystal],
@@ -4060,7 +4058,7 @@ export async function execute(interaction, client) {
     // // Garnetie
     // create_monster({
     //     id: 102,
-    //     emote: get_emote_string(applicationEmojis, 'garnetie'),
+    //     emote: get_emote_string('garnetie'),
     //     name: 'Garnetie',
     //     oochive_entry: 'A strange construct, when angered the green crystals on its body thrash about almost fluidly.',
     //     type: [OochType.Crystal],
@@ -4074,7 +4072,7 @@ export async function execute(interaction, client) {
     // // Aventux
     // create_monster({
     //     id: 103,
-    //     emote: get_emote_string(applicationEmojis, 'aventux'),
+    //     emote: get_emote_string('aventux'),
     //     name: 'Aventux',
     //     oochive_entry: 'The crystals making up its body are incredibly hard, but also very brittle, luckily they seem to regenerate quickly.',
     //     type: [OochType.Crystal],
@@ -4088,7 +4086,7 @@ export async function execute(interaction, client) {
     // // Galagge
     // create_monster({
     //     id: 104,
-    //     emote: get_emote_string(applicationEmojis, 'galagge'),
+    //     emote: get_emote_string('galagge'),
     //     name: 'Galagge',
     //     oochive_entry: 'The ancient ring restored to its former glory allows Morgoun and Aventux to form a complete being, covering eachother\'s weaknesses.',
     //     type: [OochType.Crystal],
@@ -4104,7 +4102,7 @@ export async function execute(interaction, client) {
     // i_
     create_monster({
         id: -1,
-        emote: get_emote_string(applicationEmojis, 'i_'),
+        emote: get_emote_string('i_'),
         name: 'i',
         oochive_entry: 'ERROR: entry not found',
         type: [OochType.Void],
@@ -4119,7 +4117,7 @@ export async function execute(interaction, client) {
     // Oochabit
     create_monster({
         id: -2,
-        emote: get_emote_string(applicationEmojis, 'oochabit'),
+        emote: get_emote_string('oochabit'),
         name: 'Oochabit',
         oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
         type: [OochType.Void],
@@ -4134,7 +4132,7 @@ export async function execute(interaction, client) {
     // Oochabound
     create_monster({
         id: -3,
-        emote: get_emote_string(applicationEmojis, 'oochabound'),
+        emote: get_emote_string('oochabound'),
         name: 'Oochabound',
         oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
         type: [OochType.Void],
@@ -4149,7 +4147,7 @@ export async function execute(interaction, client) {
     // Slime Head
     create_monster({
         id: -4,
-        emote: get_emote_string(applicationEmojis, 'c_027'),
+        emote: get_emote_string('c_027'),
         name: 'Slime Head',
         oochive_entry: 'An oddly human head made of Ooze, it looks like it has Prisms embedded in its eye.',
         type: [OochType.Ooze],
@@ -4164,7 +4162,7 @@ export async function execute(interaction, client) {
     // Giant Slime Head
     create_monster({
         id: -5,
-        emote: get_emote_string(applicationEmojis, 'c_900'),
+        emote: get_emote_string('c_900'),
         name: 'Giant Slime Head',
         oochive_entry: 'A large formation of Ooze. It\'s currently unknown whether this is an Oochamon or not.',
         type: [OochType.Ooze],
@@ -4179,7 +4177,7 @@ export async function execute(interaction, client) {
     // Enforcement System Δ
     create_monster({
         id: -6,
-        emote: get_emote_string(applicationEmojis, 'c_901'),
+        emote: get_emote_string('c_901'),
         name: 'Enforcement System Δ',
         oochive_entry: 'A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...',
         type: [OochType.Tech],
@@ -4194,7 +4192,7 @@ export async function execute(interaction, client) {
     // Ophicore Story Boss
     create_monster({
         id: -7,
-        emote: get_emote_string(applicationEmojis, 'c_901'),
+        emote: get_emote_string('c_901'),
         name: 'Ophicorupt',
         oochive_entry: 'An ancient Oochamon, corrupted by a deep red growth within.',
         type: [OochType.Crystal],
@@ -4209,7 +4207,7 @@ export async function execute(interaction, client) {
     // Ophicore Story Boss Ward
     create_monster({
         id: -8,
-        emote: get_emote_string(applicationEmojis, 'c_901'),
+        emote: get_emote_string('c_901'),
         name: 'Ancient Rune',
         oochive_entry: 'An ancient piece of debris infused with elemental power.',
         type: [OochType.Neutral],
@@ -4224,7 +4222,7 @@ export async function execute(interaction, client) {
     // Serpsis Story Boss
     create_monster({
         id: -7,
-        emote: get_emote_string(applicationEmojis, 'c_901'),
+        emote: get_emote_string('c_901'),
         name: 'Serpsis',
         oochive_entry: 'A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...',
         type: [OochType.Void],
