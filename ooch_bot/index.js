@@ -49,7 +49,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
 
         await rest.put(
             // eslint-disable-next-line no-undef
-            Routes.applicationCommands(process.env.DEV_CLIENT_ID),
+            Routes.applicationCommands(process.env.BOT_CLIENT_ID),
             { body: registerCommands },
         );
 
@@ -516,6 +516,6 @@ client.on('messageCreate', async message => {
 
 //Log Bot in to the Discord
 // eslint-disable-next-line no-undef
-client.login(process.env.DEV_TOKEN);
+client.login(process.env.BOT_TOKEN);
 
 export const botClient = client; 
