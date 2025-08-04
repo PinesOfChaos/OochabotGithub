@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
-import { profile, move_data as _move_data, monster_data, item_data as _item_data, ability_data } from '../db.js';
+import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
 import { capitalize, lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch } from '../func_play.js';
@@ -184,8 +184,8 @@ export async function execute(interaction) {
             }
 
             if (move_id != -1) {
-                move_name = _move_data.get(`${move_id}`, 'name');
-                move_type = _move_data.get(`${move_id}`, 'type');
+                move_name = move_data.get(`${move_id}`, 'name');
+                move_type = move_data.get(`${move_id}`, 'type');
             }
 
             move_buttons[move_idx].addComponents(
@@ -274,7 +274,7 @@ export async function execute(interaction) {
     async function buildItemData() {
         let item_list_str = ``;
         for (const [item_id, quantity] of Object.entries(profile.get(`${interaction.user.id}`, 'other_inv'))) {
-            let item_obj = await _item_data.get(`${item_id}`);
+            let item_obj = await item_data.get(`${item_id}`);
             item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
         }
 
@@ -287,12 +287,12 @@ export async function execute(interaction) {
             let amount = profile.get(`${interaction.user.id}`, `other_inv.${other_inv_keys[i]}`);
 
             if (amount != 0) {
-                if (_item_data.get(`${id}`, 'type') != 'key' && _item_data.get(`${id}`, 'type') != 'map') {
+                if (item_data.get(`${id}`, 'type') != 'key' && item_data.get(`${id}`, 'type') != 'map') {
                     other_select_options.push({
-                        label: `${_item_data.get(`${id}`, 'name')} (${amount})`,
-                        description: _item_data.get(`${id}`, 'description_short'),
+                        label: `${item_data.get(`${id}`, 'name')} (${amount})`,
+                        description: item_data.get(`${id}`, 'description_short'),
                         value: `${id}`,
-                        emoji: _item_data.get(`${id}`, 'emote'),
+                        emoji: item_data.get(`${id}`, 'emote'),
                     });
                 }
             }
@@ -455,7 +455,7 @@ export async function execute(interaction) {
 
             for (let item of healInv) {
                 if (item[1] !== 0) {
-                    let itemData = _item_data.get(`${item[0]}`);
+                    let itemData = item_data.get(`${item[0]}`);
                     if (itemData.type == 'potion') {
                         healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
                     }
@@ -616,12 +616,12 @@ export async function execute(interaction) {
                 let amount = profile.get(`${interaction.user.id}`, `heal_inv.${heal_inv_keys[i]}`);
 
                 if (amount != 0) {
-                    if (_item_data.get(`${id}`, 'type') == 'potion') {
+                    if (item_data.get(`${id}`, 'type') == 'potion') {
                         heal_select_options.push({
-                            label: `${_item_data.get(`${id}`, 'name')} (${amount})`,
-                            description: _item_data.get(`${id}`, 'description_short'),
+                            label: `${item_data.get(`${id}`, 'name')} (${amount})`,
+                            description: item_data.get(`${id}`, 'description_short'),
                             value: `${id}`,
-                            emoji: _item_data.get(`${id}`, 'emote'),
+                            emoji: item_data.get(`${id}`, 'emote'),
                         });
                     }
                 }
@@ -638,10 +638,10 @@ export async function execute(interaction) {
 
         // Oochamon Heal Select Menu
         else if (collectorId == 'party_heal_select') {
-            let item_data = _item_data.get(`${selected}`);
+            let db_item_data = item_data.get(`${selected}`);
             selected_ooch = item_use(interaction.user.id, selected_ooch, selected);
             profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
-            let amountHealed = clamp(item_data.potency, 0, selected_ooch.stats.hp);
+            let amountHealed = clamp(db_item_data.potency, 0, selected_ooch.stats.hp);
             await profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
 
             if (profile.get(`${interaction.user.id}`, `heal_inv.${selected}`) <= 0) {
@@ -657,7 +657,7 @@ export async function execute(interaction) {
             dexEmbed = dexEmbed[0];
             await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
 
-            let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${item_data.emote} **${item_data.name}**` });
+            let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${db_item_data.emote} **${db_item_data.name}**` });
             await wait(2500);
             await followUpMsg.delete().catch(() => { });
         }
@@ -762,10 +762,10 @@ export async function execute(interaction) {
                 move_sel_idx = parseInt(selected.replace('move_', ''));
                 let move_sel_id = selected_ooch.moveset[parseInt(selected.replace('move_', ''))];
 
-                for (let move_data of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
-                    if (move_data[0] <= selected_ooch.level && !selected_ooch.moveset.includes(move_data[1])) {
-                        if (move_data[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
-                        let db_move_data = _move_data.get(`${move_data[1]}`);
+                for (let db_move_data of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
+                    if (db_move_data[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_data[1])) {
+                        if (db_move_data[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
+                        let db_move_data = move_data.get(`${db_move_data[1]}`);
                         move_list_select_options.push(
                             new StringSelectMenuOptionBuilder()
                                 .setLabel(`${db_move_data.name} [${db_move_data.damage} Power, ${db_move_data.accuracy}% Accuracy]`)
@@ -785,17 +785,17 @@ export async function execute(interaction) {
                 let displayContent = `Select a move to use!`;
                 let moveEmbed;
                 if (move_sel_id) {
-                    let move_data = _move_data.get(`${move_sel_id}`);
-                    if (move_data.accuracy == -1) move_data.accuracy = 100;
+                    let db_move_data = move_data.get(`${move_sel_id}`);
+                    if (db_move_data.accuracy == -1) db_move_data.accuracy = 100;
                     let move_string = `
-                        ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
-                            *${move_data.description}*
+                        ${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**
+                            *${db_move_data.description}*
                         `;
 
                     moveEmbed = new EmbedBuilder()
                         .setTitle('Selected Move')
                         .addFields([{
-                            name: `${type_to_emote([move_data.type])} ${move_data.name}`,
+                            name: `${type_to_emote([db_move_data.type])} ${db_move_data.name}`,
                             value: move_string,
                             inline: true
                         }]);
@@ -812,7 +812,7 @@ export async function execute(interaction) {
                 // Update Dex Embed
                 let moveset_str = ``;
                 for (let move_id of selected_ooch.moveset) {
-                    let move = _move_data.get(`${move_id}`);
+                    let move = move_data.get(`${move_id}`);
                     moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** chance to hit\n`;
                 }
                 dexEmbed.data.fields[0].value = moveset_str;
@@ -858,7 +858,7 @@ export async function execute(interaction) {
 
             // Setup default item list for the default value, healing
             for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = _item_data.get(`${item_id}`);
+                let item_obj = item_data.get(`${item_id}`);
                 item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
             }
 
@@ -882,7 +882,7 @@ export async function execute(interaction) {
             let item_list_str = '';
 
             for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = _item_data.get(`${item_id}`);
+                let item_obj = item_data.get(`${item_id}`);
                 item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
             }
 
@@ -900,7 +900,7 @@ export async function execute(interaction) {
             let item_list_str = '';
 
             for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = _item_data.get(`${item_id}`);
+                let item_obj = item_data.get(`${item_id}`);
                 item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
             }
 
@@ -926,9 +926,9 @@ export async function execute(interaction) {
                 i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
             }
-            let item_data = _item_data.get(`${selected}`);
+            let db_item_data = item_data.get(`${selected}`);
 
-            if (item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
+            if (db_item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
                 let keyData = await buildItemData();
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
@@ -936,14 +936,14 @@ export async function execute(interaction) {
             }
 
             let item_usage_text = '';
-            switch (item_data.type) {
-                case 'repel': item_usage_text = `Used a **${item_data.name}**, you will no longer have wild encounters for ${item_data.potency} more steps.`; break;
-                case 'teleport': item_usage_text = `Used a **${item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
+            switch (db_item_data.type) {
+                case 'repel': item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
+                case 'teleport': item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
             }
 
-            if (item_data.type == 'repel' || item_data.type == 'teleport') {
+            if (db_item_data.type == 'repel' || db_item_data.type == 'teleport') {
                 let playspace_str;
-                switch (item_data.type) {
+                switch (db_item_data.type) {
                     case 'repel':
                         await item_use(interaction.user.id, selected_ooch, selected);
                         break;
@@ -964,7 +964,7 @@ export async function execute(interaction) {
                     await profile.delete(interaction.user.id, `other_inv.${selected}`);
                 }
 
-                if (item_data.type != 'teleport') {
+                if (db_item_data.type != 'teleport') {
                     let keyData = await buildItemData();
                     bagEmbed.setDescription(keyData[0]);
                     i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
@@ -974,13 +974,13 @@ export async function execute(interaction) {
                 await wait(5000);
                 await followUpMsg.delete().catch(() => { });
             } else {
-                let pa_components = buildPartyData(user_profile.ooch_party, true, item_data);
-                i.update({ content: `Which Oochamon would you like to use the ${item_data.emote} **${item_data.name}** on?`, embeds: [], components: pa_components });
+                let pa_components = buildPartyData(user_profile.ooch_party, true, db_item_data);
+                i.update({ content: `Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, embeds: [], components: pa_components });
             }
         } else if (selected.includes('item_ooch_id_')) {
             let selData = selected.replace('item_ooch_id_', '');
             selData = selData.split('_');
-            let selItem = _item_data.get(`${selData[1]}`);
+            let selItem = item_data.get(`${selData[1]}`);
             let item_usage_text = '';
             let oldOoch, nickname, newOoch, abilityList, currentAbility, newAbility, exp_given_ooch, level_ooch;
 
@@ -1073,7 +1073,7 @@ export async function execute(interaction) {
         else if (selected == 'map') {
             let map_name = user_profile.location_data.area;
             if (map_name.includes('everchange')) return i.update({ content: `**Everchange Cave does not have a map!**` });
-            let map_item = _item_data.find('potency', map_name);
+            let map_item = item_data.find('potency', map_name);
             if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**` });
 
             if (Object.prototype.hasOwnProperty.call(user_profile.other_inv, `${map_item.id}`)) {

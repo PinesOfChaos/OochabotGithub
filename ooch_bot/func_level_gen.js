@@ -1,7 +1,7 @@
-import { sample, round, shuffle, random, append } from 'lodash-es';
+import { sample, round, shuffle, random } from 'lodash-es';
 import { OochType, GenmapTheme, Weather, BattleAi, StanceForms } from "./types.js";
 import { create_ooch, setup_playspace_str } from './func_play.js';
-import { maps, profile as _profile, monster_data } from "./db.js";
+import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
 
 let whitelist_everchange_wild = [
@@ -14,7 +14,8 @@ let whitelist_everchange_wild = [
     119, 121, 124
 ]
 
-let whitelist_everchange_trainer = [21, 62, 109].append(whitelist_everchange_wild)
+// eslint-disable-next-line no-unused-vars
+let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 
 export async function genmap_allmaps(client) {
     
@@ -80,17 +81,17 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
     }
     
     //Kick players back to their last checkpoint if they're in one of the generated levels
-    for (let key of _profile.keys()) { 
-        let profile = _profile.get(`${key}`);
-        let loc_data = profile.location_data;
+    for (let key of profile.keys()) { 
+        let db_profile = profile.get(`${key}`);
+        let loc_data = db_profile.location_data;
 
         for(let level of kickout_list){
             if(loc_data.area == level){
-                let checkpoint = profile.checkpoint_data;
-                _profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
+                let checkpoint = db_profile.checkpoint_data;
+                profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
                 let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + await setup_playspace_str(key);
-                let thread = client.channels.cache.get(`${profile.play_thread_id}`);
-                let msg_to_edit = _profile.get(`${key}`, 'display_msg_id');
+                let thread = client.channels.cache.get(`${db_profile.play_thread_id}`);
+                let msg_to_edit = profile.get(`${key}`, 'display_msg_id');
 
                 if (thread != undefined && thread != false) {
                     await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
@@ -177,7 +178,7 @@ export function genmap_theme(theme){
  */
 export async function genmap_new(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints = false, has_shops = false){
     //Filter out user's flags to any that don't include the map's name
-    let all_users = _profile.values()
+    let all_users = profile.values()
     for(let user of all_users){
         user.flags = user.flags.filter((flag) => !flag.includes(name));
     }

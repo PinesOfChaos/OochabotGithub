@@ -1,4 +1,4 @@
-import { profile, maps, tile_data, events_data, player_positions, item_data as _item_data, monster_data } from "./db.js";
+import { profile, maps, tile_data, events_data, player_positions, monster_data, item_data } from "./db.js";
 import { Flags, PlayerState, Tile, Zone, UserType, Weather, Item, StanceForms } from './types.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder } from 'discord.js';
 import wait from 'wait';
@@ -504,14 +504,14 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 shopSelectOptions = shopSelectOptions.flat(1);
                 shopSelectOptions = [...new Set(shopSelectOptions)];
                 shopSelectOptions = shopSelectOptions.map(id => {
-                    let item_data = _item_data.get(`${id}`);
-                    let item_amount = profile.get(`${user_id}`, `${item_data.category}.${id}`);
+                    let db_item_data = item_data.get(`${id}`);
+                    let item_amount = profile.get(`${user_id}`, `${db_item_data.category}.${id}`);
                     if (item_amount == undefined) item_amount = 0;
                     return { 
-                        label: `${item_data.name} (${item_amount}/50) [$${item_data.price}]`,
-                        description: item_data.description_short,
+                        label: `${db_item_data.name} (${item_amount}/50) [$${db_item_data.price}]`,
+                        description: db_item_data.description_short,
                         value: `${id}`,
-                        emoji: item_data.emote,
+                        emoji: db_item_data.emote,
                     }
                 });
 
@@ -561,7 +561,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     }
                     
                     let item_id = sel.values[0];
-                    let item = _item_data.get(`${item_id}`);
+                    let item = item_data.get(`${item_id}`);
                     if (item.price <= oochabux) {
                         const qty_filter = async m => {
                             if (m.author.id != user_id) return false;
@@ -630,12 +630,12 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             shopSelectOptions = [...new Set(shopSelectOptions)];
 
                             shopSelectOptions = shopSelectOptions.map(id => {
-                                let item_data = _item_data.get(`${id}`);
+                                let db_item_data = item_data.get(`${id}`);
                                 return { 
-                                    label: `${item_data.name} (${profile.get(`${user_id}`, `${item_data.category}.${id}`)}/50) [$${item_data.price}]`,
-                                    description: item_data.description_short,
+                                    label: `${db_item_data.name} (${profile.get(`${user_id}`, `${db_item_data.category}.${id}`)}/50) [$${db_item_data.price}]`,
+                                    description: db_item_data.description_short,
                                     value: `${id}`,
-                                    emoji: item_data.emote,
+                                    emoji: db_item_data.emote,
                                 }
                             });
         
@@ -1056,7 +1056,7 @@ export async function setup_playspace_str(user_id) {
  * @param {Number} item_count The amount of the item to give.
  */
 export function give_item(user_id, item_id, item_count) {
-    let item = _item_data.get(`${item_id}`);
+    let item = item_data.get(`${item_id}`);
     if (profile.get(`${user_id}`, `${item.category}.${item_id}`) != undefined) {
         profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
     } else {
@@ -1091,7 +1091,6 @@ export async function create_ooch(ooch_id, level = 5, move_list = [], nickname =
     spd_iv = (spd_iv/20) + 1;
 
     // Setup ooch_id data
-    console.log(`OOCH ID: ` + ooch_id)
     let learn_list = monster_data.get(`${ooch_id}`, 'move_list');
     let ability_list = monster_data.get(`${ooch_id}`, 'abilities');
     if (nickname == false) nickname = monster_data.get(`${ooch_id}`, 'name');

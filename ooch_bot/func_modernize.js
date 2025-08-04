@@ -1,11 +1,11 @@
-import { profile as _profile, battle_data, monster_data } from "./db.js";
+import { profile, battle_data, monster_data } from "./db.js";
 import { PlayerState, UserType, Weather, FieldEffect, StanceForms } from './types.js';
 import { merge, random } from 'lodash-es';
 
 
 export async function modernize_all() {
     //Modernizes the profiles
-    let user_ids = await _profile.keys()
+    let user_ids = await profile.keys()
     for (let user_id of user_ids) { 
         await modernize_profile(user_id);
     }
@@ -19,19 +19,19 @@ export async function modernize_all() {
 
 
 export async function modernize_profile(user_id) {
-    let profile = await _profile.get(`${user_id}`);
+    let db_profile = await profile.get(`${user_id}`);
     let blank_profile = get_blank_profile();
-    merge(blank_profile, profile);
-    profile = blank_profile;
+    merge(blank_profile, db_profile);
+    db_profile = blank_profile;
 
 
-    profile.ooch_pc = await modernize_box(profile.ooch_pc);
-    profile.ooch_party = await modernize_party(profile.ooch_party);
-    profile.oochadex = await modernize_oochadex(profile.oochadex);
+    db_profile.ooch_pc = await modernize_box(db_profile.ooch_pc);
+    db_profile.ooch_party = await modernize_party(db_profile.ooch_party);
+    db_profile.oochadex = await modernize_oochadex(db_profile.oochadex);
 
 
-    //TODO SET THE Profile Info in the database, this is todo so that nothing breaks
-    _profile.set(user_id, profile);
+    //TODO SET THE db_profile Info in the database, this is todo so that nothing breaks
+    profile.set(user_id, db_profile);
 }
 
 export async function modernize_box(box_data) {

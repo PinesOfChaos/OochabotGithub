@@ -4238,50 +4238,52 @@ export async function execute(interaction, client) {
 
     //#endregion
     //#region Check if all Moves are being utilized somehow
-    // let test_mons = JSON.parse(monster_data.export()).keys.map(v => v.value);
-    // let test_moves = JSON.parse(move_data.export()).keys.map(v => v.value);
-    // let move_info = '';
+    let test_mons = monster_data.values();
+    let test_moves = move_data.values();
 
-    // for (let tmove1 of test_moves) {
-    //     let move_found = false;
-    //     move_info += `${tmove1.name}|${type_to_string(tmove1.type)}|${tmove1.damage}|${tmove1.accuracy}|${tmove1.description}\n`;
-    //     for (let tmon of test_mons) {
-    //         for (let tmove2 of tmon.move_list) {
-    //             if (tmove1.id == tmove2[1] || tmove1.id == 108) { //108 Jackpot's ID
-    //                 move_found = true;
-    //                 break;
-    //             }
-    //         }
-    //         if (move_found) {
-    //             break;
-    //         }
-    //     }
-    //     if (move_found == false) {
-    //         console.log(`MOVE UNUSED: id[${tmove1.id}] ${tmove1.name} `);
-    //     }
-    // }
+    for (let tmove1 of test_moves) {
+        let move_found = false;
+        for (let tmon of test_mons) {
+            for (let tmove2 of tmon.move_list) {
+                if (tmove1.id == tmove2[1] || tmove1.id == 108) { //108 Jackpot's ID
+                    move_found = true;
+                    break;
+                }
+            }
+            if (move_found) {
+                break;
+            }
+        }
+        if (move_found == false) {
+            console.log(`MOVE UNUSED: id[${tmove1.id}] ${tmove1.name} `);
+        }
+    }
+
+    maps.clear();
 
     //Comment/Uncomment this as needed
     //console.log(move_info);
     //#endregion
     //#region Generated Maps
-    genmap_allmaps(client);
+    await genmap_allmaps(client);
     //#endregion
     //#region Create Maps
-    await maps.clear();
     let files = readdirSync('./Maps/');
     for (let file of files) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
 
-        readFile(`./Maps/${file}`, 'utf8', (err, data) => {
-            if (err) {
-                console.log(`Error reading file: ${file}`);
-                return;
-            }
-            maps.set(map_name, JSON.parse(data));
-
-        });
+        try {
+            readFile(`./Maps/${file}`, 'utf8', (err, data) => {
+                if (err) {
+                    console.log(`Error reading file: ${file}`);
+                    return;
+                }
+                maps.set(map_name, JSON.parse(data));
+            });
+        } catch (err) {
+            console.log(err);
+        }
 
     }
     //#endregion
@@ -4300,11 +4302,11 @@ export async function execute(interaction, client) {
     writeFile('./editor_data/tiles_data.txt', tiles_output_str, (err) => { if (err) throw err; });
     writeFile('./editor_data/npc_data.txt', npc_output_str, (err) => { if (err) throw err; });
 
-    // // JSON editor info
-    // writeFile('./editor_data/ooch_data.json', JSON.stringify(JSON.parse(monster_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
-    // writeFile('./editor_data/moves_data.json', JSON.stringify(JSON.parse(move_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
-    // writeFile('./editor_data/items_data.json', JSON.stringify(JSON.parse(item_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
-    // writeFile('./editor_data/abilities_data.json', JSON.stringify(JSON.parse(ability_data.export()).keys.map(v => v.value), null, 2), (err) => { if (err) throw err; });
+    // JSON editor info
+    writeFile('./editor_data/ooch_data.json', JSON.stringify(monster_data.values(), null, 2), (err) => { if (err) throw err; });
+    writeFile('./editor_data/moves_data.json', JSON.stringify(move_data.values(), null, 2), (err) => { if (err) throw err; });
+    writeFile('./editor_data/items_data.json', JSON.stringify(item_data.values(), null, 2), (err) => { if (err) throw err; });
+    writeFile('./editor_data/abilities_data.json', JSON.stringify(ability_data.values(), null, 2), (err) => { if (err) throw err; });
 
     // // Read users.json file 
     readFile("./global_events.json", function (err, data) {

@@ -1,4 +1,4 @@
-import { global_data as _global_data } from "./db.js";
+import { global_data } from "./db.js";
 
 /**
  * This is for setting global variables in case we have a global event or anything
@@ -10,7 +10,7 @@ import { global_data as _global_data } from "./db.js";
  * @returns returns true if it completed the action, false if it failed to
  */
 export async function set_global_from_string(string_submitted){
-    let global_data = _global_data.get(`${'global_data'}`);
+    let db_global_data = global_data.get(`${'db_global_data'}`);
 
     let parts = string_submitted.split('.');
     let name = parts[1];
@@ -24,25 +24,25 @@ export async function set_global_from_string(string_submitted){
         return undefined;
     }
 
-    //Exit if the name of the property doesn't exist in the global_data
-    if(!Object.prototype.hasOwnProperty.call(global_data, name)){
+    //Exit if the name of the property doesn't exist in the db_global_data
+    if(!Object.prototype.hasOwnProperty.call(db_global_data, name)){
         console.log(console.log(`INVALID NAME - set_global_from_string: "${name}"`));
         return undefined;
     }
 
     switch(action){
         case 'add':
-            global_data[name] += value;
+            db_global_data[name] += value;
         break;
         case 'set':
-            global_data[name] = value;
+            db_global_data[name] = value;
         break;
         default: //Exit if the action was not recognized
             console.log(`INVALID ACTION - set_global_from_string: "${action}"`);
         return false;
     }
 
-    _global_data.set('global_data', global_data);
+    global_data.set('db_global_data', db_global_data);
 
     return true;
 }
@@ -53,7 +53,7 @@ export async function set_global_from_string(string_submitted){
  * @returns returns true/false depending on the resulting comparison
  */
 export async function get_global_from_string(string_submitted) {
-    let global_data = _global_data.get(`${'global_data'}`);
+    let db_global_data = global_data.get(`${'db_global_data'}`);
 
     let parts = string_submitted.split('.');
     let name = parts[1];
@@ -67,19 +67,19 @@ export async function get_global_from_string(string_submitted) {
         return undefined;
     }
 
-    //Exit if the name of the property doesn't exist in the global_data
-    if(!Object.prototype.hasOwnProperty.call(global_data, name)){
+    //Exit if the name of the property doesn't exist in the db_global_data
+    if(!Object.prototype.hasOwnProperty.call(db_global_data, name)){
         console.log(console.log(`INVALID NAME - get_global_from_string: "${name}"`));
         return undefined;
     }
 
     switch(action){
         case 'greaterthan':
-            return global_data[name] > value;
+            return db_global_data[name] > value;
         case 'lessthan':
-            return global_data[name] < value;
+            return db_global_data[name] < value;
         case 'equals':
-            return global_data[name] == value;
+            return db_global_data[name] == value;
         default: //Exit if the action was not recognized
             console.log(`INVALID ACTION - get_global_from_string: "${action}"`);
             return undefined;
@@ -94,7 +94,7 @@ export async function get_global_from_string(string_submitted) {
  * @param {Boolean} soft_reset TRUE only sets new values, FALSE resets ALL values 
  */
 export async function refresh_global_variables(hard_reset = false) {
-    let old_vars = _global_data.get(`${'global_data'}`);
+    let old_vars = global_data.get(`${'db_global_data'}`);
     let new_vars = global_default_variables();
 
     if(old_vars == undefined){
@@ -109,11 +109,11 @@ export async function refresh_global_variables(hard_reset = false) {
         
     }
 
-    _global_data.set('global_data', old_vars);
+    global_data.set('db_global_data', old_vars);
 }
 
 /**
- * Used to get the default values of the global_data
+ * Used to get the default values of the db_global_data
  * @returns Returns a fresh list of default values to be used globally
  */
 export function global_default_variables() {

@@ -10,7 +10,7 @@ import { schedule } from 'node-cron';
 
 // create a new Discord client and give it some variables
 import { Client, Partials, GatewayIntentBits, Collection, MessageFlags } from 'discord.js';
-import { profile, monster_data, item_data as _item_data, ability_data, move_data, status_data, events_data, battle_data as _battle_data } from './db.js';
+import { profile, monster_data, item_data, ability_data, move_data, status_data, events_data, battle_data } from './db.js';
 import { move, setup_playspace_str } from './func_play.js';
 import { PlayerState } from './types.js';
 import { quit_oochamon, reset_oochamon } from './func_other.js';
@@ -140,17 +140,17 @@ client.on('ready', async () => {
         }
     }
 
-    let battleIds = _battle_data.keys();
+    let battleIds = battle_data.keys();
     for (let battle of battleIds) {
-        let battle_data = _battle_data.get(`${battle}`);
-        if (battle_data == undefined) continue;
+        let db_battle_data = battle_data.get(`${battle}`);
+        if (db_battle_data == undefined) continue;
 
-        for (let user of battle_data.users) {
+        for (let user of db_battle_data.users) {
             if (user.is_player) {
                 let user_profile = profile.get(`${user.user_id}`);
 
-                if (user_profile.cur_battle_id != battle_data.battle_id || user_profile.player_state != PlayerState.Combat) {
-                    _battle_data.delete(battle_data.battle_id);
+                if (user_profile.cur_battle_id != db_battle_data.battle_id || user_profile.player_state != PlayerState.Combat) {
+                    battle_data.delete(db_battle_data.battle_id);
                     break;
                 }
 
@@ -158,7 +158,7 @@ client.on('ready', async () => {
                 let userThread = userGuild.channels.cache.get(`${user_profile.play_thread_id}`);
 
                 // Delete turn messages
-                let msgDeleteCount = _battle_data.get(`${battle}`, 'turn_msg_counter');
+                let msgDeleteCount = battle_data.get(`${battle}`, 'turn_msg_counter');
                 if (msgDeleteCount <= 100 && msgDeleteCount !== 0 && msgDeleteCount !== undefined) {
                     if (userThread != undefined) await userThread.bulkDelete(msgDeleteCount).catch(() => {});
                 }  
@@ -167,9 +167,9 @@ client.on('ready', async () => {
             }
         }
 
-        if (_battle_data.has(battle_data.battle_id)) {
-            battle_data.battle_action_queue = [];
-            _battle_data.set(battle, battle_data);
+        if (battle_data.has(db_battle_data.battle_id)) {
+            db_battle_data.battle_action_queue = [];
+            battle_data.set(battle, db_battle_data);
 
             await prompt_battle_actions(battle);
         }
@@ -184,7 +184,7 @@ client.on('interactionCreate', async interaction => {
     
     if (interaction.isAutocomplete()) {
         let ooch_ids = monster_data.values();
-        let item_ids = _item_data.values();
+        let item_ids = item_data.values();
         let ability_ids = ability_data.values();
         let move_ids = move_data.values();
         let status_ids = status_data.values();
@@ -320,8 +320,8 @@ client.on('interactionCreate', async interaction => {
                     let item_ids = Object.entries(profile.get(`${interaction.user.id}`, 'other_inv'));
                     item_ids = item_ids.filter(v => v[0] == 22 || v[0] == 23)
                     item_names = item_ids.map(v => {
-                        let item_data = _item_data.get(`${v[0]}`);
-                        return `${v[0]}:${startCase(item_data.name)} (${v[1]}/50 Held)`;
+                        let db_item_data = item_data.get(`${v[0]}`);
+                        return `${v[0]}:${startCase(db_item_data.name)} (${v[1]}/50 Held)`;
                     })
 
                     item_names = item_names.slice(0, 25);

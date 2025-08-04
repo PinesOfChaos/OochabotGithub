@@ -1,4 +1,4 @@
-import { battle_data as _battle_data, profile as _profile, move_data as _move_data, stance_data, monster_data, item_data as _item_data, status_data as _status_data, ability_data, global_data, player_positions } from "./db.js";
+import { battle_data, profile, move_data, stance_data, monster_data, item_data, status_data, ability_data, global_data, player_positions } from "./db.js";
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange } from 'lodash-es';
@@ -21,7 +21,7 @@ const closeButton = new ActionRowBuilder()
  */
 export function generate_battle_id() {
     let id = random(1, 1_000_000_000).toString();
-    if (_battle_data.has(id)) {
+    if (battle_data.has(id)) {
         id = generate_battle_id();
     }
     return id;
@@ -43,7 +43,7 @@ export async function generate_battle_user(type, options) {
     let active_slot = 0;
     let extra_info =  isUndefined(options.info) ? {} : options.info;
     let party_base, party_generated;
-    let profile, guild, member;
+    let db_profile, guild, member;
 
     if(Object.prototype.hasOwnProperty.call(options, "user_index")){
         user_info.user_index = options.user_index;
@@ -119,22 +119,22 @@ export async function generate_battle_user(type, options) {
             user_info.thread_id = options.thread_id;
             user_info.guild_id = options.guild_id;
 
-            profile = _profile.get(`${user_info.user_id}`);
-            if (options.profile != undefined && options.profile != false) {
-                profile = options.profile;
+            db_profile = profile.get(`${user_info.user_id}`);
+            if (options.db_profile != undefined && options.db_profile != false) {
+                db_profile = options.db_profile;
             }
             
             guild = botClient.guilds.cache.get(`${user_info.guild_id}`);
             member = await guild.members.fetch(user_info.user_id);
             user_info.name = member.displayName;
             user_info.name_possessive = `${user_info.name}'s`
-            user_info.battle_sprite = profile.player_sprite;
-            party = profile.ooch_party;
-            active_slot = profile.ooch_active_slot;
-            user_info.display_msg_id = profile.display_msg_id;
-            user_info.heal_inv = profile.heal_inv;
-            user_info.prism_inv = profile.prism_inv;
-            user_info.other_inv = profile.other_inv;
+            user_info.battle_sprite = db_profile.player_sprite;
+            party = db_profile.ooch_party;
+            active_slot = db_profile.ooch_active_slot;
+            user_info.display_msg_id = db_profile.display_msg_id;
+            user_info.heal_inv = db_profile.heal_inv;
+            user_info.prism_inv = db_profile.prism_inv;
+            user_info.other_inv = db_profile.other_inv;
         break;
     }
 
@@ -175,10 +175,10 @@ export async function generate_battle_user(type, options) {
 
 /**
  * Resets all triggers that should be used once-per-turn
- * @param {Object} battle_data The battle_data
+ * @param {Object} db_battle_data The db_battle_data
  */
-export function reset_this_turn_triggers(battle_data){
-    for(let user of battle_data.users){
+export function reset_this_turn_triggers(db_battle_data){
+    for(let user of db_battle_data.users){
         for(let [i, slot] of user.slot_actions.entries()){
             slot.hp_starting = user.party[i].current_hp;
 
@@ -208,7 +208,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     for (let i = 0; i < users.length; i++) {
         users[i].user_index = i;
         if (users[i].is_player) {
-            _profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
+            profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
         }
     }
 
@@ -295,7 +295,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         sendOutText += sendOutText += `You sent out ${active_ooch.emote} **${active_ooch.name}**! ${types_string}\n`
 
         if (users[id].is_player) {
-            if (!(_profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) stancesEnabled = false;
+            if (!(profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) stancesEnabled = false;
             let my_team_id = users[id].team_id;
             for (let id2 in users) {
                 //All other players in combat
@@ -309,7 +309,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
                     }
                     else if (user2.is_catchable) { //Wild oochamon
                         battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
-                        if (_profile.get(`${user.user_id}`, `oochadex[${active_ooch.id}].caught`) == 0) {
+                        if (profile.get(`${user.user_id}`, `oochadex[${active_ooch.id}].caught`) == 0) {
                             battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
                         }
                         sendOutText += `The wild ${active_ooch.emote} **${active_ooch.name}** wants to battle! ${types_string}\n`
@@ -327,10 +327,10 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
 
             let thread = botClient.channels.cache.get(`${user.thread_id}`);
 
-            _profile.set(`${user.user_id}`, battleDataObj.battle_id, 'cur_battle_id');
+            profile.set(`${user.user_id}`, battleDataObj.battle_id, 'cur_battle_id');
 
             // Delete playspace to enter battle
-            let playspace_msg = await thread.messages.fetch(_profile.get(`${user.user_id}`, 'display_msg_id'));
+            let playspace_msg = await thread.messages.fetch(profile.get(`${user.user_id}`, 'display_msg_id'));
             await playspace_msg.delete().catch(() => {});
 
             // Generate intro to battle image
@@ -348,14 +348,14 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         }
     }
 
-    _battle_data.set(battleId, battleDataObj);
+    battle_data.set(battleId, battleDataObj);
 
     await prompt_battle_actions(battleId);
 
     // This is mostly just to fix people running play while a battle is setup
     for(let user of battleDataObj.users){
         if (user.is_player) {
-            _profile.set(`${user.user_id}`, PlayerState.Combat, 'player_state');
+            profile.set(`${user.user_id}`, PlayerState.Combat, 'player_state');
         }
     }
 }
@@ -365,7 +365,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
 
 /**
  * Creates a battle action where a user joins the battle
- * @param {Object} battle_data 
+ * @param {Object} db_battle_data 
  * @param {String} user_index 
  * @param {String} text_to_show 
  * @param {Number} name 
@@ -373,7 +373,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
  * @param {Array} team_id 
  * @param {Array} party 
  */
-export async function new_battle_action_add_user(battle_data, user_index, text_to_show, name, battle_sprite, team_id, party){
+export async function new_battle_action_add_user(db_battle_data, user_index, text_to_show, name, battle_sprite, team_id, party){
     let user_options = get_blank_battle_user();
 
     user_options.name = name;
@@ -389,7 +389,7 @@ export async function new_battle_action_add_user(battle_data, user_index, text_t
     user_options.coin = 0;
     
     let user = await generate_battle_user(user_options.user_type, user_options);
-    battle_data.users.push(user);
+    db_battle_data.users.push(user);
 
     let action = {
         action_type : BattleAction.UserJoin,
@@ -399,19 +399,19 @@ export async function new_battle_action_add_user(battle_data, user_index, text_t
         user : user
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 
 /**
  * Create an Attack action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} target_user_index The user to be hit by the move
  * @param {Number} move_id The id of the move to be used
  * @returns returns a battle action object
  */
-export function new_battle_action_attack(battle_data, user_index, target_user_index, move_id) {
+export function new_battle_action_attack(db_battle_data, user_index, target_user_index, move_id) {
 
     let action = {
         action_type : BattleAction.Attack,
@@ -421,17 +421,17 @@ export function new_battle_action_attack(battle_data, user_index, target_user_in
         move_id : move_id
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create an Stance Change action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} stance_to The id of the stance to shift to
  * @returns returns a battle action object
  */
-export function new_battle_action_stance_change(battle_data, user_index, stance_to) {
+export function new_battle_action_stance_change(db_battle_data, user_index, stance_to) {
 
     let action = {
         action_type : BattleAction.StanceChange,
@@ -440,35 +440,35 @@ export function new_battle_action_stance_change(battle_data, user_index, stance_
         stance_to : stance_to
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create a Run action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @returns returns a battle action object
  */
-export function new_battle_action_run(battle_data, user_index){
+export function new_battle_action_run(db_battle_data, user_index){
     let action = {
         action_type : BattleAction.Run,
         priority : BattleAction.Run,
         user_index : user_index
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create a Switch action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} slot_target The slot to switch to
  * @param {Boolean} is_switching Whether the user is switching a mon in or just sending one out
  * @param {Boolean} skip_initial_text Whether to skip the "User sent out/switched" lines of text
  * @returns returns a battle action object
  */
-export function new_battle_action_switch(battle_data, user_index, slot_target, is_switching, skip_initial_text = false){
+export function new_battle_action_switch(db_battle_data, user_index, slot_target, is_switching, skip_initial_text = false){
     let action = {
         action_type : BattleAction.Switch,
         priority : BattleAction.Switch,
@@ -478,18 +478,18 @@ export function new_battle_action_switch(battle_data, user_index, slot_target, i
         skip_initial_text : skip_initial_text
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create a Prism action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} item_id The id of the Item to use
  * @param {Number} target_user_index The user whos active mon we're catching
  * @returns returns a battle action object
  */
-export function new_battle_action_prism(battle_data, user_index, item_id, target_user_index){
+export function new_battle_action_prism(db_battle_data, user_index, item_id, target_user_index){
     let action = {
         action_type : BattleAction.Prism,
         priority : BattleAction.Prism,
@@ -498,18 +498,18 @@ export function new_battle_action_prism(battle_data, user_index, item_id, target
         target_user_index : target_user_index
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create a Heal action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} item_id The id of the Item to use
  * @param {Number} slot_target The slot to apply healing to
  * @returns returns a battle action object
  */
-export function new_battle_action_heal(battle_data, user_index, item_id, slot_target){
+export function new_battle_action_heal(db_battle_data, user_index, item_id, slot_target){
     let action = {
         action_type : BattleAction.Heal,
         priority : BattleAction.Heal,
@@ -519,17 +519,17 @@ export function new_battle_action_heal(battle_data, user_index, item_id, slot_ta
         slot_target : slot_target
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create an Other action
- * @param {Object} battle_data The battle data object
+ * @param {Object} db_battle_data The battle data object
  * @param {Number} user_index The user which is causing this action
  * @param {Number} item_id The id of the Item to use
  * @returns returns a battle action object
  */
-export function new_battle_action_other(battle_data, user_index, item_id){
+export function new_battle_action_other(db_battle_data, user_index, item_id){
     let action = {
         action_type : BattleAction.Other,
         priority : BattleAction.Other,
@@ -538,19 +538,19 @@ export function new_battle_action_other(battle_data, user_index, item_id){
         item_id : item_id
     }
 
-    battle_data.battle_action_queue.push(action);
+    db_battle_data.battle_action_queue.push(action);
 }
 
 /**
  * Create a user_type
  * @param {Object} user_obj The user which is causing this action
- * @param {Object} battle_data The relevant battle data
+ * @param {Object} db_battle_data The relevant battle data
  * @returns returns a battle action object
  */
-export function get_ai_action(user_obj, battle_data) {
+export function get_ai_action(user_obj, db_battle_data) {
     let active_mon = user_obj.party[user_obj.active_slot];
     let moves = active_mon.moveset;
-    let users = battle_data.users;
+    let users = db_battle_data.users;
     let target_user = false;
     let move_id = false;
     let move_intentions = []
@@ -570,7 +570,7 @@ export function get_ai_action(user_obj, battle_data) {
         case UserType.Wild:
             target_user = sample(users_enemy);
             move_id = sample(moves);
-            new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+            new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
         break;
         case UserType.NPCSmart:
         case UserType.NPCTrainer:
@@ -582,9 +582,9 @@ export function get_ai_action(user_obj, battle_data) {
 
             switch (user_obj.battle_ai) {
             case BattleAi.Basic: 
-                if (battle_data.turn_counter % random(2, 3) == 0) { //Allow Setup
+                if (db_battle_data.turn_counter % random(2, 3) == 0) { //Allow Setup
                     move_id = move_intentions[random(10) < 6 ? 0 : random(move_intentions.length - 1)].move_id;
-                    new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                    new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id); 
                 } else { 
                     let damage_moves = move_intentions.filter((move) => move.damage > 0);
                     if(damage_moves.length > 0){
@@ -593,7 +593,7 @@ export function get_ai_action(user_obj, battle_data) {
                         move_id = move_intentions[random(10) < 6 ? 0 : random(move_intentions.length - 1)].move_id;
                     }
 
-                    new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id); 
+                    new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id); 
                     
                 }
             break;
@@ -605,24 +605,24 @@ export function get_ai_action(user_obj, battle_data) {
                 
                 if(good_moves.length + okay_moves_damage.length == 0 && stat_stages <= 2 && party_alive_slots.length > 0){
                     //Switch if there are no acceptable attacking moves and there is a mon we can switch to
-                    new_battle_action_switch(battle_data, user_obj.user_index, party_alive_slots[random(party_alive_slots.length - 1)]);
+                    new_battle_action_switch(db_battle_data, user_obj.user_index, party_alive_slots[random(party_alive_slots.length - 1)]);
                 }
                 else{
                     let stance_options = get_stance_options(active_mon);
                     if((stance_options.length > 0) && (active_mon.stance_cooldown <= 0)){
                         let stance_to = sample(stance_options).id;
-                        new_battle_action_stance_change(battle_data, user_obj.user_index, stance_to);
+                        new_battle_action_stance_change(db_battle_data, user_obj.user_index, stance_to);
                     }
                     
                     if(good_moves.length > 0 && (random(10) < 7)) {
                         move_id =  good_moves[0].move_id;
-                        new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
                     } else if (okay_moves.length > 0) {
                         move_id = okay_moves[0].move_id;
-                        new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
                     } else {
                         move_id = move_intentions[random(move_intentions.length - 1)].move_id;
-                        new_battle_action_attack(battle_data, user_obj.user_index, target_user.user_index, move_id);
+                        new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
                     }
                 }
             break;
@@ -641,11 +641,11 @@ export function get_ai_action(user_obj, battle_data) {
 export function get_move_intention(moves_list, target_type){
     let moves_to_sort = [];
     for(let move of moves_list){
-        let move_data = _move_data.get(`${move}`);
+        let db_move_data = move_data.get(`${move}`);
         moves_to_sort.push({
-            priority : move_data.damage == 0 ? 1 : type_effectiveness(move_data.type, target_type)[0], 
-            move_id : move_data.id,
-            damage : move_data.damage})
+            priority : db_move_data.damage == 0 ? 1 : type_effectiveness(db_move_data.type, target_type)[0], 
+            move_id : db_move_data.id,
+            damage : db_move_data.damage})
     }
     
     moves_to_sort = shuffle(moves_to_sort);
@@ -656,15 +656,15 @@ export function get_move_intention(moves_list, target_type){
 
 /**
  * Sorts the action queue of a given battle id in the database
- * @param {String} battle_data 
+ * @param {String} db_battle_data 
  */
-export function sort_action_priority(battle_data){
-    let action_list = battle_data.battle_action_queue;
+export function sort_action_priority(db_battle_data){
+    let action_list = db_battle_data.battle_action_queue;
     //Add the speed of the user's active oochamon
     for(let action of action_list){
         
         let user_index = action.user_index;
-        let user = battle_data.users[user_index];
+        let user = db_battle_data.users[user_index];
 
         let ooch_obj = user.party[user.active_slot];
         
@@ -680,7 +680,7 @@ export function sort_action_priority(battle_data){
         //Priority based on whether the move has the "priority" effect
         let move_priority = 0;
         if(action.action_type == BattleAction.Attack){
-            let move = _move_data.get(`${action.move_id}`);
+            let move = move_data.get(`${action.move_id}`);
             let effects = move.effect;
         
             for(let effect of effects) {
@@ -709,12 +709,12 @@ export function sort_action_priority(battle_data){
             }
 
             //Non-ooze mons lose priority in the Wetlands field effect
-            if((battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
+            if((db_battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
                 action.priority -= 10_000;
             }
 
             //Reverse the attack order if the Twisted Reality field effect is active
-            if(battle_data.field_effect == FieldEffect.TwistedReality){
+            if(db_battle_data.field_effect == FieldEffect.TwistedReality){
                 action.priority *= -1;
             }
         }
@@ -730,17 +730,17 @@ export function sort_action_priority(battle_data){
 
 /**
  * Sends messages to all player-type users in an array of users
- * @param {Object} battle_data The battle data
+ * @param {Object} db_battle_data The battle data
  * @param {Object} message anything that can be sent as a discord message
  * @param {Boolean} end_battle_msg If this is the end of battle message with a button
  */
-export async function distribute_messages(battle_data, message, end_battle_msg = false){
+export async function distribute_messages(db_battle_data, message, end_battle_msg = false){
     const { botClient } = await import("./index.js");
 
-    battle_data.battle_msg_counter += 1;
-    _battle_data.math(battle_data.battle_id, '+', 1, 'turn_msg_counter');
+    db_battle_data.battle_msg_counter += 1;
+    battle_data.math(db_battle_data.battle_id, '+', 1, 'turn_msg_counter');
     
-    for(let user of battle_data.users) {
+    for(let user of db_battle_data.users) {
         if(user.is_player){
             let thread = botClient.channels.cache.get(`${user.thread_id}`);
             await thread.send(message);
@@ -752,7 +752,7 @@ export async function distribute_messages(battle_data, message, end_battle_msg =
                     await i.update({ content: 'Ending battle...', components: [] }).catch(() => {});
                     await i.deleteReply().catch(() => {});
 
-                    await finish_battle(battle_data, user.user_index);
+                    await finish_battle(db_battle_data, user.user_index);
                 })
             }
         }
@@ -761,14 +761,14 @@ export async function distribute_messages(battle_data, message, end_battle_msg =
 
     /**
  * Sends messages to all player-type users in an array of users
- * @param {Object} battle_data The battle data
+ * @param {Object} db_battle_data The battle data
  * @param {Object} num_to_delete Number of messages to delete
  */
-export async function delete_messages_in_threads(battle_data, num_to_delete) {
+export async function delete_messages_in_threads(db_battle_data, num_to_delete) {
     const { botClient } = await import("./index.js");
 
     let temp_num_to_delete;
-    for(let user of battle_data.users) {
+    for(let user of db_battle_data.users) {
         temp_num_to_delete = num_to_delete;
         if(user.is_player){
             let thread = botClient.channels.cache.get(`${user.thread_id}`);
@@ -801,9 +801,9 @@ export async function prompt_battle_actions(battle_id) {
 
     const { botClient } = await import("./index.js");
 
-    _battle_data.math(battle_id, '+', 1, 'battle_msg_counter');
-    let battle_data = _battle_data.get(`${battle_id}`);
-    _battle_data.set(battle_id, 1, 'turn_msg_counter');
+    battle_data.math(battle_id, '+', 1, 'battle_msg_counter');
+    let db_battle_data = battle_data.get(`${battle_id}`);
+    battle_data.set(battle_id, 1, 'turn_msg_counter');
 
 
     let stanceSelectMenu, healSelectButtons1, healSelectButtons2
@@ -831,14 +831,14 @@ export async function prompt_battle_actions(battle_id) {
                 .setLabel('Item')
                 .setEmoji('🎒')
                 .setStyle(ButtonStyle.Danger)
-                .setDisabled(!battle_data.allow_items),
+                .setDisabled(!db_battle_data.allow_items),
         ) .addComponents(
             new ButtonBuilder()
                 .setCustomId('run')
                 .setLabel('Run')
                 .setStyle(ButtonStyle.Secondary)
                 .setEmoji('🏃‍♂️')
-                .setDisabled(!battle_data.allow_run),
+                .setDisabled(!db_battle_data.allow_run),
         );
 
     let inputRow3 = new ActionRowBuilder();
@@ -895,15 +895,15 @@ export async function prompt_battle_actions(battle_id) {
     //#endregion
 
     // Sub-function for handling end of input
-    async function end_prompt_input(battle_data, i, inputCollector) {
-        if (battle_data.users.every(u => u.action_selected !== false)) {
-            battle_data.battle_msg_counter -= 1;
-            _battle_data.set(battle_id, battle_data);
+    async function end_prompt_input(db_battle_data, i, inputCollector) {
+        if (db_battle_data.users.every(u => u.action_selected !== false)) {
+            db_battle_data.battle_msg_counter -= 1;
+            battle_data.set(battle_id, db_battle_data);
             inputCollector.stop();
             await i.update({ content: `Waiting for other players...` }).catch(() => {});
 
             // Delete all input messages
-            for (let user of battle_data.users) {
+            for (let user of db_battle_data.users) {
                 if (user.is_player) {
                     let thread = botClient.channels.cache.get(`${user.thread_id}`);
                     await thread.bulkDelete(1).catch(() => {});
@@ -920,11 +920,11 @@ export async function prompt_battle_actions(battle_id) {
 
     // Handle users
     let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
-    await battle_data.users.forEach(async (user) => {
+    await db_battle_data.users.forEach(async (user) => {
         //console.log([user.name, num_catchable])
         let ooch_disable
         if (user.user_type != UserType.Player) {
-            get_ai_action(user, battle_data);
+            get_ai_action(user, db_battle_data);
             user.action_selected = true;
 
             if(user.is_catchable && user.party[user.active_slot].id >= 0 && user.party[user.active_slot].current_hp > 0){
@@ -939,8 +939,8 @@ export async function prompt_battle_actions(battle_id) {
             }
 
             // Continue on if everyone has selected (which should happen at the end)
-            if (battle_data.users.every(u => u.action_selected !== false)) {
-                _battle_data.set(battle_id, battle_data);
+            if (db_battle_data.users.every(u => u.action_selected !== false)) {
+                battle_data.set(battle_id, db_battle_data);
                 await process_battle_actions(battle_id);
             }
         } else {
@@ -965,7 +965,7 @@ export async function prompt_battle_actions(battle_id) {
                     .setStyle(ButtonStyle.Secondary)
             )
 
-            if (!(_profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) {   
+            if (!(profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) {   
                 stancesEnabled = false;    
                 inputRow3 = new ActionRowBuilder()
                 .addComponents(
@@ -987,7 +987,7 @@ export async function prompt_battle_actions(battle_id) {
 
             const inputFilter = async i => {
                 if (i.user.id != user.user_id) return false;
-                if (_profile.get(`${i.user.id}`, 'cur_battle_id') != battle_data.battle_id) return false;
+                if (profile.get(`${i.user.id}`, 'cur_battle_id') != db_battle_data.battle_id) return false;
                 return true;
             }
 
@@ -1010,12 +1010,12 @@ export async function prompt_battle_actions(battle_id) {
                     // Get the Oochamon's Attack options
                     for (let i = 0; i < activeOoch.moveset.length; i++) {
                         move_id = activeOoch.moveset[i];
-                        move_name = _move_data.get(`${move_id}`, 'name')
-                        move_type = _move_data.get(`${move_id}`, 'type')
-                        move_damage = _move_data.get(`${move_id}`, 'damage')
+                        move_name = move_data.get(`${move_id}`, 'name')
+                        move_type = move_data.get(`${move_id}`, 'type')
+                        move_damage = move_data.get(`${move_id}`, 'damage')
 
-                        if (battle_data.users.length == 2) {
-                            let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
+                        if (db_battle_data.users.length == 2) {
+                            let enemy_user = db_battle_data.users.filter(u => u.team_id != user.team_id)[0];
                             move_effective_emote = type_effectiveness(move_type, enemy_user.party[enemy_user.active_slot].type);
                             if (move_effective_emote[0] > 1) {
                                 move_effective_emote = ' △';
@@ -1051,19 +1051,19 @@ export async function prompt_battle_actions(battle_id) {
                     await i.update({ content: moveSelMsg, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
                 } else if (customId.includes('atk_')) {
                     let move_id = customId.replace('atk_', '');
-                    let self_target = _move_data.get(`${move_id}`, 'self_target');
+                    let self_target = move_data.get(`${move_id}`, 'self_target');
 
-                    if (battle_data.users.length == 2 || self_target == true) {
-                        let enemy_user = battle_data.users.filter(u => u.team_id != user.team_id)[0];
+                    if (db_battle_data.users.length == 2 || self_target == true) {
+                        let enemy_user = db_battle_data.users.filter(u => u.team_id != user.team_id)[0];
                         user.action_selected = true;
-                        new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
+                        new_battle_action_attack(db_battle_data, user.user_index, enemy_user.user_index, move_id);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        await end_prompt_input(battle_data, i, inputCollector);
+                        await end_prompt_input(db_battle_data, i, inputCollector);
 
                     } else {
                         // Select an Oochamon to attack
-                        let user_list = battle_data.users.filter(usr => usr.team_id != user.team_id);
+                        let user_list = db_battle_data.users.filter(usr => usr.team_id != user.team_id);
                         let ooch_options = user_list.map(usr => [usr.party[usr.active_slot], usr]);
                         let ooch_check, ooch_emote, ooch_name, ooch_hp;
                         
@@ -1099,12 +1099,12 @@ export async function prompt_battle_actions(battle_id) {
                     let user_id = parts[2];
                     let move_id = parts[3];
 
-                    let enemy_user = battle_data.users.filter(u => u.team_id == team_id && u.user_id == user_id)[0];
+                    let enemy_user = db_battle_data.users.filter(u => u.team_id == team_id && u.user_id == user_id)[0];
                     user.action_selected = true;
-                    new_battle_action_attack(battle_data, user.user_index, enemy_user.user_index, move_id);
+                    new_battle_action_attack(db_battle_data, user.user_index, enemy_user.user_index, move_id);
 
                     // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(battle_data, i, inputCollector);
+                    await end_prompt_input(db_battle_data, i, inputCollector);
 
                 } else if (customId == 'view_move_info') {
 
@@ -1115,15 +1115,15 @@ export async function prompt_battle_actions(battle_id) {
                     // Get the Oochamon's Attack options
                     for (let i = 0; i < activeOoch.moveset.length; i++) {
                         let move_id = activeOoch.moveset[i];
-                        let move_data = _move_data.get(`${move_id}`);
-                        if (move_data.accuracy == -1) move_data.accuracy = 100;
+                        let db_move_data = move_data.get(`${move_id}`);
+                        if (db_move_data.accuracy == -1) db_move_data.accuracy = 100;
                         let move_string = `
-                        ${move_data.damage > 0 ? `**${move_data.damage} Power / ` : `**`}${move_data.accuracy}% Accuracy**
-                            *${move_data.description}*
+                        ${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**
+                            *${db_move_data.description}*
                         `;
                         
                         moveInfoFields.push({
-                            name: `${type_to_emote([move_data.type])} ${move_data.name}`,
+                            name: `${type_to_emote([db_move_data.type])} ${db_move_data.name}`,
                             value: move_string,
                             inline: true
                             });
@@ -1172,7 +1172,7 @@ export async function prompt_battle_actions(battle_id) {
                     activeOoch.stance = stance_id;
                     activeOoch.stance_cooldown = 3;
 
-                    new_battle_action_stance_change(battle_data, user.user_index, stance_id);
+                    new_battle_action_stance_change(db_battle_data, user.user_index, stance_id);
                     inputRow3.components[1].setDisabled(true)
 
                     await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
@@ -1215,10 +1215,10 @@ export async function prompt_battle_actions(battle_id) {
                     await i.update({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2, backButton] : [switchButtons1, backButton] });
 
                 } else if (customId.includes('switch_')) {
-                    user.action_selected = new_battle_action_switch(battle_data, user.user_index, customId.replace('switch_', ''), true, false);
+                    user.action_selected = new_battle_action_switch(db_battle_data, user.user_index, customId.replace('switch_', ''), true, false);
 
                     // Continue on if everyone has selected (which should happen at the end
-                    await end_prompt_input(battle_data, i, inputCollector);
+                    await end_prompt_input(db_battle_data, i, inputCollector);
 
                 } else if (customId == BattleInput.Bag) {
                     await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
@@ -1236,10 +1236,10 @@ export async function prompt_battle_actions(battle_id) {
 
                         if (amount > 0 && amount != undefined) {
                             heal_select_options.push({ 
-                                label: `${_item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: _item_data.get(`${id}`, 'description_short').slice(0, 100),
+                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
+                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
                                 value: `${id}`,
-                                emoji: _item_data.get(`${id}`, 'emote'),
+                                emoji: item_data.get(`${id}`, 'emote'),
                             })
                         }
                     }
@@ -1270,10 +1270,10 @@ export async function prompt_battle_actions(battle_id) {
 
                         if (amount > 0 && amount != undefined) {
                             prism_select_options.push({ 
-                                label: `${_item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: _item_data.get(`${id}`, 'description_short').slice(0, 100),
+                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
+                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
                                 value: `${id}`,
-                                emoji: _item_data.get(`${id}`, 'emote'),
+                                emoji: item_data.get(`${id}`, 'emote'),
                             })
                         }
                     }
@@ -1325,28 +1325,28 @@ export async function prompt_battle_actions(battle_id) {
                         await i.update({ content: `**-- Select An Oochamon To Heal --**`, components: (healSelectButtons2.components.length != 0) ? [healSelectButtons1, healSelectButtons2, backButton] : [healSelectButtons1, backButton] });
                     } else {
                         let user_to_catch;
-                        for(let catch_target of battle_data.users){
+                        for(let catch_target of db_battle_data.users){
                             if(catch_target.is_catchable && catch_target.party[catch_target.active_slot].current_hp > 0){
                                 user_to_catch = catch_target.user_index;
                             }
                         }
                         
-                        user.action_selected = new_battle_action_prism(battle_data, user.user_index, i.values[0], user_to_catch);
+                        user.action_selected = new_battle_action_prism(db_battle_data, user.user_index, i.values[0], user_to_catch);
 
                         // Continue on if everyone has selected (which should happen at the end)
-                        await end_prompt_input(battle_data, i, inputCollector);                                
+                        await end_prompt_input(db_battle_data, i, inputCollector);                                
                     }
                 } else if (customId.includes('_item_sel_target')) {
                     let custom_id_data = customId.split('_');
-                    user.action_selected = new_battle_action_heal(battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
+                    user.action_selected = new_battle_action_heal(db_battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
                     // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(battle_data, i, inputCollector); 
+                    await end_prompt_input(db_battle_data, i, inputCollector); 
                 } else if (customId == BattleInput.Run) {
-                    user.action_selected = new_battle_action_run(battle_data, user.user_index);
+                    user.action_selected = new_battle_action_run(db_battle_data, user.user_index);
 
                     // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(battle_data, i, inputCollector);  
+                    await end_prompt_input(db_battle_data, i, inputCollector);  
                     
                 } else if (customId == BattleInput.Info) {
                     // TODO: Make this a page system to show enemy data
@@ -1360,7 +1360,7 @@ export async function prompt_battle_actions(battle_id) {
     
                     // Setup field info for the embed about both oochamon
                     for (let ooch of [user.party[user.active_slot]]) {
-                        let oochStatusEffects = ooch.status_effects.map(v => _status_data.get(`${v}`, 'emote'));
+                        let oochStatusEffects = ooch.status_effects.map(v => status_data.get(`${v}`, 'emote'));
                         
                         let infoStr = `**Oochamon Left:** ${oochPrisms}\n` +
                                     `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n` +
@@ -1375,7 +1375,7 @@ export async function prompt_battle_actions(battle_id) {
     
                         // let moveset_str = ``;
                         // for (let move_id of ooch.moveset) {
-                        //     let move = await db.move_data.get(`${move_id}`);
+                        //     let move = await db.db_move_data.get(`${move_id}`);
                         //     move.accuracy = Math.abs(move.accuracy);
                         //     if (move.damage !== 0) {
                         //         moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
@@ -1395,7 +1395,7 @@ export async function prompt_battle_actions(battle_id) {
     
                     let battleInfoEmbed = new EmbedBuilder()
                         .setTitle('Battle Information 📒')
-                        .setDescription(`**Turn #${battle_data.turn_counter + 1}**\n`)
+                        .setDescription(`**Turn #${db_battle_data.turn_counter + 1}**\n`)
                         .addFields(oochInfoFields)
                         
                     await i.update({ content: null, embeds: [battleInfoEmbed], components: [backButton] });
@@ -1412,37 +1412,37 @@ export async function prompt_battle_actions(battle_id) {
 export async function process_battle_actions(battle_id){
     const { botClient } = await import("./index.js");
 
-    _battle_data.set(`${battle_id}`, 0, 'turn_msg_counter');
-    let battle_data = _battle_data.get(`${battle_id}`);
-    let actions = battle_data.battle_action_queue;
+    battle_data.set(`${battle_id}`, 0, 'turn_msg_counter');
+    let db_battle_data = battle_data.get(`${battle_id}`);
+    let actions = db_battle_data.battle_action_queue;
     let finish_battle = false;
     let action, text, faint_check;
 
     //console.log('MESSAGE ROUND START')
-    await distribute_messages(battle_data, { content: `# ------ Round ${battle_data.turn_counter + 1} ------` });
+    await distribute_messages(db_battle_data, { content: `# ------ Round ${db_battle_data.turn_counter + 1} ------` });
 
     //Reset all battle triggers
-    reset_this_turn_triggers(battle_data);
+    reset_this_turn_triggers(db_battle_data);
 
     while(actions.length > 0 && !finish_battle){
         //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
-        sort_action_priority(battle_data);
+        sort_action_priority(db_battle_data);
 
         action = actions.shift();
 
-        let user = battle_data.users[action.user_index]
+        let user = db_battle_data.users[action.user_index]
         if(user.party[user.active_slot].alive == false){ continue; }
 
         text = ``;
         
         //Perform the action for the turn
-        let turn_data = await action_process(battle_data, action);
+        let turn_data = await action_process(db_battle_data, action);
         text += turn_data.return_string;
         finish_battle = turn_data.finish_battle;
         
         //Check if anything fainted
         //console.log(user.party[0]);
-        faint_check = battle_faint_check(battle_data) //.text, .finish_battle
+        faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
         //console.log(user.party[0]);
         text += faint_check.text;
         finish_battle = finish_battle || faint_check.finish_battle;
@@ -1489,7 +1489,7 @@ export async function process_battle_actions(battle_id){
         }
         
         //console.log('MESSAGE FIRST DISTRIBUTE')
-        await distribute_messages(battle_data, { embeds: [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)], files: battle_sprite_files });
+        await distribute_messages(db_battle_data, { embeds: [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)], files: battle_sprite_files });
 
         //Clear any remaining actions if we're meant to finish the battle
         //Also send any final messages for the action
@@ -1503,15 +1503,15 @@ export async function process_battle_actions(battle_id){
                         png = turn_data.finish_data.ooch_png
 
                         //console.log('CAPTURE DISTRIBUTE')
-                        await distribute_messages(battle_data, { embeds: [embed], files: [png] });
+                        await distribute_messages(db_battle_data, { embeds: [embed], files: [png] });
                     break;
                 }
             }
 
-            battle_data.actions = [];
+            db_battle_data.actions = [];
         }
 
-        await wait(battle_data.battle_speed);
+        await wait(db_battle_data.battle_speed);
     }
 
     if (!finish_battle) {
@@ -1522,24 +1522,24 @@ export async function process_battle_actions(battle_id){
 
         //Apply end of round abilities/effects (burn, stat changes, etc.)
         let ooch, eot_result, slot;
-        for(let user of battle_data.users) {
+        for(let user of db_battle_data.users) {
             ooch = user.party[user.active_slot];
             slot = user.slot_actions[user.active_slot];
             if(!ooch.alive){ continue; } //Skip this one if it's dead       
             
             //Check if anything fainted before doing anything
-            faint_check = battle_faint_check(battle_data) //.text, .finish_battle
+            faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
             end_of_round_text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
             if (finish_battle) { break; }
 
             //Handle end of turn abilities (use_eot_ability returns the ooch, as well as a string with what the ability did)
-            eot_result = await use_eot_ability(battle_data, user.user_index); 
+            eot_result = await use_eot_ability(db_battle_data, user.user_index); 
             ooch = eot_result.ooch;
             end_of_round_text += eot_result.text;
 
             //Check if anything fainted from abilities
-            faint_check = battle_faint_check(battle_data) //.text, .finish_battle
+            faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
             end_of_round_text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
 
@@ -1637,7 +1637,7 @@ export async function process_battle_actions(battle_id){
                 }
 
                 //Check if anything fainted from status effects
-                faint_check = battle_faint_check(battle_data) //.text, .finish_battle
+                faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
                 end_of_round_text += faint_check.text;
                 finish_battle = finish_battle || faint_check.finish_battle;
             }
@@ -1645,48 +1645,48 @@ export async function process_battle_actions(battle_id){
         }
 
         if(end_of_round_text.replaceAll("\n","") != ''){
-            await wait(battle_data.battle_speed);
+            await wait(db_battle_data.battle_speed);
             //console.log('END ROUND DISTRIBUTE')
-            await distribute_messages(battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
+            await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
 
         //End of round switch-ins
         let faint_switch_header = '## ------ Switching In ------';
         let faint_switch_text = '';
-        await end_of_round_prompt_switch(battle_data);
+        await end_of_round_prompt_switch(db_battle_data);
 
         //Send out any new mons or any other actions that have been moved to the end of turn queue
         let turn_data;
         while(actions.length > 0 && finish_battle == false){
-            sort_action_priority(battle_data);
+            sort_action_priority(db_battle_data);
             action = actions.shift();
-            turn_data = await action_process(battle_data, action);
+            turn_data = await action_process(db_battle_data, action);
             faint_switch_text += turn_data.return_string;
 
             //Check if anything fainted as a result of the actions
-            faint_check = battle_faint_check(battle_data) //.text, .finish_battle
+            faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
             faint_switch_text += faint_check.text;
             finish_battle = finish_battle || faint_check.finish_battle;
         }
         
         if(faint_switch_text != ''){
             //console.log('FAINT SWITCH DISTRIBUTE')
-            await distribute_messages(battle_data, { content: faint_switch_header, embeds: [battle_embed_create(faint_switch_text)]});
+            await distribute_messages(db_battle_data, { content: faint_switch_header, embeds: [battle_embed_create(faint_switch_text)]});
         }
 
         //Clear all user's actions
-        battle_data.turn_counter++;
-        for(let user of battle_data.users){ user.action_selected = false; }
+        db_battle_data.turn_counter++;
+        for(let user of db_battle_data.users){ user.action_selected = false; }
     }
     
     //Do stuff depending on whether the battle is finished
     if(!finish_battle) {
-        await wait(battle_data.battle_speed);
-        await distribute_messages(battle_data, { embeds : [generate_round_start_embed(battle_data)]});
-        _battle_data.set(battle_id, battle_data);
+        await wait(db_battle_data.battle_speed);
+        await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
+        battle_data.set(battle_id, db_battle_data);
         
-        await wait(battle_data.battle_speed);
-        await prompt_battle_actions(battle_data.battle_id);
+        await wait(db_battle_data.battle_speed);
+        await prompt_battle_actions(db_battle_data.battle_id);
     }
     else if (finish_battle === true) { 
         const endButton = new ActionRowBuilder()
@@ -1696,7 +1696,7 @@ export async function process_battle_actions(battle_id){
                 .setLabel('Continue To Playspace')
                 .setStyle(ButtonStyle.Primary),
         )
-        let victoryUser = battle_data.users.filter(user => user.defeated !== true)[0];
+        let victoryUser = db_battle_data.users.filter(user => user.defeated !== true)[0];
 
         if (faint_check.finish_text != '') {
             const victorEmbed = new EmbedBuilder()
@@ -1710,11 +1710,11 @@ export async function process_battle_actions(battle_id){
                 victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
             }
 
-            await distribute_messages(battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
+            await distribute_messages(db_battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
         } else {
-            await distribute_messages(battle_data, { components: [endButton], embeds: [] }, true);
+            await distribute_messages(db_battle_data, { components: [endButton], embeds: [] }, true);
         }
-        _battle_data.set(battle_id, battle_data);
+        battle_data.set(battle_id, db_battle_data);
     }
 }
 
@@ -1743,32 +1743,32 @@ export function battle_embed_create(text, color = '#808080', author = false, hea
 
 /**
  * Processes an action inside of a battle
- * @param {Object} battle_data the current battle_data
+ * @param {Object} db_battle_data the current db_battle_data
  * @param {Object} action the action to process
  */
-export async function action_process(battle_data, action){
+export async function action_process(db_battle_data, action){
     let turn_data;
     switch(action.action_type){
         case BattleAction.Attack:
-            turn_data = await action_process_attack(battle_data, action);
+            turn_data = await action_process_attack(db_battle_data, action);
         break;
         case BattleAction.Switch:
-            turn_data = await action_process_switch(battle_data, action);
+            turn_data = await action_process_switch(db_battle_data, action);
         break;
         case BattleAction.Run:
-            turn_data = await action_process_run(battle_data, action);
+            turn_data = await action_process_run(db_battle_data, action);
         break;
         case BattleAction.Heal:
-            turn_data = await action_process_heal(battle_data, action);
+            turn_data = await action_process_heal(db_battle_data, action);
         break;
         case BattleAction.Prism:
-            turn_data = await action_process_prism(battle_data, action);
+            turn_data = await action_process_prism(db_battle_data, action);
         break;
         case BattleAction.StanceChange:
-            turn_data = await action_process_stance_change(battle_data, action);
+            turn_data = await action_process_stance_change(db_battle_data, action);
         break;
         case BattleAction.UserJoin:
-            turn_data = await action_process_add_user(battle_data, action);
+            turn_data = await action_process_add_user(db_battle_data, action);
         break;
         case BattleAction.Other:
             //TODO
@@ -1779,11 +1779,11 @@ export async function action_process(battle_data, action){
 
 /**
  * Lets a user dynamically join the battle
- * @param {*} battle_data the current battle data
+ * @param {*} db_battle_data the current battle data
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_add_user(battle_data, action){
+export async function action_process_add_user(db_battle_data, action){
     let user = action.user;
     let finish_battle = false;
     let return_string = ``;
@@ -1799,7 +1799,7 @@ export async function action_process_add_user(battle_data, action){
         return_string += `${user.name} has joined the battle!`
     }
 
-    new_battle_action_switch(battle_data, user.user_index, user.active_slot, false);
+    new_battle_action_switch(db_battle_data, user.user_index, user.active_slot, false);
 
     return {
         finish_battle : finish_battle,
@@ -1811,15 +1811,15 @@ export async function action_process_add_user(battle_data, action){
 
 /**
  * Uses an attack
- * @param {*} battle_data the current battle data
+ * @param {*} db_battle_data the current battle data
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_attack(battle_data, action){
-    let user = battle_data.users[action.user_index];
+export async function action_process_attack(db_battle_data, action){
+    let user = db_battle_data.users[action.user_index];
     let finish_battle = false;
 
-    let return_string = await attack(battle_data, user.user_index, action.target_user_index, action.move_id);
+    let return_string = await attack(db_battle_data, user.user_index, action.target_user_index, action.move_id);
 
     return {
         finish_battle : finish_battle,
@@ -1831,11 +1831,11 @@ export async function action_process_attack(battle_data, action){
 
 /**
  * Processes a "Switch" action type
- * @param {Object} battle_data the current battle_data
+ * @param {Object} db_battle_data the current db_battle_data
  * @param {Object} action the action to process
  */
-export async function action_process_switch(battle_data, action){
-    let user = battle_data.users[action.user_index];
+export async function action_process_switch(db_battle_data, action){
+    let user = db_battle_data.users[action.user_index];
     let finish_battle = false;
 
     let ooch_to = user.party[action.slot_target];
@@ -1857,7 +1857,7 @@ export async function action_process_switch(battle_data, action){
     )
 
     
-    return_string += use_switch_ability(battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+    return_string += use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
     user.active_slot = action.slot_target;
 
     if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
@@ -1882,8 +1882,8 @@ export async function action_process_switch(battle_data, action){
     }
 }
 
-export function use_switch_ability(battle_data, user_index, slot_from, slot_to) {
-    let user = battle_data.users[user_index]
+export function use_switch_ability(db_battle_data, user_index, slot_from, slot_to) {
+    let user = db_battle_data.users[user_index]
     let ooch_to = user.party[slot_to];
     let ooch_from = user.party[slot_from];
     let string_to_send = '';
@@ -2021,7 +2021,7 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to) 
     }
 
     //Check abilities vs other users
-    for(let u of battle_data.users){
+    for(let u of db_battle_data.users){
         let every_target_list = [Ability.Gentle]
         
         if((u.team_id != user.team_id || every_target_list.includes(ooch_to.ability)) && u.party[u.active_slot].alive){
@@ -2078,7 +2078,7 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to) 
         }
     }
 
-    switch(battle_data.field_effect) {
+    switch(db_battle_data.field_effect) {
         case FieldEffect.JaggedGround:
             if(!ooch_to.type.includes(OochType.Stone)){
                 let jagged_dmg = Math.floor(ooch_to.stats.hp * 0.1);
@@ -2093,25 +2093,25 @@ export function use_switch_ability(battle_data, user_index, slot_from, slot_to) 
 
 /**
  * Atemts to capture an oochamon, and if successful tells the battle to end
- * @param {*} battle_data the current battle data
+ * @param {*} db_battle_data the current battle data
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, finish_data : Varying, return_string : String}
  */
-export async function action_process_prism(battle_data, action) {
-    let user = battle_data.users[action.user_index];
+export async function action_process_prism(db_battle_data, action) {
+    let user = db_battle_data.users[action.user_index];
     let user_id = user.user_id;
     let finish_battle = false;
     let finish_data = false;
 
-    let target_user = battle_data.users[action.target_user_index]
-    let item = await _item_data.get(`${action.item_id}`);
+    let target_user = db_battle_data.users[action.target_user_index]
+    let item = await item_data.get(`${action.item_id}`);
     let ooch_target = target_user.party[target_user.active_slot];
     let return_string = `${user.name} threw a ${item.emote} **${item.name}**.`;
 
     let prism_result = item_use(`${user.user_id}`, ooch_target, action.item_id, true); //True if successful catch, False if not
     let prism_pulses = prism_result[1];
     prism_result = prism_result[0];
-    battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
+    db_battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
 
     let exp_earned = 0;
 
@@ -2126,7 +2126,7 @@ export async function action_process_prism(battle_data, action) {
 
             // Distribute XP for a caught Oochamon
             // The Oochamon in the active slot at the moment of beating the Oochamon gets 1.25x more EXP than the others.
-            let is_first_catch = (_profile.get(`${user.user_id}`, `oochadex[${ooch_target.id}].caught`) == 0);
+            let is_first_catch = (profile.get(`${user.user_id}`, `oochadex[${ooch_target.id}].caught`) == 0);
             exp_earned = battle_calc_exp(ooch_target, is_first_catch ? 2 : 1); //catching mons will always give 1x EXP, 2x for first catch
 
             let ooch_party = user.party;
@@ -2157,7 +2157,7 @@ export async function action_process_prism(battle_data, action) {
                 }
             }
 
-            //distribute_messages(battle_data, {})
+            //distribute_messages(db_battle_data, {})
             //await item_sel.update({ content: `## ------ ${user.name}'s Turn ------`, embeds: [capture_embed], components: []});
 
             // Heal the caught Oochamon when you catch it.
@@ -2167,9 +2167,9 @@ export async function action_process_prism(battle_data, action) {
             if (user.party.length < 4) {
                 user.party.push(ooch_target);
             } else {
-                _profile.push(user_id, ooch_target, `ooch_pc`)
+                profile.push(user_id, ooch_target, `ooch_pc`)
             }
-            _profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
+            profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
 
             let info_embed = await ooch_info_embed(ooch_target, false, true);
             let ooch_png = info_embed[1];
@@ -2199,19 +2199,19 @@ export async function action_process_prism(battle_data, action) {
 
 /**
  * Uss a healing item
- * @param {*} battle_data the current battle data
+ * @param {*} db_battle_data the current battle data
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_heal(battle_data, action) {
-    let user = battle_data.users[action.user_index];
+export async function action_process_heal(db_battle_data, action) {
+    let user = db_battle_data.users[action.user_index];
     let finish_battle = false;
 
-    let item = await _item_data.get(`${action.item_id}`);
+    let item = await item_data.get(`${action.item_id}`);
     let ooch = user.party[action.slot_target];
     let return_string = `${user.name} used 1 ${item.emote} **${item.name}**.`;
     let extra_text = await item_use(user.user_index, ooch, action.item_id, true); 
-    battle_data.users[action.user_index].heal_inv[action.item_id] -= 1;
+    db_battle_data.users[action.user_index].heal_inv[action.item_id] -= 1;
     return_string += extra_text;
 
     return {
@@ -2225,12 +2225,12 @@ export async function action_process_heal(battle_data, action) {
 
 /**
  * hanges Oochamon stance
- * @param {Object} battle_data the current battle data
+ * @param {Object} db_battle_data the current battle data
  * @param {Object} action the action data to process {user_index, stance_to}
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_stance_change(battle_data, action) {
-    let user = battle_data.users[action.user_index];
+export async function action_process_stance_change(db_battle_data, action) {
+    let user = db_battle_data.users[action.user_index];
     let finish_battle = false;
     let stance_to = action.stance_to;
 
@@ -2250,18 +2250,18 @@ export async function action_process_stance_change(battle_data, action) {
 
 /**
  * Atempts to run away
- * @param {*} battle_data the current battle data
+ * @param {*} db_battle_data the current battle data
  * @param {*} action the action data to process
  * @returns Turn data {finish_battle : Boolean, return_string : String}
  */
-export async function action_process_run(battle_data, action) {
-    let user = battle_data.users[action.user_index];
+export async function action_process_run(db_battle_data, action) {
+    let user = db_battle_data.users[action.user_index];
     let ooch_user = user.party[user.active_slot];
     let ooch_max_check = 0;
     let return_string = '';
     let finish_battle = false;
 
-    for(let other_user of battle_data.users){
+    for(let other_user of db_battle_data.users){
         if(other_user.user_index != user.user_index){
             let ooch_other = other_user.party[other_user.active_slot];
             ooch_max_check = Math.max(ooch_other.stats.spd + ooch_other.level * 10, ooch_max_check)
@@ -2286,9 +2286,9 @@ export async function action_process_run(battle_data, action) {
 
 /**
  * Chcks if any oochamon have been fainted
- * @param {Object} battle_data The current battle_data
+ * @param {Object} db_battle_data The current db_battle_data
  */
-export function battle_faint_check(battle_data) {
+export function battle_faint_check(db_battle_data) {
     let string_to_send = '';
     let finish_string_to_send = '';
     let level_up_string = '';
@@ -2301,7 +2301,7 @@ export function battle_faint_check(battle_data) {
     //Figure out how many human players there are and which teams they're on
     let player_count = 0;
     let first_player = null;
-    for(let user of battle_data.users) {
+    for(let user of db_battle_data.users) {
         if(user.user_type == UserType.Player){
             player_count ++;
             player_teams.push(user.team_id);
@@ -2311,7 +2311,7 @@ export function battle_faint_check(battle_data) {
     }
 
     // Get the players' active oochamon, check if they are alive
-    for(let user of battle_data.users) {
+    for(let user of db_battle_data.users) {
         let user_just_defeated = true;
         let bonus_multiplier = user.type != UserType.Wild ? 2 : 1;
         let total_exp = 0;
@@ -2336,7 +2336,7 @@ export function battle_faint_check(battle_data) {
             else if (active_ooch.current_hp <= 0 && active_ooch.alive == true) {
                 string_to_send += `\n--- 🪦 ${user.name_possessive} ${active_ooch.emote} **${active_ooch.nickname}** fainted!`
                 
-                if (battle_data.give_rewards && active_ooch.alive) {
+                if (db_battle_data.give_rewards && active_ooch.alive) {
                     total_exp += Math.round(battle_calc_exp(active_ooch, bonus_multiplier));
                 }
 
@@ -2364,7 +2364,7 @@ export function battle_faint_check(battle_data) {
                 user.defeated = true;
             } 
             else {
-                battle_data.end_of_turn_switch_queue.push(user.user_index);
+                db_battle_data.end_of_turn_switch_queue.push(user.user_index);
                 if(!active_teams.includes(user.team_id)){
                     active_teams.push(user.team_id);
                 }
@@ -2372,7 +2372,7 @@ export function battle_faint_check(battle_data) {
 
             //If there's exp to give give it out here
             if(total_exp > 0){
-                for(let other_user of battle_data.users){
+                for(let other_user of db_battle_data.users){
                     if((other_user.user_type == UserType.Player) && (other_user.user_index != user.user_index)){
 
                         let ooch_party = other_user.party;
@@ -2430,7 +2430,7 @@ export function battle_faint_check(battle_data) {
         finish_string_to_send += `${level_up_string}\n`;
         if(!isNumber(total_oochabux)){ total_oochabux = 1000; } //placeholder fix for weird oochabux issue
         if (total_oochabux > 0) {
-            _profile.math(first_player.user_id, '+', total_oochabux, 'oochabux');
+            profile.math(first_player.user_id, '+', total_oochabux, 'oochabux');
             finish_string_to_send += `\nReceived **${total_oochabux} oochabux** for winning the battle!`
         }
     }
@@ -2466,11 +2466,11 @@ export function battle_calc_exp(ooch, bonus_multiplier = 1) {
 }
 
 //Handle letting the users switch mons during end of round here
-export async function end_of_round_prompt_switch(battle_data){
+export async function end_of_round_prompt_switch(db_battle_data){
 
     const { botClient } = await import('./index.js');
     let users_to_wait_for = [];
-    let users = battle_data.users;
+    let users = db_battle_data.users;
     let next_slot = 9999;
     let notify_death = false;
     let switchButtons1, switchButtons2;
@@ -2525,7 +2525,7 @@ export async function end_of_round_prompt_switch(battle_data){
                         next_slot = parseInt(i.customId.replace('switch_', ''));
 
                         //Submit their next slot for combat
-                        new_battle_action_switch(battle_data, user.user_index, next_slot, false);
+                        new_battle_action_switch(db_battle_data, user.user_index, next_slot, false);
                         users_to_wait_for = users_to_wait_for.filter(u => u != user.user_id);
                     });
                     
@@ -2534,21 +2534,21 @@ export async function end_of_round_prompt_switch(battle_data){
                     for(let [i, ooch] of user.party.entries()){
                         if(ooch.alive){ next_slot = i; break;}
                     }
-                    new_battle_action_switch(battle_data, user.user_index, next_slot, false);
+                    new_battle_action_switch(db_battle_data, user.user_index, next_slot, false);
                 break;
             }
         }
     }
 
     if (notify_death == true) {
-        await distribute_messages(battle_data, { content: `Waiting for players to send out their Oochamon...` });
+        await distribute_messages(db_battle_data, { content: `Waiting for players to send out their Oochamon...` });
         
         // Wait for input from the dead player
         while (users_to_wait_for.length != 0) {
             await wait(1000);
         }
 
-        await delete_messages_in_threads(battle_data, 1);
+        await delete_messages_in_threads(db_battle_data, 1);
     }
     
 }
@@ -2627,7 +2627,7 @@ export function get_stats(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
  */
 export function add_status_effect(ooch, status, slot) {
     let return_string = '';
-    let statusData = _status_data.get(`${status}`);
+    let statusData = status_data.get(`${status}`);
     let statusEmote = status_to_emote(status);
     let statusUpper = toUpper(statusData.name);
 
@@ -2806,12 +2806,12 @@ export function type_effectiveness(attack_type, target_type) {
 }
 
 export function item_use(user_id, ooch, item_id, in_battle=false) {
-    let item_data = _item_data.get(`${item_id}`); 
+    let db_item_data = item_data.get(`${item_id}`); 
 
-    if (item_data.type == 'potion') {
+    if (db_item_data.type == 'potion') {
         if (in_battle && ooch.alive == true) {
             let prev_hp = ooch.current_hp;
-            ooch.current_hp += item_data.potency;
+            ooch.current_hp += db_item_data.potency;
             ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
             ooch = update_tame_value(ooch, 3);
 
@@ -2819,14 +2819,14 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         } else if (in_battle == false) {
             ooch.alive = true;
             //let prev_hp = ooch.current_hp;
-            ooch.current_hp += item_data.potency;
+            ooch.current_hp += db_item_data.potency;
             ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
             return ooch;
         } 
         
-    } else if (item_data.type == 'prism') {
+    } else if (db_item_data.type == 'prism') {
         let status_bonus = 1;
-        let prism_multiplier = item_data.potency;
+        let prism_multiplier = db_item_data.potency;
         let prism_chance = prism_multiplier / (ooch.level) * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
         let throw_chance = Math.random();
         let prism_wiggles = (throw_chance - prism_chance > 0.5 ? 0 : (throw_chance - prism_chance > 0.3 ? 1 : 2 ))
@@ -2836,45 +2836,45 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         } else {
             return [false, prism_wiggles];
         }
-    } else if (item_data.type == 'status') {
+    } else if (db_item_data.type == 'status') {
         let return_string = false;
-        if (item_data.potency !== 'All') {
-            let status_data = _status_data.get(`${item_data.potency}`)
-            ooch.status_effects = ooch.status_effects.filter(v => v != item_data.potency);
-            return_string = `\n${ooch.emote} **${ooch.nickname}** recovered from its ${status_data.emote} **${status_data.name}**.`
+        if (db_item_data.potency !== 'All') {
+            let db_status_data = status_data.get(`${db_item_data.potency}`)
+            ooch.status_effects = ooch.status_effects.filter(v => v != db_item_data.potency);
+            return_string = `\n${ooch.emote} **${ooch.nickname}** recovered from its ${db_status_data.emote} **${db_status_data.name}**.`
         } else {
             ooch.status_effects = [];
             return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
         }
         return return_string == false ? ooch : return_string;
-    } else if (item_data.type == 'repel') {
-        _profile.set(user_id, item_data.potency, 'repel_steps'); 
-    } else if (item_data.type == 'teleport') {
-        let biome_from = _profile.get(`${user_id}`, 'location_data.area');
-        let checkpoint = _profile.get(`${user_id}`, 'checkpoint_data');
+    } else if (db_item_data.type == 'repel') {
+        profile.set(user_id, db_item_data.potency, 'repel_steps'); 
+    } else if (db_item_data.type == 'teleport') {
+        let biome_from = profile.get(`${user_id}`, 'location_data.area');
+        let checkpoint = profile.get(`${user_id}`, 'checkpoint_data');
         let biome_to = checkpoint.area;
 
         //remove the player's info from the old biome and add it to the new one
         player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, user_id);
         player_positions.delete(biome_from, user_id);
-        _profile.set(user_id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
+        profile.set(user_id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
 
-        for (let i = 0; i < _profile.get(`${user_id}`, 'ooch_party').length; i++) {
-            _profile.set(user_id, _profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-            _profile.set(user_id, true, `ooch_party[${i}].alive`);
+        for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
+            profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
+            profile.set(user_id, true, `ooch_party[${i}].alive`);
         }
 
-        _profile.set(user_id, PlayerState.Playspace, 'player_state');
+        profile.set(user_id, PlayerState.Playspace, 'player_state');
         return;
 
-    } else if (item_data.type == 'level_up') {
+    } else if (db_item_data.type == 'level_up') {
         let exp_to_give = exp_to_next_level(ooch.level);
         ooch.current_exp += exp_to_give;
         ooch = level_up(ooch);
         return ooch; // [ooch, output_text]
-    } else if (item_data.type == 'give_exp') {
-        ooch.current_exp += Math.round(item_data.potency);
-        let output = [ooch, `${ooch.emote} **${ooch.nickname}** gained ${item_data.potency} exp!`];
+    } else if (db_item_data.type == 'give_exp') {
+        ooch.current_exp += Math.round(db_item_data.potency);
+        let output = [ooch, `${ooch.emote} **${ooch.nickname}** gained ${db_item_data.potency} exp!`];
         
         // Check for level ups
         if (ooch.current_exp >= ooch.next_lvl_exp) { // If we can level up
@@ -2898,10 +2898,10 @@ export function hp_chunks_lost(hp_max, hp_before, hp_current, chunk_percentage){
     return chunks_lost;
 }
 
-export async function use_eot_ability(battle_data, user_index) {
+export async function use_eot_ability(db_battle_data, user_index) {
 
     let ability_text = ``;
-    let user = battle_data.users[user_index];
+    let user = db_battle_data.users[user_index];
     
 
     let ooch = user.party[user.active_slot];
@@ -2929,11 +2929,11 @@ export async function use_eot_ability(battle_data, user_index) {
             chunks_lost = hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 25);
             if(chunks_lost > 0 && ooch.current_hp > 0){
                 ability_text += `${ooch.emote} **${ooch.nickname}**'s **Spreading Sludge**:`
-                let user_num = battle_data.users.length
+                let user_num = db_battle_data.users.length
                 //Spawn a Slime Head for each
                 for(let i = 0; i < chunks_lost; i++){
                     ability_text += `\n--- A strange <:c_027:1347440606204399707> **Slime Head** breaks off from the main body...`
-                    await new_battle_action_add_user(battle_data, user_num + i, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
+                    await new_battle_action_add_user(db_battle_data, user_num + i, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
                         "Slime Head", "c_027", user.team_id, [
                         {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
                             ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
@@ -2953,7 +2953,7 @@ export async function use_eot_ability(battle_data, user_index) {
             ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** had its HP halved!\n`;
         break;
         case Ability.Efficient:
-            if (battle_data.turn_counter % 2 === 0) {
+            if (db_battle_data.turn_counter % 2 === 0) {
                 ability_text += `${ooch.emote} **${ooch.nickname}**'s **Efficient**:`
                 ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}\n`;
             }
@@ -2964,7 +2964,7 @@ export async function use_eot_ability(battle_data, user_index) {
 
         break;
         case Ability.Patient:
-            if (battle_data.turn_counter % 2 === 0) {
+            if (db_battle_data.turn_counter % 2 === 0) {
                 ability_text += `${ooch.emote} **${ooch.nickname}**'s **Patient**:`
                 ability_text += `\n--- ${modify_stat(ooch, Stats.Defense, 1)}\n`;
             }
@@ -2980,7 +2980,7 @@ export async function use_eot_ability(battle_data, user_index) {
             ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** changed its positioning, and shifted its ability to **Parry**!\n`;
         break;
         case Ability.HoleDweller:
-            if (battle_data.turn_counter % 2 === 0) {
+            if (db_battle_data.turn_counter % 2 === 0) {
                 ability_text += `${ooch.emote} **${ooch.nickname}**'s **Hole Dweller**:`
                 ability_text += `\n--- ${add_status_effect(ooch, Status.Vanish, slot_info)}\n`;
             }
@@ -3022,7 +3022,7 @@ export async function use_eot_ability(battle_data, user_index) {
     let hp_lost;
 
     //Weather effects
-    switch(battle_data.weather){
+    switch(db_battle_data.weather){
         case Weather.Clear: break; //Do Nothing
         case Weather.None: break; //Do Nothing
         case Weather.Heatwave: 
@@ -3183,10 +3183,10 @@ export function battle_calc_damage(move_damage, move_type, ooch_attacker, ooch_d
  * @param {String} header The header string displaying whos turn it is in the battle
  * @returns An array of the attacker and defender Oochamon data, after the attacks.
  */
-export async function attack(battle_data, user_index_attacker, user_index_defender, atk_id) {
+export async function attack(db_battle_data, user_index_attacker, user_index_defender, atk_id) {
 
-    let user_attacker = battle_data.users[user_index_attacker];
-    let user_defender = battle_data.users[user_index_defender];
+    let user_attacker = db_battle_data.users[user_index_attacker];
+    let user_defender = db_battle_data.users[user_index_defender];
     let attacker = user_attacker.party[user_attacker.active_slot];
     let defender = user_defender.party[user_defender.active_slot];
     let slot_attacker = user_attacker.slot_actions[user_attacker.active_slot];
@@ -3201,7 +3201,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     //Figure out whether we're going first or last for misc values
     let going_first = true;
     let going_last = true;
-    for(let user of battle_data.users) {
+    for(let user of db_battle_data.users) {
         if (user.user_index == user_index_attacker) continue;
         if (user.slot_actions[user.active_slot].this_turn_did_attack) going_first = false
         else going_last = false
@@ -3210,17 +3210,17 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     slot_attacker.this_turn_did_attack = true;
     slot_defender.this_turn_was_attacked = true;
 
-    let move_info = await _move_data.get(`${atk_id}`);
+    let move_info = await move_data.get(`${atk_id}`);
 
     let move_effects =   move_info.effect;
     let ogMoveId = atk_id;
     if (move_effects.some(effect => effect.status === 'random')) {
-        moveList = _move_data.keys();
+        moveList = move_data.keys();
         // Remove some moves that shouldn't be obtained with random
         moveList = moveList.filter(v => !([40, 92].includes(parseInt(v))))
 
         atk_id = sample(moveList);
-        move_info = await _move_data.get(`${atk_id}`);
+        move_info = await move_data.get(`${atk_id}`);
         move_effects =   move_info.effect;
     }
     let move_name =     move_info.name;
@@ -3263,7 +3263,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
 
     //For moves with a weather-dependant type
     if(move_effects.some(effect => effect.status === Status.WeatherDependent)){
-        switch(battle_data.weather){
+        switch(db_battle_data.weather){
             case Weather.None: break; //Do nothing
             case Weather.Heatwave: 
                 move_type = OochType.Flame; 
@@ -3306,7 +3306,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     slot_attacker.move_used_last = atk_id;
 
     //Field Effects
-    switch(battle_data.field_effect){
+    switch(db_battle_data.field_effect){
         case FieldEffect.EchoChamber:
             if(move_type == OochType.Sound && move_damage > 0){
                 move_effects.push({status : Status.Expose, chance : 100, target : MoveTarget.Enemy})
@@ -3349,7 +3349,7 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
     let dmg = 0;
     if (move_damage != 0) {
         dmg = battle_calc_damage(move_damage * type_multiplier[0] * status_exposed * ability_dmg_multiplier, 
-                                move_type, attacker, defender, battle_data.turn_counter) * crit_multiplier;
+                                move_type, attacker, defender, db_battle_data.turn_counter) * crit_multiplier;
     }
 
     vampire_heal = Math.ceil(vampire_heal * dmg); //used later
@@ -3521,13 +3521,13 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
         
 
         if (ogMoveId !== atk_id) {
-            string_to_send += `\n🎲 **${_move_data.get(`${ogMoveId}`, 'name')}** changed into **${move_name}**!\n`;
+            string_to_send += `\n🎲 **${move_data.get(`${ogMoveId}`, 'name')}** changed into **${move_name}**!\n`;
         }
 
         
 
         //Add one of the battle description flavor texts if applicable
-        let move_battle_desc = await _move_data.get(`${atk_id}`, 'battle_desc');
+        let move_battle_desc = await move_data.get(`${atk_id}`, 'battle_desc');
         if(typeof move_battle_desc == "string") {
             move_battle_desc = move_battle_desc.replaceAll("USER", `${attacker_emote} ${atkOochName}`);
             move_battle_desc = move_battle_desc.replaceAll("TARGET", `${defender_emote} ${defOochName}`);
@@ -3541,19 +3541,19 @@ export async function attack(battle_data, user_index_attacker, user_index_defend
         //Handle Weather
         if(move_weather != Weather.None){
             if(move_weather == Weather.Clear){
-                battle_data.weather = Weather.None;
+                db_battle_data.weather = Weather.None;
                 string_to_send += `\n--- The weather was cleared!`
             }
-            else{ battle_data.weather = move_weather; }
+            else{ db_battle_data.weather = move_weather; }
         }
 
         //Handle Field Effects
         if(move_field != FieldEffect.None){
             if(move_field == FieldEffect.Clear){
-                battle_data.field_effect = FieldEffect.None;
+                db_battle_data.field_effect = FieldEffect.None;
                 string_to_send += `\n--- Field effects were cleared!`
             }
-            else{ battle_data.field_effect = move_field; }
+            else{ db_battle_data.field_effect = move_field; }
         }
 
         //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
@@ -3806,12 +3806,12 @@ export function modify_stat(ooch, stat, stage, set = false) {
     return text;
 }
 
-export function generate_round_start_embed(battle_data, stances_enabled) {
+export function generate_round_start_embed(db_battle_data, stances_enabled) {
     let hp_string = ``;
     let user_name, active_ooch;
-    if (battle_data.field_effect != FieldEffect.None && battle_data.field_effect != FieldEffect.Clear) hp_string += `\`Field Effect: ${startCase(battle_data.field_effect)}\``;
-    if (battle_data.weather != Weather.None && battle_data.weather != Weather.Clear) hp_string += `\`Weather: ${startCase(battle_data.weather)}\``;
-    for(let user of battle_data.users){
+    if (db_battle_data.field_effect != FieldEffect.None && db_battle_data.field_effect != FieldEffect.Clear) hp_string += `\`Field Effect: ${startCase(db_battle_data.field_effect)}\``;
+    if (db_battle_data.weather != Weather.None && db_battle_data.weather != Weather.Clear) hp_string += `\`Weather: ${startCase(db_battle_data.weather)}\``;
+    for(let user of db_battle_data.users){
         user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
         active_ooch = user.party[user.active_slot];
         hp_string += `\n\`` + trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${type_to_emote(active_ooch.type)}`);
@@ -3865,7 +3865,7 @@ export function generate_hp_bar(ooch, style) {
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;
 
     for (let status of ooch.status_effects) {
-        hp_string += _status_data.get(`${status}`, 'emote');
+        hp_string += status_data.get(`${status}`, 'emote');
     }
 
     return hp_string;
@@ -3873,12 +3873,12 @@ export function generate_hp_bar(ooch, style) {
 
     /**
  * Generate a beginning of battle image based on data passed in
- * @param {Object} battle_data The thread this instance of Oochamon is being played in
+ * @param {Object} db_battle_data The thread this instance of Oochamon is being played in
  * @param {String} user_index The user ID of the user playing Oochamon
  * @param {Object} battle_bg The player object
  * @returns A png attachment to be sent into a chat.
  */
-export async function generate_battle_image(battle_data, user_index, battle_bg = 'battle_bg_hub') {
+export async function generate_battle_image(db_battle_data, user_index, battle_bg = 'battle_bg_hub') {
 
     // Define helper functions that are only used here
     function flipDrawImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
@@ -3912,7 +3912,7 @@ export async function generate_battle_image(battle_data, user_index, battle_bg =
 
     //Sort everyone into their teams
     let teams = {};
-    for(let user of battle_data.users){
+    for(let user of db_battle_data.users){
         let team_id_to_text = `${user.team_id}`
         if(!Object.prototype.hasOwnProperty.call(teams, team_id_to_text)){
             teams[team_id_to_text] = []
@@ -3926,7 +3926,7 @@ export async function generate_battle_image(battle_data, user_index, battle_bg =
     let center_y = height/2 + 16; //offsets height to account for sprites
     let radius_oochamon = .325;
     let radius_user = .425;
-    let perspective_team_id  = battle_data.users[user_index].team_id;
+    let perspective_team_id  = db_battle_data.users[user_index].team_id;
     let rotation_increments = 360 / Object.keys(teams).length;
     let offset_rotation = 135 + (parseInt(perspective_team_id) * rotation_increments);
 
@@ -4176,27 +4176,27 @@ export function type_to_string(type, do_capitalize = true) {
 
 /**
  * Handle finishing an Oochamon battle and setting back up the playspace.
- * @param {Object} battle_data The battle data for the current battle.
+ * @param {Object} db_battle_data The battle data for the current battle.
  * @param {String} user_index The user index whose battle to end.
  * @param {Boolean} play_end True if finish_battle came from /play.
  */
-export async function finish_battle(battle_data, user_index, play_end = false) {
+export async function finish_battle(db_battle_data, user_index, play_end = false) {
     const { event_process } = await import('./func_event.js');
     const { botClient } = await import("./index.js");
     const { setup_playspace_str } = await import('./func_play.js'); 
 
-    let user_info = battle_data.users[user_index];
+    let user_info = db_battle_data.users[user_index];
 
     let battle_won = !user_info.defeated; // We won if we were not defeated
     let user_id = user_info.user_id;
     let thread = botClient.channels.cache.get(`${user_info.thread_id}`);
-    let is_online = battle_data.is_online;
+    let is_online = db_battle_data.is_online;
 
     //Clear all messages in the user's thread
-    if (battle_data.battle_msg_counter <= 100) {
-        await thread.bulkDelete(battle_data.battle_msg_counter).catch(() => {});
+    if (db_battle_data.battle_msg_counter <= 100) {
+        await thread.bulkDelete(db_battle_data.battle_msg_counter).catch(() => {});
     } else {
-        let message_count = battle_data.battle_msg_counter;
+        let message_count = db_battle_data.battle_msg_counter;
         do {
             await thread.bulkDelete(100).catch(() => {});
             message_count -= 100;
@@ -4204,7 +4204,7 @@ export async function finish_battle(battle_data, user_index, play_end = false) {
         while(message_count > thread.memberCount);
     }
 
-    if(!battle_data.fake_battle && !play_end) {
+    if(!db_battle_data.fake_battle && !play_end) {
         //Reset relevant ooch info and stuff
         for (let ooch of user_info.party){
             ooch.stats.atk_mul = 0;
@@ -4226,39 +4226,39 @@ export async function finish_battle(battle_data, user_index, play_end = false) {
         }
 
         //Set the party as needed
-        _profile.set(user_id, user_info.party, `ooch_party`);
-        _profile.set(user_id, user_info.prism_inv, `prism_inv`);
-        _profile.set(user_id, user_info.heal_inv, `heal_inv`);
-        _profile.set(user_id, user_info.other_inv, `other_inv`);
-        _profile.set(user_id, 0, 'ooch_active_slot');
+        profile.set(user_id, user_info.party, `ooch_party`);
+        profile.set(user_id, user_info.prism_inv, `prism_inv`);
+        profile.set(user_id, user_info.heal_inv, `heal_inv`);
+        profile.set(user_id, user_info.other_inv, `other_inv`);
+        profile.set(user_id, 0, 'ooch_active_slot');
 
         // If we lost, go back to the teleporter location.
         if (battle_won === false) {
-            _profile.set(user_id, _profile.get(`${user_id}`, 'checkpoint_data'), 'location_data');
-            _profile.set(user_id, [], 'cur_event_array');
-            _profile.set(user_id, 0, 'cur_event_pos')
-            _profile.set(user_id, false, 'cur_battle_id');
+            profile.set(user_id, profile.get(`${user_id}`, 'checkpoint_data'), 'location_data');
+            profile.set(user_id, [], 'cur_event_array');
+            profile.set(user_id, 0, 'cur_event_pos')
+            profile.set(user_id, false, 'cur_battle_id');
         } 
     }
 
     // Setup playspace
     let playspace_str = await await setup_playspace_str(user_id);
-    await _profile.set(user_id, PlayerState.Playspace, 'player_state');
+    await profile.set(user_id, PlayerState.Playspace, 'player_state');
 
     await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
-        _profile.set(user_id, msg.id, 'display_msg_id');
+        profile.set(user_id, msg.id, 'display_msg_id');
     });
 
     // If no players left to wait for end of battle input, delete the battle data completely
-    battle_data.users[user_index].is_player = false;
-    if (!battle_data.users.some((user) => user.is_player)) {
-        _battle_data.delete(battle_data.battle_id);
+    db_battle_data.users[user_index].is_player = false;
+    if (!db_battle_data.users.some((user) => user.is_player)) {
+        battle_data.delete(db_battle_data.battle_id);
     }
     
     if (battle_won === true && is_online == false && play_end == false) {
         // If we won the battle
-        let cur_event_array = await _profile.get(`${user_id}`, 'cur_event_array');
-        let cur_event_pos = parseInt(_profile.get(`${user_id}`, 'cur_event_pos'));
+        let cur_event_array = await profile.get(`${user_id}`, 'cur_event_array');
+        let cur_event_pos = parseInt(profile.get(`${user_id}`, 'cur_event_pos'));
 
         if (cur_event_array.length != 0) {
             // If we have an NPC event obj, continue the event processing with our held event data info after the battle is done.
@@ -4324,7 +4324,7 @@ export function level_up(ooch) {
             return inRange(v[0], starting_level + 1, ooch.level + 1)
         });
         possibleMoves = possibleMoves.map(v => {
-            let moveData = _move_data.get(`${v[1]}`);
+            let moveData = move_data.get(`${v[1]}`);
             // If the Oochamon can learn the new move and has room, add it automatically.
             if (ooch.moveset.length < 4) ooch.moveset.push(moveData.id);
             return `- ${type_to_emote(moveData.type)} **${moveData.name}**`;
@@ -4346,7 +4346,7 @@ export function level_up(ooch) {
  * Supply a status id, returns its emote if applicable
  */
 export function status_to_emote(status) {
-    return(_status_data.get(`${status}`, "emote"));
+    return(status_data.get(`${status}`, "emote"));
 }
 
 /**

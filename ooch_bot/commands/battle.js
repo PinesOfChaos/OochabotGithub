@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags } from 'discord.js';
-import { profile as _profile } from '../db.js';
+import { profile } from '../db.js';
 import { box_collector_event } from '../func_play.js';
 import { PlayerState, UserType, Weather } from '../types.js';
 import wait from 'wait';
@@ -51,12 +51,12 @@ export async function execute(interaction) {
 
     let intBattleUser = interaction.user;
     let otherBattleMember = await interaction.guild.members.fetch(otherBattleUser.id);
-    let intUserState = _profile.get(`${interaction.user.id}`, 'player_state');
-    let otherUserState = _profile.get(`${otherBattleUser.id}`, 'player_state');
+    let intUserState = profile.get(`${interaction.user.id}`, 'player_state');
+    let otherUserState = profile.get(`${otherBattleUser.id}`, 'player_state');
 
     if (intUserState == PlayerState.NotPlaying) {
         return interaction.reply({ content: 'You must be playing the game to battle with other users.', flags: MessageFlags.Ephemeral });
-    } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != _profile.get(`${interaction.user.id}`, 'play_thread_id')) {
+    } else if (intUserState != PlayerState.NotPlaying && interaction.channel.id != profile.get(`${interaction.user.id}`, 'play_thread_id')) {
         return interaction.reply({ content: 'You can\'t battle here.', flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Combat) {
         return interaction.reply({ content: `You are in the middle of a battle. If you are not mid battle, please restart the game by running \`/play\` again.`, flags: MessageFlags.Ephemeral });
@@ -65,7 +65,7 @@ export async function execute(interaction) {
     } else if (intUserState == PlayerState.Intro) {
         return interaction.reply({ content: `You cannot battle in the intro.`, flags: MessageFlags.Ephemeral });
     }
-    ``;
+
     if (otherUserState == PlayerState.NotPlaying) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     } else if (otherUserState == PlayerState.Combat) {
@@ -78,8 +78,8 @@ export async function execute(interaction) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the intro, and cannot battle.` });
     }
 
-    let otherUserThread = _profile.get(`${otherBattleUser.id}`, 'play_thread_id');
-    otherUserThread = await interaction.guild.channels.cache.get(`${_profile.get(otherBattleUser.id)}`, 'play_thread_id');
+    let otherUserThread = profile.get(`${otherBattleUser.id}`, 'play_thread_id');
+    otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherBattleUser.id)}`, 'play_thread_id');
     if (!otherUserThread || !otherUserThread.isThread()) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     }
@@ -95,8 +95,8 @@ export async function execute(interaction) {
             new ButtonBuilder().setCustomId('cancel').setLabel('Cancel Invite').setStyle(ButtonStyle.Danger));
     //#endregion
     async function start_battle(intProfile, otherProfile) {
-        _profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
-        _profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
+        profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
+        profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
 
         let intBattleDataUser = await generate_battle_user(UserType.Player, { profile: intProfile, user_id: intBattleUser.id, team_id: 0, thread_id: intUserThread.id, guild_id: interaction.guild.id });
         let otherBattleDataUser = await generate_battle_user(UserType.Player, { profile: otherProfile, user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
@@ -114,8 +114,8 @@ export async function execute(interaction) {
     });
 
     let intUserThread = interaction.channel;
-    _profile.set(otherBattleUser.id, PlayerState.Invited, 'player_state');
-    _profile.set(intBattleUser.id, PlayerState.Invited, 'player_state');
+    profile.set(otherBattleUser.id, PlayerState.Invited, 'player_state');
+    profile.set(intBattleUser.id, PlayerState.Invited, 'player_state');
     let otherUserBattleMsg = await otherUserThread.send({
         content: `You have received an invitation to battle from **${interaction.member.displayName}**! Would you like to accept?\n` +
             `*(Battle Options: ${levelScale != false ? `Scaled to* ***level ${levelScale}*** *Oochamon` : `* ***Normal Oochamon levels*** *`})*`, components: [confirmButtons]
@@ -134,19 +134,19 @@ export async function execute(interaction) {
 
     confirm_collector.on('collect', async (i) => {
         if (i.customId == 'yes') {
-            let intBoxData = buildBoxData(_profile.get(`${intBattleUser.id}`), 0);
-            let otherBoxData = buildBoxData(_profile.get(`${otherBattleUser.id}`), 0);
+            let intBoxData = buildBoxData(profile.get(`${intBattleUser.id}`), 0);
+            let otherBoxData = buildBoxData(profile.get(`${otherBattleUser.id}`), 0);
             i.update({ content: `**Oochabox:**`, components: [otherBoxData[0], otherBoxData[1], otherBoxData[2], otherBoxData[3], box_battle_buttons] });
             intUserBattleMsg.edit({ content: `**Oochabox:**`, components: [intBoxData[0], intBoxData[1], intBoxData[2], intBoxData[3], box_battle_buttons] });
 
-            _profile.set(interaction.user.id, PlayerState.CombatOochSelect, 'player_state');
-            _profile.set(otherBattleUser.id, PlayerState.CombatOochSelect, 'player_state');
+            profile.set(interaction.user.id, PlayerState.CombatOochSelect, 'player_state');
+            profile.set(otherBattleUser.id, PlayerState.CombatOochSelect, 'player_state');
             let otherIsReady = false;
             let intIsReady = false;
             let otherPageNum = 0;
             let intPageNum = 0;
-            let intProfile = _profile.get(`${intBattleUser.id}`);
-            let otherProfile = _profile.get(`${otherBattleUser.id}`);
+            let intProfile = profile.get(`${intBattleUser.id}`);
+            let otherProfile = profile.get(`${otherBattleUser.id}`);
             let pages = 9;
 
             let otherBoxCollector = otherUserThread.createMessageComponentCollector();
@@ -222,13 +222,13 @@ export async function execute(interaction) {
         if (collected.first() == undefined) {
             await otherUserBattleMsg.delete().catch(() => { });
             await intUserBattleMsg.delete().catch(() => { });
-            _profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
-            _profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
+            profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
+            profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
         } else {
             if (collected.first().customId == 'no') {
                 doDelete = true;
-                _profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
-                _profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
+                profile.set(otherBattleUser.id, PlayerState.Playspace, 'player_state');
+                profile.set(intBattleUser.id, PlayerState.Playspace, 'player_state');
             }
         }
 

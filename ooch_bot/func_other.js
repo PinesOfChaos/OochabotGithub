@@ -1,5 +1,5 @@
 // For functions that don't fit into the other categories
-import { monster_data, profile as _profile, ability_data, move_data, battle_data } from "./db.js";
+import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { TypeEmote, PlayerState, Item, TameStatus } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
@@ -85,7 +85,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let ooch_data = monster_data.get(`${ooch.id}`);
     // let user_data = false;
     // if (user_id) {
-    //     user_data = _profile.get(`${user_id}`);
+    //     user_data = profile.get(`${user_id}`);
     // }
 
     let expBar = filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
@@ -140,7 +140,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     }
     
     if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
-        let oochadex_check = _profile.get(`${user_id}`, `oochadex[${ooch_data.evo_id}]`); // Changed to 'let'
+        let oochadex_check = profile.get(`${user_id}`, `oochadex[${ooch_data.evo_id}]`); // Changed to 'let'
         if (oochadex_check == undefined) {
             oochadex_check = { caught: 0 }
         } 
@@ -243,45 +243,45 @@ export function formatStatBar(stat) {
 
 export async function reset_oochamon(user_id) {
     // Setup user data
-    let profile = get_blank_profile();
-    _profile.set(user_id, profile);
-    //TO DO, once we confirm this works, replace the below db.profile.set lines
+    let db_profile = get_blank_profile();
+    profile.set(user_id, db_profile);
+    //TO DO, once we confirm this works, replace the below db.db_profile.set lines
 
-    _profile.set(user_id, 'c_000', 'player_sprite');
-    _profile.set(user_id, [], 'ooch_pc')
-    _profile.set(user_id, 0, 'ooch_active_slot')
-    _profile.set(user_id, {}, 'other_inv')
-    _profile.set(user_id, {}, 'prism_inv')
-    _profile.set(user_id, {}, 'heal_inv')
-    _profile.set(user_id, 0, 'oochabux')
-    _profile.set(user_id, 0, 'repel_steps')
-    await _profile.set(user_id, PlayerState.Intro, 'player_state')
-    _profile.set(user_id, {}, 'ooch_enemy')
-    _profile.set(user_id, false, 'location_data')
-    _profile.set(user_id, false, 'checkpoint_data');
-    _profile.set(user_id, false, 'display_msg_id');
-    _profile.set(user_id, false, 'play_thread_id');
-    _profile.set(user_id, false, 'play_guild_id');
-    _profile.set(user_id, 0, 'battle_msg_counter');
-    _profile.set(user_id, 0, 'battle_turn_counter');
-    _profile.set(user_id, 0, 'turn_msg_counter');
-    _profile.set(user_id, [], 'oochadex');
-    _profile.set(user_id, [], 'flags');
-    _profile.set(user_id, [], 'ooch_party');
-    _profile.set(user_id, [Item.Potion, Item.Prism], 'global_shop_items');
-    _profile.set(user_id, [], 'friends_list');
-    _profile.set(user_id, 1, 'move_speed');
-    _profile.set(user_id, 'Talk to the professor.', 'objective');
-    _profile.set(user_id, false, 'cur_event_name');
+    profile.set(user_id, 'c_000', 'player_sprite');
+    profile.set(user_id, [], 'ooch_pc')
+    profile.set(user_id, 0, 'ooch_active_slot')
+    profile.set(user_id, {}, 'other_inv')
+    profile.set(user_id, {}, 'prism_inv')
+    profile.set(user_id, {}, 'heal_inv')
+    profile.set(user_id, 0, 'oochabux')
+    profile.set(user_id, 0, 'repel_steps')
+    await profile.set(user_id, PlayerState.Intro, 'player_state')
+    profile.set(user_id, {}, 'ooch_enemy')
+    profile.set(user_id, false, 'location_data')
+    profile.set(user_id, false, 'checkpoint_data');
+    profile.set(user_id, false, 'display_msg_id');
+    profile.set(user_id, false, 'play_thread_id');
+    profile.set(user_id, false, 'play_guild_id');
+    profile.set(user_id, 0, 'battle_msg_counter');
+    profile.set(user_id, 0, 'battle_turn_counter');
+    profile.set(user_id, 0, 'turn_msg_counter');
+    profile.set(user_id, [], 'oochadex');
+    profile.set(user_id, [], 'flags');
+    profile.set(user_id, [], 'ooch_party');
+    profile.set(user_id, [Item.Potion, Item.Prism], 'global_shop_items');
+    profile.set(user_id, [], 'friends_list');
+    profile.set(user_id, 1, 'move_speed');
+    profile.set(user_id, 'Talk to the professor.', 'objective');
+    profile.set(user_id, false, 'cur_event_name');
     
     // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
     // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
-    _profile.set(user_id, [], 'cur_event_array'); 
-    _profile.set(user_id, 0, 'cur_event_pos');
-    _profile.set(user_id, false, 'cur_battle_id');
+    profile.set(user_id, [], 'cur_event_array'); 
+    profile.set(user_id, 0, 'cur_event_pos');
+    profile.set(user_id, false, 'cur_battle_id');
     
     // Settings
-    _profile.set(user_id, {
+    profile.set(user_id, {
         controls_msg: false,
         battle_cleanup: true,
         zoom: '9_7',
@@ -294,24 +294,24 @@ export async function reset_oochamon(user_id) {
 
     // Setup Oochadex template
     for (const ooch_id in monster_data.keys()) { // Changed to 'const'
-        _profile.push(user_id, { id: ooch_id, caught: 0 }, 'oochadex')
+        profile.push(user_id, { id: ooch_id, caught: 0 }, 'oochadex')
     }
 }
 
 export async function quit_oochamon(thread, user_id, client) {
 
-    const { finish_battle } = await import('../func_battle.js'); // This should ideally be a direct import if func_battle.js also uses named exports
-    const { move } = await import('./func_play.js'); // This should ideally be a direct import if func_play.js also uses named exports
+    const { finish_battle } = await import('./func_battle.js');
+    const { move } = await import('./func_play.js');
 
-    let curBattleId = _profile.get(`${user_id}`, 'cur_battle_id');
+    let curBattleId = profile.get(`${user_id}`, 'cur_battle_id');
     if (curBattleId != false && curBattleId != undefined && curBattleId != null && battle_data.has(curBattleId)) {
         
         let battleData = battle_data.get(`${curBattleId}`);
         await battle_data.delete(`${curBattleId}`);
 
         for (let user of battleData.users) {
-            _profile.set(user.user_id, 0, 'cur_event_pos');
-            _profile.set(user.user_id, false, 'cur_battle_id');
+            profile.set(user.user_id, 0, 'cur_event_pos');
+            profile.set(user.user_id, false, 'cur_battle_id');
             let userThread = client.channels.cache.get(`${user.thread_id}`);
 
             if (user.is_player) {
@@ -326,5 +326,5 @@ export async function quit_oochamon(thread, user_id, client) {
     await thread.leave();
     await thread.setLocked(true);
     await thread.setArchived(true);
-    await _profile.set(user_id, PlayerState.NotPlaying, 'player_state');
+    await profile.set(user_id, PlayerState.NotPlaying, 'player_state');
 }

@@ -11001,36 +11001,6 @@
     "evo_stage": 0
   },
   {
-    "id": -7,
-    "emote": "<:c_901:1358880761104568340>",
-    "name": "Serpsis",
-    "oochive_entry": "A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...",
-    "type": [
-      "void"
-    ],
-    "hp": 50,
-    "atk": 10,
-    "def": 20,
-    "spd": 10,
-    "move_list": [
-      [
-        1,
-        92
-      ],
-      [
-        -1,
-        1
-      ]
-    ],
-    "abilities": [
-      90
-    ],
-    "pre_evo_id": -1,
-    "evo_id": -1,
-    "evo_lvl": -1,
-    "evo_stage": 0
-  },
-  {
     "id": -8,
     "emote": "<:c_901:1358880761104568340>",
     "name": "Ancient Rune",
@@ -11054,6 +11024,36 @@
     ],
     "abilities": [
       89
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": -7,
+    "emote": "<:c_901:1358880761104568340>",
+    "name": "Serpsis",
+    "oochive_entry": "A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...",
+    "type": [
+      "void"
+    ],
+    "hp": 50,
+    "atk": 10,
+    "def": 20,
+    "spd": 10,
+    "move_list": [
+      [
+        1,
+        92
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      90
     ],
     "pre_evo_id": -1,
     "evo_id": -1,
