@@ -1,11 +1,13 @@
 // For functions that don't fit into the other categories
 import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { TypeEmote, PlayerState, Item, TameStatus } from './types.js';
+import { PlayerState, Item, TameStatus } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
-import { applicationEmojis } from "./index.js";
+import { clientEmojis } from "./index.js";
+
+
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -80,8 +82,8 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     const { get_ooch_art } = await import('./func_other.js'); // This should ideally be a direct import if func_other.js also uses named exports
 
     let ooch_title = `${ooch.nickname}`;
-    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[capitalize(v)]).join('')}` 
-        : ooch_title += ` [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[capitalize(v)]).join('')}`;
+    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}}` 
+        : ooch_title += ` [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`;
     let moveset_str = ``;
     let ooch_data = monster_data.get(`${ooch.id}`);
     // let user_data = false;
@@ -160,13 +162,17 @@ export function check_chance(percent) {
 }
 
 /**
- * Returns the emote text for a specific thing.
- * @param {String} name Name of the thing to get emote from.
+ * Returns the emote text for a specified attribute
+ * @param {String} emote_name Name to get emote from.
  */
 export function get_emote_string(name) {
-    let emojiList = applicationEmojis.filter(v => v.name === toLower(name)); // Changed to 'let'
+    let emojiList = clientEmojis.filter(v => v.name === toLower(name));
     emojiList = Array.from(emojiList.values());
-    if (emojiList.length === 0) throw Error(`Unable to find emote for the name ${name}!`);
+    if (emojiList.length === 0) {
+        emojiList = clientEmojis.filter(v => v.name === 'error');
+        emojiList = Array.from(emojiList.values());
+    }
+
     return `<:${emojiList[0].name}:${emojiList[0].id}>`;
 }
 
@@ -198,9 +204,9 @@ export function get_art_file(path) {
  * @returns The star emote string.
  */
 export function get_iv_stars(iv) {
-    const star_empty = "<:star_empty:1346318267324825651>";
-    const star_half = "<:star_half:1346318282562605086>";
-    const star_full = "<:star_full:1346318298660343990>";
+    const star_empty = get_emote_string('star_empty');
+    const star_half = get_emote_string('star_half');
+    const star_full = get_emote_string('star_full');
 
     let stars = [];
     for (let i = 0; i < 5; i++) {

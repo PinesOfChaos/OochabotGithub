@@ -27,21 +27,21 @@ client.commands = new Collection();
 const registerCommands = [];
 const commandFiles = readdirSync('./commands').filter(file => file.endsWith('.js'));
 const inactivityTrackers = {};
-const clientEmojis = await botClient.application.emojis.fetch();
+let emojis;
 
 //#region 
-for (const file of commandFiles) {
-    const command = await import(`./commands/${file}`);
-    if (command.type === undefined) {
-        // Slash Commands
-        client.commands.set(command.data.name, command);
-        registerCommands.push(command.data.toJSON());
-    } else {
-        // Context Menu Commands (these have a different structure)
-        client.commands.set(command.name, command);
-        registerCommands.push(command);
+(async () => {
+    for (const file of commandFiles) {
+        const command = await import(`./commands/${file}`);
+        if (command.type === undefined) {
+            client.commands.set(command.data.name, command);
+            registerCommands.push(command.data.toJSON());
+        } else {
+            client.commands.set(command.name, command);
+            registerCommands.push(command);
+        }
     }
-}
+})();
 
 // eslint-disable-next-line no-undef
 const rest = new REST({ version: '9' }).setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
@@ -71,6 +71,7 @@ schedule('00 16 * * *', async () => {
 
 client.on('ready', async () => {
     let userIds = profile.keys();
+    emojis = await client.application.emojis.fetch();
     for (let user of userIds) {
 
         let user_profile = profile.get(`${user}`);
@@ -521,4 +522,4 @@ client.on('messageCreate', async message => {
 client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 
 export const botClient = client; 
-export const applicationEmojis = clientEmojis;
+export const clientEmojis = emojis;

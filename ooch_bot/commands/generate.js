@@ -532,277 +532,277 @@ export async function execute(interaction, client) {
     //#endregion
     //#region Item Data
     create_item({
-        id: 0, name: 'Potion', emote: '<:item_potion:1274937121370669118>',
+        id: 0, name: 'Potion', emote: get_emote_string('item_potion'),
         category: 'heal_inv', type: 'potion', price: 100, potency: 20,
         description: 'A potion filled with a mysterious mix of chemicals. Slightly heals an injured Oochamon.',
-        description_short: 'Used to heal an Oochamon for 20 HP.'
+        description_short: 'Used to heal an Oochamon for 20 HP.',
     });
     create_item({
-        id: 1, name: 'Med-Potion', emote: '<:item_potion_hi:1274937134935052328>',
+        id: 1, name: 'Med-Potion', emote: get_emote_string('item_potion_hi'),
         category: 'heal_inv', type: 'potion', price: 400, potency: 80,
         description: 'After further development a slightly stronger potion has been developed. Heals an injured Oochamon.',
         description_short: 'Used to heal an Oochamon for 80 HP.'
     });
     create_item({
-        id: 2, name: 'Hi-Potion', emote: '<:item_potion_magic:1274937146423115922>',
+        id: 2, name: 'Hi-Potion', emote: get_emote_string('item_potion_magic'),
         category: 'heal_inv', type: 'potion', price: 1000, potency: 200,
         description: 'A high-tier potion created after several iterations. Greatly restores health to an oochamon.',
         description_short: 'Used to heal an Oochamon for 200 HP.'
     });
     create_item({
-        id: 3, name: 'Prism', emote: '<:item_prism:1274937161262698536>',
+        id: 3, name: 'Prism', emote: get_emote_string('item_prism'),
         category: 'prism_inv', type: 'prism', price: 50, potency: 1,
         description: 'A device developed using ancient technology found on the planet. It\'s used to capture Oochamon.',
         description_short: 'Has a chance to capture an Oochamon.'
     });
     create_item({
-        id: 4, name: 'Greater Prism', emote: '<:item_prism_greater:1274937183710740510>',
+        id: 4, name: 'Greater Prism', emote: get_emote_string('item_prism_greater'),
         category: 'prism_inv', type: 'prism', price: 350, potency: 1.6,
         description: 'Developments in prism technology have created this improved prism with a higher capture rate.',
         description_short: 'Has an increased chance to capture an Oochamon.'
     });
     create_item({
-        id: 5, name: 'Grand Prism', emote: '<:item_prism_grand:1274937171513442359>',
+        id: 5, name: 'Grand Prism', emote: get_emote_string('item_prism_grand'),
         category: 'prism_inv', type: 'prism', price: 950, potency: 2.5,
         description: 'A further modified prism with an even higher capture rate, thought to be the upper limits of capture technology.',
         description_short: 'Has a high chance to capture an Oochamon.'
     });
     create_item({
-        id: 6, name: 'Perfect Prism', emote: '<:item_prism_perfect:1274937195970428928>',
+        id: 6, name: 'Perfect Prism', emote: get_emote_string('item_prism_perfect'),
         category: 'prism_inv', type: 'prism', price: 100000, potency: 1000,
         description: 'A prism created in what was certainly an accident, with a black core and shattered casing, nothing escapes its pull.',
         description_short: 'Has a 100% chance to capture an Oochamon.'
     });
     create_item({
-        id: 7, name: 'Attack Crystal', emote: '<:item_attack_crystal:1274936834883059774>',
+        id: 7, name: 'Attack Crystal', emote: get_emote_string('item_attack_crystal'),
         category: 'other_inv', type: 'move_unlock', price: 5000, potency: 1,
         description: 'Glimmering crystals from deep within the planets core. They have the potential to unlock a hidden move for an Oochamon by releasing stored power.',
         description_short: 'Unlocks a hidden move for an Oochamon.'
     });
     create_item({
-        id: 8, name: 'ID Card', emote: '<:item_id_card:1304609783474552842>',
+        id: 8, name: 'ID Card', emote: get_emote_string('item_id_card'),
         category: 'other_inv', type: 'key', price: -1, potency: 1,
         description: 'Your ID card. You look so fabulous!',
         description_short: 'Grants access to various Oochcorp facilities.'
     });
     create_item({
-        id: 9, name: 'Eyedrops', emote: '<:item_eyedrops:1274937019994472459>',
+        id: 9, name: 'Eyedrops', emote: get_emote_string('item_eyedrops'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Blind,
         description: 'A small vial of very powerful eyedrops. It burns to touch, but seems fine for Oochamon to use.',
         description_short: 'Removes BLIND status effect.'
     });
     create_item({
-        id: 10, name: 'Shears', emote: '<:item_shears:1274937209652514838>',
+        id: 10, name: 'Shears', emote: get_emote_string('item_shears'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Snare,
         description: 'Titanium reinforced shears, they\'ll cut through anything holding your Oochamon down.',
         description_short: 'Removes SNARED status effect.'
     });
     create_item({
-        id: 11, name: 'Daylily', emote: '<:item_daylily:1274936962125402143>',
+        id: 11, name: 'Daylily', emote: get_emote_string('item_daylily'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Doom,
         description: 'A small white flower said to be found on a plateau above the clouds, it has the ability to change the fate of an Oochamon.',
         description_short: 'Removes DOOMED status effect.'
     });
     create_item({
-        id: 12, name: 'Antiparasite', emote: '<:item_antiparasite:1274936818823069789>',
+        id: 12, name: 'Antiparasite', emote: get_emote_string('item_antiparasite'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Infect,
         description: 'A small, wrigling creature. It enters the host\'s body and hunts down any infestations within an Oochamon.',
         description_short: 'Removes INFECTED status effect.'
     });
     create_item({
-        id: 13, name: 'Debug Chip', emote: '<:item_debugchip:1274936992462930001>',
+        id: 13, name: 'Debug Chip', emote: get_emote_string('item_debugchip'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Digitize,
         description: 'A small computer chip from an odd machine. It seems to break down any tech that finds itself attached to an Oochamon.',
         description_short: 'Removes DIGITIZED status effect.'
     });
     create_item({
-        id: 14, name: 'Cooling Balm', emote: '<:item_coolingbalm:1274936928625758269>',
+        id: 14, name: 'Cooling Balm', emote: get_emote_string('item_coolingbalm'),
         category: 'heal_inv', type: 'status', price: 200, potency: Status.Burn,
         description: 'A container of glowing blue gel found deep below the planet\'s surface. Its supercooling properties will relieve a burn from an Oochamon.',
         description_short: 'Removes BURNED status effect.'
     });
     create_item({
-        id: 15, name: 'Nullifying Sphere', emote: '<:item_null_sphere:1274937109995716648>',
+        id: 15, name: 'Nullifying Sphere', emote: get_emote_string('item_null_sphere'),
         category: 'heal_inv', type: 'status', price: 750, potency: Status.All,
         description: 'A white crystal sphere with various colours mixed within. All things that may pain an Oochamon are removed by the void inside.',
         description_short: 'Removes all status effects.'
     });
     create_item({
-        id: 16, name: 'Green Boostgem', emote: '<:item_iv_hp:1274937089666056294>',
+        id: 16, name: 'Green Boostgem', emote: get_emote_string('item_iv_hp'),
         category: 'other_inv', type: 'iv', price: 25000, potency: Stats.HP,
         description: 'A viridian crystal from the planet\'s core glowing with vitality. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Health bonus of an Oochamon.'
     });
     create_item({
-        id: 17, name: 'Red Boostgem', emote: '<:item_iv_atk:1274937039460237382>',
+        id: 17, name: 'Red Boostgem', emote: get_emote_string('item_iv_atk'),
         category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Attack,
         description: 'A crimson crystal from the planet\'s core glowing with power. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Attack bonus of an Oochamon.'
     });
     create_item({
-        id: 18, name: 'Blue Boostgem', emote: '<:item_iv_def:1274937065317990486>',
+        id: 18, name: 'Blue Boostgem', emote: get_emote_string('item_iv_def'),
         category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Defense,
         description: 'An azure crystal from the planet\'s core glowing with protection. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Defense bonus of an Oochamon.'
     });
     create_item({
-        id: 19, name: 'Yellow Boostgem', emote: '<:item_iv_spd:1274937099984048138>',
+        id: 19, name: 'Yellow Boostgem', emote: get_emote_string('item_iv_spd'),
         category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Speed,
         description: 'An amber crystal from the planet\'s core glowing with energy. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Speed bonus of an Oochamon.'
     });
     create_item({
-        id: 20, name: 'Spore Feather', emote: '<:item_sporefeather:1304609799245266964>',
+        id: 20, name: 'Spore Feather', emote: get_emote_string('item_sporefeather'),
         category: 'other_inv', type: 'evolve', price: 8000, potency: [59, 62],
         description: 'An old feather covered in fungal spores. Oochamon are particulary susceptible to corrupting forces, and it seems like this one was no different.',
         description_short: 'Used to evolve a certain Oochamon.'
     });
     create_item({
-        id: 21, name: 'Lavaboard', emote: '<:item_lavaboard:1304609819201900575>',
+        id: 21, name: 'Lavaboard', emote: get_emote_string('item_lavaboard'),
         category: 'other_inv', type: 'key', price: -1, potency: 1,
         description: 'A high-tech board that uses extreme heat to to float. It even comes with a cool heat-proof suit.',
         description_short: 'Used to ride over Lava tiles.'
     });
     create_item({
-        id: 22, name: 'Repulsor', emote: '<:item_repulsor:1306488213908488212>',
+        id: 22, name: 'Repulsor', emote: get_emote_string('item_repulsor'),
         category: 'other_inv', type: 'repel', price: 200, potency: 75,
         description: 'A battery-powered repulsion device that keeps Oochamon away.',
         description_short: 'Repels Oochamon for 75 steps.'
     });
     create_item({
-        id: 23, name: 'Teleporter', emote: '<:item_tp_device:1306488228383031296>',
+        id: 23, name: 'Teleporter', emote: get_emote_string('item_tp_device'),
         category: 'other_inv', type: 'teleport', price: 1000, potency: 1,
         description: 'An emergency button that uses unknown systems to relocate the user. It\'s mildly painful to use, but it gets you where you\'re going quick!',
         description_short: 'Brings you to your last used Save Station.'
     });
     create_item({
-        id: 24, name: 'Map: Hub', emote: '<:item_map:1353128506535706754>',
+        id: 24, name: 'Map: Hub', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'hub',
         description: 'Dave\'s hand drawn map of the Hub and surrounding area.',
         description_short: 'A map of the Hub.'
     });
     create_item({
-        id: 25, name: 'Map: Stone Tunnel', emote: '<:item_map:1353128506535706754>',
+        id: 25, name: 'Map: Stone Tunnel', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'stone_tunnel',
         description: 'Dave\'s hand drawn map of the Stone Tunnel.',
         description_short: 'A map of the Stone Tunnel.'
     });
     create_item({
-        id: 26, name: 'Map: Fungal Caves', emote: '<:item_map:1353128506535706754>',
+        id: 26, name: 'Map: Fungal Caves', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'fungal_cave',
         description: 'Dave\'s hand drawn map of the Fungal Caves.',
         description_short: 'A map of the Fungal Caves.'
     });
     create_item({
-        id: 27, name: 'Map: Lava Path', emote: '<:item_map:1353128506535706754>',
+        id: 27, name: 'Map: Lava Path', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'lava_path',
         description: 'Dave\'s hand drawn map of the Lava Path and the settlement there.',
         description_short: 'A map of the Lava Path.'
     });
     create_item({
-        id: 28, name: 'Map: Old Training Facility', emote: '<:item_map:1353128506535706754>',
+        id: 28, name: 'Map: Old Training Facility', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'training_facility',
         description: 'Dave\'s hand drawn map of the Old Training Facility.',
         description_short: 'A map of the Old Training Facility.'
     });
     create_item({
-        id: 29, name: 'Map: Thunder Peak', emote: '<:item_map:1353128506535706754>',
+        id: 29, name: 'Map: Thunder Peak', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'thunderpeak',
         description: 'Dave\'s hand drawn map of Thunder Peak.',
         description_short: 'A map of Thunder Peak.'
     });
     create_item({
-        id: 30, name: 'Map: Ancient Bridge', emote: '<:item_map:1353128506535706754>',
+        id: 30, name: 'Map: Ancient Bridge', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'ancient_bridge',
         description: 'Less a map, and more of a sketch of the Ancient Bridge.',
         description_short: 'A map of the Ancient Bridge.'
     });
     create_item({
-        id: 31, name: 'Map: Flower Fields', emote: '<:item_map:1353128506535706754>',
+        id: 31, name: 'Map: Flower Fields', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'flower_fields',
         description: 'Dave\'s hand drawn map of the Flower Fields.',
         description_short: 'A map of the Flower Fields.'
     });
     create_item({
-        id: 32, name: 'Map: Access Tunnel', emote: '<:item_map:1353128506535706754>',
+        id: 32, name: 'Map: Access Tunnel', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'access_tunnel',
         description: 'Dave\'s hand drawn map of the Access Tunnel connecting the Lava Path settlement and the Hub.',
         description_short: 'A map of the Access Tunnel.'
     });
     create_item({
-        id: 33, name: 'Map: Scaffolds', emote: '<:item_map:1353128506535706754>',
+        id: 33, name: 'Map: Scaffolds', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'scaffolds',
         description: 'Dave\'s hand drawn...map? The Scaffolds seem to have affected him.',
         description_short: 'A map of the Scaffolds.'
     });
     create_item({
-        id: 34, name: 'Map: Goo Lake', emote: '<:item_map:1353128506535706754>',
+        id: 34, name: 'Map: Goo Lake', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'goo_lake',
         description: 'Dave\'s hand drawn map of the Goo Lake and its beaches.',
         description_short: 'A map of the Goo Lake.'
     });
     create_item({
-        id: 35, name: 'Map: Old Powerplant', emote: '<:item_map:1353128506535706754>',
+        id: 35, name: 'Map: Old Powerplant', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'old_power_station',
         description: 'Dave\'s hand drawn map of the Old Powerplant and some of its interior.',
         description_short: 'A map of the Old Powerplant.'
     });
     create_item({
-        id: 36, name: 'Map: Restricted Area', emote: '<:item_map:1353128506535706754>',
+        id: 36, name: 'Map: Restricted Area', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'restricted_area',
         description: 'Dave\'s hand drawn map of the Restricted Area.',
         description_short: 'A map of the Restricted Area.'
     });
     create_item({
-        id: 37, name: 'Map: Crystal Caves', emote: '<:item_map:1353128506535706754>',
+        id: 37, name: 'Map: Crystal Caves', emote: get_emote_string('item_map'),
         category: 'other_inv', type: 'map', price: -1, potency: 'crystal_caves',
         description: 'Dave\'s hand drawn map of the Crystal Caves.',
         description_short: 'A map of the Crystal Caves.'
     });
     create_item({
-        id: 38, name: 'Flower Sample', emote: '<:item_flower_sample:1353128546985312379>',
+        id: 38, name: 'Flower Sample', emote: get_emote_string('item_flower_sample'),
         category: 'other_inv', type: 'key', price: -1, potency: 1,
         description: 'A sample of a large flower. It seems to be crystalline, with a mote of red energy at its very core.',
         description_short: 'A sample of the large growth in the Flower Fields.'
     });
     create_item({
-        id: 39, name: 'Data Disc', emote: '<:item_data_disc:1353132155009765487>',
+        id: 39, name: 'Data Disc', emote: get_emote_string('item_data_disc'),
         category: 'other_inv', type: 'key', price: -1, potency: 1,
         description: 'A disc containing the finalized teleportation protocols. It should plug in to the large machine at the edge of Goo Lake.',
         description_short: 'A data disc. Inserts somewhere.'
     });
     create_item({
-        id: 40, name: 'Old Disc', emote: '<:item_old_disc:1353132170004135967>',
+        id: 40, name: 'Old Disc', emote: get_emote_string('item_old_disc'),
         category: 'other_inv', type: 'key', price: -1, potency: 1,
         description: 'A weathered data disc, its purpose is unknown. There\'s some text etched into its side:\n"Passphrase: SB_ROSWIER"',
         description_short: 'A weathered data disc.'
     });
     create_item({
-        id: 41, name: 'Ability Sphere', emote: '<:item_ability_sphere:1358552929908555776>',
+        id: 41, name: 'Ability Sphere', emote: get_emote_string('item_ability_sphere'),
         category: 'other_inv', type: 'ability_swap', price: 15000, potency: 1,
         description: 'A near perfect sphere crafted from crystals at the planet\'s core. Allows an Oochamon to change its ability.',
         description_short: 'Allows an Oochamon to change its ability.'
     });
     create_item({
-        id: 42, name: 'Essence Monolith', emote: '<:item_xp_x:1392998087588319273>',
+        id: 42, name: 'Essence Monolith', emote: get_emote_string('item_xp_x'),
         category: 'other_inv', type: 'level_up', price: -1, potency: 1,
         description: 'A pitch black monolith of eyes, only visible to those destined peer into the void. Levels up an Oochamon',
         description_short: 'Levels up an Oochamon'
     });
     create_item({
-        id: 43, name: 'Essence Fragment', emote: '<:item_xp_s:1392998035641991189>',
+        id: 43, name: 'Essence Fragment', emote: get_emote_string('item_xp_s'),
         category: 'other_inv', type: 'give_exp', price: -1, potency: 500,
         description: 'A sliver of knowledge trapped within an inky void. Gives a small amount of EXP to an Oochamon',
         description_short: 'Gives a small amount of EXP to an Oochamon'
     });
     create_item({
-        id: 44, name: 'Essence Shard', emote: '<:item_xp_m:1392998053983686917>',
+        id: 44, name: 'Essence Shard', emote: get_emote_string('item_xp_m'),
         category: 'other_inv', type: 'give_exp', price: -1, potency: 5000,
         description: 'A sizeable shard of knowledge. Gives a medium amount of EXP to an Oochamon',
         description_short: 'Gives a medium amount of EXP to an Oochamon'
     });
     create_item({
-        id: 45, name: 'Essence Chunk', emote: '<:item_xp_l:1392998069095895080>',
+        id: 45, name: 'Essence Chunk', emote: get_emote_string('item_xp_l'),
         category: 'other_inv', type: 'give_exp', price: -1, potency: 50000,
         description: 'A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon',
         description_short: 'Gives a large amount of EXP to an Oochamon'
@@ -1778,19 +1778,19 @@ export async function execute(interaction, client) {
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //#region Status Data
     //            ID,  NAME,        EMOTE                                       DESCRIPTION
-    create_status(0, 'Burned', '<:status_burned:1274938453569830997>', 'Burns the Oochamon at the end of each turn, dealing damage.');
-    create_status(1, 'Infected', '<:status_infected:1274938506225123358>', 'Damages the Oochamon at the end of each turn, the infection increases in severity each turn.');
-    create_status(2, 'Blinded', '<:status_blinded:1274938440940781590>', 'Blinds the Oochamon, reducing its accuracy.');
-    create_status(3, 'Digitized', '<:status_digitized:1274938471034654770>', 'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
-    create_status(4, 'Snared', '<:status_snared:1274938520821305355>', 'Ensnares the Oochamon, forcing it to go second in battle.');
-    create_status(5, 'Vanished', '<:status_vanish:1274938531864776735>', 'The Oochamon vanishes, making it impossible to hit for a turn, reappearing afterwards.');
-    create_status(6, 'Doomed', '<:status_doomed:1274938483924009062>', 'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
-    create_status(7, 'Exposed', '<:status_exposed:1335433347345813624>', 'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-    create_status(8, 'Focused', '<:status_focused:1304616656915533855>', 'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
-    create_status(9, 'Sleep', '<:status_sleep:1335446202275070034>', 'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
-    create_status(10, 'Petrified', '<:status_petrify:1335446218393784454>', 'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
-    create_status(11, 'Weakened', '<:status_weak:1335452472881315872>', 'Reduces the power of the Oochamon\'s damaging moves.');
-    create_status(12, 'Revealed', '<:status_reveal:1339448769871220866>', 'The Oochamon is guaranteed to be hit, it is also unable to gain the <:status_vanish:1274938531864776735> VANISHED status.');
+    create_status(0, 'Burned', get_emote_string('status_burned'), 'Burns the Oochamon at the end of each turn, dealing damage.');
+    create_status(1, 'Infected', get_emote_string('status_infected'), 'Damages the Oochamon at the end of each turn, the infection increases in severity each turn.');
+    create_status(2, 'Blinded', get_emote_string('status_blinded'), 'Blinds the Oochamon, reducing its accuracy.');
+    create_status(3, 'Digitized', get_emote_string('status_digitized'), 'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
+    create_status(4, 'Snared', get_emote_string('status_snared'), 'Ensnares the Oochamon, forcing it to go second in battle.');
+    create_status(5, 'Vanished', get_emote_string('status_vanish'), `The Oochamon vanishes, making it impossible to hit for a turn. It gets the ${get_emote_string('status_reveal')} Revealed status at the end of the turn.}`);
+    create_status(6, 'Doomed', get_emote_string('status_doomed'), 'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
+    create_status(7, 'Exposed', get_emote_string('status_exposed'), 'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+    create_status(8, 'Focused', get_emote_string('status_focused'), 'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+    create_status(9, 'Sleep', get_emote_string('status_sleep'), 'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
+    create_status(10, 'Petrified', get_emote_string('status_petrified'), 'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
+    create_status(11, 'Weakened', get_emote_string('status_weak'), 'Reduces the power of the Oochamon\'s damaging moves.');
+    create_status(12, 'Revealed', get_emote_string('status_reveal'), `The Oochamon is guaranteed to be hit, it is also unable to gain the ${get_emote_string('status_vanish')} VANISHED status.`);
     create_status(13, 'Drained', '😓', 'The Oochamon is Drained and must spend the turn recharging.');
 
     //#endregion

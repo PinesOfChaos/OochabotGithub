@@ -3,7 +3,7 @@ import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange } from 'lodash-es';
 import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status } from "./types.js";
-import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar } from "./func_other.js";
+import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
 
@@ -310,7 +310,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
                     else if (user2.is_catchable) { //Wild oochamon
                         battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
                         if (profile.get(`${user.user_id}`, `oochadex[${active_ooch.id}].caught`) == 0) {
-                            battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
+                            battleStartText += `${get_emote_string('item_prism')} ***Uncaught Oochamon!***\n`
                         }
                         sendOutText += `The wild ${active_ooch.emote} **${active_ooch.name}** wants to battle! ${types_string}\n`
                     }
@@ -820,7 +820,7 @@ export async function prompt_battle_actions(battle_id) {
             new ButtonBuilder()
                 .setCustomId('switch')
                 .setLabel('Switch')
-                .setEmoji('<:item_prism:1274937161262698536>')
+                .setEmoji(get_emote_string('item_prism'))
                 .setStyle(ButtonStyle.Success),
         );
 
@@ -858,13 +858,13 @@ export async function prompt_battle_actions(battle_id) {
                 .setCustomId('heal')
                 .setLabel('Healing')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_potion_magic:1274937146423115922>'),
+                .setEmoji(get_emote_string('item_potion_magic')),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('prism')
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_prism:1274937161262698536>')
+                .setEmoji(get_emote_string('item_prism'))
                 .setDisabled(true),
         )
 
@@ -1353,7 +1353,7 @@ export async function prompt_battle_actions(battle_id) {
                     
                     let oochPrisms = '';
                     for (let ooch of user.party) {
-                        oochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                        oochPrisms += ooch.alive ? get_emote_string('item_prism') : `❌`;
                     }
     
                     let oochInfoFields = [];
@@ -1569,7 +1569,7 @@ export async function process_battle_actions(battle_id){
                             slot.this_turn_vanished = false;
                         }
                         else{
-                            end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared!`;
+                            end_of_round_text += `\n${get_emote_string('status_vanish')} ${ooch.emote} **${ooch.nickname}** reappeared!`;
                             end_of_round_text +=  `\n${add_status_effect(ooch, Status.Revealed, slot)}`;
                             ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
                         }
@@ -1580,7 +1580,7 @@ export async function process_battle_actions(battle_id){
                             slot.this_turn_revealed = false;
                         }
                         else {
-                            end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
+                            end_of_round_text += `\n${get_emote_string('status_reveal')} ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
                             ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
                         }
                     break;
@@ -1588,13 +1588,13 @@ export async function process_battle_actions(battle_id){
                         sleep_val = Math.round(ooch.stats.hp/10);
                         ooch.current_hp += sleep_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
-                        end_of_round_text += `\n<:status_sleep:1335446202275070034> ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
+                        end_of_round_text += `\n${get_emote_string('status_sleep')} ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
                     break;
                     case Status.Burn:
                         burn_val = Math.round(ooch.stats.hp * 0.07);
                         ooch.current_hp -= burn_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
-                        end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
+                        end_of_round_text += `\n${get_emote_string('status_burned')} ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
                     break;
                     case Status.Infect:
                         if(!Object.prototype.hasOwnProperty.call(slot, "status_counter_infect")){
@@ -1606,10 +1606,10 @@ export async function process_battle_actions(battle_id){
                         ooch.current_hp -= infect_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
                         if(infect_val == 0){
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s doesn't look so good!`;
+                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}**'s doesn't look so good!`;
                         }
                         else{
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
+                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
                         }                         
                     break;
                     case Status.Doom:
@@ -1617,21 +1617,21 @@ export async function process_battle_actions(battle_id){
                         if (ooch.doom_timer == 0) {
                             ooch.current_hp = 0;
                             //ooch.alive = false;
-                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
+                            end_of_round_text += `\n${get_emote_string('status_doomed')} ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
                         } else {
-                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
+                            end_of_round_text += `\n${get_emote_string('status_doomed')} ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
                         }
                     break;
                     case Status.Digitize:
                         if(ooch.type != [OochType.Tech]){
                             ooch.type = [OochType.Tech];
-                            end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
+                            end_of_round_text += `\n${get_emote_string('status_digitized')} ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
                         }
                     break;
                     case Status.Petrify:
                         if(ooch.type != [OochType.Stone]){
                             ooch.type = [OochType.Stone];
-                            end_of_round_text += `\n<:status_petrify:1335446218393784454> ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
+                            end_of_round_text += `\n${get_emote_string('status_petrify')} ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
                         }
                     break;
                 }
@@ -2640,7 +2640,7 @@ export function add_status_effect(ooch, status, slot) {
     //Ignore if we already have this status
     if(status == Status.Vanish){
         if (ooch.status_effects.includes(Status.Revealed)) {
-            return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is <:status_reveal:1339448769871220866> **REVEALED**!`
+            return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is ${get_emote_string('status_reveal')} **REVEALED**!`
             return return_string;
         }
         else{
@@ -2932,8 +2932,8 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 let user_num = db_battle_data.users.length
                 //Spawn a Slime Head for each
                 for(let i = 0; i < chunks_lost; i++){
-                    ability_text += `\n--- A strange <:c_027:1347440606204399707> **Slime Head** breaks off from the main body...`
-                    await new_battle_action_add_user(db_battle_data, user_num + i, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
+                    ability_text += `\n--- A strange ${get_emote_string('c_027')} **Slime Head** breaks off from the main body...`
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The split off ${get_emote_string('c_027')} **Slime Head** joins the battle!`, 
                         "Slime Head", "c_027", user.team_id, [
                         {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
                             ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
@@ -3068,7 +3068,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
  * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
  * @returns The emote string
  */
-export function type_to_emote(type_array, text_emote = false) {
+export function type_to_emote(type_array) {
     let return_string = '';
 
     if (!Array.isArray(type_array)) {
@@ -3077,18 +3077,18 @@ export function type_to_emote(type_array, text_emote = false) {
 
     for (let type of type_array) {
         switch(type) {
-            case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1274936258811920414>'   : '<:icon_flame:1274936249484050472>';   break;
-            case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1274936284497969203>'  : '<:icon_fungal:1274936267884199947>';  break;
-            case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1274936569790468096>'   : '<:icon_magic:1274936558595866787>';   break;
-            case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1274936655236563055>'   : '<:icon_stone:1274936641433243781>';   break;
-            case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1274936596155863080>' : '<:icon_neutral:1274936582583091210>'; break;
-            case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1274936617320316928>'    : '<:icon_ooze:1274936607136288810>';    break;
-            case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1274936688589803613>'    : '<:icon_tech:1274936672022298624>';    break;
-            case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_void:1274936702959485011>';    break;
-            case OochType.Sound:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_sound:1296312531068911616>';   break;
-            case OochType.Crystal: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_crystal:1296312529126948894>'; break;
-            case OochType.Cloth:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_cloth:1296312526882996234>';   break;
-            case OochType.Martial: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_martial:1296312529949036575>'; break;
+            case OochType.Flame:   return_string += get_emote_string('icon_flame');   break;
+            case OochType.Fungal:  return_string += get_emote_string('icon_fungal');  break;
+            case OochType.Magic:   return_string += get_emote_string('icon_magic');   break;
+            case OochType.Stone:   return_string += get_emote_string('icon_stone');   break;
+            case OochType.Neutral: return_string += get_emote_string('icon_neutral'); break;
+            case OochType.Ooze:    return_string += get_emote_string('icon_ooze');    break;
+            case OochType.Tech:    return_string += get_emote_string('icon_tech');    break;
+            case OochType.Void:    return_string += get_emote_string('icon_void');    break;
+            case OochType.Sound:   return_string += get_emote_string('icon_sound');   break;
+            case OochType.Crystal: return_string += get_emote_string('icon_crystal'); break;
+            case OochType.Cloth:   return_string += get_emote_string('icon_cloth');   break;
+            case OochType.Martial: return_string += get_emote_string('icon_martial'); break;
         }
     }
 
@@ -3384,7 +3384,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         attacker.status_effects = attacker.status_effects.filter(v => v != Status.Drained);
     }
     else if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
-        string_to_send = `\n${attacker_emote} **${atkOochName}** is <:status_sleep:1335446202275070034> SLEEPING...`;
+        string_to_send = `\n${attacker_emote} **${atkOochName}** is ${get_emote_string('status_sleep')} SLEEPING...`;
     }
     else if(first_last_failed_text != ''){
         string_to_send += `${tried_to_text} ${first_last_failed_text}`;
@@ -3558,7 +3558,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
         if(status_exposed != 1 && move_damage > 0) {
-            string_to_send += `\n--- **The damage was <:status_exposed:1335433347345813624> ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
+            string_to_send += `\n--- **The damage was ${get_emote_string(status_exposed)} ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
         }
 
         //If a crit lands
@@ -3843,23 +3843,23 @@ export function generate_hp_bar(ooch, style) {
     hp_string += `\n${monster_data.get(`${ooch.id}`, 'emote')} `;
 
     if (style == 'plr') {
-        piece_type = `<:p_f_hm:1274936333277855775>`
-        if (sections <= 5) piece_type = `<:p_m_hm:1274936384779714680>`;
-        if (sections <= 2) piece_type = `<:p_l_hm:1274936321890193501>`;
+        piece_type = get_emote_string('p_f_hm');
+        if (sections <= 5) piece_type = get_emote_string('p_m_hm');
+        if (sections <= 2) piece_type = get_emote_string('p_l_hm');
 
-        hp_string += `<:p_hs:1274936342677028905>`;
+        hp_string += get_emote_string('p_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:p_g_hm:1274936302529155115>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:p_he:1274936313123967016>\n`;
+        hp_string += `${get_emote_string('p_g_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `<${get_emote_string('p_he')}\n`;
     } else {
-        piece_type = `<:e_f_hm:1274935813758521416>`;
-        if (sections <= 5) piece_type = `<:e_m_hm:1274936005777948744>`;
-        if (sections <= 2) piece_type = `<:e_l_hm:1274935997037154417>`;
+        piece_type = get_emote_string('e_f_hm');
+        if (sections <= 5) piece_type = get_emote_string('e_m_hm');
+        if (sections <= 2) piece_type = get_emote_string('e_l_hm');
 
-        hp_string += `<:e_hs:1274935985289039915>`;
+        hp_string += get_emote_string('e_he');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:e_g_hm:1274935806301048974>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:e_he:1274935824173240372>\n`;
+        hp_string += `${get_emote_string('e_g_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `${get_emote_string('e_he')}\n`;
     }
 
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;

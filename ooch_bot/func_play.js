@@ -4,7 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, 
 import wait from 'wait';
 import { sample, clamp, random } from 'lodash-es';
 import { event_process, event_from_npc } from './func_event.js';
-import { buildBoxData, ooch_info_embed } from "./func_other.js";
+import { buildBoxData, get_emote_string, ooch_info_embed } from "./func_other.js";
 
 let slot_num, ooch_user_data, box_row;
 
@@ -1004,7 +1004,7 @@ export async function setup_playspace_str(user_id) {
     player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
     let moveBtns = [];
-    let spdEmotes = ['<:wlk1:1307858678229110937>', '<:wlk2:1307858664119336982>', '<:wlk3:1307858651297349652>', '<:wlk4:1307858636793577514>'];
+    let spdEmotes = [get_emote_string('wlk1'), get_emote_string('wlk2'), get_emote_string('wlk3'), get_emote_string('wlk4')];
 
     if (profile.get(`${user_id}`, 'settings.discord_move_buttons') === true) {
         const row = new ActionRowBuilder()

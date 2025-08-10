@@ -1,11 +1,11 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
-import { capitalize, lowerCase, inRange, clamp } from 'lodash-es';
+import { lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch } from '../func_play.js';
-import { PlayerState, TypeEmote } from '../types.js';
+import { PlayerState } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { ooch_info_embed, get_ooch_art, get_art_file } from '../func_other.js';
+import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string } from '../func_other.js';
  
 export const data = new SlashCommandBuilder()
     .setName('menu')
@@ -33,12 +33,12 @@ export async function execute(interaction) {
     // Main Menu
     let settings_row_1 = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>')).addComponents(
+            new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_prism'))).addComponents(
                 new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'));
 
     let settings_row_2 = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('<:item_map:1353128506535706754>'))
+            new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji(get_emote_string('item_map')))
         .addComponents(
             new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'));
 
@@ -85,7 +85,7 @@ export async function execute(interaction) {
     let party_extra_buttons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder().setCustomId('primary').setLabel('Set As Primary').setStyle(ButtonStyle.Success).setEmoji('👑')).addComponents(
-                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>').setDisabled(true)).addComponents(
+                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_potion_magic')).setDisabled(true)).addComponents(
                     new ButtonBuilder().setCustomId('evolve').setLabel('Evolve').setStyle(ButtonStyle.Success).setDisabled(true).setEmoji('⬆️')
                 );
 
@@ -100,8 +100,8 @@ export async function execute(interaction) {
 
     let bag_buttons = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>')).addComponents(
-                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji('<:item_prism:1274937161262698536>')).addComponents(
+            new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_potion_magic'))).addComponents(
+                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
                     new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑'));
 
     // Dex arrows
@@ -353,7 +353,7 @@ export async function execute(interaction) {
             ooch_img_file = get_ooch_art(ooch_data.name);
             dexEmbed = new EmbedBuilder()
                 .setColor('#808080')
-                .setTitle(`${ooch_data.name} (Type: ${ooch_data.type.map(v => TypeEmote[capitalize(v)]).join('')})`)
+                .setTitle(`${ooch_data.name} (Type: ${type_to_emote(ooch_data.type)}`)
                 .setThumbnail(`attachment://${lowerCase(ooch_data.name)}.png`)
                 .setDescription(`*${ooch_data.oochive_entry}*`)
                 .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
@@ -739,7 +739,7 @@ export async function execute(interaction) {
 
                 // Generate a new ooch title to place into our embed
                 let ooch_title = `${selected_ooch.nickname}`;
-                selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${TypeEmote[capitalize(selected_ooch.type)]}` : ooch_title += ` ${TypeEmote[capitalize(selected_ooch.type)]}`;
+                selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${type_to_emote(selected_ooch.type)}` : ooch_title += ` ${type_to_emote(selected_ooch.type)}`;
                 dexEmbed.setTitle(ooch_title);
 
                 profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
@@ -845,7 +845,7 @@ export async function execute(interaction) {
                     bag_buttons.components[2].setStyle(ButtonStyle.Success);
                 } else {
                     display_inv = prism_inv;
-                    display_title = '<:item_prism:1274937161262698536> Prisms';
+                    display_title = `${get_emote_string('item_potion_magic')} Prisms`;
                     bag_buttons.components[1].setStyle(ButtonStyle.Success);
                 }
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
@@ -892,7 +892,7 @@ export async function execute(interaction) {
 
         // Prism Button
         else if (selected == 'prism_button') {
-            bagEmbed.setTitle('<:item_prism:1274937161262698536> Prisms');
+            bagEmbed.setTitle(`${get_emote_string('item_prism')} Prisms`);
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Success);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
