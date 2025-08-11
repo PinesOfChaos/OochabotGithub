@@ -908,7 +908,12 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
                 let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
                 tile = tile_data.get(`${obj.sprite_id.slice(0, 1) + obj.sprite_id.slice(3)}`);
                 if (tile.use === Tile.Int) npcZoneId = 0;
-                emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
+                if (tile.zone_emote_ids[npcZoneId] == undefined) {
+                    emote_map_array[xx][yy] = get_emote_string('error');
+                } else {
+                    emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
+                }
+                
 
                 //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
                 if ((plr_interacted && obj.remove_on_finish) || (all_flags.includes(obj.flag_kill))) { 

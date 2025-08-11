@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "Potion",
-    "emote": "<:item_potion:1274937121370669118>",
+    "emote": "<:item_potion:1403927546768134265>",
     "category": "heal_inv",
     "type": "potion",
     "price": 100,
@@ -14,7 +14,7 @@
   {
     "id": 1,
     "name": "Med-Potion",
-    "emote": "<:item_potion_hi:1274937134935052328>",
+    "emote": "<:item_potion_hi:1403927551713476809>",
     "category": "heal_inv",
     "type": "potion",
     "price": 400,
@@ -26,7 +26,7 @@
   {
     "id": 2,
     "name": "Hi-Potion",
-    "emote": "<:item_potion_magic:1274937146423115922>",
+    "emote": "<:item_potion_magic:1403927557492965527>",
     "category": "heal_inv",
     "type": "potion",
     "price": 1000,
@@ -38,7 +38,7 @@
   {
     "id": 3,
     "name": "Prism",
-    "emote": "<:item_prism:1274937161262698536>",
+    "emote": "<:item_prism:1403927574153003099>",
     "category": "prism_inv",
     "type": "prism",
     "price": 50,
@@ -50,7 +50,7 @@
   {
     "id": 4,
     "name": "Greater Prism",
-    "emote": "<:item_prism_greater:1274937183710740510>",
+    "emote": "<:item_prism_greater:1403927595346690259>",
     "category": "prism_inv",
     "type": "prism",
     "price": 350,
@@ -62,7 +62,7 @@
   {
     "id": 5,
     "name": "Grand Prism",
-    "emote": "<:item_prism_grand:1274937171513442359>",
+    "emote": "<:item_prism_grand:1403927582063460402>",
     "category": "prism_inv",
     "type": "prism",
     "price": 950,
@@ -74,7 +74,7 @@
   {
     "id": 6,
     "name": "Perfect Prism",
-    "emote": "<:item_prism_perfect:1274937195970428928>",
+    "emote": "<:item_prism_perfect:1403927604297465856>",
     "category": "prism_inv",
     "type": "prism",
     "price": 100000,
@@ -86,7 +86,7 @@
   {
     "id": 7,
     "name": "Attack Crystal",
-    "emote": "<:item_attack_crystal:1274936834883059774>",
+    "emote": "<:item_attack_crystal:1403927442653052939>",
     "category": "other_inv",
     "type": "move_unlock",
     "price": 5000,
@@ -98,7 +98,7 @@
   {
     "id": 8,
     "name": "ID Card",
-    "emote": "<:item_id_card:1304609783474552842>",
+    "emote": "<:item_id_card:1403927491357184021>",
     "category": "other_inv",
     "type": "key",
     "price": -1,
@@ -110,7 +110,7 @@
   {
     "id": 9,
     "name": "Eyedrops",
-    "emote": "<:item_eyedrops:1274937019994472459>",
+    "emote": "<:item_eyedrops:1403927471769911338>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -122,7 +122,7 @@
   {
     "id": 10,
     "name": "Shears",
-    "emote": "<:item_shears:1274937209652514838>",
+    "emote": "<:error:1403946237165703218>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -134,7 +134,7 @@
   {
     "id": 11,
     "name": "Daylily",
-    "emote": "<:item_daylily:1274936962125402143>",
+    "emote": "<:item_daylily:1403927460562866206>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -146,7 +146,7 @@
   {
     "id": 12,
     "name": "Antiparasite",
-    "emote": "<:item_antiparasite:1274936818823069789>",
+    "emote": "<:item_antiparasite:1403927435447369901>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -158,7 +158,7 @@
   {
     "id": 13,
     "name": "Debug Chip",
-    "emote": "<:item_debugchip:1274936992462930001>",
+    "emote": "<:error:1403946237165703218>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -170,7 +170,7 @@
   {
     "id": 14,
     "name": "Cooling Balm",
-    "emote": "<:item_coolingbalm:1274936928625758269>",
+    "emote": "<:item_coolingbalm:1403927448852107305>",
     "category": "heal_inv",
     "type": "status",
     "price": 200,
@@ -182,7 +182,7 @@
   {
     "id": 15,
     "name": "Nullifying Sphere",
-    "emote": "<:item_null_sphere:1274937109995716648>",
+    "emote": "<:item_null_sphere:1403927537473556520>",
     "category": "heal_inv",
     "type": "status",
     "price": 750,
@@ -194,7 +194,7 @@
   {
     "id": 16,
     "name": "Green Boostgem",
-    "emote": "<:item_iv_hp:1274937089666056294>",
+    "emote": "<:item_iv_hp:1403927507769626668>",
     "category": "other_inv",
     "type": "iv",
     "price": 25000,
@@ -206,7 +206,7 @@
   {
     "id": 17,
     "name": "Red Boostgem",
-    "emote": "<:item_iv_atk:1274937039460237382>",
+    "emote": "<:item_iv_atk:1403927497048850524>",
     "category": "other_inv",
     "type": "iv",
     "price": 25000,
@@ -218,7 +218,7 @@
   {
     "id": 18,
     "name": "Blue Boostgem",
-    "emote": "<:item_iv_def:1274937065317990486>",
+    "emote": "<:item_iv_def:1403927501809651852>",
     "category": "other_inv",
     "type": "iv",
     "price": 25000,
@@ -230,7 +230,7 @@
   {
     "id": 19,
     "name": "Yellow Boostgem",
-    "emote": "<:item_iv_spd:1274937099984048138>",
+    "emote": "<:item_iv_spd:1403927513159172227>",
     "category": "other_inv",
     "type": "iv",
     "price": 25000,
@@ -242,7 +242,7 @@
   {
     "id": 20,
     "name": "Spore Feather",
-    "emote": "<:item_sporefeather:1304609799245266964>",
+    "emote": "<:item_sporefeather:1403927815434408046>",
     "category": "other_inv",
     "type": "evolve",
     "price": 8000,
@@ -257,7 +257,7 @@
   {
     "id": 21,
     "name": "Lavaboard",
-    "emote": "<:item_lavaboard:1304609819201900575>",
+    "emote": "<:item_lavaboard:1403927519228461116>",
     "category": "other_inv",
     "type": "key",
     "price": -1,
@@ -269,7 +269,7 @@
   {
     "id": 22,
     "name": "Repulsor",
-    "emote": "<:item_repulsor:1306488213908488212>",
+    "emote": "<:item_repulsor:1403927810132676608>",
     "category": "other_inv",
     "type": "repel",
     "price": 200,
@@ -281,7 +281,7 @@
   {
     "id": 23,
     "name": "Teleporter",
-    "emote": "<:item_tp_device:1306488228383031296>",
+    "emote": "<:item_tp_device:1403927821189120052>",
     "category": "other_inv",
     "type": "teleport",
     "price": 1000,
@@ -293,7 +293,7 @@
   {
     "id": 24,
     "name": "Map: Hub",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -305,7 +305,7 @@
   {
     "id": 25,
     "name": "Map: Stone Tunnel",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -317,7 +317,7 @@
   {
     "id": 26,
     "name": "Map: Fungal Caves",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -329,7 +329,7 @@
   {
     "id": 27,
     "name": "Map: Lava Path",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -341,7 +341,7 @@
   {
     "id": 28,
     "name": "Map: Old Training Facility",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -353,7 +353,7 @@
   {
     "id": 29,
     "name": "Map: Thunder Peak",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -365,7 +365,7 @@
   {
     "id": 30,
     "name": "Map: Ancient Bridge",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -377,7 +377,7 @@
   {
     "id": 31,
     "name": "Map: Flower Fields",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -389,7 +389,7 @@
   {
     "id": 32,
     "name": "Map: Access Tunnel",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -401,7 +401,7 @@
   {
     "id": 33,
     "name": "Map: Scaffolds",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -413,7 +413,7 @@
   {
     "id": 34,
     "name": "Map: Goo Lake",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -425,7 +425,7 @@
   {
     "id": 35,
     "name": "Map: Old Powerplant",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -437,7 +437,7 @@
   {
     "id": 36,
     "name": "Map: Restricted Area",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -449,7 +449,7 @@
   {
     "id": 37,
     "name": "Map: Crystal Caves",
-    "emote": "<:item_map:1353128506535706754>",
+    "emote": "<:item_map:1403927531949785138>",
     "category": "other_inv",
     "type": "map",
     "price": -1,
@@ -461,7 +461,7 @@
   {
     "id": 38,
     "name": "Flower Sample",
-    "emote": "<:item_flower_sample:1353128546985312379>",
+    "emote": "<:item_flower_sample:1403927486567415840>",
     "category": "other_inv",
     "type": "key",
     "price": -1,
@@ -473,7 +473,7 @@
   {
     "id": 39,
     "name": "Data Disc",
-    "emote": "<:item_data_disc:1353132155009765487>",
+    "emote": "<:item_data_disc:1403927453952639086>",
     "category": "other_inv",
     "type": "key",
     "price": -1,
@@ -485,7 +485,7 @@
   {
     "id": 40,
     "name": "Old Disc",
-    "emote": "<:item_old_disc:1353132170004135967>",
+    "emote": "<:item_old_disc:1403927541764456499>",
     "category": "other_inv",
     "type": "key",
     "price": -1,
@@ -497,7 +497,7 @@
   {
     "id": 41,
     "name": "Ability Sphere",
-    "emote": "<:item_ability_sphere:1358552929908555776>",
+    "emote": "<:item_ability_sphere:1403927429805768897>",
     "category": "other_inv",
     "type": "ability_swap",
     "price": 15000,
@@ -509,7 +509,7 @@
   {
     "id": 42,
     "name": "Essence Monolith",
-    "emote": "<:item_xp_x:1392998087588319273>",
+    "emote": "<:item_xp_x:1403928969593753743>",
     "category": "other_inv",
     "type": "level_up",
     "price": -1,
@@ -521,7 +521,7 @@
   {
     "id": 43,
     "name": "Essence Fragment",
-    "emote": "<:item_xp_s:1392998035641991189>",
+    "emote": "<:item_xp_s:1403928964182835290>",
     "category": "other_inv",
     "type": "give_exp",
     "price": -1,
@@ -533,7 +533,7 @@
   {
     "id": 44,
     "name": "Essence Shard",
-    "emote": "<:item_xp_m:1392998053983686917>",
+    "emote": "<:item_xp_m:1403928958591963228>",
     "category": "other_inv",
     "type": "give_exp",
     "price": -1,
@@ -545,7 +545,7 @@
   {
     "id": 45,
     "name": "Essence Chunk",
-    "emote": "<:item_xp_l:1392998069095895080>",
+    "emote": "<:item_xp_l:1403928953705467934>",
     "category": "other_inv",
     "type": "give_exp",
     "price": -1,

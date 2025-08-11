@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
+import process from 'process';
 dotenv.config();
 
-import { readdirSync } from 'fs';
 import { REST } from '@discordjs/rest';
 import { Routes, InteractionType } from 'discord-api-types/v9';
 import wait from 'wait';
@@ -24,43 +24,61 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
     partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 client.commands = new Collection();
-const registerCommands = [];
-const commandFiles = readdirSync('./commands').filter(file => file.endsWith('.js'));
 const inactivityTrackers = {};
-let emojis;
 
-//#region 
-(async () => {
-    for (const file of commandFiles) {
-        const command = await import(`./commands/${file}`);
-        if (command.type === undefined) {
-            client.commands.set(command.data.name, command);
-            registerCommands.push(command.data.toJSON());
-        } else {
-            client.commands.set(command.name, command);
-            registerCommands.push(command);
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const commandDir = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandDir).filter(f => f.endsWith('.js'));
+let emojis = [];
+
+async function loadCommands() {
+  const registerCommands = [];
+
+  for (const file of commandFiles) {
+    const mod = await import(new URL(`./commands/${file}`, import.meta.url));
+    const command = mod.default ?? mod; 
+
+    if (!command || !command.data) {
+      console.warn(`Skipping ${file} — no 'data' export found.`);
+      continue;
+    }
+
+    client.commands.set(command.data.name, command);
+    registerCommands.push(typeof command.data.toJSON === 'function' ? command.data.toJSON() : command.data);
+  }
+
+  return registerCommands;
+}
+
+loadCommands()
+  .then(async (registerCommands) => {
+     const rest = new REST({ version: '10' }).setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
+
+        try {
+            await rest.put(
+                Routes.applicationCommands(branch != 'dev' ? process.env.BOT_CLIENT_ID : process.env.DEV_CLIENT_ID),
+                { body: registerCommands }
+            );
+            console.log('Slash commands registered successfully.');
+
+        } catch (error) {
+            console.error('Failed to register commands:', error);
         }
-    }
-})();
-
-// eslint-disable-next-line no-undef
-const rest = new REST({ version: '9' }).setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
-(async () => {
-    try {
-        console.log('Started refreshing application (/) commands.');
-
-        await rest.put(
-            // eslint-disable-next-line no-undef
-            Routes.applicationCommands(branch != 'dev' ? process.env.BOT_CLIENT_ID : process.env.DEV_CLIENT_ID),
-            { body: registerCommands },
-        );
-
-        console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-        console.error(error);
-    }
-})();
-//#endregion
+    })
+    .catch((err) => {
+        console.error('Command loader failed:', err);
+        process.exit(1);
+    })
+  .catch(err => {
+    console.error('Command loader failed:', err);
+    process.exit(1);
+  });
 
 // Runs at 9:00am (MST) every day
 schedule('00 16 * * *', async () => { 
@@ -71,7 +89,8 @@ schedule('00 16 * * *', async () => {
 
 client.on('ready', async () => {
     let userIds = profile.keys();
-    emojis = await client.application.emojis.fetch();
+
+    emojis = await botClient.application.emojis.fetch();
     for (let user of userIds) {
 
         let user_profile = profile.get(`${user}`);
@@ -181,6 +200,7 @@ client.on('ready', async () => {
     console.log('Bot Ready')
 });
 
+console.log(emojis);
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 client.on('interactionCreate', async interaction => {
@@ -518,8 +538,9 @@ client.on('messageCreate', async message => {
 });
 
 //Log Bot in to the Discord
-// eslint-disable-next-line no-undef
 client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 
 export const botClient = client; 
-export const clientEmojis = emojis;
+export function getClientEmojis() {
+  return emojis;
+}

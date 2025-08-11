@@ -5,9 +5,7 @@ import { PlayerState, Item, TameStatus } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
-import { clientEmojis } from "./index.js";
-
-
+import { getClientEmojis } from "./index.js";
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -166,6 +164,7 @@ export function check_chance(percent) {
  * @param {String} emote_name Name to get emote from.
  */
 export function get_emote_string(name) {
+    let clientEmojis = getClientEmojis();
     let emojiList = clientEmojis.filter(v => v.name === toLower(name));
     emojiList = Array.from(emojiList.values());
     if (emojiList.length === 0) {
