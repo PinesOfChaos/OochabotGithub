@@ -21,7 +21,7 @@ export async function execute(interaction, client) {
     }
 
     // UNCOMMENT THIS IF DOING DEV STUFF!!
-    if (target != '122568101995872256' && target != '145342159724347393' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', flags: MessageFlags.Ephemeral });
+    // if (target != '122568101995872256' && target != '145342159724347393' && target != '791144786685067274') return interaction.editReply({ content: 'The bot is being developed on right now, so please don\'t use it!', flags: MessageFlags.Ephemeral });
 
     let thread = interaction.channel;
 
