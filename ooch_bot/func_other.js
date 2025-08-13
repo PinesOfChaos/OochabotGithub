@@ -326,7 +326,7 @@ export async function quit_oochamon(thread, user_id, client) {
         } 
     } 
 
-    await thread.bulkDelete(5);
+    // await thread.bulkDelete(5);
     await thread.members.remove(user_id);
     await thread.leave();
     await thread.setLocked(true);
