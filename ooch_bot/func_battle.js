@@ -264,7 +264,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     let battleStartText, sendOutText, active_ooch, types_string, stancesEnabled = true;
     battleDataObj.battle_msg_counter += 2;
 
-        //Handle switch-in abilities
+    //Handle switch-in abilities
     let switch_in_text = '';
     let switch_in_embed = false;
     for(let user of battleDataObj.users){
@@ -1416,10 +1416,10 @@ export async function process_battle_actions(battle_id){
     let db_battle_data = battle_data.get(`${battle_id}`);
     let actions = db_battle_data.battle_action_queue;
     let finish_battle = false;
-    let action, text, faint_check;
+    let action, text, faint_check, first_turn = true;
 
     //console.log('MESSAGE ROUND START')
-    await distribute_messages(db_battle_data, { content: `# ------ Round ${db_battle_data.turn_counter + 1} ------` });
+    let roundHeader = `# ------ Round ${db_battle_data.turn_counter + 1} ------`;
 
     //Reset all battle triggers
     reset_this_turn_triggers(db_battle_data);
@@ -1487,29 +1487,29 @@ export async function process_battle_actions(battle_id){
                         iconURL: battle_sprite_icon }
             battle_thumbnail = ooch_sprite_icon;
         }
+
+        let embedList = [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)];
         
         //console.log('MESSAGE FIRST DISTRIBUTE')
-        await distribute_messages(db_battle_data, { embeds: [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)], files: battle_sprite_files });
 
         //Clear any remaining actions if we're meant to finish the battle
         //Also send any final messages for the action
-        let embed, png;
         if(finish_battle == true){
             if(('finish_data' in turn_data) && turn_data.finish_data != false){
                 let finish_data = turn_data.finish_data;
                 switch(finish_data.type) {
                     case 'capture':
-                        embed = turn_data.finish_data.info_embed;
-                        png = turn_data.finish_data.ooch_png
-
-                        //console.log('CAPTURE DISTRIBUTE')
-                        await distribute_messages(db_battle_data, { embeds: [embed], files: [png] });
+                        embedList.push(turn_data.finish_data.info_embed);
+                        battle_sprite_files.push(turn_data.finish_data.ooch_png);
                     break;
                 }
             }
 
             db_battle_data.actions = [];
         }
+
+        await distribute_messages(db_battle_data, { content: (first_turn == true ? roundHeader : null), embeds: embedList, files: battle_sprite_files });
+        first_turn = false;
 
         await wait(db_battle_data.battle_speed);
     }
@@ -3849,8 +3849,8 @@ export function generate_hp_bar(ooch, style) {
 
         hp_string += get_emote_string('p_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${get_emote_string('p_g_hm').repeat(10 - sections)}` // Empty slots
-        hp_string += `<${get_emote_string('p_he')}\n`;
+        hp_string += `${get_emote_string('p_e_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `${get_emote_string('p_he')}\n`;
     } else {
         piece_type = get_emote_string('e_f_hm');
         if (sections <= 5) piece_type = get_emote_string('e_m_hm');
@@ -3858,7 +3858,7 @@ export function generate_hp_bar(ooch, style) {
 
         hp_string += get_emote_string('e_he');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${get_emote_string('e_g_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `${get_emote_string('e_e_hm').repeat(10 - sections)}` // Empty slots
         hp_string += `${get_emote_string('e_he')}\n`;
     }
 

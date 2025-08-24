@@ -494,10 +494,10 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "hub",
-				"x_to": 0.0,
-				"y_to": 0.0
+				"x_to": 46.0,
+				"y_to": 50.0
 			}
 		],
 		[
@@ -2449,10 +2449,10 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "hub",
-				"x_to": 0.0,
-				"y_to": 0.0
+				"x_to": 46.0,
+				"y_to": 50.0
 			}
 		],
 		[

@@ -59,24 +59,19 @@ let box_confirm_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('box_no').setLabel('No').setStyle(ButtonStyle.Danger),
     );
 
-// let confirm_buttons = new ActionRowBuilder()
-//     .addComponents(
-//         new ButtonBuilder().setCustomId('yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-//     ).addComponents(
-//         new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
-//     );
-
 let confirm_buttons_tp = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Set Checkpoint').setEmoji('🏳️').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Save').setEmoji('🏳️').setStyle(ButtonStyle.Success),
     ).addComponents(
         new ButtonBuilder().setCustomId('box_oochabox').setLabel('Oochabox').setEmoji('🎒').setStyle(ButtonStyle.Primary),
-    ).addComponents(
+    )
+
+let confirm_buttons_tp_exit = new ActionRowBuilder()
+    .addComponents(
         new ButtonBuilder().setCustomId('back').setLabel('Exit').setStyle(ButtonStyle.Danger)
     )
 
 let teleport_menu = new ActionRowBuilder();    
-// let savepoint_options = [confirm_buttons_tp]
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
@@ -85,10 +80,10 @@ let wild_encounter_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
     );
 
-// let wild_encounter_instakill_btn = new ActionRowBuilder()
-//     .addComponents(
-//         new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
-//     )
+let wild_encounter_instakill_btn = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
+    )
 
 let back_button = new ActionRowBuilder()
     .addComponents(
@@ -155,8 +150,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     for(let ooch of profile_data.ooch_party){
         all_flags.push(`ooch_id_${ooch.id}`)
     }
-    
-    let moveDisable = false;
+
     let repel_ran_out = false;
 
     let previous_positions = profile_data.previous_positions;
@@ -252,7 +246,6 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         stop_moving = true;
                         await update_position(user_id, map_name, playerx, playery, previous_positions);
 
-                        //moveDisable = true; to do we need to update the buttons *during* the event, this doesn't disable them until after it
                         await event_process(user_id, thread, events_data.get(`${obj.event_name}`), 0, obj.event_name);
 
                         //updat the profile information as it has likely changed since the event_process
@@ -367,13 +360,12 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
                     stop_moving = true;
-                    moveDisable = true;
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let page_num = 0;
                     let pages = 9;
-                    let savepoint_options = [confirm_buttons_tp];
+                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
 
                     // Setup teleport menu
                     if (profile_data.areas_visited.length > 0 && profile.get(`${user_id}`, 'flags').includes('teleport_enable')) {
@@ -396,8 +388,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         
                         savepoint_options.push(teleport_menu);
                     }
-
-                    thread.send({ content: `\n## Checkpoint`, components: savepoint_options }).then(async msg => {
+                    
+                    await thread.messages.fetch(msg_to_edit).then(async msg => {
+                        msg.edit({ components: savepoint_options })
                         profile.set(user_id, PlayerState.Encounter, 'player_state');
                         confirm_collector = msg.createMessageComponentCollector();
 
@@ -444,12 +437,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 let playspace_str = await setup_playspace_str(user_id);
 
                                 profile_data = profile.get(`${user_id}`);
-
-                                selected.update({ content: `## Checkpoint\n\n**Warped to ${biome_to_data.map_info.map_name}!**`})
-
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0] }).catch(() => {});
-                                });
+                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
                             }
                             
                             else if (selected.customId == 'set_checkpoint') {
@@ -461,24 +449,20 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
                                     profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                     profile.set(user_id, true, `ooch_party[${i}].alive`);
+            
                                 }
                                 profile.set(user_id, PlayerState.Playspace, 'player_state');
                                 let playspace_str = await setup_playspace_str(user_id);
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                });
-                                await selected.update({ content: 'Set a checkpoint and healed all your Oochamon.', components: [] });
-                                await wait(5000);
-                                await msg.delete().catch(() => {});
+                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                                let quickMsg = await thread.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
                                 await confirm_collector.stop();
+                                await wait(5000);
+                                await quickMsg.delete().catch(() => {});
                             } else {
                                 profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                await msg.delete().catch(() => {});
                                 await confirm_collector.stop();
                                 let playspace_str = await setup_playspace_str(user_id);
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                });
+                                selected.update({ components: playspace_str[1] }).catch(() => {});
                             }
                         });
                     });
@@ -743,9 +727,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             let mon_name = monster_data.get(`${mons_to_add[0].id.toString()}`, 'name');
                             let mon_emote = monster_data.get(`${mons_to_add[0].id.toString()}`, 'emote');
 
-                            // let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
+                            let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
                             let encounter_buttons = [wild_encounter_buttons];
-                            // if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
+                            if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
                             
                             //use mons_to_add .id, .level to setup the encounter
                             await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
@@ -825,28 +809,12 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
     //Send reply displaying the player's location on the map
     await thread.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch((err) => { console.log(`Err: ${err}`)});
+        msg.edit({ content: playspace_str[0] }).catch((err) => { console.log(`Err: ${err}`)});
     }).catch(async () => {
         await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
             await profile.set(user_id, newMsg.id, 'display_msg_id');
         }).catch((err) => { console.log(`Err 2: ${err}`) });
     });
-
-    if (moveDisable == true) {
-        await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-            const newComponents = msg.components.map((row) => {
-                const newRow = row.toJSON(); 
-                newRow.components = newRow.components.map((button) => {
-                    button.disabled = true; 
-                    return button;
-                });
-                return newRow;
-            });
-
-            await msg.edit({ components: newComponents }).catch(() => {});
-
-        }).catch((err) => { console.log(err) });
-    }
 }
 
 export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
@@ -1196,7 +1164,7 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
     // Back to save (exit)
     else if (selected.customId == 'box_back_to_save') {
         profile.set(user_id, user_profile);
-        let options = [confirm_buttons_tp];
+        let options = [confirm_buttons_tp, confirm_buttons_tp_exit];
 
         if (user_profile.areas_visited.length > 0 && user_profile.flags.includes('teleport_enable')) { 
         teleport_menu = new ActionRowBuilder();
@@ -1219,7 +1187,8 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
             options.push(teleport_menu);
         }
 
-        selected.update({ content: `## Checkpoint`, components: options });
+        let playspace_str = await setup_playspace_str(user_id);
+        selected.update({ content: playspace_str[0], components: options, embeds: [], files: [] });
     } 
 
     // Finalize team for box in pvp

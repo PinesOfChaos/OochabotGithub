@@ -1670,6 +1670,83 @@ export async function execute(interaction, client) {
         description: 'Carefullly on to the target, REVEALING and EXPOSING them.',
         self_target: false,
     });
+    create_move({
+        id: 132, name: 'Calamity', type: OochType.Magic,
+        damage: 100, accuracy: 90,
+        effect: [{ status: Status.Doom, chance: 100, target: MoveTarget.Self }],
+        description: 'A high damaging move that DOOMS the user.',
+        self_target: false,
+    });
+    create_move({
+        id: 133, name: 'Shooting Star', type: OochType.Stone,
+        damage: 60, accuracy: 100,
+        effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
+        description: 'A high damaging move that DOOMS the user.',
+        self_target: false,
+    });
+    create_move({
+        id: 134, name: 'Battle Cry', type: OochType.Sound,
+        damage: 0, accuracy: 100,
+        effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }],
+        description: 'An intimidating shout that raises the user\'s ATK and lowers the enemy\'s ATK.',
+        self_target: false,
+    });
+    create_move({
+        id: 135, name: 'The Most Annoying Sound in the World', type: OochType.Sound,
+        damage: 1, accuracy: -1,
+        effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy },{ status: '-_def_1', chance: 100, target: MoveTarget.Enemy },{ status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
+        description: 'Hey.',
+        self_target: false,
+    });
+    create_move({
+        id: 136, name: 'Wub', type: OochType.Sound,
+        damage: 60, accuracy: 100,
+        effect: [{ status: '-_spd_1', chance: 30, target: MoveTarget.Enemy }],
+        description: 'A deafening bass that can freeze enemies in their tracks. Has a chance to lower SPD.',
+        self_target: false,
+    });
+    create_move({
+        id: 137, name: 'Bone Tone', type: OochType.Sound,
+        damage: 40, accuracy: 90,
+        effect: [{ status: Status.Petrify, chance: 100, target: MoveTarget.Enemy }],
+        description: 'An odd sound changes the targets internal structure to PETRIFY it.',
+        self_target: false,
+    });
+    create_move({
+        id: 138, name: 'Silkstorm', type: OochType.Cloth,
+        damage: 80, accuracy: 90,
+        effect: [{ status: '-_spd_3', chance: 100, target: MoveTarget.Self }, { status: '-_spd_3', chance: 100, target: MoveTarget.Enemy }],
+        description: 'Densely woven silk strikes the target, greatly reducing its SPD as well as the user\'s.',
+        self_target: false,
+    });
+    create_move({
+        id: 139, name: 'Spool Up', type: OochType.Cloth,
+        damage: 0, accuracy: 100,
+        effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Self }, { status: Status.ClearStatus, chance: 100, target: MoveTarget.Enemy }],
+        description: 'The user takes some time to get organized reducing its SPD and clearing any Status Effects.',
+        self_target: true,
+    });
+    create_move({
+        id: 140, name: 'Tie Down', type: OochType.Cloth,
+        damage: 40, accuracy: 90,
+        effect: [{ status: Status.Snare, chance: 100, target: MoveTarget.Enemy }, { status: Status.Expose, chance: 100, target: MoveTarget.Enemy }],
+        description: 'Flailing ropes tie the target down to SNARE and EXPOSE them.',
+        self_target: false,
+    });
+    create_move({
+        id: 141, name: 'Rug Rash', type: OochType.Cloth,
+        damage: 50, accuracy: 90,
+        effect: [{ status: Status.Burn, chance: 40, target: MoveTarget.Enemy }],
+        description: 'High friction on rough cloth damages the target, with a chance to BURN.',
+        self_target: false,
+    });
+    create_move({
+        id: 142, name: 'Hymn of Dread', type: OochType.Sound,
+        damage: 70, accuracy: 90,
+        effect: [{ status: Status.Weak, chance: 100, target: MoveTarget.Enemy }],
+        description: 'A ancient and horrid song that leaves the target WEAKENED.',
+        self_target: false,
+    });
 
     //#endregionF
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
@@ -1763,15 +1840,16 @@ export async function execute(interaction, client) {
     create_ability(85, 'Seer', 'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
     create_ability(86, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.'); //Unique - Security System Boss
     create_ability(87, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.'); //Unique - Giant Slime Head Boss
+
+    //TO DO (i think some may be done but i forgor)
     create_ability(88, 'Ancient Plating', 'Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
     create_ability(89, 'Ancient Ward', 'Allied Oochamon take reduced damage for attacks that match this Oochamon\'s type.'); //Unique - Ophicore's Rune pieces
     create_ability(90, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
     create_ability(91, 'Pure Core', 'Reduces the damage of incoming non-Super Effective moves.'); //Unique - Ophicore (Post-game ability)
     create_ability(92, 'Lullaby', 'Sound-type moves have a chance to put the target to SLEEP.'); //Unique - Heraloom
-
-
-
-
+    create_ability(93, 'Twilight Hour', 'If this oochamon gets DOOMED, its ATK, DEF, & SPD are greatly increased.') //Unique - Priseroth Line
+    create_ability(94, 'Cacophony', 'Using a Sound-type move raise the users ATK, but lowers their DEF.') //Unique - Bansheet
+    create_ability(95, 'Accelerando', 'Using a Sound-type move raise the users SPD.') //Unique - Orchestryd  line
 
 
     //#endregion
@@ -2413,7 +2491,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.Intimidate], [9, Move.Gravitate],
             [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [21, Move.JaggedGround], [23, Move.SolarBlast],
-            [27, Move.HawkEye], [31, Move.SonicBoom], [36, Move.DustStorm], [39, Move.HighImpact], [42, Move.PlasmaCannon],
+            [27, Move.HawkEye], [29, Move.ShootingStar], [31, Move.SonicBoom], [36, Move.DustStorm], [39, Move.HighImpact], [42, Move.PlasmaCannon],
             [47, Move.LavaLance], [-1, Move.SyncStrike]
         ],
         abilities: [Ability.Inertia, Ability.Scorching],
@@ -2431,7 +2509,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.PebbleBlast], [7, Move.Intimidate], [9, Move.Gravitate],
             [12, Move.ClampDown], [15, Move.CrashLanding], [18, Move.Boulderdash], [21, Move.JaggedGround], [23, Move.SolarBlast],
-            [27, Move.HawkEye], [31, Move.SonicBoom], [36, Move.DustStorm], [39, Move.HighImpact], [42, Move.PlasmaCannon],
+            [27, Move.HawkEye], [29, Move.ShootingStar], [31, Move.SonicBoom], [36, Move.DustStorm], [39, Move.HighImpact], [42, Move.PlasmaCannon],
             [47, Move.LavaLance], [-1, Move.SyncStrike]
         ],
         abilities: [Ability.Immense, Ability.Scorching],
@@ -2448,7 +2526,7 @@ export async function execute(interaction, client) {
         hp: 12, atk: 15, def: 13, spd: 10, // total 50
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip],
-            [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [28, Move.FatedThreads],
+            [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [24, Move.SpoolUp], [28, Move.FatedThreads],
             [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
@@ -2466,7 +2544,7 @@ export async function execute(interaction, client) {
         hp: 22, atk: 20, def: 18, spd: 10, // total 70
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip],
-            [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [28, Move.FatedThreads],
+            [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [24, Move.SpoolUp], [28, Move.FatedThreads],
             [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
@@ -3431,7 +3509,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Screech], [4, Move.RagWhip], [8, Move.Hasten], [11, Move.PrecisionStrike],
             [13, Move.EarShatter], [15, Move.Bind], [17, Move.RallyingCry], [20, Move.Whiplash], [24, Move.SonicBoom], [26, Move.PressureWave],
-            [29, Move.EarSplitter], [33, Move.Thunderstorm], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
+            [29, Move.Wub], [33, Move.Thunderstorm], [35, Move.BattleCry], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
             [-1, Move.SlurpUp]
         ],
         abilities: [Ability.Miniscule, Ability.Gentle],
@@ -3449,7 +3527,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Screech], [4, Move.RagWhip], [8, Move.Hasten], [11, Move.PrecisionStrike],
             [13, Move.EarShatter], [15, Move.Bind], [17, Move.RallyingCry], [20, Move.Whiplash], [24, Move.SonicBoom], [26, Move.PressureWave],
-            [29, Move.EarSplitter], [33, Move.Thunderstorm], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
+            [29, Move.Wub], [33, Move.Thunderstorm], [35, Move.BattleCry], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
             [-1, Move.SlurpUp]
         ],
         abilities: [Ability.BassBoost, Ability.Stealthy],
@@ -3467,10 +3545,10 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Screech], [4, Move.RagWhip], [8, Move.Hasten], [11, Move.PrecisionStrike],
             [13, Move.EarShatter], [15, Move.Bind], [17, Move.RallyingCry], [20, Move.Whiplash], [24, Move.SonicBoom], [26, Move.PressureWave],
-            [29, Move.EarSplitter], [33, Move.Thunderstorm], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
+            [29, Move.Wub], [33, Move.Thunderstorm], [35, Move.BattleCry], [38, Move.ScarySheet], [40, Move.FiberSlicer], [43, Move.Mummify],
             [-1, Move.SlurpUp]
         ],
-        abilities: [Ability.BassBoost, Ability.Boisterous],
+        abilities: [Ability.BassBoost, Ability.Cacophony],
         pre_evo_id: 94, evo_id: -1, evo_lvl: -1, evo_stage: 2
     });
 
@@ -3540,7 +3618,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.Intimidate], [7, Move.RagWhip], [9, Move.Brittle],
             [12, Move.Caltrops], [15, Move.RallyingCry], [18, Move.Suplex], [21, Move.Bind], [25, Move.Entrench],
-            [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [36, Move.Boulderdash],
+            [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [34, Move.TieDown], [36, Move.Boulderdash],
             [40, Move.Grind], [44, Move.Sedimentation], [-1, Move.CrashLanding]
         ],
         abilities: [Ability.Protector, Ability.Tough],
@@ -3558,7 +3636,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.Intimidate], [7, Move.RagWhip], [9, Move.Brittle],
             [12, Move.Caltrops], [15, Move.RallyingCry], [18, Move.Suplex], [21, Move.Bind], [25, Move.Entrench],
-            [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [36, Move.Boulderdash],
+            [26, Move.IronHammer], [30, Move.Barrage], [33, Move.JaggedGround], [34, Move.TieDown], [36, Move.Boulderdash],
             [40, Move.Grind], [44, Move.Sedimentation], [-1, Move.CrashLanding]
         ],
         abilities: [Ability.Protector, Ability.Tough],
@@ -3595,7 +3673,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [3, Move.Blink], [5, Move.MagicBolt], [8, Move.HawkEye], [11, Move.Shards],
             [13, Move.ClampDown], [16, Move.DrainLife], [19, Move.TwistedReality], [23, Move.CrystalBall], [26, Move.Gravitate],
             [28, Move.Thunderstorm], [30, Move.GuidedSpire], [33, Move.Heatwave], [35, Move.PressureWave], [39, Move.ArcaStrike],
-            [41, Move.GemBash], [-1, Move.SolarBlast]
+            [41, Move.GemBash], [-1, Move.Calamity]
         ],
         abilities: [Ability.Seer, Ability.Pact],
         pre_evo_id: 101, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -3613,7 +3691,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [3, Move.SporeShot], [5, Move.Embolden], [7, Move.MagicBolt], [10, Move.Wetlands],
             [12, Move.EnfeeblingSpore], [16, Move.Siphon], [18, Move.DrainLife], [20, Move.Entrench], [24, Move.Gravitate],
             [27, Move.SyncStrike], [30, Move.Blight], [33, Move.HeldStrike], [36, Move.Overgrowth], [37, Move.Thunderstorm],
-            [41, Move.ArcaStrike], [-1, Move.SlurpUp]
+            [41, Move.ArcaStrike], [-1, Move.Calamity]
         ],
         abilities: [Ability.Vigorous, Ability.Burdened],
         pre_evo_id: -1, evo_id: 104, evo_lvl: 18, evo_stage: 0
@@ -3649,7 +3727,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash],
             [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
             [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry],
-            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]
+            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
         abilities: [Ability.Vigorous, Ability.Burdened],
         pre_evo_id: -1, evo_id: 106, evo_lvl: 30, evo_stage: 0
@@ -3666,8 +3744,8 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash],
             [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
-            [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry],
-            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]
+            [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.RugRash], [36, Move.Micronet], [39, Move.Flurry],
+            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
         abilities: [Ability.Matryoshka, Ability.Burdened],
         pre_evo_id: 105, evo_id: 107, evo_lvl: 40, evo_stage: 1
@@ -3684,8 +3762,8 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.RagWhip], [5, Move.Hasten], [7, Move.HawkEye], [11, Move.Slash],
             [14, Move.Bind], [17, Move.Lurk], [19, Move.SonicBoom], [22, Move.Sharpen], [26, Move.Whiplash],
-            [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry],
-            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.CrashLanding]
+            [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.RugRash], [36, Move.Micronet], [39, Move.Flurry],
+            [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
         abilities: [Ability.Matryoshka, Ability.Burdened],
         pre_evo_id: 106, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -3788,9 +3866,9 @@ export async function execute(interaction, client) {
         hp: 12, atk: 12, def: 7, spd: 9, // total 40
         move_list: [
             [1, Move.Bash], [3, Move.Screech], [4, Move.Limber], [6, Move.PrecisionStrike], [9, Move.Siphon],
-            [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.TakeOver],
+            [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.Wub],
             [25, Move.Impale], [28, Move.EchoChamber], [30, Move.ThornShot], [34, Move.EarSplitter], [36, Move.HeldStrike],
-            [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.MycoBurst]
+            [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.BoneTone]
         ],
         abilities: [Ability.Apprentice, Ability.Gentle],
         pre_evo_id: -1, evo_id: 114, evo_lvl: 30, evo_stage: 0
@@ -3806,9 +3884,9 @@ export async function execute(interaction, client) {
         hp: 16, atk: 18, def: 17, spd: 19, // total 70
         move_list: [
             [1, Move.Bash], [3, Move.Screech], [4, Move.Limber], [6, Move.PrecisionStrike], [9, Move.Siphon],
-            [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.TakeOver],
+            [11, Move.HypeUp], [14, Move.Thunder], [17, Move.SyncStrike], [20, Move.SonicBoom], [22, Move.Wub],
             [25, Move.Impale], [28, Move.EchoChamber], [30, Move.ThornShot], [34, Move.EarSplitter], [36, Move.HeldStrike],
-            [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.MycoBurst]
+            [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.BoneTone]
         ],
         abilities: [Ability.BassBoost, Ability.Bloodrush],
         pre_evo_id: 113, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -3931,9 +4009,11 @@ export async function execute(interaction, client) {
         type: [OochType.Crystal],
         hp: 12, atk: 9, def: 11, spd: 8, // total 40
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [3, Move.Hasten], [5, Move.Shards], [9, Move.DustStorm], [12, Move.Blink],
+            [14, Move.Brittle], [16, Move.Fog], [21, Move.Glimmer], [25, Move.ShootingStar], [29, Move.Lurk], 
+            [33, Move.BlindingBeam], [37, Move.DrainLife], [40, Move.Calamity], [44, Move.GemBash], [-1, Move.PlasmaCannon]
         ],
-        abilities: [Ability.Ravenous, Ability.Constructor],
+        abilities: [Ability.TwilightHour, Ability.Constructor],
         pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
     });
 
@@ -3946,9 +4026,11 @@ export async function execute(interaction, client) {
         type: [OochType.Crystal],
         hp: 17, atk: 14, def: 16, spd: 13, // total 60
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [3, Move.Hasten], [5, Move.Shards], [9, Move.DustStorm], [12, Move.Blink],
+            [14, Move.Brittle], [16, Move.Fog], [21, Move.Glimmer], [25, Move.ShootingStar], [29, Move.Lurk], 
+            [33, Move.BlindingBeam], [37, Move.DrainLife], [40, Move.Calamity], [44, Move.GemBash], [-1, Move.PlasmaCannon]
         ],
-        abilities: [Ability.Seer, Ability.Constructor],
+        abilities: [Ability.TwilightHour, Ability.Constructor],
         pre_evo_id: 121, evo_id: 123, evo_lvl: 40, evo_stage: 1
     });
 
@@ -3961,9 +4043,11 @@ export async function execute(interaction, client) {
         type: [OochType.Crystal],
         hp: 23, atk: 18, def: 22, spd: 17, // total 80
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [3, Move.Hasten], [5, Move.Shards], [9, Move.DustStorm], [12, Move.Blink],
+            [14, Move.Brittle], [16, Move.Fog], [21, Move.Glimmer], [25, Move.ShootingStar], [29, Move.Lurk], 
+            [33, Move.BlindingBeam], [37, Move.DrainLife], [40, Move.Calamity], [44, Move.GemBash], [-1, Move.PlasmaCannon]
         ],
-        abilities: [Ability.Seer, Ability.Constructor],
+        abilities: [Ability.TwilightHour, Ability.Constructor],
         pre_evo_id: 122, evo_id: -1, evo_lvl: -1, evo_stage: 2
     });
 
@@ -3976,9 +4060,12 @@ export async function execute(interaction, client) {
         type: [OochType.Sound],
         hp: 11, atk: 12, def: 9, spd: 8, // total 40
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [2, Move.Embolden], [5, Move.Screech], [7, Move.EarSplitter], [12, Move.BattleCry],
+            [15, Move.MagicBolt], [17, Move.Wub], [19, Move.Lurk], [21, Move.EchoChamber], [25, Move.Impale],
+            [27, Move.Grind], [30, Move.ClampDown], [33, Move.HighImpact], [36, Move.BoneTone], [41, Move.CallThunder],
+            [45, Move.PressureWave], [-1, Move.Barrage]
         ],
-        abilities: [Ability.BassBoost, Ability.Swaying],
+        abilities: [Ability.Accelerando, Ability.Swaying],
         pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
     });
 
@@ -3991,10 +4078,13 @@ export async function execute(interaction, client) {
         type: [OochType.Sound],
         hp: 15, atk: 17, def: 16, spd: 14, // total 40
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [2, Move.Embolden], [5, Move.Screech], [7, Move.EarSplitter], [12, Move.BattleCry],
+            [15, Move.MagicBolt], [17, Move.Wub], [19, Move.Lurk], [21, Move.EchoChamber], [25, Move.Impale],
+            [27, Move.Grind], [30, Move.ClampDown], [33, Move.HighImpact], [36, Move.BoneTone], [41, Move.CallThunder],
+            [45, Move.PressureWave], [-1, Move.Barrage]
         ],
-        abilities: [Ability.BassBoost, Ability.Swaying],
-        pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
+        abilities: [Ability.Accelerando, Ability.Swaying],
+        pre_evo_id: -1, evo_id: 122, evo_lvl: 35, evo_stage: 0
     });
 
     // Orchestryd
@@ -4006,9 +4096,12 @@ export async function execute(interaction, client) {
         type: [OochType.Sound],
         hp: 19, atk: 23, def: 21, spd: 19, // total 40
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [2, Move.Embolden], [5, Move.Screech], [7, Move.EarSplitter], [12, Move.BattleCry],
+            [15, Move.MagicBolt], [17, Move.Wub], [19, Move.Lurk], [21, Move.EchoChamber], [25, Move.Impale],
+            [27, Move.Grind], [30, Move.ClampDown], [33, Move.HighImpact], [36, Move.BoneTone], [41, Move.CallThunder],
+            [45, Move.PressureWave], [-1, Move.Barrage]
         ],
-        abilities: [Ability.BassBoost, Ability.Swaying],
+        abilities: [Ability.Accelerando, Ability.Swaying],
         pre_evo_id: -1, evo_id: 122, evo_lvl: 25, evo_stage: 0
     });
 
@@ -4018,10 +4111,12 @@ export async function execute(interaction, client) {
         emote: get_emote_string('heraloom'),
         name: 'Heraloom',
         oochive_entry: 'The harp on its body is made of many fine hairs; its soothing sound can put foes to sleep when strummed.',
-        type: [OochType.Sound],
+        type: [OochType.Sound, OochType.Cloth],
         hp: 22, atk: 14, def: 15, spd: 11, // total 60
         move_list: [
-            [1, Move.Bash]
+            [1, Move.Bash], [5, Move.Screech], [7, Move.EnfeeblingSpore], [10, Move.Siphon], [12, Move.RugRash],
+            [16, Move.Wub], [19, Move.SpoolUp], [22, Move.Fog], [26, Move.Gravitate], [30, Move.BattleCry], [33, Move.TieDown],
+            [37, Move.Silkstorm], [40, Move.BoneTone], [45, Move.HymnOfDread], [-1, Move.FatedThreads]
         ],
         abilities: [Ability.Lullaby],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0

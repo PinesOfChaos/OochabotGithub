@@ -417,18 +417,19 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     }
 
     //Send Embed and Await user input before proceeding
-    let msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
+    let msg;
     if (msg_to_edit == false) {
+        msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
         await profile.set(user_id, msg.id, 'display_msg_id');
         profile_data = await profile.get(`${user_id}`);
         msg_to_edit = profile_data.display_msg_id;
-    }
-
-    // Hide movement buttons
-    if (event_name !== 'ev_intro') {
-        await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-            await msg.edit({ components: [] }).catch(() => {});
-        }).catch(() => {});
+    } else {
+        msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+        if (msg != undefined) {
+            await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        } else {
+            return console.log("Failed to find message to edit, kicking out");
+        }
     }
 
     const confirm_collector = await msg.createMessageComponentCollector({ filter });
@@ -485,9 +486,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             profile.set(user_id, [], 'cur_event_array');
             profile.set(user_id, 0, 'cur_event_pos');
             let playspace_str = await setup_playspace_str(user_id);
-            await thread.messages.fetch(msg_to_edit).then((msg) => {
-                msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
-            }).catch(() => {});
+            sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
             return;
         }
 

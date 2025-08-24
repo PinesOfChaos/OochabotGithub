@@ -285,7 +285,18 @@ const Move = {
     Frostbite: 128,
     LaserSweep: 129,
     Annihilate: 130,
-    TargetLock: 131
+    TargetLock: 131,
+    Calamity: 132,
+    ShootingStar: 133,
+    BattleCry: 134,
+    MostAnnoyingSound: 135,
+    Wub: 136,
+    BoneTone: 137,
+    Silkstorm: 138,
+    SpoolUp: 139,
+    TieDown: 140,
+    RugRash: 141,
+    HymnOfDread: 142
 }
 
 const Ability = {
@@ -381,7 +392,10 @@ const Ability = {
     AncientWard: 89,
     Usurper: 90,
     PureCore: 91,
-    Lullaby: 92
+    Lullaby: 92,
+    TwilightHour: 93,
+    Cacophony: 94,
+    Accelerando: 95
 }
 
 const Item = {
