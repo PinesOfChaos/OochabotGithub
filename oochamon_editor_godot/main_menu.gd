@@ -210,7 +210,7 @@ func refresh_data():
 	ln = f_npcs.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
-		
+		print(ln)
 		var index = lnsplit[1].split(":")[1]
 		var emote = lnsplit[1].split(":")[2]
 		emote = emote.replace(">","")
