@@ -463,5 +463,20 @@
     "id": 92,
     "name": "Lullaby",
     "description": "Sound-type moves have a chance to put the target to SLEEP."
+  },
+  {
+    "id": 93,
+    "name": "Twilight Hour",
+    "description": "If this oochamon gets DOOMED, its ATK, DEF, & SPD are greatly increased."
+  },
+  {
+    "id": 94,
+    "name": "Cacophony",
+    "description": "Using a Sound-type move raise the users ATK, but lowers their DEF."
+  },
+  {
+    "id": 95,
+    "name": "Accelerando",
+    "description": "Using a Sound-type move raise the users SPD."
   }
 ]
