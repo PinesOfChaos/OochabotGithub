@@ -507,6 +507,171 @@
 			}
 		]
 	],
+	"ev_lyra_kat_dialog": [
+		[
+			0.0,
+			{
+				"description": "-don't you understand, Kat? You're making the wrong decision here!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It's too late for that, I'm taking the data, and making that deal with the Core.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "No, please don't, I can't lose you too. Not after your parents made the same mistake.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Look, this is what I have to do. I promise I'll make it work.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I've even made a discovery that should fix this deeper within the powerplant, just trust me.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "...",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "lyra_kat_dialog_finished"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_lyra_kat_dialog"
+			}
+		]
+	],
+	"ev_lyra_locked": [
+		[
+			0.0,
+			{
+				"description": "Oh, thank goodness you're here, {player}!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I don't know what's gotten into my granddaughter, she's barely been herself recently.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "After we got the data she needed, she locked me in here and ran off to the Restricted Tunnel.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "There's some sort of main security system up ahead keeping me locked in here, destroy it and I think we might just be able to catch up with her.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Destroy the Security System",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I know you can do it, {player}!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_lyra_locked"
+			}
+		]
+	],
 	"ev_moldire_boss": [
 		[
 			0.0,
@@ -1089,6 +1254,124 @@
 				"map_to": "access_tunnel",
 				"x_to": 40.0,
 				"y_to": 27.0
+			}
+		]
+	],
+	"ev_security_boss": [
+		[
+			0,
+			{
+				"description": "Main Systems Online",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Deploying Battle Pattern Delta",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Activating Combat Mode",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			1,
+			{
+				"battle_ai": 0,
+				"coin": 0,
+				"is_catchable": false,
+				"name": "Security System Δ",
+				"sprite": 52,
+				"sprite_combat": "",
+				"sprite_id": "c00_901",
+				"team": [
+					{
+						"ability": 86,
+						"atk_iv": 0,
+						"def_iv": 0,
+						"hp_iv": 2.0,
+						"id": -6.0,
+						"item": -1,
+						"level": 35.0,
+						"moveset": [
+							121,
+							129,
+							130,
+							131
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0
+					}
+				],
+				"user_type": 1
+			}
+		],
+		[
+			0,
+			{
+				"description": "Integrity Depleted",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Returning to Hybernation and Repair Mode",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Return to Lyra in the Powerplant",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			2,
+			{
+				"text": "security_boss_defeated"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_security_boss"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_security_boss"
 			}
 		]
 	],

@@ -1879,7 +1879,7 @@ export async function execute(interaction, client) {
     create_status(10, 'Petrified', get_emote_string('status_petrified'), 'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
     create_status(11, 'Weakened', get_emote_string('status_weak'), 'Reduces the power of the Oochamon\'s damaging moves.');
     create_status(12, 'Revealed', get_emote_string('status_reveal'), `The Oochamon is guaranteed to be hit, it is also unable to gain the ${get_emote_string('status_vanish')} VANISHED status.`);
-    create_status(13, 'Drained', '😓', 'The Oochamon is Drained and must spend the turn recharging.');
+    create_status(13, 'Drained', get_emote_string('status_drain'), 'The Oochamon is completely exhausted and must spend the turn recharging.');
 
     //#endregion
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
