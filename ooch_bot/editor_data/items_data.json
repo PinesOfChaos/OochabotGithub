@@ -553,5 +553,20 @@
     "description": "A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon",
     "description_short": "Gives a large amount of EXP to an Oochamon",
     "tags": []
+  },
+  {
+    "id": 46,
+    "name": "Odd Bulb",
+    "emote": "<:item_odd_bulb:1410439904176898068>",
+    "category": "other_inv",
+    "type": "evolve",
+    "price": 8000,
+    "potency": [
+      59,
+      62
+    ],
+    "description": "An old lightbulb filled with tiny machines. The bulb seems to flicker and glow on occaison.",
+    "description_short": "Used to evolve a certain Oochamon.",
+    "tags": []
   }
 ]

@@ -807,556 +807,561 @@ export async function execute(interaction, client) {
         description: 'A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon',
         description_short: 'Gives a large amount of EXP to an Oochamon'
     });
-
+    create_item({
+        id: 46, name: 'Odd Bulb', emote: get_emote_string('item_odd_bulb'),
+        category: 'other_inv', type: 'evolve', price: 8000, potency: [21, 111],
+        description: 'An old lightbulb filled with tiny machines. The bulb seems to flicker and glow on occaison.',
+        description_short: 'Used to evolve a certain Oochamon.'
+    });
     //#endregion
     //#region Move Data
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //          ID, NAME,             TYPE,        DMG,ACCURACY, EFF,EFF_CHANCE,     DESCRIPTION
     create_move({
-        id: 0, name: 'Hit', type: OochType.Neutral,
+        id: Move.Hit, name: 'Hit', type: OochType.Neutral,
         damage: 10, accuracy: 100,
         effect: [],
         description: 'The user hits the target to deal damage.'
     });
     create_move({
-        id: 1, name: 'Bash', type: OochType.Neutral,
+        id: Move.Bash, name: 'Bash', type: OochType.Neutral,
         damage: 20, accuracy: 100,
         effect: [],
         description: 'The target is dealt some blunt damage.'
     });
     create_move({
-        id: 2, name: 'Spore Shot', type: OochType.Fungal,
+        id: Move.SporeShot, name: 'Spore Shot', type: OochType.Fungal,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'A puff of spore burst from the user\'s body.'
     });
     create_move({
-        id: 3, name: 'Pebble Blast', type: OochType.Stone,
+        id: Move.PebbleBlast, name: 'Pebble Blast', type: OochType.Stone,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'Fires a barrage of small pebbles.'
     });
     create_move({
-        id: 4, name: 'Fireball', type: OochType.Flame,
+        id: Move.Fireball, name: 'Fireball', type: OochType.Flame,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'Shoots a ball of fire at the target.'
     });
     create_move({
-        id: 5, name: 'Slash', type: OochType.Neutral,
+        id: Move.Slash, name: 'Slash', type: OochType.Neutral,
         damage: 50, accuracy: 95,
         effect: [],
         description: 'The user slashes at the target with sharp appendages.'
     });
     create_move({
-        id: 6, name: 'Take Over', type: OochType.Fungal,
+        id: Move.TakeOver, name: 'Take Over', type: OochType.Fungal,
         damage: 30, accuracy: 90,
         effect: [{ status: Status.Infect, chance: 100, target: MoveTarget.Enemy }],
         description: 'Fungal spores are launched which INFECT the target.'
     });
     create_move({
-        id: 7, name: 'Dust Storm', type: OochType.Stone,
+        id: Move.DustStorm, name: 'Dust Storm', type: OochType.Stone,
         damage: 30, accuracy: 90,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }],
         description: 'A storm is whipped up which leaves the target BLINDED.'
     });
     create_move({
-        id: 8, name: 'Engulf', type: OochType.Flame,
+        id: Move.Engulf, name: 'Engulf', type: OochType.Flame,
         damage: 30, accuracy: 90,
         effect: [{ status: Status.Burn, chance: 100, target: MoveTarget.Enemy }],
         description: 'The target is BURNED by red-hot flames.'
     });
     create_move({
-        id: 9, name: 'Impale', type: OochType.Neutral,
+        id: Move.Impale, name: 'Impale', type: OochType.Neutral,
         damage: 80, accuracy: 100,
         effect: [],
         description: 'Impales the target with a spike.'
     });
     create_move({
-        id: 10, name: 'Bloom', type: OochType.Fungal,
+        id: Move.Bloom, name: 'Bloom', type: OochType.Fungal,
         damage: 70, accuracy: 90,
         effect: [],
         description: 'Explosive spores are launched at the target to deal damage.'
     });
     create_move({
-        id: 11, name: 'Boulder Dash', type: OochType.Stone,
+        id: Move.Boulderdash, name: 'Boulder Dash', type: OochType.Stone,
         damage: 60, accuracy: 90,
         effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
         description: 'Flings a boulder at the target before it has a chance to do anything.'
     });
     create_move({
-        id: 12, name: 'Torch', type: OochType.Flame,
+        id: Move.Torch, name: 'Torch', type: OochType.Flame,
         damage: 70, accuracy: 90,
         effect: [],
         description: 'The user bashes the target with a firey appendage.'
     });
     create_move({
-        id: 13, name: 'Blight', type: OochType.Fungal,
+        id: Move.Blight, name: 'Blight', type: OochType.Fungal,
         damage: 60, accuracy: 90,
         effect: [{ status: Status.Blind, chance: 50, target: MoveTarget.Enemy }],
         description: 'If the infection takes hold, the target is BLINDED.'
     });
     create_move({
-        id: 14, name: 'Lava Lance', type: OochType.Stone,
+        id: Move.LavaLance, name: 'Lava Lance', type: OochType.Stone,
         damage: 60, accuracy: 90,
         effect: [{ status: Status.Burn, chance: 50, target: MoveTarget.Enemy }],
         description: 'Red-hot stone is launched to BURN the target.'
     });
     create_move({
-        id: 15, name: 'Tumorize', type: OochType.Flame,
+        id: Move.Tumorize, name: 'Tumorize', type: OochType.Flame,
         damage: 60, accuracy: 90,
         effect: [{ status: Status.Infect, chance: 50, target: MoveTarget.Enemy }],
         description: 'The user creates radiation in order to INFECT the target.'
     });
     create_move({
-        id: 16, name: 'Glimmer', type: OochType.Crystal,
+        id: Move.Glimmer, name: 'Glimmer', type: OochType.Crystal,
         damage: 20, accuracy: 90,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }],
         description: 'Refracts light in an attempt to BLIND the target.',
         tags: [MoveTag.Light]
     });
     create_move({
-        id: 17, name: 'Gem Bash', type: OochType.Crystal,
+        id: Move.GemBash, name: 'Gem Bash', type: OochType.Crystal,
         damage: 110, accuracy: 70,
         effect: [],
         description: 'Massive crystals are swung wildly to inflict damage.'
     });
     create_move({
-        id: 18, name: 'Caustic Orb', type: OochType.Ooze,
+        id: Move.CausticOrb, name: 'Caustic Orb', type: OochType.Ooze,
         damage: 60, accuracy: 100,
         effect: [{ status: Status.Burn, chance: 75, target: MoveTarget.Enemy }],
         description: 'A ball of caustic goo is launched with a high chance of BURNING.',
     });
     create_move({
-        id: 19, name: 'Pulverize', type: OochType.Neutral,
+        id: Move.Pulverize, name: 'Pulverize', type: OochType.Neutral,
         damage: 150, accuracy: 80,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Self }],
         description: 'The target is slammed to deal massive damage, but the user exausts itself, losing ATK.',
     });
     create_move({
-        id: 20, name: 'Ash Blast', type: OochType.Flame,
+        id: Move.AshBlast, name: 'Ash Blast', type: OochType.Flame,
         damage: 50, accuracy: 95,
         effect: [{ status: Status.Blind, chance: 75, target: MoveTarget.Enemy }],
         description: 'Hot ashes are launched at the target with a high chance to BLIND.',
     });
     create_move({
-        id: 21, name: 'Inferno', type: OochType.Flame,
+        id: Move.Inferno, name: 'Inferno', type: OochType.Flame,
         damage: 100, accuracy: 95,
         effect: [{ status: Status.Burn, chance: 100, target: MoveTarget.All }],
         description: 'A blazing inferno afflicts all targets with a BURN.',
     });
     create_move({
-        id: 22, name: 'Digitize', type: OochType.Tech,
+        id: Move.Digitize, name: 'Digitize', type: OochType.Tech,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.Digitize, chance: 100, target: MoveTarget.Enemy }],
         description: 'The target becomes DIGITIZED when hit by this strange beam.',
     });
     create_move({
-        id: 23, name: 'Clamp Down', type: OochType.Neutral,
+        id: Move.ClampDown, name: 'Clamp Down', type: OochType.Neutral,
         damage: 45, accuracy: 100,
         effect: [{ status: Status.Snare, chance: 30, target: MoveTarget.Enemy }],
         description: 'Clamps down tight on the target to deal damage and SNARE them if you get lucky.'
     });
     create_move({
-        id: 24, name: 'Magic Bolt', type: OochType.Magic,
+        id: Move.MagicBolt, name: 'Magic Bolt', type: OochType.Magic,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'Fires a bolt of magic energy.',
     });
     create_move({
-        id: 25, name: 'Sparkler', type: OochType.Flame,
+        id: Move.Sparkler, name: 'Sparkler', type: OochType.Flame,
         damage: 40, accuracy: 100,
         effect: [{ status: Status.Blind, chance: 30, target: MoveTarget.Enemy }],
         description: 'Shoots bright sparks with the potential to BLIND the target.',
     });
     create_move({
-        id: 26, name: 'Arca Strike', type: OochType.Magic,
+        id: Move.ArcaStrike, name: 'Arca Strike', type: OochType.Magic,
         damage: 80, accuracy: 100,
         effect: [],
         description: 'Fires a powerful burst of magic.',
     });
     create_move({
-        id: 27, name: 'Call Lightning', type: OochType.Magic,
+        id: Move.CallThunder, name: 'Call Lightning', type: OochType.Magic,
         damage: 80, accuracy: 90,
         effect: [{ status: Status.Burn, chance: 30, target: MoveTarget.Enemy }],
         description: 'Causes a great bolt of lightning to crash on the enemy, potentially BURNING them.',
         tags: [MoveTag.Electric]
     });
     create_move({
-        id: 28, name: 'Sticky Orb', type: OochType.Ooze,
+        id: Move.StickyOrb, name: 'Sticky Orb', type: OochType.Ooze,
         damage: 80, accuracy: 90,
         effect: [{ status: Status.Snare, chance: 60, target: MoveTarget.Enemy }],
         description: 'Fling a orb of goo that can SNARE the target.',
     });
     create_move({
-        id: 29, name: 'Glob', type: OochType.Ooze,
+        id: Move.Glob, name: 'Glob', type: OochType.Ooze,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'Pelts the target with a viscous ooze.',
     });
     create_move({
-        id: 30, name: 'Blink', type: OochType.Magic,
+        id: Move.Blink, name: 'Blink', type: OochType.Magic,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.Expose, chance: 100, target: MoveTarget.Enemy }],
         description: 'Travels to a different time, EXPOSING the target\'s weaknesses.',
         tags: [MoveTag.Time]
     });
     create_move({
-        id: 31, name: 'Time Warp', type: OochType.Magic,
+        id: Move.TimeWarp, name: 'Time Warp', type: OochType.Magic,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.Expose, chance: 50, target: MoveTarget.Enemy }],
         description: 'Warps spacetime around the target, with a chance to EXPOSE the target.',
         tags: [MoveTag.Time]
     });
     create_move({
-        id: 32, name: 'Mycelium Whip', type: OochType.Fungal,
+        id: Move.MyceliumWhip, name: 'Mycelium Whip', type: OochType.Fungal,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.Snare, chance: 50, target: MoveTarget.Enemy }],
         description: 'Shoots whips made of mycelium in an attempt to SNARE the opponent.',
     });
     create_move({
-        id: 33, name: 'Parasitize', type: OochType.Ooze,
+        id: Move.Parasitize, name: 'Parasitize', type: OochType.Ooze,
         damage: 40, accuracy: 50,
         effect: [{ status: Status.Infect, chance: 50, target: MoveTarget.Enemy }],
         description: 'Parasitic bodies are launched at the target potentially INFECTING them.',
     });
     create_move({
-        id: 34, name: 'Corrode', type: OochType.Ooze,
+        id: Move.Corrode, name: 'Corrode', type: OochType.Ooze,
         damage: 40, accuracy: 65,
         effect: [{ status: '-_def_2', chance: 100, target: MoveTarget.Enemy }],
         description: 'Powerful acids damage the target, greatly lowering its DEF.',
     });
     create_move({
-        id: 35, name: 'Grind', type: OochType.Stone,
+        id: Move.Grind, name: 'Grind', type: OochType.Stone,
         damage: 80, accuracy: 90,
         effect: [],
         description: 'Grinds against the opponent with rough, jagged edges.',
     });
     create_move({
-        id: 36, name: 'Metal Lance', type: OochType.Tech,
+        id: Move.MetalLance, name: 'Metal Lance', type: OochType.Tech,
         damage: 70, accuracy: 90,
         effect: [],
         description: 'Stabs the opponent with a metallic object.',
     });
     create_move({
-        id: 37, name: 'Iron Hammer', type: OochType.Tech,
+        id: Move.IronHammer, name: 'Iron Hammer', type: OochType.Tech,
         damage: 50, accuracy: 100,
         effect: [],
         description: 'A heavy, metal object is hammered against the target.',
     });
     create_move({
-        id: 38, name: 'Laminate', type: OochType.Tech,
+        id: Move.Laminate, name: 'Laminate', type: OochType.Tech,
         damage: 30, accuracy: 90,
         effect: [{ status: Status.Snare, chance: 100, target: MoveTarget.Enemy }],
         description: 'Covers the target in a tough plastic substance to SNARE them.',
     });
     create_move({
-        id: 39, name: 'Entomb', type: OochType.Stone,
+        id: Move.Entomb, name: 'Entomb', type: OochType.Stone,
         damage: 60, accuracy: 80,
         effect: [{ status: Status.Snare, chance: 50, target: MoveTarget.Enemy }],
         description: 'Stones fall onto the target, leaving them SNARED if they get trapped.',
     });
     create_move({
-        id: 40, name: 'undefined_int', type: OochType.Void,
+        id: Move.UndefinedInt, name: 'undefined_int', type: OochType.Void,
         damage: 100, accuracy: 100,
         effect: [],
         description: 'TEST MOVE',
     });
     create_move({
-        id: 41, name: 'Precision Strike', type: OochType.Neutral,
+        id: Move.PrecisionStrike, name: 'Precision Strike', type: OochType.Neutral,
         damage: 20, accuracy: 100,
         effect: [{ status: 'critical', chance: 60, target: MoveTarget.None }],
         description: 'A targeted strike that is likely to land a Critical Hit.',
     });
     create_move({
-        id: 42, name: 'Barrage', type: OochType.Neutral,
+        id: Move.Barrage, name: 'Barrage', type: OochType.Neutral,
         damage: 100, accuracy: 80,
         effect: [{ status: 'recoil', chance: 30, target: MoveTarget.Self }],
         description: 'Devastating blasts damage the target, the user is hit with Recoil.',
     });
     create_move({
-        id: 43, name: 'Eruption', type: OochType.Flame,
+        id: Move.Eruption, name: 'Eruption', type: OochType.Flame,
         damage: 100, accuracy: 80,
         effect: [{ status: 'recoil', chance: 30, target: MoveTarget.Self }],
         description: 'Blazing heat erupts from the user, dealing high damage but also being hit with Recoil.',
     });
     create_move({
-        id: 44, name: 'Self Destruct', type: OochType.Tech,
+        id: Move.SelfDestruct, name: 'Self Destruct', type: OochType.Tech,
         damage: 250, accuracy: 100,
         effect: [{ status: 'recoil', chance: 100, target: MoveTarget.Self }],
         description: 'The user self destructs to inflict massive damage.',
         battle_desc: 'USER detonates violently!'
     });
     create_move({
-        id: 45, name: 'Siphon', type: OochType.Fungal,
+        id: Move.Siphon, name: 'Siphon', type: OochType.Fungal,
         damage: 20, accuracy: 100,
         effect: [{ status: 'vampire', chance: 10, target: MoveTarget.Self }],
         description: 'The user damages the opponent, slightly Healing itself in the process.',
     });
     create_move({
-        id: 46, name: 'Drain Life', type: OochType.Magic,
+        id: Move.DrainLife, name: 'Drain Life', type: OochType.Magic,
         damage: 50, accuracy: 50,
         effect: [{ status: 'vampire', chance: 50, target: MoveTarget.Self }],
         description: 'A horribly innacurate move with the potential to greatly heal the user.',
     });
     create_move({
-        id: 47, name: 'Restruct', type: OochType.Stone,
+        id: Move.Restruct, name: 'Restruct', type: OochType.Stone,
         damage: 0, accuracy: 100,
         effect: [{ status: 'heal', chance: 25, target: MoveTarget.Self }],
         description: 'Stones are reorganized in the user\'s body to restore some HP.',
         self_target: true
     });
     create_move({
-        id: 48, name: 'Flurry', type: OochType.Tech,
+        id: Move.Flurry, name: 'Flurry', type: OochType.Tech,
         damage: 75, accuracy: 90,
         effect: [{ status: 'critical', chance: 50, target: MoveTarget.None }],
         description: 'A flurry of steel blades shred the target, with a high chance to land a Critical Hit.',
     });
     create_move({
-        id: 49, name: 'Crash Landing', type: OochType.Stone,
+        id: Move.CrashLanding, name: 'Crash Landing', type: OochType.Stone,
         damage: 90, accuracy: 90,
         effect: [{ status: 'recoil', chance: 20, target: MoveTarget.Self }],
         description: 'The user falls down from the sky inflicting high damage, but injuring itself.',
     });
     create_move({
-        id: 50, name: 'Solar Blast', type: OochType.Flame,
+        id: Move.SolarBlast, name: 'Solar Blast', type: OochType.Flame,
         damage: 85, accuracy: 100,
         effect: [{ status: Status.Blind, chance: 50, target: MoveTarget.Enemy }],
         description: 'Lob a brilliant ball of flame, potentially BLINDING the target.',
     });
     create_move({
-        id: 51, name: 'Tangled Threads', type: OochType.Cloth,
+        id: Move.TangledThreads, name: 'Tangled Threads', type: OochType.Cloth,
         damage: 70, accuracy: 100,
         effect: [{ status: Status.Blind, chance: 30, target: MoveTarget.Enemy }],
         description: 'Threads are shot at the target dealing damage with a chance to SNARE them.',
     });
     create_move({
-        id: 52, name: 'Fated Threads', type: OochType.Cloth,
+        id: Move.FatedThreads, name: 'Fated Threads', type: OochType.Cloth,
         damage: 70, accuracy: 100,
         effect: [{ status: Status.Expose, chance: 50, target: MoveTarget.Enemy }],
         description: 'Crimson threads fly at the target, with a chance to EXPOSE the target.',
     });
     create_move({
-        id: 53, name: 'Sync Strike', type: OochType.Neutral,
+        id: Move.SyncStrike, name: 'Sync Strike', type: OochType.Neutral,
         damage: 70, accuracy: 100,
         effect: [{ status: 'typematch', chance: 100, target: MoveTarget.Self }],
         description: 'Launch a ball of energy synchronized with the user\'s type.',
     });
     create_move({
-        id: 54, name: 'Threefold', type: OochType.Tech,
+        id: Move.Threefold, name: 'Threefold', type: OochType.Tech,
         damage: 90, accuracy: 90,
         effect: [{ status: 'critical', chance: 30, target: MoveTarget.None }],
         description: 'The target is struck repeatedly, leaving it open to Critical Hits.',
     });
     create_move({
-        id: 55, name: 'Glass Blades', type: OochType.Crystal,
+        id: Move.GlassBlades, name: 'Glass Blades', type: OochType.Crystal,
         damage: 80, accuracy: 70,
         effect: [{ status: 'critical', chance: 50, target: MoveTarget.None }],
         description: 'Brittle blades are used to strike at the opponent\'s weak spots with a high chance to Crit.',
     });
     create_move({
-        id: 56, name: 'Gravitate', type: OochType.Magic,
+        id: Move.Gravitate, name: 'Gravitate', type: OochType.Magic,
         damage: 60, accuracy: 100,
         effect: [],
         description: 'The user manipulates gravity to fling itself at the target.',
     });
     create_move({
-        id: 57, name: 'Tenderize', type: OochType.Neutral,
+        id: Move.Tenderize, name: 'Tenderize', type: OochType.Neutral,
         damage: 120, accuracy: 70,
         effect: [{ status: 'recoil', chance: 30, target: MoveTarget.Self }],
         description: 'The user slams its body into the opponent, but is hit with recoil.',
     });
     create_move({
-        id: 58, name: 'Byte Bite', type: OochType.Tech,
+        id: Move.ByteBite, name: 'Byte Bite', type: OochType.Tech,
         damage: 30, accuracy: 100,
         effect: [],
         description: 'Form digital jaws that clamp down on the target.',
     });
     create_move({
-        id: 59, name: 'Sawblade', type: OochType.Tech,
+        id: Move.Sawblade, name: 'Sawblade', type: OochType.Tech,
         damage: 50, accuracy: 95,
         effect: [],
         description: 'The user hits the target with a metal blade.',
     });
     create_move({
-        id: 60, name: 'Limber', type: OochType.Ooze,
+        id: Move.Limber, name: 'Limber', type: OochType.Ooze,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_def_1', chance: 100, target: MoveTarget.Self }],
         description: 'Softens the body making it harder to damage, increasing its DEF.',
         self_target: true,
     });
     create_move({
-        id: 61, name: 'Embolden', type: OochType.Neutral,
+        id: Move.Embolden, name: 'Embolden', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }],
         description: 'Prepares the user to fight with all its strength, increasing its ATK.',
         self_target: true,
     });
     create_move({
-        id: 62, name: 'Hasten', type: OochType.Neutral,
+        id: Move.Hasten, name: 'Hasten', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_spd_1', chance: 100, target: MoveTarget.Self }],
         description: 'The user readies itself to move quickly, increasing its SPD.',
         self_target: true,
     });
     create_move({
-        id: 63, name: 'Brittle', type: OochType.Stone,
+        id: Move.Brittle, name: 'Brittle', type: OochType.Stone,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_def_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Makes the opponent\'s body brittle, lowering its DEF.',
     });
     create_move({
-        id: 64, name: 'Intimidate', type: OochType.Neutral,
+        id: Intimidate, name: 'Intimidate', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Glare at the opponent, lowering its ATK.',
     });
     create_move({
-        id: 65, name: 'Mud', type: OochType.Ooze,
+        id: Move.Mud, name: 'Mud', type: OochType.Ooze,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Throw mud on the opponent, lowering its SPD.',
     });
     create_move({
-        id: 66, name: 'Hype-Up', type: OochType.Neutral,
+        id: Move.HypeUp, name: 'Hype-Up', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: '+_spd_1', chance: 100, target: MoveTarget.Self }],
         description: 'Hypes up the user, increasing its ATK and SPD.',
         self_target: true
     });
     create_move({
-        id: 67, name: 'Sharpen', type: OochType.Tech,
+        id: Move.Sharpen, name: 'Sharpen', type: OochType.Tech,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_2', chance: 100, target: MoveTarget.Self }],
         description: 'Sharpens any edges the user has, greatly increasing its ATK.',
         self_target: true
     });
     create_move({
-        id: 68, name: 'Cursed Eye', type: OochType.Magic,
+        id: Move.CursedEye, name: 'Cursed Eye', type: OochType.Magic,
         damage: 10, accuracy: 100,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }, { status: Status.Burn, chance: 100, target: MoveTarget.Enemy }],
         description: 'Shoot a beam that curses the opponent, applying BLINDED and BURNED.',
     });
     create_move({
-        id: 69, name: 'Suplex', type: OochType.Neutral,
+        id: Move.Suplex, name: 'Suplex', type: OochType.Neutral,
         damage: 60, accuracy: 90,
         effect: [{ status: '-_def_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Suplex the opponent, damaging them and reducing DEF.',
     });
     create_move({
-        id: 70, name: 'Enfeebling Spore', type: OochType.Fungal,
+        id: Move.EnfeeblingSpore, name: 'Enfeebling Spore', type: OochType.Fungal,
         damage: 30, accuracy: 90,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }, { status: '-_spd_1', chance: 100, target: MoveTarget.Enemy },],
         description: 'Launch a damaging spore at the opponent which lowers ATK and SPD.'
     });
     create_move({
-        id: 71, name: 'Torque', type: OochType.Tech,
+        id: Move.Torque, name: 'Torque', type: OochType.Tech,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Self }, { status: '+_atk_2', chance: 100, target: MoveTarget.Self },],
         description: 'Reduce the user\'s SPD to massively increase ATK.',
         self_target: true
     });
     create_move({
-        id: 72, name: 'Slow Burn', type: OochType.Flame,
+        id: Move.SlowBurn, name: 'Slow Burn', type: OochType.Flame,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Self }, { status: '+_def_2', chance: 100, target: MoveTarget.Self },],
         description: 'Reduces the user\'s heat, greatly increasing DEF at the cost of some SPD.',
         self_target: true
     });
     create_move({
-        id: 73, name: 'Kaleidoscope', type: OochType.Crystal,
+        id: Move.Kaleidoscope, name: 'Kaleidoscope', type: OochType.Crystal,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }, { status: Status.Snare, chance: 100, target: MoveTarget.Enemy }],
         description: 'Disorient the opponent in a room that BLINDS and SNARES.',
         tags: [MoveTag.Light]
     });
     create_move({
-        id: 74, name: 'Blinding Beam', type: OochType.Crystal,
+        id: Move.BlindingBeam, name: 'Blinding Beam', type: OochType.Crystal,
         damage: 75, accuracy: 80,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }],
         description: 'Fire a brilliant beam of light that BLINDS the opponent.',
         tags: [MoveTag.Light]
     });
     create_move({
-        id: 75, name: 'Overgrowth', type: OochType.Fungal,
+        id: Move.Overgrowth, name: 'Overgrowth', type: OochType.Fungal,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: '+_def_1', chance: 100, target: MoveTarget.Self }, { status: '+_spd_1', chance: 100, target: MoveTarget.Self }],
         description: 'Rapid fungal growth Raises ATK, DEF, and SPD.',
         self_target: true
     });
     create_move({
-        id: 76, name: 'Myco-Burst', type: OochType.Fungal,
+        id: Move.MycoBurst, name: 'Myco-Burst', type: OochType.Fungal,
         damage: 75, accuracy: 80,
         effect: [{ status: Status.Blind, chance: 100, target: MoveTarget.Enemy }],
         description: 'Fire a spore-filled bomb which BLINDS the opponent.',
     });
     create_move({
-        id: 77, name: 'Thorn Shot', type: OochType.Fungal,
+        id: Move.ThornShot, name: 'Thorn Shot', type: OochType.Fungal,
         damage: 60, accuracy: 90,
         effect: [{ status: 'critical', chance: 50, target: MoveTarget.None }],
         description: 'Shoot a condensed fungal thorn with a high critical chance.',
     });
     create_move({
-        id: 78, name: 'Slurp Up', type: OochType.Ooze,
+        id: Move.SlurpUp, name: 'Slurp Up', type: OochType.Ooze,
         damage: 0, accuracy: 100,
         effect: [{ status: 'heal', chance: 35, target: MoveTarget.Self }],
         description: 'The user gathers missing parts of its body to restore half its HP.',
         self_target: true
     });
     create_move({
-        id: 79, name: 'Digital Gamble', type: OochType.Tech,
+        id: Move.DigitalGamble, name: 'Digital Gamble', type: OochType.Tech,
         damage: 0, accuracy: 100,
         effect: [{ status: 'random', chance: 100, target: MoveTarget.None }],
         description: 'The user randomly uses a move.',
         battle_desc: 'Let\'s go gambling!'
     });
     create_move({
-        id: 80, name: 'Sedimentation', type: OochType.Stone,
+        id: Move.Sedimentation, name: 'Sedimentation', type: OochType.Stone,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_def_2', chance: 100, target: MoveTarget.Self }],
         description: 'Spend the turn gathering stone to greatly increase DEF.',
         self_target: true,
     });
     create_move({
-        id: 81, name: 'Plasma Cannon', type: OochType.Flame,
+        id: Move.PlasmaCannon, name: 'Plasma Cannon', type: OochType.Flame,
         damage: 120, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Self }],
         description: 'A high damage blast of extreme heat, but lowers the user\'s SPD afterward.',
     });
     create_move({
-        id: 82, name: 'Phantom Bullet', type: OochType.Magic,
+        id: Move.PhantomBullet, name: 'Phantom Bullet', type: OochType.Magic,
         damage: 30, accuracy: 100,
         effect: [{ status: 'critical', chance: 100, target: MoveTarget.None }],
         description: 'Fire a highly accurate ghost bullet that always Crits.',
     });
     create_move({
-        id: 83, name: 'Firey Bullet', type: OochType.Flame,
+        id: Move.FireyHorn, name: 'Firey Horn', type: OochType.Flame,
         damage: 70, accuracy: 100,
         effect: [{ status: Status.Burn, chance: 50, target: MoveTarget.Enemy }],
         description: 'Attack with blazing horns that have a chance to BURN the target.',
     });
     create_move({
-        id: 84, name: 'Radiate', type: OochType.Flame,
+        id: Move.Radiate, name: 'Radiate', type: OochType.Flame,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }, { status: Status.Burn, chance: 100, target: MoveTarget.Enemy }],
         description: 'Release stored-up radiation to BURN the target and reduce its ATK.',
         tags: [MoveTag.Light]
     });
     create_move({
-        id: 85, name: 'Caltrops', type: OochType.Stone,
+        id: Move.Caltrops, name: 'Caltrops', type: OochType.Stone,
         damage: 20, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Scatter damaging spikes that damage and reduce the target\'s SPD.',
     });
     create_move({
-        id: 86, name: 'Lurk', type: OochType.Magic,
+        id: Move.Lurk, name: 'Lurk', type: OochType.Magic,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: Status.Focus, chance: 100, target: MoveTarget.Self }],
         description: 'Lurk in the shadows boosting ATK and makes the user FOCUSED.',
         self_target: true,
     });
     create_move({
-        id: 87, name: 'Fog', type: OochType.Neutral,
+        id: Move.Fog, name: 'Fog', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_acc_2', chance: 100, target: MoveTarget.Self }, { status: '-_acc_2', chance: 100, target: MoveTarget.Enemy }],
         description: 'Spray thick fog which heavily reduces Accuracy on both sides.',
@@ -1364,136 +1369,136 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 88, name: 'Purify', type: OochType.Neutral,
+        id: Move.Purify, name: 'Purify', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: 'clear_status', chance: 100, target: MoveTarget.Self }],
         description: 'Removes all status effects from the user.',
         self_target: true
     });
     create_move({
-        id: 89, name: 'Reset', type: OochType.Neutral,
+        id: Move.Reset, name: 'Reset', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: 'clear_stat_stages', chance: 100, target: MoveTarget.Self }],
         description: 'Clears all stat changes from the user.',
         self_target: true
     });
     create_move({
-        id: 90, name: 'Debug Bomb', type: OochType.Tech,
+        id: Move.DebugBomb, name: 'Debug Bomb', type: OochType.Tech,
         damage: 100, accuracy: 80,
         effect: [{ status: 'clear_status', chance: 100, target: MoveTarget.Enemy }],
         description: 'Fire a high-damage bomb that clears any status effects from its target.',
     });
     create_move({
-        id: 91, name: 'Entrench', type: OochType.Fungal,
+        id: Move.Entrench, name: 'Entrench', type: OochType.Fungal,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_def_3', chance: 100, target: MoveTarget.Self }, { status: Status.Snare, chance: 100, target: MoveTarget.Self }],
         description: 'The user roots into the ground, becoming SNARED, but greatly boosting its DEF.',
         self_target: true
     });
     create_move({
-        id: 92, name: 'Null Sphere', type: OochType.Void,
+        id: Move.NullSphere, name: 'Null Sphere', type: OochType.Void,
         damage: 60, accuracy: 100,
         effect: [],
         description: 'Fire a sphere of dark matter.',
     });
     create_move({
-        id: 93, name: 'High Impact', type: OochType.Neutral,
+        id: Move.HighImpact, name: 'High Impact', type: OochType.Neutral,
         damage: 170, accuracy: 80,
         effect: [{ status: Status.Vanish, chance: 100, target: MoveTarget.Enemy }],
         description: 'Hit the opponent so hard they get launched and VANISH.'
     });
     create_move({
-        id: 94, name: 'Shards', type: OochType.Crystal,
+        id: Move.Shards, name: 'Shards', type: OochType.Crystal,
         damage: 20, accuracy: 100,
         effect: [],
         description: 'Shoot several small shards of crystal at the enemy to deal damage.',
     });
     create_move({
-        id: 95, name: 'Rag Whip', type: OochType.Cloth,
+        id: Move.RagWhip, name: 'Rag Whip', type: OochType.Cloth,
         damage: 20, accuracy: 100,
         effect: [],
         description: 'Pummel the opponent with cloth whips.',
     });
     create_move({
-        id: 96, name: 'Screech', type: OochType.Sound,
+        id: Move.Screech, name: 'Screech', type: OochType.Sound,
         damage: 20, accuracy: 100,
         effect: [],
         description: 'Emit a high-pitched screech that shatters objects.',
     });
     create_move({
-        id: 97, name: 'Lense Flare', type: OochType.Crystal,
+        id: Move.LenseFlare, name: 'Lense Flare', type: OochType.Crystal,
         damage: 40, accuracy: 100,
         effect: [{ status: '-_acc_1', chance: 40, target: MoveTarget.Enemy }],
         description: 'Fire an incredibly bright gem at the opponenet with a chance to reduce their Accuracy.',
         tags: [MoveTag.Light]
     });
     create_move({
-        id: 98, name: 'Bind', type: OochType.Cloth,
+        id: Move.Bind, name: 'Bind', type: OochType.Cloth,
         damage: 40, accuracy: 95,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Tightly wraps the enemy with cloth reducing its SPD.',
     });
     create_move({
-        id: 99, name: 'Thunder', type: OochType.Sound,
+        id: Move.Thunder, name: 'Thunder', type: OochType.Sound,
         damage: 30, accuracy: 100,
         effect: [{ status: '-_atk_1', chance: 30, target: MoveTarget.Enemy }],
         description: 'Fire a booming sound which has a chance to reduce the target\'s ATK.',
     });
     create_move({
-        id: 100, name: 'Rallying Cry', type: OochType.Sound,
+        id: Move.RallyingCry, name: 'Rallying Cry', type: OochType.Sound,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 50, target: MoveTarget.Self }, { status: '+_def_1', chance: 50, target: MoveTarget.Self }, { status: '+_spd_1', chance: 50, target: MoveTarget.Self }],
         description: 'Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.',
         self_target: true
     });
     create_move({
-        id: 101, name: 'Crystal Ball', type: OochType.Crystal,
+        id: Move.CrystalBall, name: 'Crystal Ball', type: OochType.Crystal,
         damage: 50, accuracy: 90,
         effect: [{ status: Status.Expose, chance: 30, target: MoveTarget.Enemy }],
         description: 'Launch a future-seeing crystal ball at the enemy, it might just forsee a future where the target\'s weakness is EXPOSED.',
     });
     create_move({
-        id: 102, name: 'Sonic Boom', type: OochType.Sound,
+        id: Move.SonicBoom, name: 'Sonic Boom', type: OochType.Sound,
         damage: 40, accuracy: 100,
         effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
         description: 'Quickly launch a blast of sound, this move always goes first.',
     });
     create_move({
-        id: 103, name: 'Ear Shatter', type: OochType.Sound,
+        id: Move.EarShatter, name: 'Shatter', type: OochType.Sound,
         damage: 80, accuracy: 95,
         effect: [{ status: '-_def_1', chance: 30, target: MoveTarget.Enemy }],
         description: 'Shout so loud that it shatters eardrums, has a chance to reduce DEF.',
     });
     create_move({
-        id: 104, name: 'Healing Gems', type: OochType.Crystal,
+        id: Move.HealingGems, name: 'Healing Gems', type: OochType.Crystal,
         damage: 0, accuracy: 100,
         effect: [{ status: 'heal', chance: 15, target: MoveTarget.Self }, { status: '+_def_1', chance: 100, target: MoveTarget.Self }],
         description: 'Heals the user a little while slightly bolstering their DEF.',
         self_target: true
     });
     create_move({
-        id: 105, name: 'Scary Sheet', type: OochType.Cloth,
+        id: Move.ScarySheet, name: 'Scary Sheet', type: OochType.Cloth,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_def_1', chance: 100, target: MoveTarget.Enemy }, { status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Catch the emeny off guard with a spooky cloth, dropping their DEF and SPD.',
         self_target: false,
     });
     create_move({
-        id: 106, name: 'Fiber Slicer', type: OochType.Cloth,
+        id: Move.FiberSlicer, name: 'Fiber Slicer', type: OochType.Cloth,
         damage: 65, accuracy: 100,
         effect: [{ status: Status.CritChance, chance: 30, target: MoveTarget.None }],
         description: 'Slashes the target with highly compressed fibers, has a high chance to Crit.',
         self_target: false,
     });
     create_move({
-        id: 107, name: 'Mummify', type: OochType.Cloth,
+        id: Move.Mummify, name: 'Mummify', type: OochType.Cloth,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.Doom, chance: 100, target: MoveTarget.Enemy }],
         description: 'Wraps the target in cursed cloths, DOOMING the target.',
         self_target: false,
     });
     create_move({
-        id: 108, name: 'Jackpot', type: OochType.Tech,
+        id: Move.Jackpot, name: 'Jackpot', type: OochType.Tech,
         damage: 99999, accuracy: -1,
         effect: [],
         description: 'You hit the jackpot!!!',
@@ -1501,7 +1506,7 @@ export async function execute(interaction, client) {
         self_target: false,
     });
     create_move({
-        id: 109, name: 'Jagged Ground', type: OochType.Stone,
+        id: Move.JaggedGround, name: 'Jagged Ground', type: OochType.Stone,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Field, chance: FieldEffect.JaggedGround, target: MoveTarget.None }],
         description: 'Jagged spikes erupt from the ground, any non-Stone-types that switch-in will take some damage.',
@@ -1509,7 +1514,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 110, name: 'Echo Chamber', type: OochType.Sound,
+        id: Move.EchoChamber, name: 'Echo Chamber', type: OochType.Sound,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Field, chance: FieldEffect.EchoChamber, target: MoveTarget.None }],
         description: 'Sound-type attacks harshly reverbrate in the area and can apply EXPOSED.',
@@ -1517,7 +1522,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 111, name: 'Wetlands', type: OochType.Ooze,
+        id: Move.Wetlands, name: 'Wetlands', type: OochType.Ooze,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Field, chance: FieldEffect.Wetlands, target: MoveTarget.None }],
         description: 'Viscous goo spreads across the area, non-Ooze-types move slower.',
@@ -1525,7 +1530,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 112, name: 'Twisted Reality', type: OochType.Magic,
+        id: Move.TwistedReality, name: 'Twisted Reality', type: OochType.Magic,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Field, chance: FieldEffect.TwistedReality, target: MoveTarget.None }],
         description: 'Reality becomes twisted in the surrounding area, Move order is reversed!.',
@@ -1533,7 +1538,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 113, name: 'Heatwave', type: OochType.Flame,
+        id: Move.Heatwave, name: 'Heatwave', type: OochType.Flame,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Weather, chance: Weather.Heatwave, target: MoveTarget.None }],
         description: 'The atmosphere is superheated! Non-Flame-type Oochamon will take damage at the end of each round.',
@@ -1541,7 +1546,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 114, name: 'Thunderstorm', type: OochType.Magic,
+        id: Move.Thunderstorm, name: 'Static Storm', type: OochType.Magic,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Weather, chance: Weather.Thunderstorm, target: MoveTarget.None }],
         description: 'Creates a magical thunderstorm. Oochamon that stay in battle too long will be struck by lightning.',
@@ -1549,7 +1554,7 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 115, name: 'Sky Clear', type: OochType.Neutral,
+        id: Move.SkyClear, name: 'Sky Clear', type: OochType.Neutral,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Weather, chance: Weather.Clear, target: MoveTarget.None }],
         description: 'Clears any weather affecting the battle.',
@@ -1557,91 +1562,91 @@ export async function execute(interaction, client) {
         self_target: true,
     });
     create_move({
-        id: 116, name: 'Pressure Wave', type: OochType.Neutral,
+        id: Move.PressureWave, name: 'Pressure Wave', type: OochType.Neutral,
         damage: 80, accuracy: 100,
         effect: [{ status: Status.WeatherDependent, chance: 100, target: MoveTarget.None }],
         description: 'Launches a wave of compressed air at the target. The move\'s type and status effects change depending on the current Weather.',
         self_target: false,
     });
     create_move({
-        id: 117, name: 'Held Strike', type: OochType.Neutral,
+        id: Move.HeldStrike, name: 'Held Strike', type: OochType.Neutral,
         damage: 120, accuracy: 100,
         effect: [{ status: 'priority_-1', chance: 100, target: MoveTarget.None }],
         description: 'An incredibly powerful strike that goes second.',
         self_target: false,
     });
     create_move({
-        id: 118, name: 'Lagspike', type: OochType.Tech,
+        id: Move.Lagspike, name: 'Lagspike', type: OochType.Tech,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.GoingLastBonus, chance: 150, target: MoveTarget.None }, { status: '-_def_2', chance: 100, target: MoveTarget.Enemy }],
         description: 'A high-damage move that fails if the user doesn\'t go last. Has 150 damage and lowers the target\'s DEF 2 stages if it hits.',
         self_target: false,
     });
     create_move({
-        id: 119, name: 'Whiplash', type: OochType.Cloth,
+        id: Move.Whiplash, name: 'Whiplash', type: OochType.Cloth,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.GoingFirstBonus, chance: 50, target: MoveTarget.None }],
         description: 'Rapidly lash out at the target. Deals double damage if it goes first.',
         self_target: false,
     });
     create_move({
-        id: 120, name: 'Guided Spire', type: OochType.Crystal,
+        id: Move.GuidedSpire, name: 'Guided Spire', type: OochType.Crystal,
         damage: 65, accuracy: -1,
         effect: [],
         description: 'Fires a crystal that relentlessly pursues the target. Guaranteed to hit.',
         self_target: false,
     });
     create_move({
-        id: 121, name: 'Heatseeker', type: OochType.Tech,
+        id: Move.Heatseeker, name: 'Heatseeker', type: OochType.Tech,
         damage: 60, accuracy: -1,
         effect: [],
         description: 'Fires a guieded missile at the target. Guaranteed to hit.',
         self_target: false,
     });
     create_move({
-        id: 122, name: 'Ear Splitter', type: OochType.Sound,
+        id: Move.EarSplitter, name: 'Ear Splitter', type: OochType.Sound,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.TrueDamage, chance: 30, target: MoveTarget.None }],
         description: 'A painful screech that always deals 30 damage.',
         self_target: false,
     });
     create_move({
-        id: 123, name: 'Micronet', type: OochType.Cloth,
+        id: Move.Micronet, name: 'Micronet', type: OochType.Cloth,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.TrueDamage, chance: 50, target: MoveTarget.None }],
         description: 'A particle-splitting net that always deals 50 damage.',
         self_target: false,
     });
     create_move({
-        id: 124, name: 'Asbestos Bomb', type: OochType.Stone,
+        id: Move.AsbestosBomb, name: 'Asbestos Bomb', type: OochType.Stone,
         damage: 20, accuracy: 100,
         effect: [{ status: Status.Infect, chance: 100, target: MoveTarget.Enemy }],
         description: 'A dangerous blast of asbestos that INFECTS the target.',
         self_target: false,
     });
     create_move({
-        id: 125, name: 'True Reflection', type: OochType.Crystal,
+        id: Move.TrueReflection, name: 'True Reflection', type: OochType.Crystal,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.TrueDamage, chance: 50, target: MoveTarget.None }],
         description: 'Creates a mirror image of the enemy that viciously attacks them. This move will always deal at least 50 damage.',
         self_target: false,
     });
     create_move({
-        id: 126, name: 'Gorgon Eye', type: OochType.Magic,
+        id: Move.GorgonEye, name: 'Gorgon Eye', type: OochType.Magic,
         damage: 50, accuracy: 100,
         effect: [{ status: Status.Petrify, chance: 30, target: MoveTarget.Enemy }],
         description: 'Blasts the enemy with dark magic. Has a chance to PETRIFY the target.',
         self_target: false,
     });
     create_move({
-        id: 127, name: 'Hawk Eye', type: OochType.Neutral,
+        id: Move.HawkEye, name: 'Hawk Eye', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.Revealed, chance: 100, target: MoveTarget.Enemy }],
         description: 'REVEALS the enemy Oochamon, guaranteeing the next attack against it to hit.',
         self_target: false,
     });
     create_move({
-        id: 128, name: 'Frostbite', type: OochType.Ooze,
+        id: Move.Frostbite, name: 'Frostbite', type: OochType.Ooze,
         damage: 30, accuracy: 100,
         effect: [{ status: Status.Snare, chance: 100, target: MoveTarget.Enemy }],
         description: 'Frosty jaws lunge forward, SNARING the target.',
@@ -1649,7 +1654,7 @@ export async function execute(interaction, client) {
         self_target: false,
     });
     create_move({
-        id: 129, name: 'Laser Sweep', type: OochType.Flame,
+        id: Move.LaserSweep, name: 'Laser Sweep', type: OochType.Flame,
         damage: 40, accuracy: 100,
         effect: [{ status: Status.SweepDamage, chance: 5, target: MoveTarget.Enemy }],
         description: 'An array of lasers sweep the area, it even damages Oochamon in their prisms.',
@@ -1657,91 +1662,91 @@ export async function execute(interaction, client) {
         self_target: false,
     });
     create_move({
-        id: 130, name: 'Annihilate', type: OochType.Neutral,
+        id: Move.Annihilate, name: 'Annihilate', type: OochType.Neutral,
         damage: 150, accuracy: 100,
         effect: [{ status: Status.Drained, chance: 100, target: MoveTarget.Self }],
         description: 'Bombards the area with high damage, the user must recharge after using this attack.',
         self_target: false,
     });
     create_move({
-        id: 131, name: 'Target Lock', type: OochType.Neutral,
+        id: Move.TargetLock, name: 'Target Lock', type: OochType.Neutral,
         damage: 0, accuracy: -1,
         effect: [{ status: Status.Revealed, chance: 100, target: MoveTarget.Enemy }, { status: Status.Expose, chance: 100, target: MoveTarget.Enemy }],
         description: 'Carefullly on to the target, REVEALING and EXPOSING them.',
         self_target: false,
     });
     create_move({
-        id: 132, name: 'Calamity', type: OochType.Magic,
+        id: Move.Calamity, name: 'Calamity', type: OochType.Magic,
         damage: 100, accuracy: 90,
         effect: [{ status: Status.Doom, chance: 100, target: MoveTarget.Self }],
         description: 'A high damaging move that DOOMS the user.',
         self_target: false,
     });
     create_move({
-        id: 133, name: 'Shooting Star', type: OochType.Stone,
+        id: Move.ShootingStar, name: 'Shooting Star', type: OochType.Stone,
         damage: 60, accuracy: 100,
         effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
         description: 'A high damaging move that DOOMS the user.',
         self_target: false,
     });
     create_move({
-        id: 134, name: 'Battle Cry', type: OochType.Sound,
+        id: Move.BattleCry, name: 'Battle Cry', type: OochType.Sound,
         damage: 0, accuracy: 100,
         effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'An intimidating shout that raises the user\'s ATK and lowers the enemy\'s ATK.',
         self_target: false,
     });
     create_move({
-        id: 135, name: 'The Most Annoying Sound in the World', type: OochType.Sound,
+        id: Move.MostAnnoyingSound, name: 'The Most Annoying Sound in the World', type: OochType.Sound,
         damage: 1, accuracy: -1,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy },{ status: '-_def_1', chance: 100, target: MoveTarget.Enemy },{ status: '-_spd_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Hey.',
         self_target: false,
     });
     create_move({
-        id: 136, name: 'Wub', type: OochType.Sound,
+        id: Move.Wub, name: 'Wub', type: OochType.Sound,
         damage: 60, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 30, target: MoveTarget.Enemy }],
         description: 'A deafening bass that can freeze enemies in their tracks. Has a chance to lower SPD.',
         self_target: false,
     });
     create_move({
-        id: 137, name: 'Bone Tone', type: OochType.Sound,
+        id: Move.BoneTone, name: 'Bone Tone', type: OochType.Sound,
         damage: 40, accuracy: 90,
         effect: [{ status: Status.Petrify, chance: 100, target: MoveTarget.Enemy }],
         description: 'An odd sound changes the targets internal structure to PETRIFY it.',
         self_target: false,
     });
     create_move({
-        id: 138, name: 'Silkstorm', type: OochType.Cloth,
+        id: Move.Silkstorm, name: 'Silkstorm', type: OochType.Cloth,
         damage: 80, accuracy: 90,
         effect: [{ status: '-_spd_3', chance: 100, target: MoveTarget.Self }, { status: '-_spd_3', chance: 100, target: MoveTarget.Enemy }],
         description: 'Densely woven silk strikes the target, greatly reducing its SPD as well as the user\'s.',
         self_target: false,
     });
     create_move({
-        id: 139, name: 'Spool Up', type: OochType.Cloth,
+        id: Move.SpoolUp, name: 'Spool Up', type: OochType.Cloth,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_spd_1', chance: 100, target: MoveTarget.Self }, { status: Status.ClearStatus, chance: 100, target: MoveTarget.Enemy }],
         description: 'The user takes some time to get organized reducing its SPD and clearing any Status Effects.',
         self_target: true,
     });
     create_move({
-        id: 140, name: 'Tie Down', type: OochType.Cloth,
+        id: Move.TieDown, name: 'Tie Down', type: OochType.Cloth,
         damage: 40, accuracy: 90,
         effect: [{ status: Status.Snare, chance: 100, target: MoveTarget.Enemy }, { status: Status.Expose, chance: 100, target: MoveTarget.Enemy }],
         description: 'Flailing ropes tie the target down to SNARE and EXPOSE them.',
         self_target: false,
     });
     create_move({
-        id: 141, name: 'Rug Rash', type: OochType.Cloth,
+        id: Move.RugRash, name: 'Rug Rash', type: OochType.Cloth,
         damage: 50, accuracy: 90,
         effect: [{ status: Status.Burn, chance: 40, target: MoveTarget.Enemy }],
         description: 'High friction on rough cloth damages the target, with a chance to BURN.',
         self_target: false,
     });
     create_move({
-        id: 142, name: 'Hymn of Dread', type: OochType.Sound,
+        id: Move.HymnOfDread, name: 'Hymn of Dread', type: OochType.Sound,
         damage: 70, accuracy: 90,
         effect: [{ status: Status.Weak, chance: 100, target: MoveTarget.Enemy }],
         description: 'A ancient and horrid song that leaves the target WEAKENED.',
@@ -1752,104 +1757,109 @@ export async function execute(interaction, client) {
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //#region Ability Data
     //             ID,  NAME,               Description
-    create_ability(0, 'Miniscule', 'Becomes super small and raises evasion against attacks by 1 stage upon entering the battlefield.');
-    create_ability(1, 'Icky', 'Boosts the power of OOZE & FUNGAL type attacks by 20%.');
-    create_ability(2, 'Burdened', 'A large growth reduces SPD by 1 stage but raises DEF by 1 stage upon entering the battlefield.');
-    create_ability(3, 'Broodmother', 'Gains 1 stage of ATK for each Oochamon with the same type in the party.');
-    create_ability(4, 'Tough', 'A durable body grants a 1 stage increase to DEF upon entering the battlefield.');
-    create_ability(5, 'Shadow', 'Grants a 25% chance to VANISH after being attacked.');
-    create_ability(6, 'Withering', 'Withers away the opposing Oochamon, lowering it\'s DEF by 1 stage upon entering the battlefield.');
-    create_ability(7, 'Darkbright', 'Attacks that afflict BURN also BLIND and vice-versa.');
-    create_ability(8, 'Gentle', 'A kind heart reduces both your ATK and the enemy ATK by 1 stage.');
-    create_ability(9, 'Warm', 'Raises the damage of FLAME attacks by 10%.');
-    create_ability(10, 'Radiant', 'Dangerous energy causes attacks that BURN also INFECT.');
-    create_ability(11, 'Conflicted', 'Multiple minds increase ALL stats by 1 stage upon entering the battlefield.');
-    create_ability(12, 'Burrower', 'Raises the damage of STONE attacks by 10%.');
-    create_ability(13, 'Reactive', 'When hit by an attack, reflects 10% of the attacker\'s HP as damage.');
-    create_ability(14, 'Inertia', 'Raises SPD by 1 stage each turn.');
-    create_ability(15, 'Dense', 'Raises ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield.');
-    create_ability(16, 'Moist', 'Halves all incoming FLAME damage.');
-    create_ability(17, 'Alert', 'Raises ATK by 1 stage when an Oochamon switches in.');
-    create_ability(18, 'Fleeting', 'Raises SPD and ATK by 2 stages but also loses half of current HP each turn.');
-    create_ability(19, 'Efficient', 'Raises ATK by 1 stage every other turn.');
-    create_ability(20, 'Boisterous', 'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP.');
-    create_ability(21, 'Haunted', 'Applies the DOOMED status to an enemy when the Haunted Oochamon faints.');
-    create_ability(22, 'Leech', 'Restores HP equal to 10% of damage done to the enemy.');
-    create_ability(23, 'Ensnare', 'Grants a 30% chance to SNARE an enemy when attacking.');
-    create_ability(24, 'Uncontrolled', 'Raises ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn.');
-    create_ability(25, 'Apprentice', 'Raises ATK by 2 stages if any other party members share a move with it.');
-    create_ability(26, 'Focused', 'Raises damage of attacks by 10% if unaffected by status effects.');
-    create_ability(27, 'Ravenous', 'Restores 20% of max HP upon defeating an enemy.');
-    create_ability(28, 'Immense', 'Raises DEF by 2 stages upon entering the battlefield, but also makes opponent\'s moves always hit.');
-    create_ability(29, 'Armored', 'Reduces STONE damage by 20%.');
-    create_ability(30, 'Scorching', 'Attacks that can BURN always BURN.');
-    create_ability(31, 'Tangled', 'Causes enemies that hit it to be SNARED.');
-    create_ability(32, 'Mundane', 'Makes the Oochamon completely immune to Status Effects.');
-    create_ability(33, 'Rogue', 'Doubles the damage dealt to full HP enemies.');
-    create_ability(34, 'Crystallize', 'Boosts the power of Ooze, Flame, and Crystal attacks by 30%.');
-    create_ability(35, 'Lacerating', 'All attacks do an extra attack to an enemy, dealing 5% of their max HP.');
-    create_ability(36, 'Gravity', 'Attacks deal 1% more damage per number of turns in this battle.');
-    create_ability(37, 'Sporespray', 'INFECTS the enemy when the Sporespray Oochamon faints.');
-    create_ability(38, 'Frostbite', 'Attacks that strike an enemy reduce their SPD by 1 stage.');
-    create_ability(39, 'Bipolar', 'Use the DEF stat when dealing damage, rather than the ATK stat.');
-    create_ability(40, 'Hexiply', 'Attacks deal 6% more damage per sixth of HP remaining.');
-    create_ability(41, 'Nullify', 'Nullify\'s the opposing Oochamon, changing their ability to Null while out on the field.');
-    create_ability(42, 'Duplicant', 'Copies the opponent\'s ability.');
-    create_ability(43, 'Null', 'Does nothing.');
-    create_ability(44, 'invalid_entry', 'I̵͑n̵̤̚c̶̥̈r̴͛͜e̵̛̖a̴̺͗s̵̼̑e̶s̵̺̈ a̶͙͗l̶̖͆l̸̠͐ ̸̪̐b̴͎̋a̸̖̅s̶͖̚ë̴̫́ ̵̹̔ş̶̽t̶̟̎a̴̪̾t̴̥̂ş̵̈́ ̵̱̉ū̵͜p̸̗̆ô̶̰ņ̴̓ ̵̳͋d̵̹̑e̵͎̕a̷͔͐t̵͉͋h̷̰̋.̴̫͘ ̶͈́C̸͙̈a̶̰̔ṅ̵̯n̵̬̾o̶̒ͅt̷̪̎ ̵̆͜b̴͎̄ȩ̸͗ ̵̜͛c̴̰̈́o̴̢͒p̸̣͛i̷̗̍ê̸͈d̶̹͌.̵͍̈'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
-    create_ability(45, 'Immobile', 'Always go last when attacking, but gain a DEF increase upon entering the battlefield.');
-    create_ability(46, 'Strings Attached', 'Gains a 20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking.');
-    create_ability(47, 'Corrosive', 'Attacks deal more damage to enemies with high DEF.');
-    create_ability(48, 'Spectral', 'Changes the Spectral Oochamon\'s type to Magic every other turn.');
-    create_ability(49, 'Height Advantage', 'Raises chance to do a critical hit by 10%.');
-    create_ability(50, 'Hearty', 'Raises damage done by 15% while above 50% HP.');
-    create_ability(51, 'Radioactive', 'Changes the Radioactive Oochamon\'s type to Flame every other turn.');
-    create_ability(52, 'Energized', 'Raises ATK and SPD by 1 stage on kill.');
-    create_ability(53, 'Patient', 'Raises DEF by 1 stage every other turn.');
-    create_ability(54, 'Easy Go', 'Heals the rest of the Oochamon Trainer\'s party by 20% of their max HP when defeated.');
-    create_ability(55, 'Bomber', 'The Oochamon explodes upon fainting, dealing half of the opposing Oochamon\'s HP on death.');
-    create_ability(56, 'Flammable', 'Gains 1 stage of ATK when hit with a FLAME type move.');
-    create_ability(57, 'Hole Dweller', 'Gets the Vanished status at the end of every other turn.'); //Unique - Cryptid
-    create_ability(58, 'Power Conduit', 'Boosts the power of FLAME moves against OOZE and TECH types by 50%.'); //Unique - Chemerai
-    create_ability(59, 'Liquid Cooled', 'Prevents BURN and boosts the power of TECH type moves by 25%.'); //Unique - Roswier
-    create_ability(60, 'Increment', 'Randomly boosts a stat by 1 stage at the end of each turn.');
-    create_ability(61, 'Parry', 'Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte.');
-    create_ability(62, 'Riposte', 'Raises damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry.');
-    create_ability(63, 'Swaying', 'Raises DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage.');
-    create_ability(64, 'Thrashing', 'Raises ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage.');
-    create_ability(65, 'Union', 'Raises ATK and DEF by 1 stage.');
-    create_ability(66, 'Protector', 'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.');
-    create_ability(67, 'Phantasmal', 'The Oochamon is phantasmal, making it immune to Neutral-type moves.');
-    create_ability(68, 'Matryoshka', 'The first time the Oochamon would faint, revives and restores its HP to half.');
-    create_ability(69, 'Thorned', 'Attacks deal extra damage based on DEF.');
-    create_ability(70, 'Downward Spiral', 'Randomly lowers one of its stats 1 stage at the end of each turn.');
-    create_ability(71, 'Constructor', 'Raises DEF by 1 stage when hit by a Stone-type move.');
-    create_ability(72, 'Neutralizer', 'The special effects of damaging attacks are ignored, but their damage is increased by 30%.');
-    create_ability(73, 'Bass Boost', 'Boosts the power of Sound moves by 15%.');
-    create_ability(74, 'Stealthy', 'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.');
-    create_ability(75, 'Pursuer', 'Deals 20% current HP damage to an Oochamon as it switches out.');
-    create_ability(76, 'Bloodrush', 'Taking damage raises SPD by 1 stage.');
-    create_ability(77, 'Chronomancy', 'Damaging moves get -1 Priority. Other moves get +1 Priority.');
-    create_ability(78, 'Martyr', 'If this Oochamon is swapped out with 0 HP, Raises the ATK of the next mon to switch in.');
-    create_ability(79, 'Condiment', 'Raises the DEF & SPD of Lasangato in the party 1 stage.'); //Unique - Parmanyan
-    create_ability(80, 'Double or Nothing', 'Attacks damage is either doubled or reduced to 0.');
-    create_ability(81, 'Vigorous', 'Raises healing done by moves by 30%.');
-    create_ability(82, 'Turbine', 'Raises ATK whenever it uses a Flame-type attack.');
-    create_ability(83, 'Pact', 'Raises the damage of the user\'s first move by 30% on repeated uses.');
-    create_ability(84, 'Exploiter', 'The EXPOSED status triples damage instead of doubling it.');
-    create_ability(85, 'Seer', 'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
-    create_ability(86, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.'); //Unique - Security System Boss
-    create_ability(87, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.'); //Unique - Giant Slime Head Boss
+    create_ability(Ability.Miniscule, 'Miniscule', 'Becomes super small and raises evasion against attacks by 1 stage upon entering the battlefield.');
+    create_ability(Ability.Icky, 'Icky', 'Boosts the power of OOZE & FUNGAL type attacks by 20%.');
+    create_ability(Ability.Burdened, 'Burdened', 'A large growth reduces SPD by 1 stage but raises DEF by 1 stage upon entering the battlefield.');
+    create_ability(Ability.Broodmother, 'Broodmother', 'Gains 1 stage of ATK for each Oochamon with the same type in the party.');
+    create_ability(Ability.Tough, 'Tough', 'A durable body grants a 1 stage increase to DEF upon entering the battlefield.');
+    create_ability(Ability.Shadow, 'Shadow', 'Grants a 25% chance to VANISH after being attacked.');
+    create_ability(Ability.Withering, 'Withering', 'Withers away the opposing Oochamon, lowering it\'s DEF by 1 stage upon entering the battlefield.');
+    create_ability(Ability.Darkbright, 'Darkbright', 'Attacks that afflict BURN also BLIND and vice-versa.');
+    create_ability(Ability.Gentle, 'Gentle', 'A kind heart reduces both your ATK and the enemy ATK by 1 stage.');
+    create_ability(Ability.Warm, 'Warm', 'Raises the damage of FLAME attacks by 10%.');
+    create_ability(Ability.Radiant, 'Radiant', 'Dangerous energy causes attacks that BURN also INFECT.');
+    create_ability(Ability.Conflicted, 'Conflicted', 'Multiple minds increase ALL stats by 1 stage upon entering the battlefield.');
+    create_ability(Ability.Burrower, 'Burrower', 'Raises the damage of STONE attacks by 10%.');
+    create_ability(Ability.Reactive, 'Reactive', 'When hit by an attack, reflects 10% of the attacker\'s HP as damage.');
+    create_ability(Ability.Inertia, 'Inertia', 'Raises SPD by 1 stage each turn.');
+    create_ability(Ability.Dense, 'Dense', 'Raises ATK by 1 stage but reduces SPD by 1 stage upon entering the battlefield.');
+    create_ability(Ability.Moist, 'Moist', 'Halves all incoming FLAME damage.');
+    create_ability(Ability.Alert, 'Alert', 'Raises ATK by 1 stage when an Oochamon switches in.');
+    create_ability(Ability.Fleeting, 'Fleeting', 'Raises SPD and ATK by 2 stages but also loses half of current HP each turn.');
+    create_ability(Ability.Efficient, 'Efficient', 'Raises ATK by 1 stage every other turn.');
+    create_ability(Ability.Boisterous, 'Boisterous', 'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP.');
+    create_ability(Ability.Haunted, 'Haunted', 'Applies the DOOMED status to an enemy when the Haunted Oochamon faints.');
+    create_ability(Ability.Leech, 'Leech', 'Restores HP equal to 10% of damage done to the enemy.');
+    create_ability(Ability.Ensnare, 'Ensnare', 'Grants a 30% chance to SNARE an enemy when attacking.');
+    create_ability(Ability.Uncontrolled, 'Uncontrolled', 'Raises ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn.');
+    create_ability(Ability.Apprentice, 'Apprentice', 'Raises ATK by 2 stages if any other party members share a move with it.');
+    create_ability(Ability.Focused, 'Focused', 'Raises damage of attacks by 10% if unaffected by status effects.');
+    create_ability(Ability.Ravenous, 'Ravenous', 'Restores 20% of max HP upon defeating an enemy.');
+    create_ability(Ability.Immense, 'Immense', 'Raises DEF by 2 stages upon entering the battlefield, but also makes opponent\'s moves always hit.');
+    create_ability(Ability.Armored, 'Armored', 'Reduces STONE damage by 20%.');
+    create_ability(Ability.Scorching, 'Scorching', 'Attacks that can BURN always BURN.');
+    create_ability(Ability.Tangled, 'Tangled', 'Causes enemies that hit it to be SNARED.');
+    create_ability(Ability.Mundane, 'Mundane', 'Makes the Oochamon completely immune to Status Effects.');
+    create_ability(Ability.Rogue, 'Rogue', 'Doubles the damage dealt to full HP enemies.');
+    create_ability(Ability.Crystallize, 'Crystallize', 'Boosts the power of Ooze, Flame, and Crystal attacks by 30%.');
+    create_ability(Ability.Lacerating, 'Lacerating', 'All attacks do an extra attack to an enemy, dealing 5% of their max HP.');
+    create_ability(Ability.Gravity, 'Gravity', 'Attacks deal 1% more damage per number of turns in this battle.');
+    create_ability(Ability.Sporespray, 'Sporespray', 'INFECTS the enemy when the Sporespray Oochamon faints.');
+    create_ability(Ability.Frostbite, 'Frostbite', 'Attacks that strike an enemy reduce their SPD by 1 stage.');
+    create_ability(Ability.Bipolar, 'Bipolar', 'Use the DEF stat when dealing damage, rather than the ATK stat.');
+    create_ability(Ability.Hexiply, 'Hexiply', 'Attacks deal 6% more damage per sixth of HP remaining.');
+    create_ability(Ability.Nullify, 'Nullify', 'Nullify\'s the opposing Oochamon, changing their ability to Null while out on the field.');
+    create_ability(Ability.Duplicant, 'Duplicant', 'Copies the opponent\'s ability.');
+    create_ability(Ability.Null, 'Null', 'Does nothing.');
+    create_ability(Ability.InvalidEntry, 'invalid_entry', 'I̵͑n̵̤̚c̶̥̈r̴͛͜e̵̛̖a̴̺͗s̵̼̑e̶s̵̺̈ a̶͙͗l̶̖͆l̸̠͐ ̸̪̐b̴͎̋a̸̖̅s̶͖̚ë̴̫́ ̵̹̔ş̶̽t̶̟̎a̴̪̾t̴̥̂ş̵̈́ ̵̱̉ū̵͜p̸̗̆ô̶̰ņ̴̓ ̵̳͋d̵̹̑e̵͎̕a̷͔͐t̵͉͋h̷̰̋.̴̫͘ ̶͈́C̸͙̈a̶̰̔ṅ̵̯n̵̬̾o̶̒ͅt̷̪̎ ̵̆͜b̴͎̄ȩ̸͗ ̵̜͛c̴̰̈́o̴̢͒p̸̣͛i̷̗̍ê̸͈d̶̹͌.̵͍̈'); // Increase the global counter for i's stats by 1 upon losing to a player, resets its stats to 1 upon defeating a player
+    create_ability(Ability.Immobile, 'Immobile', 'Always go last when attacking, but gain a DEF increase upon entering the battlefield.');
+    create_ability(Ability.StringsAttached, 'Strings Attached', 'Gains a 20% chance to apply a randomly apply BURN, INFECT, BLIND, or SNARE when attacking.');
+    create_ability(Ability.Corrosive, 'Corrosive', 'Attacks deal more damage to enemies with high DEF.');
+    create_ability(Ability.Spectral, 'Spectral', 'Changes the Spectral Oochamon\'s type to Magic every other turn.');
+    create_ability(Ability.HeightAdvantage, 'Height Advantage', 'Raises chance to do a critical hit by 10%.');
+    create_ability(Ability.Hearty, 'Hearty', 'Raises damage done by 15% while above 50% HP.');
+    create_ability(Ability.Radioactive, 'Radioactive', 'Changes the Radioactive Oochamon\'s type to Flame every other turn.');
+    create_ability(Ability.Energized, 'Energized', 'Raises ATK and SPD by 1 stage on kill.');
+    create_ability(Ability.Patient, 'Patient', 'Raises DEF by 1 stage every other turn.');
+    create_ability(Ability.EasyGo, 'Easy Go', 'Heals the rest of the Oochamon Trainer\'s party by 20% of their max HP when defeated.');
+    create_ability(Ability.Bomber, 'Bomber', 'The Oochamon explodes upon fainting, dealing half of the opposing Oochamon\'s HP on death.');
+    create_ability(Ability.Flammable, 'Flammable', 'Gains 1 stage of ATK when hit with a FLAME type move.');
+    create_ability(Ability.HoleDweller, 'Hole Dweller', 'Gets the Vanished status at the end of every other turn.'); //Unique - Cryptid
+    create_ability(Ability.PowerConduit, 'Power Conduit', 'Boosts the power of FLAME moves against OOZE and TECH types by 50%.'); //Unique - Chemerai
+    create_ability(Ability.LiquidCooled, 'Liquid Cooled', 'Prevents BURN and boosts the power of TECH type moves by 25%.'); //Unique - Roswier
+    create_ability(Ability.Increment, 'Increment', 'Randomly boosts a stat by 1 stage at the end of each turn.');
+    create_ability(Ability.Parry, 'Parry', 'Reduces damage taken by 20%. When hit by an attack, this ability becomes Riposte.');
+    create_ability(Ability.Riposte, 'Riposte', 'Raises damage dealt by 20%. After attacking or when the turn ends, this ability becomes Parry.');
+    create_ability(Ability.Swaying, 'Swaying', 'Raises DEF by 1 stage upon entering the battlefield, but also lowers accuracy by 1 stage.');
+    create_ability(Ability.Thrashing, 'Thrashing', 'Raises ATK by 1 stage upon entering the battlefield, but also lowers evasion by 1 stage.');
+    create_ability(Ability.Union, 'Union', 'Raises ATK and DEF by 1 stage.');
+    create_ability(Ability.Protector, 'Protector', 'The Oochamon gets protected, making it immune to moves it resists during the turn it switches in.');
+    create_ability(Ability.Phantasmal, 'Phantasmal', 'The Oochamon is phantasmal, making it immune to Neutral-type moves.');
+    create_ability(Ability.Matryoshka, 'Matryoshka', 'The first time the Oochamon would faint, revives and restores its HP to half.');
+    create_ability(Ability.Thorned, 'Thorned', 'Attacks deal extra damage based on DEF.');
+    create_ability(Ability.DownwardSpiral, 'Downward Spiral', 'Randomly lowers one of its stats 1 stage at the end of each turn.');
+    create_ability(Ability.Constructor, 'Constructor', 'Raises DEF by 1 stage when hit by a Stone-type move.');
+    create_ability(Ability.Neutralizer, 'Neutralizer', 'The special effects of damaging attacks are ignored, but their damage is increased by 30%.');
+    create_ability(Ability.BassBoost, 'Bass Boost', 'Boosts the power of Sound moves by 15%.');
+    create_ability(Ability.Stealthy, 'Stealthy', 'The Oochamon becomes stealthy, gaining the status effect **FOCUSED** if it hasn\'t dealt damage this turn.');
+    create_ability(Ability.Pursuer, 'Pursuer', 'Deals 20% current HP damage to an Oochamon as it switches out.');
+    create_ability(Ability.Bloodrush, 'Bloodrush', 'Taking damage raises SPD by 1 stage.');
+    create_ability(Ability.Chronomancy, 'Chronomancy', 'Damaging moves get -1 Priority. Other moves get +1 Priority.');
+    create_ability(Ability.Martyr, 'Martyr', 'If this Oochamon is swapped out with 0 HP, Raises the ATK of the next mon to switch in.');
+    create_ability(Ability.Condiment, 'Condiment', 'Raises the DEF & SPD of Lasangato in the party 1 stage.'); //Unique - Parmanyan
+    create_ability(Ability.DoubleOrNothing, 'Double or Nothing', 'Attacks damage is either doubled or reduced to 0.');
+    create_ability(Ability.Vigorous, 'Vigorous', 'Raises healing done by moves by 30%.');
+    create_ability(Ability.Turbine, 'Turbine', 'Raises ATK whenever it uses a Flame-type attack.');
+    create_ability(Ability.Pact, 'Pact', 'Raises the damage of the user\'s first move by 30% on repeated uses.');
+    create_ability(Ability.Exploiter, 'Exploiter', 'The EXPOSED status triples damage instead of doubling it.');
+    create_ability(Ability.Seer, 'Seer', 'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
+    create_ability(Ability.EscalationProtocol, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.'); //Unique - Security System Boss
+    create_ability(Ability.SpreadingSludge, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.'); //Unique - Giant Slime Head Boss
 
     //TO DO (i think some may be done but i forgor)
-    create_ability(88, 'Ancient Plating', 'Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
-    create_ability(89, 'Ancient Ward', 'Allied Oochamon take reduced damage for attacks that match this Oochamon\'s type.'); //Unique - Ophicore's Rune pieces
-    create_ability(90, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
-    create_ability(91, 'Pure Core', 'Reduces the damage of incoming non-Super Effective moves.'); //Unique - Ophicore (Post-game ability)
-    create_ability(92, 'Lullaby', 'Sound-type moves have a chance to put the target to SLEEP.'); //Unique - Heraloom
-    create_ability(93, 'Twilight Hour', 'If this oochamon gets DOOMED, its ATK, DEF, & SPD are greatly increased.') //Unique - Priseroth Line
-    create_ability(94, 'Cacophony', 'Using a Sound-type move raise the users ATK, but lowers their DEF.') //Unique - Bansheet
-    create_ability(95, 'Accelerando', 'Using a Sound-type move raise the users SPD.') //Unique - Orchestryd  line
+    create_ability(Ability.AncientPlating, 'Ancient Plating', 'Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
+    create_ability(Ability.AncientWard, 'Ancient Ward', 'Allied Oochamon take reduced damage for attacks that match this Oochamon\'s type.'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.Usurper, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
+    create_ability(Ability.PureCore, 'Pure Core', 'Reduces the damage of incoming non-Super Effective moves.'); //Unique - Ophicore (Post-game ability)
+    create_ability(Ability.Lullaby, 'Lullaby', 'Sound-type moves have a chance to put the target to SLEEP.'); //Unique - Heraloom
+    create_ability(Ability.TwilightHour, 'Twilight Hour', 'If this oochamon gets DOOMED, its ATK, DEF, & SPD are greatly increased.') //Unique - Priseroth Line
+    create_ability(Ability.Cacophony, 'Cacophony', 'Using a Sound-type move raise the users ATK, but lowers their DEF.') //Unique - Bansheet
+    create_ability(Ability.Accelerando, 'Accelerando', 'Using a Sound-type move raise the users SPD.') //Unique - Orchestryd  line
+    create_ability(Ability.OnIce, 'On Ice', 'Starts with the EXHAUSTED status, but increases ATK, DEF, and SPD the following turn.')
+    create_ability(Ability.Flux, 'Flux', 'Status effects on this Oochamon are randomized at the end of each turn.')
+    create_ability(Ability.Equalized, 'Equalized', 'Sets the Oochamon\'s type to Neutral at the start of battle.') //funny because neutral has no weakenesses/resistances
+    create_ability(Ability.Patchwork, 'Patchwork', 'Using Cloth-type moves heals the user for 5% of max HP.')
+
 
 
     //#endregion
@@ -2246,7 +2256,7 @@ export async function execute(interaction, client) {
             [31, Move.Torch], [34, Move.Bind], [36, Move.Barrage], [43, Move.PlasmaCannon], [-1, Move.Laminate]
         ],
         abilities: [Ability.Leech, Ability.Icky],
-        pre_evo_id: -1, evo_id: 111, evo_lvl: -1, evo_stage: 0
+        pre_evo_id: -1, evo_id: 111, evo_lvl: 30, evo_stage: 0
     });
 
     // Jellime

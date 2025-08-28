@@ -395,7 +395,11 @@ const Ability = {
     Lullaby: 92,
     TwilightHour: 93,
     Cacophony: 94,
-    Accelerando: 95
+    Accelerando: 95,
+    OnIce: 96,
+    Flux: 97,
+    Equalized: 98,
+    Patchwork: 99
 }
 
 const Item = {
