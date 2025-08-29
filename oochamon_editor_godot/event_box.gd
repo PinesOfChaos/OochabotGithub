@@ -9,8 +9,8 @@ var child_node = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(event_slot_type == Global.EVENT_DIALOG)
-	print([event_slot_type, Global.EVENT_DIALOG])
+	#print(event_slot_type == Global.EVENT_DIALOG)
+	#print([event_slot_type, Global.EVENT_DIALOG])
 	var spawn_child = ""
 	if event_slot_type == Global.EVENT_DIALOG:
 		label.text = "Dialog"

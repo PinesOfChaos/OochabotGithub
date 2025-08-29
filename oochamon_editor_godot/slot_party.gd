@@ -51,7 +51,7 @@ func _ready():
 		var ooch = Global.DataOochamon[key]
 		var ooch_index = ooch.ooch_index
 		ooch_index = index_js2gd(ooch_index)
-		print([ooch_index, ooch.ooch_name, ooch.ooch_texture])
+		#print([ooch_index, ooch.ooch_name, ooch.ooch_texture])
 		o_slot_species.add_icon_item(
 			ooch.ooch_texture,
 			ooch.ooch_name,
@@ -236,7 +236,7 @@ func _on_slot_level_value_changed(value):
 	
 func _on_slot_ability_item_selected(index):
 	slot_data.ability = o_slot_ability.get_item_id(index)
-	print(slot_data.ability)
+	#print(slot_data.ability)
 
 func refresh_summary(index):
 	index = index_js2gd(index)
@@ -268,26 +268,26 @@ func _on_slot_spd_value_changed(value):
 	refresh_summary(slot_data.id)
 
 func _on_move_1_item_selected(index):
-	print(slot_data.moveset)
-	print(o_move_1.get_item_id(index))
+	#print(slot_data.moveset)
+	#print(o_move_1.get_item_id(index))
 	fill_empty_moves()
 	slot_data.moveset[0] = o_move_1.get_item_id(index)
 
 func _on_move_2_item_selected(index):
-	print(slot_data.moveset)
-	print(o_move_2.get_item_id(index))
+	#print(slot_data.moveset)
+	#print(o_move_2.get_item_id(index))
 	fill_empty_moves()
 	slot_data.moveset[1] = o_move_2.get_item_id(index)
 
 func _on_move_3_item_selected(index):
-	print(slot_data.moveset)
-	print(o_move_3.get_item_id(index))
+	#print(slot_data.moveset)
+	#print(o_move_3.get_item_id(index))
 	fill_empty_moves()
 	slot_data.moveset[2] = o_move_3.get_item_id(index)
 
 func _on_move_4_item_selected(index):
-	print(slot_data.moveset)
-	print(o_move_4.get_item_id(index))
+	#print(slot_data.moveset)
+	#print(o_move_4.get_item_id(index))
 	fill_empty_moves()
 	slot_data.moveset[3] = o_move_4.get_item_id(index)
 	

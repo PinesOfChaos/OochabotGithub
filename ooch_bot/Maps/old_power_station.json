@@ -1123,7 +1123,7 @@
 			"aggro_range": 3.0,
 			"battle_ai": 0.0,
 			"coin": 0.0,
-			"flag_given": "",
+			"flag_given": "lyra_freed",
 			"flag_kill": "",
 			"flag_required": "",
 			"is_catchable": false,
@@ -1185,7 +1185,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 46
+					"id": 46.0
 				}
 			],
 			"name": "Chest",
@@ -5921,6 +5921,13 @@
 			"connect_y": 31.0,
 			"x": 36.0,
 			"y": 8.0
+		},
+		{
+			"connect_map": "hub",
+			"connect_x": 55.0,
+			"connect_y": 42.0,
+			"x": 8.0,
+			"y": 59.0
 		}
 	],
 	"map_weather": []

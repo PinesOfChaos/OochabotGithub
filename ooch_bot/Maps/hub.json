@@ -26,6 +26,15 @@
 			"width": 0.0,
 			"x": 45.0,
 			"y": 50.0
+		},
+		{
+			"event_name": "ev_lyra_al_post_powerplant",
+			"flag_kill": "ev_lyra_al_post_powerplant",
+			"flag_required": "",
+			"height": 1.0,
+			"width": 2.0,
+			"x": 47.0,
+			"y": 49.0
 		}
 	],
 	"map_info": {
@@ -202,7 +211,7 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "to_restricted_tunnel",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
@@ -783,7 +792,7 @@
 				0.0
 			],
 			"team": [],
-			"x": 42.0,
+			"x": 43.0,
 			"y": 41.0
 		},
 		{
@@ -848,7 +857,7 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "Oh thank goodness, you're back, {player}!\nCade's already checked in with me and it seems he may be taking a little break to recover.\nThat misadventure below the access tunnel really took a toll on him.\nSpeaking of which, Al and his team will be working to clear the access tunnel of any debris.\nI'll be off investigating some issues with the Powerplant nearby.\nBut, oh, don't you worry about me, I'm quite capable of defending myself.\nAs for yourself, relax as you see fit for the time being. {objective:Relax}\nExplore, catch some Oochamon, do some shopping, get some rest. Our work will only get busier from here.",
 			"remove_on_finish": true,
-			"sprite": 6,
+			"sprite": 6.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_006",
@@ -860,11 +869,11 @@
 			"y": 49.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "go_to_powerplant",
-			"flag_kill": "",
+			"flag_kill": "lyra_freed",
 			"flag_required": "find_lyra",
 			"is_catchable": false,
 			"items": [],
@@ -873,41 +882,162 @@
 			"post_combat_dialogue": "You... do know what direction east is, right?\nOh, good, well get going! Who knows what kind of danger the professor could be in!",
 			"pre_combat_dialogue": "Hm...\nHmmm...\nNo, no, I obviously couldn't...\n...\nAh, you haven't seen Professor Lyra yet either?\nLast I heard she was headed to the old Powerplant just east of here.\nPlease check on her, I'm not exactly equipped for battle.\nI'll message the guard so he knows to let you through. {objective:Travel East to find Professor Lyra at the Powerplant}",
 			"remove_on_finish": false,
-			"sprite": 5,
+			"sprite": 5.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_005",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 47.0,
 			"y": 50.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "go_to_powerplant",
 			"is_catchable": false,
-			"items": [],
+			"items": [
+				{
+					"count": 2.0,
+					"id": 9.0
+				},
+				{
+					"count": 2.0,
+					"id": 10.0
+				},
+				{
+					"count": 2.0,
+					"id": 12.0
+				},
+				{
+					"count": 2.0,
+					"id": 13.0
+				},
+				{
+					"count": 2.0,
+					"id": 14.0
+				}
+			],
 			"name": "Guard Bob",
 			"npc_id": "396447901277015875",
-			"post_combat_dialogue": "Well, get moving...\nIs what I would say if this weren't the end of this playtest session.\n`This is the end of this part of the playtest. But there's plenty of other stuff to do in the meantime.`",
-			"pre_combat_dialogue": "You've been granted temporary permission to enter the powerplant.\nDo yourself a favor and don't cause any trouble in there.",
+			"post_combat_dialogue": "Well, get going!",
+			"pre_combat_dialogue": "You've been granted permission to enter the Powerplant.\nDo yourself a favor and don't cause any trouble in there.\n...\nHey, take these with you. You never know what you might run into out there.",
 			"remove_on_finish": false,
-			"sprite": 3,
+			"sprite": 3.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_003",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 55.0,
-			"y": 42.0
+			"y": 41.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "lyra_freed",
+			"is_catchable": false,
+			"items": [],
+			"name": "Researcher David",
+			"npc_id": "769617621787906674",
+			"post_combat_dialogue": "Sorry, {player}, I'm a bit busy at the moment.",
+			"pre_combat_dialogue": "Ah, good, Lyra's back. Glad you could make that happen.",
+			"remove_on_finish": false,
+			"sprite": 5.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_005",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 44.0,
+			"y": 53.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "lyra_freed",
+			"is_catchable": false,
+			"items": [],
+			"name": "Professor Lyra",
+			"npc_id": "775946956620680965",
+			"post_combat_dialogue": "I'll be here If you need me. Please be safe, {player}.",
+			"pre_combat_dialogue": "It feels good to finally not be in that cramped room anymore.",
+			"remove_on_finish": false,
+			"sprite": 6.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 48.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "to_restricted_tunnel",
+			"flag_required": "lyra_freed",
+			"is_catchable": false,
+			"items": [],
+			"name": "Engineer Al",
+			"npc_id": "487738329478030185",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 9.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_009",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 47.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "read_a_sign",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Sign",
+			"npc_id": "375409082184676492",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "← Stone Tunnel\n→ Powerplant\n↑ Access Tunnel\n↓ Restricted Tunnel",
+			"remove_on_finish": false,
+			"sprite": 2.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_020",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 37.0,
+			"y": 41.0
 		}
 	],
 	"map_savepoints": [
@@ -5241,10 +5371,17 @@
 		},
 		{
 			"connect_map": "old_power_station",
-			"connect_x": 0.0,
-			"connect_y": 0.0,
+			"connect_x": 9.0,
+			"connect_y": 59.0,
 			"x": 56.0,
 			"y": 42.0
+		},
+		{
+			"connect_map": "restricted_tunnel",
+			"connect_x": 10.0,
+			"connect_y": 4.0,
+			"x": 37.0,
+			"y": 59.0
 		}
 	],
 	"map_weather": []

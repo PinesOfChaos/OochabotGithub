@@ -507,6 +507,289 @@
 			}
 		]
 	],
+	"ev_lyra_al_post_powerplant": [
+		[
+			0,
+			{
+				"description": "Ah, welcome back, and thank you for the rescue, {player}.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Seriously, thanks, I had no idea the Prof was in so much danger.",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Oh, and Prof, have you heard anything back from Cade?",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Not yet, but I have left him some messages, hopefully he'll reach out soon.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Before we proceed further, {player}, it's probably best to make sure you're ready to deal with what's ahead. Prepare yourself!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			1,
+			{
+				"battle_ai": 1,
+				"coin": 0,
+				"is_catchable": false,
+				"name": "Professor Lyra",
+				"sprite": 6,
+				"sprite_combat": "",
+				"sprite_id": "c00_006",
+				"team": [
+					{
+						"ability": 14,
+						"atk_iv": 4.0,
+						"def_iv": 2.0,
+						"hp_iv": 5.0,
+						"id": 73.0,
+						"item": -1,
+						"level": 34.0,
+						"moveset": [
+							42,
+							109,
+							14,
+							36
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 8.0
+					},
+					{
+						"ability": 28,
+						"atk_iv": 2.0,
+						"def_iv": 9.0,
+						"hp_iv": 4.0,
+						"id": 36.0,
+						"item": -1,
+						"level": 35.0,
+						"moveset": [
+							102,
+							11,
+							50,
+							49
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 7.0
+					},
+					{
+						"ability": 2,
+						"atk_iv": 4.0,
+						"def_iv": 3.0,
+						"hp_iv": 4.0,
+						"id": 80.0,
+						"item": -1,
+						"level": 36.0,
+						"moveset": [
+							56,
+							78,
+							39,
+							80
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 4.0
+					},
+					{
+						"ability": 0.0,
+						"atk_iv": 8.0,
+						"def_iv": 2.0,
+						"hp_iv": 1.0,
+						"id": 86.0,
+						"item": -1,
+						"level": 37.0,
+						"moveset": [
+							73,
+							35,
+							56,
+							66
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 3
+			}
+		],
+		[
+			0,
+			{
+				"description": "Now, I suppose I owe you an explanation for everything that's been going on.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "As I'm sure you've noticed, some researchers have been corrupted by some sort of influence within the planet.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I'm afraid that influence is some sort of Oochamon, deep below the planet's surface.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Kat seems to have come under its influence and is attempting to reach it via the Restricted Tunnel.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I don't know what she's getting out of this, but I know it can't be good for us or the Oochamon on this planet.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Please, try to stop her.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I'll try to pull some strings on my end. For now, I think Lyra and I can both place our trust in you, {player}.",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "I'll let you know if I have any luck!",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Thank you, both of you, so much! I know you can do this, {player}.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Travel South and through the Restricted Tunnel",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_lyra_al_post_powerplant"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_lyra_al_post_powerplant"
+			}
+		]
+	],
 	"ev_lyra_kat_dialog": [
 		[
 			0.0,
@@ -919,6 +1202,144 @@
 			}
 		]
 	],
+	"ev_roswier": [
+		[
+			0.0,
+			{
+				"description": "The computer screen seems to glow with an eerie light.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "A glowing eye appears in the screen's center.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It seems to get closer.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Closer...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Closer...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*bvzzzzzzt*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": true,
+				"name": "",
+				"sprite": 41.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_041",
+				"team": [
+					{
+						"ability": 59.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 97.0,
+						"item": -1.0,
+						"level": 35.0,
+						"moveset": [
+							48.0,
+							34.0,
+							51.0,
+							9.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_roswier"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_roswier"
+			}
+		]
+	],
 	"ev_save_tutorial": [
 		[
 			0.0,
@@ -1259,7 +1680,7 @@
 	],
 	"ev_security_boss": [
 		[
-			0,
+			0.0,
 			{
 				"description": "Main Systems Online",
 				"dialogue_portrait": "",
@@ -1272,7 +1693,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Deploying Battle Pattern Delta",
 				"dialogue_portrait": "",
@@ -1285,7 +1706,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Activating Combat Mode",
 				"dialogue_portrait": "",
@@ -1298,40 +1719,40 @@
 			}
 		],
 		[
-			1,
+			1.0,
 			{
-				"battle_ai": 0,
-				"coin": 0,
+				"battle_ai": 0.0,
+				"coin": 0.0,
 				"is_catchable": false,
 				"name": "Security System Δ",
-				"sprite": 52,
+				"sprite": 52.0,
 				"sprite_combat": "",
 				"sprite_id": "c00_901",
 				"team": [
 					{
-						"ability": 86,
-						"atk_iv": 0,
-						"def_iv": 0,
+						"ability": 86.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
 						"hp_iv": 2.0,
 						"id": -6.0,
-						"item": -1,
+						"item": -1.0,
 						"level": 35.0,
 						"moveset": [
-							121,
-							129,
-							130,
-							131
+							121.0,
+							129.0,
+							130.0,
+							131.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
-						"spd_iv": 0
+						"spd_iv": 0.0
 					}
 				],
-				"user_type": 1
+				"user_type": 1.0
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Integrity Depleted",
 				"dialogue_portrait": "",
@@ -1344,7 +1765,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "Returning to Hybernation and Repair Mode",
 				"dialogue_portrait": "",
@@ -1357,19 +1778,19 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "security_boss_defeated"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_security_boss"
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_security_boss"
 			}
@@ -1973,6 +2394,58 @@
 				"map_to": "thunderpeak",
 				"x_to": 32.0,
 				"y_to": 48.0
+			}
+		]
+	],
+	"ev_training_down": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 14.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "training_facility",
+				"x_to": 60.0,
+				"y_to": 57.0
+			}
+		]
+	],
+	"ev_training_up": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 4.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "training_facility",
+				"x_to": 23.0,
+				"y_to": 58.0
 			}
 		]
 	],
