@@ -282,7 +282,7 @@ const Move = {
     TrueReflection: 125,
     GorgonEye: 126,
     HawkEye: 127,
-    Frostbite: 128,
+    Chilltouch: 128,
     LaserSweep: 129,
     Annihilate: 130,
     TargetLock: 131,
