@@ -3449,8 +3449,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     defender.current_hp = clamp(defender.current_hp - damage_taken, 0, defender.stats.hp);
                     defender_field_text += `\n------ ${defender_emote} **${defOochName}** lost ${damage_taken} HP!\n`;
                 break;
-                case Ability.Frostbite:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Frostbite**:`
+                case Ability.Chilltouch:
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Chilltouch**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, -1)}\n`;
                 break;
                 case Ability.StringsAttached:

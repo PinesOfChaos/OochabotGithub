@@ -1795,7 +1795,7 @@ export async function execute(interaction, client) {
     create_ability(Ability.Lacerating, 'Lacerating', 'All attacks do an extra attack to an enemy, dealing 5% of their max HP.');
     create_ability(Ability.Gravity, 'Gravity', 'Attacks deal 1% more damage per number of turns in this battle.');
     create_ability(Ability.Sporespray, 'Sporespray', 'INFECTS the enemy when the Sporespray Oochamon faints.');
-    create_ability(Ability.Frostbite, 'Frostbite', 'Attacks that strike an enemy reduce their SPD by 1 stage.');
+    create_ability(Ability.Chilltouch, 'Frostbite', 'Attacks that strike an enemy reduce their SPD by 1 stage.');
     create_ability(Ability.Bipolar, 'Bipolar', 'Use the DEF stat when dealing damage, rather than the ATK stat.');
     create_ability(Ability.Hexiply, 'Hexiply', 'Attacks deal 6% more damage per sixth of HP remaining.');
     create_ability(Ability.Nullify, 'Nullify', 'Nullify\'s the opposing Oochamon, changing their ability to Null while out on the field.');
@@ -2364,7 +2364,7 @@ export async function execute(interaction, client) {
             [42, Move.PlasmaCannon], [50, Move.DebugBomb], [-1, Move.Pulverize]
         ],
         abilities: [Ability.Fleeting, Ability.Reactive],
-        pre_evo_id: 26, evo_id: 28, evo_lvl: 40, evo_stage: 1
+        pre_evo_id: 26, evo_id: 28, evo_lvl: 38, evo_stage: 1
     });
 
     // Temporath
@@ -2769,7 +2769,7 @@ export async function execute(interaction, client) {
             [10, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [23, Move.Frostbite], [25, Move.CursedEye],
             [28, Move.StickyOrb], [32, Move.ArcaStrike], [36, Move.Suplex], [41, Move.GemBash], [-1, Move.Kaleidoscope]
         ],
-        abilities: [Ability.Moist, Ability.Frostbite],
+        abilities: [Ability.Moist, Ability.Chilltouch],
         pre_evo_id: -1, evo_id: 51, evo_lvl: 23, evo_stage: 0
     });
 
@@ -2786,7 +2786,7 @@ export async function execute(interaction, client) {
             [10, Move.Brittle], [14, Move.Siphon], [20, Move.Impale], [23, Move.Frostbite], [25, Move.CursedEye],
             [28, Move.StickyOrb], [32, Move.ArcaStrike], [36, Move.Suplex], [41, Move.GemBash], [-1, Move.Kaleidoscope]
         ],
-        abilities: [Ability.Bipolar, Ability.Frostbite],
+        abilities: [Ability.Bipolar, Ability.Chilltouch],
         pre_evo_id: 50, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -3135,7 +3135,7 @@ export async function execute(interaction, client) {
             [12, Move.CausticOrb], [16, Move.SlurpUp], [19, Move.RallyingCry], [23, Move.Bind], [26, Move.TangledThreads],
             [29, Move.SyncStrike], [34, Move.Barrage], [37, Move.ArcaStrike], [43, Move.Bloom], [-1, Move.FatedThreads]
         ],
-        abilities: [Ability.Frostbite, Ability.Hearty],
+        abilities: [Ability.Chilltouch, Ability.Hearty],
         pre_evo_id: 70, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -3382,7 +3382,7 @@ export async function execute(interaction, client) {
             [29, Move.Kaleidoscope], [33, Move.Restruct], [37, Move.Grind], [40, Move.SelfDestruct], [-1, Move.Barrage]
         ],
         abilities: [Ability.Gentle, Ability.Patient],
-        pre_evo_id: -1, evo_id: 86, evo_lvl: 42, evo_stage: 0
+        pre_evo_id: -1, evo_id: 86, evo_lvl: 35, evo_stage: 0
     });
 
     // Korkobble
