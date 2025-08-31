@@ -1,8 +1,8 @@
 import { battle_data, profile, move_data, stance_data, monster_data, item_data, status_data, ability_data, global_data, player_positions } from "./db.js";
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status } from "./types.js";
+import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
+import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID } from "./types.js";
 import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
@@ -1421,9 +1421,6 @@ export async function process_battle_actions(battle_id){
     //console.log('MESSAGE ROUND START')
     let roundHeader = `# ------ Round ${db_battle_data.turn_counter + 1} ------`;
 
-    //Reset all battle triggers
-    reset_this_turn_triggers(db_battle_data);
-
     while(actions.length > 0 && !finish_battle){
         //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
         sort_action_priority(db_battle_data);
@@ -1681,6 +1678,10 @@ export async function process_battle_actions(battle_id){
     
     //Do stuff depending on whether the battle is finished
     if(!finish_battle) {
+
+        //Reset all battle triggers
+        reset_this_turn_triggers(db_battle_data);
+        
         await wait(db_battle_data.battle_speed);
         await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
         battle_data.set(battle_id, db_battle_data);
@@ -1989,6 +1990,64 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
                 string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Apprentice**:`;
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, incAmount)}\n`;
             }
+        break;
+        case Ability.OnIce: 
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **On Ice**:`;
+            add_status_effect(ooch_to, Status.Drained, slot_to);
+            string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** feels drained and heavy!\n`;
+        break;
+        case Ability.Equalized:
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Equalized**:`;
+            ooch_to.type = [OochType.Neutral];
+            string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** is equalized and had it's ability changed to ${type_to_emote(ooch_to.type)} **Neutral**!\n`;
+        break;
+        case Ability.AncientWardNeutral:
+            ooch_to.type = [OochType.Neutral];
+            ooch_to.emote = get_emote_string('ophicore_neutral')
+        break;
+        case Ability.AncientWardVoid:
+            ooch_to.type = [OochType.Void];
+            ooch_to.emote = get_emote_string('ophicore_void')
+        break;
+        case Ability.AncientWardFungal:
+            ooch_to.type = [OochType.Fungal];
+            ooch_to.emote = get_emote_string('ophicore_fungal')
+        break;
+        case Ability.AncientWardFlame:
+            ooch_to.type = [OochType.Flame];
+            ooch_to.emote = get_emote_string('ophicore_flame')
+        break;
+        case Ability.AncientWardStone:
+            ooch_to.type = [OochType.Stone];
+            ooch_to.emote = get_emote_string('ophicore_stone')
+        break;
+        case Ability.AncientWardTech:
+            ooch_to.type = [OochType.Tech];
+            ooch_to.emote = get_emote_string('ophicore_tech')
+        break;
+        case Ability.AncientWardMagic:
+            ooch_to.type = [OochType.Magic];
+            ooch_to.emote = get_emote_string('ophicore_magic')
+        break;
+        case Ability.AncientWardOoze:
+            ooch_to.type = [OochType.Ooze];
+            ooch_to.emote = get_emote_string('ophicore_ooze')
+        break;
+        case Ability.AncientWardCrystal:
+            ooch_to.type = [OochType.Crystal];
+            ooch_to.emote = get_emote_string('ophicore_crystal')
+        break;
+        case Ability.AncientWardCloth:
+            ooch_to.type = [OochType.Cloth];
+            ooch_to.emote = get_emote_string('ophicore_cloth')
+        break;
+        case Ability.AncientWardSound:
+            ooch_to.type = [OochType.Sound];
+            ooch_to.emote = get_emote_string('ophicore_sound')
+        break;
+        case Ability.AncientWardMartial:
+            ooch_to.type = [OochType.Martial];
+            ooch_to.emote = get_emote_string('ophicore_neutral')
         break;
     }
 
@@ -2637,7 +2696,7 @@ export function add_status_effect(ooch, status, slot) {
         return return_string;
     }
 
-    //Ignore if we already have this status
+    //Ignore Vanish if the mon is currently Revealed
     if(status == Status.Vanish){
         if (ooch.status_effects.includes(Status.Revealed)) {
             return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is ${get_emote_string('status_reveal')} **REVEALED**!`
@@ -2647,7 +2706,15 @@ export function add_status_effect(ooch, status, slot) {
             slot.this_turn_vanished = true;
         }
     }
-    
+
+    if(status == Status.Doom){
+        if (ooch.ability == Ability.TwilightHour){
+            return_string += `${ooch.emote} **${ooch.nickname}**'s **Twilight Hour**:`
+            return_string += `\n--- ${modify_stat(ooch, Stats.Attack, 2)}`;
+            return_string += `\n--- ${modify_stat(ooch, Stats.Defense, 2)}`;
+            return_string += `\n--- ${modify_stat(ooch, Stats.Speed, 2)}`;
+        }
+    }
 
     //Mundane ignores status effects
     if (ooch.ability == Ability.Mundane){
@@ -2902,11 +2969,10 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
     let ability_text = ``;
     let user = db_battle_data.users[user_index];
-    
 
     let ooch = user.party[user.active_slot];
     let slot_info = user.slot_actions[user.active_slot];
-    
+    let status_list = Object.values(Status);
 
     //Used for checking how much HP was lost
     let hp_before = slot_info.hp_starting;
@@ -2914,6 +2980,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
     let chunks_lost = 0;
 
     let randomStat, randomStatDecrease;
+    let statusLength, otherStatusArr, newStatusEffects;
 
     switch(ooch.ability) {
         case Ability.EscalationProtocol:
@@ -2937,6 +3004,44 @@ export async function use_eot_ability(db_battle_data, user_index) {
                         "Slime Head", "c_027", user.team_id, [
                         {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
                             ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
+                    ])
+                }
+            }
+        break;
+        case Ability.AncientPlating:
+            // TODO: GET THIS SETUP
+            chunks_lost = hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
+            if (chunks_lost > 0 && ooch.current_hp > 0) {
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Ancient Plating**:`
+                ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** cleared its Status Effects!`
+                let user_num = db_battle_data.users.length
+
+                let last_type = OochType.Neutral;
+                let ward_emoteStr = "ophicore_";
+                let ward_ability = Ability.AncientWardNeutral;
+                switch(last_type) {
+                    case OochType.Neutral:  ward_emoteStr += "neutral"; ward_ability = Ability.AncientWardNeutral; break;
+                    case OochType.Void:     ward_emoteStr += "void";    ward_ability = Ability.AncientWardVoid; break;
+                    case OochType.Fungal:   ward_emoteStr += "fungal";  ward_ability = Ability.AncientWardFungal; break;
+                    case OochType.Flame:    ward_emoteStr += "flame";   ward_ability = Ability.AncientWardFlame; break;
+                    case OochType.Stone:    ward_emoteStr += "stone";   ward_ability = Ability.AncientWardStone; break;
+                    case OochType.Tech:     ward_emoteStr += "tech";    ward_ability = Ability.AncientWardTech; break;
+                    case OochType.Magic:    ward_emoteStr += "magic";   ward_ability = Ability.AncientWardMagic; break;
+                    case OochType.Ooze:     ward_emoteStr += "ooze";    ward_ability = Ability.AncientWardOoze; break;
+                    case OochType.Crystal:  ward_emoteStr += "crystal"; ward_ability = Ability.AncientWardCrystal; break;
+                    case OochType.Sound:    ward_emoteStr += "sound";   ward_ability = Ability.AncientWardSound; break;
+                    case OochType.Cloth:    ward_emoteStr += "cloth";   ward_ability = Ability.AncientWardCloth; break;
+                    case OochType.Martial:  ward_emoteStr += "martial"; ward_ability = Ability.AncientWardMartial; break;
+                }
+                let ward_emote = get_emote_string(ward_emoteStr)
+
+                //Spawn an Ancient Rune for each chunk lost      
+                for(let i = 0; i < chunks_lost; i++){
+                    ability_text += `\n--- An ${get_emote_string('c_027')} **Ancient Rune** appears out of thin air...`
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The ${ward_emote} **Ancient Rune** joins the battle!`, 
+                        "Ancient Rune", ward_emote, user.team_id, [
+                        {   id : OochID.AncientRune, level : ooch.level, moveset : [Move.SyncStrike], 
+                            ability : ward_ability, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
                     ])
                 }
             }
@@ -2989,6 +3094,27 @@ export async function use_eot_ability(db_battle_data, user_index) {
             ability_text += `${ooch.emote} **${ooch.nickname}**'s **Downward Spiral**:`
             randomStatDecrease = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
             ability_text += `\n--- ${modify_stat(ooch, randomStatDecrease, -1)}\n`;
+        break;
+        case Ability.OnIce:
+            if (slot_info.this_turn_switched_in) {
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **On Ice**:`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}\n`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Defense, 1)}\n`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Speed, 1)}\n`;
+            }
+        break;
+        case Ability.Flux:
+            statusLength = ooch.status_effects.length
+            if(statusLength > 0){
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Flux**:`;
+                
+                otherStatusArr = shuffle(status_list);
+                newStatusEffects = take(otherStatusArr, statusLength);
+
+                for (let status of newStatusEffects) {
+                    ability_text += add_status_effect(ooch, status, slot_info);
+                }
+            }
         break;
     }
 
@@ -3201,7 +3327,10 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     //Figure out whether we're going first or last for misc values
     let going_first = true;
     let going_last = true;
+    let mons_in_battle = [];
     for(let user of db_battle_data.users) {
+        mons_in_battle.push(user.party[user.active_slot]);
+
         if (user.user_index == user_index_attacker) continue;
         if (user.slot_actions[user.active_slot].this_turn_did_attack) going_first = false
         else going_last = false
@@ -3279,9 +3408,36 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     }
 
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
+    if (defender.ability == Ability.PureCore) type_multiplier[0] *= 0.8;
     //Weak status reduces the move's power by 10
     if(attacker.status_effects.includes(Status.Weak)){
         move_damage = _max(move_damage - 10, 5)
+    }
+
+    let ancient_ward_text = ""
+    for(let mon of mons_in_battle){
+        switch(mon.ability){
+
+            //Ancient Ward go brrrrrrr
+            case Ability.AncientWardNeutral:
+            case Ability.AncientWardVoid:
+            case Ability.AncientWardFungal:
+            case Ability.AncientWardFlame:
+            case Ability.AncientWardStone:
+            case Ability.AncientWardTech:
+            case Ability.AncientWardMagic:
+            case Ability.AncientWardOoze:
+            case Ability.AncientWardCrystal:
+            case Ability.AncientWardSound:
+            case Ability.AncientWardCloth:
+            case Ability.AncientWardMartial:
+                if(mon.type == move_type){
+                    move_damage *= 30;
+                    ancient_ward_text = `\n${monster_data.get(`${mon.id}`, 'emote')} **${mon.name}**'s **Ancient Ward** reduces the attack's damage!`;
+                }
+            break;
+
+        }
     }
     
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
@@ -3429,7 +3585,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 break;
                 case Ability.Leech:
                     hp_prev = attacker.current_hp;
-                    attacker.current_hp = clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
+                    attacker.current_hp = clamp(attacker.current_hp + Math.ceil(dmg * 0.2), 0, attacker.stats.hp); 
 
                     if(attacker.current_hp - hp_prev > 0){
                         defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Leech**:`
@@ -3469,6 +3625,25 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     if(move_type == OochType.Flame){
                         defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Turbine**:`
                         defender_field_text += `\n------ ${modify_stat(attacker, Stats.Attack, 1)}\n`;
+                    }
+                break;
+                case Ability.Lullaby:
+                    if (move_type == OochType.Sound && check_chance(25)) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Lullaby**:`;
+                        defender_field_text += `\n------ ${add_status_effect(defender, Status.Sleep, slot_defender)}`;
+                    }
+                break;
+                case Ability.Cacophony:
+                    if (move_type == OochType.Sound) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Cacophony**:`
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Attack, 1)}\n`;
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Defense, -1)}\n`;
+                    }
+                break;
+                case Ability.Accelerando:
+                    if (move_type == OochType.Sound) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Accelerando**:`
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Speed, 1)}\n`;
                     }
                 break;
             }
@@ -3515,16 +3690,31 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Bloodrush**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, 1)}\n`;
                 break;
+                case Ability.Usurper:
+                    db_battle_data.battle_action_queue.push(new_battle_action_attack(db_battle_data, user_index_defender, user_index_attacker, atk_id));
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Bloodrush**:`
+                    defender_field_text += `\n------ The attack is being reflected!\n`;
+                break;
             }
         }
 
-        
+        // Attacker on move use ability
+        switch (attacker.ability) {
+            case Ability.Patchwork:
+                if (move_type == OochType.Cloth) {
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Patchwork**:`
+                    attacker.current_hp = clamp(Math.round(attacker.current_hp + attacker.stats.hp * 0.05), 0, attacker.stats.hp);
+                    defender_field_text += `\n------ ❤️ ${attacker_emote} **${atkOochName}** healed **${clamp(Math.round(attacker.stats.hp * 0.05), 0, attacker.stats.hp)}** HP.`;
+                }
+            break;
+        }
 
         if (ogMoveId !== atk_id) {
             string_to_send += `\n🎲 **${move_data.get(`${ogMoveId}`, 'name')}** changed into **${move_name}**!\n`;
         }
 
-        
+        //From the ancient ward ability
+        string_to_send += ancient_ward_text;
 
         //Add one of the battle description flavor texts if applicable
         let move_battle_desc = await move_data.get(`${atk_id}`, 'battle_desc');
@@ -3583,8 +3773,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         if (recoil_damage > 0) {
             string_to_send += `\n--- 💥 ${attacker_emote} **${atkOochName}** lost **${recoil_damage}** HP from recoil!`
         }
-
-        
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
@@ -4214,6 +4402,7 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
             ooch.stats.eva_mul = 0;
             ooch.ability = ooch.og_ability;
             ooch.type = ooch.og_type;
+            ooch.emote = ooch.og_emote;
             ooch.doom_timer = 4;
             ooch.stance = StanceForms.Base;
             ooch.stance_cooldown = 0;

@@ -17,7 +17,6 @@ export async function modernize_all() {
     }
 }
 
-
 export async function modernize_profile(user_id) {
     let db_profile = await profile.get(`${user_id}`);
     let blank_profile = get_blank_profile();
@@ -29,8 +28,6 @@ export async function modernize_profile(user_id) {
     db_profile.ooch_party = await modernize_party(db_profile.ooch_party);
     db_profile.oochadex = await modernize_oochadex(db_profile.oochadex);
 
-
-    //TODO SET THE db_profile Info in the database, this is todo so that nothing breaks
     profile.set(user_id, db_profile);
 }
 
@@ -191,6 +188,7 @@ export function get_blank_oochamon() {
         type: 0,
         og_type: 0,
         doom_timer: 4, // Used for the doomed status effect
+        og_emote : "",
         emote: "",
         starting_stance: StanceForms.Base,
         stance: StanceForms.Base,

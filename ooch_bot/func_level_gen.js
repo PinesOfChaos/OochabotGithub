@@ -19,15 +19,16 @@ let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 
 export async function genmap_allmaps(client) {
     
+    let everchange_cave_floor_count = 3;
     let everchange_cave_themes = [];
-    for(let i = 0; i < 2; i++){
+    for(let i = 0; i < everchange_cave_floor_count; i++){
         everchange_cave_themes.push(sample([
             GenmapTheme.ObsidianPath,
             GenmapTheme.FungalCave,
             GenmapTheme.Powerplant
         ]))
     }
-    genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 22, 30, 'lava_path', 3, 52)
+    genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'lava_path', 3, 52)
 
     
     console.log('Generated daily maps.');

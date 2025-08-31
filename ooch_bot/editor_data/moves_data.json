@@ -1346,7 +1346,7 @@
   },
   {
     "id": 83,
-    "name": "Firey Bullet",
+    "name": "Firey Horn",
     "type": "flame",
     "damage": 70,
     "accuracy": 100,
@@ -1697,7 +1697,7 @@
   },
   {
     "id": 103,
-    "name": "Ear Shatter",
+    "name": "Shatter",
     "type": "sound",
     "damage": 80,
     "accuracy": 95,
@@ -1894,7 +1894,7 @@
   },
   {
     "id": 114,
-    "name": "Thunderstorm",
+    "name": "Static Storm",
     "type": "magic",
     "damage": 0,
     "accuracy": -1,

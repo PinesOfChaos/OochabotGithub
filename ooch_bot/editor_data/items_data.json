@@ -562,8 +562,8 @@
     "type": "evolve",
     "price": 8000,
     "potency": [
-      59,
-      62
+      21,
+      111
     ],
     "description": "An old lightbulb filled with tiny machines. The bulb seems to flicker and glow on occaison.",
     "description_short": "Used to evolve a certain Oochamon.",

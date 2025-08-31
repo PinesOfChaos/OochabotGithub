@@ -365,7 +365,7 @@ client.on('interactionCreate', async interaction => {
                 switch(str_upper){
                     case 'SB_ROSWIER':
                         if(loc_data.area == 'training_facility' && loc_data.x == 18 && loc_data.y == 58){
-                            //To do, add a flag to the player that allows progress
+                            profile.push(interaction.user.id, 'pass_roswier', 'flags');
                         }
                     break;
                 }

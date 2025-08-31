@@ -2,7 +2,7 @@ import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
 import { readdirSync, readFile, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
-import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect } from '../types.js';
+import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect, StanceForms, OochID } from '../types.js';
 import { get_emote_string } from '../func_other.js';
 import { refresh_global_variables } from '../func_global_data.js';
 import { modernize_all } from '../func_modernize.js';
@@ -1095,12 +1095,12 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.Siphon, name: 'Siphon', type: OochType.Fungal,
         damage: 20, accuracy: 100,
-        effect: [{ status: 'vampire', chance: 10, target: MoveTarget.Self }],
+        effect: [{ status: 'vampire', chance: 25, target: MoveTarget.Self }],
         description: 'The user damages the opponent, slightly Healing itself in the process.',
     });
     create_move({
         id: Move.DrainLife, name: 'Drain Life', type: OochType.Magic,
-        damage: 50, accuracy: 50,
+        damage: 60, accuracy: 80,
         effect: [{ status: 'vampire', chance: 50, target: MoveTarget.Self }],
         description: 'A horribly innacurate move with the potential to greatly heal the user.',
     });
@@ -1211,7 +1211,7 @@ export async function execute(interaction, client) {
         description: 'Makes the opponent\'s body brittle, lowering its DEF.',
     });
     create_move({
-        id: Intimidate, name: 'Intimidate', type: OochType.Neutral,
+        id: Move.Intimidate, name: 'Intimidate', type: OochType.Neutral,
         damage: 0, accuracy: 100,
         effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy }],
         description: 'Glare at the opponent, lowering its ATK.',
@@ -1779,7 +1779,7 @@ export async function execute(interaction, client) {
     create_ability(Ability.Efficient, 'Efficient', 'Raises ATK by 1 stage every other turn.');
     create_ability(Ability.Boisterous, 'Boisterous', 'Shatters eardrums when it enters the field dealing 10% of the enemy\'s HP.');
     create_ability(Ability.Haunted, 'Haunted', 'Applies the DOOMED status to an enemy when the Haunted Oochamon faints.');
-    create_ability(Ability.Leech, 'Leech', 'Restores HP equal to 10% of damage done to the enemy.');
+    create_ability(Ability.Leech, 'Leech', 'Restores HP equal to 20% of damage done to the enemy.');
     create_ability(Ability.Ensnare, 'Ensnare', 'Grants a 30% chance to SNARE an enemy when attacking.');
     create_ability(Ability.Uncontrolled, 'Uncontrolled', 'Raises ATK by 3 stages and reduces DEF by 1 stages upon entering the battlefield, but randomly chooses an attack each turn.');
     create_ability(Ability.Apprentice, 'Apprentice', 'Raises ATK by 2 stages if any other party members share a move with it.');
@@ -1844,52 +1844,59 @@ export async function execute(interaction, client) {
     create_ability(Ability.Exploiter, 'Exploiter', 'The EXPOSED status triples damage instead of doubling it.');
     create_ability(Ability.Seer, 'Seer', 'If the Oochamon would be EXPOSED it instead gains +1 SPD.');
     create_ability(Ability.EscalationProtocol, 'Escalation Protocol', 'Gets +1 ATK, DEF, & SPD per 20% HP lost.'); //Unique - Security System Boss
-    create_ability(Ability.SpreadingSludge, 'Spreading Sludge', 'Spawns a helpful Slime Head per 20% HP lost.'); //Unique - Giant Slime Head Boss
-
-    //TO DO (i think some may be done but i forgor)
-    create_ability(Ability.AncientPlating, 'Ancient Plating', 'Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
-    create_ability(Ability.AncientWard, 'Ancient Ward', 'Allied Oochamon take reduced damage for attacks that match this Oochamon\'s type.'); //Unique - Ophicore's Rune pieces
-    create_ability(Ability.Usurper, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
+    create_ability(Ability.SpreadingSludge, 'Spreading Sludge', 'Spawns a helpful Slime Head per 25% HP lost.'); //Unique - Giant Slime Head Boss
     create_ability(Ability.PureCore, 'Pure Core', 'Reduces the damage of incoming non-Super Effective moves.'); //Unique - Ophicore (Post-game ability)
-    create_ability(Ability.Lullaby, 'Lullaby', 'Sound-type moves have a chance to put the target to SLEEP.'); //Unique - Heraloom
-    create_ability(Ability.TwilightHour, 'Twilight Hour', 'If this oochamon gets DOOMED, its ATK, DEF, & SPD are greatly increased.') //Unique - Priseroth Line
-    create_ability(Ability.Cacophony, 'Cacophony', 'Using a Sound-type move raise the users ATK, but lowers their DEF.') //Unique - Bansheet
-    create_ability(Ability.Accelerando, 'Accelerando', 'Using a Sound-type move raise the users SPD.') //Unique - Orchestryd  line
-    create_ability(Ability.OnIce, 'On Ice', 'Starts with the EXHAUSTED status, but increases ATK, DEF, and SPD the following turn.')
-    create_ability(Ability.Flux, 'Flux', 'Status effects on this Oochamon are randomized at the end of each turn.')
-    create_ability(Ability.Equalized, 'Equalized', 'Sets the Oochamon\'s type to Neutral at the start of battle.') //funny because neutral has no weakenesses/resistances
-    create_ability(Ability.Patchwork, 'Patchwork', 'Using Cloth-type moves heals the user for 5% of max HP.')
-
-
+    create_ability(Ability.Lullaby, 'Lullaby', 'Sound-type attacks have a 25% chance to put the target to SLEEP.'); //Unique - Heraloom
+    create_ability(Ability.TwilightHour, 'Twilight Hour', 'If this oochamon gets DOOMED, it gains +2 ATK, DEF, & SPD stages.'); //Unique - Priseroth Line
+    create_ability(Ability.Cacophony, 'Cacophony', 'Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage.'); //Unique - Bansheet
+    create_ability(Ability.Accelerando, 'Accelerando', 'Using a Sound-type move raises the users SPD by 1 stage.'); //Unique - Orchestryd line\
+    create_ability(Ability.Usurper, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
+    create_ability(Ability.OnIce, 'On Ice', 'Starts with the DRAINED status, but increases ATK, DEF, and SPD by 1 stage at the end of the switch in turn.');
+    create_ability(Ability.Flux, 'Flux', 'Status effects on this Oochamon are randomized at the end of each turn.');
+    create_ability(Ability.Equalized, 'Equalized', 'Sets the Oochamon\'s type to Neutral when they are switched in.'); //funny because neutral has no weakenesses/resistances
+    create_ability(Ability.AncientPlating, 'Ancient Plating', 'Clears the Oochamon\'s Status Effects and Spawns a Ancient Rune per 20% HP lost.'); //Unique - Ophicore (Story Boss Ability)
+    create_ability(Ability.AncientWardNeutral, 'Ancient Ward (Neutral)','Reduces the damage of all Neutral-type attacks.'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardVoid, 'Ancient Ward (Void)',      'Reduces the damage of all Void-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardFungal, 'Ancient Ward (Fungal)',  'Reduces the damage of all Fungal-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardFlame, 'Ancient Ward (Flame)',    'Reduces the damage of all Flame-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardStone, 'Ancient Ward (Stone)',    'Reduces the damage of all Stone-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardTech, 'Ancient Ward (Tech)',      'Reduces the damage of all Tech-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardOoze, 'Ancient Ward (Ooze)',      'Reduces the damage of all Ooze-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardMagic, 'Ancient Ward (Magic)',    'Reduces the damage of all Magic-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardCrystal, 'Ancient Ward (Crystal)','Reduces the damage of all Crystal-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardSound, 'Ancient Ward (Sound)',    'Reduces the damage of all Sound-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardCloth, 'Ancient Ward (Cloth)',    'Reduces the damage of all Cloth-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.AncientWardMartial, 'Ancient Ward (Martial)','Reduces the damage of all Martial-type attacks'); //Unique - Ophicore's Rune pieces
+    create_ability(Ability.Patchwork, 'Patchwork', 'Using Cloth-type moves heals the user for 5% of max HP.');
 
     //#endregion
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //#region Status Data
-    //            ID,  NAME,        EMOTE                                       DESCRIPTION
-    create_status(0, 'Burned', get_emote_string('status_burned'), 'Burns the Oochamon at the end of each turn, dealing damage.');
-    create_status(1, 'Infected', get_emote_string('status_infected'), 'Damages the Oochamon at the end of each turn, the infection increases in severity each turn.');
-    create_status(2, 'Blinded', get_emote_string('status_blinded'), 'Blinds the Oochamon, reducing its accuracy.');
-    create_status(3, 'Digitized', get_emote_string('status_digitized'), 'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
-    create_status(4, 'Snared', get_emote_string('status_snared'), 'Ensnares the Oochamon, forcing it to go second in battle.');
-    create_status(5, 'Vanished', get_emote_string('status_vanish'), `The Oochamon vanishes, making it impossible to hit for a turn. It gets the ${get_emote_string('status_reveal')} Revealed status at the end of the turn.}`);
-    create_status(6, 'Doomed', get_emote_string('status_doomed'), 'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
-    create_status(7, 'Exposed', get_emote_string('status_exposed'), 'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
-    create_status(8, 'Focused', get_emote_string('status_focused'), 'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
-    create_status(9, 'Sleep', get_emote_string('status_sleep'), 'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
-    create_status(10, 'Petrified', get_emote_string('status_petrified'), 'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
-    create_status(11, 'Weakened', get_emote_string('status_weak'), 'Reduces the power of the Oochamon\'s damaging moves.');
-    create_status(12, 'Revealed', get_emote_string('status_reveal'), `The Oochamon is guaranteed to be hit, it is also unable to gain the ${get_emote_string('status_vanish')} VANISHED status.`);
-    create_status(13, 'Drained', get_emote_string('status_drain'), 'The Oochamon is completely exhausted and must spend the turn recharging.');
+    //            ID,               NAME,        EMOTE                                       DESCRIPTION
+    create_status(Status.Burn,      'Burned', get_emote_string('status_burned'), 'Burns the Oochamon at the end of each turn, dealing damage.');
+    create_status(Status.Infect,    'Infected', get_emote_string('status_infected'), 'Damages the Oochamon at the end of each turn, the infection increases in severity each turn.');
+    create_status(Status.Blind,     'Blinded', get_emote_string('status_blinded'), 'Blinds the Oochamon, reducing its accuracy.');
+    create_status(Status.Digitize,  'Digitized', get_emote_string('status_digitized'), 'Digitizes the Oochamon, changing its type forcefully to Tech while it is Digitized.');
+    create_status(Status.Snare,     'Snared', get_emote_string('status_snared'), 'Ensnares the Oochamon, forcing it to go second in battle.');
+    create_status(Status.Vanish,    'Vanished', get_emote_string('status_vanish'), `The Oochamon vanishes, making it impossible to hit for a turn. It gets the ${get_emote_string('status_reveal')} Revealed status at the end of the turn.}`);
+    create_status(Status.Doom,      'Doomed', get_emote_string('status_doomed'), 'The Oochamon becomes marked for death, dying after 3 turns in battle unless switched out.');
+    create_status(Status.Expose,    'Exposed', get_emote_string('status_exposed'), 'The Oochamon goes into a vulnerable state, taking double damage from the next attack its hit by.');
+    create_status(Status.Focus,     'Focused', get_emote_string('status_focused'), 'The Oochamon becomes focused and locked in, guaranteeing a critical strike on the next hit.');
+    create_status(Status.Sleep,     'Sleep', get_emote_string('status_sleep'), 'The Oochamon is cannot attack and recovers some HP each turn, it may wake up if it\'s hit.');
+    create_status(Status.Petrify,   'Petrified', get_emote_string('status_petrified'), 'Turns part of the Oochamon\'s body to stone, turning it to Stone and reducing its priority.');
+    create_status(Status.Weak,      'Weakened', get_emote_string('status_weak'), 'Reduces the power of the Oochamon\'s damaging moves.');
+    create_status(Status.Revealed,  'Revealed', get_emote_string('status_reveal'), `The Oochamon is guaranteed to be hit, it is also unable to gain the ${get_emote_string('status_vanish')} VANISHED status.`);
+    create_status(Status.Drained,   'Drained', get_emote_string('status_drain'), 'The Oochamon is completely exhausted and must spend the turn recharging.');
 
     //#endregion
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //#region Stance Data
-    //            ID,  NAME,        DESCRIPTION                                                                      DESCRIPTION SHORT
-    create_stance(0, 'Base', 'The basic Oochamon stance. Does nothing.', 'Does nothing.');
-    create_stance(1, 'Attack', 'The attack Oochamon stance. Increases attack, but at the cost of defense.', 'Increases attack, lowers defense.');
-    create_stance(2, 'Defense', 'The defensive Oochamon stance. Increases defense, but at the cost of attack.', 'Increases defense, lowers attack.');
-    create_stance(3, 'Speed', 'The speedy Oochamon stance. Increases speed, but at the cost of accuracy.', 'Increases speed, lowers accuracy.');
-    create_stance(4, 'Sniper', 'The sniper Oochamon stance. Increases accuracy, but at the cost of speed.', 'Increases accuracy, lowers speed.');
+    //            ID,                   NAME,        DESCRIPTION                                                                     DESCRIPTION SHORT
+    create_stance(StanceForms.Base,     'Base',     'The basic Oochamon stance. Does nothing.', 'Does nothing.');
+    create_stance(StanceForms.Attack,   'Attack',   'The attack Oochamon stance. Increases attack, but at the cost of defense.',    'Increases attack, lowers defense.');
+    create_stance(StanceForms.Defense,  'Defense',  'The defensive Oochamon stance. Increases defense, but at the cost of attack.', 'Increases defense, lowers attack.');
+    create_stance(StanceForms.Speed,    'Speed',    'The speedy Oochamon stance. Increases speed, but at the cost of accuracy.',       'Increases speed, lowers accuracy.');
+    create_stance(StanceForms.Sniper,   'Sniper',   'The sniper Oochamon stance. Increases accuracy, but at the cost of speed.',    'Increases accuracy, lowers speed.');
 
     //#endregion
     //#region Creature Data
@@ -1899,7 +1906,7 @@ export async function execute(interaction, client) {
     //Abilities, Pre-Evolution ID, Evolution ID, Evolution Level, Evolution Stage
     // Sporbee
     create_monster({
-        id: 0,
+        id: OochID.Sporbee,
         emote: get_emote_string('sporbee'),
         name: 'Sporbee',
         oochive_entry: 'An insect that dwells in fungal forests. Every day it risks infection to provide for its hive.',
@@ -1915,7 +1922,7 @@ export async function execute(interaction, client) {
 
     // Stingrowth
     create_monster({
-        id: 1,
+        id: OochID.Stingrowth,
         emote: get_emote_string('stingrowth'),
         name: 'Stingrowth',
         oochive_entry: 'A strange protrusion is growing on this hive soldier, slowly gaining control over its movements.',
@@ -1931,7 +1938,7 @@ export async function execute(interaction, client) {
 
     // Queenect
     create_monster({
-        id: 2,
+        id: OochID.Queenect,
         emote: get_emote_string('queenect'),
         name: 'Queenect',
         oochive_entry: 'A hive queen, completely overtaken by fungus. It continues to produce infected offspring even in this state.',
@@ -1947,7 +1954,7 @@ export async function execute(interaction, client) {
 
     // Roocky
     create_monster({
-        id: 3,
+        id: OochID.Roocky,
         emote: get_emote_string('roocky'),
         name: 'Roocky',
         oochive_entry: 'A ancient, crumbling pillar. The shadows beneath it are oddly comforting.',
@@ -1963,7 +1970,7 @@ export async function execute(interaction, client) {
 
     // Graknight
     create_monster({
-        id: 4,
+        id: OochID.Graknight,
         emote: get_emote_string('graknight'),
         name: 'Graknight',
         oochive_entry: 'The stones have continued deteriorating revealing a gremlin-like form, it wields fragments of its former body as a spear.',
@@ -1979,7 +1986,7 @@ export async function execute(interaction, client) {
 
     // Kracking
     create_monster({
-        id: 5,
+        id: OochID.Kracking,
         emote: get_emote_string('kracking'),
         name: 'Kracking',
         oochive_entry: 'Its body continues to wither away, freeing the shadows inside. The diamond eye in its center is its sole source of power.',
@@ -1995,7 +2002,7 @@ export async function execute(interaction, client) {
 
     // Puppyre
     create_monster({
-        id: 6,
+        id: OochID.Puppyre,
         emote: get_emote_string('puppyre'),
         name: 'Puppyre',
         oochive_entry: 'A very good boy, empowered by the spiraling patterns on its body.',
@@ -2011,7 +2018,7 @@ export async function execute(interaction, client) {
 
     // Dogglow
     create_monster({
-        id: 7,
+        id: OochID.Dogglow,
         emote: get_emote_string('dogglow'),
         name: 'Dogglow',
         oochive_entry: 'The etchings empowering its body have become corrupted, its flame now glows a sickly yellow.',
@@ -2027,7 +2034,7 @@ export async function execute(interaction, client) {
 
     // Hounuke
     create_monster({
-        id: 8,
+        id: OochID.Hounuke,
         emote: get_emote_string('hounuke'),
         name: 'Hounuke',
         oochive_entry: 'Its body now radiates an eerie green, the once-pure etchings now shimmer and contort on its oozing skin.',
@@ -2043,7 +2050,7 @@ export async function execute(interaction, client) {
 
     // Glither
     create_monster({
-        id: 9,
+        id: OochID.Glither,
         emote: get_emote_string('glither'),
         name: 'Glither',
         oochive_entry: 'Its diamond-hard skin protects it from the most brutal of sandstorms.',
@@ -2059,7 +2066,7 @@ export async function execute(interaction, client) {
 
     // Sparafura
     create_monster({
-        id: 10,
+        id: OochID.Sparafura,
         emote: get_emote_string('sparafura'),
         name: 'Sparafura',
         oochive_entry: 'These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.',
@@ -2075,7 +2082,7 @@ export async function execute(interaction, client) {
 
     // Constone
     create_monster({
-        id: 11,
+        id: OochID.Constone,
         emote: get_emote_string('constone'),
         name: 'Constone',
         oochive_entry: 'Found on salt flats, these strange beings move about on a single wheel rather than legs.',
@@ -2091,7 +2098,7 @@ export async function execute(interaction, client) {
 
     // Amephyst
     create_monster({
-        id: 12,
+        id: OochID.Amephyst,
         emote: get_emote_string('amephyst'),
         name: 'Amephyst',
         oochive_entry: 'The crystals that make up the core of its body have overtaken its left arm, creating a dangerous weapon.',
@@ -2107,7 +2114,7 @@ export async function execute(interaction, client) {
 
     // Widew
     create_monster({
-        id: 13,
+        id: OochID.Widew,
         emote: get_emote_string('widew'),
         name: 'Widew',
         oochive_entry: 'The growth on its back forms a symbiotic relationship with the host, maximizing the amount of nutrients each can absorb.',
@@ -2123,7 +2130,7 @@ export async function execute(interaction, client) {
 
     // Tarotula
     create_monster({
-        id: 14,
+        id: OochID.Tarotula,
         emote: get_emote_string('tarotula'),
         name: 'Tarotula',
         oochive_entry: 'The fine hairs on its back help it detect nearby movement making ambushing this giant spider surprisingly difficult.',
@@ -2139,7 +2146,7 @@ export async function execute(interaction, client) {
 
     //Moldot
     create_monster({
-        id: 15,
+        id: OochID.Moldot,
         emote: get_emote_string('moldot'),
         name: 'Moldot',
         oochive_entry: 'Novice explorers are often shocked by just how much of this creature is buried beneath the surface.',
@@ -2156,7 +2163,7 @@ export async function execute(interaction, client) {
 
     // Moldire
     create_monster({
-        id: 16,
+        id: OochID.Moldire,
         emote: get_emote_string('moldire'),
         name: 'Moldire',
         oochive_entry: 'Its body is no longer able to fully fit in the crevice it grew up in, forcing its body to grow a defensive maw.',
@@ -2173,7 +2180,7 @@ export async function execute(interaction, client) {
 
     // Charlite
     create_monster({
-        id: 17,
+        id: OochID.Charlite,
         emote: get_emote_string('charlite'),
         name: 'Charlite',
         oochive_entry: 'Its life is tied to whatever it is currently burning, these creatures live a frail, fleeting life.',
@@ -2190,7 +2197,7 @@ export async function execute(interaction, client) {
 
     // Darcoal
     create_monster({
-        id: 18,
+        id: OochID.Darcoal,
         emote: get_emote_string('darcoal'),
         name: 'Darcoal',
         oochive_entry: 'This flame has lived a surprisingly long life. It slowly burns its surroundings, covering the area in a thick black smoke.',
@@ -2207,7 +2214,7 @@ export async function execute(interaction, client) {
 
     // Torchoir
     create_monster({
-        id: 19,
+        id: OochID.Torchoir,
         emote: get_emote_string('torchoir'),
         name: 'Torchoir',
         oochive_entry: 'A sentient torch that hums a haunting tune. Its song fills people with dread.',
@@ -2226,7 +2233,7 @@ export async function execute(interaction, client) {
 
     // Chantern
     create_monster({
-        id: 20,
+        id: OochID.Chantern,
         emote: get_emote_string('chantern'),
         name: 'Chantern',
         oochive_entry: 'It can mimic the human voice nearly perfectly, though it only speaks in random phrases.',
@@ -2244,7 +2251,7 @@ export async function execute(interaction, client) {
 
     // Eluslug
     create_monster({
-        id: 21,
+        id: OochID.Eluslug,
         emote: get_emote_string('eluslug'),
         name: 'Eluslug',
         oochive_entry: 'Oddly malleable despite its metallic body, it feeds on the magnetic wandering stones found in various locations.',
@@ -2261,7 +2268,7 @@ export async function execute(interaction, client) {
 
     // Jellime
     create_monster({
-        id: 22,
+        id: OochID.Jellime,
         emote: get_emote_string('jellime'),
         name: 'Jellime',
         oochive_entry: 'A jellyfish-like creature, its probing tendrils ensnare whatever they touch.',
@@ -2279,7 +2286,7 @@ export async function execute(interaction, client) {
 
     // Meduslime
     create_monster({
-        id: 23,
+        id: OochID.Meduslime,
         emote: get_emote_string('meduslime'),
         name: 'Meduslime',
         oochive_entry: 'With a strangely developed nervous system, this creature is capable of exploting any weaknesses it finds.',
@@ -2297,7 +2304,7 @@ export async function execute(interaction, client) {
 
     // Tisparc
     create_monster({
-        id: 24,
+        id: OochID.Tisparc,
         emote: get_emote_string('tisparc'),
         name: 'Tisparc',
         oochive_entry: 'The hat-like crystal on its head grants it a magical energy which it cannot quite control.',
@@ -2315,7 +2322,7 @@ export async function execute(interaction, client) {
 
     // Wizzap
     create_monster({
-        id: 25,
+        id: OochID.Wizzap,
         emote: get_emote_string('wizzap'),
         name: 'Wizzap',
         oochive_entry: 'It has mastered control of its crystal and uses it to produce highly dangerous magic arcs.',
@@ -2333,7 +2340,7 @@ export async function execute(interaction, client) {
 
     // Blipoint
     create_monster({
-        id: 26,
+        id: OochID.Blipoint,
         emote: get_emote_string('blipoint'),
         name: 'Blipoint',
         oochive_entry: 'An eye peeks through a rift in space-time.',
@@ -2351,7 +2358,7 @@ export async function execute(interaction, client) {
 
     // Rerune
     create_monster({
-        id: 27,
+        id: OochID.Rerune,
         emote: get_emote_string('rerune'),
         name: 'Rerune',
         oochive_entry: 'What seems to be part of a face begins to emerge from the rift, unable to fully reveal itself.',
@@ -2369,7 +2376,7 @@ export async function execute(interaction, client) {
 
     // Temporath
     create_monster({
-        id: 28,
+        id: OochID.Temporath,
         emote: get_emote_string('temporath'),
         name: 'Temporath',
         oochive_entry: 'It was not meant to exist here and now, so it experiences episodes of uncontrollable rage.',
@@ -2387,7 +2394,7 @@ export async function execute(interaction, client) {
 
     // Nucleorb
     create_monster({
-        id: 29,
+        id: OochID.Nucleorb,
         emote: get_emote_string('nucleorb'),
         name: 'Nucleorb',
         oochive_entry: 'The nucleus of a cell grown to a massive size, for a cell that is. This rarity is relatively helpless on its own.',
@@ -2405,7 +2412,7 @@ export async function execute(interaction, client) {
 
     // Amebite
     create_monster({
-        id: 30,
+        id: OochID.Amebite,
         emote: get_emote_string('amebite'),
         name: 'Amebite',
         oochive_entry: 'A ravenous macrocell that eats anything in its path, they grow and reproduce quickly enough to overrun entire ecosystems.',
@@ -2423,7 +2430,7 @@ export async function execute(interaction, client) {
 
     // Amalgrime
     create_monster({
-        id: 31,
+        id: OochID.Amalgrime,
         emote: get_emote_string('amalgrime'),
         name: 'Amalgrime',
         oochive_entry: 'When an ecosystem is overrun by Amebite they eventually converge on a single point. The result is a massive, yet oddly gentle being.',
@@ -2441,7 +2448,7 @@ export async function execute(interaction, client) {
 
     // Drilline
     create_monster({
-        id: 32,
+        id: OochID.Drilline,
         emote: get_emote_string('drilline'),
         name: 'Drilline',
         oochive_entry: 'Despite a simplified system, these robots are prone to going rogue. How they sustain themselves in the wild remains a mystery.',
@@ -2458,7 +2465,7 @@ export async function execute(interaction, client) {
 
     // Erwrek
     create_monster({
-        id: 33,
+        id: OochID.Erwrek,
         emote: get_emote_string('erwrek'),
         name: 'Erwrek',
         oochive_entry: 'It consumes whatever it can to replace its broken parts, when choices are slim it will even make use of organic material.',
@@ -2475,7 +2482,7 @@ export async function execute(interaction, client) {
 
     // Purif-i
     create_monster({
-        id: 34,
+        id: OochID.Purif_i,
         emote: get_emote_string('purifi'),
         name: 'Purif-i',
         oochive_entry: 'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.',
@@ -2492,7 +2499,7 @@ export async function execute(interaction, client) {
 
     // Cromet
     create_monster({
-        id: 35,
+        id: OochID.Cromet,
         emote: get_emote_string('cromet'),
         name: 'Cromet',
         oochive_entry: 'Cromet fall from the sky when the distant stars rupture in the night. Thousands can fall at the same time.',
@@ -2510,7 +2517,7 @@ export async function execute(interaction, client) {
 
     // Lobstar
     create_monster({
-        id: 36,
+        id: OochID.Lobstar,
         emote: get_emote_string('lobstar'),
         name: 'Lobstar',
         oochive_entry: 'From a distance they seem to be stars in the sky, their weighty bodies are lifted by an immense amount of energy.',
@@ -2528,7 +2535,7 @@ export async function execute(interaction, client) {
 
     // Spoolette
     create_monster({
-        id: 37,
+        id: OochID.Spoolette,
         emote: get_emote_string('spoolette'),
         name: 'Spoolette',
         oochive_entry: 'While Spoolette itself is magical in nature, the threads it creates are completely mundane.',
@@ -2546,7 +2553,7 @@ export async function execute(interaction, client) {
 
     // Thimbite
     create_monster({
-        id: 38,
+        id: OochID.Thimbite,
         emote: get_emote_string('thimbite'),
         name: 'Thimbite',
         oochive_entry: 'Thimbite enchant a container when they evolve so that it can never be removed, touching one\'s container causes it to rage.',
@@ -2564,7 +2571,7 @@ export async function execute(interaction, client) {
 
     // Digityke
     create_monster({
-        id: 39,
+        id: OochID.Digityke,
         emote: get_emote_string('digityke'),
         name: 'Digityke',
         oochive_entry: 'An old model of machine companion, its feeble body prevents it from being of much use.',
@@ -2582,7 +2589,7 @@ export async function execute(interaction, client) {
 
     // Codet
     create_monster({
-        id: 40,
+        id: OochID.Codet,
         emote: get_emote_string('codet'),
         name: 'Codet',
         oochive_entry: 'An attempt to modernize the DGTY-k gone wrong. Despite being decommissioned these haunting machines continue to run.',
@@ -2600,7 +2607,7 @@ export async function execute(interaction, client) {
 
     // Heatri
     create_monster({
-        id: 41,
+        id: OochID.Heatri,
         emote: get_emote_string('heatri'),
         name: 'Heatri',
         oochive_entry: 'A bird-like creature made of an ever-shifting fluid, in this form it becomes superheated.',
@@ -2617,7 +2624,7 @@ export async function execute(interaction, client) {
 
     // Moistri
     create_monster({
-        id: 42,
+        id: OochID.Moistri,
         emote: get_emote_string('moistri'),
         name: 'Moistri',
         oochive_entry: 'Researchers studying Moistri have realized that its structure can shift freely, some believe it may be able to change forms at will.',
@@ -2634,7 +2641,7 @@ export async function execute(interaction, client) {
 
     // Crystri
     create_monster({
-        id: 43,
+        id: OochID.Crystri,
         emote: get_emote_string('crystri'),
         name: 'Crystri',
         oochive_entry: 'Crystri\'s body reveals that it\'s made up of several smaller organisms, linking together to form one larger creature.',
@@ -2651,7 +2658,7 @@ export async function execute(interaction, client) {
 
     // Solidifyr
     create_monster({
-        id: 44,
+        id: OochID.Solidifyr,
         emote: get_emote_string('solidifyr'),
         name: 'Solidifyr',
         oochive_entry: 'Frequently found wandering lava fields. While unflinching in the face of an eruption, they will flee immediately if startled otherwise.',
@@ -2669,7 +2676,7 @@ export async function execute(interaction, client) {
 
     // Obstaggard
     create_monster({
-        id: 45,
+        id: OochID.Obstaggard,
         emote: get_emote_string('obstaggard'),
         name: 'Obstaggard',
         oochive_entry: 'While incredibly hard and sharp, their horns are very brittle. Obstaggard are often hunted in order to make precision blades.',
@@ -2688,7 +2695,7 @@ export async function execute(interaction, client) {
 
     // Droplunk
     create_monster({
-        id: 46,
+        id: OochID.Droplunk,
         emote: get_emote_string('droplunk'),
         name: 'Droplunk',
         oochive_entry: 'Oops, don\'t let this one drop on your head!',
@@ -2706,7 +2713,7 @@ export async function execute(interaction, client) {
 
     // Brykurse
     create_monster({
-        id: 47,
+        id: OochID.Brykurse,
         emote: get_emote_string('brykurse'),
         name: 'Brykurse',
         oochive_entry: 'Square meatball!',
@@ -2724,7 +2731,7 @@ export async function execute(interaction, client) {
 
     // Polyplute
     create_monster({
-        id: 48,
+        id: OochID.Polyplute,
         emote: get_emote_string('polyplute'),
         name: 'Polyplute',
         oochive_entry: 'Blooms of Polyplute create beautiful fields, however this phenomenon is incredibly dangerous as they make the environment around them toxic.',
@@ -2741,7 +2748,7 @@ export async function execute(interaction, client) {
 
     // Reefest
     create_monster({
-        id: 49,
+        id: OochID.Reefest,
         emote: get_emote_string('reefest'),
         name: 'Reefest',
         oochive_entry: 'When Polyplute blooms linger in an area, they often congeal into the massive Reefest.',
@@ -2758,7 +2765,7 @@ export async function execute(interaction, client) {
 
     // Frigook
     create_monster({
-        id: 50,
+        id: OochID.Frigook,
         emote: get_emote_string('frigook'),
         name: 'Frigook',
         oochive_entry: 'Frigook maintain a temperature just above the point of freezing and can quickly drop below it to harden their bodies.',
@@ -2775,7 +2782,7 @@ export async function execute(interaction, client) {
 
     // Boreyuc
     create_monster({
-        id: 51,
+        id: OochID.Boreyuc,
         emote: get_emote_string('boreyuc'),
         name: 'Boreyuc',
         oochive_entry: 'These beasts move incredibly slowly unless disturbed, liquefying their body and attacking immediately.',
@@ -2792,7 +2799,7 @@ export async function execute(interaction, client) {
 
     // Vrumbox
     create_monster({
-        id: 52,
+        id: OochID.Vrumbox,
         emote: get_emote_string('vrumbox'),
         name: 'Vrumbox',
         oochive_entry: 'Monowheeled automata built for carrying various pieces of equipment.',
@@ -2809,7 +2816,7 @@ export async function execute(interaction, client) {
 
     // Folduo
     create_monster({
-        id: 53,
+        id: OochID.Folduo,
         emote: get_emote_string('folduo'),
         name: 'Folduo',
         oochive_entry: 'Folduo\'s body allows it to fit into small spaces. It also can combine with and dock with Vrumbox to create platforms.',
@@ -2826,7 +2833,7 @@ export async function execute(interaction, client) {
 
     // Hexyclone
     create_monster({
-        id: 54,
+        id: OochID.Hexyclone,
         emote: get_emote_string('hexyclone'),
         name: 'Hexyclone',
         oochive_entry: 'A Hexcyclone\'s entire body can be folded into the space that acts as its head, allowing it to explore otherwise unenterable areas.',
@@ -2843,7 +2850,7 @@ export async function execute(interaction, client) {
 
     // Doubud
     create_monster({
-        id: 55,
+        id: OochID.Doubud,
         emote: get_emote_string('doubud'),
         name: 'Doubud',
         oochive_entry: 'Discovered when a researcher heard someone screaming. It turned out to be a pair of Doubud shouting back and forth at eachother.',
@@ -2860,7 +2867,7 @@ export async function execute(interaction, client) {
 
     // Hedfren
     create_monster({
-        id: 56,
+        id: OochID.Hedfren,
         emote: get_emote_string('hedfren'),
         name: 'Hedfren',
         oochive_entry: 'It\'s still not certain whether Hedfren is a true evolution or if it\'s just Doubud after emerging from the ground.',
@@ -2877,7 +2884,7 @@ export async function execute(interaction, client) {
 
     // Kindeep
     create_monster({
-        id: 57,
+        id: OochID.Kindeep,
         emote: get_emote_string('kindeep'),
         name: 'Kindeep',
         oochive_entry: 'Schools of this fish-like oochamon are often found floating down in the caverns.',
@@ -2895,7 +2902,7 @@ export async function execute(interaction, client) {
 
     // Ablayzz
     create_monster({
-        id: 58,
+        id: OochID.Ablayzz,
         emote: get_emote_string('ablayzz'),
         name: 'Ablayzz',
         oochive_entry: 'Its flames act as a beacon for young Kindeep, serving as a vanguard and guiding them.',
@@ -2913,7 +2920,7 @@ export async function execute(interaction, client) {
 
     // Krakle
     create_monster({
-        id: 59,
+        id: OochID.Krakle,
         emote: get_emote_string('krakle'),
         name: 'Krakle',
         oochive_entry: 'This small \'mon has a superheated shell, don\'t touch it.',
@@ -2929,7 +2936,7 @@ export async function execute(interaction, client) {
 
     // Lightuft
     create_monster({
-        id: 60,
+        id: OochID.Lightuft,
         emote: get_emote_string('lightuft'),
         name: 'Lightuft',
         oochive_entry: 'They don\'t quite fly well yet, but they\'re known for dropping on unsuspecting victims, burning them in the process.',
@@ -2946,7 +2953,7 @@ export async function execute(interaction, client) {
 
     // Infernowl
     create_monster({
-        id: 61,
+        id: OochID.Infernowl,
         emote: get_emote_string('infernowl'),
         name: 'Infernowl',
         oochive_entry: 'These apex predators will find a single volcano and make its entirety their hunting ground.',
@@ -2963,7 +2970,7 @@ export async function execute(interaction, client) {
 
     // Fluffly
     create_monster({
-        id: 62,
+        id: OochID.Fluffly,
         emote: get_emote_string('fluffly'),
         name: 'Fluffly',
         oochive_entry: 'These spore-infected creatures float gently on the wind. Incredibly soft. Potentially dangerous.',
@@ -2981,7 +2988,7 @@ export async function execute(interaction, client) {
 
     // Decavian
     create_monster({
-        id: 63,
+        id: OochID.Decavian,
         emote: get_emote_string('decavian'),
         name: 'Decavian',
         oochive_entry: 'A bird-like creature barely holding itself together, the fungus throughout its body is incredibly heat-resistant.',
@@ -2999,7 +3006,7 @@ export async function execute(interaction, client) {
 
     // Phaegrim
     create_monster({
-        id: 64,
+        id: OochID.Phaegrim,
         emote: get_emote_string('phaegrim'),
         name: 'Phaegrim',
         oochive_entry: 'The only truly solid part of its body is the mask-like shell, the rest is several individuals working as one.',
@@ -3017,7 +3024,7 @@ export async function execute(interaction, client) {
 
     // Plaghast
     create_monster({
-        id: 65,
+        id: OochID.Plaghast,
         emote: get_emote_string('plaghast'),
         name: 'Plaghast',
         oochive_entry: 'Its tendrils can be thinned and stretched over large swathes of land, acting as a widespread nervous system.',
@@ -3035,7 +3042,7 @@ export async function execute(interaction, client) {
 
     // Grubbit
     create_monster({
-        id: 66,
+        id: OochID.Grubbit,
         emote: get_emote_string('grubbit'),
         name: 'Grubbit',
         oochive_entry: 'These small bugs can be found munching on bits of crystal.',
@@ -3053,7 +3060,7 @@ export async function execute(interaction, client) {
 
     // Culcoon
     create_monster({
-        id: 67,
+        id: OochID.Culcoon,
         emote: get_emote_string('culcoon'),
         name: 'Culcoon',
         oochive_entry: 'It encases itself in threads and chunks of crystal, Culcoon\'s shells are incredibly tough.',
@@ -3071,7 +3078,7 @@ export async function execute(interaction, client) {
 
     // Speculidae
     create_monster({
-        id: 68,
+        id: OochID.Speculidae,
         emote: get_emote_string('speculidae'),
         name: 'Speculidae',
         oochive_entry: 'Their thin bodies and stained glass-like wings belie their incredible rigidity.',
@@ -3089,7 +3096,7 @@ export async function execute(interaction, client) {
 
     // Nisythe
     create_monster({
-        id: 69,
+        id: OochID.Nisythe,
         emote: get_emote_string('nisythe'),
         name: 'Nisythe',
         oochive_entry: 'A haunting creature wielding a flaming scythe, it is nearly impossible to get a picture of this Oochamon.',
@@ -3107,7 +3114,7 @@ export async function execute(interaction, client) {
 
     // Tidoll
     create_monster({
-        id: 70,
+        id: OochID.Tidoll,
         emote: get_emote_string('tidoll'),
         name: 'Tidoll',
         oochive_entry: 'These creatures are barely more than sacks of liquid with no bones supporting them.',
@@ -3124,7 +3131,7 @@ export async function execute(interaction, client) {
 
     // Marinette
     create_monster({
-        id: 71,
+        id: OochID.Marinette,
         emote: get_emote_string('marinette'),
         name: 'Marinette',
         oochive_entry: 'The golden threads controlling it are the main body, the rest is just ice-cold water.',
@@ -3141,7 +3148,7 @@ export async function execute(interaction, client) {
 
     // Durble
     create_monster({
-        id: 72,
+        id: OochID.Durble,
         emote: get_emote_string('durble'),
         name: 'Durble',
         oochive_entry: 'These small stone-creatures are incredibly friendly, some researchers have taken them in as pets.',
@@ -3158,7 +3165,7 @@ export async function execute(interaction, client) {
 
     // Durubull
     create_monster({
-        id: 73,
+        id: OochID.Durubull,
         emote: get_emote_string('durubull'),
         name: 'Durubull',
         oochive_entry: 'Unlike their previous form, Durubull are incredibly aggressive. Keep a safe distance if you can.',
@@ -3175,7 +3182,7 @@ export async function execute(interaction, client) {
 
     // Rustail
     create_monster({
-        id: 74,
+        id: OochID.Rustail,
         emote: get_emote_string('rustail'),
         name: 'Rustail',
         oochive_entry: 'These little lizards are made entirely of metal, their rusted tails act as an infectious weapon.',
@@ -3193,7 +3200,7 @@ export async function execute(interaction, client) {
 
     // Oxydrake
     create_monster({
-        id: 75,
+        id: OochID.Oxydrake,
         emote: get_emote_string('oxydrake'),
         name: 'Oxydrake',
         oochive_entry: 'Their heart is like a miniature reactor, how this creature evolved naturally is entirely unknown.',
@@ -3211,7 +3218,7 @@ export async function execute(interaction, client) {
 
     // Chakreye
     create_monster({
-        id: 76,
+        id: OochID.Chakreye,
         emote: get_emote_string('chakreye'),
         name: 'Chakreye',
         oochive_entry: 'Their body is surrounded by a rapidly spinning disc of plasma.',
@@ -3229,7 +3236,7 @@ export async function execute(interaction, client) {
 
     // Sabrink
     create_monster({
-        id: 77,
+        id: OochID.Sabrink,
         emote: get_emote_string('sabrink'),
         name: 'Sabrink',
         oochive_entry: 'A grinning energy blade that relentlessly pursues its enemies.',
@@ -3247,7 +3254,7 @@ export async function execute(interaction, client) {
 
     // Sapler
     create_monster({
-        id: 78,
+        id: OochID.Sapler,
         emote: get_emote_string('sapler'),
         name: 'Sapler',
         oochive_entry: 'These little guys are known to infest power stations and cables, slowly draining their energy.',
@@ -3265,7 +3272,7 @@ export async function execute(interaction, client) {
 
     // Radient
     create_monster({
-        id: 79,
+        id: OochID.Radient,
         emote: get_emote_string('radient'),
         name: 'Radient',
         oochive_entry: 'Radient spread their influence by chopping off their limbs, which eventually form new Saplers.',
@@ -3283,7 +3290,7 @@ export async function execute(interaction, client) {
 
     // Lasangato
     create_monster({
-        id: 80,
+        id: OochID.Lasangato,
         emote: get_emote_string('lasangato'),
         name: 'Lasangato',
         oochive_entry: 'A feline-like creature, known to bask for days at a time which causes layers of stone to build upon its back.',
@@ -3300,7 +3307,7 @@ export async function execute(interaction, client) {
 
     // Crudoil
     create_monster({
-        id: 81,
+        id: OochID.Crudoil,
         emote: get_emote_string('crudoil'),
         name: 'Crudoil',
         oochive_entry: 'A living mass of an oil-like substance. They\'re always seen carrying a heavy metal ring.',
@@ -3318,7 +3325,7 @@ export async function execute(interaction, client) {
 
     // Oilantern
     create_monster({
-        id: 82,
+        id: OochID.Oilantern,
         emote: get_emote_string('oilantern'),
         name: 'Oilantern',
         oochive_entry: 'When Oilantern get angry enough the light they fuel gets hot enough to ignite their entire body.',
@@ -3336,7 +3343,7 @@ export async function execute(interaction, client) {
 
     // Saporite
     create_monster({
-        id: 83,
+        id: OochID.Saporite,
         emote: get_emote_string('saporite'),
         name: 'Saporite',
         oochive_entry: 'Also called mushroom fairies, these small creatures are very peaceful.',
@@ -3353,7 +3360,7 @@ export async function execute(interaction, client) {
 
     // Faering
     create_monster({
-        id: 84,
+        id: OochID.Faering,
         emote: get_emote_string('faering'),
         name: 'Faering',
         oochive_entry: 'When Saporite settle into the ground they form a network of mushrooms, granting them control of the ground itself.',
@@ -3370,7 +3377,7 @@ export async function execute(interaction, client) {
 
     // Kerkobble
     create_monster({
-        id: 85,
+        id: OochID.Kerkobble,
         emote: get_emote_string('kercobble'),
         name: 'Kerkobble',
         oochive_entry: 'A small floating stone, researchers are unsure it has enough intelligence to be considered an Oochamon.',
@@ -3387,7 +3394,7 @@ export async function execute(interaction, client) {
 
     // Korkobble
     create_monster({
-        id: 86,
+        id: OochID.Korkobble,
         emote: get_emote_string('korkobble'),
         name: 'Korkobble',
         oochive_entry: 'If enough Kerkobble gather together, they work together form a neural network of sorts. It still isn\'t very smart though.',
@@ -3404,7 +3411,7 @@ export async function execute(interaction, client) {
 
     // Ilushand
     create_monster({
-        id: 87,
+        id: OochID.Ilushand,
         emote: get_emote_string('ilushand'),
         name: 'Ilushand',
         oochive_entry: 'Its unknown whether Ilushand\'s main body is the creature in the mirror or the small orb constantly next to it.',
@@ -3421,7 +3428,7 @@ export async function execute(interaction, client) {
 
     // Miroraj
     create_monster({
-        id: 88,
+        id: OochID.Miroraj,
         emote: get_emote_string('miroraj'),
         name: 'Miroraj',
         oochive_entry: 'It endlessly reflects its inner core making it incredibly difficult to perceive.',
@@ -3438,7 +3445,7 @@ export async function execute(interaction, client) {
 
     // Fritarge
     create_monster({
-        id: 89,
+        id: OochID.Fritarge,
         emote: get_emote_string('fritarge'),
         name: 'Fritarge',
         oochive_entry: 'The empty husk of what appears to be a bronze turtle. It rarely moves.',
@@ -3456,7 +3463,7 @@ export async function execute(interaction, client) {
 
     // Wardred
     create_monster({
-        id: 90,
+        id: OochID.Wardred,
         emote: get_emote_string('wardred'),
         name: 'Wardred',
         oochive_entry: 'The gaping maw on this creature\'s back echoes metallic whispers.',
@@ -3474,7 +3481,7 @@ export async function execute(interaction, client) {
 
     // Congsume
     create_monster({
-        id: 91,
+        id: OochID.Congsume,
         emote: get_emote_string('congsume'),
         name: 'Congsume',
         oochive_entry: 'It can\'t stop moving or the flames on its body will eventually catch up.',
@@ -3492,7 +3499,7 @@ export async function execute(interaction, client) {
 
     // Fevour
     create_monster({
-        id: 92,
+        id: OochID.Fevour,
         emote: get_emote_string('fevour'),
         name: 'Fevour',
         oochive_entry: 'Whatever it eats is immediately burned to keep it alive.',
@@ -3510,7 +3517,7 @@ export async function execute(interaction, client) {
 
     // Taditty
     create_monster({
-        id: 93,
+        id: OochID.Taditty,
         emote: get_emote_string('taditty'),
         name: 'Taditty',
         oochive_entry: 'They can often be found clustered in small circles, covered in blankets and humming tunes to eachother.',
@@ -3528,7 +3535,7 @@ export async function execute(interaction, client) {
 
     // Silentoad
     create_monster({
-        id: 94,
+        id: OochID.Silentoad,
         emote: get_emote_string('silentoad'),
         name: 'Silentoad',
         oochive_entry: 'Silentoad are quiet, watchful, and relentlessly protective of the Taditty that rest near them.',
@@ -3546,7 +3553,7 @@ export async function execute(interaction, client) {
 
     // Bansheet
     create_monster({
-        id: 95,
+        id: OochID.Bansheet,
         emote: get_emote_string('bansheet'),
         name: 'Bansheet',
         oochive_entry: 'Hidden beneath a tattered cloth, these creatures often catch unwary adventurers off guard with a head-splittingly loud screech.',
@@ -3564,7 +3571,7 @@ export async function execute(interaction, client) {
 
     // Tryptid
     create_monster({
-        id: 96,
+        id: OochID.Tryptid,
         emote: get_emote_string('tryptid'),
         name: 'Tryptid',
         oochive_entry: 'It seemingly appeared out of nowhere, creeping up from the darkness, and attaching parts of Oochamon to itself as it went.',
@@ -3582,7 +3589,7 @@ export async function execute(interaction, client) {
 
     // Roswier
     create_monster({
-        id: 97,
+        id: OochID.Roswier,
         emote: get_emote_string('roswier'),
         name: 'Roswier',
         oochive_entry: 'The existence of Roswier leads researchers to believe that all Tech Oochamon are internally controlled by organisms related to Ooze-types.',
@@ -3601,7 +3608,7 @@ export async function execute(interaction, client) {
 
     // Chemerai
     create_monster({
-        id: 98,
+        id: OochID.Chemerai,
         emote: get_emote_string('chemerai'),
         name: 'Chemerai',
         oochive_entry: 'The crystal atop this creature acts as a matter-energy converter of sorts, though its inner workings are completely unknown.',
@@ -3619,7 +3626,7 @@ export async function execute(interaction, client) {
 
     // Shieldome
     create_monster({
-        id: 99,
+        id: OochID.Shieldome,
         emote: get_emote_string('shieldome'),
         name: 'Shieldome',
         oochive_entry: 'A protective little guy, its body is made of stone and its shield is tough like kevlar.',
@@ -3637,7 +3644,7 @@ export async function execute(interaction, client) {
 
     // Rietor
     create_monster({
-        id: 100,
+        id: OochID.Rietor,
         emote: get_emote_string('rietor'),
         name: 'Rietor',
         oochive_entry: 'A tough shield covers most of its body, it giddily slams into enemies with all its strength.',
@@ -3655,7 +3662,7 @@ export async function execute(interaction, client) {
 
     // Pondorb
     create_monster({
-        id: 101,
+        id: OochID.Pondorb,
         emote: get_emote_string('pondorb'),
         name: 'Pondorb',
         oochive_entry: 'A small octopus-like creature, it constantly peers into an odd crystal ball.',
@@ -3673,7 +3680,7 @@ export async function execute(interaction, client) {
 
     // Maglobe
     create_monster({
-        id: 102,
+        id: OochID.Maglobe,
         emote: get_emote_string('maglobe'),
         name: 'Maglobe',
         oochive_entry: 'Maglobe are often compared to old legends due to their ability to form pacts and see into the future.',
@@ -3691,7 +3698,7 @@ export async function execute(interaction, client) {
 
     // Stakulb
     create_monster({
-        id: 103,
+        id: OochID.Stakulb,
         emote: get_emote_string('stakulb'),
         name: 'Stakulb',
         oochive_entry: 'A pair of fungal bulbs, one is always carrying the other.',
@@ -3709,7 +3716,7 @@ export async function execute(interaction, client) {
 
     // Matryion
     create_monster({
-        id: 104,
+        id: OochID.Matryion,
         emote: get_emote_string('matryion'),
         name: 'Matryion',
         oochive_entry: 'Matryion have layers, lots of them, too many in fact.',
@@ -3727,7 +3734,7 @@ export async function execute(interaction, client) {
 
     // Lacerize
     create_monster({
-        id: 105,
+        id: OochID.Lacerize,
         emote: get_emote_string('lacerize'),
         name: 'Lacerize',
         oochive_entry: 'Lacerize catch the breeze and float near the tops of mountains.',
@@ -3745,7 +3752,7 @@ export async function execute(interaction, client) {
 
     // Rendive
     create_monster({
-        id: 106,
+        id: OochID.Rendive,
         emote: get_emote_string('rendive'),
         name: 'Rendive',
         oochive_entry: 'Rendive are said to be Lacerize that have decended to the very bottom of the world, they aim to rise to the top once again.',
@@ -3763,7 +3770,7 @@ export async function execute(interaction, client) {
 
     // Drascend
     create_monster({
-        id: 107,
+        id: OochID.Drascend,
         emote: get_emote_string('drascend'),
         name: 'Drascend',
         oochive_entry: 'A dragon-like Oochamon, these creatures have returned from the depths of the world to attain new power!',
@@ -3781,7 +3788,7 @@ export async function execute(interaction, client) {
 
     // Nullifly
     create_monster({
-        id: 108,
+        id: OochID.Nullifly,
         emote: get_emote_string('nullifly'),
         name: 'Nullifly',
         oochive_entry: 'Strange creatures which begin to swarm where pockets of Void appear.',
@@ -3798,7 +3805,7 @@ export async function execute(interaction, client) {
 
     // Gnayme
     create_monster({
-        id: 109,
+        id: OochID.Gnayme,
         emote: get_emote_string('gnayme'),
         name: 'Gnayme',
         oochive_entry: 'They never speak, but when near humans they\'ll often point to the tag on top of their head.',
@@ -3816,7 +3823,7 @@ export async function execute(interaction, client) {
 
     // Mysnome
     create_monster({
-        id: 110,
+        id: OochID.Mysnome,
         emote: get_emote_string('mysnome'),
         name: 'Mysnome',
         oochive_entry: 'Mysnome are often seen stealing the tags off Gnaymes\' heads and attaching the tags to their own.',
@@ -3834,7 +3841,7 @@ export async function execute(interaction, client) {
 
     // Shellamp
     create_monster({
-        id: 111,
+        id: OochID.Shellamp,
         emote: get_emote_string('shellamp'),
         name: 'Shellamp',
         oochive_entry: 'It\'s believed that Shellamp use the crystal bulb on its tail to communicate with others.',
@@ -3851,7 +3858,7 @@ export async function execute(interaction, client) {
 
     // Caracar
     create_monster({
-        id: 112,
+        id: OochID.Caracar,
         emote: get_emote_string('caracar'),
         name: 'Caracar',
         oochive_entry: 'Caracar are shockingly fast for what seems to just be a giant snail. The generator on their backs produces extreme amounts of energy.',
@@ -3868,7 +3875,7 @@ export async function execute(interaction, client) {
 
     // Larvibe
     create_monster({
-        id: 113,
+        id: OochID.Larvibe,
         emote: get_emote_string('larvibe'),
         name: 'Larvibe',
         oochive_entry: 'Larvibe are often found relaxing near calming, rythmic sounds.',
@@ -3886,7 +3893,7 @@ export async function execute(interaction, client) {
 
     // Virtuito
     create_monster({
-        id: 114,
+        id: OochID.Virtuito,
         emote: get_emote_string('virtuito'),
         name: 'Virtuito',
         oochive_entry: 'Capable of making a calming melody or a screeching cacophony, these creatures are known for their audio versatility.',
@@ -3904,7 +3911,7 @@ export async function execute(interaction, client) {
 
     // Parmanyan
     create_monster({
-        id: 115,
+        id: OochID.Parmanyan,
         emote: get_emote_string('parmanyan'),
         name: 'Parmanyan',
         oochive_entry: 'They frequently approach and befriend humans and as well as Oochamon.',
@@ -3922,7 +3929,7 @@ export async function execute(interaction, client) {
 
     // Regulush
     create_monster({
-        id: 116,
+        id: OochID.Regulush,
         emote: get_emote_string('regulush'),
         name: 'Regulush',
         oochive_entry: 'Despite its more intimidating appearance, Regulush remains very friendly towards others after evolving from Parmanyan.',
@@ -3940,7 +3947,7 @@ export async function execute(interaction, client) {
 
     // Chewdee
     create_monster({
-        id: 117,
+        id: OochID.Chewdee,
         emote: get_emote_string('chewdee'),
         name: 'Chewdee',
         oochive_entry: 'Their perfectly flat bodies are capable of slipping through the thinnest cracks. Researchers are unsure how they manage to be alive and so flat at the same time.',
@@ -3958,7 +3965,7 @@ export async function execute(interaction, client) {
 
     // Rhodent
     create_monster({
-        id: 118,
+        id: OochID.Rhodent,
         emote: get_emote_string('rhodent'),
         name: 'Rhodent',
         oochive_entry: 'Its body seems to be some sort of digital construct which allows it to phase through walls at will.',
@@ -3976,7 +3983,7 @@ export async function execute(interaction, client) {
 
     // Coimble
     create_monster({
-        id: 119,
+        id: OochID.Coimble,
         emote: get_emote_string('coimble'),
         name: 'Coimble',
         oochive_entry: 'When attacking they often end up flipped on their backs, requiring assistance to get back up.',
@@ -3994,7 +4001,7 @@ export async function execute(interaction, client) {
 
     // Crabandit
     create_monster({
-        id: 120,
+        id: OochID.Crabandit,
         emote: get_emote_string('crabandit'),
         name: 'Crabandit',
         oochive_entry: 'Crabandit often use old slot machines as shells. It\'s currently unknown where they got the machines from.',
@@ -4012,7 +4019,7 @@ export async function execute(interaction, client) {
 
     // Bismote
     create_monster({
-        id: 121,
+        id: OochID.Bismote,
         emote: get_emote_string('bismote'),
         name: 'Bismote',
         oochive_entry: 'A fragment of rough crystals come to life, swarms of Bismote will scavenge the cave together to protect eachother.',
@@ -4029,7 +4036,7 @@ export async function execute(interaction, client) {
 
     // Iridusk
     create_monster({
-        id: 122,
+        id: OochID.Iridusk,
         emote: get_emote_string('iridusk'),
         name: 'Iridusk',
         oochive_entry: 'During the twilight hours these creatures can occaisionally be seen wandering to the surface.',
@@ -4046,7 +4053,7 @@ export async function execute(interaction, client) {
 
     // Priseroth
     create_monster({
-        id: 123,
+        id: OochID.Priseroth,
         emote: get_emote_string('priseroth'),
         name: 'Priseroth',
         oochive_entry: 'On clear nights Priseroth be seen compltely still, staring into the night sky, almost as if yearning to live among the stars.',
@@ -4063,7 +4070,7 @@ export async function execute(interaction, client) {
 
     // Talto
     create_monster({
-        id: 124,
+        id: OochID.Talto,
         emote: get_emote_string('talto'),
         name: 'Talto',
         oochive_entry: 'These gangly fellas stumble around as they chirp like odd birds.',
@@ -4081,7 +4088,7 @@ export async function execute(interaction, client) {
 
     // Sectrip
     create_monster({
-        id: 125,
+        id: OochID.Sectrip,
         emote: get_emote_string('sectrip'),
         name: 'Sectrip',
         oochive_entry: 'They\'d prefer to wander open plains, but have occaisionally been seen resting inside of abandoned buildings.',
@@ -4099,7 +4106,7 @@ export async function execute(interaction, client) {
 
     // Orchestryd
     create_monster({
-        id: 126,
+        id: OochID.Orchestryd,
         emote: get_emote_string('orchestryd'),
         name: 'Orchestryd',
         oochive_entry: 'Orchestryd will often be seen taking various instruments and adhering them to their bodies in order to the loudest possible shell.',
@@ -4117,7 +4124,7 @@ export async function execute(interaction, client) {
 
     // Heraloom
     create_monster({
-        id: 127,
+        id: OochID.Heraloom,
         emote: get_emote_string('heraloom'),
         name: 'Heraloom',
         oochive_entry: 'The harp on its body is made of many fine hairs; its soothing sound can put foes to sleep when strummed.',
@@ -4206,7 +4213,7 @@ export async function execute(interaction, client) {
     //#region Uncatchable Data
     // i_
     create_monster({
-        id: -1,
+        id: OochID.i_,
         emote: get_emote_string('i_'),
         name: 'i',
         oochive_entry: 'ERROR: entry not found',
@@ -4221,7 +4228,7 @@ export async function execute(interaction, client) {
 
     // Oochabit
     create_monster({
-        id: -2,
+        id: OochID.Oochabit,
         emote: get_emote_string('oochabit'),
         name: 'Oochabit',
         oochive_entry: 'These little guys\'ll consume space-time and do it with a smile on their faces.',
@@ -4236,7 +4243,7 @@ export async function execute(interaction, client) {
 
     // Oochabound
     create_monster({
-        id: -3,
+        id: OochID.Oochabound,
         emote: get_emote_string('oochabound'),
         name: 'Oochabound',
         oochive_entry: 'No thank you, I\'d really rather not write a description for this one.',
@@ -4251,7 +4258,7 @@ export async function execute(interaction, client) {
 
     // Slime Head
     create_monster({
-        id: -4,
+        id: OochID.SlimeHead,
         emote: get_emote_string('c_027'),
         name: 'Slime Head',
         oochive_entry: 'An oddly human head made of Ooze, it looks like it has Prisms embedded in its eye.',
@@ -4266,7 +4273,7 @@ export async function execute(interaction, client) {
 
     // Giant Slime Head
     create_monster({
-        id: -5,
+        id: OochID.GiantSlimeHead,
         emote: get_emote_string('c_900'),
         name: 'Giant Slime Head',
         oochive_entry: 'A large formation of Ooze. It\'s currently unknown whether this is an Oochamon or not.',
@@ -4281,7 +4288,7 @@ export async function execute(interaction, client) {
 
     // Enforcement System Δ
     create_monster({
-        id: -6,
+        id: OochID.EnforcementSystemΔ,
         emote: get_emote_string('c_901'),
         name: 'Enforcement System Δ',
         oochive_entry: 'A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...',
@@ -4296,7 +4303,7 @@ export async function execute(interaction, client) {
 
     // Ophicore Story Boss
     create_monster({
-        id: -7,
+        id: OochID.Ophicorupt,
         emote: get_emote_string('c_901'),
         name: 'Ophicorupt',
         oochive_entry: 'An ancient Oochamon, corrupted by a deep red growth within.',
@@ -4311,7 +4318,7 @@ export async function execute(interaction, client) {
 
     // Ophicore Story Boss Ward
     create_monster({
-        id: -8,
+        id: OochID.AncientRune,
         emote: get_emote_string('c_901'),
         name: 'Ancient Rune',
         oochive_entry: 'An ancient piece of debris infused with elemental power.',
@@ -4326,7 +4333,7 @@ export async function execute(interaction, client) {
 
     // Serpsis Story Boss
     create_monster({
-        id: -7,
+        id: OochID.Serpsis,
         emote: get_emote_string('c_901'),
         name: 'Serpsis',
         oochive_entry: 'A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...',

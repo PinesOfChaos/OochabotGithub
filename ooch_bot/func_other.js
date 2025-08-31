@@ -250,40 +250,6 @@ export async function reset_oochamon(user_id) {
     // Setup user data
     let db_profile = get_blank_profile();
     profile.set(user_id, db_profile);
-    //TO DO, once we confirm this works, replace the below db.db_profile.set lines
-
-    profile.set(user_id, 'c_000', 'player_sprite');
-    profile.set(user_id, [], 'ooch_pc')
-    profile.set(user_id, 0, 'ooch_active_slot')
-    profile.set(user_id, {}, 'other_inv')
-    profile.set(user_id, {}, 'prism_inv')
-    profile.set(user_id, {}, 'heal_inv')
-    profile.set(user_id, 0, 'oochabux')
-    profile.set(user_id, 0, 'repel_steps')
-    await profile.set(user_id, PlayerState.Intro, 'player_state')
-    profile.set(user_id, {}, 'ooch_enemy')
-    profile.set(user_id, false, 'location_data')
-    profile.set(user_id, false, 'checkpoint_data');
-    profile.set(user_id, false, 'display_msg_id');
-    profile.set(user_id, false, 'play_thread_id');
-    profile.set(user_id, false, 'play_guild_id');
-    profile.set(user_id, 0, 'battle_msg_counter');
-    profile.set(user_id, 0, 'battle_turn_counter');
-    profile.set(user_id, 0, 'turn_msg_counter');
-    profile.set(user_id, [], 'oochadex');
-    profile.set(user_id, [], 'flags');
-    profile.set(user_id, [], 'ooch_party');
-    profile.set(user_id, [Item.Potion, Item.Prism], 'global_shop_items');
-    profile.set(user_id, [], 'friends_list');
-    profile.set(user_id, 1, 'move_speed');
-    profile.set(user_id, 'Talk to the professor.', 'objective');
-    profile.set(user_id, false, 'cur_event_name');
-    
-    // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
-    // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
-    profile.set(user_id, [], 'cur_event_array'); 
-    profile.set(user_id, 0, 'cur_event_pos');
-    profile.set(user_id, false, 'cur_battle_id');
     
     // Settings
     profile.set(user_id, {

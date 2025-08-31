@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from 'discord.js';
-import { move_data, ability_data, status_data, item_data, profile } from '../db.js';
+import { move_data, ability_data, status_data, item_data, profile, monster_data } from '../db.js';
 import { type_to_emote, status_to_emote } from '../func_battle.js';
 import { get_art_file } from '../func_other.js';
 import { Status, MoveTarget, Weather, FieldEffect, OochType } from '../types.js';
@@ -70,7 +70,6 @@ export async function execute(interaction) {
 
     if (['move', 'ability', 'status', 'item'].includes(selected_db)) {
         if (isNaN(selected_id)) {
-            // TODO: Just have this try to find it in the database rather than saying this
             return interaction.reply('Make sure you select from one of the drop down options, don\'t type this in manually!');
         }
     }
@@ -78,7 +77,8 @@ export async function execute(interaction) {
     let info_move, eff_str, eff_split, embed_move,
     info_ability, embed_ability, embed_type_chart, controls_embed,
     info_status, amtOwned, embed_status, info_item, embed_item,
-    weather_desc, embed_weather, field_desc, embed_field;
+    weather_desc, embed_weather, field_desc, embed_field, ooch_ability_list;
+    //ooch_move_list;
 
     switch (selected_db) {
         case 'move':
@@ -170,6 +170,21 @@ export async function execute(interaction) {
                 eff_str += eff_line;
             }
 
+            // Get all Oochamon that learn this move
+            // ooch_move_list = monster_data.values();
+            // ooch_move_list = ooch_move_list.filter(ooch => (ooch.move_list.filter(move => move[1] == parseInt(selected_id)).length > 0 && ooch.id > 0));
+            // ooch_move_list = ooch_move_list.map(ooch => {
+            //     if (profile.has(interaction.user.id)) {
+            //         if (profile.get(interaction.user.id, `oochadex[${ooch.id}]`).caught > 0) {
+            //             return `${ooch.emote} ${ooch.name} [Lv. ${ooch.move_list.filter(move => move[1] == parseInt(selected_id))[0][0]}]`;
+            //         } else {
+            //             return `<???>`;
+            //         }
+            //     } else {
+            //         return `<???>`;
+            //     }
+            // })
+
             embed_move = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${type_to_emote(info_move.type)} ${info_move.name}`)
@@ -182,6 +197,8 @@ export async function execute(interaction) {
                     { name: 'Effect(s):', value: `${(info_move.effect == false) ? '--' : eff_str}`, inline: true }
                 );
 
+                //if (ooch_move_list.length > 0) embed_move.addFields({ name: `Oochamon Who Learn ${info_move.name}`, value: ooch_move_list.join('\n')});
+
             return interaction.reply({
                 embeds: [embed_move],
                 flags: MessageFlags.Ephemeral
@@ -189,10 +206,25 @@ export async function execute(interaction) {
 
         case 'ability':
             info_ability = ability_data.get(`${selected_id}`);
+            ooch_ability_list = monster_data.values();
+            ooch_ability_list = ooch_ability_list.filter(ooch => (ooch.abilities.includes(parseInt(selected_id)) && ooch.id > 0));
+            ooch_ability_list = ooch_ability_list.map(ooch => {
+                if (profile.has(interaction.user.id)) {
+                    if (profile.get(interaction.user.id, `oochadex[${ooch.id}]`).caught > 0) {
+                        return `${ooch.emote} ${ooch.name}`;
+                    } else {
+                        return `<???>`;
+                    }
+                } else {
+                    return `<???>`;
+                }
+            })
             embed_ability = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${info_ability.name}`)
                 .setDescription(info_ability.description);
+            
+            if (ooch_ability_list.length > 0) embed_ability.addFields({ name: `Oochamon With ${info_ability.name}`, value: ooch_ability_list.join('\n')});
             return interaction.reply({
                 embeds: [embed_ability],
                 flags: MessageFlags.Ephemeral
