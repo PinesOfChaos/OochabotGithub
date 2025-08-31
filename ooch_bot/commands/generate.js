@@ -4310,7 +4310,7 @@ export async function execute(interaction, client) {
         type: [OochType.Crystal],
         hp: 55, atk: 15, def: 20, spd: 15, // total 105
         move_list: [
-            [1, Move.Heatseeker], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
+            [1, Move.GuidedSpire], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
         ],
         abilities: [Ability.AncientPlating],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -4319,15 +4319,20 @@ export async function execute(interaction, client) {
     // Ophicore Story Boss Ward
     create_monster({
         id: OochID.AncientRune,
-        emote: get_emote_string('c_901'),
+        emote: get_emote_string('ophicore_neutral'),
         name: 'Ancient Rune',
         oochive_entry: 'An ancient piece of debris infused with elemental power.',
         type: [OochType.Neutral],
-        hp: 10, atk: 10, def: 10, spd: 10, // total 100
+        hp: 10, atk: 10, def: 10, spd: 10, // total 40
         move_list: [
             [1, Move.SyncStrike], [-1, Move.Bash]
         ],
-        abilities: [Ability.AncientWard],
+        abilities: [
+            Ability.AncientWardNeutral, Ability.AncientWardVoid, Ability.AncientWardFungal, 
+            Ability.AncientWardFlame, Ability.AncientWardStone, Ability.AncientWardTech, 
+            Ability.AncientWardMagic, Ability.AncientWardOoze, Ability.AncientWardCrystal, 
+            Ability.AncientWardSound, Ability.AncientWardCloth, Ability.AncientWardMartial
+        ],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
 
@@ -4340,7 +4345,7 @@ export async function execute(interaction, client) {
         type: [OochType.Void],
         hp: 50, atk: 10, def: 20, spd: 10, // total 90
         move_list: [
-            [1, Move.NullSphere], [-1, Move.Bash]
+            [1, Move.NullSphere], [1, Move.DrainLife], [1, Move.Overgrowth], [1, Move.TakeOver], [-1, Move.Bash]
         ],
         abilities: [Ability.Usurper],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
