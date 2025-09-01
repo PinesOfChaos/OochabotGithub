@@ -1,4 +1,5 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
+import { sortBy} from 'lodash-es';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
 import { readdirSync, readFile, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
@@ -4439,6 +4440,9 @@ export async function execute(interaction, client) {
 
     maps.clear();
 
+    
+
+
     //Comment/Uncomment this as needed
     //console.log(move_info);
     //#endregion
@@ -4481,10 +4485,16 @@ export async function execute(interaction, client) {
     writeFile('./editor_data/npc_data.txt', npc_output_str, (err) => { if (err) throw err; });
 
     // JSON editor info
-    writeFile('./editor_data/ooch_data.json', JSON.stringify(monster_data.values(), null, 2), (err) => { if (err) throw err; });
-    writeFile('./editor_data/moves_data.json', JSON.stringify(move_data.values(), null, 2), (err) => { if (err) throw err; });
-    writeFile('./editor_data/items_data.json', JSON.stringify(item_data.values(), null, 2), (err) => { if (err) throw err; });
-    writeFile('./editor_data/abilities_data.json', JSON.stringify(ability_data.values(), null, 2), (err) => { if (err) throw err; });
+    //Sort the data to be in order of id
+    //var sorted_monsters = monster_data.values().toSorted((a, b) => a.id - b.id); SKIP MONSTER DATA OR YOU WILL DRIVE PINES INSANE
+    var sorted_moves = move_data.values().toSorted((a, b) => a.id - b.id);
+    var sorted_items = item_data.values().toSorted((a, b) => a.id - b.id);
+    var sorted_abilities = ability_data.values().toSorted((a, b) => a.id - b.id);
+
+    writeFile('./editor_data/ooch_data.json', JSON.stringify(monster_data.values()), (err) => { if (err) throw err; });
+    writeFile('./editor_data/moves_data.json', JSON.stringify(sorted_moves, null, 2), (err) => { if (err) throw err; });
+    writeFile('./editor_data/items_data.json', JSON.stringify(sorted_items, null, 2), (err) => { if (err) throw err; });
+    writeFile('./editor_data/abilities_data.json', JSON.stringify(sorted_abilities, null, 2), (err) => { if (err) throw err; });
 
     // // Read users.json file 
     readFile("./global_events.json", function (err, data) {

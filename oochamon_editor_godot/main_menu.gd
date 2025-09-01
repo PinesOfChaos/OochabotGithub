@@ -26,8 +26,6 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_file_dialog_set_file_paths_dir_selected(dir):
-	var data_path = DirAccess.open(dir)
-	
 	if DirAccess.dir_exists_absolute(dir):
 		Global.DataPath = dir
 		save_preferences()

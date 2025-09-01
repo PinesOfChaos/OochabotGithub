@@ -440,54 +440,14 @@
     "description": "Spawns a helpful Slime Head per 25% HP lost."
   },
   {
-    "id": 89,
-    "name": "Pure Core",
-    "description": "Reduces the damage of incoming non-Super Effective moves."
-  },
-  {
-    "id": 102,
-    "name": "Lullaby",
-    "description": "Sound-type attacks have a 25% chance to put the target to SLEEP."
-  },
-  {
-    "id": 103,
-    "name": "Twilight Hour",
-    "description": "If this oochamon gets DOOMED, it gains +2 ATK, DEF, & SPD stages."
-  },
-  {
-    "id": 104,
-    "name": "Cacophony",
-    "description": "Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage."
-  },
-  {
-    "id": 105,
-    "name": "Accelerando",
-    "description": "Using a Sound-type move raises the users SPD by 1 stage."
-  },
-  {
-    "id": 110,
-    "name": "Usurper",
-    "description": "Queues the same attack after an enemy Oochamon attacks."
-  },
-  {
-    "id": 106,
-    "name": "On Ice",
-    "description": "Starts with the DRAINED status, but increases ATK, DEF, and SPD by 1 stage at the end of the switch in turn."
-  },
-  {
-    "id": 107,
-    "name": "Flux",
-    "description": "Status effects on this Oochamon are randomized at the end of each turn."
-  },
-  {
-    "id": 108,
-    "name": "Equalized",
-    "description": "Sets the Oochamon's type to Neutral when they are switched in."
-  },
-  {
     "id": 88,
     "name": "Ancient Plating",
     "description": "Clears the Oochamon's Status Effects and Spawns a Ancient Rune per 20% HP lost."
+  },
+  {
+    "id": 89,
+    "name": "Pure Core",
+    "description": "Reduces the damage of incoming non-Super Effective moves."
   },
   {
     "id": 90,
@@ -520,14 +480,14 @@
     "description": "Reduces the damage of all Tech-type attacks"
   },
   {
-    "id": 97,
-    "name": "Ancient Ward (Ooze)",
-    "description": "Reduces the damage of all Ooze-type attacks"
-  },
-  {
     "id": 96,
     "name": "Ancient Ward (Magic)",
     "description": "Reduces the damage of all Magic-type attacks"
+  },
+  {
+    "id": 97,
+    "name": "Ancient Ward (Ooze)",
+    "description": "Reduces the damage of all Ooze-type attacks"
   },
   {
     "id": 98,
@@ -550,8 +510,48 @@
     "description": "Reduces the damage of all Martial-type attacks"
   },
   {
+    "id": 102,
+    "name": "Lullaby",
+    "description": "Sound-type attacks have a 25% chance to put the target to SLEEP."
+  },
+  {
+    "id": 103,
+    "name": "Twilight Hour",
+    "description": "If this oochamon gets DOOMED, it gains +2 ATK, DEF, & SPD stages."
+  },
+  {
+    "id": 104,
+    "name": "Cacophony",
+    "description": "Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage."
+  },
+  {
+    "id": 105,
+    "name": "Accelerando",
+    "description": "Using a Sound-type move raises the users SPD by 1 stage."
+  },
+  {
+    "id": 106,
+    "name": "On Ice",
+    "description": "Starts with the DRAINED status, but increases ATK, DEF, and SPD by 1 stage at the end of the switch in turn."
+  },
+  {
+    "id": 107,
+    "name": "Flux",
+    "description": "Status effects on this Oochamon are randomized at the end of each turn."
+  },
+  {
+    "id": 108,
+    "name": "Equalized",
+    "description": "Sets the Oochamon's type to Neutral when they are switched in."
+  },
+  {
     "id": 109,
     "name": "Patchwork",
     "description": "Using Cloth-type moves heals the user for 5% of max HP."
+  },
+  {
+    "id": 110,
+    "name": "Usurper",
+    "description": "Queues the same attack after an enemy Oochamon attacks."
   }
 ]
