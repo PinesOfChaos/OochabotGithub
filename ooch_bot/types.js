@@ -98,7 +98,8 @@ const Status = {
     GoingFirstBonus: 'going_first',
     GoingLastBonus: 'going_last',
     TrueDamage: 'true_damage',
-    SweepDamage: 'sweep_damage'
+    SweepDamage: 'sweep_damage',
+    AlwaysSuperEff: 'always_super_effective'
 }
 
 const OochType = {
@@ -296,7 +297,10 @@ const Move = {
     SpoolUp: 139,
     TieDown: 140,
     RugRash: 141,
-    HymnOfDread: 142
+    HymnOfDread: 142,
+    SoulScale: 143,
+    CoreBurst: 144,
+    CoreDelete: 145
 }
 
 const OochID = {
@@ -552,7 +556,8 @@ const Ability = {
     OnIce: 106,
     Flux: 107,
     Equalized: 108,
-    Patchwork: 109
+    Patchwork: 109,
+    Usurper: 110
 }
 
 const Item = {

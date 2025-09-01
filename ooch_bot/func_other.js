@@ -168,6 +168,9 @@ export function get_emote_string(name) {
     let emojiList = clientEmojis.filter(v => v.name === toLower(name));
     emojiList = Array.from(emojiList.values());
     if (emojiList.length === 0) {
+
+        console.log(`EMOJI ERROR: ${name} not found.`);
+
         emojiList = clientEmojis.filter(v => v.name === 'error');
         emojiList = Array.from(emojiList.values());
     }

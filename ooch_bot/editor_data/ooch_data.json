@@ -976,7 +976,7 @@
   },
   {
     "id": 10,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:sparafura:1412122677732315346>",
     "name": "Sparafura",
     "oochive_entry": "These dangerous serpents are found beneath the desert sands. Their crushing bite shatters bone with ease.",
     "type": [
@@ -1784,7 +1784,7 @@
   },
   {
     "id": 19,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:torchoir:1412124612409688075>",
     "name": "Torchoir",
     "oochive_entry": "A sentient torch that hums a haunting tune. Its song fills people with dread.",
     "type": [
@@ -3459,7 +3459,7 @@
     ],
     "abilities": [
       31,
-      22
+      109
     ],
     "pre_evo_id": -1,
     "evo_id": 38,
@@ -3551,7 +3551,7 @@
     ],
     "abilities": [
       31,
-      22
+      109
     ],
     "pre_evo_id": 37,
     "evo_id": -1,
@@ -5776,7 +5776,7 @@
   },
   {
     "id": 66,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:grubbit:1412122575651213422>",
     "name": "Grubbit",
     "oochive_entry": "These small bugs can be found munching on bits of crystal.",
     "type": [
@@ -6205,7 +6205,7 @@
     ],
     "abilities": [
       16,
-      50
+      109
     ],
     "pre_evo_id": -1,
     "evo_id": 71,
@@ -6293,7 +6293,7 @@
     ],
     "abilities": [
       38,
-      50
+      109
     ],
     "pre_evo_id": 70,
     "evo_id": -1,
@@ -7579,8 +7579,8 @@
       ]
     ],
     "abilities": [
-      31,
-      28
+      107,
+      53
     ],
     "pre_evo_id": 85,
     "evo_id": -1,
@@ -8384,7 +8384,7 @@
     ],
     "abilities": [
       73,
-      94
+      104
     ],
     "pre_evo_id": 94,
     "evo_id": -1,
@@ -9624,7 +9624,7 @@
     "id": 110,
     "emote": "<:mysnome:1403938593369624668>",
     "name": "Mysnome",
-    "oochive_entry": "Mysnome are often seen stealing the tags off Gnaymes' heads and attaching the tags to their own.",
+    "oochive_entry": "Mysnome are often seen stealing the tags off Gnaymes' heads and attaching them to their own.",
     "type": [
       "magic"
     ],
@@ -10082,7 +10082,7 @@
       ]
     ],
     "abilities": [
-      73,
+      104,
       76
     ],
     "pre_evo_id": 113,
@@ -10719,7 +10719,7 @@
       ]
     ],
     "abilities": [
-      93,
+      103,
       71
     ],
     "pre_evo_id": -1,
@@ -10802,7 +10802,7 @@
       ]
     ],
     "abilities": [
-      93,
+      103,
       71
     ],
     "pre_evo_id": 121,
@@ -10885,7 +10885,7 @@
       ]
     ],
     "abilities": [
-      93,
+      103,
       71
     ],
     "pre_evo_id": 122,
@@ -10976,7 +10976,7 @@
       ]
     ],
     "abilities": [
-      95,
+      105,
       63
     ],
     "pre_evo_id": -1,
@@ -11067,7 +11067,7 @@
       ]
     ],
     "abilities": [
-      95,
+      105,
       63
     ],
     "pre_evo_id": -1,
@@ -11158,7 +11158,7 @@
       ]
     ],
     "abilities": [
-      95,
+      105,
       63
     ],
     "pre_evo_id": -1,
@@ -11242,7 +11242,203 @@
       ]
     ],
     "abilities": [
-      92
+      102
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 128,
+    "emote": "<:symaat:1411926483374571530>",
+    "name": "Syma'at",
+    "oochive_entry": "This ancient Oochamon can tell the alignment of others at a mere glance. Its body seems to be of similar composition to ruins found around the planet.",
+    "type": [
+      "magic"
+    ],
+    "hp": 20,
+    "atk": 20,
+    "def": 20,
+    "spd": 20,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        63
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        10,
+        41
+      ],
+      [
+        12,
+        39
+      ],
+      [
+        14,
+        13
+      ],
+      [
+        16,
+        12
+      ],
+      [
+        20,
+        134
+      ],
+      [
+        25,
+        11
+      ],
+      [
+        27,
+        6
+      ],
+      [
+        29,
+        8
+      ],
+      [
+        33,
+        143
+      ],
+      [
+        37,
+        47
+      ],
+      [
+        40,
+        21
+      ],
+      [
+        40,
+        7
+      ],
+      [
+        40,
+        77
+      ],
+      [
+        45,
+        93
+      ],
+      [
+        -1,
+        0
+      ]
+    ],
+    "abilities": [
+      108
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
+    "id": 129,
+    "emote": "<:ophicore:1411926470074568794>",
+    "name": "Ophicore",
+    "oochive_entry": "This once corrupted Oochamon has taken on a new form. Its body contains fragments of various energies, some of which are familiar, and some which are not.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 24,
+    "atk": 21,
+    "def": 16,
+    "spd": 19,
+    "move_list": [
+      [
+        1,
+        1
+      ],
+      [
+        3,
+        94
+      ],
+      [
+        5,
+        61
+      ],
+      [
+        7,
+        30
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        12,
+        74
+      ],
+      [
+        14,
+        66
+      ],
+      [
+        17,
+        80
+      ],
+      [
+        20,
+        39
+      ],
+      [
+        22,
+        101
+      ],
+      [
+        24,
+        47
+      ],
+      [
+        27,
+        144
+      ],
+      [
+        29,
+        17
+      ],
+      [
+        33,
+        118
+      ],
+      [
+        36,
+        42
+      ],
+      [
+        40,
+        131
+      ],
+      [
+        45,
+        130
+      ],
+      [
+        -1,
+        145
+      ]
+    ],
+    "abilities": [
+      89
     ],
     "pre_evo_id": -1,
     "evo_id": -1,
@@ -11303,7 +11499,7 @@
   },
   {
     "id": -3,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:oochabound:1403938715511816292>",
     "name": "Oochabound",
     "oochive_entry": "No thank you, I'd really rather not write a description for this one.",
     "type": [
@@ -11371,7 +11567,7 @@
   },
   {
     "id": -5,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:c_900:1412123447621844992>",
     "name": "Giant Slime Head",
     "oochive_entry": "A large formation of Ooze. It's currently unknown whether this is an Oochamon or not.",
     "type": [
@@ -11413,7 +11609,7 @@
   },
   {
     "id": -6,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:c_901:1412123468895358996>",
     "name": "Enforcement System Δ",
     "oochive_entry": "A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...",
     "type": [
@@ -11454,8 +11650,50 @@
     "evo_stage": 0
   },
   {
+    "id": -7,
+    "emote": "<:c_901:1412123468895358996>",
+    "name": "Ophicorupt",
+    "oochive_entry": "An ancient Oochamon, corrupted by a deep red growth within.",
+    "type": [
+      "crystal"
+    ],
+    "hp": 55,
+    "atk": 15,
+    "def": 20,
+    "spd": 15,
+    "move_list": [
+      [
+        1,
+        120
+      ],
+      [
+        1,
+        129
+      ],
+      [
+        1,
+        130
+      ],
+      [
+        1,
+        131
+      ],
+      [
+        -1,
+        1
+      ]
+    ],
+    "abilities": [
+      88
+    ],
+    "pre_evo_id": -1,
+    "evo_id": -1,
+    "evo_lvl": -1,
+    "evo_stage": 0
+  },
+  {
     "id": -8,
-    "emote": "<:error:1403946237165703218>",
+    "emote": "<:ophicore_neutral:1403938764140580884>",
     "name": "Ancient Rune",
     "oochive_entry": "An ancient piece of debris infused with elemental power.",
     "type": [
@@ -11476,7 +11714,18 @@
       ]
     ],
     "abilities": [
-      89
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101
     ],
     "pre_evo_id": -1,
     "evo_id": -1,
@@ -11484,8 +11733,8 @@
     "evo_stage": 0
   },
   {
-    "id": -7,
-    "emote": "<:error:1403946237165703218>",
+    "id": -9,
+    "emote": "<:c_901:1412123468895358996>",
     "name": "Serpsis",
     "oochive_entry": "A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...",
     "type": [
@@ -11501,12 +11750,24 @@
         92
       ],
       [
+        1,
+        46
+      ],
+      [
+        1,
+        75
+      ],
+      [
+        1,
+        6
+      ],
+      [
         -1,
         1
       ]
     ],
     "abilities": [
-      90
+      110
     ],
     "pre_evo_id": -1,
     "evo_id": -1,

@@ -680,7 +680,7 @@
     "effect": [
       {
         "status": "vampire",
-        "chance": 10,
+        "chance": 25,
         "target": 0
       }
     ],
@@ -692,8 +692,8 @@
     "id": 46,
     "name": "Drain Life",
     "type": "magic",
-    "damage": 50,
-    "accuracy": 50,
+    "damage": 60,
+    "accuracy": 80,
     "effect": [
       {
         "status": "vampire",
@@ -2416,6 +2416,62 @@
       }
     ],
     "description": "A ancient and horrid song that leaves the target WEAKENED.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 143,
+    "name": "Soul Scale",
+    "type": "magic",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Giant scales tip in your favor, lowering the target's ATK and raising the user's.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 144,
+    "name": "Core Burst",
+    "type": "neutral",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "always_super_effective",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Unleash a burst of energy from the core. It is always super effective!",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 145,
+    "name": "Core Delete",
+    "type": "crystal",
+    "damage": 120,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Erase a large area of matter from existence to deal massive damage. Doing so lowers the user's ATK.",
     "self_target": false,
     "tags": []
   }

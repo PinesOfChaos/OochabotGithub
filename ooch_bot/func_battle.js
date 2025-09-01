@@ -3408,11 +3408,15 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     }
 
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-    if (defender.ability == Ability.PureCore) type_multiplier[0] *= 0.8;
+    if ((defender.ability == Ability.PureCore) && (type_multiplier[0] <= 1.0)){ type_multiplier[0] *= 0.8; }
+
+    //AlwaysSuperEff makes the move always deal super-effective damage
+    if(move_effects.includes(Status.AlwaysSuperEff)){ type_multiplier[0] = 2.0; type_multiplier[1] = '*Super effective!*'; }
+
     //Weak status reduces the move's power by 10
-    if(attacker.status_effects.includes(Status.Weak)){
-        move_damage = _max(move_damage - 10, 5)
-    }
+    if(attacker.status_effects.includes(Status.Weak)) move_damage = _max(move_damage - 10, 5);
+
+    
 
     let ancient_ward_text = ""
     for(let mon of mons_in_battle){

@@ -785,25 +785,25 @@ export async function execute(interaction, client) {
     });
     create_item({
         id: 42, name: 'Essence Monolith', emote: get_emote_string('item_xp_x'),
-        category: 'other_inv', type: 'level_up', price: -1, potency: 1,
+        category: 'other_inv', type: 'level_up', price: 100_000, potency: 1,
         description: 'A pitch black monolith of eyes, only visible to those destined peer into the void. Levels up an Oochamon',
         description_short: 'Levels up an Oochamon'
     });
     create_item({
         id: 43, name: 'Essence Fragment', emote: get_emote_string('item_xp_s'),
-        category: 'other_inv', type: 'give_exp', price: -1, potency: 500,
+        category: 'other_inv', type: 'give_exp', price: 8_000, potency: 500,
         description: 'A sliver of knowledge trapped within an inky void. Gives a small amount of EXP to an Oochamon',
         description_short: 'Gives a small amount of EXP to an Oochamon'
     });
     create_item({
         id: 44, name: 'Essence Shard', emote: get_emote_string('item_xp_m'),
-        category: 'other_inv', type: 'give_exp', price: -1, potency: 5000,
+        category: 'other_inv', type: 'give_exp', price: 40_000, potency: 5000,
         description: 'A sizeable shard of knowledge. Gives a medium amount of EXP to an Oochamon',
         description_short: 'Gives a medium amount of EXP to an Oochamon'
     });
     create_item({
         id: 45, name: 'Essence Chunk', emote: get_emote_string('item_xp_l'),
-        category: 'other_inv', type: 'give_exp', price: -1, potency: 50000,
+        category: 'other_inv', type: 'give_exp', price: 100_000, potency: 50000,
         description: 'A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon',
         description_short: 'Gives a large amount of EXP to an Oochamon'
     });
@@ -812,6 +812,12 @@ export async function execute(interaction, client) {
         category: 'other_inv', type: 'evolve', price: 8000, potency: [21, 111],
         description: 'An old lightbulb filled with tiny machines. The bulb seems to flicker and glow on occaison.',
         description_short: 'Used to evolve a certain Oochamon.'
+    });
+    create_item({
+        id: 47, name: 'Magic Mirror', emote: get_emote_string('item_magic_mirror'),
+        category: 'other_inv', type: 'magic_mirror', price: -1, potency: 0,
+        description: 'A mirror made of crystals from deep beneath the surface. Using it lets you change your appearance.',
+        description_short: 'Used to change your appearance.'
     });
     //#endregion
     //#region Move Data
@@ -1752,6 +1758,27 @@ export async function execute(interaction, client) {
         description: 'A ancient and horrid song that leaves the target WEAKENED.',
         self_target: false,
     });
+    create_move({
+        id: Move.SoulScale, name: 'Soul Scale', type: OochType.Magic,
+        damage: 50, accuracy: 100,
+        effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Enemy },{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }],
+        description: 'Giant scales tip in your favor, lowering the target\'s ATK and raising the user\'s.',
+        self_target: false,
+    });
+    create_move({
+        id: Move.CoreBurst, name: 'Core Burst', type: OochType.Neutral,
+        damage: 50, accuracy: 100,
+        effect: [{ status: Status.AlwaysSuperEff, chance: 100, target: MoveTarget.Self }],
+        description: 'Unleash a burst of energy from the core. It is always super effective!',
+        self_target: false,
+    });
+    create_move({
+        id: Move.CoreDelete, name: 'Core Delete', type: OochType.Crystal,
+        damage: 120, accuracy: 100,
+        effect: [{ status: '-_atk_1', chance: 100, target: MoveTarget.Self }],
+        description: 'Erase a large area of matter from existence to deal massive damage. Doing so lowers the user\'s ATK.',
+        self_target: false,
+    });
 
     //#endregionF
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
@@ -1848,8 +1875,8 @@ export async function execute(interaction, client) {
     create_ability(Ability.PureCore, 'Pure Core', 'Reduces the damage of incoming non-Super Effective moves.'); //Unique - Ophicore (Post-game ability)
     create_ability(Ability.Lullaby, 'Lullaby', 'Sound-type attacks have a 25% chance to put the target to SLEEP.'); //Unique - Heraloom
     create_ability(Ability.TwilightHour, 'Twilight Hour', 'If this oochamon gets DOOMED, it gains +2 ATK, DEF, & SPD stages.'); //Unique - Priseroth Line
-    create_ability(Ability.Cacophony, 'Cacophony', 'Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage.'); //Unique - Bansheet
-    create_ability(Ability.Accelerando, 'Accelerando', 'Using a Sound-type move raises the users SPD by 1 stage.'); //Unique - Orchestryd line\
+    create_ability(Ability.Cacophony, 'Cacophony', 'Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage.'); 
+    create_ability(Ability.Accelerando, 'Accelerando', 'Using a Sound-type move raises the users SPD by 1 stage.'); 
     create_ability(Ability.Usurper, 'Usurper', 'Queues the same attack after an enemy Oochamon attacks.'); //Unique - Serpsis' (Story Boss Ability)
     create_ability(Ability.OnIce, 'On Ice', 'Starts with the DRAINED status, but increases ATK, DEF, and SPD by 1 stage at the end of the switch in turn.');
     create_ability(Ability.Flux, 'Flux', 'Status effects on this Oochamon are randomized at the end of each turn.');
@@ -3826,7 +3853,7 @@ export async function execute(interaction, client) {
         id: OochID.Mysnome,
         emote: get_emote_string('mysnome'),
         name: 'Mysnome',
-        oochive_entry: 'Mysnome are often seen stealing the tags off Gnaymes\' heads and attaching the tags to their own.',
+        oochive_entry: 'Mysnome are often seen stealing the tags off Gnaymes\' heads and attaching them to their own.',
         type: [OochType.Magic],
         hp: 21, atk: 18, def: 17, spd: 19, // total 70
         move_list: [
@@ -4148,7 +4175,10 @@ export async function execute(interaction, client) {
         type: [OochType.Magic],
         hp: 20, atk: 20, def: 20, spd: 20, // total 80
         move_list: [
-            [1, Move.Bash], [-1, Move.Hit]
+            [1, Move.Bash], [3, Move.Brittle], [5, Move.PebbleBlast], [5, Move.Fireball], [5, Move.SporeShot], 
+            [10, Move.PrecisionStrike], [12, Move.Entomb], [14, Move.Blight], [16, Move.Torch], [20, Move.BattleCry],
+            [25, Move.Boulderdash], [27, Move.TakeOver], [29, Move.Engulf], [33, Move.SoulScale], [37, Move.Restruct],
+            [40, Move.Inferno], [40, Move.DustStorm], [40, Move.ThornShot], [45, Move.HighImpact],  [-1, Move.Hit]
         ],
         abilities: [Ability.Equalized],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -4161,9 +4191,12 @@ export async function execute(interaction, client) {
         name: 'Ophicore',
         oochive_entry: 'This once corrupted Oochamon has taken on a new form. Its body contains fragments of various energies, some of which are familiar, and some which are not.',
         type: [OochType.Crystal],
-        hp: 25, atk: 20, def: 15, spd: 20, // total 80
+        hp: 24, atk: 21, def: 16, spd: 19, // total 80
         move_list: [
-            [1, Move.Bash], [-1, Move.Hit]
+            [1, Move.Bash], [3, Move.Shards], [5, Move.Embolden], [7, Move.Blink], [10, Move.ArcaStrike],
+            [12, Move.BlindingBeam], [14, Move.HypeUp], [17, Move.Sedimentation], [20, Move.Entomb], [22, Move.CrystalBall],
+            [24, Move.Restruct], [27, Move.CoreBurst], [29, Move.GemBash], [33, Move.Lagspike], [36, Move.Barrage],
+            [40, Move.TargetLock], [45, Move.Annihilate], [-1, Move.CoreDelete]
         ],
         abilities: [Ability.PureCore],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
@@ -4390,7 +4423,7 @@ export async function execute(interaction, client) {
         let move_found = false;
         for (let tmon of test_mons) {
             for (let tmove2 of tmon.move_list) {
-                if (tmove1.id == tmove2[1] || tmove1.id == 108) { //108 Jackpot's ID
+                if (tmove1.id == tmove2[1] || [Move.Jackpot, Move.MostAnnoyingSound].includes(tmove1.id)) { //Add exceptions here
                     move_found = true;
                     break;
                 }
