@@ -428,6 +428,8 @@ const OochID = {
     Sectrip:125,
     Orchestryd:126,
     Heraloom:127,
+    Symaat:128,
+    Ophicore:129,
 
     i_:-1,
     Oochabit:-2,

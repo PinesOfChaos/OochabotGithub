@@ -2547,7 +2547,7 @@ export async function execute(interaction, client) {
             [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
-        abilities: [Ability.Tangled, Ability.Leech],
+        abilities: [Ability.Tangled, Ability.Patchwork],
         pre_evo_id: -1, evo_id: 38, evo_lvl: 13, evo_stage: 0
     });
 
@@ -2565,7 +2565,7 @@ export async function execute(interaction, client) {
             [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
-        abilities: [Ability.Tangled, Ability.Leech],
+        abilities: [Ability.Tangled, Ability.Patchwork],
         pre_evo_id: 37, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -3125,7 +3125,7 @@ export async function execute(interaction, client) {
             [12, Move.CausticOrb], [16, Move.SlurpUp], [19, Move.RallyingCry], [23, Move.Bind], [26, Move.TangledThreads],
             [29, Move.SyncStrike], [34, Move.Barrage], [37, Move.ArcaStrike], [43, Move.Bloom], [-1, Move.FatedThreads]
         ],
-        abilities: [Ability.Moist, Ability.Hearty],
+        abilities: [Ability.Moist, Ability.Patchwork],
         pre_evo_id: -1, evo_id: 71, evo_lvl: 24, evo_stage: 0
     });
 
@@ -3142,7 +3142,7 @@ export async function execute(interaction, client) {
             [12, Move.CausticOrb], [16, Move.SlurpUp], [19, Move.RallyingCry], [23, Move.Bind], [26, Move.TangledThreads],
             [29, Move.SyncStrike], [34, Move.Barrage], [37, Move.ArcaStrike], [43, Move.Bloom], [-1, Move.FatedThreads]
         ],
-        abilities: [Ability.Chilltouch, Ability.Hearty],
+        abilities: [Ability.Chilltouch, Ability.Patchwork],
         pre_evo_id: 70, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -3405,7 +3405,7 @@ export async function execute(interaction, client) {
             [12, Move.HypeUp], [15, Move.Caltrops], [18, Move.Gravitate], [21, Move.CursedEye], [26, Move.Boulderdash],
             [29, Move.Kaleidoscope], [33, Move.Restruct], [37, Move.Grind], [40, Move.SelfDestruct], [-1, Move.Barrage]
         ],
-        abilities: [Ability.Tangled, Ability.Immense],
+        abilities: [Ability.Flux, Ability.Patient],
         pre_evo_id: 85, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -3905,7 +3905,7 @@ export async function execute(interaction, client) {
             [25, Move.Impale], [28, Move.EchoChamber], [30, Move.ThornShot], [34, Move.EarSplitter], [36, Move.HeldStrike],
             [39, Move.Glimmer], [44, Move.PressureWave], [-1, Move.BoneTone]
         ],
-        abilities: [Ability.BassBoost, Ability.Bloodrush],
+        abilities: [Ability.Cacophony, Ability.Bloodrush],
         pre_evo_id: 113, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
@@ -4136,6 +4136,36 @@ export async function execute(interaction, client) {
             [37, Move.Silkstorm], [40, Move.BoneTone], [45, Move.HymnOfDread], [-1, Move.FatedThreads]
         ],
         abilities: [Ability.Lullaby],
+        pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+    });
+
+    // Syma'at
+    create_monster({
+        id: OochID.Symaat,
+        emote: get_emote_string('symaat'),
+        name: 'Syma\'at',
+        oochive_entry: 'This ancient Oochamon can tell the alignment of others at a mere glance. Its body seems to be of similar composition to ruins found around the planet.',
+        type: [OochType.Magic],
+        hp: 20, atk: 20, def: 20, spd: 20, // total 80
+        move_list: [
+            [1, Move.Bash], [-1, Move.Hit]
+        ],
+        abilities: [Ability.Equalized],
+        pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
+    });
+
+    // Ophicore
+    create_monster({
+        id: OochID.Ophicore,
+        emote: get_emote_string('ophicore'),
+        name: 'Ophicore',
+        oochive_entry: 'This once corrupted Oochamon has taken on a new form. Its body contains fragments of various energies, some of which are familiar, and some which are not.',
+        type: [OochType.Crystal],
+        hp: 25, atk: 20, def: 15, spd: 20, // total 80
+        move_list: [
+            [1, Move.Bash], [-1, Move.Hit]
+        ],
+        abilities: [Ability.PureCore],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
 
