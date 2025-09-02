@@ -596,7 +596,7 @@
 					"ooch_id": 85.0
 				},
 				{
-					"max_level": 1.0,
+					"max_level": 35.0,
 					"min_level": 31.0,
 					"ooch_id": 50.0
 				}
@@ -624,7 +624,7 @@
 					"ooch_id": 74.0
 				},
 				{
-					"max_level": 1.0,
+					"max_level": 36.0,
 					"min_level": 35.0,
 					"ooch_id": 75.0
 				}
