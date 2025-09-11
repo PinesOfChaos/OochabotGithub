@@ -558,18 +558,18 @@
 			"height": 10.0,
 			"spawn_slots": [
 				{
-					"max_level": 35.0,
+					"max_level": 34.0,
 					"min_level": 33.0,
 					"ooch_id": 47.0
 				},
 				{
-					"max_level": 35.0,
-					"min_level": 30.0,
+					"max_level": 33.0,
+					"min_level": 29.0,
 					"ooch_id": 38.0
 				},
 				{
-					"max_level": 35.0,
-					"min_level": 30.0,
+					"max_level": 34.0,
+					"min_level": 29.0,
 					"ooch_id": 85.0
 				}
 			],
@@ -581,23 +581,23 @@
 			"height": 2.0,
 			"spawn_slots": [
 				{
-					"max_level": 35.0,
+					"max_level": 34.0,
 					"min_level": 31.0,
 					"ooch_id": 47.0
 				},
 				{
-					"max_level": 35.0,
-					"min_level": 31.0,
+					"max_level": 34.0,
+					"min_level": 29.0,
 					"ooch_id": 10.0
 				},
 				{
-					"max_level": 35.0,
-					"min_level": 31.0,
+					"max_level": 33.0,
+					"min_level": 29.0,
 					"ooch_id": 85.0
 				},
 				{
-					"max_level": 35.0,
-					"min_level": 31.0,
+					"max_level": 33.0,
+					"min_level": 29.0,
 					"ooch_id": 50.0
 				}
 			],
@@ -609,17 +609,17 @@
 			"height": 2.0,
 			"spawn_slots": [
 				{
-					"max_level": 36.0,
+					"max_level": 34.0,
 					"min_level": 32.0,
 					"ooch_id": 117.0
 				},
 				{
-					"max_level": 36.0,
+					"max_level": 34.0,
 					"min_level": 32.0,
 					"ooch_id": 125.0
 				},
 				{
-					"max_level": 36.0,
+					"max_level": 34.0,
 					"min_level": 32.0,
 					"ooch_id": 74.0
 				},

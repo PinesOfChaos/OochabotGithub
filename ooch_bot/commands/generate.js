@@ -523,6 +523,18 @@ export async function execute(interaction, client) {
     create_tile(`c_048`, Tile.Int); // Security Boss
     create_tile(`c_049`, Tile.Int); // TP Network Chip
     create_tile(`c_050`, Tile.Int); // Chemerai NPC
+    create_tile(`c_051`, Tile.Npc); // Main Character
+    create_tile(`c_052`, Tile.Npc); // Doctor 
+    create_tile(`c_053`, Tile.Npc); // Balancer
+    create_tile(`c_054`, Tile.Int); // Crystal Blocker
+    create_tile(`c_055`, Tile.Npc); // Skin - Evergreen Cultist (Pines)
+    create_tile(`c_056`, Tile.Npc); // Skin - Forsythe (Jack)
+    create_tile(`c_057`, Tile.Npc); // Skin - The Engineer (Marci)
+    create_tile(`c_058`, Tile.Npc); // Skin - Tamagoochi™ Girl 👌 (Maus)
+    create_tile(`c_059`, Tile.Npc); // Skin - Jeffdev (Jeffdev)
+    create_tile(`c_060`, Tile.Npc); // Skin - Terarabe (Codraven)
+    create_tile(`c_061`, Tile.Npc); // Skin - JEKYLL POWER STANCE (False Prophet)
+    create_tile(`c_062`, Tile.Npc); // Skin - Neo (Neotea)
 
     create_tile(`c_900`, Tile.Int); // BIG Ooze
     create_tile(`c_901`, Tile.Int); // Enforcement System Delta
@@ -820,6 +832,187 @@ export async function execute(interaction, client) {
         description: 'A mirror made of crystals from deep beneath the surface. Using it lets you change your appearance.',
         description_short: 'Used to change your appearance.'
     });
+    create_item({
+        id: 48, name: 'Skin: Player A', emote: get_emote_string('c_000'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_000',
+        description: 'Change your appearance to match this sprite.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 49, name: 'Skin: Player B', emote: get_emote_string('c_051'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_051',
+        description: 'Change your appearance to match this sprite.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 50, name: 'Skin: Scout', emote: get_emote_string('c_001'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_001',
+        description: 'Change your appearance to match this sprite. Scouts venture out into unexplored areas ahead of the researchers to provide them with data.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 51, name: 'Skin: Raider', emote: get_emote_string('c_002'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_002',
+        description: 'Change your appearance to match this sprite. Raiders were previously employees of Oochcorp, but abandoned the company to strike out on their own.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 52, name: 'Skin: Guard', emote: get_emote_string('c_003'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_003',
+        description: 'Change your appearance to match this sprite. Hired by Oochcorp to protect important areas.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 53, name: 'Skin: Seer Sister', emote: get_emote_string('c_004'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_004',
+        description: 'Change your appearance to match this sprite. The Seer Sisters and their shape-shifting Oochamon commune with the planet\'s storms.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 54, name: 'Skin: Researcher', emote: get_emote_string('c_005'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_005',
+        description: 'Change your appearance to match this sprite. Researchers are committed to seeking out discoveries despite the danger of exploring.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 55, name: 'Skin: Professor Lyra', emote: get_emote_string('c_006'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_006',
+        description: 'Change your appearance to match this sprite. The elderly head researcher of the Hub, Lyra\'s experience has been a boon to the exploration of the planet.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 56, name: 'Skin: Rival Cade', emote: get_emote_string('c_007'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_007',
+        description: 'Change your appearance to match this sprite. He\'s been there since the beginning, another newcomer to the planet.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 57, name: 'Skin: Engineer Al', emote: get_emote_string('c_009'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_009',
+        description: 'Change your appearance to match this sprite. Al\'s been working for Oochcorp a while now. He\'s been in charge of building most human structures on the planet.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 58, name: 'Skin: Fungal Corrupted', emote: get_emote_string('c_010'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_010',
+        description: 'Change your appearance to match this sprite. A researcher corrupted by the fungal caves around them.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 59, name: 'Skin: Shopkeeper', emote: get_emote_string('c_011'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_011',
+        description: 'Change your appearance to match this sprite. A hard-working shopkeeper, they\'re found working in several locations around the world.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 60, name: 'Skin: Crew', emote: get_emote_string('c_014'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_014',
+        description: 'Change your appearance to match this sprite. A member of the construction crew, ecpect to find some where ever there\'s work to be done.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 61, name: 'Skin: Tech Corrupted', emote: get_emote_string('c_015'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_015',
+        description: 'Change your appearance to match this sprite. A researcher corrupted by microscopic machines in the area.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 62, name: 'Skin: CFO Katerina', emote: get_emote_string('c_016'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_016',
+        description: 'Change your appearance to match this sprite. The CFO of Oochcorp and Lyra\'s granddaughter. She\'s been overseeing the efforts on the planet.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 63, name: 'Skin: Mr. Nice', emote: get_emote_string('c_018'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_018',
+        description: 'Change your appearance to match this sprite. A mysterious magician who appears from chests on your adventures, perhaps he was an accidental stowaway.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 64, name: 'Skin: Slime Corrupted', emote: get_emote_string('c_027'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_027',
+        description: 'Change your appearance to match this sprite. A researcher corrupted by the ever shifting liquids of Goo Lake.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 65, name: 'Skin: Corrupted Katerina', emote: get_emote_string('c_028'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_028',
+        description: 'Change your appearance to match this sprite. This was the result of Katerina\'s repeated exposure to Serpsis within the Crystal Caves.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 66, name: 'Skin: Explorer Dave', emote: get_emote_string('c_039'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_039',
+        description: 'Change your appearance to match this sprite. A friendly cartographer, he\'s always happy to provide a map of areas he\'s explored.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 67, name: 'Skin: Dr. Anne', emote: get_emote_string('c_052'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_052',
+        description: 'Change your appearance to match this sprite. A mysterious doctor who\'s interested in exploration of a mysterious new type of Oochamon.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 68, name: 'Skin: The Balancer', emote: get_emote_string('c_053'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_053',
+        description: 'Change your appearance to match this sprite. A mysterious man who claims to be from an ancient civilization despite his tattered labcoat.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 69, name: 'Skin: Evergreen Cultist', emote: get_emote_string('c_055'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_055',
+        description: 'Change your appearance to match this sprite. Made for one of the devs.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 70, name: 'Skin: Forsythe', emote: get_emote_string('c_056'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_056',
+        description: 'Change your appearance to match this sprite. Made for a playtester.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 71, name: 'Skin: The Engineer', emote: get_emote_string('c_057'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_057',
+        description: 'Change your appearance to match this sprite. Made for a playtester.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 72, name: 'Skin: Tamagoochi™ Girl 👌', emote: get_emote_string('c_058'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_058',
+        description: 'Change your appearance to match this sprite. Made for a playtester.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 73, name: 'Skin: Jeffdev', emote: get_emote_string('c_059'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_059',
+        description: 'Change your appearance to match this sprite. Made for one of the devs.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 74, name: 'Skin: Terarabe', emote: get_emote_string('c_060'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_060',
+        description: 'Change your appearance to match this sprite. Made for a playtester.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 75, name: 'Skin: JEKYLL POWER STANCE', emote: get_emote_string('c_061'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_061',
+        description: 'Change your appearance to match this sprite. Made for a playtester.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 76, name: 'Skin: Neo', emote: get_emote_string('c_062'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_062',
+        description: 'Change your appearance to match this sprite. Made for our character and cutscene artist.',
+        description_short: 'A cosmetic outfit.'
+    });
+    create_item({
+        id: 77, name: 'Skin: Sign', emote: get_emote_string('c_020'),
+        category: 'other_inv', type: 'skin', price: -1, potency: 'c_020',
+        description: 'Change your appearance to match this sprite. Your inability to read has allowed you to defeat the Signruler.',
+        description_short: 'A cosmetic outfit.'
+    });
+
     //#endregion
     //#region Move Data
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
