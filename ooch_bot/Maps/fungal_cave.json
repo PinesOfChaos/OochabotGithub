@@ -581,9 +581,9 @@
 			"y": 24.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -591,7 +591,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 7
+					"id": 7.0
 				}
 			],
 			"name": "Chest",
@@ -599,16 +599,41 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 46.0,
 			"y": 10.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "finished_campaign1",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Strange Crystal",
+			"npc_id": "708914835984447843",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "An odd crystal blocks your path...",
+			"remove_on_finish": false,
+			"sprite": 54,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_054",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 43.0,
+			"y": 17.0
 		}
 	],
 	"map_savepoints": [
@@ -756,7 +781,7 @@
 				{
 					"max_level": 5.0,
 					"min_level": 5.0,
-					"ooch_id": 0
+					"ooch_id": 0.0
 				},
 				{
 					"max_level": 40.0,
