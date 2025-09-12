@@ -101,8 +101,9 @@ export async function execute(interaction) {
     let bag_buttons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_potion_magic'))).addComponents(
-                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
-                    new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑'));
+            new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
+            new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑')).addComponents(
+            new ButtonBuilder().setCustomId('skin_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('c_000')));
 
     // Dex arrows
     let dex_arrows = new ActionRowBuilder()
@@ -271,25 +272,25 @@ export async function execute(interaction) {
         return pa_components;
     }
 
-    async function buildItemData() {
+    async function buildItemData(inv) {
         let item_list_str = ``;
-        for (const [item_id, quantity] of Object.entries(profile.get(`${interaction.user.id}`, 'other_inv'))) {
+        for (const [item_id, quantity] of Object.entries(profile.get(`${interaction.user.id}`, inv))) {
             let item_obj = await item_data.get(`${item_id}`);
             item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
         }
 
-        let other_inv_keys = Object.keys(profile.get(`${interaction.user.id}`, 'other_inv'));
+        let other_inv_keys = Object.keys(profile.get(`${interaction.user.id}`, inv));
 
         bag_select = new ActionRowBuilder();
         let other_select_options = [];
         for (let i = 0; i < other_inv_keys.length; i++) {
             let id = other_inv_keys[i];
-            let amount = profile.get(`${interaction.user.id}`, `other_inv.${other_inv_keys[i]}`);
+            let amount = profile.get(`${interaction.user.id}`, `${inv}.${other_inv_keys[i]}`);
 
             if (amount != 0) {
                 if (item_data.get(`${id}`, 'type') != 'key' && item_data.get(`${id}`, 'type') != 'map') {
                     other_select_options.push({
-                        label: `${item_data.get(`${id}`, 'name')} (${amount})`,
+                        label: `${item_data.get(`${id}`, 'name')}${amount > 1 ? ` (${amount})` : ``}`,
                         description: item_data.get(`${id}`, 'description_short'),
                         value: `${id}`,
                         emoji: item_data.get(`${id}`, 'emote'),
@@ -308,7 +309,7 @@ export async function execute(interaction) {
 
         bag_select.addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('other_select')
+                .setCustomId(`${inv}_select`)
                 .setPlaceholder('Select an item to use in your inventory.')
                 .addOptions(other_select_options));
 
@@ -374,7 +375,8 @@ export async function execute(interaction) {
 
     // Initialize all variables used across multiple sub menus here
     let selected, collectorId;
-    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
+    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
+    dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
 
     // Enable party healing button if we have healing items
     let healItems = Object.entries(user_profile.heal_inv);
@@ -389,6 +391,9 @@ export async function execute(interaction) {
     //console.log(oochHpCheck)
     oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
     if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
+
+    // Taming button undisable with flag
+    if (user_profile.flags('ev_tamagoochi')) party_extra_buttons_2.components[2].setDisabled(false);
 
     // Menu operation is handled in this collector
     await collector.on('collect', async (i) => {
@@ -830,6 +835,7 @@ export async function execute(interaction) {
             heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
             prism_inv = profile.get(`${interaction.user.id}`, 'prism_inv');
             key_inv = profile.get(`${interaction.user.id}`, 'other_inv');
+            skin_inv = profile.get(`${interaction.user.id}`, 'skin_inv');
             display_inv = heal_inv;
             let display_title = 'Healing Items ❤️';
             let item_list_str = '';
@@ -837,21 +843,26 @@ export async function execute(interaction) {
             if (Object.keys(heal_inv).length == 0) bag_buttons.components[0].setDisabled(true);
             if (Object.keys(prism_inv).length == 0) bag_buttons.components[1].setDisabled(true);
             if (Object.keys(key_inv).length == 0) bag_buttons.components[2].setDisabled(true);
+            if (Object.keys(skin_inv).length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[3].setDisabled(true);
 
             if (bag_buttons.components[0].data.disabled == true) {
                 if (bag_buttons.components[1].data.disabled == true) {
+                    display_inv = skin_inv;
+                    display_title = `${get_emote_string('c_000')} Skins`;
+                    bag_buttons.components[3].setStyle(ButtonStyle.Success);
+                } else if (bag_buttons.components[2].data.disabled == true) {
                     display_inv = key_inv;
                     display_title = '🔑 Key Items';
                     bag_buttons.components[2].setStyle(ButtonStyle.Success);
-                } else {
+                } else if (bag_buttons.components[3].data.disabled == true) {
                     display_inv = prism_inv;
-                    display_title = `${get_emote_string('item_potion_magic')} Prisms`;
+                    display_title = `${get_emote_string('item_prism')} Prisms`;
                     bag_buttons.components[1].setStyle(ButtonStyle.Success);
                 }
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             }
 
-            if (Object.keys(heal_inv).length == 0 && Object.keys(prism_inv).length == 0 && Object.keys(key_inv).length == 0) {
+            if (Object.keys(heal_inv).length == 0 && Object.keys(prism_inv).length == 0 && Object.keys(key_inv).length == 0 && (Object.keys(skin_inv).length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
                 i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_button] });
                 return;
             }
@@ -859,14 +870,14 @@ export async function execute(interaction) {
             // Setup default item list for the default value, healing
             for (const [item_id, quantity] of Object.entries(display_inv)) {
                 let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${quantity > 1 ? ` | **${quantity}x**\n` : ``}`;
             }
 
             bagEmbed = new EmbedBuilder()
                 .setColor('#808080')
                 .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
                 .setTitle(display_title)
-                .setDescription(item_list_str.length != 0 ? item_list_str : `You have no healing items in your bag.`);
+                .setDescription(item_list_str.length != 0 ? item_list_str : `You have no items in your bag.`);
 
             i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
 
@@ -878,6 +889,7 @@ export async function execute(interaction) {
             bag_buttons.components[0].setStyle(ButtonStyle.Success);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
             display_inv = heal_inv;
             let item_list_str = '';
 
@@ -896,6 +908,7 @@ export async function execute(interaction) {
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Success);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
             display_inv = prism_inv;
             let item_list_str = '';
 
@@ -914,14 +927,15 @@ export async function execute(interaction) {
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Success);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
 
-            let keyData = await buildItemData();
+            let keyData = await buildItemData('other_inv');
             bagEmbed.setDescription(keyData[0]);
             await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
         }
-        else if (collectorId == 'other_select') {
+        else if (collectorId == 'other_inv_select') {
             if (selected == 'n/a') {
-                let keyData = await buildItemData();
+                let keyData = await buildItemData('other_inv');
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
@@ -929,7 +943,7 @@ export async function execute(interaction) {
             let db_item_data = item_data.get(`${selected}`);
 
             if (db_item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
-                let keyData = await buildItemData();
+                let keyData = await buildItemData('other_inv');
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
@@ -965,7 +979,7 @@ export async function execute(interaction) {
                 }
 
                 if (db_item_data.type != 'teleport') {
-                    let keyData = await buildItemData();
+                    let keyData = await buildItemData('other_inv');
                     bagEmbed.setDescription(keyData[0]);
                     i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 }
@@ -977,6 +991,38 @@ export async function execute(interaction) {
                 let pa_components = buildPartyData(user_profile.ooch_party, true, db_item_data);
                 i.update({ content: `Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, embeds: [], components: pa_components });
             }
+        } 
+        else if (selected == 'skin_button') {
+            bagEmbed.setTitle(`${get_emote_string('c_000')} Skin Items`);
+            bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Success);
+
+            let keyData = await buildItemData('skin_inv');
+            bagEmbed.setDescription(keyData[0]);
+            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+        }
+        else if (collectorId == 'skin_inv_select') {
+            if (selected == 'n/a') {
+                let keyData = await buildItemData('skin_inv');
+                bagEmbed.setDescription(keyData[0]);
+                i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                return;
+            }
+            
+            let db_item_data = item_data.get(`${selected}`);
+            let item_usage_text = `Changed your skin to ${get_emote_string(db_item_data.potency)}!`;
+            profile.set(interaction.user.id, db_item_data.potency, 'player_sprite')
+
+            profile.math(interaction.user.id, '-', 1, `skin_inv.${selected}`);
+            if (profile.get(`${interaction.user.id}`, `skin_inv.${selected}`) <= 0) {
+                profile.delete(interaction.user.id, `skin_inv.${selected}`);
+            }
+
+            let followUpMsg = await interaction.followUp({ content: item_usage_text });
+            await wait(5000);
+            await followUpMsg.delete().catch(() => { });
         } else if (selected.includes('item_ooch_id_')) {
             let selData = selected.replace('item_ooch_id_', '');
             selData = selData.split('_');

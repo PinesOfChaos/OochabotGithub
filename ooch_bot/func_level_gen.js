@@ -902,7 +902,7 @@ export function genmap_layout(width, height, room_cols, room_rows, room_size_avg
         layout[spot.x][spot.y] = "misc";
     }
 
-    // var layout_text = '';
+    // let layout_text = '';
     // for(let j = 1; j < height; j++){
     //     for(let i = 0; i < width; i++){
     //         switch(layout[i][j]){

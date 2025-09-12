@@ -563,9 +563,10 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
                         // Reset other values upon tutorial completion
                         profile.set(user_id, 0, 'oochabux');
-                        profile.set(user_id, {}, 'other_inv')
-                        profile.set(user_id, {}, 'prism_inv')
-                        profile.set(user_id, {}, 'heal_inv')
+                        profile.set(user_id, {}, 'skin_inv');
+                        profile.set(user_id, {}, 'other_inv');
+                        profile.set(user_id, {}, 'prism_inv');
+                        profile.set(user_id, {}, 'heal_inv');
                         profile.set(user_id, 0, `oochadex[52].caught`);
                     }
 

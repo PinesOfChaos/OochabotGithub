@@ -18,5 +18,5 @@ export async function execute(interaction) {
     party[active_slot].og_ability = ability;
     profile.set(interaction.user.id, party, 'ooch_party');
 
-    interaction.reply({ content: `Changed ability to ${ability_data.get(`${ability}`, 'name')}!`, ephemeral: false });
+    interaction.reply({ content: `Changed ability to ${ability_data.get(`${ability}`, 'name')}!`, flags: [MessageFlags.Ephemeral] });
 }

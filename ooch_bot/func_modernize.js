@@ -112,6 +112,7 @@ export function get_blank_profile() {
         other_inv : {},
         prism_inv : {},
         heal_inv : {},
+        skin_inv : {},
 
         oochabux : 0,
         repel_steps : 0,
@@ -244,6 +245,7 @@ export function get_blank_battle_user(){
             heal_inv: [],
             prism_inv: [],
             other_inv: [],
+            skin_inv: [],
             team_id: 0,
             user_type: UserType.Wild,
             thread_id: '',

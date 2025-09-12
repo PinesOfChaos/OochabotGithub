@@ -135,6 +135,7 @@ export async function generate_battle_user(type, options) {
             user_info.heal_inv = db_profile.heal_inv;
             user_info.prism_inv = db_profile.prism_inv;
             user_info.other_inv = db_profile.other_inv;
+            user_info.skin_inv = db_profile.skin_inv;
         break;
     }
 
@@ -4423,6 +4424,7 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
         profile.set(user_id, user_info.prism_inv, `prism_inv`);
         profile.set(user_id, user_info.heal_inv, `heal_inv`);
         profile.set(user_id, user_info.other_inv, `other_inv`);
+        profile.set(user_id, user_info.skin_inv, `skin_inv`);
         profile.set(user_id, 0, 'ooch_active_slot');
 
         // If we lost, go back to the teleporter location.

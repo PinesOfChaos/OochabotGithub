@@ -74,8 +74,8 @@ typings/
 
 # FuseBox cache
 .fusebox/
-ooch_bot/config.json
-ooch_bot/package-lock.json
+
+ooch_bot/bun.lock
 ooch_bot/package.json
 ooch_bot/.DS_Store
 ooch_bot/.DS_Store

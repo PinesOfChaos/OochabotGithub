@@ -30,7 +30,7 @@
 		{
 			"event_name": "ev_lyra_al_post_powerplant",
 			"flag_kill": "ev_lyra_al_post_powerplant",
-			"flag_required": "",
+			"flag_required": "lyra_freed",
 			"height": 1.0,
 			"width": 2.0,
 			"x": 47.0,

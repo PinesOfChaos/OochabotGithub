@@ -212,7 +212,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         } 
 
         let tile_id = map_tiles[playerx][playery]
-        var tile = tile_data.get(`${tile_id.toString()}`);
+        let tile = tile_data.get(`${tile_id.toString()}`);
         // 10% chance on cave, 40% chance on other places
         if (encounter_chance === false) {
             encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
@@ -602,6 +602,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                     profile.ensure(user_id, 0, `other_inv.${item_id}`)
                                     profile.math(user_id, '+', buyAmount, `other_inv.${item_id}`);
                                     new_inv_qty = profile.get(`${user_id}`, `other_inv.${item_id}`);
+                                break;
+                                case 'skin_inv':
+                                    profile.ensure(user_id, 0, `skin_inv.${item_id}`)
+                                    profile.math(user_id, '+', buyAmount, `skin_inv.${item_id}`);
+                                    new_inv_qty = profile.get(`${user_id}`, `skin_inv.${item_id}`);
                                 break;
                             }
                             

@@ -200,11 +200,14 @@ client.on('ready', async () => {
     console.log('Bot Ready')
 });
 
-console.log(emojis);
-
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 client.on('interactionCreate', async interaction => {
     
+    if (interaction.isModalSubmit()) {
+        const { handleModal } = await import('./commands/report_bug.js');
+        await handleModal(interaction, client);
+    }
+
     if (interaction.isAutocomplete()) {
         let ooch_ids = monster_data.values();
         let item_ids = item_data.values();
