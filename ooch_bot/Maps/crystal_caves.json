@@ -10,15 +10,6 @@
 			"y": 13.0
 		},
 		{
-			"event_name": "ev_final_battle2",
-			"flag_kill": "ev_final_battle2",
-			"flag_required": "ev_final_battle1",
-			"height": 1.0,
-			"width": 2.0,
-			"x": 12.0,
-			"y": 13.0
-		},
-		{
 			"event_name": "ev_magic_mirror",
 			"flag_kill": "ev_magic_mirror",
 			"flag_required": "",
@@ -348,9 +339,9 @@
 			"y": 17.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "finished_campaign1",
 			"flag_required": "",
@@ -361,21 +352,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "An odd crystal blocks your path...",
 			"remove_on_finish": false,
-			"sprite": 54,
+			"sprite": 54.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_054",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 35.0,
 			"y": 34.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "finished_campaign1",
 			"flag_required": "",
@@ -386,12 +377,12 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "An odd crystal blocks your path...",
 			"remove_on_finish": false,
-			"sprite": 54,
+			"sprite": 54.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_054",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 20.0,
@@ -399,8 +390,8 @@
 		},
 		{
 			"aggro_range": 0.0,
-			"battle_ai": 0,
-			"coin": 0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -411,27 +402,27 @@
 			"post_combat_dialogue": "The strange crystal crumbles...",
 			"pre_combat_dialogue": "An odd crystal blocks your path...\nWait, no it doesn't, it's just in the middle of this room.\n***vvvvvmmmmm***",
 			"remove_on_finish": true,
-			"sprite": 54,
+			"sprite": 54.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_054",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [
 				{
-					"ability": 89,
+					"ability": 89.0,
 					"atk_iv": 5.0,
 					"def_iv": 5.0,
 					"hp_iv": 5.0,
 					"id": 129.0,
-					"item": -1,
+					"item": -1.0,
 					"level": 40.0,
 					"moveset": [
-						17,
-						131,
-						26,
-						47
+						17.0,
+						131.0,
+						26.0,
+						47.0
 					],
 					"nickname": "",
 					"slot_enabled": true,
@@ -440,6 +431,31 @@
 			],
 			"x": 54.0,
 			"y": 36.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "ev_final_battle1",
+			"flag_required": "cade_crystal_caves_appear",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "600155517179359949",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 7,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_007",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 13.0,
+			"y": 14.0
 		}
 	],
 	"map_savepoints": [
