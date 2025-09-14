@@ -652,12 +652,6 @@ const Item = {
 
 }
 
-const ItemType = {
-    Heal: 0,
-    Prism: 1,
-    Misc: 2,
-}
-
 const BattleState = {
     Start : 0,
     AwaitInput : 1,
@@ -747,11 +741,38 @@ const BattleAi = {
     Smart : 1
 }
 
+const ItemCategory = {
+    Consumable: 'consumable',
+    Prism:      'prism',
+    Map:        'map',
+    Key:        'key',
+    Skin:       'skin'
+}
+
+const ItemType = {
+    Potion: 0,
+    Prism: 1,
+    Key: 2,
+    Status: 3,
+    IV: 4,
+    Evolve: 5,
+    Repel: 6,
+    Teleport: 7,
+    Map: 8,
+    AbilitySwap: 9,
+    LevelUp: 10,
+    GiveExp: 11,
+    Skin: 12,
+    Treat: 13,
+    MoveUnlock: 14,
+}
+
 export {
     PlayerState, GraphicsMode, Flags, 
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
-    BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID
+    BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID,
+    ItemCategory
 };

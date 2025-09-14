@@ -1,6 +1,6 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { profile, item_data } from '../db.js';
-import { PlayerState } from '../types.js';
+import { ItemType, PlayerState } from '../types.js';
 import { item_use } from '../func_battle.js';
 import { setup_playspace_str } from '../func_play.js';
 import wait from 'wait';
@@ -29,35 +29,30 @@ export async function execute(interaction) {
   if (!item_data.has(item_id)) return interaction.editReply({ content: 'Invalid item id!', flags: MessageFlags.Ephemeral });
   let db_item_data = item_data.get(`${item_id}`);
 
-  if (db_item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
+  if (db_item_data.type == ItemType.Teleport && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
     return interaction.editReply({ content: 'You cannot use a teleport right now.', flags: MessageFlags.Ephemeral });
   }
 
   let item_usage_text = '';
   switch (db_item_data.type) {
-    case 'repel': item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
-    case 'teleport': item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
+    case ItemType.Repel: item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
+    case ItemType.Teleport: item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
   }
 
-  if (db_item_data.type == 'repel' || db_item_data.type == 'teleport') {
+  if (db_item_data.type == ItemType.Repel || db_item_data.type == ItemType.Teleport) {
     let playspace_str, msg_to_edit;
     switch (db_item_data.type) {
-      case 'repel':
-        await item_use(interaction.user.id, {}, item_id);
+      case ItemType.Repel:
+        await item_use(interaction.user.id, {}, item_id, false, true);
         break;
-      case 'teleport':
-        await item_use(interaction.user.id, {}, item_id);
+      case ItemType.Teleport:
+        await item_use(interaction.user.id, {}, item_id, false, true);
         playspace_str = await setup_playspace_str(interaction.user.id);
         msg_to_edit = profile.get(`${interaction.user.id}`, 'display_msg_id');
         await interaction.channel.messages.fetch(msg_to_edit).then((msg) => {
           msg.edit({ content: playspace_str[0], components: playspace_str[1] });
         }).catch(() => { });
         break;
-    }
-
-    await profile.math(interaction.user.id, '-', 1, `other_inv.${item_id}`);
-    if (profile.get(`${interaction.user.id}`, `other_inv.${item_id}`) <= 0) {
-      await profile.delete(interaction.user.id, `other_inv.${item_id}`);
     }
 
     let followUpMsg = await interaction.editReply({ content: item_usage_text });

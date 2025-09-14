@@ -152,6 +152,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     }
 
     let repel_ran_out = false;
+    let relax_steps_end = false;
 
     let previous_positions = profile_data.previous_positions;
 
@@ -204,11 +205,24 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         playerx += xmove;
         playery += ymove;
 
+        profile.math(user_id, '+', 1, 'step_counter');
+        profile_data.step_counter += 1;
+
         //Track Repulsor steps remaining
         if (profile_data.repel_steps != 0) {
             profile.math(user_id, '-', 1, 'repel_steps');
             profile_data.repel_steps -= 1;
             if (profile_data.repel_steps == 0) repel_ran_out = true;
+        } 
+
+        //Track Repulsor steps remaining
+        if (profile_data.relax_step_counter != 0 && profile_data.flags.includes('returned_to_surface')) {
+            profile.math(user_id, '-', 1, 'relax_step_counter');
+            profile_data.relax_step_counter -= 1;
+            if (profile_data.relax_step_counter == 0) {
+                relax_steps_end = true;
+                break;
+            } 
         } 
 
         let tile_id = map_tiles[playerx][playery]
@@ -478,7 +492,6 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 playerx -= xmove;
                 playery -= ymove;
 
-                
                 await update_position(user_id, map_name, playerx, playery, previous_positions);
                 profile.set(user_id, PlayerState.Shop, 'player_state');
 
@@ -489,10 +502,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 shopSelectOptions = [...new Set(shopSelectOptions)];
                 shopSelectOptions = shopSelectOptions.map(id => {
                     let db_item_data = item_data.get(`${id}`);
-                    let item_amount = profile.get(`${user_id}`, `${db_item_data.category}.${id}`);
-                    if (item_amount == undefined) item_amount = 0;
+                    let inv_item_data = get_inv_item(user_id, item_data.category, id);
                     return { 
-                        label: `${db_item_data.name} (${item_amount}/50) [$${db_item_data.price}]`,
+                        label: `${db_item_data.name} (${inv_item_data.quantity}/50) [$${db_item_data.price}]`,
                         description: db_item_data.description_short,
                         value: `${id}`,
                         emoji: db_item_data.emote,
@@ -561,18 +573,13 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             }
                         }
 
-                        profile.ensure(user_id, 0, `${item.category}.${item_id}`);
-                        let amtHeld = profile.get(`${user_id}`, `${item.category}.${item_id}`); 
-                        if (amtHeld < 0) {
-                            profile.set(user_id, 0, `${item.category}.${item_id}`);
-                            amtHeld = 0;
-                        }
+                        let inv_item = get_inv_item(user_id, item.category, item_id);
 
                         let maxAmt = Math.floor(oochabux / item.price);
                         if (maxAmt > 50) maxAmt = 50;
-                        if (maxAmt > amtHeld) maxAmt -= amtHeld;
+                        if (maxAmt > inv_item.quantity) maxAmt -= inv_item.quantity;
 
-                        if (amtHeld >= 50) {
+                        if (inv_item.quantity >= 50) {
                             await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
                             return;
                         }
@@ -584,31 +591,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         item_qty_collector.on('collect', async m => {
                             let new_inv_qty = 0;
                             let buyAmount = Math.abs(parseInt(m.content));
-                            if (buyAmount > (50 - amtHeld)) buyAmount = (50 - amtHeld);
+                            if (buyAmount > (50 - inv_item.quantity)) buyAmount = (50 - inv_item.quantity);
                             oochabux -= item.price * buyAmount;
                             profile.set(user_id, oochabux, 'oochabux')
-                            switch (item.category) {
-                                case 'heal_inv': 
-                                    profile.ensure(user_id, 0, `heal_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `heal_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `heal_inv.${item_id}`);
-                                break;
-                                case 'prism_inv': 
-                                    profile.ensure(user_id, 0, `prism_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `prism_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `prism_inv.${item_id}`);
-                                break;
-                                case 'other_inv': 
-                                    profile.ensure(user_id, 0, `other_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `other_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `other_inv.${item_id}`);
-                                break;
-                                case 'skin_inv':
-                                    profile.ensure(user_id, 0, `skin_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `skin_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `skin_inv.${item_id}`);
-                                break;
-                            }
+                            
+                            add_item(user_id, item_id, buyAmount);
                             
                             await m.delete().catch(() => {});
                             let followUpMsg;
@@ -621,7 +608,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             shopSelectOptions = shopSelectOptions.map(id => {
                                 let db_item_data = item_data.get(`${id}`);
                                 return { 
-                                    label: `${db_item_data.name} (${profile.get(`${user_id}`, `${db_item_data.category}.${id}`)}/50) [$${db_item_data.price}]`,
+                                    label: `${db_item_data.name} (${get_inv_item(user_id, db_item_data.category, id)}/50) [$${db_item_data.price}]`,
                                     description: db_item_data.description_short,
                                     value: `${id}`,
                                     emoji: db_item_data.emote,
@@ -803,6 +790,10 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         }
     }
 
+    if (relax_steps_end) {
+        await event_process(user_id, thread, events_data.get(`${'ev_meet_al_access_tunnel'}`), 0, 'ev_meet_al_access_tunnel')
+        return;
+    }
 
     //Update the player's profile with their new x & y positions
     await update_position(user_id, map_name, playerx, playery, previous_positions);
@@ -1321,4 +1312,45 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
     shopSelectOptions = shopSelectOptions.flat(1)
 
     return(shopSelectOptions);
+}
+
+export function add_item(user_id, item_id, qty) {
+    let item = item_data.get(`${item_id}`);
+    let inventory = profile.get(user_id, `inventory.${item.category}`);
+    const existing = inventory.find(i => i.id == item_id);
+
+    if (existing) {
+        existing.quantity += qty;
+    } else {
+        inventory.push({ id: item_id, quantity: qty });
+    }
+
+    profile.set(user_id, inventory, `inventory.${item.category}`);
+}
+
+export function remove_item(user_id, item_id, qty) {
+    let item = item_data.get(`${item_id}`);
+    let inventory = profile.get(user_id, `inventory.${item.category}`);
+    const existing = inventory.find(i => i.id == item_id);
+
+    if (existing) {
+        existing.quantity -= qty;
+        if (existing.quantity <= 0) {
+            inventory = inventory.filter(i => i.id !== item_id);
+        }
+    } else {
+        inventory.push({ id: item_id, quantity: qty });
+    }
+    
+    profile.set(user_id, inventory, `inventory.${item.category}`,);
+}
+
+export function get_inv_item(user_id, category, item_id) {
+    const inventory = profile.get(user_id, `inventory.${category}`);
+    return inventory.find(i => i.id == item_id);
+}
+
+export function get_all_item_type(user_id, category, type) {
+    const inventory = profile.get(user_id, `inventory.${category}`);
+    return inventory.filter(i => i.type == type);
 }

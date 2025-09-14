@@ -1,7 +1,7 @@
 // For functions that don't fit into the other categories
 import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { PlayerState, Item, TameStatus } from './types.js';
+import { PlayerState, TameStatus } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
@@ -77,7 +77,7 @@ export function buildBoxData(user_profile, page_num) {
  */
 export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     const { type_to_emote } = await import('./func_battle.js');
-    const { get_ooch_art } = await import('./func_other.js'); // This should ideally be a direct import if func_other.js also uses named exports
+    const { get_ooch_art } = await import('./func_other.js'); 
 
     let ooch_title = `${ooch.nickname}`;
     ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}}` 

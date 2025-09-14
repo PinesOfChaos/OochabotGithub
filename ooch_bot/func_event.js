@@ -1,7 +1,7 @@
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import { profile, item_data, maps, monster_data, player_positions, events_data } from './db.js';
 import { sample } from 'lodash-es';
-import { PlayerState, EventMode, Flags, UserType, Weather } from './types.js';
+import { PlayerState, EventMode, Flags, UserType, Weather, ItemCategory } from './types.js';
 import { get_art_file } from './func_other.js';
 import { generate_battle_user, setup_battle } from './func_battle.js';
 import wait from 'wait';
@@ -403,7 +403,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 profile.set(user_id, 0, 'cur_event_pos');
                 let playspace_str = await setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                    msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
                 }).catch(() => {});
                 //await move(thread, user_id, '', 1);
                 return;
@@ -563,25 +563,25 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
                         // Reset other values upon tutorial completion
                         profile.set(user_id, 0, 'oochabux');
-                        profile.set(user_id, {}, 'skin_inv');
-                        profile.set(user_id, {}, 'other_inv');
-                        profile.set(user_id, {}, 'prism_inv');
-                        profile.set(user_id, {}, 'heal_inv');
+                        profile.set(user_id, {
+                            [ItemCategory.Consumable]: [],
+                            [ItemCategory.Prism]: [],
+                            [ItemCategory.Map]: [],
+                            [ItemCategory.Key]: [],
+                            [ItemCategory.Skin]: [],
+                        }, 'inventory');
                         profile.set(user_id, 0, `oochadex[52].caught`);
                     }
 
                     await confirm_collector.stop();
                     if (msg.id != msg_to_edit) await msg.delete();
-                    await profile.set(user_id, PlayerState.Playspace, 'player_state');
-                    await profile.set(user_id, false, 'cur_event_name');
-                    await profile.set(user_id, [], 'cur_event_array');
-                    await profile.set(user_id, 0, 'cur_event_pos');
+                    profile.set(user_id, PlayerState.Playspace, 'player_state');
+                    profile.set(user_id, false, 'cur_event_name');
+                    profile.set(user_id, [], 'cur_event_array');
+                    profile.set(user_id, 0, 'cur_event_pos');
                     quit = true; 
                     let playspace_str = await setup_playspace_str(user_id);
-                    await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-                        await msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
-                    }).catch((err) => { console.log(err) });
-
+                    await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).catch(() => {});
                     await move(thread, user_id, '', 2);
                     return;
                 } else {

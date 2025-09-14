@@ -2,7 +2,7 @@ import { battle_data, profile, move_data, stance_data, monster_data, item_data, 
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID } from "./types.js";
+import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType } from "./types.js";
 import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
@@ -132,10 +132,7 @@ export async function generate_battle_user(type, options) {
             party = db_profile.ooch_party;
             active_slot = db_profile.ooch_active_slot;
             user_info.display_msg_id = db_profile.display_msg_id;
-            user_info.heal_inv = db_profile.heal_inv;
-            user_info.prism_inv = db_profile.prism_inv;
-            user_info.other_inv = db_profile.other_inv;
-            user_info.skin_inv = db_profile.skin_inv;
+            user_info.inventory = db_profile.inventory;
         break;
     }
 
@@ -331,8 +328,8 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
             profile.set(`${user.user_id}`, battleDataObj.battle_id, 'cur_battle_id');
 
             // Delete playspace to enter battle
-            let playspace_msg = await thread.messages.fetch(profile.get(`${user.user_id}`, 'display_msg_id'));
-            await playspace_msg.delete().catch(() => {});
+            let playspace_msg = await thread.messages.fetch(profile.get(`${user.user_id}`, 'display_msg_id')).catch(() => {});
+            if (playspace_msg) await playspace_msg.delete().catch(() => {});
 
             // Generate intro to battle image
             let battle_image = await generate_battle_image(battleDataObj, user.user_index, battle_bg);
@@ -535,7 +532,6 @@ export function new_battle_action_other(db_battle_data, user_index, item_id){
         action_type : BattleAction.Other,
         priority : BattleAction.Other,
         user_index : user_index,
-
         item_id : item_id
     }
 
@@ -1226,21 +1222,19 @@ export async function prompt_battle_actions(battle_id) {
                     
                 } else if (customId == BattleInput.BagHeal) {
                     
-                    let heal_inv = user.heal_inv;
-                    let heal_inv_keys = Object.keys(heal_inv);
+                    let consumable_inv = user.inventory[ItemCategory.Consumable];
                     let bag_select = new ActionRowBuilder();
                     let heal_select_options = [];
                     
-                    for (let i = 0; i < heal_inv_keys.length; i++) {
-                        let id = heal_inv_keys[i];
-                        let amount = heal_inv[heal_inv_keys[i]];
-
-                        if (amount > 0 && amount != undefined) {
+                    for (let c of consumable_inv) {
+                        const consumable_data = item_data.get(c.id);
+                        if (consumable_data.type != ItemType.Potion) continue;
+                        if (c.quantity > 0 && c.quantity != undefined) {
                             heal_select_options.push({ 
-                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
-                                value: `${id}`,
-                                emoji: item_data.get(`${id}`, 'emote'),
+                                label: `${consumable_data.name} (${c.quantity})`,
+                                description: consumable_data.description_short.slice(0, 100),
+                                value: `${consumable_data.id}`,
+                                emoji: consumable_data.emote,
                             })
                         }
                     }
@@ -1249,7 +1243,7 @@ export async function prompt_battle_actions(battle_id) {
                         bag_select.addComponents(
                             new StringSelectMenuBuilder()
                                 .setCustomId('heal_item_select')
-                                .setPlaceholder('Select an item in your heal inventory to use!')
+                                .setPlaceholder('Select a healing item to use!')
                                 .addOptions(heal_select_options),
                         );
 
@@ -1260,21 +1254,18 @@ export async function prompt_battle_actions(battle_id) {
 
                 } else if (customId == BattleInput.BagPrism) {
 
-                    let prism_inv = user.prism_inv;
-                    let prism_inv_keys = Object.keys(prism_inv);
+                    let prism_inv = user.inventory[ItemCategory.Prism];
                     let bag_select = new ActionRowBuilder();
                     let prism_select_options = [];
                     
-                    for (let i = 0; i < prism_inv_keys.length; i++) {
-                        let id = prism_inv_keys[i];
-                        let amount = prism_inv[prism_inv_keys[i]];
-
-                        if (amount > 0 && amount != undefined) {
+                    for (let p of prism_inv) {
+                        const prism_data = item_data.get(p.id);
+                        if (p.quantity > 0 && p.quantity != undefined) {
                             prism_select_options.push({ 
-                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
-                                value: `${id}`,
-                                emoji: item_data.get(`${id}`, 'emote'),
+                                label: `${prism_data.name} (${p.quantity})`,
+                                description: prism_data.description_short.slice(0, 100),
+                                value: `${prism_data.id}`,
+                                emoji: prism_data.emote,
                             })
                         }
                     }
@@ -1282,7 +1273,7 @@ export async function prompt_battle_actions(battle_id) {
                     bag_select.addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('prism_item_select')
-                            .setPlaceholder('Select an item in your inventory to use!')
+                            .setPlaceholder('Select a prism to use!')
                             .addOptions(prism_select_options),
                     );
 
@@ -2168,10 +2159,11 @@ export async function action_process_prism(db_battle_data, action) {
     let ooch_target = target_user.party[target_user.active_slot];
     let return_string = `${user.name} threw a ${item.emote} **${item.name}**.`;
 
-    let prism_result = item_use(`${user.user_id}`, ooch_target, action.item_id, true); //True if successful catch, False if not
+    let prism_result = await item_use(`${user.user_id}`, ooch_target, action.item_id, true); //True if successful catch, False if not
     let prism_pulses = prism_result[1];
     prism_result = prism_result[0];
-    db_battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
+    let db_item = db_battle_data.users[action.user_index].inventory[ItemCategory.Prism].find(item => item.id == action.item_id)
+    db_item.quantity -= 1;
 
     let exp_earned = 0;
 
@@ -2271,7 +2263,9 @@ export async function action_process_heal(db_battle_data, action) {
     let ooch = user.party[action.slot_target];
     let return_string = `${user.name} used 1 ${item.emote} **${item.name}**.`;
     let extra_text = await item_use(user.user_index, ooch, action.item_id, true); 
-    db_battle_data.users[action.user_index].heal_inv[action.item_id] -= 1;
+
+    let db_item = db_battle_data.users[action.user_index].inventory[ItemCategory.Consumable].find(item => item.id == action.item_id)
+    db_item.quantity -= 1;
     return_string += extra_text;
 
     return {
@@ -2873,10 +2867,12 @@ export function type_effectiveness(attack_type, target_type) {
     return([multiplier, string])
 }
 
-export function item_use(user_id, ooch, item_id, in_battle=false) {
+export async function item_use(user_id, ooch, item_id, in_battle=false, remove=false) {
+    const { remove_item } = await import('./func_play.js');
     let db_item_data = item_data.get(`${item_id}`); 
+    if (remove) remove_item(user_id, item_id, 1);
 
-    if (db_item_data.type == 'potion') {
+    if (db_item_data.type == ItemType.Potion) {
         if (in_battle && ooch.alive == true) {
             let prev_hp = ooch.current_hp;
             ooch.current_hp += db_item_data.potency;
@@ -2892,7 +2888,7 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
             return ooch;
         } 
         
-    } else if (db_item_data.type == 'prism') {
+    } else if (db_item_data.type == ItemType.Prism) {
         let status_bonus = 1;
         let prism_multiplier = db_item_data.potency;
         let prism_chance = prism_multiplier / (ooch.level) * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
@@ -2904,7 +2900,7 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         } else {
             return [false, prism_wiggles];
         }
-    } else if (db_item_data.type == 'status') {
+    } else if (db_item_data.type == ItemType.Status) {
         let return_string = false;
         if (db_item_data.potency !== 'All') {
             let db_status_data = status_data.get(`${db_item_data.potency}`)
@@ -2915,9 +2911,9 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
             return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
         }
         return return_string == false ? ooch : return_string;
-    } else if (db_item_data.type == 'repel') {
+    } else if (db_item_data.type == ItemType.Repel) {
         profile.set(user_id, db_item_data.potency, 'repel_steps'); 
-    } else if (db_item_data.type == 'teleport') {
+    } else if (db_item_data.type == ItemType.Teleport) {
         let biome_from = profile.get(`${user_id}`, 'location_data.area');
         let checkpoint = profile.get(`${user_id}`, 'checkpoint_data');
         let biome_to = checkpoint.area;
@@ -2935,12 +2931,12 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         profile.set(user_id, PlayerState.Playspace, 'player_state');
         return;
 
-    } else if (db_item_data.type == 'level_up') {
+    } else if (db_item_data.type == ItemType.LevelUp) {
         let exp_to_give = exp_to_next_level(ooch.level);
         ooch.current_exp += exp_to_give;
         ooch = level_up(ooch);
         return ooch; // [ooch, output_text]
-    } else if (db_item_data.type == 'give_exp') {
+    } else if (db_item_data.type == ItemType.GiveExp) {
         ooch.current_exp += Math.round(db_item_data.potency);
         let output = [ooch, `${ooch.emote} **${ooch.nickname}** gained ${db_item_data.potency} exp!`];
         
@@ -4421,10 +4417,7 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
 
         //Set the party as needed
         profile.set(user_id, user_info.party, `ooch_party`);
-        profile.set(user_id, user_info.prism_inv, `prism_inv`);
-        profile.set(user_id, user_info.heal_inv, `heal_inv`);
-        profile.set(user_id, user_info.other_inv, `other_inv`);
-        profile.set(user_id, user_info.skin_inv, `skin_inv`);
+        profile.set(user_id, user_info.inventory, `inventory`);
         profile.set(user_id, 0, 'ooch_active_slot');
 
         // If we lost, go back to the teleporter location.

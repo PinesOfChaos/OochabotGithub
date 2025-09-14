@@ -2,7 +2,7 @@ import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
 import { readdirSync, readFile, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
-import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect, StanceForms, OochID, Item } from '../types.js';
+import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect, StanceForms, OochID, Item, ItemType, ItemCategory } from '../types.js';
 import { get_emote_string } from '../func_other.js';
 import { refresh_global_variables } from '../func_global_data.js';
 import { modernize_all } from '../func_modernize.js';
@@ -537,7 +537,8 @@ export async function execute(interaction, client) {
 
     create_tile(`c_900`, Tile.Int); // BIG Ooze
     create_tile(`c_901`, Tile.Int); // Enforcement System Delta
-
+    create_tile(`c_902`, Tile.Int); // 
+    create_tile(`c_903`, Tile.Int); //
 
 
 
@@ -545,529 +546,529 @@ export async function execute(interaction, client) {
     //#region Item Data
     create_item({
         id: Item.Potion, name: 'Potion', emote: get_emote_string('item_potion'),
-        category: 'heal_inv', type: 'potion', price: 100, potency: 20,
+        category: ItemCategory.Consumable, type: ItemType.Potion, price: 100, potency: 20,
         description: 'A potion filled with a mysterious mix of chemicals. Slightly heals an injured Oochamon.',
         description_short: 'Used to heal an Oochamon for 20 HP.',
     });
     create_item({
         id: Item.HiPotion, name: 'Med-Potion', emote: get_emote_string('item_potion_hi'),
-        category: 'heal_inv', type: 'potion', price: 400, potency: 80,
+        category: ItemCategory.Consumable, type: ItemType.Potion, price: 400, potency: 80,
         description: 'After further development a slightly stronger potion has been developed. Heals an injured Oochamon.',
         description_short: 'Used to heal an Oochamon for 80 HP.'
     });
     create_item({
         id: Item.MaxPotion, name: 'Hi-Potion', emote: get_emote_string('item_potion_magic'),
-        category: 'heal_inv', type: 'potion', price: 1000, potency: 200,
+        category: ItemCategory.Consumable, type: ItemType.Potion, price: 1000, potency: 200,
         description: 'A high-tier potion created after several iterations. Greatly restores health to an oochamon.',
         description_short: 'Used to heal an Oochamon for 200 HP.'
     });
     create_item({
         id: Item.Prism, name: 'Prism', emote: get_emote_string('item_prism'),
-        category: 'prism_inv', type: 'prism', price: 50, potency: 1,
+        category: ItemCategory.Prism, type: ItemType.Prism, price: 50, potency: 1,
         description: 'A device developed using ancient technology found on the planet. It\'s used to capture Oochamon.',
         description_short: 'Has a chance to capture an Oochamon.'
     });
     create_item({
         id: Item.GreaterPrism, name: 'Greater Prism', emote: get_emote_string('item_prism_greater'),
-        category: 'prism_inv', type: 'prism', price: 350, potency: 1.6,
+        category: ItemCategory.Prism, type: ItemType.Prism, price: 350, potency: 1.6,
         description: 'Developments in prism technology have created this improved prism with a higher capture rate.',
         description_short: 'Has an increased chance to capture an Oochamon.'
     });
     create_item({
         id: Item.GrandPrism, name: 'Grand Prism', emote: get_emote_string('item_prism_grand'),
-        category: 'prism_inv', type: 'prism', price: 950, potency: 2.5,
+        category: ItemCategory.Prism, type: ItemType.Prism, price: 950, potency: 2.5,
         description: 'A further modified prism with an even higher capture rate, thought to be the upper limits of capture technology.',
         description_short: 'Has a high chance to capture an Oochamon.'
     });
     create_item({
         id: Item.PerfectPrism, name: 'Perfect Prism', emote: get_emote_string('item_prism_perfect'),
-        category: 'prism_inv', type: 'prism', price: 100000, potency: 1000,
+        category: ItemCategory.Prism, type: ItemType.Prism, price: 100000, potency: 1000,
         description: 'A prism created in what was certainly an accident, with a black core and shattered casing, nothing escapes its pull.',
         description_short: 'Has a 100% chance to capture an Oochamon.'
     });
     create_item({
         id: Item.AttackCrystal, name: 'Attack Crystal', emote: get_emote_string('item_attack_crystal'),
-        category: 'other_inv', type: 'move_unlock', price: 5000, potency: 1,
+        category: ItemCategory.Consumable, type: ItemType.MoveUnlock, price: 5000, potency: 1,
         description: 'Glimmering crystals from deep within the planets core. They have the potential to unlock a hidden move for an Oochamon by releasing stored power.',
         description_short: 'Unlocks a hidden move for an Oochamon.'
     });
     create_item({
         id: Item.IDCard, name: 'ID Card', emote: get_emote_string('item_id_card'),
-        category: 'other_inv', type: 'key', price: -1, potency: 1,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 1,
         description: 'Your ID card. You look so fabulous!',
         description_short: 'Grants access to various Oochcorp facilities.'
     });
     create_item({
         id: Item.Eyedrops, name: 'Eyedrops', emote: get_emote_string('item_eyedrops'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Blind,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Blind,
         description: 'A small vial of very powerful eyedrops. It burns to touch, but seems fine for Oochamon to use.',
         description_short: 'Removes BLIND status effect.'
     });
     create_item({
         id: Item.Shears, name: 'Shears', emote: get_emote_string('item_shears'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Snare,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Snare,
         description: 'Titanium reinforced shears, they\'ll cut through anything holding your Oochamon down.',
         description_short: 'Removes SNARED status effect.'
     });
     create_item({
         id: Item.Daylily, name: 'Daylily', emote: get_emote_string('item_daylily'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Doom,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Doom,
         description: 'A small white flower said to be found on a plateau above the clouds, it has the ability to change the fate of an Oochamon.',
         description_short: 'Removes DOOMED status effect.'
     });
     create_item({
         id: Item.Antiparasite, name: 'Antiparasite', emote: get_emote_string('item_antiparasite'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Infect,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Infect,
         description: 'A small, wrigling creature. It enters the host\'s body and hunts down any infestations within an Oochamon.',
         description_short: 'Removes INFECTED status effect.'
     });
     create_item({
         id: Item.DebugChip, name: 'Debug Chip', emote: get_emote_string('item_debugchip'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Digitize,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Digitize,
         description: 'A small computer chip from an odd machine. It seems to break down any tech that finds itself attached to an Oochamon.',
         description_short: 'Removes DIGITIZED status effect.'
     });
     create_item({
         id: Item.CoolingBalm, name: 'Cooling Balm', emote: get_emote_string('item_coolingbalm'),
-        category: 'heal_inv', type: 'status', price: 200, potency: Status.Burn,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 200, potency: Status.Burn,
         description: 'A container of glowing blue gel found deep below the planet\'s surface. Its supercooling properties will relieve a burn from an Oochamon.',
         description_short: 'Removes BURNED status effect.'
     });
     create_item({
         id: Item.NullSphere, name: 'Nullifying Sphere', emote: get_emote_string('item_null_sphere'),
-        category: 'heal_inv', type: 'status', price: 750, potency: Status.All,
+        category: ItemCategory.Consumable, type: ItemType.Status, price: 750, potency: Status.All,
         description: 'A white crystal sphere with various colours mixed within. All things that may pain an Oochamon are removed by the void inside.',
         description_short: 'Removes all status effects.'
     });
     create_item({
         id: Item.GreenBoostgem, name: 'Green Boostgem', emote: get_emote_string('item_iv_hp'),
-        category: 'other_inv', type: 'iv', price: 25000, potency: Stats.HP,
+        category: ItemCategory.Consumable, type: ItemType.IV, price: 25000, potency: Stats.HP,
         description: 'A viridian crystal from the planet\'s core glowing with vitality. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Health bonus of an Oochamon.'
     });
     create_item({
         id: Item.RedBoostgem, name: 'Red Boostgem', emote: get_emote_string('item_iv_atk'),
-        category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Attack,
+        category: ItemCategory.Consumable, type: ItemType.IV, price: 25000, potency: Stats.Attack,
         description: 'A crimson crystal from the planet\'s core glowing with power. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Attack bonus of an Oochamon.'
     });
     create_item({
         id: Item.BlueBoostgem, name: 'Blue Boostgem', emote: get_emote_string('item_iv_def'),
-        category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Defense,
+        category: ItemCategory.Consumable, type: ItemType.IV, price: 25000, potency: Stats.Defense,
         description: 'An azure crystal from the planet\'s core glowing with protection. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Defense bonus of an Oochamon.'
     });
     create_item({
         id: Item.YellowBoostgem, name: 'Yellow Boostgem', emote: get_emote_string('item_iv_spd'),
-        category: 'other_inv', type: 'iv', price: 25000, potency: Stats.Speed,
+        category: ItemCategory.Consumable, type: ItemType.IV, price: 25000, potency: Stats.Speed,
         description: 'An amber crystal from the planet\'s core glowing with energy. Your Oochamon seem strangely drawn to it.',
         description_short: 'Permanently Raises Speed bonus of an Oochamon.'
     });
     create_item({
         id: Item.SporeFeather, name: 'Spore Feather', emote: get_emote_string('item_sporefeather'),
-        category: 'other_inv', type: 'evolve', price: 8000, potency: [59, 62],
+        category: ItemCategory.Consumable, type: ItemType.Evolve, price: 8000, potency: [59, 62],
         description: 'An old feather covered in fungal spores. Oochamon are particulary susceptible to corrupting forces, and it seems like this one was no different.',
         description_short: 'Used to evolve a certain Oochamon.'
     });
     create_item({
         id: Item.Lavaboard, name: 'Lavaboard', emote: get_emote_string('item_lavaboard'),
-        category: 'other_inv', type: 'key', price: -1, potency: 1,
+        category: ItemCategory.Consumable, type: ItemType.Key, price: -1, potency: 1,
         description: 'A high-tech board that uses extreme heat to to float. It even comes with a cool heat-proof suit.',
         description_short: 'Used to ride over Lava tiles.'
     });
     create_item({
         id: Item.Repulsor, name: 'Repulsor', emote: get_emote_string('item_repulsor'),
-        category: 'other_inv', type: 'repel', price: 200, potency: 75,
+        category: ItemCategory.Consumable, type: ItemType.Repel, price: 200, potency: 75,
         description: 'A battery-powered repulsion device that keeps Oochamon away.',
         description_short: 'Repels Oochamon for 75 steps.'
     });
     create_item({
         id: Item.Teleporter, name: 'Teleporter', emote: get_emote_string('item_tp_device'),
-        category: 'other_inv', type: 'teleport', price: 1000, potency: 1,
+        category: ItemCategory.Consumable, type: ItemType.Teleport, price: 1000, potency: 1,
         description: 'An emergency button that uses unknown systems to relocate the user. It\'s mildly painful to use, but it gets you where you\'re going quick!',
         description_short: 'Brings you to your last used Save Station.'
     });
     create_item({
         id: Item.MapHub, name: 'Map: Hub', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'hub',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'hub',
         description: 'Dave\'s hand drawn map of the Hub and surrounding area.',
         description_short: 'A map of the Hub.'
     });
     create_item({
         id: Item.MapStoneTunnel, name: 'Map: Stone Tunnel', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'stone_tunnel',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'stone_tunnel',
         description: 'Dave\'s hand drawn map of the Stone Tunnel.',
         description_short: 'A map of the Stone Tunnel.'
     });
     create_item({
         id: Item.MapFungalCaves, name: 'Map: Fungal Caves', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'fungal_cave',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'fungal_cave',
         description: 'Dave\'s hand drawn map of the Fungal Caves.',
         description_short: 'A map of the Fungal Caves.'
     });
     create_item({
         id: Item.MapLavaPath, name: 'Map: Lava Path', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'lava_path',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'lava_path',
         description: 'Dave\'s hand drawn map of the Lava Path and the settlement there.',
         description_short: 'A map of the Lava Path.'
     });
     create_item({
         id: Item.MapOldTrainingFacility, name: 'Map: Old Training Facility', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'training_facility',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'training_facility',
         description: 'Dave\'s hand drawn map of the Old Training Facility.',
         description_short: 'A map of the Old Training Facility.'
     });
     create_item({
         id: Item.MapThunderPeak, name: 'Map: Thunder Peak', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'thunderpeak',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'thunderpeak',
         description: 'Dave\'s hand drawn map of Thunder Peak.',
         description_short: 'A map of Thunder Peak.'
     });
     create_item({
         id: Item.MapAncientBridge, name: 'Map: Ancient Bridge', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'ancient_bridge',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'ancient_bridge',
         description: 'Less a map, and more of a sketch of the Ancient Bridge.',
         description_short: 'A map of the Ancient Bridge.'
     });
     create_item({
         id: Item.MapFlowerFields, name: 'Map: Flower Fields', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'flower_fields',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'flower_fields',
         description: 'Dave\'s hand drawn map of the Flower Fields.',
         description_short: 'A map of the Flower Fields.'
     });
     create_item({
         id: Item.MapAccessTunnel, name: 'Map: Access Tunnel', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'access_tunnel',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'access_tunnel',
         description: 'Dave\'s hand drawn map of the Access Tunnel connecting the Lava Path settlement and the Hub.',
         description_short: 'A map of the Access Tunnel.'
     });
     create_item({
         id: Item.MapScaffolds, name: 'Map: Scaffolds', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'scaffolds',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'scaffolds',
         description: 'Dave\'s hand drawn...map? The Scaffolds seem to have affected him.',
         description_short: 'A map of the Scaffolds.'
     });
     create_item({
         id: Item.MapGooLake, name: 'Map: Goo Lake', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'goo_lake',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'goo_lake',
         description: 'Dave\'s hand drawn map of the Goo Lake and its beaches.',
         description_short: 'A map of the Goo Lake.'
     });
     create_item({
         id: Item.MapOldPowerplant, name: 'Map: Old Powerplant', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'old_power_station',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'old_power_station',
         description: 'Dave\'s hand drawn map of the Old Powerplant and some of its interior.',
         description_short: 'A map of the Old Powerplant.'
     });
     create_item({
         id: Item.MapRestrictedArea, name: 'Map: Restricted Area', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'restricted_area',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'restricted_area',
         description: 'Dave\'s hand drawn map of the Restricted Area.',
         description_short: 'A map of the Restricted Area.'
     });
     create_item({
         id: Item.MapCrystalCaves, name: 'Map: Crystal Caves', emote: get_emote_string('item_map'),
-        category: 'other_inv', type: 'map', price: -1, potency: 'crystal_caves',
+        category: ItemCategory.Map, type: ItemType.Map, price: -1, potency: 'crystal_caves',
         description: 'Dave\'s hand drawn map of the Crystal Caves.',
         description_short: 'A map of the Crystal Caves.'
     });
     create_item({
         id: Item.FlowerSample, name: 'Flower Sample', emote: get_emote_string('item_flower_sample'),
-        category: 'other_inv', type: 'key', price: -1, potency: 1,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 1,
         description: 'A sample of a large flower. It seems to be crystalline, with a mote of red energy at its very core.',
         description_short: 'A sample of the large growth in the Flower Fields.'
     });
     create_item({
         id: Item.DataDisc, name: 'Data Disc', emote: get_emote_string('item_data_disc'),
-        category: 'other_inv', type: 'key', price: -1, potency: 1,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 1,
         description: 'A disc containing the finalized teleportation protocols. It should plug in to the large machine at the edge of Goo Lake.',
         description_short: 'A data disc. Inserts somewhere.'
     });
     create_item({
         id: Item.OldDisc, name: 'Old Disc', emote: get_emote_string('item_old_disc'),
-        category: 'other_inv', type: 'key', price: -1, potency: 1,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 1,
         description: 'A weathered data disc, its purpose is unknown. There\'s some text etched into its side:\n"Passphrase: SB_ROSWIER"',
         description_short: 'A weathered data disc.'
     });
     create_item({
         id: Item.AbilitySphere, name: 'Ability Sphere', emote: get_emote_string('item_ability_sphere'),
-        category: 'other_inv', type: 'ability_swap', price: 15000, potency: 1,
+        category: ItemCategory.Consumable, type: ItemType.AbilitySwap, price: 15000, potency: 1,
         description: 'A near perfect sphere crafted from crystals at the planet\'s core. Allows an Oochamon to change its ability.',
         description_short: 'Allows an Oochamon to change its ability.'
     });
     create_item({
         id: Item.EssenceMonolith, name: 'Essence Monolith', emote: get_emote_string('item_xp_x'),
-        category: 'other_inv', type: 'level_up', price: 100_000, potency: 1,
+        category: ItemCategory.Consumable, type: ItemType.LevelUp, price: 100_000, potency: 1,
         description: 'A pitch black monolith of eyes, only visible to those destined peer into the void. Levels up an Oochamon',
         description_short: 'Levels up an Oochamon'
     });
     create_item({
         id: Item.EssenceFragment, name: 'Essence Fragment', emote: get_emote_string('item_xp_s'),
-        category: 'other_inv', type: 'give_exp', price: 8_000, potency: 500,
+        category: ItemCategory.Consumable, type: ItemType.GiveExp, price: 8_000, potency: 500,
         description: 'A sliver of knowledge trapped within an inky void. Gives a small amount of EXP to an Oochamon',
         description_short: 'Gives a small amount of EXP to an Oochamon'
     });
     create_item({
         id: Item.EssenceShard, name: 'Essence Shard', emote: get_emote_string('item_xp_m'),
-        category: 'other_inv', type: 'give_exp', price: 40_000, potency: 5000,
+        category: ItemCategory.Consumable, type: ItemType.GiveExp, price: 40_000, potency: 5000,
         description: 'A sizeable shard of knowledge. Gives a medium amount of EXP to an Oochamon',
         description_short: 'Gives a medium amount of EXP to an Oochamon'
     });
     create_item({
         id: Item.EssenceChunk, name: 'Essence Chunk', emote: get_emote_string('item_xp_l'),
-        category: 'other_inv', type: 'give_exp', price: 100_000, potency: 50000,
+        category: ItemCategory.Consumable, type: ItemType.GiveExp, price: 100_000, potency: 50000,
         description: 'A collection of knowledge gathered from dozens of individuals. Gives a large amount of EXP to an Oochamon',
         description_short: 'Gives a large amount of EXP to an Oochamon'
     });
     create_item({
         id: Item.OddBulb, name: 'Odd Bulb', emote: get_emote_string('item_odd_bulb'),
-        category: 'other_inv', type: 'evolve', price: 8000, potency: [21, 111],
+        category: ItemCategory.Consumable, type: ItemType.Evolve, price: 8000, potency: [21, 111],
         description: 'An old lightbulb filled with tiny machines. The bulb seems to flicker and glow on occaison.',
         description_short: 'Used to evolve a certain Oochamon.'
     });
     create_item({
         id: Item.MagicMirror, name: 'Magic Mirror', emote: get_emote_string('item_magic_mirror'),
-        category: 'other_inv', type: 'magic_mirror', price: -1, potency: 0,
-        description: 'A mirror made of crystals from deep beneath the surface. Using it lets you change your appearance.',
-        description_short: 'Used to change your appearance.'
+        category: ItemCategory.Consumable, type: ItemType.Key, price: -1, potency: 0,
+        description: 'A mirror made of crystals from deep beneath the surface. Holding it allows you to change your appearance.',
+        description_short: 'Unlocks changing appearance.'
     });
     create_item({
         id: Item.SkinPlayerA, name: 'Skin: Player A', emote: get_emote_string('c_000'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_000',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_000',
         description: 'Change your appearance to match this sprite.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinPlayerB, name: 'Skin: Player B', emote: get_emote_string('c_051'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_051',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_051',
         description: 'Change your appearance to match this sprite.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinScout, name: 'Skin: Scout', emote: get_emote_string('c_001'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_001',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_001',
         description: 'Change your appearance to match this sprite. Scouts venture out into unexplored areas ahead of the researchers to provide them with data.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinRaider, name: 'Skin: Raider', emote: get_emote_string('c_002'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_002',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_002',
         description: 'Change your appearance to match this sprite. Raiders were previously employees of Oochcorp, but abandoned the company to strike out on their own.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinGuard, name: 'Skin: Guard', emote: get_emote_string('c_003'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_003',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_003',
         description: 'Change your appearance to match this sprite. Hired by Oochcorp to protect important areas.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinSeerSister, name: 'Skin: Seer Sister', emote: get_emote_string('c_004'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_004',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_004',
         description: 'Change your appearance to match this sprite. The Seer Sisters and their shape-shifting Oochamon commune with the planet\'s storms.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinResearcher, name: 'Skin: Researcher', emote: get_emote_string('c_005'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_005',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_005',
         description: 'Change your appearance to match this sprite. Researchers are committed to seeking out discoveries despite the danger of exploring.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinProfLyra, name: 'Skin: Professor Lyra', emote: get_emote_string('c_006'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_006',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_006',
         description: 'Change your appearance to match this sprite. The elderly head researcher of the Hub, Lyra\'s experience has been a boon to the exploration of the planet.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinRivalCade, name: 'Skin: Rival Cade', emote: get_emote_string('c_007'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_007',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_007',
         description: 'Change your appearance to match this sprite. He\'s been there since the beginning, another newcomer to the planet.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinEngineerAl, name: 'Skin: Engineer Al', emote: get_emote_string('c_009'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_009',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_009',
         description: 'Change your appearance to match this sprite. Al\'s been working for Oochcorp a while now. He\'s been in charge of building most human structures on the planet.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinFungalCorrupted, name: 'Skin: Fungal Corrupted', emote: get_emote_string('c_010'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_010',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_010',
         description: 'Change your appearance to match this sprite. A researcher corrupted by the fungal caves around them.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinShopkeeper, name: 'Skin: Shopkeeper', emote: get_emote_string('c_011'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_011',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_011',
         description: 'Change your appearance to match this sprite. A hard-working shopkeeper, they\'re found working in several locations around the world.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinCrew, name: 'Skin: Crew', emote: get_emote_string('c_014'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_014',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_014',
         description: 'Change your appearance to match this sprite. A member of the construction crew, ecpect to find some where ever there\'s work to be done.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinTechCorrupted, name: 'Skin: Tech Corrupted', emote: get_emote_string('c_015'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_015',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_015',
         description: 'Change your appearance to match this sprite. A researcher corrupted by microscopic machines in the area.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinCFOKaterina, name: 'Skin: CFO Katerina', emote: get_emote_string('c_016'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_016',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_016',
         description: 'Change your appearance to match this sprite. The CFO of Oochcorp and Lyra\'s granddaughter. She\'s been overseeing the efforts on the planet.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinMrNice, name: 'Skin: Mr. Nice', emote: get_emote_string('c_018'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_018',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_018',
         description: 'Change your appearance to match this sprite. A mysterious magician who appears from chests on your adventures, perhaps he was an accidental stowaway.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinSlimeCorrupted, name: 'Skin: Slime Corrupted', emote: get_emote_string('c_027'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_027',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_027',
         description: 'Change your appearance to match this sprite. A researcher corrupted by the ever shifting liquids of Goo Lake.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinKaterinaCorrupted, name: 'Skin: Corrupted Katerina', emote: get_emote_string('c_028'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_028',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_028',
         description: 'Change your appearance to match this sprite. This was the result of Katerina\'s repeated exposure to Serpsis within the Crystal Caves.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinExplorerDave, name: 'Skin: Explorer Dave', emote: get_emote_string('c_039'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_039',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_039',
         description: 'Change your appearance to match this sprite. A friendly cartographer, he\'s always happy to provide a map of areas he\'s explored.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinDrAnne, name: 'Skin: Dr. Anne', emote: get_emote_string('c_052'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_052',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_052',
         description: 'Change your appearance to match this sprite. A mysterious doctor who\'s interested in exploration of a mysterious new type of Oochamon.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinBalancer, name: 'Skin: The Balancer', emote: get_emote_string('c_053'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_053',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_053',
         description: 'Change your appearance to match this sprite. A mysterious man who claims to be from an ancient civilization despite his tattered labcoat.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinEvergreenCultist, name: 'Skin: Evergreen Cultist', emote: get_emote_string('c_055'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_055',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_055',
         description: 'Change your appearance to match this sprite. Made for one of the devs.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinForsythe, name: 'Skin: Forsythe', emote: get_emote_string('c_056'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_056',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_056',
         description: 'Change your appearance to match this sprite. Made for a playtester.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinEngineer, name: 'Skin: The Engineer', emote: get_emote_string('c_057'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_057',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_057',
         description: 'Change your appearance to match this sprite. Made for a playtester.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinTamagoochiGirl, name: 'Skin: Tamagoochi™ Girl 👌', emote: get_emote_string('c_058'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_058',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_058',
         description: 'Change your appearance to match this sprite. Made for a playtester.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinJeffdev, name: 'Skin: Jeffdev', emote: get_emote_string('c_059'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_059',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_059',
         description: 'Change your appearance to match this sprite. Made for one of the devs.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinTerarabe, name: 'Skin: Terarabe', emote: get_emote_string('c_060'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_060',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_060',
         description: 'Change your appearance to match this sprite. Made for a playtester.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinJEKYLLPOWERSTANCE, name: 'Skin: JEKYLL POWER STANCE', emote: get_emote_string('c_061'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_061',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_061',
         description: 'Change your appearance to match this sprite. Made for a playtester.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinNeo, name: 'Skin: Neo', emote: get_emote_string('c_062'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_062',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_062',
         description: 'Change your appearance to match this sprite. Made for our character and cutscene artist.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.SkinSign, name: 'Skin: Sign', emote: get_emote_string('c_020'),
-        category: 'skin_inv', type: 'skin', price: -1, potency: 'c_020',
+        category: ItemCategory.Skin, type: ItemType.Skin, price: -1, potency: 'c_020',
         description: 'Change your appearance to match this sprite. Your inability to read has allowed you to defeat the Signruler.',
         description_short: 'A cosmetic outfit.'
     });
     create_item({
         id: Item.TreatBasic, name: 'Snacky Treat', emote: get_emote_string('item_treat'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: -1,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: -1,
         description: 'A mass produced treat, Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFungal, name: 'Squishy Treat', emote: get_emote_string('item_treat_fungal'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Fungal,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Fungal,
         description: 'A treat coated in spores, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFlame, name: 'Spicy Treat', emote: get_emote_string('item_treat_flame'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Flame,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Flame,
         description: 'A scalding hot treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatStone, name: 'Crunchy Treat', emote: get_emote_string('item_treat_stone'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Stone,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Stone,
         description: 'A rock-like treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatOoze, name: 'Gooey Treat', emote: get_emote_string('item_treat_ooze'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Ooze,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Ooze,
         description: 'A slimy treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatMagic, name: 'Sparkly Treat', emote: get_emote_string('item_treat_magic'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Magic,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Magic,
         description: 'An ethereal treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatTech, name: 'Metallic Treat', emote: get_emote_string('item_treat_tech'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Tech,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Tech,
         description: 'A finely crafted treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCloth, name: 'Soft Treat', emote: get_emote_string('item_treat_cloth'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Cloth,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Cloth,
         description: 'A silky smooth treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatSound, name: 'Soothing Treat', emote: get_emote_string('item_treat_sound'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Sound,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Sound,
         description: 'A treat that seems to hum a tune, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCrystal, name: 'Rigid Treat', emote: get_emote_string('item_treat_crystal'),
-        category: 'heal_inv', type: 'treat', price: -1, potency: OochType.Crystal,
+        category: ItemCategory.Consumable, type: 'treat', price: -1, potency: OochType.Crystal,
         description: 'A sharply sweet treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });

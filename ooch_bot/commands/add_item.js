@@ -1,5 +1,6 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
-import { item_data, profile } from '../db.js';
+import { item_data } from '../db.js';
+import { add_item } from '../func_play.js';
 
 export const data = new SlashCommandBuilder()
     .setName('add_item')
@@ -16,11 +17,8 @@ export async function execute(interaction) {
     if (interaction.user.id != '145342159724347393' && interaction.user.id != '122568101995872256') return interaction.reply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     let id = interaction.options.getString('item');
     if (isNaN(id)) return interaction.reply('You must input an item ID here.');
-    id = parseInt(id);
     let num_to_add = interaction.options.getInteger('number_to_add');
-    let item_category = item_data.get(`${id}`, 'category');
+    add_item(interaction.user.id, id, num_to_add);
 
-    profile.set(interaction.user.id, num_to_add, `${item_category}.${id}`);
-
-    return interaction.reply(`Added Item ${item_data.get(`${id}`, 'name')} to your Inventory!`);
+    interaction.reply(`Added Item ${item_data.get(`${id}`, 'name')} to your Inventory!`);
 }

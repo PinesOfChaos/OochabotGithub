@@ -1,5 +1,5 @@
 import { profile, battle_data, monster_data } from "./db.js";
-import { PlayerState, UserType, Weather, FieldEffect, StanceForms } from './types.js';
+import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory } from './types.js';
 import { merge, random } from 'lodash-es';
 
 
@@ -109,13 +109,18 @@ export function get_blank_profile() {
         player_sprite : 'c_000',
         ooch_pc : [],
         ooch_active_slot : 0,
-        other_inv : {},
-        prism_inv : {},
-        heal_inv : {},
-        skin_inv : {},
+        inventory: {
+            [ItemCategory.Consumable]: [],
+            [ItemCategory.Prism]: [],
+            [ItemCategory.Map]: [],
+            [ItemCategory.Key]: [],
+            [ItemCategory.Skin]: [],
+        },
 
         oochabux : 0,
         repel_steps : 0,
+        step_counter : 0,
+        relax_steps : 100,
         player_state : PlayerState.Intro,
         location_data : false,
         checkpoint_data : false,
@@ -242,10 +247,7 @@ export function get_blank_battle_user(){
             name_possessive: '',
             battle_sprite: '',
             user_id: `${random(5, 1_000_000)}`,
-            heal_inv: [],
-            prism_inv: [],
-            other_inv: [],
-            skin_inv: [],
+            inventory: {},
             team_id: 0,
             user_type: UserType.Wild,
             thread_id: '',

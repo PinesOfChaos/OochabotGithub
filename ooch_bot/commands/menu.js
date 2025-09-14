@@ -2,8 +2,8 @@ import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Str
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
 import { lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
-import { setup_playspace_str, create_ooch } from '../func_play.js';
-import { PlayerState } from '../types.js';
+import { setup_playspace_str, create_ooch, remove_item, get_all_item_type } from '../func_play.js';
+import { ItemCategory, ItemType, PlayerState } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
 import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string } from '../func_other.js';
  
@@ -100,7 +100,7 @@ export async function execute(interaction) {
 
     let bag_buttons = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_potion_magic'))).addComponents(
+            new ButtonBuilder().setCustomId('consumable_button').setStyle(ButtonStyle.Success).setEmoji('🎒')).addComponents(
             new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
             new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑')).addComponents(
             new ButtonBuilder().setCustomId('skin_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('c_000')));
@@ -274,33 +274,26 @@ export async function execute(interaction) {
 
     async function buildItemData(inv) {
         let item_list_str = ``;
-        for (const [item_id, quantity] of Object.entries(profile.get(`${interaction.user.id}`, inv))) {
-            let item_obj = await item_data.get(`${item_id}`);
-            item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
-        }
-
-        let other_inv_keys = Object.keys(profile.get(`${interaction.user.id}`, inv));
-
+        let item_inv = profile.get(`${interaction.user.id}`, `inventory.${inv}`);
         bag_select = new ActionRowBuilder();
-        let other_select_options = [];
-        for (let i = 0; i < other_inv_keys.length; i++) {
-            let id = other_inv_keys[i];
-            let amount = profile.get(`${interaction.user.id}`, `${inv}.${other_inv_keys[i]}`);
+        let select_options = [];
 
-            if (amount != 0) {
-                if (item_data.get(`${id}`, 'type') != 'key' && item_data.get(`${id}`, 'type') != 'map') {
-                    other_select_options.push({
-                        label: `${item_data.get(`${id}`, 'name')}${amount > 1 ? ` (${amount})` : ``}`,
-                        description: item_data.get(`${id}`, 'description_short'),
-                        value: `${id}`,
-                        emoji: item_data.get(`${id}`, 'emote'),
-                    });
-                }
+        for (const item of item_inv) {
+            let item_obj = item_data.get(`${item.id}`);
+            item_list_str += `${item_obj.emote} ${item_obj.name} | **${item.quantity}x**\n`;
+
+            if (item.quantity != 0) {
+                select_options.push({
+                    label: `${item_obj.name}${item.quantity > 1 ? ` (${item.quantity})` : ``}`,
+                    description: item_obj.description_short,
+                    value: `${item.id}`,
+                    emoji: item_obj.emote,
+                });
             }
         }
 
-        if (other_select_options.length == 0) {
-            other_select_options.push({
+        if (select_options.length == 0) {
+            select_options.push({
                 label: `No Usable Items.`,
                 description: 'Can\'t use anything!',
                 value: `n/a`
@@ -311,7 +304,7 @@ export async function execute(interaction) {
             new StringSelectMenuBuilder()
                 .setCustomId(`${inv}_select`)
                 .setPlaceholder('Select an item to use in your inventory.')
-                .addOptions(other_select_options));
+                .addOptions(select_options));
 
         return [item_list_str, bag_select];
     }
@@ -376,10 +369,10 @@ export async function execute(interaction) {
     // Initialize all variables used across multiple sub menus here
     let selected, collectorId;
     let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
-    dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
+    dexEmbed, bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
 
     // Enable party healing button if we have healing items
-    let healItems = Object.entries(user_profile.heal_inv);
+    let healItems = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
     if (healItems.length != 0) {
         for (let item of healItems) {
             ooch_back_button.components[1].setDisabled(item[1] == 0);
@@ -393,7 +386,7 @@ export async function execute(interaction) {
     if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
 
     // Taming button undisable with flag
-    if (user_profile.flags('ev_tamagoochi')) party_extra_buttons_2.components[2].setDisabled(false);
+    if (user_profile.flags.includes('ev_tamagoochi')) party_extra_buttons_2.components[2].setDisabled(false);
 
     // Menu operation is handled in this collector
     await collector.on('collect', async (i) => {
@@ -454,15 +447,14 @@ export async function execute(interaction) {
 
         // Quick Party Heal Oochamon
         else if (selected == 'quick_heal') {
-            let healInv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            healInv = Object.entries(healInv);
+            let healInv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
             let healOptions = [];
 
             for (let item of healInv) {
-                if (item[1] !== 0) {
-                    let itemData = item_data.get(`${item[0]}`);
-                    if (itemData.type == 'potion') {
-                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
+                if (item.quantity !== 0) {
+                    let itemData = item_data.get(`${item.id}`);
+                    if (itemData.type == ItemType.Potion) {
+                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item.quantity, used: 0, emote: itemData.emote, name: itemData.name });
                     }
                 }
             }
@@ -512,7 +504,7 @@ export async function execute(interaction) {
             let outputMsg = 'Potions used for quick heals:';
             healOptions.forEach(item => {
                 if (item.used > 0) {
-                    profile.math(interaction.user.id, '-', item.used, `heal_inv.${item.id}`);
+                    remove_item(interaction.user.id, item.id, item.used);
                     outputMsg += `\n${item.emote} **${item.name}** (${item.used}x)`;
                 }
             });
@@ -529,12 +521,12 @@ export async function execute(interaction) {
             selected = parseInt(selected.replace('par_ooch_id_', ''));
             party_idx = parseInt(selected);
             selected_ooch = ooch_party[party_idx];
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
+            heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
             // Also reset the heal button to be enabled or disabled based on current HP values
             party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
-            party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || Object.keys(heal_inv).length == 0) ? true : false);
+            party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || heal_inv.length == 0) ? true : false);
 
             // Check if we can enable the move switcher, if we have more options outside of the main 4 moves
             let available_moves = 0;
@@ -611,22 +603,20 @@ export async function execute(interaction) {
 
         // Heal Oochamon button
         else if (selected == 'party_heal') {
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            let heal_inv_keys = Object.keys(heal_inv);
+            heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             bag_select = new ActionRowBuilder();
             let heal_select_options = [];
-            for (let i = 0; i < heal_inv_keys.length; i++) {
-                let id = heal_inv_keys[i];
-                let amount = profile.get(`${interaction.user.id}`, `heal_inv.${heal_inv_keys[i]}`);
+            for (let item of heal_inv) {
+                let item_data = item_data.get(`${item.id}`);
 
-                if (amount != 0) {
-                    if (item_data.get(`${id}`, 'type') == 'potion') {
+                if (item.quantity != 0) {
+                    if (item_data.type == ItemType.Potion) {
                         heal_select_options.push({
-                            label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                            description: item_data.get(`${id}`, 'description_short'),
-                            value: `${id}`,
-                            emoji: item_data.get(`${id}`, 'emote'),
+                            label: `${item_data.name} (${item.quantity})`,
+                            description: item_data.description_short,
+                            value: `${item.id}`,
+                            emoji: item_data.emote,
                         });
                     }
                 }
@@ -644,17 +634,13 @@ export async function execute(interaction) {
         // Oochamon Heal Select Menu
         else if (collectorId == 'party_heal_select') {
             let db_item_data = item_data.get(`${selected}`);
-            selected_ooch = item_use(interaction.user.id, selected_ooch, selected);
+            selected_ooch = await item_use(interaction.user.id, selected_ooch, selected, false, true);
             profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
             let amountHealed = clamp(db_item_data.potency, 0, selected_ooch.stats.hp);
-            await profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
-
-            if (profile.get(`${interaction.user.id}`, `heal_inv.${selected}`) <= 0) {
-                await profile.delete(interaction.user.id, `heal_inv.${selected}`);
-            }
+            let heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             // Disable the heal Oochamon button if its enabled, if we are out of healing items
-            party_extra_buttons.components[1].setDisabled((Object.keys(profile.get(`${interaction.user.id}`, 'heal_inv')).length == 0) ? true : false);
+            party_extra_buttons.components[1].setDisabled(heal_inv.length == 0 ? true : false);
 
             if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
             let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
@@ -832,18 +818,19 @@ export async function execute(interaction) {
         //#endregion
         //#region Bag / Bag Submenu
         else if (selected == 'bag') {
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            prism_inv = profile.get(`${interaction.user.id}`, 'prism_inv');
-            key_inv = profile.get(`${interaction.user.id}`, 'other_inv');
-            skin_inv = profile.get(`${interaction.user.id}`, 'skin_inv');
-            display_inv = heal_inv;
-            let display_title = 'Healing Items ❤️';
+            consumable_inv = user_profile.inventory[ItemCategory.Consumable];
+            prism_inv = user_profile.inventory[ItemCategory.Prism];
+            key_inv = user_profile.inventory[ItemCategory.Key];
+            skin_inv = user_profile.inventory[ItemCategory.Skin];
+            console.log(consumable_inv);
+            display_inv = consumable_inv;
+            let display_title = 'Consumable Items 🎒';
             let item_list_str = '';
 
-            if (Object.keys(heal_inv).length == 0) bag_buttons.components[0].setDisabled(true);
-            if (Object.keys(prism_inv).length == 0) bag_buttons.components[1].setDisabled(true);
-            if (Object.keys(key_inv).length == 0) bag_buttons.components[2].setDisabled(true);
-            if (Object.keys(skin_inv).length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[3].setDisabled(true);
+            if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
+            if (prism_inv.length == 0) bag_buttons.components[1].setDisabled(true);
+            if (key_inv.length == 0) bag_buttons.components[2].setDisabled(true);
+            if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[3].setDisabled(true);
 
             if (bag_buttons.components[0].data.disabled == true) {
                 if (bag_buttons.components[1].data.disabled == true) {
@@ -862,16 +849,14 @@ export async function execute(interaction) {
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             }
 
-            if (Object.keys(heal_inv).length == 0 && Object.keys(prism_inv).length == 0 && Object.keys(key_inv).length == 0 && (Object.keys(skin_inv).length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
+            if (consumable_inv.length == 0 && prism_inv.length == 0 && key_inv.length == 0 && (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
                 i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_button] });
                 return;
             }
 
             // Setup default item list for the default value, healing
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${quantity > 1 ? ` | **${quantity}x**\n` : ``}`;
-            }
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            item_list_str = consumableData[0];
 
             bagEmbed = new EmbedBuilder()
                 .setColor('#808080')
@@ -879,27 +864,26 @@ export async function execute(interaction) {
                 .setTitle(display_title)
                 .setDescription(item_list_str.length != 0 ? item_list_str : `You have no items in your bag.`);
 
-            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            if (item_list_str.length != 0) {
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+            } else {
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            }
 
         }
 
-        // Heal Button
-        else if (selected == 'heal_button') {
-            bagEmbed.setTitle('❤️ Healing Items');
+        // Consumable Button
+        else if (selected == 'consumable_button') {
+            bagEmbed.setTitle('🎒 Consumable Items');
             bag_buttons.components[0].setStyle(ButtonStyle.Success);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
-            display_inv = heal_inv;
-            let item_list_str = '';
 
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
-            }
-
-            bagEmbed.setDescription(item_list_str);
-            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            bagEmbed.setDescription(consumableData[0]);
+            
+            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
         }
 
         // Prism Button
@@ -912,9 +896,9 @@ export async function execute(interaction) {
             display_inv = prism_inv;
             let item_list_str = '';
 
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -928,22 +912,29 @@ export async function execute(interaction) {
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Success);
             bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            display_inv = key_inv;
+            let item_list_str = '';
 
-            let keyData = await buildItemData('other_inv');
-            bagEmbed.setDescription(keyData[0]);
-            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            // Setup default item list for the default value, healing
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}`;
+            }
+
+            bagEmbed.setDescription(item_list_str);
+            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
         }
-        else if (collectorId == 'other_inv_select') {
+        else if (collectorId == `${ItemCategory.Consumable}_select`) {
             if (selected == 'n/a') {
-                let keyData = await buildItemData('other_inv');
+                let keyData = await buildItemData(ItemCategory.Consumable);
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
             }
             let db_item_data = item_data.get(`${selected}`);
 
-            if (db_item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
-                let keyData = await buildItemData('other_inv');
+            if (db_item_data.type == ItemType.Teleport && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
+                let keyData = await buildItemData(ItemCategory.Consumable);
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
@@ -951,18 +942,18 @@ export async function execute(interaction) {
 
             let item_usage_text = '';
             switch (db_item_data.type) {
-                case 'repel': item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
-                case 'teleport': item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
+                case ItemType.Repel: item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
+                case ItemType.Teleport: item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
             }
 
-            if (db_item_data.type == 'repel' || db_item_data.type == 'teleport') {
+            if (db_item_data.type == ItemType.Repel || db_item_data.type == ItemType.Teleport) {
                 let playspace_str;
                 switch (db_item_data.type) {
-                    case 'repel':
-                        await item_use(interaction.user.id, selected_ooch, selected);
+                    case ItemType.Repel:
+                        await item_use(interaction.user.id, selected_ooch, selected, false, true);
                         break;
-                    case 'teleport':
-                        await item_use(interaction.user.id, selected_ooch, selected);
+                    case ItemType.Teleport:
+                        await item_use(interaction.user.id, selected_ooch, selected, false, true);
                         playspace_str = await setup_playspace_str(interaction.user.id);
                         await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                             profile.set(interaction.user.id, msg.id, 'display_msg_id');
@@ -973,15 +964,10 @@ export async function execute(interaction) {
                         break;
                 }
 
-                await profile.math(interaction.user.id, '-', 1, `other_inv.${selected}`);
-                if (profile.get(`${interaction.user.id}`, `other_inv.${selected}`) <= 0) {
-                    await profile.delete(interaction.user.id, `other_inv.${selected}`);
-                }
-
-                if (db_item_data.type != 'teleport') {
-                    let keyData = await buildItemData('other_inv');
-                    bagEmbed.setDescription(keyData[0]);
-                    i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                if (db_item_data.type != ItemType.Teleport) {
+                    let consumableData = await buildItemData(ItemCategory.Consumable);
+                    bagEmbed.setDescription(consumableData[0]);
+                    i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
                 }
 
                 let followUpMsg = await interaction.followUp({ content: item_usage_text });
@@ -999,13 +985,13 @@ export async function execute(interaction) {
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[3].setStyle(ButtonStyle.Success);
 
-            let keyData = await buildItemData('skin_inv');
-            bagEmbed.setDescription(keyData[0]);
-            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            let skinData = await buildItemData(ItemCategory.Skin);
+            bagEmbed.setDescription(skinData[0]);
+            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, skinData[1], back_button] });
         }
-        else if (collectorId == 'skin_inv_select') {
+        else if (collectorId == `${ItemCategory.Skin}_select`) {
             if (selected == 'n/a') {
-                let keyData = await buildItemData('skin_inv');
+                let keyData = await buildItemData(ItemCategory.Skin);
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
@@ -1014,11 +1000,6 @@ export async function execute(interaction) {
             let db_item_data = item_data.get(`${selected}`);
             let item_usage_text = `Changed your skin to ${get_emote_string(db_item_data.potency)}!`;
             profile.set(interaction.user.id, db_item_data.potency, 'player_sprite')
-
-            profile.math(interaction.user.id, '-', 1, `skin_inv.${selected}`);
-            if (profile.get(`${interaction.user.id}`, `skin_inv.${selected}`) <= 0) {
-                profile.delete(interaction.user.id, `skin_inv.${selected}`);
-            }
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
             await wait(5000);
@@ -1031,11 +1012,18 @@ export async function execute(interaction) {
             let oldOoch, nickname, newOoch, abilityList, currentAbility, newAbility, exp_given_ooch, level_ooch;
 
             switch (selItem.type) {
-                case 'iv':
+                case ItemType.Potion:
+                    user_profile.ooch_party[selData[0]].current_hp += selItem.potency
+                    user_profile.ooch_party[selData[0]].current_hp = clamp(user_profile.ooch_party[selData[0]].current_hp, 0, user_profile.ooch_party[selData[0]].stats.hp);
+                    item_usage_text = `Used a **${selItem.name}**, and healed ${selItem.potency} HP for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
+                    remove_item(interaction.user.id, selItem.id, 1)
+                break;
+                case ItemType.IV:
                     user_profile.ooch_party[selData[0]].stats[`${selItem.potency}_iv`] += 0.05;
                     item_usage_text = `Used a **${selItem.name}**, and raised the ${selItem.potency.toUpperCase()} Bonus for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}** by 1.`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'evolve':
+                case ItemType.Evolve:
                     oldOoch = user_profile.ooch_party[selData[0]];
 
                     // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
@@ -1051,12 +1039,14 @@ export async function execute(interaction) {
                     profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].caught`);
 
                     item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.name}** into ${newOoch.emote} **${newOoch.name}**!`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'move_unlock':
+                case ItemType.MoveUnlock:
                     user_profile.ooch_party[selData[0]].unlocked_special_move = true;
                     item_usage_text = `Used the **${selItem.name}**, and unlocked the latent potential of ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**. It can now learn special moves!`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'ability_swap':
+                case ItemType.AbilitySwap:
                     abilityList = monster_data.get(`${user_profile.ooch_party[selData[0]].id}`, 'abilities');
                     currentAbility = user_profile.ooch_party[selData[0]].ability;
 
@@ -1064,8 +1054,11 @@ export async function execute(interaction) {
                     user_profile.ooch_party[selData[0]].ability = newAbility;
 
                     item_usage_text = `Swapped ability from **${ability_data.get(`${currentAbility}`, 'name')}** to **${ability_data.get(`${newAbility}`, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
+                    
+                    remove_item(interaction.user.id, selItem.id, 1)
+                    
                     break;
-                case 'give_exp':
+                case ItemType.GiveExp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
                         let keyData = await buildItemData();
                         bagEmbed.setDescription(keyData[0]);
@@ -1073,12 +1066,12 @@ export async function execute(interaction) {
                         return;
                     }
 
-                    exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    exp_given_ooch = await item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id, false, true);
 
                     user_profile.ooch_party[selData[0]] = exp_given_ooch[0];
                     item_usage_text = exp_given_ooch[1];
                     break;
-                case 'level_up':
+                case ItemType.LevelUp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
                         let keyData = await buildItemData();
                         bagEmbed.setDescription(keyData[0]);
@@ -1086,7 +1079,7 @@ export async function execute(interaction) {
                         return;
                     }
 
-                    level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    level_ooch = await item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id, false, true);
 
                     user_profile.ooch_party[selData[0]] = level_ooch[0];
                     item_usage_text = level_ooch[1];
@@ -1095,14 +1088,9 @@ export async function execute(interaction) {
 
             profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
 
-            await profile.math(interaction.user.id, '-', 1, `other_inv.${selData[1]}`);
-            if (profile.get(`${interaction.user.id}`, `other_inv.${selData[1]}`) <= 0) {
-                await profile.delete(interaction.user.id, `other_inv.${selData[1]}`);
-            }
-
-            let keyData = await buildItemData();
-            bagEmbed.setDescription(keyData[0]);
-            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            bagEmbed.setDescription(consumableData[0]);
+            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
             await wait(5000);
