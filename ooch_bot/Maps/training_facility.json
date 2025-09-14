@@ -1014,6 +1014,36 @@
 			"team": [],
 			"x": 6.0,
 			"y": 60.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "anne1",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 89
+				}
+			],
+			"name": "Dr. Anne",
+			"npc_id": "964854476164186106",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Hmmm...\nHmmmmm...\nOh, hey there! You must be {player}, I've heard how you're helping out around here!\nWould you mind testing my new invention?\nIt's the Oochagotchi!\n...the name's still a bit of a work in progress.\nAnyway, try giving it a try, it should help you grow closer with your Oochamon!\nHopefully I'll see you around, {player}.",
+			"remove_on_finish": true,
+			"sprite": 52.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_052",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 10.0,
+			"y": 9.0
 		}
 	],
 	"map_savepoints": [

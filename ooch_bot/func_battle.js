@@ -202,11 +202,18 @@ export function reset_this_turn_triggers(db_battle_data){
 export async function setup_battle (users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
     const { botClient } = await import("./index.js");
 
+    let i_quest_do_transformation = false;
+
     // Add index to users
     for (let i = 0; i < users.length; i++) {
         users[i].user_index = i;
         if (users[i].is_player) {
             profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
+
+            let flags = profile.get(users[i].user_id, 'player_flags');
+            if(flags.includes('i_mission')){
+                i_quest_do_transformation = true;
+            }
         }
     }
 
@@ -236,8 +243,9 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         weather : weather,
         field_effect : FieldEffect.None,
         oochabux: oochabux,
-        amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+        amount_of_teams: 2, // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
 
+        i_transformation_bool : i_quest_do_transformation,
     }
 
     if (fake_battle) {
@@ -1880,7 +1888,8 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
     let ooch_to = user.party[slot_to];
     let ooch_from = user.party[slot_from];
     let string_to_send = '';
-    let status_types = []
+    let status_types = [];
+    
 
     //If the ooch is affected by Digitize make it a tech type again
     if (ooch_to.status_effects.includes(Status.Digitize)) {
@@ -1894,9 +1903,16 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
     }
 
     let incAmount = 0;
+    let i_transformation = db_battle_data.i_transformation_bool;
     
     //Effects of the mon to switching in
     switch (ooch_to.ability) {
+        case Ability.InvalidEntry:
+            if(i_transformation){
+                string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`
+                user = generate_battle_user(UserType.Wild, {id : OochID.Purif_i, level : ooch_to.level, team_id : 1})
+            }
+        break;
         case Ability.Miniscule: 
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Miniscule**:`;
             string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Evasion, 1)}\n`;
@@ -3897,6 +3913,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 monster_data.set('-1', 1, 'def');
                 monster_data.set('-1', 1, 'spd');
                 monster_data.set('-1', 1, 'hp');
+                
             break;
             case Ability.Ravenous:
                 hp_prev = attacker.current_hp;

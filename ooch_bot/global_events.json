@@ -807,7 +807,7 @@
 	],
 	"ev_heraloom": [
 		[
-			0,
+			0.0,
 			{
 				"description": "*ssssshhhhhhhhhhhhh*",
 				"dialogue_portrait": "",
@@ -820,40 +820,40 @@
 			}
 		],
 		[
-			1,
+			1.0,
 			{
-				"battle_ai": 0,
-				"coin": 0,
+				"battle_ai": 0.0,
+				"coin": 0.0,
 				"is_catchable": true,
 				"name": "",
-				"sprite": 2,
+				"sprite": 2.0,
 				"sprite_combat": "",
 				"sprite_id": "",
 				"team": [
 					{
-						"ability": 102,
+						"ability": 102.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
 						"id": 127.0,
-						"item": -1,
+						"item": -1.0,
 						"level": 45.0,
 						"moveset": [
-							142,
-							140,
-							56,
-							134
+							142.0,
+							140.0,
+							56.0,
+							134.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
 						"spd_iv": 5.0
 					}
 				],
-				"user_type": 1
+				"user_type": 1.0
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "*shhhhhh.....*",
 				"dialogue_portrait": "",
@@ -866,7 +866,7 @@
 			}
 		],
 		[
-			4,
+			4.0,
 			{
 				"default_tp": true,
 				"map_to": "lava_path",
@@ -2948,6 +2948,147 @@
 			2.0,
 			{
 				"text": "ev_slimehead_big"
+			}
+		]
+	],
+	"ev_symaat": [
+		[
+			0,
+			{
+				"description": "Ah, you must be... no...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "You may call me the Balancer...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "Well, let us see if you're worthy of Syma'at's power as well...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			1,
+			{
+				"battle_ai": 0,
+				"coin": 0,
+				"is_catchable": false,
+				"name": "The Balancer",
+				"sprite": 53,
+				"sprite_combat": "",
+				"sprite_id": "c00_053",
+				"team": [
+					{
+						"ability": 108,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 128.0,
+						"item": -1,
+						"level": 45.0,
+						"moveset": [
+							93,
+							77,
+							7,
+							21
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 2
+			}
+		],
+		[
+			0,
+			{
+				"description": "Ahaha, you truly a worthy weilder of it's power! ",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			3,
+			{
+				"description": "Now, now, don't be shy. Weild Syma'at's power as you see fit!",
+				"dialogue_portrait": "balancer",
+				"image": "",
+				"options": [
+					{
+						"ability": 108,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 128.0,
+						"item": -1,
+						"level": 45.0,
+						"moveset": [
+							21,
+							7,
+							77,
+							93
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"title": "The Balancer"
+			}
+		],
+		[
+			0,
+			{
+				"description": "May you continue your journey , we will be watching...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_symaat"
+			}
+		],
+		[
+			2,
+			{
+				"text": "ev_symaat"
 			}
 		]
 	],

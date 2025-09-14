@@ -648,7 +648,9 @@ const Item = {
     TreatTech: 84,
     TreatCloth: 85,
     TreatSound: 86,
-    TreatCrystal: 87
+    TreatCrystal: 87,
+    PrismPurifying: 88,
+    Oochagotchi: 89
 
 }
 

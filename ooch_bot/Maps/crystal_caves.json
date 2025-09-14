@@ -239,12 +239,12 @@
 			"coin": 20000.0,
 			"flag_given": "",
 			"flag_kill": "read_a_sign",
-			"flag_required": "",
+			"flag_required": "finished_campaign1",
 			"is_catchable": false,
 			"items": [
 				{
 					"count": 1.0,
-					"id": 41.0
+					"id": 77
 				}
 			],
 			"name": "Signruler, King of Signs",
@@ -433,9 +433,9 @@
 			"y": 36.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "ev_final_battle1",
 			"flag_required": "cade_crystal_caves_appear",
@@ -446,16 +446,41 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 7,
+			"sprite": 7.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_007",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 13.0,
+			"y": 14.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "finished_campaign1",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "096772609810911564",
+			"post_combat_dialogue": "An odd crystal blocks your path...\nIt's still humming with energy...",
+			"pre_combat_dialogue": "An odd crystal blocks your path...\nIt's still humming with energy...",
+			"remove_on_finish": false,
+			"sprite": 54,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_054",
 			"stance_list": [
 				0
 			],
 			"team": [],
 			"x": 13.0,
-			"y": 14.0
+			"y": 29.0
 		}
 	],
 	"map_savepoints": [

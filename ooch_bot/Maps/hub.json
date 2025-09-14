@@ -1038,6 +1038,98 @@
 			"team": [],
 			"x": 37.0,
 			"y": 41.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "i_mission",
+			"flag_kill": "i_mission_complete",
+			"flag_required": "anne2&finished_campaign1&encountered_i",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 88
+				}
+			],
+			"name": "Dr. Anne",
+			"npc_id": "308764453612960083",
+			"post_combat_dialogue": "If you manage to catch that shadowy Oochamon, please come pay me a visit!",
+			"pre_combat_dialogue": "Ah, so you must've seen it too then.\nI've been looking into Prisms, and I think I've found a way to help the creature.\nTake this Purifying Prism, it should help clear away the darkness around it.\nIf you encounter that shadowy Oochamon again, it should make it possible to catch.",
+			"remove_on_finish": false,
+			"sprite": 52,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_052",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 41.0,
+			"y": 52.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 8000.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "i_mission_complete",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 79
+				},
+				{
+					"count": 1.0,
+					"id": 80
+				},
+				{
+					"count": 1.0,
+					"id": 81
+				},
+				{
+					"count": 1.0,
+					"id": 82
+				},
+				{
+					"count": 1.0,
+					"id": 83
+				},
+				{
+					"count": 1.0,
+					"id": 84
+				},
+				{
+					"count": 1.0,
+					"id": 85
+				},
+				{
+					"count": 1.0,
+					"id": 86
+				},
+				{
+					"count": 1.0,
+					"id": 87
+				}
+			],
+			"name": "Dr. Anne",
+			"npc_id": "298200296887568259",
+			"post_combat_dialogue": "I'll be researching here for a little while.\nFeel free to stop by anytime, {player}.",
+			"pre_combat_dialogue": "Ah, did you manage to do it?\nSo Purif-i is the name of the Oochamon that was hiding in those shadows.\nLooks to be a Stone-type... \nAnd it has the... Void-type?\nWell that's new to me, I heard the Oochamon you battled in the Crystal Caves was also a Void-type Oochamon.\nI wonder if there's more out there...\nAnyway, I have much to thank you for, please take these as a token of my appreciation!\n",
+			"remove_on_finish": false,
+			"sprite": 52,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_052",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 42.0,
+			"y": 52.0
 		}
 	],
 	"map_savepoints": [

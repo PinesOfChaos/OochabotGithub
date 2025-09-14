@@ -125,6 +125,16 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         ymove = 0;
     }
 
+    function has_flag( event_name, user_events){
+        var ev_split = event_name.split('&');
+        for(let ev_substr of ev_split){
+            if(!user_events.includes(ev_substr)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     let checkPlrState = profile.get(`${user_id}`, 'player_state')
     if (checkPlrState !== PlayerState.Playspace) {
         return;
@@ -249,7 +259,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 x2 = (obj.x + obj.width) >= playerx;
                 y2 = (obj.y + obj.height) >= playery;
                 if (x1 && y1 && x2 && y2) {
-                    if ((obj.flag_required == false || all_flags.includes(obj.flag_required)) && !all_flags.includes(obj.event_name)) {
+                    if ((obj.flag_required == false || has_flag(all_flags, obj.flag_required)) && !has_flag(all_flags, obj.event_name)) {
 
                         //Push the player back 1 step if they collide with an NPC to trigger this event
                         if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
@@ -282,9 +292,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
 
                 //Skip NPCs if they meet any of these conditions
-                if( (all_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
-                    (obj.flag_required != "" && !all_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
-                    (obj.remove_on_finish && all_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
+                if( (has_flag(obj.flag_kill, all_flags)) || //The player has the NPC's kill flag
+                    (obj.flag_required != "" && !has_flag(all_flags, obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
+                    (obj.remove_on_finish && has_flag(all_flags, npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
                 if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
                 
                 
@@ -679,7 +689,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             break;
             case Tile.Grass:
                 if ((Math.random() <= encounter_chance) && (!stop_moving)) {
-                    let spawn_zone, x1,y1,x2,y2;
+
+                   let spawn_zone, x1,y1,x2,y2;
                     for(let j = 0; j < map_spawns.length; j++){
                         if(stop_moving){ break;}
                         spawn_zone = map_spawns[j];
@@ -692,6 +703,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             stop_moving = true;
                             await update_position(user_id, map_name, playerx, playery, previous_positions);
 
+                            //Increase chances of battling i if the player has beaten the campaign an not-yet encountered it, or if the player is on the quest to capture i
+                            let encountered_i = has_flag('encountered_i', all_flags);
+                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || (!encountered_i && has_flag('finished_campaign1'))
+                            let encounter_has_i = false;
+
                             let battle_user_array = []
                             let mons_to_add = [];
                             let mon_count = 1 + profile_data.allies_list.length;
@@ -701,13 +717,14 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
 
-                                if(random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/1,000 battles)
+                                if(random(0, 1000) > (boost_i_chance ? 900 : 999)){ 
                                     let new_slot = {
-                                        id : -1,
+                                        id : -1, //This is the index of the oochamon _i
                                         level : random(slot.min_level, slot.max_level)
                                     }
                                     slot = new_slot;
-                                    mons_to_add = [slot]
+                                    mons_to_add = [slot];
+                                    encounter_has_i = true;
                                     break;
                                 } 
                                 else{
@@ -749,6 +766,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                     }
 
                                     if (sel.customId == 'fight') {
+                                        if(encounter_has_i && !encountered_i){ 
+                                            profile.push(user_id, 'encounterd_i', 'flags'); 
+                                        }
                                         await msg.delete();
                                         await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                     } else {
@@ -757,6 +777,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                         if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
 
                                         if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
+                                            if(encounter_has_i && !encountered_i){ 
+                                                profile.push(user_id, 'encounterd_i', 'flags'); 
+                                            }
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                             await msg.delete();
                                         }
