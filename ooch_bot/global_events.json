@@ -906,7 +906,7 @@
 				"description": "`Waking Oochcorp employee, {player}, from stasis...`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -916,10 +916,49 @@
 		[
 			0.0,
 			{
-				"description": "`Scanning {player}'s employee data for discrepancies.`",
+				"description": "`Scanning employee's data for discrepancies.`",
 				"dialogue_portrait": "",
 				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`Error: Unable to load appearance data. Loading visualizer now.`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			13,
+			{
+				"description": "Select your appearance.",
+				"dialogue_portrait": "",
 				"image": "",
+				"options": [
+					48,
+					49
+				],
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`Scanning for additional discrepancies...`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -929,10 +968,10 @@
 		[
 			0,
 			{
-				"description": "",
+				"description": "`...`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -942,20 +981,20 @@
 		[
 			0,
 			{
-				"description": "",
+				"description": "`No additional discrepancies detected. Proceeding to Oochamon partner selection.`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
-				"title": ""
+				"title": "Intro"
 			}
 		],
 		[
 			3.0,
 			{
-				"description": "Let's begin with selecting an Oochamon.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
+				"description": "Please select an Oochamon to join you.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
 				"dialogue_portrait": "",
 				"image": "starter.png",
 				"options": [
@@ -1020,9 +1059,9 @@
 		[
 			6.0,
 			{
-				"description": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled.",
+				"description": "Would you like to play a tutorial? This will teach you the basics if you're new to the game.",
 				"dialogue_portrait": "",
-				"image": "",
+				"image": "intro",
 				"options": [
 					{
 						"emote": "",
@@ -1047,10 +1086,10 @@
 		[
 			0.0,
 			{
-				"description": "Perfect! With that, we shall continue onto the game! Enjoy the wonderful world of Oochamon!",
+				"description": "`Skipping tutorial session. Please, enjoy your flight to the planet's surface, {player}.`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -3235,54 +3274,16 @@
 	],
 	"ev_test": [
 		[
-			11.0,
+			13.0,
 			{
-
-			}
-		],
-		[
-			12.0,
-			{
-
-			}
-		],
-		[
-			9.0,
-			{
-				"battle_ai": 0.0,
-				"coin": 0.0,
-				"is_catchable": false,
-				"name": "pizzalad",
-				"sprite": 2.0,
-				"sprite_combat": "",
-				"sprite_id": "",
-				"team": [
-					{
-						"ability": 50.0,
-						"atk_iv": 5.0,
-						"def_iv": 5.0,
-						"hp_iv": 5.0,
-						"id": 9.0,
-						"item": -1.0,
-						"level": 5.0,
-						"moveset": [
-							1.0,
-							64.0,
-							3.0,
-							9999.0
-						],
-						"nickname": "",
-						"slot_enabled": true,
-						"spd_iv": 5.0
-					}
+				"description": "Select your appearance.",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					48.0,
+					49.0
 				],
-				"user_type": 2.0
-			}
-		],
-		[
-			10.0,
-			{
-
+				"title": "Intro"
 			}
 		]
 	],

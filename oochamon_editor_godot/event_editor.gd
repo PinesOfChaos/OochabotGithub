@@ -109,6 +109,9 @@ func _on_new_b_group_start_pressed() -> void:
 
 func _on_new_b_group_end_pressed() -> void:
 	new_node(Global.EVENT_BATTLEGROUP_END)
+	
+func _on_new_skin_select_pressed() -> void:
+	new_node(Global.EVENT_SET_SKIN)
 
 func _on_button_save_pressed() -> void:
 	var data = []

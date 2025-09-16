@@ -1,5 +1,11 @@
 extends VBoxContainer
 
+@onready var line_edit_title: LineEdit = $HBoxContainer/LineEditTitle
+@onready var line_edit_desc: LineEdit = $HBoxContainer2/LineEditDesc
+@onready var line_edit_image: LineEdit = $HBoxContainer3/LineEditImage
+@onready var line_edit_portrait: LineEdit = $HBoxContainer4/LineEditPortrait
+@onready var v_box_container_options: VBoxContainer = $VBoxContainerOptions
+
 var event_data = {
 	"title" : "",
 	"description" : "Select your appearance.",
@@ -7,11 +13,6 @@ var event_data = {
 	"dialogue_portrait" : "",
 	"options" : []
 }
-@onready var line_edit_title: LineEdit = $HBoxContainer/LineEditTitle
-@onready var line_edit_desc: LineEdit = $HBoxContainer2/LineEditDescription
-@onready var line_edit_image: LineEdit = $HBoxContainer3/LineEditImage
-@onready var line_edit_portrait: LineEdit = $HBoxContainer4/LineEditPortrait
-@onready var v_box_container_options: VBoxContainer = $VBoxContainerOptions
 
 const SLOT_ITEM = preload("uid://bqcv8gwyak7r0")
 
@@ -38,5 +39,9 @@ func save():
 	event_data.dialogue_portrait = line_edit_portrait.text
 	event_data.options = []
 	for slot in v_box_container_options.get_children():	
-		if slot.slot_data.slot_enabled:
-			event_data.options.push_back(slot.item_id)
+		event_data.options.push_back(slot.item_id)
+
+
+func _on_button_add_option_pressed() -> void:
+	var s = SLOT_ITEM.instantiate()
+	v_box_container_options.add_child(s)
