@@ -1329,6 +1329,111 @@
 			"team": [],
 			"x": 40.0,
 			"y": 48.0
+		},
+		{
+			"aggro_range": 0.0,
+			"battle_ai": 1,
+			"coin": 8000.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "finished_campaign1",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 57
+				}
+			],
+			"name": "Engineer Al",
+			"npc_id": "255405204482895517",
+			"post_combat_dialogue": "I can see how you handled yourself so well, {player}.\nYou stay safe out there. And remember, you're always welcome 'round these parts.",
+			"pre_combat_dialogue": "You've done some great work around here, {player}.\nHow about we have a little rematch, just for fun?",
+			"remove_on_finish": false,
+			"sprite": 9,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_009",
+			"stance_list": [
+				0,
+				1,
+				4
+			],
+			"team": [
+				{
+					"ability": 13,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 10.0,
+					"item": -1,
+					"level": 50.0,
+					"moveset": [
+						126,
+						120,
+						117,
+						119
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10.0
+				},
+				{
+					"ability": 14,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 12.0,
+					"item": -1,
+					"level": 50.0,
+					"moveset": [
+						19,
+						101,
+						12,
+						11
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10.0
+				},
+				{
+					"ability": 107,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 86.0,
+					"item": -1,
+					"level": 50.0,
+					"moveset": [
+						47,
+						35,
+						42,
+						44
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10.0
+				},
+				{
+					"ability": 4,
+					"atk_iv": 10.0,
+					"def_iv": 10.0,
+					"hp_iv": 10.0,
+					"id": 100.0,
+					"item": -1,
+					"level": 50.0,
+					"moveset": [
+						35,
+						140,
+						91,
+						37
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10.0
+				}
+			],
+			"x": 48.0,
+			"y": 26.0
 		}
 	],
 	"map_savepoints": [

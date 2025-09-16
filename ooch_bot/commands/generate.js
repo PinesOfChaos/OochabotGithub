@@ -4039,7 +4039,7 @@ export async function execute(interaction, client) {
             [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.Thunderstorm], [36, Move.Micronet], [39, Move.Flurry],
             [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
-        abilities: [Ability.Vigorous, Ability.Burdened],
+        abilities: [Ability.Inertia, Ability.StringsAttached],
         pre_evo_id: -1, evo_id: 106, evo_lvl: 30, evo_stage: 0
     });
 
@@ -4057,7 +4057,7 @@ export async function execute(interaction, client) {
             [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.RugRash], [36, Move.Micronet], [39, Move.Flurry],
             [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
-        abilities: [Ability.Matryoshka, Ability.Burdened],
+        abilities: [Ability.Inertia, Ability.Rogue],
         pre_evo_id: 105, evo_id: 107, evo_lvl: 40, evo_stage: 1
     });
 
@@ -4075,7 +4075,7 @@ export async function execute(interaction, client) {
             [29, Move.HeldStrike], [31, Move.PressureWave], [34, Move.RugRash], [36, Move.Micronet], [39, Move.Flurry],
             [42, Move.GlassBlades], [45, Move.FiberSlicer], [-1, Move.Silkstorm]
         ],
-        abilities: [Ability.Matryoshka, Ability.Burdened],
+        abilities: [Ability.Flux, Ability.Rogue],
         pre_evo_id: 106, evo_id: -1, evo_lvl: -1, evo_stage: 2
     });
 

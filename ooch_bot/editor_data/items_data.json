@@ -1065,12 +1065,12 @@
     "id": 88,
     "name": "Purifying Prism",
     "emote": "<:item_prism_pure:1416856097498857595>",
-    "category": "prism",
-    "type": 1,
+    "category": "key",
+    "type": 2,
     "price": -1,
     "potency": -1,
-    "description": "A prism provided to you by a mysterious man known as the Balancer.",
-    "description_short": "Use to capture the mysterious Oochamon i.",
+    "description": "A special prism developed by Dr. Anne. It seems to constantly clear away tiny pockets of darkness within itself.",
+    "description_short": "Used to cleanse i.",
     "tags": []
   },
   {

@@ -363,12 +363,17 @@ client.on('interactionCreate', async interaction => {
         let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
         if (profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true && interaction.isButton()) {
             let str_upper = toUpper(interaction.customId)
-            if(['SB_ROSWIER'].includes(str_upper)){ //Passwords for certain events
+            if(['SB_ROSWIER', 'HEXNON'].includes(str_upper)){ //Passwords for certain events
                 let loc_data = profile.get(`${interaction.user.id}`, 'location_data');
                 switch(str_upper){
                     case 'SB_ROSWIER':
                         if(loc_data.area == 'training_facility' && loc_data.x == 18 && loc_data.y == 58){
                             profile.push(interaction.user.id, 'pass_roswier', 'flags');
+                        }
+                    break;
+                    case 'HEXNON':
+                        if(loc_data.area == 'access_tunnel' && loc_data.x == 43 && loc_data.y == 51){
+                            profile.push(interaction.user.id, 'hexnon', 'flags');
                         }
                     break;
                 }
