@@ -98,6 +98,7 @@ export async function execute(interaction, client) {
             await profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
 
+        console.log(profile.get(`${interaction.user.id}`, 'player_state'))
         if (profile.get(`${interaction.user.id}`, 'player_state') == PlayerState.Intro) {
             await event_process(interaction.user.id, thread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
         } else {

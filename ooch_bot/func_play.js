@@ -125,8 +125,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         ymove = 0;
     }
 
-    function has_flag( event_name, user_events){
-        var ev_split = event_name.split('&');
+    function has_flag(event_name, user_events){
+        let ev_split = event_name.split('&');
         for(let ev_substr of ev_split){
             if(!user_events.includes(ev_substr)){
                 return false;
@@ -259,7 +259,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 x2 = (obj.x + obj.width) >= playerx;
                 y2 = (obj.y + obj.height) >= playery;
                 if (x1 && y1 && x2 && y2) {
-                    if ((obj.flag_required == false || has_flag(all_flags, obj.flag_required)) && !has_flag(all_flags, obj.event_name)) {
+                    if ((obj.flag_required == false || has_flag(obj.flag_required, all_flags)) && !has_flag(obj.event_name, all_flags)) {
 
                         //Push the player back 1 step if they collide with an NPC to trigger this event
                         if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
@@ -293,8 +293,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                 //Skip NPCs if they meet any of these conditions
                 if( (has_flag(obj.flag_kill, all_flags)) || //The player has the NPC's kill flag
-                    (obj.flag_required != "" && !has_flag(all_flags, obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
-                    (obj.remove_on_finish && has_flag(all_flags, npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
+                    (obj.flag_required != "" && !has_flag(obj.flag_required, all_flags)) || //The NPC requres a flag, and the player does not have that flag
+                    (obj.remove_on_finish && has_flag(npc_flag, all_flags))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
                 if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
                 
                 
@@ -705,7 +705,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                             //Increase chances of battling i if the player has beaten the campaign an not-yet encountered it, or if the player is on the quest to capture i
                             let encountered_i = has_flag('encountered_i', all_flags);
-                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || (!encountered_i && has_flag('finished_campaign1'))
+                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || (!encountered_i && has_flag('finished_campaign1', all_flags))
                             let encounter_has_i = false;
 
                             let battle_user_array = []

@@ -38,6 +38,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     let battleGroupBattleArr = [];
     let filter = i => i.user.id == user_id;
     let oochamonPicks = new ActionRowBuilder();
+    let skinPicks = new ActionRowBuilder();
     let optionsRow = new ActionRowBuilder();
     let event_buttons = next_buttons
 
@@ -88,8 +89,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            event_embed.setImage(`attachment://${obj_content.image}.png`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
         }
 
         info_data = '';
@@ -210,8 +211,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            event_embed.setImage(`attachment://${obj_content.image}.png`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
         }
 
         event_buttons = oochamonPicks;
@@ -323,8 +324,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+            event_embed.setImage(`attachment://${obj_content.image}.png`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
         }
 
         if (initial) event_buttons = optionsRow;
@@ -340,6 +341,42 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             profile.push(user_id, obj_content, 'allies_list');
         }
         if (event == EventMode.RemoveAlly) profile.set(user_id, [], 'allies_list');
+    }
+
+    async function setSkinEvent(obj_content) {
+        skinPicks = new ActionRowBuilder();
+
+        for (let skin of obj_content.options) {
+            let skinData = item_data.get(`${skin}`)
+            skinPicks.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`skin|${skin}`)
+                    .setLabel(`‎`)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(`${skinData.emote}`),
+            );
+        }
+
+        if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+        if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+
+        // Set NPC dialogue portrait
+        if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+            if (obj_content.dialogue_portrait.includes('NPC|')) {
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+            } else {
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+            }
+        }
+
+        if (obj_content.image) {
+            event_embed.setImage(`attachment://${obj_content.image}.png`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
+        }
+
+        event_buttons = skinPicks;
     }
 
     while (!quit_init_loop) {
@@ -390,6 +427,11 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
             case EventMode.BattleGroupStart:
                 await battleGroupEvent();
+            break;
+
+            case EventMode.SetSkin:
+                await setSkinEvent(obj_content);
+                quit_init_loop = true;
             break;
         }
 
@@ -472,6 +514,13 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 current_place = event_array.length;
                 await event_process(user_id, thread, events_data.get(`${eventName}`), 0, eventName);
             }
+        } else if (sel.customId.includes('skin')) {
+            let skinButtonData = sel.customId.split('|');
+            
+            let skinId = skinButtonData[1];
+            let skinData = item_data.get(`${skinId}`);
+
+            profile.set(user_id, skinData.potency, 'player_sprite');
         }
 
         current_place++;
@@ -545,6 +594,12 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.BattleGroupStart:
                     quit = true;
                     battleGroupEvent();
+                break;
+
+                case EventMode.SetSkin:
+                    quit = true;
+                    await setSkinEvent(obj_content);
+                    await sel.update({ embeds: [event_embed], components: [skinPicks], files: imageFiles });
                 break;
             }
 
