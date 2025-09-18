@@ -225,8 +225,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             if (profile_data.repel_steps == 0) repel_ran_out = true;
         } 
 
-        //Track Repulsor steps remaining
-        if (profile_data.relax_step_counter != 0 && profile_data.flags.includes('returned_to_surface')) {
+        //Track steps to force campaign progress
+        if (profile_data.relax_step_counter != 0 && profile_data.flags.includes('returned_to_surface') && !profile_data.flags.includes('find_lyra')) {
             profile.math(user_id, '-', 1, 'relax_step_counter');
             profile_data.relax_step_counter -= 1;
             if (profile_data.relax_step_counter == 0) {

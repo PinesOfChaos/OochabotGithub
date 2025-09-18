@@ -120,7 +120,7 @@ export function get_blank_profile() {
         oochabux : 0,
         repel_steps : 0,
         step_counter : 0,
-        relax_steps : 100,
+        relax_step_counter : 100,
         player_state : PlayerState.Intro,
         location_data : false,
         checkpoint_data : false,

@@ -210,7 +210,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         if (users[i].is_player) {
             profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
 
-            let flags = profile.get(users[i].user_id, 'player_flags');
+            let flags = profile.get(users[i].user_id, 'flags');
             if(flags.includes('i_mission')){
                 i_quest_do_transformation = true;
             }
