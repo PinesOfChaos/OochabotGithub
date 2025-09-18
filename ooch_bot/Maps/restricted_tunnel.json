@@ -1,7 +1,7 @@
 {
 	"map_events": [],
 	"map_info": {
-		"map_battleback": "",
+		"map_battleback": "battle_bg_restricted_tunnel",
 		"map_generated": false,
 		"map_name": "Restricted Tunnel"
 	},
@@ -351,8 +351,8 @@
 			"items": [],
 			"name": "Raider Charlie",
 			"npc_id": "022439025933100169",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
+			"post_combat_dialogue": "Oi, what're *you* doin on our turf?",
+			"pre_combat_dialogue": "Oh, no, boss ain't gonna like this...",
 			"remove_on_finish": false,
 			"sprite": 2.0,
 			"sprite_combat": "",
