@@ -2,7 +2,7 @@ import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Str
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
 import { lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
-import { setup_playspace_str, create_ooch, remove_item, get_all_item_type } from '../func_play.js';
+import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
 import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string } from '../func_other.js';
@@ -102,6 +102,7 @@ export async function execute(interaction) {
         .addComponents(
             new ButtonBuilder().setCustomId('consumable_button').setStyle(ButtonStyle.Success).setEmoji('🎒')).addComponents(
             new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
+            new ButtonBuilder().setCustomId('map_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_map'))).addComponents(
             new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑')).addComponents(
             new ButtonBuilder().setCustomId('skin_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('c_000')));
 
@@ -369,7 +370,7 @@ export async function execute(interaction) {
     // Initialize all variables used across multiple sub menus here
     let selected, collectorId;
     let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
-    dexEmbed, bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
+    dexEmbed, bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, map_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
 
     // Enable party healing button if we have healing items
     let healItems = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
@@ -822,6 +823,7 @@ export async function execute(interaction) {
             prism_inv = user_profile.inventory[ItemCategory.Prism];
             key_inv = user_profile.inventory[ItemCategory.Key];
             skin_inv = user_profile.inventory[ItemCategory.Skin];
+            map_inv = user_profile.inventory[ItemCategory.Map];
             console.log(consumable_inv);
             display_inv = consumable_inv;
             let display_title = 'Consumable Items 🎒';
@@ -829,27 +831,33 @@ export async function execute(interaction) {
 
             if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
             if (prism_inv.length == 0) bag_buttons.components[1].setDisabled(true);
-            if (key_inv.length == 0) bag_buttons.components[2].setDisabled(true);
-            if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[3].setDisabled(true);
+            if (map_inv.length == 0) bag_buttons.components[2].setDisabled(true);
+            if (key_inv.length == 0) bag_buttons.components[3].setDisabled(true);
+            if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[4].setDisabled(true);
 
             if (bag_buttons.components[0].data.disabled == true) {
                 if (bag_buttons.components[1].data.disabled == true) {
                     display_inv = skin_inv;
                     display_title = `${get_emote_string('c_000')} Skins`;
-                    bag_buttons.components[3].setStyle(ButtonStyle.Success);
+                    bag_buttons.components[4].setStyle(ButtonStyle.Success);
                 } else if (bag_buttons.components[2].data.disabled == true) {
                     display_inv = key_inv;
                     display_title = '🔑 Key Items';
-                    bag_buttons.components[2].setStyle(ButtonStyle.Success);
+                    bag_buttons.components[3].setStyle(ButtonStyle.Success);
                 } else if (bag_buttons.components[3].data.disabled == true) {
+                    display_inv = map_inv;
+                    display_title = `${get_emote_string('item_map')} Maps`;
+                    bag_buttons.components[2].setStyle(ButtonStyle.Success);
+                } else if (bag_buttons.components[4].data.disabled == true) {
                     display_inv = prism_inv;
                     display_title = `${get_emote_string('item_prism')} Prisms`;
                     bag_buttons.components[1].setStyle(ButtonStyle.Success);
                 }
+                
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             }
 
-            if (consumable_inv.length == 0 && prism_inv.length == 0 && key_inv.length == 0 && (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
+            if (consumable_inv.length == 0 && prism_inv.length == 0 && key_inv.length == 0 && map_inv.length == 0 && (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
                 i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_button] });
                 return;
             }
@@ -893,12 +901,33 @@ export async function execute(interaction) {
             bag_buttons.components[1].setStyle(ButtonStyle.Success);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
             display_inv = prism_inv;
             let item_list_str = '';
 
             for (const item of display_inv) {
                 let item_obj = item_data.get(`${item.id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
+            }
+
+            bagEmbed.setDescription(item_list_str);
+            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+        }
+
+         // Prism Button
+        else if (selected == 'map_button') {
+            bagEmbed.setTitle(`${get_emote_string('item_map')} Maps`);
+            bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[2].setStyle(ButtonStyle.Success);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            display_inv = map_inv;
+            let item_list_str = '';
+
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -910,15 +939,16 @@ export async function execute(interaction) {
             bagEmbed.setTitle('🔑 Misc Items');
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
-            bag_buttons.components[2].setStyle(ButtonStyle.Success);
-            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Success);
+            bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
             display_inv = key_inv;
             let item_list_str = '';
 
             // Setup default item list for the default value, healing
             for (const item of display_inv) {
                 let item_obj = item_data.get(`${item.id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -983,7 +1013,8 @@ export async function execute(interaction) {
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
-            bag_buttons.components[3].setStyle(ButtonStyle.Success);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[4].setStyle(ButtonStyle.Success);
 
             let skinData = await buildItemData(ItemCategory.Skin);
             bagEmbed.setDescription(skinData[0]);
@@ -1108,9 +1139,9 @@ export async function execute(interaction) {
             let map_name = user_profile.location_data.area;
             if (map_name.includes('everchange')) return i.update({ content: `**Everchange Cave does not have a map!**` });
             let map_item = item_data.find('potency', map_name);
-            if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**` });
+            if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**`, components: [back_button] });
 
-            if (Object.prototype.hasOwnProperty.call(user_profile.other_inv, `${map_item.id}`)) {
+            if (get_inv_item(interaction.user.id, ItemCategory.Map, map_item.id) ) {
                 let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
                 i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
             }

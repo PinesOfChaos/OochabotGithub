@@ -1235,7 +1235,7 @@ export async function prompt_battle_actions(battle_id) {
                     let heal_select_options = [];
                     
                     for (let c of consumable_inv) {
-                        const consumable_data = item_data.get(c.id);
+                        const consumable_data = item_data.get(`${c.id}`);
                         if (consumable_data.type != ItemType.Potion) continue;
                         if (c.quantity > 0 && c.quantity != undefined) {
                             heal_select_options.push({ 
@@ -1267,7 +1267,7 @@ export async function prompt_battle_actions(battle_id) {
                     let prism_select_options = [];
                     
                     for (let p of prism_inv) {
-                        const prism_data = item_data.get(p.id);
+                        const prism_data = item_data.get(`${p.id}`);
                         if (p.quantity > 0 && p.quantity != undefined) {
                             prism_select_options.push({ 
                                 label: `${prism_data.name} (${p.quantity})`,
