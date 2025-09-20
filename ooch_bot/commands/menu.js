@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
-import { lowerCase, inRange, clamp, isUndefined } from 'lodash-es';
+import { lowerCase, inRange, clamp } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState } from '../types.js';

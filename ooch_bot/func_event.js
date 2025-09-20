@@ -540,6 +540,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         while (!quit) {
+            imageFiles = [];
+            
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
 

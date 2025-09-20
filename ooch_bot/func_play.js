@@ -506,15 +506,15 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 profile.set(user_id, PlayerState.Shop, 'player_state');
 
                 let profile_flags = profile.get(`${user_id}`, 'flags');
-                let shopSelectOptions = await shop_list_from_flags(obj, profile_flags)
+                let shopSelectOptions = shop_list_from_flags(obj, profile_flags)
 
                 shopSelectOptions = shopSelectOptions.flat(1);
                 shopSelectOptions = [...new Set(shopSelectOptions)];
                 shopSelectOptions = shopSelectOptions.map(id => {
                     let db_item_data = item_data.get(`${id}`);
-                    let inv_item_data = get_inv_item(user_id, item_data.category, id);
+                    let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
                     return { 
-                        label: `${db_item_data.name} (${inv_item_data.quantity}/50) [$${db_item_data.price}]`,
+                        label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
                         description: db_item_data.description_short,
                         value: `${id}`,
                         emoji: db_item_data.emote,
@@ -1293,7 +1293,7 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
     return false;
 }
 
-export async function shop_list_from_flags(shop_obj, profile_flags){
+export function shop_list_from_flags(shop_obj, profile_flags){
     let shopBuildOptions = [
         //Potions
         [Item.Potion,           false], //Potion
@@ -1317,7 +1317,7 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
         [Item.Antiparasite,     'cromet_quest_end'], //Antiparasite
         [Item.DebugChip,        'cromet_quest_end'], //Debug Chip
         [Item.CoolingBalm,      'cromet_quest_end'], //Cooling Balm
-        [Item.NullSphere,       'to_restricted_tunnel']
+        [Item.NullSphere,       'to_restricted_tunnel'],
 
         //Evolution Items
         [Item.SporeFeather,     'obtained_sporefeather'],

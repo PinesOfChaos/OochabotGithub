@@ -2,7 +2,7 @@ import { battle_data, profile, move_data, stance_data, monster_data, item_data, 
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType } from "./types.js";
+import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType, EventMode } from "./types.js";
 import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
@@ -1236,7 +1236,7 @@ export async function prompt_battle_actions(battle_id) {
                     
                     for (let c of consumable_inv) {
                         const consumable_data = item_data.get(`${c.id}`);
-                        if (consumable_data.type != ItemType.Potion) continue;
+                        if (consumable_data.type != ItemType.Potion && consumable_data.type != ItemType.Status) continue;
                         if (c.quantity > 0 && c.quantity != undefined) {
                             heal_select_options.push({ 
                                 label: `${consumable_data.name} (${c.quantity})`,
@@ -4454,6 +4454,15 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
         // If we lost, go back to the teleporter location.
         if (battle_won === false) {
             profile.set(user_id, profile.get(`${user_id}`, 'checkpoint_data'), 'location_data');
+
+            // Check for add and remove ally event
+            let cur_event_array_check = profile.get(user_id, 'cur_event_array');
+            cur_event_array_check = cur_event_array_check.filter(ev => ev[0] == EventMode.AddAlly || ev[0] == EventMode.RemoveAlly);
+            cur_event_array_check = cur_event_array_check.map(ev => ev[0]);
+            if (cur_event_array_check.includes(EventMode.AddAlly) && cur_event_array_check.includes(EventMode.RemoveAlly)) {
+                profile.set(user_id, [], 'allies_list');
+            }
+
             profile.set(user_id, [], 'cur_event_array');
             profile.set(user_id, 0, 'cur_event_pos')
             profile.set(user_id, false, 'cur_battle_id');
