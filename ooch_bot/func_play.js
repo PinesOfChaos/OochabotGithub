@@ -1298,12 +1298,12 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
         //Potions
         [Item.Potion,           false], //Potion
         [Item.HiPotion,         'to_lava_town_begin'], //Med Potion
-        [Item.MaxPotion,        'PLACEHOLDER'], //Hi Potion
+        [Item.MaxPotion,        'to_restricted_tunnel'], //Hi Potion
 
         //Prisms
         [Item.Prism,            false], //Prism
         [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
-        [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
+        [Item.GrandPrism,       'to_restricted_tunnel'], //Grand Prism
 
         //Other
         [Item.Repulsor,         'to_lava_town_begin'], // Repulsor
@@ -1317,9 +1317,23 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
         [Item.Antiparasite,     'cromet_quest_end'], //Antiparasite
         [Item.DebugChip,        'cromet_quest_end'], //Debug Chip
         [Item.CoolingBalm,      'cromet_quest_end'], //Cooling Balm
+        [Item.NullSphere,       'to_restricted_tunnel']
 
         //Evolution Items
         [Item.SporeFeather,     'obtained_sporefeather'],
+        [Item.OddBulb,          'obtained_odd_bulb'],
+
+        //Treats
+        [Item.TreatBasic,       'ev_tamagoochi'],
+        // [Item.TreatFungal,      'anne2'],
+        // [Item.TreatFlame,       'anne2'],
+        // [Item.TreatStone,       'anne2'],
+        // [Item.TreatOoze,        'anne2'],
+        // [Item.TreatTech,        'anne2'],
+        // [Item.TreatMagic,       'anne2'],
+        // [Item.TreatCrystal,     'anne2'],
+        // [Item.TreatCloth,       'anne2'],
+        // [Item.TreatSound,       'anne2']
     ];
         
     let shopSelectOptions = [];

@@ -1,5 +1,5 @@
 import { profile, battle_data, monster_data, item_data } from "./db.js";
-import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory } from './types.js';
+import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType } from './types.js';
 import { merge, random } from 'lodash-es';
 
 
@@ -308,6 +308,8 @@ export function get_blank_slot_actions(){
     let slot_actions_obj = {
         move_used_first : false,
         move_used_last : false,
+
+        last_damage_type_taken : OochType.Neutral,
 
         this_turn_did_attack : false,
         this_turn_did_damage : false,

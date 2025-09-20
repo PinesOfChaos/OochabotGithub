@@ -713,7 +713,7 @@
 			"coin": 0.0,
 			"flag_given": "anne2",
 			"flag_kill": "",
-			"flag_required": "anne1",
+			"flag_required": "ev_tamagoochi",
 			"is_catchable": false,
 			"items": [
 				{

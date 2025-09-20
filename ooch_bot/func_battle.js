@@ -1603,7 +1603,7 @@ export async function process_battle_actions(battle_id){
                         ooch.current_hp -= infect_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
                         if(infect_val == 0){
-                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}**'s doesn't look so good!`;
+                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}** doesn't look so good!`;
                         }
                         else{
                             end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
@@ -2010,52 +2010,65 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
             string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** is equalized and had it's ability changed to ${type_to_emote(ooch_to.type)} **Neutral**!\n`;
         break;
         case Ability.AncientWardNeutral:
+            
             ooch_to.type = [OochType.Neutral];
             ooch_to.emote = get_emote_string('ophicore_neutral')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Neutral-type moves.`
         break;
         case Ability.AncientWardVoid:
             ooch_to.type = [OochType.Void];
             ooch_to.emote = get_emote_string('ophicore_void')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Void-type moves.`
         break;
         case Ability.AncientWardFungal:
             ooch_to.type = [OochType.Fungal];
             ooch_to.emote = get_emote_string('ophicore_fungal')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Fungal-type moves.`
         break;
         case Ability.AncientWardFlame:
             ooch_to.type = [OochType.Flame];
             ooch_to.emote = get_emote_string('ophicore_flame')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Flame-type moves.`
         break;
         case Ability.AncientWardStone:
             ooch_to.type = [OochType.Stone];
             ooch_to.emote = get_emote_string('ophicore_stone')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Stone-type moves.`
         break;
         case Ability.AncientWardTech:
             ooch_to.type = [OochType.Tech];
             ooch_to.emote = get_emote_string('ophicore_tech')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Tech-type moves.`
         break;
         case Ability.AncientWardMagic:
             ooch_to.type = [OochType.Magic];
             ooch_to.emote = get_emote_string('ophicore_magic')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Magic-type moves.`
         break;
         case Ability.AncientWardOoze:
             ooch_to.type = [OochType.Ooze];
             ooch_to.emote = get_emote_string('ophicore_ooze')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Ooze-type moves.`
         break;
         case Ability.AncientWardCrystal:
             ooch_to.type = [OochType.Crystal];
             ooch_to.emote = get_emote_string('ophicore_crystal')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Crystal-type moves.`
         break;
         case Ability.AncientWardCloth:
             ooch_to.type = [OochType.Cloth];
             ooch_to.emote = get_emote_string('ophicore_cloth')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Cloth-type moves.`
         break;
         case Ability.AncientWardSound:
             ooch_to.type = [OochType.Sound];
             ooch_to.emote = get_emote_string('ophicore_sound')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Sound-type moves.`
         break;
         case Ability.AncientWardMartial:
             ooch_to.type = [OochType.Martial];
             ooch_to.emote = get_emote_string('ophicore_neutral')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Martial-type moves.`
         break;
     }
 
@@ -3029,7 +3042,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** cleared its Status Effects!`
                 let user_num = db_battle_data.users.length
 
-                let last_type = OochType.Neutral;
+                let last_type = slot_info.last_damage_type_taken;
                 let ward_emoteStr = "ophicore_";
                 let ward_ability = Ability.AncientWardNeutral;
                 switch(last_type) {
@@ -3050,7 +3063,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
                 //Spawn an Ancient Rune for each chunk lost      
                 for(let i = 0; i < chunks_lost; i++){
-                    ability_text += `\n--- An ${get_emote_string('c_027')} **Ancient Rune** appears out of thin air...`
+                    ability_text += `\n--- An ${ward_emote} **Ancient Rune** appears out of thin air...`
                     await new_battle_action_add_user(db_battle_data, user_num + i, `The ${ward_emote} **Ancient Rune** joins the battle!`, 
                         "Ancient Rune", ward_emote, user.team_id, [
                         {   id : OochID.AncientRune, level : ooch.level, moveset : [Move.SyncStrike], 
@@ -3591,6 +3604,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         slot_attacker.this_turn_did_damage = true;
         slot_defender.this_turn_was_damaged = true;
+        slot_defender.last_damage_type_taken = move_type;
 
         // When the Oochamon attacker hits the defender and we aren't targetting ourself
         let hp_prev, damage_taken, randomStatus, prev_hp, reflect_dmg;
@@ -3709,7 +3723,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 break;
                 case Ability.Usurper:
                     db_battle_data.battle_action_queue.push(new_battle_action_attack(db_battle_data, user_index_defender, user_index_attacker, atk_id));
-                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Bloodrush**:`
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Usurper**:`
                     defender_field_text += `\n------ The attack is being reflected!\n`;
                 break;
             }

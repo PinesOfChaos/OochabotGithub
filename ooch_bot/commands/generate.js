@@ -4633,7 +4633,7 @@ export async function execute(interaction, client) {
     // Ophicore Story Boss
     create_monster({
         id: OochID.Ophicorupt,
-        emote: get_emote_string('c_901'),
+        emote: get_emote_string('c_902'),
         name: 'Ophicorupt',
         oochive_entry: 'An ancient Oochamon, corrupted by a deep red growth within.',
         type: [OochType.Crystal],
@@ -4668,7 +4668,7 @@ export async function execute(interaction, client) {
     // Serpsis Story Boss
     create_monster({
         id: OochID.Serpsis,
-        emote: get_emote_string('c_901'),
+        emote: get_emote_string('serpsis'),
         name: 'Serpsis',
         oochive_entry: 'A crimson droplet coiled around like a snake. It seems it may not even be from this plane of existence...',
         type: [OochType.Void],

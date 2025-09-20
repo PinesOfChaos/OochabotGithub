@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
-import { lowerCase, inRange, clamp } from 'lodash-es';
+import { lowerCase, inRange, clamp, isUndefined } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState } from '../types.js';
@@ -754,10 +754,11 @@ export async function execute(interaction) {
                 move_sel_idx = parseInt(selected.replace('move_', ''));
                 let move_sel_id = selected_ooch.moveset[parseInt(selected.replace('move_', ''))];
 
-                for (let db_move_data of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
-                    if (db_move_data[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_data[1])) {
-                        if (db_move_data[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
-                        let db_move_data = move_data.get(`${db_move_data[1]}`);
+                for (let db_move_at_lv of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
+                    if (db_move_at_lv[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_at_lv[1])) {
+                        if (db_move_at_lv[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
+                        
+                        let db_move_data = move_data.get(`${db_move_at_lv[1]}`);
                         move_list_select_options.push(
                             new StringSelectMenuOptionBuilder()
                                 .setLabel(`${db_move_data.name} [${db_move_data.damage} Power, ${db_move_data.accuracy}% Accuracy]`)
