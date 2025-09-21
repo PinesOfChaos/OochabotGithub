@@ -573,14 +573,15 @@ export function get_ai_action(user_obj, db_battle_data) {
 
     switch (user_obj.user_type) {
         case UserType.Wild:
-            target_user = sample(users_enemy);
+            users_to_choose = users_enemy.filter((u) => u.defeated == false);
+            target_user = sample(users_to_choose);
             move_id = sample(moves);
             new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
         break;
         case UserType.NPCSmart:
         case UserType.NPCTrainer:
             //move_intentions.filter((move) => move.priority > 1);
-            users_to_choose = users_enemy.filter((u) => u.defeated == false)
+            users_to_choose = users_enemy.filter((u) => u.defeated == false);
             target_user = sample(users_to_choose);
             target_mon = target_user.party[target_user.active_slot];
             move_intentions = get_move_intention(moves, target_mon.type);
@@ -668,6 +669,7 @@ export function sort_action_priority(db_battle_data){
     //Add the speed of the user's active oochamon
     for(let action of action_list){
         
+
         let user_index = action.user_index;
         let user = db_battle_data.users[user_index];
 
@@ -1754,7 +1756,6 @@ export async function action_process(db_battle_data, action){
             turn_data = await action_process_attack(db_battle_data, action);
         break;
         case BattleAction.Switch:
-            console.log(action)
             turn_data = await action_process_switch(db_battle_data, action);
         break;
         case BattleAction.Run:
@@ -1858,12 +1859,7 @@ export async function action_process_switch(db_battle_data, action){
         : `\n${user.name} sent out ${monster_data.get(`${ooch_to.id}`, 'emote')} **${ooch_to.nickname}**.\n`
     )
 
-    
-    return_string += use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
-    user.active_slot = action.slot_target;
-
-    if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
-
+    //These value resets need to happen before use_switch_ability
     ooch_from.stats.atk_mul = 0;
     ooch_from.stats.def_mul = 0;
     ooch_from.stats.spd_mul = 0;
@@ -1874,6 +1870,13 @@ export async function action_process_switch(db_battle_data, action){
     ooch_from.doom_timer = 4;
     ooch_from.stance_cooldown = 0;
     ooch_from.stance = StanceForms.Base;
+
+    return_string += use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+    user.active_slot = action.slot_target;
+
+    if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
+
+    
 
 
     return {
@@ -1906,7 +1909,6 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
     let incAmount = 0;
     let i_transformation = db_battle_data.i_transformation_bool;
 
-    console.log(ooch_to.ability)
     
     //Effects of the mon to switching in
     switch (ooch_to.ability) {
@@ -2059,7 +2061,6 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Crystal-type moves.`
         break;
         case Ability.AncientWardCloth:
-            console.log("Yeah, it's cloth type but it doesn't wanna be")
             ooch_to.type = [OochType.Cloth];
             ooch_to.emote = get_emote_string('ophicore_cloth')
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Cloth-type moves.`
@@ -3726,7 +3727,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, 1)}\n`;
                 break;
                 case Ability.Usurper:
-                    db_battle_data.battle_action_queue.push(new_battle_action_attack(db_battle_data, user_index_defender, user_index_attacker, atk_id));
+                    new_battle_action_attack(db_battle_data, user_index_defender, user_index_attacker, atk_id);
                     defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Usurper**:`
                     defender_field_text += `\n------ The attack is being reflected!\n`;
                 break;
