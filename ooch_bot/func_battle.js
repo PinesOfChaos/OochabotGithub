@@ -1754,6 +1754,7 @@ export async function action_process(db_battle_data, action){
             turn_data = await action_process_attack(db_battle_data, action);
         break;
         case BattleAction.Switch:
+            console.log(action)
             turn_data = await action_process_switch(db_battle_data, action);
         break;
         case BattleAction.Run:
@@ -1800,7 +1801,7 @@ export async function action_process_add_user(db_battle_data, action){
         return_string += `${user.name} has joined the battle!`
     }
 
-    new_battle_action_switch(db_battle_data, user.user_index, user.active_slot, false);
+    new_battle_action_switch(db_battle_data, user.user_index, user.active_slot, true);
 
     return {
         finish_battle : finish_battle,
@@ -1904,6 +1905,8 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
 
     let incAmount = 0;
     let i_transformation = db_battle_data.i_transformation_bool;
+
+    console.log(ooch_to.ability)
     
     //Effects of the mon to switching in
     switch (ooch_to.ability) {
@@ -2009,8 +2012,8 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
             ooch_to.type = [OochType.Neutral];
             string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** is equalized and had it's ability changed to ${type_to_emote(ooch_to.type)} **Neutral**!\n`;
         break;
+        
         case Ability.AncientWardNeutral:
-            
             ooch_to.type = [OochType.Neutral];
             ooch_to.emote = get_emote_string('ophicore_neutral')
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Neutral-type moves.`
@@ -2056,6 +2059,7 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Crystal-type moves.`
         break;
         case Ability.AncientWardCloth:
+            console.log("Yeah, it's cloth type but it doesn't wanna be")
             ooch_to.type = [OochType.Cloth];
             ooch_to.emote = get_emote_string('ophicore_cloth')
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Cloth-type moves.`
@@ -3462,7 +3466,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
             case Ability.AncientWardCloth:
             case Ability.AncientWardMartial:
                 if(mon.type == move_type){
-                    move_damage *= 30;
+                    move_damage *= .75;
                     ancient_ward_text = `\n${monster_data.get(`${mon.id}`, 'emote')} **${mon.name}**'s **Ancient Ward** reduces the attack's damage!`;
                 }
             break;

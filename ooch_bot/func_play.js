@@ -584,6 +584,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         }
 
                         let inv_item = get_inv_item(user_id, item.category, item_id);
+                        if (!inv_item) inv_item = { id: item_id, quantity: 0 }
 
                         let maxAmt = Math.floor(oochabux / item.price);
                         if (maxAmt > 50) maxAmt = 50;
