@@ -133,6 +133,7 @@ export async function generate_battle_user(type, options) {
             active_slot = db_profile.ooch_active_slot;
             user_info.display_msg_id = db_profile.display_msg_id;
             user_info.inventory = db_profile.inventory;
+            user_info.hp_style = 'plr';
         break;
     }
 
@@ -1630,7 +1631,7 @@ export async function process_battle_actions(battle_id){
                     case Status.Petrify:
                         if(ooch.type != [OochType.Stone]){
                             ooch.type = [OochType.Stone];
-                            end_of_round_text += `\n${get_emote_string('status_petrify')} ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
+                            end_of_round_text += `\n${get_emote_string('status_petrified')} ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
                         }
                     break;
                 }
@@ -2301,6 +2302,10 @@ export async function action_process_heal(db_battle_data, action) {
     let db_item = db_battle_data.users[action.user_index].inventory[ItemCategory.Consumable].find(item => item.id == action.item_id)
     db_item.quantity -= 1;
     return_string += extra_text;
+
+    if (extra_text.includes('HP')) {
+        return_string += `\n${generate_hp_bar(ooch, user.hp_style, true)}`;
+    }
 
     return {
         finish_battle : finish_battle,
@@ -3003,7 +3008,11 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
     let ooch = user.party[user.active_slot];
     let slot_info = user.slot_actions[user.active_slot];
-    let status_list = Object.values(Status);
+    let status_list = [
+        Status.Burn, Status.Infect, Status.Blind, Status.Doom, Status.Expose, 
+        Status.Digitize, Status.Petrify, Status.Focus, Status.Revealed, 
+        Status.Snare, Status.Sleep, Status.Vanish
+    ];
 
     //Used for checking how much HP was lost
     let hp_before = slot_info.hp_starting;
@@ -3142,8 +3151,10 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 otherStatusArr = shuffle(status_list);
                 newStatusEffects = take(otherStatusArr, statusLength);
 
+                ooch.status_effects = [];
+
                 for (let status of newStatusEffects) {
-                    ability_text += add_status_effect(ooch, status, slot_info);
+                    ability_text += `\n--- ${add_status_effect(ooch, status, slot_info)}`;
                 }
             }
         break;
@@ -3186,21 +3197,21 @@ export async function use_eot_ability(db_battle_data, user_index) {
             if(!ooch.type.includes(OochType.Flame)) {
                 let hp_lost = Math.floor(ooch.stats.hp * 0.05);
                 ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
-                ability_text += `\n\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
+                ability_text += `\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
             }
         break;
         case Weather.Thunderstorm:
             slot_info.counter_thunderstorm++;
             switch(slot_info.counter_thunderstorm){
                 case 1:
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** begins to spark...`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** begins to spark...`;
                 break;
                 case 2:
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
                 break;
                 case 3:
                     hp_lost = Math.floor(ooch.stats.hp / 2);
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
                     if(ooch.type.includes(OochType.Tech)){
                         ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is energized by the lightning!`;
                         ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}`;
@@ -3784,7 +3795,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
         if(status_exposed != 1 && move_damage > 0) {
-            string_to_send += `\n--- **The damage was ${get_emote_string(status_exposed)} ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
+            string_to_send += `\n--- **The damage was ${get_emote_string('status_exposed')} ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
         }
 
         //If a crit lands
@@ -3989,6 +4000,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         }
     }
 
+    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += `\n${generate_hp_bar(defender, user_defender.hp_style, true)}`;
+
     string_to_send = `${string_to_send}${defender_field_text}` 
     return string_to_send;
 }
@@ -4040,7 +4053,7 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
         user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
         active_ooch = user.party[user.active_slot];
         hp_string += `\n\`` + trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${type_to_emote(active_ooch.type)}`);
-        hp_string += generate_hp_bar(active_ooch, 'plr'); 
+        hp_string += generate_hp_bar(active_ooch, user.hp_style); 
         if (stances_enabled) {
             hp_string += `\n`;
             hp_string += `\`Stance: ${stance_data.get(`${active_ooch.stance}`, 'name')}\``
@@ -4056,9 +4069,10 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
  * Generate a custom emote HP bar for use in Oochamon battles.
  * @param {Object} ooch The oochamon data.
  * @param {String} style The style of the HP bar (plr/enemy)
+ * @param {Boolean} in_turn If this is part of a battle turn embed
  * @returns The generated HP emote string for the Oochamon.
  */
-export function generate_hp_bar(ooch, style) {
+export function generate_hp_bar(ooch, style, in_turn = false) {
     let hp_string = ``;
     let hp_sec = (ooch.current_hp / ooch.stats.hp);
     let sections = Math.ceil(hp_sec * 10);
@@ -4081,7 +4095,7 @@ export function generate_hp_bar(ooch, style) {
         if (sections <= 5) piece_type = get_emote_string('e_m_hm');
         if (sections <= 2) piece_type = get_emote_string('e_l_hm');
 
-        hp_string += get_emote_string('e_he');
+        hp_string += get_emote_string('e_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
         hp_string += `${get_emote_string('e_e_hm').repeat(10 - sections)}` // Empty slots
         hp_string += `${get_emote_string('e_he')}\n`;
@@ -4089,8 +4103,10 @@ export function generate_hp_bar(ooch, style) {
 
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;
 
-    for (let status of ooch.status_effects) {
-        hp_string += status_data.get(`${status}`, 'emote');
+    if (!in_turn) {
+        for (let status of ooch.status_effects) {
+            hp_string += status_data.get(`${status}`, 'emote');
+        }
     }
 
     return hp_string;

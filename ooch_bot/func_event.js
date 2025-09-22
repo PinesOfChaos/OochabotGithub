@@ -145,6 +145,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             ally.team_id = 0;
             let user_type = UserType.NPCTrainer;
             let trainerObj = await generate_battle_user(user_type, ally);
+            trainerObj.hp_style = 'plr';
             allyList.push(trainerObj);
         }
 

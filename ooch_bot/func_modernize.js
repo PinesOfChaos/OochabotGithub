@@ -298,7 +298,8 @@ export function get_blank_battle_user(){
             oochabux: 0,
             stance_list : [StanceForms.Base],
             ooch_overwrites_name : false,
-            custom_start_text : ''
+            custom_start_text : '',
+            hp_style : 'enemy'
     }
 
     return(battle_user_obj);

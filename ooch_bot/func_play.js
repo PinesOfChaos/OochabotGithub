@@ -706,7 +706,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                             //Increase chances of battling i if the player has beaten the campaign an not-yet encountered it, or if the player is on the quest to capture i
                             let encountered_i = has_flag('encountered_i', all_flags);
-                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || (!encountered_i && has_flag('finished_campaign1', all_flags))
+                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || ((!encountered_i) && has_flag('finished_campaign1', all_flags))
                             let encounter_has_i = false;
 
                             let battle_user_array = []
@@ -718,7 +718,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
 
-                                if(random(0, 1000) > (boost_i_chance ? 900 : 999)){ 
+                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){ 
                                     let new_slot = {
                                         id : -1, //This is the index of the oochamon _i
                                         level : random(slot.min_level, slot.max_level)
@@ -767,9 +767,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                     }
 
                                     if (sel.customId == 'fight') {
+
                                         if(encounter_has_i && !encountered_i){ 
-                                            profile.push(user_id, 'encounterd_i', 'flags'); 
+                                            profile.push(user_id, 'encountered_i', 'flags'); 
                                         }
+
                                         await msg.delete();
                                         await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                     } else {
@@ -779,7 +781,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                                         if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
                                             if(encounter_has_i && !encountered_i){ 
-                                                profile.push(user_id, 'encounterd_i', 'flags'); 
+                                                profile.push(user_id, 'encountered_i', 'flags'); 
                                             }
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                             await msg.delete();
