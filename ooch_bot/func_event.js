@@ -130,6 +130,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             if (confirm_collector !== undefined) confirm_collector.stop();
         }
 
+        profile_data = await profile.get(`${user_id}`);
+
         obj_content.team_id = 1;
         if (battle_group_arr.length == 0) {
             let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
@@ -380,6 +382,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     }
 
     while (!quit_init_loop) {
+        profile_data = await profile.get(`${user_id}`);
         event_mode = event_array[current_place][0];
         obj_content = event_array[current_place][1];
 

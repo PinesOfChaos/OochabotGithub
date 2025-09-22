@@ -3031,7 +3031,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 //Spawn a Slime Head for each
                 for(let i = 0; i < chunks_lost; i++){
                     ability_text += `\n--- A strange ${get_emote_string('c_027')} **Slime Head** breaks off from the main body...`
-                    await new_battle_action_add_user(db_battle_data, user_num + i, `The split off ${get_emote_string('c_027')} **Slime Head** joins the battle!`, 
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The split off ${get_emote_string('c_027')} **Slime Head** joins the battle!\n`, 
                         "Slime Head", "c_027", user.team_id, [
                         {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
                             ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
@@ -3069,7 +3069,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 //Spawn an Ancient Rune for each chunk lost      
                 for(let i = 0; i < chunks_lost; i++){
                     ability_text += `\n--- An ${ward_emote} **Ancient Rune** appears out of thin air...`
-                    await new_battle_action_add_user(db_battle_data, user_num + i, `The ${ward_emote} **Ancient Rune** joins the battle!`, 
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The ${ward_emote} **Ancient Rune** joins the battle!\n`, 
                         "Ancient Rune", ward_emote, user.team_id, [
                         {   id : OochID.AncientRune, level : ooch.level, moveset : [Move.SyncStrike], 
                             ability : ward_ability, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}

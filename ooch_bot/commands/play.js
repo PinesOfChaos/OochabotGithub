@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags } from 'discord.js';
 import { profile, battle_data, events_data } from '../db.js';
 import { setup_playspace_str, move } from '../func_play.js';
-import { PlayerState } from '../types.js';
+import { EventMode, PlayerState } from '../types.js';
 import { event_process } from '../func_event.js';
 import wait from 'wait';
 import { finish_battle } from '../func_battle.js';
@@ -68,6 +68,14 @@ export async function execute(interaction, client) {
     if (profile.get(`${interaction.user.id}`, 'player_state') != PlayerState.Intro) {
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         playspace_str = await setup_playspace_str(interaction.user.id);
+    }
+
+    // Update ally list if needed
+    let cur_event_array_check = profile.get(interaction.user.id, 'cur_event_array');
+    cur_event_array_check = cur_event_array_check.filter(ev => ev[0] == EventMode.AddAlly || ev[0] == EventMode.RemoveAlly);
+    cur_event_array_check = cur_event_array_check.map(ev => ev[0]);
+    if (cur_event_array_check.includes(EventMode.AddAlly) && cur_event_array_check.includes(EventMode.RemoveAlly)) {
+        profile.set(interaction.user.id, [], 'allies_list');
     }
 
     let curBattleId = profile.get(`${interaction.user.id}`, 'cur_battle_id');
