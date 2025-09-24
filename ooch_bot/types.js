@@ -558,7 +558,8 @@ const Ability = {
     Flux: 107,
     Equalized: 108,
     Patchwork: 109,
-    Usurper: 110
+    Usurper: 110,
+    Purification: 111
 }
 
 const Item = {

@@ -110,6 +110,21 @@ export function get_map_weather(map_weather, location_data) {
     return weather_options.length > 0 ? sample(weather_options) : Weather.None
 }
 
+//Checks if a player has a flag, handles "&"" checks
+export function has_flag(event_name, user_events){
+    let ev_split = event_name.split('&');
+    if(ev_split.length == 1 && user_events.includes(event_name)){
+        return true;
+    }
+
+    for(let ev_substr of ev_split){
+        if(!user_events.includes(ev_substr)){
+            return false;
+        }
+    }
+    return true;
+}
+
 export async function move(thread, user_id, direction, dist = 1, encounter_chance = false) {
     /*
         db.player_positions.set(user_id, interaction.member.displayName, 'player_name');
@@ -125,15 +140,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         ymove = 0;
     }
 
-    function has_flag(event_name, user_events){
-        let ev_split = event_name.split('&');
-        for(let ev_substr of ev_split){
-            if(!user_events.includes(ev_substr)){
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
     let checkPlrState = profile.get(`${user_id}`, 'player_state')
     if (checkPlrState !== PlayerState.Playspace) {
@@ -287,29 +294,33 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         //NPCs
         if(!stop_moving){
             for(let obj of map_npcs){
-                if(stop_moving){ break; } //Only interact with one NPC at a time (come back to this later maybe)
-
                 let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
 
+                //Stop searching if the player no-longer should be moving
+                if(stop_moving){ break; } 
+
                 //Skip NPCs if they meet any of these conditions
-                if( (has_flag(obj.flag_kill, all_flags)) || //The player has the NPC's kill flag
-                    (obj.flag_required != "" && !has_flag(obj.flag_required, all_flags)) || //The NPC requres a flag, and the player does not have that flag
-                    (obj.remove_on_finish && has_flag(npc_flag, all_flags))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
-                if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
-                
-                
-                if(obj.x == playerx && obj.y == playery){ //Check if player collides with this NPC's position
+                if( ((obj.flag_kill != false) && has_flag(obj.flag_kill, all_flags)) || //The player has the NPC's kill flag
+                    ((obj.flag_required != "") && !has_flag(obj.flag_required, all_flags)) || //The NPC requires a flag, and the player does not have that flag
+                    (obj.remove_on_finish && has_flag(npc_flag, all_flags))){ //The NPC gets removed on finish, and the player has the NPC's personal flag
+                        continue; 
+                    } 
+
+                //Check if player collides with this NPC's position
+                if(obj.x == playerx && obj.y == playery){ 
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
                     
+                    console.log(obj)
+
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let npc_event_obj = await event_from_npc(obj, user_id);
                     //console.log(npc_event_obj);
                     event_process(user_id, thread, npc_event_obj);
                 }
-                else if ((obj.team.length > 0) && (!all_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
+                else if ((obj.team.length > 0) && (!has_flag(npc_flag, all_flags))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                     let quarter_circle_radians = 90 * Math.PI / 180;
                     let steps = obj.aggro_range;
                     let stop_check = false;
@@ -718,7 +729,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
 
-                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){ 
+                                if(random(0, 1000) > (boost_i_chance ? 980 : 999)){ 
                                     let new_slot = {
                                         id : -1, //This is the index of the oochamon _i
                                         level : random(slot.min_level, slot.max_level)
@@ -892,10 +903,19 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
         xx = obj.x - x_pos + x_center;
         yy = obj.y - y_pos + y_center;
         if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
-            if (obj.flag_required == '' || obj.flag_required == false || all_flags.includes(obj.flag_required)) {
-                let plr_interacted = all_flags.includes(npc_flag); //check if the player has defeated this npc
+            
+            if (obj.flag_required == false || has_flag(obj.flag_required, all_flags)) {
+
+                let plr_interacted = has_flag(npc_flag, all_flags); //check if the player has defeated this npc
                 let plain_tile = emote_map_array_base[xx][yy];
                 let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
+
+                //NPC has been interacted with/beaten by the player and needs to be removed, skip it
+                if ((plr_interacted && obj.remove_on_finish) || ((obj.flag_kill != false) && has_flag(obj.flag_kill, all_flags))) { 
+                    continue;
+                }
+
+
                 tile = tile_data.get(`${obj.sprite_id.slice(0, 1) + obj.sprite_id.slice(3)}`);
                 if (tile.use === Tile.Int) npcZoneId = 0;
                 if (tile.zone_emote_ids[npcZoneId] == undefined) {
@@ -905,14 +925,12 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
                 }
                 
 
-                //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
-                if ((plr_interacted && obj.remove_on_finish) || (all_flags.includes(obj.flag_kill))) { 
-                    emote_map_array[xx][yy] = plain_tile;
-                }
+                
             }
         }
     }
 
+    //Draw allies following the player
     for(let i = 0; i < allies_list.length; i++){
         if(previous_positions.length <= i){ break; }
         

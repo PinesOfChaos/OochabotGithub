@@ -275,7 +275,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     let switch_in_text = '';
     let switch_in_embed = false;
     for(let user of battleDataObj.users){
-        switch_in_text += use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
+        switch_in_text += await use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
     }
 
     switch(weather){
@@ -1872,7 +1872,7 @@ export async function action_process_switch(db_battle_data, action){
     ooch_from.stance_cooldown = 0;
     ooch_from.stance = StanceForms.Base;
 
-    return_string += use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+    return_string += await use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
     user.active_slot = action.slot_target;
 
     if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
@@ -1888,7 +1888,10 @@ export async function action_process_switch(db_battle_data, action){
     }
 }
 
-export function use_switch_ability(db_battle_data, user_index, slot_from, slot_to) {
+export async function use_switch_ability(db_battle_data, user_index, slot_from, slot_to) {
+
+    const { create_ooch } = await import('./func_play.js');
+
     let user = db_battle_data.users[user_index]
     let ooch_to = user.party[slot_to];
     let ooch_from = user.party[slot_from];
@@ -1915,8 +1918,9 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
     switch (ooch_to.ability) {
         case Ability.InvalidEntry:
             if(i_transformation){
-                string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`
-                user = generate_battle_user(UserType.Wild, {id : OochID.Purif_i, level : ooch_to.level, team_id : 1})
+                string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`;
+                ooch_to = await create_ooch(OochID.Purif_i, ooch_to.level);
+                user.party[0] = ooch_to;
             }
         break;
         case Ability.Miniscule: 

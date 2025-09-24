@@ -2161,6 +2161,7 @@ export async function execute(interaction, client) {
     create_ability(Ability.AncientWardCloth, 'Ancient Ward (Cloth)',    'Reduces the damage of all Cloth-type attacks'); //Unique - Ophicore's Rune pieces
     create_ability(Ability.AncientWardMartial, 'Ancient Ward (Martial)','Reduces the damage of all Martial-type attacks'); //Unique - Ophicore's Rune pieces
     create_ability(Ability.Patchwork, 'Patchwork', 'Using Cloth-type moves heals the user for 5% of max HP.');
+    create_ability(Ability.Purification, 'Purification', 'Reduces damage taken by super effective moves by 50%'); //Unique - Purif-i
 
     //#endregion
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
@@ -2783,10 +2784,10 @@ export async function execute(interaction, client) {
         hp: 10, atk: 10, def: 10, spd: 10, // total 40
         move_list: [
             [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Brittle], [7, Move.CursedEye],
-            [10, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm],
-            [24, Move.Entrench], [31, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope]
+            [10, Move.Purify], [12, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm],
+            [24, Move.Entrench], [27, Move.Restruct], [31, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope]
         ],
-        abilities: [Ability.Increment],
+        abilities: [Ability.Purification],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
 
