@@ -5,6 +5,7 @@ import { PlayerState, EventMode, Flags, UserType, Weather, ItemCategory } from '
 import { get_art_file } from './func_other.js';
 import { generate_battle_user, setup_battle } from './func_battle.js';
 import wait from 'wait';
+import { add_item } from './func_play.js';
 
 /**
  * Runs an event based on event array
@@ -16,7 +17,7 @@ import wait from 'wait';
  */
 export async function event_process(user_id, thread, event_array, start_pos = 0, event_name = false) {
     
-    const { give_item, setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
+    const { setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
 
     let next_buttons = new ActionRowBuilder()
         .addComponents(
@@ -104,7 +105,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 for (let item of obj_content.items) {
                     let itemData = item_data.get(`${item.id}`);
                     info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
-                    give_item(user_id, item.id, item.count);
+                    add_item(user_id, item.id, item.count);
                 }
             }
         } 

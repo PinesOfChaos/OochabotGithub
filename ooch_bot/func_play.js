@@ -907,7 +907,6 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
             if (obj.flag_required == false || has_flag(obj.flag_required, all_flags)) {
 
                 let plr_interacted = has_flag(npc_flag, all_flags); //check if the player has defeated this npc
-                let plain_tile = emote_map_array_base[xx][yy];
                 let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
 
                 //NPC has been interacted with/beaten by the player and needs to be removed, skip it
@@ -1060,21 +1059,6 @@ export async function setup_playspace_str(user_id) {
     }
 
     return [map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id), moveBtns];
-}
-
-/**
- * Gives a specific amount of an item to a user.
- * @param {String} user_id The user ID of the user who is receiving this item
- * @param {Number} item_id The ID of the item being given
- * @param {Number} item_count The amount of the item to give.
- */
-export function give_item(user_id, item_id, item_count) {
-    let item = item_data.get(`${item_id}`);
-    if (profile.get(`${user_id}`, `${item.category}.${item_id}`) != undefined) {
-        profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
-    } else {
-        profile.set(user_id, item_count, `${item.category}.${item_id}`);
-    }
 }
 
 /**

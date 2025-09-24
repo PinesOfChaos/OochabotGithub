@@ -1470,7 +1470,9 @@ export async function process_battle_actions(battle_id){
                 battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
                 battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
 
-                if (action.action_type == BattleAction.Attack) {
+                if (action.action_type == BattleAction.Attack ||
+                action.action_type == BattleAction.Heal ||
+                action.action_type == BattleAction.StanceChange) {
                     let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
                     battle_sprite_files.push(get_ooch_art(name_space_replaced));
                     ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
@@ -1480,7 +1482,11 @@ export async function process_battle_actions(battle_id){
                 let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
                 battle_sprite_files = [get_ooch_art(name_space_replaced)]
                 battle_sprite_icon = `attachment://${name_space_replaced}.png`;
-                if (action.action_type == BattleAction.Attack) ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
+                if (action.action_type == BattleAction.Attack ||
+                action.action_type == BattleAction.Heal ||
+                action.action_type == BattleAction.StanceChange) {
+                    ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
+                } 
             }
 
             author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, 
@@ -2262,6 +2268,13 @@ export async function action_process_prism(db_battle_data, action) {
             }
             profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
 
+            // If oochamon is purif-i, add the i_mission_complete flag
+            if (ooch_target.id == OochID.Purif_i) {
+                if (!profile.get(user_id, 'flags').includes('i_mission_complete')) {
+                    profile.push(user_id, 'i_mission_complete', 'flags');
+                }
+            }
+
             let info_embed = await ooch_info_embed(ooch_target, false, true);
             let ooch_png = info_embed[1];
             info_embed = info_embed[0];
@@ -2308,7 +2321,7 @@ export async function action_process_heal(db_battle_data, action) {
     return_string += extra_text;
 
     if (extra_text.includes('HP')) {
-        return_string += `\n${generate_hp_bar(ooch, user.hp_style, true)}`;
+        return_string += `\n${generate_hp_bar(ooch, user.hp_style, 9, true)}`;
     }
 
     return {
@@ -4004,7 +4017,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         }
     }
 
-    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += `\n${generate_hp_bar(defender, user_defender.hp_style, true)}`;
+    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += `\n${generate_hp_bar(defender, user_defender.hp_style, 9, true)}`;
 
     string_to_send = `${string_to_send}${defender_field_text}` 
     return string_to_send;
@@ -4057,7 +4070,7 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
         user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
         active_ooch = user.party[user.active_slot];
         hp_string += `\n\`` + trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${type_to_emote(active_ooch.type)}`);
-        hp_string += generate_hp_bar(active_ooch, user.hp_style); 
+        hp_string += generate_hp_bar(active_ooch, user.hp_style, 9); 
         if (stances_enabled) {
             hp_string += `\n`;
             hp_string += `\`Stance: ${stance_data.get(`${active_ooch.stance}`, 'name')}\``
@@ -4073,17 +4086,18 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
  * Generate a custom emote HP bar for use in Oochamon battles.
  * @param {Object} ooch The oochamon data.
  * @param {String} style The style of the HP bar (plr/enemy)
+ * @param {Number} hp_sections The number of hp sections
  * @param {Boolean} in_turn If this is part of a battle turn embed
  * @returns The generated HP emote string for the Oochamon.
  */
-export function generate_hp_bar(ooch, style, in_turn = false) {
+export function generate_hp_bar(ooch, style, hp_sections = 9, in_turn = false) {
     let hp_string = ``;
     let hp_sec = (ooch.current_hp / ooch.stats.hp);
-    let sections = Math.ceil(hp_sec * 10);
-    if(ooch.current_hp != ooch.stats.hp){ sections = Math.min(sections, 9); }
+    let sections = Math.ceil(hp_sec * hp_sections);
+    if(ooch.current_hp != ooch.stats.hp){ sections = Math.min(sections, hp_sections - 1); }
     let piece_type;
 
-    hp_string += `\n${monster_data.get(`${ooch.id}`, 'emote')} `;
+    hp_string += `\n`;
 
     if (style == 'plr') {
         piece_type = get_emote_string('p_f_hm');
@@ -4092,7 +4106,7 @@ export function generate_hp_bar(ooch, style, in_turn = false) {
 
         hp_string += get_emote_string('p_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${get_emote_string('p_e_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `${get_emote_string('p_e_hm').repeat(hp_sections - sections)}` // Empty slots
         hp_string += `${get_emote_string('p_he')}\n`;
     } else {
         piece_type = get_emote_string('e_f_hm');
@@ -4101,10 +4115,11 @@ export function generate_hp_bar(ooch, style, in_turn = false) {
 
         hp_string += get_emote_string('e_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${get_emote_string('e_e_hm').repeat(10 - sections)}` // Empty slots
+        hp_string += `${get_emote_string('e_e_hm').repeat(hp_sections - sections)}` // Empty slots
         hp_string += `${get_emote_string('e_he')}\n`;
     }
 
+    hp_string += `${monster_data.get(`${ooch.id}`, 'emote')} `;
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;
 
     if (!in_turn) {
