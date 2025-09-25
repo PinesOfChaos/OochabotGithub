@@ -32,7 +32,7 @@
 			"remove_on_finish": true,
 			"sprite": 16.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_cfo",
 			"sprite_id": "c00_016",
 			"stance_list": [
 				0.0,
@@ -119,7 +119,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0

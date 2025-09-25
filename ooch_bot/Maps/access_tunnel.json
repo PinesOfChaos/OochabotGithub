@@ -55,7 +55,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -85,7 +85,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -110,7 +110,7 @@
 			"remove_on_finish": false,
 			"sprite": 7.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_rival",
 			"sprite_id": "c00_007",
 			"stance_list": [
 				0.0
@@ -305,7 +305,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -374,7 +374,7 @@
 			"remove_on_finish": false,
 			"sprite": 29.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_rival",
 			"sprite_id": "c00_029",
 			"stance_list": [
 				0.0
@@ -499,7 +499,7 @@
 			"remove_on_finish": false,
 			"sprite": 7.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_rival",
 			"sprite_id": "c00_007",
 			"stance_list": [
 				0.0
@@ -524,7 +524,7 @@
 			"remove_on_finish": false,
 			"sprite": 9.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_engineer",
 			"sprite_id": "c00_009",
 			"stance_list": [
 				0.0
@@ -760,7 +760,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -882,7 +882,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -912,7 +912,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -942,7 +942,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -992,7 +992,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0

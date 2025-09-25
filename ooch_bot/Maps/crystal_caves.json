@@ -41,7 +41,7 @@
 			"remove_on_finish": true,
 			"sprite": 28.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_cfo_crystal",
 			"sprite_id": "c00_028",
 			"stance_list": [
 				0.0,
@@ -148,7 +148,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -182,7 +182,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -224,7 +224,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -244,7 +244,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 77
+					"id": 77.0
 				}
 			],
 			"name": "Signruler, King of Signs",
@@ -458,9 +458,9 @@
 			"y": 14.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "finished_campaign1",
@@ -471,16 +471,127 @@
 			"post_combat_dialogue": "An odd crystal blocks your path...\nIt's still humming with energy...",
 			"pre_combat_dialogue": "An odd crystal blocks your path...\nIt's still humming with energy...",
 			"remove_on_finish": false,
-			"sprite": 54,
+			"sprite": 54.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_054",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 13.0,
 			"y": 29.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 36
+				},
+				{
+					"count": 1.0,
+					"id": 37
+				},
+				{
+					"count": 1.0,
+					"id": 66
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "529359676973809900",
+			"post_combat_dialogue": "Well, I can see how you've gotten so far.\nY'know, you've inspired me to start catching Oochamon as I explore.\nAnd I've really been enjoying it, so thanks for that!\nAnyway, here's your maps, I hope we can see eachother again sometime.\nCatch ya later, {player}.",
+			"pre_combat_dialogue": "Oh, hey, {player}.\nWe sure have been through a lot.\nI've been meaning to get these maps to you too...\nBuuuuuut, how bout this time we do a little battle for 'em?",
+			"remove_on_finish": true,
+			"sprite": 39,
+			"sprite_combat": "portrait_explorer",
+			"sprite_dialog": "portrait_explorer",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0
+			],
+			"team": [
+				{
+					"ability": 52,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 111.0,
+					"item": -1,
+					"level": 42.0,
+					"moveset": [
+						12,
+						42,
+						118,
+						71
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				},
+				{
+					"ability": 68,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 104.0,
+					"item": -1,
+					"level": 43.0,
+					"moveset": [
+						75,
+						13,
+						117,
+						26
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				},
+				{
+					"ability": 61,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 77.0,
+					"item": -1,
+					"level": 44.0,
+					"moveset": [
+						74,
+						8,
+						54,
+						5
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				},
+				{
+					"ability": 33,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 107.0,
+					"item": -1,
+					"level": 45.0,
+					"moveset": [
+						106,
+						67,
+						48,
+						55
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				}
+			],
+			"x": 42.0,
+			"y": 39.0
 		}
 	],
 	"map_savepoints": [

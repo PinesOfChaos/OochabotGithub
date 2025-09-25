@@ -470,7 +470,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -500,7 +500,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -606,8 +606,8 @@
 				0.0
 			],
 			"team": [],
-			"x": 43.0,
-			"y": 46.0
+			"x": 44.0,
+			"y": 47.0
 		},
 		{
 			"aggro_range": 3.0,
@@ -625,7 +625,7 @@
 			"remove_on_finish": false,
 			"sprite": 7.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_rival",
 			"sprite_id": "c00_007",
 			"stance_list": [
 				0.0
@@ -731,7 +731,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -761,7 +761,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -816,7 +816,7 @@
 			"remove_on_finish": true,
 			"sprite": 39.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_explorer",
 			"sprite_id": "c00_039",
 			"stance_list": [
 				0.0
@@ -1005,7 +1005,7 @@
 			"remove_on_finish": false,
 			"sprite": 9.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_engineer",
 			"sprite_id": "c00_009",
 			"stance_list": [
 				0.0
@@ -1132,8 +1132,8 @@
 			"y": 52.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
 			"coin": 20000.0,
 			"flag_given": "",
 			"flag_kill": "",
@@ -1142,7 +1142,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 6
+					"id": 6.0
 				}
 			],
 			"name": "Professor Lyra",
@@ -1150,12 +1150,12 @@
 			"post_combat_dialogue": "Stay safe, {player}, and do come visit me from time to time if you'd like!",
 			"pre_combat_dialogue": "Thank you for everything you've done, {player}.\nYou've prevented the corruption of so many more people.\nAnd not only that, you've saved my granddaughter.\nI can't begin to thank you enough.\nAs for the Crystal Caves, they should be safe to explore again now that you've dealt with that strange Oochamon.\nIt looks like the cause of the corruption slipped away into some sort of Void.\nWe're currently researching into that a bit further, I'll reach out if I hear anything...\nOh!\nAl said he'd be back up in the Lava Path settlement if you wanted to visit.\nAnd I believe, Cade's already off doing some training on his own, it sounded like he wants to conquer past weaknesses.\nI don't have much I can offer you, but take this, consider it a bonus from myself and Katerina.",
 			"remove_on_finish": false,
-			"sprite": 6,
+			"sprite": 6.0,
 			"sprite_combat": "",
 			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 48.0,

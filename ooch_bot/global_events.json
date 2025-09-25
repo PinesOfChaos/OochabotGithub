@@ -2640,7 +2640,7 @@
 			0.0,
 			{
 				"description": "You've reached the highest peak...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2653,7 +2653,7 @@
 			0.0,
 			{
 				"description": "And the depest depths...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2666,7 +2666,7 @@
 			0.0,
 			{
 				"description": "And you've returned to see us...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2679,7 +2679,7 @@
 			0.0,
 			{
 				"description": "And now, we fight as one!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2803,7 +2803,7 @@
 			0.0,
 			{
 				"description": "And together...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2816,7 +2816,7 @@
 			0.0,
 			{
 				"description": "We have...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2829,7 +2829,7 @@
 			0.0,
 			{
 				"description": "Been defeated...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2842,7 +2842,7 @@
 			0.0,
 			{
 				"description": "You have proven yourself worthy.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -2855,7 +2855,7 @@
 			0.0,
 			{
 				"description": "Go forth, and challenge the master of Thunder Peak.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
