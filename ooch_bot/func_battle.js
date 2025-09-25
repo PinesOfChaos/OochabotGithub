@@ -929,7 +929,6 @@ export async function prompt_battle_actions(battle_id) {
     // Handle users
     let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
     await db_battle_data.users.forEach(async (user) => {
-        //console.log([user.name, num_catchable])
         let ooch_disable
         if (user.user_type != UserType.Player) {
             get_ai_action(user, db_battle_data);
@@ -1421,7 +1420,6 @@ export async function process_battle_actions(battle_id){
     let finish_battle = false;
     let action, text, faint_check, first_turn = true;
 
-    //console.log('MESSAGE ROUND START')
     let roundHeader = `# ------ Round ${db_battle_data.turn_counter + 1} ------`;
 
     while(actions.length > 0 && !finish_battle){
@@ -1441,9 +1439,7 @@ export async function process_battle_actions(battle_id){
         finish_battle = turn_data.finish_battle;
         
         //Check if anything fainted
-        //console.log(user.party[0]);
         faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
-        //console.log(user.party[0]);
         text += faint_check.text;
         finish_battle = finish_battle || faint_check.finish_battle;
         if (!finish_battle) text += faint_check.finish_text;
@@ -1496,7 +1492,6 @@ export async function process_battle_actions(battle_id){
 
         let embedList = [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)];
         
-        //console.log('MESSAGE FIRST DISTRIBUTE')
 
         //Clear any remaining actions if we're meant to finish the battle
         //Also send any final messages for the action
@@ -1652,7 +1647,6 @@ export async function process_battle_actions(battle_id){
 
         if(end_of_round_text.replaceAll("\n","") != ''){
             await wait(db_battle_data.battle_speed);
-            //console.log('END ROUND DISTRIBUTE')
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
 
@@ -1676,7 +1670,6 @@ export async function process_battle_actions(battle_id){
         }
         
         if(faint_switch_text != ''){
-            //console.log('FAINT SWITCH DISTRIBUTE')
             await distribute_messages(db_battle_data, { content: faint_switch_header, embeds: [battle_embed_create(faint_switch_text)]});
         }
 
@@ -3467,15 +3460,19 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     }
 
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
-    if ((defender.ability == Ability.PureCore) && (type_multiplier[0] <= 1.0)){ type_multiplier[0] *= 0.8; }
+    if ((defender.ability == Ability.PureCore) && (type_multiplier[0] <= 1.0)){ 
+        type_multiplier[0] *= 0.8; 
+    }
+    if ((defender.ability == Ability.Purification) && (type_multiplier[0] > 1.0)){ 
+        type_multiplier[0] *= 0.5; 
+    }
+    
 
     //AlwaysSuperEff makes the move always deal super-effective damage
     if(move_effects.includes(Status.AlwaysSuperEff)){ type_multiplier[0] = 2.0; type_multiplier[1] = '*Super effective!*'; }
 
     //Weak status reduces the move's power by 10
     if(attacker.status_effects.includes(Status.Weak)) move_damage = _max(move_damage - 10, 5);
-
-    
 
     let ancient_ward_text = ""
     for(let mon of mons_in_battle){

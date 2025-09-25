@@ -1,0 +1,11 @@
+In GIMP:
+- Filters
+	- Distorts > Ripple
+		- period 6
+		- amplitude 1
+		- phase shift 0
+- Colors
+	- Colorize
+		- hue 180
+		- saturation 50
+		- lightness 20

@@ -308,16 +308,15 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                 //Check if player collides with this NPC's position
                 if(obj.x == playerx && obj.y == playery){ 
+                    console.log(obj);
+
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
-                    
-                    console.log(obj)
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let npc_event_obj = await event_from_npc(obj, user_id);
-                    //console.log(npc_event_obj);
                     event_process(user_id, thread, npc_event_obj);
                 }
                 else if ((obj.team.length > 0) && (!has_flag(npc_flag, all_flags))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
@@ -729,7 +728,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
 
-                                if(random(0, 1000) > (boost_i_chance ? 980 : 999)){ 
+                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){ 
                                     let new_slot = {
                                         id : -1, //This is the index of the oochamon _i
                                         level : random(slot.min_level, slot.max_level)
@@ -842,9 +841,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
     //Send reply displaying the player's location on the map
     await thread.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0] }).catch((err) => { console.log(`Err: ${err}`)});
+        msg.edit({ content: playspace_str[0], embeds: [], files: [] }).catch((err) => { console.log(`Err: ${err}`)});
     }).catch(async () => {
-        await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
+        await thread.send({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async newMsg => {
             await profile.set(user_id, newMsg.id, 'display_msg_id');
         }).catch((err) => { console.log(`Err 2: ${err}`) });
     });

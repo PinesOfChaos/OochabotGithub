@@ -284,12 +284,14 @@ export async function execute(interaction) {
             item_list_str += `${item_obj.emote} ${item_obj.name} | **${item.quantity}x**\n`;
 
             if (item.quantity != 0) {
-                select_options.push({
-                    label: `${item_obj.name}${item.quantity > 1 ? ` (${item.quantity})` : ``}`,
-                    description: item_obj.description_short,
-                    value: `${item.id}`,
-                    emoji: item_obj.emote,
-                });
+                if (item_obj.type != ItemType.Status && item_obj.type != ItemType.Treat) {
+                    select_options.push({
+                        label: `${item_obj.name}${item.quantity > 1 ? ` (${item.quantity})` : ``}`,
+                        description: item_obj.description_short,
+                        value: `${item.id}`,
+                        emoji: item_obj.emote,
+                    });
+                }
             }
         }
 

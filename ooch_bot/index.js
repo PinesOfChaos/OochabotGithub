@@ -45,7 +45,7 @@ async function loadCommands() {
     const command = mod.default ?? mod; 
 
     if (!command || !command.data) {
-      console.warn(`Skipping ${file} — no 'data' export found.`);
+      console.warn(`Skipping ${file} - no 'data' export found.`);
       continue;
     }
 

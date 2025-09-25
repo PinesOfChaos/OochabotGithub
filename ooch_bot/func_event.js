@@ -84,8 +84,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
@@ -209,8 +209,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
@@ -322,8 +322,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
@@ -370,8 +370,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
@@ -540,7 +540,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             profile.set(user_id, [], 'cur_event_array');
             profile.set(user_id, 0, 'cur_event_pos');
             let playspace_str = await setup_playspace_str(user_id);
-            sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
+            await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
             return;
         }
 
@@ -567,7 +567,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.OochamonPick:
                     quit = true;
                     await oochPickEvent(obj_content);
-                    sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
+                    await sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
                 break;
 
                 //No Visual representation, just sets appropriate flags in the player
@@ -711,7 +711,7 @@ export async function event_from_npc (npc_obj, user_id) {
                 items: false,
                 flags: [],
                 objective: false,
-                dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
+                dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`
             }])
         }
 

@@ -351,7 +351,7 @@
 			"remove_on_finish": false,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -406,7 +406,7 @@
 			"remove_on_finish": false,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -440,7 +440,7 @@
 			"remove_on_finish": false,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -659,7 +659,7 @@
 			"remove_on_finish": false,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -859,7 +859,7 @@
 			"remove_on_finish": true,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -980,7 +980,7 @@
 			"remove_on_finish": false,
 			"sprite": 6.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0.0
@@ -1118,7 +1118,7 @@
 			"name": "Dr. Anne",
 			"npc_id": "298200296887568259",
 			"post_combat_dialogue": "I'll be researching here for a little while.\nFeel free to stop by anytime, {player}.",
-			"pre_combat_dialogue": "Ah, did you manage to do it?\nSo Purif-i is the name of the Oochamon that was hiding in those shadows.\nLooks to be a Stone-type... \nAnd it has the... Void-type?\nWell that's new to me, I heard the Oochamon you battled in the Crystal Caves was also a Void-type Oochamon.\nI wonder if there's more out there...\nAnyway, I have much to thank you for, please take these as a token of my appreciation!\n",
+			"pre_combat_dialogue": "Ah, did you manage to do it?\nSo Purif-i is the name of the Oochamon that was hiding in those shadows.\nLooks to be a Stone-type... \nAnd it has the... Void-type?\nWell that's new to me, I heard the Oochamon you battled in the Crystal Caves was also a Void-type Oochamon.\nI wonder if there's more out there...\nAnyway, I have much to thank you for, please take these as a token of my appreciation!",
 			"remove_on_finish": false,
 			"sprite": 52.0,
 			"sprite_combat": "",
@@ -1152,7 +1152,7 @@
 			"remove_on_finish": false,
 			"sprite": 6,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_prof",
 			"sprite_id": "c00_006",
 			"stance_list": [
 				0
