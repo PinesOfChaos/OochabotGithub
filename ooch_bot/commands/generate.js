@@ -3520,7 +3520,7 @@ export async function execute(interaction, client) {
         hp: 12, atk: 18, def: 10, spd: 15, // total 55
         move_list: [
             [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [13, Move.SlowBurn],
-            [17, Move.Barrage], [19, Move.Radiate], [21, Move.Slash], [26, Move.Gravitate], [29, Move.Slash],
+            [17, Move.Barrage], [19, Move.Radiate], [21, Move.Slash], [26, Move.Gravitate],
             [31, Move.SyncStrike], [34, Move.BlindingBeam], [37, Move.Threefold], [39, Move.SelfDestruct], [42, Move.Engulf],
             [-1, Move.GlassBlades]
         ],
@@ -3538,7 +3538,7 @@ export async function execute(interaction, client) {
         hp: 19, atk: 25, def: 16, spd: 25, // total 85
         move_list: [
             [1, Move.Bash], [5, Move.Embolden], [8, Move.Sawblade], [10, Move.Blink], [13, Move.SlowBurn],
-            [17, Move.Barrage], [19, Move.Radiate], [21, Move.Slash], [26, Move.Gravitate], [29, Move.Slash],
+            [17, Move.Barrage], [19, Move.Radiate], [21, Move.Slash], [26, Move.Gravitate],
             [31, Move.SyncStrike], [34, Move.BlindingBeam], [37, Move.Threefold], [39, Move.SelfDestruct], [42, Move.Engulf],
             [-1, Move.GlassBlades]
         ],
