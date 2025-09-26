@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { move_data, ability_data, status_data, item_data, profile, monster_data } from '../db.js';
 import { type_to_emote, status_to_emote } from '../func_battle.js';
 import { get_art_file } from '../func_other.js';
@@ -74,14 +74,25 @@ export async function execute(interaction) {
         }
     }
 
-    let info_move, eff_str, eff_split, embed_move,
+    let info_move, eff_str, eff_split,
     info_ability, embed_ability, embed_type_chart, controls_embed,
     info_status, amtOwned, embed_status, info_item, embed_item,
-    weather_desc, embed_weather, field_desc, embed_field, ooch_ability_list;
-    //ooch_move_list;
+    weather_desc, embed_weather, field_desc, embed_field, ooch_ability_list,
+    ooch_move_list, items_per_page = 15;
+
+    const prevButton = new ButtonBuilder()
+        .setCustomId('prev_page')
+        .setLabel('◀️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true);
+
+    const nextButton = new ButtonBuilder()
+        .setCustomId('next_page')
+        .setLabel('▶️')
+        .setStyle(ButtonStyle.Primary)
 
     switch (selected_db) {
-        case 'move':
+        case 'move': {
             info_move = move_data.get(`${selected_id}`);
 
             eff_str = ``;
@@ -171,38 +182,82 @@ export async function execute(interaction) {
             }
 
             // Get all Oochamon that learn this move
-            // ooch_move_list = monster_data.values();
-            // ooch_move_list = ooch_move_list.filter(ooch => (ooch.move_list.filter(move => move[1] == parseInt(selected_id)).length > 0 && ooch.id > 0));
-            // ooch_move_list = ooch_move_list.map(ooch => {
-            //     if (profile.has(interaction.user.id)) {
-            //         if (profile.get(interaction.user.id, `oochadex[${ooch.id}]`).caught > 0) {
-            //             return `${ooch.emote} ${ooch.name} [Lv. ${ooch.move_list.filter(move => move[1] == parseInt(selected_id))[0][0]}]`;
-            //         } else {
-            //             return `<???>`;
-            //         }
-            //     } else {
-            //         return `<???>`;
-            //     }
-            // })
+            ooch_move_list = monster_data.values();
+            ooch_move_list = ooch_move_list.filter(ooch => (ooch.move_list.filter(move => move[1] == parseInt(selected_id)).length > 0 && ooch.id > 0));
+            ooch_move_list = ooch_move_list.map(ooch => {
+                if (profile.has(interaction.user.id)) {
+                    if (profile.get(interaction.user.id, `oochadex[${ooch.id}]`).caught > 0) {
+                        return `${ooch.emote} ${ooch.name} [Lv. ${ooch.move_list.filter(move => move[1] == parseInt(selected_id))[0][0]}]`;
+                    } else {
+                        return `<???>`;
+                    }
+                } else {
+                    return `<???>`;
+                }
+            })
 
-            embed_move = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle(`${type_to_emote(info_move.type)} ${info_move.name}`)
-                .setDescription(info_move.description)
-                .addFields(
-                    { name: 'Type:', value: `${info_move.type.charAt(0).toUpperCase() + info_move.type.slice(1)}`, inline: true },
-                    { name: 'Power:', value: `${(info_move.damage == 0) ? '--' : info_move.damage}`, inline: true },
-                    { name: 'Accuracy:', value: info_move.accuracy > 0 ? `${info_move.accuracy}%` : `--`, inline: true },
+            const totalPages = Math.max(1, Math.ceil(ooch_move_list.length / items_per_page));
 
-                    { name: 'Effect(s):', value: `${(info_move.effect == false) ? '--' : eff_str}`, inline: true }
-                );
+            const makeEmbedForPage = (page) => {
+                const start = (page - 1) * items_per_page;
+                const pageItems = ooch_move_list.slice(start, start + items_per_page);
 
-                //if (ooch_move_list.length > 0) embed_move.addFields({ name: `Oochamon Who Learn ${info_move.name}`, value: ooch_move_list.join('\n')});
+                const embed = new EmbedBuilder()
+                    .setColor('#808080')
+                    .setTitle(`${type_to_emote(info_move.type)} ${info_move.name}`)
+                    .setDescription(info_move.description)
+                    .addFields(
+                        { name: 'Type:', value: `${info_move.type.charAt(0).toUpperCase() + info_move.type.slice(1)}`, inline: true },
+                        { name: 'Power:', value: `${(info_move.damage == 0) ? '--' : info_move.damage}`, inline: true },
+                        { name: 'Accuracy:', value: info_move.accuracy > 0 ? `${info_move.accuracy}%` : `--`, inline: true },
+                        { name: 'Effect(s):', value: `${(info_move.effect == false) ? '--' : eff_str}`, inline: true }
+                    );
 
-            return interaction.reply({
-                embeds: [embed_move],
-                flags: MessageFlags.Ephemeral
-            });
+                if (ooch_move_list.length > 0) embed.addFields({ name: `Oochamon Who Learn ${info_move.name}`, value: pageItems.length > 0 ? pageItems.join('\n') : '--' });
+
+                if (totalPages > 1) embed.setFooter({ text: `Page ${page}/${totalPages}` });
+                return embed;
+            };
+
+            if (totalPages <= 1) {
+                await interaction.reply({
+                    embeds: [makeEmbedForPage(1)],
+                    flags: MessageFlags.Ephemeral,
+                    fetchReply: true
+                });
+            } else {
+                let currentPage = 1;
+                if (totalPages <= 1) prevButton.setDisabled(true);
+
+                const row = new ActionRowBuilder().addComponents(prevButton, nextButton);
+
+                const msg = await interaction.reply({
+                    embeds: [makeEmbedForPage(currentPage)],
+                    components: [row],
+                    flags: MessageFlags.Ephemeral,
+                });
+
+                const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 60000 });
+
+                collector.on('collect', async (i) => {
+                    if (i.customId === 'prev_page' && currentPage > 1) currentPage--;
+                    if (i.customId === 'next_page' && currentPage < totalPages) currentPage++;
+
+                    prevButton.setDisabled(currentPage <= 1);
+                    nextButton.setDisabled(currentPage >= totalPages);
+
+                    await i.update({ embeds: [makeEmbedForPage(currentPage)], components: [new ActionRowBuilder().addComponents(prevButton, nextButton)] });
+                });
+
+                collector.on('end', async () => {
+                    prevButton.setDisabled(true);
+                    nextButton.setDisabled(true);
+                    await msg.edit({ components: [new ActionRowBuilder().addComponents(prevButton, nextButton)] }).catch(() => {});
+                });
+            }
+
+            break;
+        }
 
         case 'ability':
             info_ability = ability_data.get(`${selected_id}`);

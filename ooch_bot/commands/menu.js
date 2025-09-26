@@ -817,6 +817,15 @@ export async function execute(interaction) {
             }
         }
 
+        //#endregion
+        //#region Taming Menu
+
+        else if (selected == 'taming') {
+            i.update({ content: [] });
+        }
+
+
+
 
 
         //#endregion
