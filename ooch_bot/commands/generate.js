@@ -2416,7 +2416,7 @@ export async function execute(interaction, client) {
         hp: 14, atk: 10, def: 9, spd: 12, //total 35
         move_list: [[1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [6, Move.HawkEye], [7, Move.StickyOrb],
         [11, Move.Slash], [14, Move.Lurk], [17, Move.ThornShot], [21, Move.Impale], [23, Move.MycoBurst],
-        [28, Move.PrecisionStrike], [30, Move.Micronet], [33, Move.Mummify], [36, Move.ThornShot], [39, Move.DrainLife],
+        [28, Move.PrecisionStrike], [30, Move.Micronet], [33, Move.Mummify], [36, Move.TieDown], [39, Move.DrainLife],
         [41, Move.FiberSlicer], [46, Move.TangledThreads], [-1, Move.Glimmer]],
         abilities: [Ability.Moist, Ability.Miniscule],
         pre_evo_id: -1, evo_id: 14, evo_lvl: 9, evo_stage: 0
@@ -2432,7 +2432,7 @@ export async function execute(interaction, client) {
         hp: 21, atk: 17, def: 12, spd: 15, //total 65
         move_list: [[1, Move.Hit], [2, Move.Mud], [3, Move.SporeShot], [6, Move.HawkEye], [7, Move.StickyOrb],
         [11, Move.Slash], [14, Move.Lurk], [17, Move.ThornShot], [21, Move.Impale], [23, Move.MycoBurst],
-        [28, Move.PrecisionStrike], [30, Move.Micronet], [33, Move.Mummify], [36, Move.ThornShot], [39, Move.DrainLife],
+        [28, Move.PrecisionStrike], [30, Move.Micronet], [33, Move.Mummify], [36, Move.TieDown], [39, Move.DrainLife],
         [41, Move.FiberSlicer], [46, Move.TangledThreads], [-1, Move.Glimmer]],
         abilities: [Ability.Moist, Ability.Alert],
         pre_evo_id: 13, evo_id: -1, evo_lvl: -1, evo_stage: 1
@@ -2642,7 +2642,7 @@ export async function execute(interaction, client) {
         hp: 10, atk: 7, def: 6, spd: 7, // total 30
         move_list: [
             [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp],
-            [15, Move.Slash], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
+            [15, Move.Gravitate], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
             [27, Move.PressureWave], [30, Move.HeldStrike], [35, Move.TimeWarp], [40, Move.HighImpact],
             [42, Move.PlasmaCannon], [50, Move.DebugBomb], [-1, Move.Pulverize]
         ],
@@ -2660,7 +2660,7 @@ export async function execute(interaction, client) {
         hp: 13, atk: 15, def: 13, spd: 14, // total 55
         move_list: [
             [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp],
-            [15, Move.Slash], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
+            [15, Move.Gravitate], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
             [27, Move.PressureWave], [30, Move.HeldStrike], [35, Move.TimeWarp], [40, Move.HighImpact],
             [42, Move.PlasmaCannon], [50, Move.DebugBomb], [-1, Move.Pulverize]
         ],
@@ -2678,7 +2678,7 @@ export async function execute(interaction, client) {
         hp: 20, atk: 20, def: 20, spd: 20, // total 80
         move_list: [
             [1, Move.Bash], [2, Move.Slash], [5, Move.Blink], [11, Move.HypeUp],
-            [15, Move.Slash], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
+            [15, Move.Gravitate], [18, Move.PrecisionStrike], [20, Move.TwistedReality], [25, Move.Impale],
             [27, Move.PressureWave], [30, Move.HeldStrike], [35, Move.TimeWarp], [40, Move.HighImpact],
             [42, Move.PlasmaCannon], [50, Move.DebugBomb], [-1, Move.Pulverize]
         ],
@@ -2749,7 +2749,7 @@ export async function execute(interaction, client) {
         type: [OochType.Tech],
         hp: 11, atk: 14, def: 15, spd: 5, // total 45
         move_list: [
-            [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], [8, Move.Sedimentation],
+            [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.PrecisionStrike], [8, Move.Sedimentation],
             [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale],
             [26, Move.Reset], [29, Move.Grind], [35, Move.Torque], [39, Move.Heatseeker], [44, Move.IronHammer], [-1, Move.Boulderdash]
         ],
@@ -2766,7 +2766,7 @@ export async function execute(interaction, client) {
         type: [OochType.Tech],
         hp: 20, atk: 21, def: 18, spd: 16, // total 75
         move_list: [
-            [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.IronHammer], [8, Move.Sedimentation],
+            [1, Move.Bash], [2, Move.Embolden], [4, Move.PebbleBlast], [7, Move.PrecisionStrike], [8, Move.Sedimentation],
             [12, Move.Entomb], [14, Move.JaggedGround], [16, Move.SelfDestruct], [20, Move.MetalLance], [23, Move.Impale],
             [26, Move.Reset], [29, Move.Grind], [35, Move.Torque], [39, Move.Heatseeker], [44, Move.IronHammer], [-1, Move.Boulderdash]
         ],
@@ -2838,7 +2838,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip],
             [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [24, Move.SpoolUp], [28, Move.FatedThreads],
-            [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
+            [32, Move.Mummify], [35, Move.Whiplash], [38, Move.TieDown], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
         abilities: [Ability.Tangled, Ability.Patchwork],
@@ -2856,7 +2856,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [4, Move.MagicBolt], [7, Move.Lurk], [9, Move.RagWhip],
             [13, Move.TangledThreads], [17, Move.DrainLife], [19, Move.Impale], [22, Move.Barrage], [24, Move.SpoolUp], [28, Move.FatedThreads],
-            [32, Move.Mummify], [35, Move.Whiplash], [38, Move.Impale], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
+            [32, Move.Mummify], [35, Move.Whiplash], [38, Move.TieDown], [43, Move.FiberSlicer], [48, Move.GuidedSpire],
             [-1, Move.MetalLance]
         ],
         abilities: [Ability.Tangled, Ability.Patchwork],
@@ -2873,7 +2873,7 @@ export async function execute(interaction, client) {
         hp: 10, atk: 7, def: 8, spd: 5, // total 30
         move_list: [
             [1, Move.Bash], [2, Move.Slash], [5, Move.ByteBite], [7, Move.DigitalGamble], [10, Move.EarSplitter],
-            [12, Move.Suplex], [14, Move.Sparkler], [16, Move.SyncStrike], [20, Move.SelfDestruct],
+            [12, Move.Suplex], [14, Move.Sparkler], [16, Move.Sawblade], [20, Move.SelfDestruct],
             [27, Move.Reset], [32, Move.SyncStrike], [37, Move.CallThunder], [40, Move.Thunder], [48, Move.PlasmaCannon],
             [-1, Move.BlindingBeam]
         ],
@@ -2891,7 +2891,7 @@ export async function execute(interaction, client) {
         hp: 20, atk: 16, def: 13, spd: 11, // total 60
         move_list: [
             [1, Move.Bash], [2, Move.Slash], [5, Move.ByteBite], [7, Move.DigitalGamble], [10, Move.EarSplitter],
-            [12, Move.Suplex], [14, Move.Sparkler], [16, Move.SyncStrike], [20, Move.SelfDestruct], [21, Move.PhantomBullet], [23, Move.Heatseeker],
+            [12, Move.Suplex], [14, Move.Sparkler], [16, Move.Sawblade], [20, Move.SelfDestruct], [21, Move.PhantomBullet], [23, Move.Heatseeker],
             [27, Move.Reset], [32, Move.SyncStrike], [37, Move.CallThunder], [40, Move.Thunder], [48, Move.PlasmaCannon],
             [-1, Move.BlindingBeam]
         ],
@@ -3102,7 +3102,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [6, Move.Sawblade], [8, Move.Caltrops], [12, Move.Sharpen],
             [15, Move.SlowBurn], [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [31, Move.Radiate],
-            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
+            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Boulderdash], [-1, Move.CallThunder]
         ],
         abilities: [Ability.Inertia, Ability.Armored],
         pre_evo_id: -1, evo_id: 53, evo_lvl: 18, evo_stage: 0
@@ -3119,7 +3119,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [6, Move.Sawblade], [8, Move.Caltrops], [12, Move.Sharpen],
             [15, Move.SlowBurn], [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [31, Move.Radiate],
-            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
+            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Boulderdash], [-1, Move.CallThunder]
         ],
         abilities: [Ability.Inertia, Ability.Armored],
         pre_evo_id: 52, evo_id: 54, evo_lvl: 32, evo_stage: 1
@@ -3136,7 +3136,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [2, Move.Hasten], [6, Move.Sawblade], [8, Move.Caltrops], [12, Move.Sharpen],
             [15, Move.SlowBurn], [19, Move.Barrage], [23, Move.Torque], [27, Move.Grind], [31, Move.Radiate],
-            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Caltrops], [-1, Move.CallThunder]
+            [35, Move.DigitalGamble], [37, Move.Flurry], [42, Move.Suplex], [47, Move.Boulderdash], [-1, Move.CallThunder]
         ],
         abilities: [Ability.Hexiply, Ability.Efficient],
         pre_evo_id: 53, evo_id: -1, evo_lvl: -1, evo_stage: 2
@@ -3186,7 +3186,7 @@ export async function execute(interaction, client) {
         hp: 11, atk: 13, def: 13, spd: 18, // total 55
         move_list: [
             [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [10, Move.LenseFlare],
-            [12, Move.Engulf], [16, Move.Lurk], [17, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
+            [12, Move.Engulf], [16, Move.Lurk], [17, Move.Torch], [22, Move.Blink], [27, Move.Inferno],
             [28, Move.PressureWave], [33, Move.ArcaStrike], [36, Move.Impale], [40, Move.AshBlast], [45, Move.PhantomBullet],
             [-1, Move.BlindingBeam]
         ],
@@ -3204,7 +3204,7 @@ export async function execute(interaction, client) {
         hp: 20, atk: 22, def: 17, spd: 21, // total 80
         move_list: [
             [1, Move.Hit], [2, Move.Fireball], [5, Move.MagicBolt], [8, Move.Hasten], [10, Move.LenseFlare],
-            [12, Move.Engulf], [16, Move.Lurk], [17, Move.Lurk], [22, Move.Blink], [27, Move.Inferno],
+            [12, Move.Engulf], [16, Move.Lurk], [17, Move.Torch], [22, Move.Blink], [27, Move.Inferno],
             [28, Move.PressureWave], [33, Move.ArcaStrike], [36, Move.Impale], [40, Move.AshBlast], [45, Move.PhantomBullet],
             [-1, Move.BlindingBeam]
         ],
@@ -3485,7 +3485,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Sawblade], [10, Move.ClampDown],
             [13, Move.PrecisionStrike], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
-            [29, Move.Heatseeker], [34, Move.Flurry], [36, Move.HypeUp], [41, Move.CallThunder], [44, Move.Threefold],
+            [29, Move.Heatseeker], [34, Move.Flurry], [36, Move.Barrage], [41, Move.CallThunder], [44, Move.Threefold],
             [-1, Move.Eruption]
         ],
         abilities: [Ability.Tangled, Ability.Lacerating],
@@ -3503,7 +3503,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Sawblade], [10, Move.ClampDown],
             [13, Move.PrecisionStrike], [15, Move.Fireball], [18, Move.HypeUp], [23, Move.Grind], [26, Move.Corrode],
-            [29, Move.Heatseeker], [34, Move.Flurry], [36, Move.HypeUp], [41, Move.CallThunder], [44, Move.Threefold],
+            [29, Move.Heatseeker], [34, Move.Flurry], [36, Move.Barrage], [41, Move.CallThunder], [44, Move.Threefold],
             [-1, Move.Eruption]
         ],
         abilities: [Ability.Radioactive, Ability.Withering],
@@ -3749,7 +3749,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [10, Move.ClampDown],
             [13, Move.Entrench], [16, Move.Caltrops], [18, Move.IronHammer], [21, Move.Thunderstorm], [24, Move.AshBlast],
             [27, Move.Lagspike], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.DebugBomb],
-            [-1, Move.AshBlast]
+            [-1, Move.SlowBurn]
         ],
         abilities: [Ability.Immobile, Ability.Armored],
         pre_evo_id: -1, evo_id: 90, evo_lvl: 20, evo_stage: 0
@@ -3767,7 +3767,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [2, Move.ByteBite], [5, Move.Intimidate], [8, Move.Fireball], [10, Move.ClampDown],
             [13, Move.Entrench], [16, Move.Caltrops], [18, Move.IronHammer], [21, Move.Thunderstorm], [24, Move.AshBlast],
             [27, Move.Lagspike], [29, Move.Barrage], [33, Move.Eruption], [39, Move.CursedEye], [43, Move.DebugBomb],
-            [-1, Move.AshBlast]
+            [-1, Move.SlowBurn]
         ],
         abilities: [Ability.Ravenous, Ability.Mundane],
         pre_evo_id: 89, evo_id: -1, evo_lvl: -1, evo_stage: 1

@@ -805,6 +805,46 @@
 			}
 		]
 	],
+	"ev_goo_lake_tp": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "goo_lake",
+				"x_to": 33.0,
+				"y_to": 11.0
+			}
+		]
+	],
+	"ev_goo_lake_tp_confirm": [
+		[
+			6.0,
+			{
+				"description": "Return to the Shores of Goo Lake?",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"emote": "",
+						"event": "ev_goo_lake_tp",
+						"flag": "",
+						"price": 0.0,
+						"style": 2.0,
+						"text": "Yes"
+					},
+					{
+						"emote": "",
+						"event": "",
+						"flag": "",
+						"price": 0.0,
+						"style": 3.0,
+						"text": "No"
+					}
+				],
+				"title": ""
+			}
+		]
+	],
 	"ev_heraloom": [
 		[
 			0.0,
@@ -940,14 +980,14 @@
 			}
 		],
 		[
-			13,
+			13.0,
 			{
 				"description": "Select your appearance.",
 				"dialogue_portrait": "",
 				"image": "",
 				"options": [
-					48,
-					49
+					48.0,
+					49.0
 				],
 				"title": "Intro"
 			}
@@ -966,7 +1006,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "`...`",
 				"dialogue_portrait": "",
@@ -979,7 +1019,7 @@
 			}
 		],
 		[
-			0,
+			0.0,
 			{
 				"description": "`No additional discrepancies detected. Proceeding to Oochamon partner selection.`",
 				"dialogue_portrait": "",
@@ -1106,7 +1146,7 @@
 			}
 		],
 		[
-			2,
+			2.0,
 			{
 				"text": "ev_intro"
 			}
@@ -4329,7 +4369,7 @@
 				"options": [
 					{
 						"emote": "",
-						"event": "ev_warp_hub",
+						"event": "ev_goo_lake_tp",
 						"flag": "",
 						"price": 0.0,
 						"style": 2.0,
