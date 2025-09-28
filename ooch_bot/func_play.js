@@ -308,7 +308,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                 //Check if player collides with this NPC's position
                 if(obj.x == playerx && obj.y == playery){ 
-                    console.log(obj);
+                    //console.log(obj);
 
                     stop_moving = true;
                     playerx -= xmove;
@@ -617,6 +617,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             profile.set(user_id, oochabux, 'oochabux')
                             
                             add_item(user_id, item_id, buyAmount);
+
+                            new_inv_qty = get_inv_item(user_id, item.category, item_id).quantity;
                             
                             await m.delete().catch(() => {});
                             let followUpMsg;
@@ -628,8 +630,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                             shopSelectOptions = shopSelectOptions.map(id => {
                                 let db_item_data = item_data.get(`${id}`);
+                                let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
                                 return { 
-                                    label: `${db_item_data.name} (${get_inv_item(user_id, db_item_data.category, id)}/50) [$${db_item_data.price}]`,
+                                    label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
                                     description: db_item_data.description_short,
                                     value: `${id}`,
                                     emoji: db_item_data.emote,
@@ -1393,5 +1396,9 @@ export function get_inv_item(user_id, category, item_id) {
 
 export function get_all_item_type(user_id, category, type) {
     const inventory = profile.get(user_id, `inventory.${category}`);
-    return inventory.filter(i => i.type == type);
+    return inventory.filter(i => {
+        const db_item_data = item_data.get(`${i.id}`);
+        return db_item_data.type == type;
+    });
+    
 }

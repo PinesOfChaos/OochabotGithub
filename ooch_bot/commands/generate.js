@@ -828,7 +828,7 @@ export async function execute(interaction, client) {
     });
     create_item({
         id: Item.MagicMirror, name: 'Magic Mirror', emote: get_emote_string('item_magic_mirror'),
-        category: ItemCategory.Consumable, type: ItemType.Key, price: -1, potency: 0,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 0,
         description: 'A mirror made of crystals from deep beneath the surface. Holding it allows you to change your appearance.',
         description_short: 'Unlocks changing appearance.'
     });
@@ -1341,7 +1341,7 @@ export async function execute(interaction, client) {
     });
     create_move({
         id: Move.PrecisionStrike, name: 'Precision Strike', type: OochType.Neutral,
-        damage: 20, accuracy: 100,
+        damage: 40, accuracy: 100,
         effect: [{ status: 'critical', chance: 60, target: MoveTarget.None }],
         description: 'A targeted strike that is likely to land a Critical Hit.',
     });
@@ -2784,7 +2784,7 @@ export async function execute(interaction, client) {
         hp: 10, atk: 10, def: 10, spd: 10, // total 40
         move_list: [
             [1, Move.Bash], [2, Move.PebbleBlast], [5, Move.Brittle], [7, Move.CursedEye],
-            [10, Move.Purify], [12, Move.Purify], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm],
+            [10, Move.Purify], [12, Move.PrecisionStrike], [15, Move.Blink], [17, Move.NullSphere], [20, Move.DustStorm],
             [24, Move.Entrench], [27, Move.Restruct], [31, Move.Boulderdash], [40, Move.GemBash], [-1, Move.Kaleidoscope]
         ],
         abilities: [Ability.Purification],
@@ -4623,7 +4623,7 @@ export async function execute(interaction, client) {
         name: 'Enforcement System Δ',
         oochive_entry: 'A large machine protecting important data. Despite not being an Oochamon, the Oochadex sure seems to think it is one...',
         type: [OochType.Tech],
-        hp: 50, atk: 15, def: 20, spd: 15, // total 100
+        hp: 60, atk: 15, def: 20, spd: 15, // total 100
         move_list: [
             [1, Move.Heatseeker], [1, Move.LaserSweep], [1, Move.Annihilate], [1, Move.TargetLock], [-1, Move.Bash]
         ],

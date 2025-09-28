@@ -80,6 +80,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
             if (obj_content.dialogue_portrait.includes('NPC|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -90,8 +91,9 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}.png`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+            event_embed.setImage(`attachment://${obj_content.image}`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
 
         info_data = '';
@@ -205,6 +207,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
             if (obj_content.dialogue_portrait.includes('NPC|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -215,8 +218,9 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}.png`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+            event_embed.setImage(`attachment://${obj_content.image}`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
 
         event_buttons = oochamonPicks;
@@ -318,6 +322,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
             if (obj_content.dialogue_portrait.includes('NPC|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -328,8 +333,9 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}.png`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+            event_embed.setImage(`attachment://${obj_content.image}`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
 
         if (initial) event_buttons = optionsRow;
@@ -366,6 +372,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
             if (obj_content.dialogue_portrait.includes('NPC|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
@@ -376,8 +383,9 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         }
 
         if (obj_content.image) {
-            event_embed.setImage(`attachment://${obj_content.image}.png`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}.png`));
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+            event_embed.setImage(`attachment://${obj_content.image}`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
 
         event_buttons = skinPicks;

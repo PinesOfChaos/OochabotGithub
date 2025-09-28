@@ -606,7 +606,7 @@
     "id": 41,
     "name": "Precision Strike",
     "type": "neutral",
-    "damage": 20,
+    "damage": 40,
     "accuracy": 100,
     "effect": [
       {

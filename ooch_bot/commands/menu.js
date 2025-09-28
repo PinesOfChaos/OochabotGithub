@@ -26,7 +26,7 @@ export async function execute(interaction) {
 
     profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
     // Delete the current playspace
-    let playspace_msg = await interaction.channel.messages.fetch(profile.get(`${interaction.user.id}`, 'display_msg_id'));
+    let playspace_msg = await interaction.channel.messages.fetch(profile.get(`${interaction.user.id}`, 'display_msg_id')).catch(() => {});
     await playspace_msg.delete().catch(() => { });;
 
     //#region Setup action rows for the main menu and some submenus
@@ -237,20 +237,20 @@ export async function execute(interaction) {
                         .setEmoji(monster_data.get(`${ooch_party[i].id}`, 'emote'))
                 );
             } else {
-                if (item.type == 'iv') {
+                if (item.type == ItemType.IV) {
                     if (ooch_party[i].stats[`${item.potency}_iv`] >= 1.5) disableOochButton = true;
-                } else if (item.type == 'evolve') {
+                } else if (item.type == ItemType.Evolve) {
                     if (item.potency[0] != ooch_party[i].id) disableOochButton = true;
-                } else if (item.type == 'move_unlock') {
+                } else if (item.type == ItemType.MoveUnlock) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'move_list').filter(mv => mv[0] == -1).length == 0 || ooch_party[i].unlocked_special_move == true) disableOochButton = true;
-                } else if (item.type == 'ability_swap') {
+                } else if (item.type == ItemType.AbilitySwap) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'abilities').length == 1) disableOochButton = true;
                 }
 
                 ((i <= 1) ? party : party_2).addComponents(
                     new ButtonBuilder()
                         .setCustomId(`item_ooch_id_${i}_${item.id}`)
-                        .setLabel(`${ooch_party[i].nickname}${item.type == 'iv' ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
+                        .setLabel(`${ooch_party[i].nickname}${item.type == ItemType.IV ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji(monster_data.get(`${ooch_party[i].id}`, 'emote'))
                         .setDisabled(disableOochButton)
@@ -378,7 +378,7 @@ export async function execute(interaction) {
     let healItems = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
     if (healItems.length != 0) {
         for (let item of healItems) {
-            ooch_back_button.components[1].setDisabled(item[1] == 0);
+            ooch_back_button.components[1].setDisabled(item.quantity == 0);
         }
     }
 
@@ -434,7 +434,7 @@ export async function execute(interaction) {
 
         // Back to Item Select
         else if (selected == 'back_to_item') {
-            let box_row = await buildItemData();
+            let box_row = await buildItemData(ItemCategory.Consumable);
             bagEmbed.setDescription(box_row[0]);
             i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
         }
@@ -611,13 +611,13 @@ export async function execute(interaction) {
             bag_select = new ActionRowBuilder();
             let heal_select_options = [];
             for (let item of heal_inv) {
-                let item_data = item_data.get(`${item.id}`);
+                let db_item_data = item_data.get(`${item.id}`);
 
                 if (item.quantity != 0) {
-                    if (item_data.type == ItemType.Potion) {
+                    if (db_item_data.type == ItemType.Potion) {
                         heal_select_options.push({
-                            label: `${item_data.name} (${item.quantity})`,
-                            description: item_data.description_short,
+                            label: `${db_item_data.name} (${item.quantity})`,
+                            description: db_item_data.description_short,
                             value: `${item.id}`,
                             emoji: item_data.emote,
                         });
@@ -742,6 +742,16 @@ export async function execute(interaction) {
             });
         }
 
+        // else if (selected == 'stance_select') {
+        //     selected = parseInt(selected.replace('move_sel_', ''));
+        //     profile.set(interaction.user.id, , `ooch_party[${party_idx}].nickname`);
+        //     party_extra_buttons.components[0].setDisabled(true);
+        //     i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+        //     let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
+        //     await wait(5000);
+        //     await followUpMsg.delete().catch(() => { });
+        // }
+
         // Move switcher button
         else if (selected == 'moves') {
             let move_buttons = buildMoveData(selected_ooch);
@@ -817,6 +827,8 @@ export async function execute(interaction) {
             }
         }
 
+
+
         //#endregion
         //#region Taming Menu
 
@@ -836,7 +848,7 @@ export async function execute(interaction) {
             key_inv = user_profile.inventory[ItemCategory.Key];
             skin_inv = user_profile.inventory[ItemCategory.Skin];
             map_inv = user_profile.inventory[ItemCategory.Map];
-            console.log(consumable_inv);
+            //console.log(consumable_inv);
             display_inv = consumable_inv;
             let display_title = 'Consumable Items 🎒';
             let item_list_str = '';
@@ -1103,7 +1115,7 @@ export async function execute(interaction) {
                     break;
                 case ItemType.GiveExp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
-                        let keyData = await buildItemData();
+                        let keyData = await buildItemData(ItemCategory.Consumable);
                         bagEmbed.setDescription(keyData[0]);
                         i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                         return;
@@ -1116,7 +1128,7 @@ export async function execute(interaction) {
                     break;
                 case ItemType.LevelUp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
-                        let keyData = await buildItemData();
+                        let keyData = await buildItemData(ItemCategory.Consumable);
                         bagEmbed.setDescription(keyData[0]);
                         i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                         return;
