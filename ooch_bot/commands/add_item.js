@@ -9,6 +9,9 @@ export const data = new SlashCommandBuilder()
         .setDescription('ID of item')
         .setAutocomplete(true)
         .setRequired(true))
+    .addUserOption(option => option.setName('user')
+        .setDescription('user to give item')
+        .setRequired(true))
     .addIntegerOption(option => option.setName('number_to_add')
         .setDescription('How many of the item to add')
         .setRequired(true));
@@ -18,7 +21,8 @@ export async function execute(interaction) {
     let id = interaction.options.getString('item');
     if (isNaN(id)) return interaction.reply('You must input an item ID here.');
     let num_to_add = interaction.options.getInteger('number_to_add');
-    add_item(interaction.user.id, id, num_to_add);
+    let user_to_add = interaction.options.getUser('user');
+    add_item(user_to_add.id, id, num_to_add);
 
     interaction.reply(`Added Item ${item_data.get(`${id}`, 'name')} to your Inventory!`);
 }

@@ -1,4 +1,4 @@
-import { profile, battle_data, monster_data, item_data } from "./db.js";
+import { profile, battle_data, monster_data } from "./db.js";
 import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType } from './types.js';
 import { merge, random } from 'lodash-es';
 
@@ -23,7 +23,6 @@ export async function modernize_profile(user_id) {
     merge(blank_profile, db_profile);
     db_profile = blank_profile;
 
-    await modernize_inventory(db_profile);
     db_profile.ooch_pc = await modernize_box(db_profile.ooch_pc);
     db_profile.ooch_party = await modernize_party(db_profile.ooch_party);
     db_profile.oochadex = await modernize_oochadex(db_profile.oochadex);
@@ -31,40 +30,40 @@ export async function modernize_profile(user_id) {
     profile.set(user_id, db_profile);
 }
 
-export async function modernize_inventory(db_profile) { 
-    db_profile.inventory = {
-        [ItemCategory.Consumable]: [],
-        [ItemCategory.Prism]: [],
-        [ItemCategory.Map]: [],
-        [ItemCategory.Key]: [],
-        [ItemCategory.Skin]: [],
-    }
+// export async function modernize_inventory(db_profile) { 
+//     db_profile.inventory = {
+//         [ItemCategory.Consumable]: [],
+//         [ItemCategory.Prism]: [],
+//         [ItemCategory.Map]: [],
+//         [ItemCategory.Key]: [],
+//         [ItemCategory.Skin]: [],
+//     }
 
-    if (db_profile.heal_inv) {
-        for (let healEntries of Object.entries(db_profile.heal_inv)) {
-            db_profile.inventory[ItemCategory.Consumable].push({ id: parseInt(healEntries[0]), quantity: healEntries[1] })
-        }
-    }
+//     if (db_profile.heal_inv) {
+//         for (let healEntries of Object.entries(db_profile.heal_inv)) {
+//             db_profile.inventory[ItemCategory.Consumable].push({ id: parseInt(healEntries[0]), quantity: healEntries[1] })
+//         }
+//     }
 
-    if (db_profile.prism_inv) {
-        for (let prismEntries of Object.entries(db_profile.prism_inv)) {
-            db_profile.inventory[ItemCategory.Prism].push({ id: parseInt(prismEntries[0]), quantity: prismEntries[1] })
-        }
-    }
+//     if (db_profile.prism_inv) {
+//         for (let prismEntries of Object.entries(db_profile.prism_inv)) {
+//             db_profile.inventory[ItemCategory.Prism].push({ id: parseInt(prismEntries[0]), quantity: prismEntries[1] })
+//         }
+//     }
 
-    if (db_profile.other_inv) {
-        for (let keyEntries of Object.entries(db_profile.other_inv)) {
-            let keyData = item_data.get(keyEntries[0]);
-            db_profile.inventory[keyData.category].push({ id: parseInt(keyEntries[0]), quantity: keyEntries[1] })
-        }
-    }
+//     if (db_profile.other_inv) {
+//         for (let keyEntries of Object.entries(db_profile.other_inv)) {
+//             let keyData = item_data.get(keyEntries[0]);
+//             db_profile.inventory[keyData.category].push({ id: parseInt(keyEntries[0]), quantity: keyEntries[1] })
+//         }
+//     }
 
-    if (db_profile.skin_inv) {
-        for (let skinEntries of Object.entries(db_profile.skin_inv)) {
-            db_profile.inventory[ItemCategory.Skin].push({ id: parseInt(skinEntries[0]), quantity: skinEntries[1] })
-        }
-    }
-}
+//     if (db_profile.skin_inv) {
+//         for (let skinEntries of Object.entries(db_profile.skin_inv)) {
+//             db_profile.inventory[ItemCategory.Skin].push({ id: parseInt(skinEntries[0]), quantity: skinEntries[1] })
+//         }
+//     }
+// }
 
 export async function modernize_box(box_data) {
     for(let i = 0; i < box_data.length; i++){

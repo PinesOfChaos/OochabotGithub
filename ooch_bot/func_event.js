@@ -81,7 +81,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
             if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
@@ -208,7 +208,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
             if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
@@ -248,7 +248,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 profile.set(user_id, {area: 'access_tunnel', x : 23, y : 22}, 'checkpoint_data')
             }
 
-            if (!obj_content.text.includes('NPC|')) {
+            if (!obj_content.text.toLowerCase().includes('npc|')) {
                 let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
                 let playspace_str = await setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
@@ -323,7 +323,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
             if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
@@ -373,7 +373,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
             if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
@@ -475,7 +475,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     let msg;
     if (msg_to_edit == false) {
         msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
-        await profile.set(user_id, msg.id, 'display_msg_id');
+        profile.set(user_id, msg.id, 'display_msg_id');
         profile_data = await profile.get(`${user_id}`);
         msg_to_edit = profile_data.display_msg_id;
     } else {
@@ -594,7 +594,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.Options:
                     quit = true;
                     optionsEvent(obj_content);
-                    sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
+                    await sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
                 break;
 
                 case EventMode.Wait:
@@ -651,8 +651,10 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                     profile.set(user_id, 0, 'cur_event_pos');
                     quit = true; 
                     let playspace_str = await setup_playspace_str(user_id);
-                    await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).catch(() => {});
-                    await move(thread, user_id, '', 2);
+                    await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async () => {
+                        await move(thread, user_id, '', 2);
+                    }).catch((err) => { console.log(err) });
+                    current_place++;
                     return;
                 } else {
                     current_place++;

@@ -9,7 +9,7 @@ import { startCase, toUpper } from 'lodash-es';
 import { schedule } from 'node-cron';
 
 // create a new Discord client and give it some variables
-import { Client, Partials, GatewayIntentBits, Collection, MessageFlags } from 'discord.js';
+import { Client, Partials, GatewayIntentBits, Collection, MessageFlags, Events } from 'discord.js';
 import { profile, monster_data, item_data, ability_data, move_data, status_data, events_data, battle_data } from './db.js';
 import { move, setup_playspace_str } from './func_play.js';
 import { PlayerState } from './types.js';
@@ -87,7 +87,7 @@ schedule('00 16 * * *', async () => {
     scheduled: true,
 });
 
-client.on('ready', async () => {
+client.on(Events.ClientReady, async () => {
     let userIds = profile.keys();
 
     emojis = await botClient.application.emojis.fetch();
@@ -96,7 +96,7 @@ client.on('ready', async () => {
         let user_profile = profile.get(`${user}`);
 
         // UNCOMMENT THIS IF DOING DEV STUFF!!
-        //if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
+        // if (user != '122568101995872256' && user != '145342159724347393' && user != '791144786685067274') continue;
 
         if (user_profile.play_guild_id === undefined || user_profile.play_guild_id === false) continue;
         let userGuild = await client.guilds.fetch(user_profile.play_guild_id);
@@ -201,7 +201,7 @@ client.on('ready', async () => {
 });
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     
     if (interaction.isModalSubmit()) {
         const { handleModal } = await import('./commands/report_bug.js');
@@ -381,22 +381,30 @@ client.on('interactionCreate', async interaction => {
             else if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
                 await interaction.update({ embeds: [] });
                 await move(interaction.channel, interaction.user.id, interaction.customId, curSpeed);
-            } else if (interaction.customId === 'play_dist') {
-                profile.set(interaction.user.id, (curSpeed % 4) + 1, 'move_speed');
-                let playspace_str = await setup_playspace_str(interaction.user.id);
-                await interaction.update({ components: playspace_str[1] });
-            } else if (interaction.customId === 'play_menu') {
-                let command = client.commands.get(`${'menu'}`);
-                command.execute(interaction, client);
             }
         }
     }
 
     if (interaction.isButton()) {
-        switch (interaction.customId) {
-            case 'close_prompt':
-                await interaction.message.delete().catch(() => {});
-            break;
+        let command, playspace_str;
+        let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
+        let playThreadId = profile.get(`${interaction.user.id}`, 'play_thread_id');
+
+        if (interaction.channel.id == playThreadId) {
+            switch (interaction.customId) {
+                case 'close_prompt':
+                    await interaction.message.delete().catch(() => {});
+                break;
+                case 'play_menu_btn':
+                    command = client.commands.get('menu');
+                    command.execute(interaction, client);
+                break;
+                case 'play_dist':
+                    profile.set(interaction.user.id, (curSpeed % 4) + 1, 'move_speed');
+                    playspace_str = await setup_playspace_str(interaction.user.id);
+                    await interaction.update({ components: playspace_str[1] });
+                break;
+            }
         }
     }
 
@@ -434,7 +442,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 
-client.on('messageCreate', async message => {
+client.on(Events.MessageCreate, async message => {
 
     if (message.author.id == '397879158962782219') {
         if (message.type == 'THREAD_CREATED') {

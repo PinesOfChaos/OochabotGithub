@@ -275,6 +275,11 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     let switch_in_text = '';
     let switch_in_embed = false;
     for(let user of battleDataObj.users){
+        for (let ooch of user.party) {
+            if (ooch.starting_stance) {
+                ooch.stance = ooch.starting_stance;
+            }
+        }
         switch_in_text += await use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
     }
 

@@ -1,4 +1,5 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
+import { profile } from '../db.js';
 
 export const data = new SlashCommandBuilder()
     .setName('add_flag')

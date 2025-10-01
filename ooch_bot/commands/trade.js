@@ -42,7 +42,7 @@ export async function execute(interaction) {
     }
 
     let otherUserThread = profile.get(`${otherTradeUser.id}`, 'play_thread_id');
-    otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherTradeUser.id)}`, 'play_thread_id');
+    otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherTradeUser.id, 'play_thread_id')}`);
     if (!otherUserThread || !otherUserThread.isThread()) {
         return interaction.reply({ content: `**${otherTradeMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     }
@@ -182,7 +182,7 @@ export async function execute(interaction) {
             i.customId == 'left' ? userPageData.page_num -= 1 : userPageData.page_num += 1;
             userPageData.page_num = (userPageData.page_num + userPageData.pages) % userPageData.pages; // Handle max page overflow
 
-            userPageData.box_row = buildBoxData(userPageData.user, userPageData.page_num);
+            userPageData.box_row = buildBoxData(profile.get(userPageData.user.id), userPageData.page_num);
             userPageData.box_buttons.components[3].setLabel(`${userPageData.page_num + 1}`);
             await i.update({ components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
         } else if (i.customId.includes('box_ooch')) {
@@ -208,13 +208,13 @@ export async function execute(interaction) {
 
             await i.update({ embeds: [dexEmbed], files: [dexPng], components: [oochTradeButtons] });
         } else if (i.customId == 'back') {
-            userPageData.box_row = buildBoxData(userPageData.user, userPageData.page_num);
+            userPageData.box_row = buildBoxData(profile.get(userPageData.user.id), userPageData.page_num);
             userPageData.ready_to_trade = false;
             userPageData.ooch_selected = null;
             userPageData.ooch_is_party = false;
             userPageData.ooch_slot_num = 0;
 
-            oppUserPageData.box_row = buildBoxData(oppUserPageData.user, oppUserPageData.page_num);
+            oppUserPageData.box_row = buildBoxData(profile.get(oppUserPageData.user.id), oppUserPageData.page_num);
             oppUserPageData.ready_to_trade = false;
             oppUserPageData.ooch_selected = null;
             oppUserPageData.ooch_is_party = false;

@@ -1487,7 +1487,7 @@
 			"pre_combat_dialogue": "Hey there, {player}, just a heads up the guards really don't want us around here.\nSounds like the CFO has been beefing up security around here...\nI wonder what she's up to...\nAnyway, I wasn't able to explore too deep, but here's a copy of my map. I'll see ya around!",
 			"remove_on_finish": true,
 			"sprite": 39,
-			"sprite_combat": "portrait_explorer",
+			"sprite_combat": "",
 			"sprite_dialog": "portrait_explorer",
 			"sprite_id": "c00_039",
 			"stance_list": [

@@ -12,7 +12,7 @@ export async function execute(interaction, client) {
     }
 
     // Begin introduction!
-    let command = client.commands.get(`${'play'}`);
+    let command = client.commands.get(`play`);
     await command.execute(interaction);
 
 }

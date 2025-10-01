@@ -279,7 +279,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                         await event_process(user_id, thread, events_data.get(`${obj.event_name}`), 0, obj.event_name);
 
-                        //updat the profile information as it has likely changed since the event_process
+                        //update the profile information as it has likely changed since the event_process
                         profile_data = await profile.get(`${user_id}`); 
                         player_location = profile_data.location_data;
                         map_name = player_location.area;
@@ -840,16 +840,18 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     // Update player position in the player positions array (don't do this right now)
     //db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
-    let playspace_str = await setup_playspace_str(user_id);
-    playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
-    //Send reply displaying the player's location on the map
-    await thread.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0], embeds: [], files: [] }).catch((err) => { console.log(`Err: ${err}`)});
-    }).catch(async () => {
-        await thread.send({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async newMsg => {
-            await profile.set(user_id, newMsg.id, 'display_msg_id');
-        }).catch((err) => { console.log(`Err 2: ${err}`) });
-    });
+    if (direction != '') {
+        let playspace_str = await setup_playspace_str(user_id);
+        playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
+        //Send reply displaying the player's location on the map
+        await thread.messages.fetch(msg_to_edit).then((msg) => {
+            msg.edit({ content: playspace_str[0] }).catch((err) => { console.log(`Err: ${err}`)});
+        }).catch(async () => {
+            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
+                await profile.set(user_id, newMsg.id, 'display_msg_id');
+            }).catch((err) => { console.log(`Err 2: ${err}`) });
+        });
+    }
 }
 
 export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
@@ -1034,7 +1036,7 @@ export async function setup_playspace_str(user_id) {
                 .setStyle(ButtonStyle.Primary),
         ).addComponents(
             new ButtonBuilder()
-                .setCustomId('play_menu')
+                .setCustomId('play_menu_btn')
                 .setLabel('≡')
                 .setStyle(ButtonStyle.Secondary),
         )

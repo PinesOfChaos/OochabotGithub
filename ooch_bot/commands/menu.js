@@ -15,13 +15,13 @@ export async function execute(interaction) {
     let playerState = profile.get(`${interaction.user.id}`, 'player_state');
 
     if (playerState == PlayerState.NotPlaying) {
-        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.' });
     } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != profile.get(`${interaction.user.id}`, 'play_thread_id')) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu here.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You can\'t pull up the menu here.' });
     } else if (playerState == PlayerState.Menu) {
-        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.` });
     } else if (playerState != PlayerState.Playspace) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu right now.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You can\'t pull up the menu right now.' });
     }
 
     profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
@@ -402,6 +402,16 @@ export async function execute(interaction) {
             selected = i.values[0];
         }
 
+        let dex_components = [party_extra_buttons, party_extra_buttons_2]
+
+        if (selected_ooch) {
+            if (inRange(selected_ooch.tame_value, 121, 201)) {
+                dex_components.push(party_extra_stance_sel);
+            }
+        }
+
+        dex_components.push(party_back_button);
+
         //#region Back Buttons
         // Back to Main Menu
         if (selected == 'back_to_menu') {
@@ -564,7 +574,7 @@ export async function execute(interaction) {
             dexEmbed = dexEmbed[0];
             let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
-            if (inRange(selected_ooch.tame_value, 121, 201)) {
+            // if (inRange(selected_ooch.tame_value, 121, 201)) {
                 let available_stances = get_stance_options(selected_ooch, true);
                 party_extra_stance_sel = new ActionRowBuilder();
                 let stance_options = [];
@@ -583,8 +593,7 @@ export async function execute(interaction) {
                         .setPlaceholder('Select a stance to start in!')
                         .addOptions(stance_options));
                 party_buttons.push(party_extra_stance_sel);
-                console.log(party_buttons);
-            }
+            // }
 
             party_buttons.push(party_back_button);
 
@@ -598,7 +607,7 @@ export async function execute(interaction) {
             [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
             profile.set(interaction.user.id, ooch_party, 'ooch_party');
             party_extra_buttons.components[0].setDisabled(true);
-            i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            i.update({ content: null, embeds: [dexEmbed], components: dex_components });
             let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
             await wait(5000);
             await followUpMsg.delete().catch(() => { });
@@ -649,7 +658,7 @@ export async function execute(interaction) {
             let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
             let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
-            await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
 
             let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${db_item_data.emote} **${db_item_data.name}**` });
             await wait(2500);
@@ -677,7 +686,7 @@ export async function execute(interaction) {
                 party_extra_buttons.components[2].setDisabled(true);
             }
 
-            i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
 
             // Finalize putting the ooch into the database and in our menu
             profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
@@ -737,20 +746,20 @@ export async function execute(interaction) {
                 dexEmbed.setTitle(ooch_title);
 
                 profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
-                menuMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                menuMsg.edit({ content: null, embeds: [dexEmbed], components: dex_components });
                 await msg.delete().catch(() => { });;
             });
         }
 
-        // else if (selected == 'stance_select') {
-        //     selected = parseInt(selected.replace('move_sel_', ''));
-        //     profile.set(interaction.user.id, , `ooch_party[${party_idx}].nickname`);
-        //     party_extra_buttons.components[0].setDisabled(true);
-        //     i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
-        //     let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
-        //     await wait(5000);
-        //     await followUpMsg.delete().catch(() => { });
-        // }
+        else if (collectorId == 'stance_select') {
+            selected = parseInt(selected.replace('stance_sel_', ''));
+            profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].starting_stance`);
+
+            i.update({ content: null, embeds: [dexEmbed], components: dex_components });
+            let followUpMsg = await interaction.followUp({ content: 'You\'ve changed your starting stance!' });
+            await wait(5000);
+            await followUpMsg.delete().catch(() => { });
+        }
 
         // Move switcher button
         else if (selected == 'moves') {
@@ -931,7 +940,7 @@ export async function execute(interaction) {
 
             for (const item of display_inv) {
                 let item_obj = item_data.get(`${item.id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -951,7 +960,7 @@ export async function execute(interaction) {
 
             for (const item of display_inv) {
                 let item_obj = item_data.get(`${item.id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -972,7 +981,7 @@ export async function execute(interaction) {
             // Setup default item list for the default value, healing
             for (const item of display_inv) {
                 let item_obj = item_data.get(`${item.id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : ``}\n`;
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -1055,6 +1064,8 @@ export async function execute(interaction) {
             let db_item_data = item_data.get(`${selected}`);
             let item_usage_text = `Changed your skin to ${get_emote_string(db_item_data.potency)}!`;
             profile.set(interaction.user.id, db_item_data.potency, 'player_sprite')
+
+            await i.update({ content: `` });
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
             await wait(5000);

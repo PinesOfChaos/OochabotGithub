@@ -510,7 +510,7 @@
 			"pre_combat_dialogue": "Oh, hey, {player}.\nWe sure have been through a lot.\nI've been meaning to get these maps to you too...\nBuuuuuut, how bout this time we do a little battle for 'em?",
 			"remove_on_finish": true,
 			"sprite": 39,
-			"sprite_combat": "portrait_explorer",
+			"sprite_combat": "",
 			"sprite_dialog": "portrait_explorer",
 			"sprite_id": "c00_039",
 			"stance_list": [

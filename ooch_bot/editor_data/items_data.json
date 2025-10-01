@@ -573,7 +573,7 @@
     "id": 47,
     "name": "Magic Mirror",
     "emote": "<:item_magic_mirror:1412092240809033890>",
-    "category": "consumable",
+    "category": "key",
     "type": 2,
     "price": -1,
     "potency": 0,
