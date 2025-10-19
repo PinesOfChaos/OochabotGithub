@@ -1080,7 +1080,7 @@ export async function execute(interaction, client) {
     });
     create_item({
         id: Item.Oochagotchi, name: 'Oochagotchi', emote: get_emote_string('item_oochagotchi'),
-        category: ItemCategory.Consumable, type: ItemType.Key, price: -1, potency: 0,
+        category: ItemCategory.Key, type: ItemType.Key, price: -1, potency: 0,
         description: 'A device developed by Dr. Anne. It should help you grow closer to your Oochamon.',
         description_short: 'Unlocks Oochamon Taming.'
     });
@@ -2779,7 +2779,7 @@ export async function execute(interaction, client) {
         id: OochID.Purif_i,
         emote: get_emote_string('purifi'),
         name: 'Purif-i',
-        oochive_entry: 'Cleansed of its corruption, this oochamon maintains some aspects of the Void and Stone types.',
+        oochive_entry: 'Cleansed of its corruption, this Oochamon maintains some aspects of the Void and Stone types.',
         type: [OochType.Void, OochType.Stone],
         hp: 10, atk: 10, def: 10, spd: 10, // total 40
         move_list: [
@@ -4112,7 +4112,7 @@ export async function execute(interaction, client) {
             [46, Move.Pulverize], [-1, Move.EarShatter]
         ],
         abilities: [Ability.Apprentice, Ability.Pursuer],
-        pre_evo_id: -1, evo_id: 110, evo_lvl: 20, evo_stage: 0
+        pre_evo_id: -1, evo_id: 110, evo_lvl: 20, evo_stage: 0, special_evo : true
     });
 
     // Mysnome
@@ -4433,11 +4433,11 @@ export async function execute(interaction, client) {
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
 
-    // Syma'at
+    // Syma-at
     create_monster({
         id: OochID.Symaat,
         emote: get_emote_string('symaat'),
-        name: 'Syma\'at',
+        name: 'Syma-at',
         oochive_entry: 'This ancient Oochamon can tell the alignment of others at a mere glance. Its body seems to be of similar composition to ruins found around the planet.',
         type: [OochType.Magic],
         hp: 20, atk: 20, def: 20, spd: 20, // total 80

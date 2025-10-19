@@ -6,6 +6,7 @@ import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
 import { getClientEmojis } from "./index.js";
+import { Canvas, loadImage } from "skia-canvas";
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -94,7 +95,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let infoEmbed = new EmbedBuilder()
         .setColor('#808080')
         .setTitle(ooch_title)
-        .setThumbnail(`attachment://${toLower(ooch.name)}.png`)
+        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}.png`)
         .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${ability_data.get(`${ooch.ability}`, 'name')}**\nType: **${ooch.type.map(v => capitalize(v)).join(' | ')}**`);
 
     for (let move_id of ooch.moveset) {
@@ -113,20 +114,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
     let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
 
-    let tame_status = ooch.tame_value;
-    if (inRange(tame_status, 0, 40)){
-        tame_status = TameStatus.Hostile;
-    } else if (inRange(tame_status, 41, 80)) {
-        tame_status = TameStatus.Angry;
-    } else if (inRange(tame_status, 81, 120)) {
-        tame_status = TameStatus.Neutral;
-    } else if (inRange(tame_status, 121, 160)) {
-        tame_status = TameStatus.Happy;
-    } else if (inRange(tame_status, 161, 199)) {
-        tame_status = TameStatus.Loyal;
-    } else if (ooch.tame_value >= 200) {
-        tame_status = TameStatus.BestFriend;
-    }
+    let tame_status = get_tame_string(ooch.tame_value);  
 
     infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
     infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** (${get_iv_stars(iv_hp)})` + 
@@ -145,10 +133,10 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
         if (oochadex_check == undefined) {
             oochadex_check = { caught: 0 }
         } 
-        infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level ${ooch_data.evo_lvl}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
+        infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
     }
 
-    return [infoEmbed, get_ooch_art(ooch.name)];
+    return [infoEmbed, get_ooch_art(ooch_data.name)];
 }
 
 /**
@@ -184,7 +172,7 @@ export function get_emote_string(name) {
  * @returns The attachment file object.
  */
 export function get_ooch_art(ooch_name) {
-    let file_name = `./Art/ResizedArt/${replace(toLower(ooch_name), RegExp(" ", "g"), "_")}.png`
+    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}.png`
     let file = new AttachmentBuilder(file_name);
     
     return file;
@@ -301,4 +289,57 @@ export async function quit_oochamon(thread, user_id, client) {
     await thread.setLocked(true);
     await thread.setArchived(true);
     await profile.set(user_id, PlayerState.NotPlaying, 'player_state');
+}
+
+/**
+ * Get the tame value string
+ * @param {number} tame_value the tame value to check
+ * @returns The tame string
+ */
+export function get_tame_string(tame_value) {
+    let tame_status = TameStatus.Hostile;
+
+    if (inRange(tame_value, 41, 80)) {
+        tame_status = TameStatus.Angry;
+    } else if (inRange(tame_value, 81, 120)) {
+        tame_status = TameStatus.Neutral;
+    } else if (inRange(tame_value, 121, 160)) {
+        tame_status = TameStatus.Happy;
+    } else if (inRange(tame_value, 161, 199)) {
+        tame_status = TameStatus.Loyal;
+    } else if (tame_value >= 200) {
+        tame_status = TameStatus.BestFriend;
+    }
+
+    return tame_status;
+
+}
+
+/**
+ * Setup the oochamon taming picture
+ * @param {Object} ooch The oochamon to add to the taming background
+ * @returns The taming picture
+ */
+export async function setup_taming_picture(ooch) {
+    let canvas = new Canvas(250, 250);
+    let ctx = canvas.getContext("2d");
+    
+    // Draw the background
+    const background = await loadImage(`./Art/ArtFiles/taming_background.png`);
+    ctx.drawImage(background, 0, 0, 250, 250);
+
+    ctx.imageSmoothingEnabled = false;
+    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}.png`)
+    const shadow_image = await loadImage(`./Art/BattleArt/shadow_64x32.png`);
+
+    let shadow = {
+        x : (canvas.width / 2) - (shadow_image.width),
+        y : (canvas.height * .75) - (shadow_image.height)
+    }
+
+    ctx.drawImage(shadow_image, shadow.x, shadow.y, shadow_image.width * 2, shadow_image.height * 2);
+    ctx.drawImage(ooch_image, (canvas.width / 2) - (ooch_image.width), (canvas.height * .75) - (ooch_image.height * 2), ooch_image.width * 2, ooch_image.height * 2)
+
+    let pngData = canvas.toBufferSync('png');
+    return pngData;
 }

@@ -1,11 +1,11 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
-import { lowerCase, inRange, clamp } from 'lodash-es';
+import { inRange, clamp } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string } from '../func_other.js';
+import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string, setup_taming_picture, get_tame_string } from '../func_other.js';
  
 export const data = new SlashCommandBuilder()
     .setName('menu')
@@ -114,6 +114,16 @@ export async function execute(interaction) {
             new ButtonBuilder().setCustomId('dex_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
         ).addComponents(
             new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
+        );
+
+    // Taming Buttons
+    let taming_buttons = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder().setCustomId('taming_feed').setLabel('Feed').setEmoji('🍪').setStyle(ButtonStyle.Success).setDisabled(true)
+        ).addComponents(
+            new ButtonBuilder().setCustomId('taming_pet').setLabel('Pet').setEmoji('🫳').setStyle(ButtonStyle.Success).setDisabled(true)
+        ).addComponents(
+            new ButtonBuilder().setCustomId('taming_walk').setLabel('Walk').setEmoji('🚶').setStyle(ButtonStyle.Success).setDisabled(true)
         );
 
     // Preference Select Menu
@@ -351,16 +361,16 @@ export async function execute(interaction) {
             dexEmbed = new EmbedBuilder()
                 .setColor('#808080')
                 .setTitle(`${ooch_data.name} (Type: ${type_to_emote(ooch_data.type)}`)
-                .setThumbnail(`attachment://${lowerCase(ooch_data.name)}.png`)
+                .setThumbnail(`attachment://${(ooch_data.name).toLowerCase().replace('\'', '')}.png`)
                 .setDescription(`*${ooch_data.oochive_entry}*`)
                 .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                 .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
 
             if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
                 if (oochadex_data[ooch_data.evo_id].caught != 0) {
-                    dexEmbed.setFooter({ text: `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
+                    dexEmbed.setFooter({ text: `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
                 } else {
-                    dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl} • Caught: ${oochadex_data[0].caught}` });
+                    dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''} • Caught: ${oochadex_data[0].caught}` });
                 }
             }
             is_caught = oochadex_data[ooch_data.id].caught > 0;
@@ -574,7 +584,7 @@ export async function execute(interaction) {
             dexEmbed = dexEmbed[0];
             let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
-            // if (inRange(selected_ooch.tame_value, 121, 201)) {
+            if (inRange(selected_ooch.tame_value, 121, 201)) {
                 let available_stances = get_stance_options(selected_ooch, true);
                 party_extra_stance_sel = new ActionRowBuilder();
                 let stance_options = [];
@@ -593,7 +603,7 @@ export async function execute(interaction) {
                         .setPlaceholder('Select a stance to start in!')
                         .addOptions(stance_options));
                 party_buttons.push(party_extra_stance_sel);
-            // }
+            }
 
             party_buttons.push(party_back_button);
 
@@ -835,17 +845,32 @@ export async function execute(interaction) {
                 i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button], files: [] });
             }
         }
-
+    
 
 
         //#endregion
         //#region Taming Menu
 
         else if (selected == 'taming') {
-            i.update({ content: [] });
+            const taming_image = await setup_taming_picture(selected_ooch);
+            const taming_status = await get_tame_string(selected_ooch.tame_value)
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .addFields([{ name: `Taming Status:`, value: `${taming_status}` }])
+                .setImage(`attachment://file.jpg`)
+
+            if (selected_ooch.tame_value >= 41) taming_buttons.components[0].setDisabled(false)
+            if (selected_ooch.tame_value >= 81) taming_buttons.components[1].setDisabled(false)
+            if (selected_ooch.tame_value >= 121) taming_buttons.components[2].setDisabled(false)
+
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        } else if (selected == 'taming_pet') {
+            // TODO: Add
+        } else if (selected == 'taming_feed') {
+            // TODO: Add
+        } else if (selected == 'taming_walk') {
+            // TODO: Add
         }
-
-
 
 
 

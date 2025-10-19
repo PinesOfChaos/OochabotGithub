@@ -682,6 +682,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             }
         }
 
+        let cancel_grass = false;
         switch (tile.use) {
             case Tile.Board:
                 stop_moving = true;
@@ -702,7 +703,15 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 }
             break;
             case Tile.Grass:
-                if ((Math.random() <= encounter_chance) && (!stop_moving)) {
+                //Check if we're on a savepoint, and ignore underlying grass tiles if so
+                for(let obj of map_savepoints){
+                    if(obj.x == playerx && obj.y == playery){
+                        cancel_grass = true;
+                        break;
+                    }
+                }
+
+                if ((Math.random() <= encounter_chance) && (!stop_moving) && (!cancel_grass)) {
 
                    let spawn_zone, x1,y1,x2,y2;
                     for(let j = 0; j < map_spawns.length; j++){

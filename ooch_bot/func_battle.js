@@ -1944,10 +1944,6 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Immobile**:`;
             string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Defense, 1)}\n`;
         break;
-        case Ability.Gentle:
-            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Gentle**:`;
-            string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, -1)}\n`;
-        break;
         case Ability.Conflicted:
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Conflicted**:`;
             string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, 1)}`;
@@ -2089,7 +2085,7 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
     //Switch-out abilities
     switch(ooch_from.ability){
         case Ability.Martyr:
-            if(ooch_from.hp_current == 0){
+            if(ooch_from.current_hp == 0){
                 string_to_send += `\n${ooch_from.emote} **${ooch_from.nickname}**'s **Martyr**:`;
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, 1)}`;
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Defense, 1)}`;
@@ -2116,7 +2112,7 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
 
     //Check abilities vs other users
     for(let u of db_battle_data.users){
-        let every_target_list = [Ability.Gentle]
+        let every_target_list = [Ability.Gentle] //include abilities that should also affect the user of that ability
         
         if((u.team_id != user.team_id || every_target_list.includes(ooch_to.ability)) && u.party[u.active_slot].alive){
             let ooch_enemy = u.party[u.active_slot];
@@ -2255,8 +2251,14 @@ export async function action_process_prism(db_battle_data, action) {
             //distribute_messages(db_battle_data, {})
             //await item_sel.update({ content: `## ------ ${user.name}'s Turn ------`, embeds: [capture_embed], components: []});
 
-            // Heal the caught Oochamon when you catch it.
+            // Heal the caught Oochamon when you catch it. Also clear any of its status effects and stat stage changes
             ooch_target.current_hp = ooch_target.stats.hp;
+            ooch_target.status = []
+            ooch_target.stats.atk_mul = 0;
+            ooch_target.stats.def_mul = 0;
+            ooch_target.stats.spd_mul = 0;
+            ooch_target.stats.acc_mul = 0;
+            ooch_target.stats.eva_mul = 0;
 
             // Have it check here if you want to send the Oochamon to your party or not
             if (user.party.length < 4) {
@@ -3385,12 +3387,14 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let going_first = true;
     let going_last = true;
     let mons_in_battle = [];
+    let ooch_order_check;
     for(let user of db_battle_data.users) {
-        mons_in_battle.push(user.party[user.active_slot]);
+        ooch_order_check = user.party[user.active_slot]
+        mons_in_battle.push(ooch_order_check);
 
         if (user.user_index == user_index_attacker) continue;
         if (user.slot_actions[user.active_slot].this_turn_did_attack) going_first = false
-        else going_last = false
+        else if (ooch_order_check.current_hp > 0) going_last = false
     }
 
     slot_attacker.this_turn_did_attack = true;
@@ -3477,7 +3481,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     if(move_effects.includes(Status.AlwaysSuperEff)){ type_multiplier[0] = 2.0; type_multiplier[1] = '*Super effective!*'; }
 
     //Weak status reduces the move's power by 10
-    if(attacker.status_effects.includes(Status.Weak)) move_damage = _max(move_damage - 10, 5);
+    if(attacker.status_effects.includes(Status.Weak)) move_damage = Math.max(move_damage - 10, 5);
 
     let ancient_ward_text = ""
     for(let mon of mons_in_battle){

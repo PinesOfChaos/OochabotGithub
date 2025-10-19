@@ -913,6 +913,12 @@
 				"x_to": 40.0,
 				"y_to": 48.0
 			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_heraloom"
+			}
 		]
 	],
 	"ev_heraloom_tp": [
@@ -3201,7 +3207,7 @@
 		[
 			0.0,
 			{
-				"description": "Well, let us see if you're worthy of Syma'at's power as well...",
+				"description": "Well, let us see if you're worthy of Syma-at's power as well...",
 				"dialogue_portrait": "balancer",
 				"flags": [],
 				"image": "",
@@ -3260,7 +3266,7 @@
 		[
 			3.0,
 			{
-				"description": "Now, now, don't be shy. Weild Syma'at's power as you see fit!",
+				"description": "Now, now, don't be shy. Wield Syma-at's power as you see fit!",
 				"dialogue_portrait": "balancer",
 				"image": "",
 				"options": [

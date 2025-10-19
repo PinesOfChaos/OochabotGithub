@@ -181,7 +181,8 @@ export async function genmap_new(name, width, height, theme, level_min, level_ma
 
     //Filter out user's flags to any that don't include the map's name
     let all_users = profile.values()
-    for(let user of all_users){
+    for(let user of all_users) {
+        if (user.flags == undefined) continue;
         user.flags = user.flags.filter((flag) => !flag.includes(name));
     }
 
