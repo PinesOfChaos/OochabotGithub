@@ -1,11 +1,11 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
-import { capitalize, lowerCase, inRange, clamp } from 'lodash-es';
+import { inRange, clamp } from 'lodash-es';
 import wait from 'wait';
-import { setup_playspace_str, create_ooch } from '../func_play.js';
-import { PlayerState, TypeEmote } from '../types.js';
+import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item, add_item } from '../func_play.js';
+import { ItemCategory, ItemType, PlayerState, TamingAction } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { ooch_info_embed, get_ooch_art, get_art_file } from '../func_other.js';
+import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards } from '../func_other.js';
  
 export const data = new SlashCommandBuilder()
     .setName('menu')
@@ -15,30 +15,30 @@ export async function execute(interaction) {
     let playerState = profile.get(`${interaction.user.id}`, 'player_state');
 
     if (playerState == PlayerState.NotPlaying) {
-        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You must be playing the game to pull up the menu.' });
     } else if (playerState != PlayerState.NotPlaying && interaction.channel.id != profile.get(`${interaction.user.id}`, 'play_thread_id')) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu here.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You can\'t pull up the menu here.' });
     } else if (playerState == PlayerState.Menu) {
-        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.`, flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: `The menu is already open, you cannot open it again! If you don't have the menu open, please restart the game by running \`/play\`.` });
     } else if (playerState != PlayerState.Playspace) {
-        return interaction.editReply({ content: 'You can\'t pull up the menu right now.', flags: MessageFlags.Ephemeral });
+        return interaction.editReply({ content: 'You can\'t pull up the menu right now.' });
     }
 
     profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
     // Delete the current playspace
-    let playspace_msg = await interaction.channel.messages.fetch(profile.get(`${interaction.user.id}`, 'display_msg_id'));
+    let playspace_msg = await interaction.channel.messages.fetch(profile.get(`${interaction.user.id}`, 'display_msg_id')).catch(() => {});
     await playspace_msg.delete().catch(() => { });;
 
     //#region Setup action rows for the main menu and some submenus
     // Main Menu
     let settings_row_1 = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_prism:1274937161262698536>')).addComponents(
+            new ButtonBuilder().setCustomId('party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_prism'))).addComponents(
                 new ButtonBuilder().setCustomId('bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'));
 
     let settings_row_2 = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji('<:item_map:1353128506535706754>'))
+            new ButtonBuilder().setCustomId('map').setLabel('Oochamap').setStyle(ButtonStyle.Primary).setEmoji(get_emote_string('item_map')))
         .addComponents(
             new ButtonBuilder().setCustomId('oochadex').setLabel('Oochadex').setStyle(ButtonStyle.Secondary).setEmoji('📱'));
 
@@ -85,7 +85,7 @@ export async function execute(interaction) {
     let party_extra_buttons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder().setCustomId('primary').setLabel('Set As Primary').setStyle(ButtonStyle.Success).setEmoji('👑')).addComponents(
-                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>').setDisabled(true)).addComponents(
+                new ButtonBuilder().setCustomId('party_heal').setLabel('Heal Oochamon').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_potion_magic')).setDisabled(true)).addComponents(
                     new ButtonBuilder().setCustomId('evolve').setLabel('Evolve').setStyle(ButtonStyle.Success).setDisabled(true).setEmoji('⬆️')
                 );
 
@@ -100,9 +100,11 @@ export async function execute(interaction) {
 
     let bag_buttons = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('heal_button').setStyle(ButtonStyle.Success).setEmoji('<:item_potion_magic:1274937146423115922>')).addComponents(
-                new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji('<:item_prism:1274937161262698536>')).addComponents(
-                    new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑'));
+            new ButtonBuilder().setCustomId('consumable_button').setStyle(ButtonStyle.Success).setEmoji('🎒')).addComponents(
+            new ButtonBuilder().setCustomId('prism_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_prism'))).addComponents(
+            new ButtonBuilder().setCustomId('map_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('item_map'))).addComponents(
+            new ButtonBuilder().setCustomId('key_button').setStyle(ButtonStyle.Secondary).setEmoji('🔑')).addComponents(
+            new ButtonBuilder().setCustomId('skin_button').setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('c_000')));
 
     // Dex arrows
     let dex_arrows = new ActionRowBuilder()
@@ -112,6 +114,16 @@ export async function execute(interaction) {
             new ButtonBuilder().setCustomId('dex_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
         ).addComponents(
             new ButtonBuilder().setCustomId('back_to_menu').setLabel('Back').setStyle(ButtonStyle.Danger)
+        );
+
+    // Taming Buttons
+    let taming_buttons = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder().setCustomId('taming_feed').setLabel('Feed').setEmoji('🍪').setStyle(ButtonStyle.Success).setDisabled(false)
+        ).addComponents(
+            new ButtonBuilder().setCustomId('taming_pet').setLabel('Pet').setEmoji('🫳').setStyle(ButtonStyle.Success).setDisabled(false)
+        ).addComponents(
+            new ButtonBuilder().setCustomId('taming_walk').setLabel('Walk').setEmoji('🚶').setStyle(ButtonStyle.Success).setDisabled(false)
         );
 
     // Preference Select Menu
@@ -235,20 +247,20 @@ export async function execute(interaction) {
                         .setEmoji(monster_data.get(`${ooch_party[i].id}`, 'emote'))
                 );
             } else {
-                if (item.type == 'iv') {
+                if (item.type == ItemType.IV) {
                     if (ooch_party[i].stats[`${item.potency}_iv`] >= 1.5) disableOochButton = true;
-                } else if (item.type == 'evolve') {
+                } else if (item.type == ItemType.Evolve) {
                     if (item.potency[0] != ooch_party[i].id) disableOochButton = true;
-                } else if (item.type == 'move_unlock') {
+                } else if (item.type == ItemType.MoveUnlock) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'move_list').filter(mv => mv[0] == -1).length == 0 || ooch_party[i].unlocked_special_move == true) disableOochButton = true;
-                } else if (item.type == 'ability_swap') {
+                } else if (item.type == ItemType.AbilitySwap) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'abilities').length == 1) disableOochButton = true;
                 }
 
                 ((i <= 1) ? party : party_2).addComponents(
                     new ButtonBuilder()
                         .setCustomId(`item_ooch_id_${i}_${item.id}`)
-                        .setLabel(`${ooch_party[i].nickname}${item.type == 'iv' ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
+                        .setLabel(`${ooch_party[i].nickname}${item.type == ItemType.IV ? ` (Bonus: ${(Math.round((ooch_party[i].stats[`${item.potency}_iv`] - 1) * 20))})` : ``}`)
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji(monster_data.get(`${ooch_party[i].id}`, 'emote'))
                         .setDisabled(disableOochButton)
@@ -271,35 +283,30 @@ export async function execute(interaction) {
         return pa_components;
     }
 
-    async function buildItemData() {
+    async function buildItemData(inv) {
         let item_list_str = ``;
-        for (const [item_id, quantity] of Object.entries(profile.get(`${interaction.user.id}`, 'other_inv'))) {
-            let item_obj = await item_data.get(`${item_id}`);
-            item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
-        }
-
-        let other_inv_keys = Object.keys(profile.get(`${interaction.user.id}`, 'other_inv'));
-
+        let item_inv = profile.get(`${interaction.user.id}`, `inventory.${inv}`);
         bag_select = new ActionRowBuilder();
-        let other_select_options = [];
-        for (let i = 0; i < other_inv_keys.length; i++) {
-            let id = other_inv_keys[i];
-            let amount = profile.get(`${interaction.user.id}`, `other_inv.${other_inv_keys[i]}`);
+        let select_options = [];
 
-            if (amount != 0) {
-                if (item_data.get(`${id}`, 'type') != 'key' && item_data.get(`${id}`, 'type') != 'map') {
-                    other_select_options.push({
-                        label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                        description: item_data.get(`${id}`, 'description_short'),
-                        value: `${id}`,
-                        emoji: item_data.get(`${id}`, 'emote'),
+        for (const item of item_inv) {
+            let item_obj = item_data.get(`${item.id}`);
+            item_list_str += `${item_obj.emote} ${item_obj.name} | **${item.quantity}x**\n`;
+
+            if (item.quantity != 0) {
+                if (item_obj.type != ItemType.Status && item_obj.type != ItemType.Treat) {
+                    select_options.push({
+                        label: `${item_obj.name}${item.quantity > 1 ? ` (${item.quantity})` : ``}`,
+                        description: item_obj.description_short,
+                        value: `${item.id}`,
+                        emoji: item_obj.emote,
                     });
                 }
             }
         }
 
-        if (other_select_options.length == 0) {
-            other_select_options.push({
+        if (select_options.length == 0) {
+            select_options.push({
                 label: `No Usable Items.`,
                 description: 'Can\'t use anything!',
                 value: `n/a`
@@ -308,9 +315,9 @@ export async function execute(interaction) {
 
         bag_select.addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('other_select')
+                .setCustomId(`${inv}_select`)
                 .setPlaceholder('Select an item to use in your inventory.')
-                .addOptions(other_select_options));
+                .addOptions(select_options));
 
         return [item_list_str, bag_select];
     }
@@ -353,17 +360,17 @@ export async function execute(interaction) {
             ooch_img_file = get_ooch_art(ooch_data.name);
             dexEmbed = new EmbedBuilder()
                 .setColor('#808080')
-                .setTitle(`${ooch_data.name} (Type: ${ooch_data.type.map(v => TypeEmote[capitalize(v)]).join('')})`)
-                .setThumbnail(`attachment://${lowerCase(ooch_data.name)}.png`)
+                .setTitle(`${ooch_data.name} (Type: ${type_to_emote(ooch_data.type)}`)
+                .setThumbnail(`attachment://${(ooch_data.name).toLowerCase().replace('\'', '')}.png`)
                 .setDescription(`*${ooch_data.oochive_entry}*`)
                 .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
                 .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
 
             if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
                 if (oochadex_data[ooch_data.evo_id].caught != 0) {
-                    dexEmbed.setFooter({ text: `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
+                    dexEmbed.setFooter({ text: `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
                 } else {
-                    dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl} • Caught: ${oochadex_data[0].caught}` });
+                    dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''} • Caught: ${oochadex_data[0].caught}` });
                 }
             }
             is_caught = oochadex_data[ooch_data.id].caught > 0;
@@ -374,13 +381,14 @@ export async function execute(interaction) {
 
     // Initialize all variables used across multiple sub menus here
     let selected, collectorId;
-    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [], dexEmbed, bagEmbed, heal_inv, prism_inv, key_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
+    let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
+    dexEmbed, bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, map_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
 
     // Enable party healing button if we have healing items
-    let healItems = Object.entries(user_profile.heal_inv);
+    let healItems = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
     if (healItems.length != 0) {
         for (let item of healItems) {
-            ooch_back_button.components[1].setDisabled(item[1] == 0);
+            ooch_back_button.components[1].setDisabled(item.quantity == 0);
         }
     }
 
@@ -389,6 +397,9 @@ export async function execute(interaction) {
     //console.log(oochHpCheck)
     oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
     if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
+
+    // Taming button undisable with flag
+    if (user_profile.flags.includes('ev_tamagoochi')) party_extra_buttons_2.components[2].setDisabled(false);
 
     // Menu operation is handled in this collector
     await collector.on('collect', async (i) => {
@@ -400,6 +411,16 @@ export async function execute(interaction) {
             collectorId = i.customId;
             selected = i.values[0];
         }
+
+        let dex_components = [party_extra_buttons, party_extra_buttons_2]
+
+        if (selected_ooch) {
+            if (inRange(selected_ooch.tame_value, 121, 201)) {
+                dex_components.push(party_extra_stance_sel);
+            }
+        }
+
+        dex_components.push(party_back_button);
 
         //#region Back Buttons
         // Back to Main Menu
@@ -433,7 +454,7 @@ export async function execute(interaction) {
 
         // Back to Item Select
         else if (selected == 'back_to_item') {
-            let box_row = await buildItemData();
+            let box_row = await buildItemData(ItemCategory.Consumable);
             bagEmbed.setDescription(box_row[0]);
             i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
         }
@@ -449,15 +470,14 @@ export async function execute(interaction) {
 
         // Quick Party Heal Oochamon
         else if (selected == 'quick_heal') {
-            let healInv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            healInv = Object.entries(healInv);
+            let healInv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
             let healOptions = [];
 
             for (let item of healInv) {
-                if (item[1] !== 0) {
-                    let itemData = item_data.get(`${item[0]}`);
-                    if (itemData.type == 'potion') {
-                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item[1], used: 0, emote: itemData.emote, name: itemData.name });
+                if (item.quantity !== 0) {
+                    let itemData = item_data.get(`${item.id}`);
+                    if (itemData.type == ItemType.Potion) {
+                        healOptions.push({ id: itemData.id, hp: itemData.potency, owned: item.quantity, used: 0, emote: itemData.emote, name: itemData.name });
                     }
                 }
             }
@@ -507,7 +527,7 @@ export async function execute(interaction) {
             let outputMsg = 'Potions used for quick heals:';
             healOptions.forEach(item => {
                 if (item.used > 0) {
-                    profile.math(interaction.user.id, '-', item.used, `heal_inv.${item.id}`);
+                    remove_item(interaction.user.id, item.id, item.used);
                     outputMsg += `\n${item.emote} **${item.name}** (${item.used}x)`;
                 }
             });
@@ -524,12 +544,12 @@ export async function execute(interaction) {
             selected = parseInt(selected.replace('par_ooch_id_', ''));
             party_idx = parseInt(selected);
             selected_ooch = ooch_party[party_idx];
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
+            heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             // Reset the set to primary button pre-emptively so that it's ready to be used for this oochamon, unless it's already primary.
             // Also reset the heal button to be enabled or disabled based on current HP values
             party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
-            party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || Object.keys(heal_inv).length == 0) ? true : false);
+            party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || heal_inv.length == 0) ? true : false);
 
             // Check if we can enable the move switcher, if we have more options outside of the main 4 moves
             let available_moves = 0;
@@ -583,7 +603,6 @@ export async function execute(interaction) {
                         .setPlaceholder('Select a stance to start in!')
                         .addOptions(stance_options));
                 party_buttons.push(party_extra_stance_sel);
-                console.log(party_buttons);
             }
 
             party_buttons.push(party_back_button);
@@ -598,7 +617,7 @@ export async function execute(interaction) {
             [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
             profile.set(interaction.user.id, ooch_party, 'ooch_party');
             party_extra_buttons.components[0].setDisabled(true);
-            i.update({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            i.update({ content: null, embeds: [dexEmbed], components: dex_components });
             let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
             await wait(5000);
             await followUpMsg.delete().catch(() => { });
@@ -606,22 +625,20 @@ export async function execute(interaction) {
 
         // Heal Oochamon button
         else if (selected == 'party_heal') {
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            let heal_inv_keys = Object.keys(heal_inv);
+            heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             bag_select = new ActionRowBuilder();
             let heal_select_options = [];
-            for (let i = 0; i < heal_inv_keys.length; i++) {
-                let id = heal_inv_keys[i];
-                let amount = profile.get(`${interaction.user.id}`, `heal_inv.${heal_inv_keys[i]}`);
+            for (let item of heal_inv) {
+                let db_item_data = item_data.get(`${item.id}`);
 
-                if (amount != 0) {
-                    if (item_data.get(`${id}`, 'type') == 'potion') {
+                if (item.quantity != 0) {
+                    if (db_item_data.type == ItemType.Potion) {
                         heal_select_options.push({
-                            label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                            description: item_data.get(`${id}`, 'description_short'),
-                            value: `${id}`,
-                            emoji: item_data.get(`${id}`, 'emote'),
+                            label: `${db_item_data.name} (${item.quantity})`,
+                            description: db_item_data.description_short,
+                            value: `${item.id}`,
+                            emoji: db_item_data.emote,
                         });
                     }
                 }
@@ -639,23 +656,19 @@ export async function execute(interaction) {
         // Oochamon Heal Select Menu
         else if (collectorId == 'party_heal_select') {
             let db_item_data = item_data.get(`${selected}`);
-            selected_ooch = item_use(interaction.user.id, selected_ooch, selected);
+            selected_ooch = await item_use(interaction.user.id, selected_ooch, selected, false, true);
             profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
             let amountHealed = clamp(db_item_data.potency, 0, selected_ooch.stats.hp);
-            await profile.math(interaction.user.id, '-', 1, `heal_inv.${selected}`);
-
-            if (profile.get(`${interaction.user.id}`, `heal_inv.${selected}`) <= 0) {
-                await profile.delete(interaction.user.id, `heal_inv.${selected}`);
-            }
+            let heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
             // Disable the heal Oochamon button if its enabled, if we are out of healing items
-            party_extra_buttons.components[1].setDisabled((Object.keys(profile.get(`${interaction.user.id}`, 'heal_inv')).length == 0) ? true : false);
+            party_extra_buttons.components[1].setDisabled(heal_inv.length == 0 ? true : false);
 
             if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
             let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
             let dexPng = dexEmbed[1];
             dexEmbed = dexEmbed[0];
-            await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            await i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
 
             let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${db_item_data.emote} **${db_item_data.name}**` });
             await wait(2500);
@@ -683,7 +696,7 @@ export async function execute(interaction) {
                 party_extra_buttons.components[2].setDisabled(true);
             }
 
-            i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+            i.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
 
             // Finalize putting the ooch into the database and in our menu
             profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
@@ -739,13 +752,23 @@ export async function execute(interaction) {
 
                 // Generate a new ooch title to place into our embed
                 let ooch_title = `${selected_ooch.nickname}`;
-                selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${TypeEmote[capitalize(selected_ooch.type)]}` : ooch_title += ` ${TypeEmote[capitalize(selected_ooch.type)]}`;
+                selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${type_to_emote(selected_ooch.type)}` : ooch_title += ` ${type_to_emote(selected_ooch.type)}`;
                 dexEmbed.setTitle(ooch_title);
 
                 profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
-                menuMsg.edit({ content: null, embeds: [dexEmbed], components: [party_extra_buttons, party_extra_buttons_2, party_back_button] });
+                menuMsg.edit({ content: null, embeds: [dexEmbed], components: dex_components });
                 await msg.delete().catch(() => { });;
             });
+        }
+
+        else if (collectorId == 'stance_select') {
+            selected = parseInt(selected.replace('stance_sel_', ''));
+            profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].starting_stance`);
+
+            i.update({ content: null, embeds: [dexEmbed], components: dex_components });
+            let followUpMsg = await interaction.followUp({ content: 'You\'ve changed your starting stance!' });
+            await wait(5000);
+            await followUpMsg.delete().catch(() => { });
         }
 
         // Move switcher button
@@ -762,10 +785,11 @@ export async function execute(interaction) {
                 move_sel_idx = parseInt(selected.replace('move_', ''));
                 let move_sel_id = selected_ooch.moveset[parseInt(selected.replace('move_', ''))];
 
-                for (let db_move_data of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
-                    if (db_move_data[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_data[1])) {
-                        if (db_move_data[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
-                        let db_move_data = move_data.get(`${db_move_data[1]}`);
+                for (let db_move_at_lv of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
+                    if (db_move_at_lv[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_at_lv[1])) {
+                        if (db_move_at_lv[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
+                        
+                        let db_move_data = move_data.get(`${db_move_at_lv[1]}`);
                         move_list_select_options.push(
                             new StringSelectMenuOptionBuilder()
                                 .setLabel(`${db_move_data.name} [${db_move_data.damage} Power, ${db_move_data.accuracy}% Accuracy]`)
@@ -821,87 +845,231 @@ export async function execute(interaction) {
                 i.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], moves_back_button], files: [] });
             }
         }
+    
+
+
+        //#endregion
+        //#region Taming Menu
+
+        else if (selected == 'taming') {
+            const taming_image = await setup_taming_picture(selected_ooch);
+            const taming_status = await get_tame_string(selected_ooch.tame_value)
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
+
+            // if (selected_ooch.tame_value >= 41) taming_buttons.components[0].setDisabled(false)
+            // if (selected_ooch.tame_value >= 81) taming_buttons.components[1].setDisabled(false)
+            // if (selected_ooch.tame_value >= 121) taming_buttons.components[2].setDisabled(false)
+            if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
+
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        } else if (selected == 'taming_feed') {
+
+            let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Treat);
+
+            let treat_select = new ActionRowBuilder();
+            let treat_select_options = [];
+            for (let item of treat_inv) {
+                let db_item_data = item_data.get(`${item.id}`);
+
+                if (item.quantity != 0) {
+                    treat_select_options.push({
+                        label: `${db_item_data.name} (${item.quantity})`,
+                        description: db_item_data.description_short,
+                        value: `taming_feed_id_${item.id}`,
+                        emoji: db_item_data.emote,
+                    });
+                }
+            }
+
+            treat_select.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('taming_feed_item_select')
+                    .setPlaceholder(`Select a treat for ${selected_ooch.nickname}!`)
+                    .addOptions(treat_select_options));
+
+            i.update({ components: [treat_select, sel_ooch_back_button] });
+
+        } else if (selected.includes('taming_feed_id_')) {
+            const feed_item_id = selected.split('_')[3];
+            const food_data = item_data.get(feed_item_id);
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Feed);
+            
+            let feed_result = selected_ooch.type.includes(food_data.potency) || food_data.potency == -1;
+            if (feed_result) {
+                selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value + (food_data.potency == -1 ? 5 : 10))
+            } else {
+                selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value - 10)
+            }
+            remove_item(interaction.user.id, feed_item_id, 1);
+
+            user_profile.ooch_party[party_idx] = selected_ooch
+
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_feed_text = feed_text(selected_ooch.nickname, feed_result);
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_feed_text}*`)
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: `Taming Status: ${taming_status}` })
+
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+
+        } else if (selected == 'taming_pet') {
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Pet);
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_pet_text = pet_text(selected_ooch.nickname, selected_ooch.tame_value);
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_pet_text}*`)
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
+                
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+
+        } else if (selected == 'taming_walk') {
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Walk);
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_walk_data = walk_get_rewards(selected_ooch.nickname, selected_ooch.tame_value, selected_ooch.level);
+
+            for (let loot of taming_walk_data.loot) {
+                add_item(interaction.user.id, loot.id, loot.count)
+            }
+
+            let loot_field_str = taming_walk_data.loot.map(item => {
+                let db_item_data = item_data.get(`${item.id}`);
+                return `- ${db_item_data.emote} ${db_item_data.name} (${item.count}x)`;
+            }).join('\n');
+
+            profile.set(interaction.user.id, true, 'walk_taken');
+            taming_buttons.components[2].setDisabled(true)
+
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_walk_data.walk_text}*`)
+                .addFields([{ name: 'Items Received From Walking:', value: `${loot_field_str}` }])
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
+                
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        }
 
 
 
         //#endregion
         //#region Bag / Bag Submenu
         else if (selected == 'bag') {
-            heal_inv = profile.get(`${interaction.user.id}`, 'heal_inv');
-            prism_inv = profile.get(`${interaction.user.id}`, 'prism_inv');
-            key_inv = profile.get(`${interaction.user.id}`, 'other_inv');
-            display_inv = heal_inv;
-            let display_title = 'Healing Items ❤️';
+            consumable_inv = user_profile.inventory[ItemCategory.Consumable];
+            prism_inv = user_profile.inventory[ItemCategory.Prism];
+            key_inv = user_profile.inventory[ItemCategory.Key];
+            skin_inv = user_profile.inventory[ItemCategory.Skin];
+            map_inv = user_profile.inventory[ItemCategory.Map];
+            //console.log(consumable_inv);
+            display_inv = consumable_inv;
+            let display_title = 'Consumable Items 🎒';
             let item_list_str = '';
 
-            if (Object.keys(heal_inv).length == 0) bag_buttons.components[0].setDisabled(true);
-            if (Object.keys(prism_inv).length == 0) bag_buttons.components[1].setDisabled(true);
-            if (Object.keys(key_inv).length == 0) bag_buttons.components[2].setDisabled(true);
+            if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
+            if (prism_inv.length == 0) bag_buttons.components[1].setDisabled(true);
+            if (map_inv.length == 0) bag_buttons.components[2].setDisabled(true);
+            if (key_inv.length == 0) bag_buttons.components[3].setDisabled(true);
+            if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[4].setDisabled(true);
 
             if (bag_buttons.components[0].data.disabled == true) {
                 if (bag_buttons.components[1].data.disabled == true) {
+                    display_inv = skin_inv;
+                    display_title = `${get_emote_string('c_000')} Skins`;
+                    bag_buttons.components[4].setStyle(ButtonStyle.Success);
+                } else if (bag_buttons.components[2].data.disabled == true) {
                     display_inv = key_inv;
                     display_title = '🔑 Key Items';
+                    bag_buttons.components[3].setStyle(ButtonStyle.Success);
+                } else if (bag_buttons.components[3].data.disabled == true) {
+                    display_inv = map_inv;
+                    display_title = `${get_emote_string('item_map')} Maps`;
                     bag_buttons.components[2].setStyle(ButtonStyle.Success);
-                } else {
+                } else if (bag_buttons.components[4].data.disabled == true) {
                     display_inv = prism_inv;
-                    display_title = '<:item_prism:1274937161262698536> Prisms';
+                    display_title = `${get_emote_string('item_prism')} Prisms`;
                     bag_buttons.components[1].setStyle(ButtonStyle.Success);
                 }
+                
                 bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             }
 
-            if (Object.keys(heal_inv).length == 0 && Object.keys(prism_inv).length == 0 && Object.keys(key_inv).length == 0) {
+            if (consumable_inv.length == 0 && prism_inv.length == 0 && key_inv.length == 0 && map_inv.length == 0 && (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
                 i.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_button] });
                 return;
             }
 
             // Setup default item list for the default value, healing
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
-            }
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            item_list_str = consumableData[0];
 
             bagEmbed = new EmbedBuilder()
                 .setColor('#808080')
                 .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
                 .setTitle(display_title)
-                .setDescription(item_list_str.length != 0 ? item_list_str : `You have no healing items in your bag.`);
+                .setDescription(item_list_str.length != 0 ? item_list_str : `You have no items in your bag.`);
 
-            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            if (item_list_str.length != 0) {
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+            } else {
+                i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            }
 
         }
 
-        // Heal Button
-        else if (selected == 'heal_button') {
-            bagEmbed.setTitle('❤️ Healing Items');
+        // Consumable Button
+        else if (selected == 'consumable_button') {
+            bagEmbed.setTitle('🎒 Consumable Items');
             bag_buttons.components[0].setStyle(ButtonStyle.Success);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
-            display_inv = heal_inv;
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            bagEmbed.setDescription(consumableData[0]);
+            
+            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+        }
+
+        // Prism Button
+        else if (selected == 'prism_button') {
+            bagEmbed.setTitle(`${get_emote_string('item_prism')} Prisms`);
+            bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[1].setStyle(ButtonStyle.Success);
+            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
+            display_inv = prism_inv;
             let item_list_str = '';
 
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
             }
 
             bagEmbed.setDescription(item_list_str);
             i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
         }
 
-        // Prism Button
-        else if (selected == 'prism_button') {
-            bagEmbed.setTitle('<:item_prism:1274937161262698536> Prisms');
+         // Prism Button
+        else if (selected == 'map_button') {
+            bagEmbed.setTitle(`${get_emote_string('item_map')} Maps`);
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
-            bag_buttons.components[1].setStyle(ButtonStyle.Success);
-            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
-            display_inv = prism_inv;
+            bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[2].setStyle(ButtonStyle.Success);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            display_inv = map_inv;
             let item_list_str = '';
 
-            for (const [item_id, quantity] of Object.entries(display_inv)) {
-                let item_obj = item_data.get(`${item_id}`);
-                item_list_str += `${item_obj.emote} ${item_obj.name} | **${quantity}x**\n`;
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
             }
 
             bagEmbed.setDescription(item_list_str);
@@ -913,23 +1081,32 @@ export async function execute(interaction) {
             bagEmbed.setTitle('🔑 Misc Items');
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
             bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
-            bag_buttons.components[2].setStyle(ButtonStyle.Success);
+            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Success);
+            bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
+            display_inv = key_inv;
+            let item_list_str = '';
 
-            let keyData = await buildItemData();
-            bagEmbed.setDescription(keyData[0]);
-            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            // Setup default item list for the default value, healing
+            for (const item of display_inv) {
+                let item_obj = item_data.get(`${item.id}`);
+                item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
+            }
+
+            bagEmbed.setDescription(item_list_str);
+            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
         }
-        else if (collectorId == 'other_select') {
+        else if (collectorId == `${ItemCategory.Consumable}_select`) {
             if (selected == 'n/a') {
-                let keyData = await buildItemData();
+                let keyData = await buildItemData(ItemCategory.Consumable);
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
             }
             let db_item_data = item_data.get(`${selected}`);
 
-            if (db_item_data.type == 'teleport' && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
-                let keyData = await buildItemData();
+            if (db_item_data.type == ItemType.Teleport && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
+                let keyData = await buildItemData(ItemCategory.Consumable);
                 bagEmbed.setDescription(keyData[0]);
                 i.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                 return;
@@ -937,18 +1114,18 @@ export async function execute(interaction) {
 
             let item_usage_text = '';
             switch (db_item_data.type) {
-                case 'repel': item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
-                case 'teleport': item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
+                case ItemType.Repel: item_usage_text = `Used a **${db_item_data.name}**, you will no longer have wild encounters for ${db_item_data.potency} more steps.`; break;
+                case ItemType.Teleport: item_usage_text = `Used a **${db_item_data.name}**, and teleported back to the previously used teleporter while healing your Oochamon.`; break;
             }
 
-            if (db_item_data.type == 'repel' || db_item_data.type == 'teleport') {
+            if (db_item_data.type == ItemType.Repel || db_item_data.type == ItemType.Teleport) {
                 let playspace_str;
                 switch (db_item_data.type) {
-                    case 'repel':
-                        await item_use(interaction.user.id, selected_ooch, selected);
+                    case ItemType.Repel:
+                        await item_use(interaction.user.id, selected_ooch, selected, false, true);
                         break;
-                    case 'teleport':
-                        await item_use(interaction.user.id, selected_ooch, selected);
+                    case ItemType.Teleport:
+                        await item_use(interaction.user.id, selected_ooch, selected, false, true);
                         playspace_str = await setup_playspace_str(interaction.user.id);
                         await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
                             profile.set(interaction.user.id, msg.id, 'display_msg_id');
@@ -959,15 +1136,10 @@ export async function execute(interaction) {
                         break;
                 }
 
-                await profile.math(interaction.user.id, '-', 1, `other_inv.${selected}`);
-                if (profile.get(`${interaction.user.id}`, `other_inv.${selected}`) <= 0) {
-                    await profile.delete(interaction.user.id, `other_inv.${selected}`);
-                }
-
-                if (db_item_data.type != 'teleport') {
-                    let keyData = await buildItemData();
-                    bagEmbed.setDescription(keyData[0]);
-                    i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                if (db_item_data.type != ItemType.Teleport) {
+                    let consumableData = await buildItemData(ItemCategory.Consumable);
+                    bagEmbed.setDescription(consumableData[0]);
+                    i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
                 }
 
                 let followUpMsg = await interaction.followUp({ content: item_usage_text });
@@ -977,6 +1149,36 @@ export async function execute(interaction) {
                 let pa_components = buildPartyData(user_profile.ooch_party, true, db_item_data);
                 i.update({ content: `Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, embeds: [], components: pa_components });
             }
+        } 
+        else if (selected == 'skin_button') {
+            bagEmbed.setTitle(`${get_emote_string('c_000')} Skin Items`);
+            bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+            bag_buttons.components[4].setStyle(ButtonStyle.Success);
+
+            let skinData = await buildItemData(ItemCategory.Skin);
+            bagEmbed.setDescription(skinData[0]);
+            await i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, skinData[1], back_button] });
+        }
+        else if (collectorId == `${ItemCategory.Skin}_select`) {
+            if (selected == 'n/a') {
+                let keyData = await buildItemData(ItemCategory.Skin);
+                bagEmbed.setDescription(keyData[0]);
+                i.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                return;
+            }
+            
+            let db_item_data = item_data.get(`${selected}`);
+            let item_usage_text = `Changed your skin to ${get_emote_string(db_item_data.potency)}!`;
+            profile.set(interaction.user.id, db_item_data.potency, 'player_sprite')
+
+            await i.update({ content: `` });
+
+            let followUpMsg = await interaction.followUp({ content: item_usage_text });
+            await wait(5000);
+            await followUpMsg.delete().catch(() => { });
         } else if (selected.includes('item_ooch_id_')) {
             let selData = selected.replace('item_ooch_id_', '');
             selData = selData.split('_');
@@ -985,11 +1187,18 @@ export async function execute(interaction) {
             let oldOoch, nickname, newOoch, abilityList, currentAbility, newAbility, exp_given_ooch, level_ooch;
 
             switch (selItem.type) {
-                case 'iv':
+                case ItemType.Potion:
+                    user_profile.ooch_party[selData[0]].current_hp += selItem.potency
+                    user_profile.ooch_party[selData[0]].current_hp = clamp(user_profile.ooch_party[selData[0]].current_hp, 0, user_profile.ooch_party[selData[0]].stats.hp);
+                    item_usage_text = `Used a **${selItem.name}**, and healed ${selItem.potency} HP for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
+                    remove_item(interaction.user.id, selItem.id, 1)
+                break;
+                case ItemType.IV:
                     user_profile.ooch_party[selData[0]].stats[`${selItem.potency}_iv`] += 0.05;
                     item_usage_text = `Used a **${selItem.name}**, and raised the ${selItem.potency.toUpperCase()} Bonus for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}** by 1.`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'evolve':
+                case ItemType.Evolve:
                     oldOoch = user_profile.ooch_party[selData[0]];
 
                     // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
@@ -1005,12 +1214,14 @@ export async function execute(interaction) {
                     profile.math(interaction.user.id, '+', 1, `oochadex[${newOoch.id}].caught`);
 
                     item_usage_text = `Used a **${selItem.name}**, and evolved ${oldOoch.emote} **${oldOoch.name}** into ${newOoch.emote} **${newOoch.name}**!`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'move_unlock':
+                case ItemType.MoveUnlock:
                     user_profile.ooch_party[selData[0]].unlocked_special_move = true;
                     item_usage_text = `Used the **${selItem.name}**, and unlocked the latent potential of ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**. It can now learn special moves!`;
+                    remove_item(interaction.user.id, selItem.id, 1)
                     break;
-                case 'ability_swap':
+                case ItemType.AbilitySwap:
                     abilityList = monster_data.get(`${user_profile.ooch_party[selData[0]].id}`, 'abilities');
                     currentAbility = user_profile.ooch_party[selData[0]].ability;
 
@@ -1018,29 +1229,32 @@ export async function execute(interaction) {
                     user_profile.ooch_party[selData[0]].ability = newAbility;
 
                     item_usage_text = `Swapped ability from **${ability_data.get(`${currentAbility}`, 'name')}** to **${ability_data.get(`${newAbility}`, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
+                    
+                    remove_item(interaction.user.id, selItem.id, 1)
+                    
                     break;
-                case 'give_exp':
+                case ItemType.GiveExp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
-                        let keyData = await buildItemData();
+                        let keyData = await buildItemData(ItemCategory.Consumable);
                         bagEmbed.setDescription(keyData[0]);
                         i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                         return;
                     }
 
-                    exp_given_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    exp_given_ooch = await item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id, false, true);
 
                     user_profile.ooch_party[selData[0]] = exp_given_ooch[0];
                     item_usage_text = exp_given_ooch[1];
                     break;
-                case 'level_up':
+                case ItemType.LevelUp:
                     if (user_profile.ooch_party[selData[0]].level >= 50) {
-                        let keyData = await buildItemData();
+                        let keyData = await buildItemData(ItemCategory.Consumable);
                         bagEmbed.setDescription(keyData[0]);
                         i.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
                         return;
                     }
 
-                    level_ooch = item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id);
+                    level_ooch = await item_use(interaction.user.id, user_profile.ooch_party[selData[0]], selItem.id, false, true);
 
                     user_profile.ooch_party[selData[0]] = level_ooch[0];
                     item_usage_text = level_ooch[1];
@@ -1049,14 +1263,9 @@ export async function execute(interaction) {
 
             profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
 
-            await profile.math(interaction.user.id, '-', 1, `other_inv.${selData[1]}`);
-            if (profile.get(`${interaction.user.id}`, `other_inv.${selData[1]}`) <= 0) {
-                await profile.delete(interaction.user.id, `other_inv.${selData[1]}`);
-            }
-
-            let keyData = await buildItemData();
-            bagEmbed.setDescription(keyData[0]);
-            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            let consumableData = await buildItemData(ItemCategory.Consumable);
+            bagEmbed.setDescription(consumableData[0]);
+            i.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
             await wait(5000);
@@ -1074,9 +1283,9 @@ export async function execute(interaction) {
             let map_name = user_profile.location_data.area;
             if (map_name.includes('everchange')) return i.update({ content: `**Everchange Cave does not have a map!**` });
             let map_item = item_data.find('potency', map_name);
-            if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**` });
+            if (map_item == undefined) return i.update({ content: `**You don't have the map for this area yet...**`, components: [back_button] });
 
-            if (Object.prototype.hasOwnProperty.call(user_profile.other_inv, `${map_item.id}`)) {
+            if (get_inv_item(interaction.user.id, ItemCategory.Map, map_item.id) ) {
                 let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
                 i.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
             }

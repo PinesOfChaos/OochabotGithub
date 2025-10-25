@@ -4,7 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, 
 import wait from 'wait';
 import { sample, clamp, random } from 'lodash-es';
 import { event_process, event_from_npc } from './func_event.js';
-import { buildBoxData, ooch_info_embed } from "./func_other.js";
+import { buildBoxData, get_emote_string, ooch_info_embed } from "./func_other.js";
 
 let slot_num, ooch_user_data, box_row;
 
@@ -59,24 +59,19 @@ let box_confirm_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('box_no').setLabel('No').setStyle(ButtonStyle.Danger),
     );
 
-// let confirm_buttons = new ActionRowBuilder()
-//     .addComponents(
-//         new ButtonBuilder().setCustomId('yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-//     ).addComponents(
-//         new ButtonBuilder().setCustomId('no').setLabel('No').setStyle(ButtonStyle.Danger),
-//     );
-
 let confirm_buttons_tp = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Set Checkpoint').setEmoji('🏳️').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Save').setEmoji('🏳️').setStyle(ButtonStyle.Success),
     ).addComponents(
         new ButtonBuilder().setCustomId('box_oochabox').setLabel('Oochabox').setEmoji('🎒').setStyle(ButtonStyle.Primary),
-    ).addComponents(
+    )
+
+let confirm_buttons_tp_exit = new ActionRowBuilder()
+    .addComponents(
         new ButtonBuilder().setCustomId('back').setLabel('Exit').setStyle(ButtonStyle.Danger)
     )
 
 let teleport_menu = new ActionRowBuilder();    
-// let savepoint_options = [confirm_buttons_tp]
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
@@ -85,10 +80,10 @@ let wild_encounter_buttons = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
     );
 
-// let wild_encounter_instakill_btn = new ActionRowBuilder()
-//     .addComponents(
-//         new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
-//     )
+let wild_encounter_instakill_btn = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
+    )
 
 let back_button = new ActionRowBuilder()
     .addComponents(
@@ -115,6 +110,21 @@ export function get_map_weather(map_weather, location_data) {
     return weather_options.length > 0 ? sample(weather_options) : Weather.None
 }
 
+//Checks if a player has a flag, handles "&"" checks
+export function has_flag(event_name, user_events){
+    let ev_split = event_name.split('&');
+    if(ev_split.length == 1 && user_events.includes(event_name)){
+        return true;
+    }
+
+    for(let ev_substr of ev_split){
+        if(!user_events.includes(ev_substr)){
+            return false;
+        }
+    }
+    return true;
+}
+
 export async function move(thread, user_id, direction, dist = 1, encounter_chance = false) {
     /*
         db.player_positions.set(user_id, interaction.member.displayName, 'player_name');
@@ -129,6 +139,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         xmove = 0;
         ymove = 0;
     }
+
+    
 
     let checkPlrState = profile.get(`${user_id}`, 'player_state')
     if (checkPlrState !== PlayerState.Playspace) {
@@ -155,9 +167,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     for(let ooch of profile_data.ooch_party){
         all_flags.push(`ooch_id_${ooch.id}`)
     }
-    
-    let moveDisable = false;
+
     let repel_ran_out = false;
+    let relax_steps_end = false;
 
     let previous_positions = profile_data.previous_positions;
 
@@ -210,6 +222,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         playerx += xmove;
         playery += ymove;
 
+        profile.math(user_id, '+', 1, 'step_counter');
+        profile_data.step_counter += 1;
+
         //Track Repulsor steps remaining
         if (profile_data.repel_steps != 0) {
             profile.math(user_id, '-', 1, 'repel_steps');
@@ -217,8 +232,18 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             if (profile_data.repel_steps == 0) repel_ran_out = true;
         } 
 
+        //Track steps to force campaign progress
+        if (profile_data.relax_step_counter != 0 && profile_data.flags.includes('returned_to_surface') && !profile_data.flags.includes('find_lyra')) {
+            profile.math(user_id, '-', 1, 'relax_step_counter');
+            profile_data.relax_step_counter -= 1;
+            if (profile_data.relax_step_counter == 0) {
+                relax_steps_end = true;
+                break;
+            } 
+        } 
+
         let tile_id = map_tiles[playerx][playery]
-        var tile = tile_data.get(`${tile_id.toString()}`);
+        let tile = tile_data.get(`${tile_id.toString()}`);
         // 10% chance on cave, 40% chance on other places
         if (encounter_chance === false) {
             encounter_chance = tile.zone_id == Zone.Cave ? .10 : .40;
@@ -241,7 +266,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 x2 = (obj.x + obj.width) >= playerx;
                 y2 = (obj.y + obj.height) >= playery;
                 if (x1 && y1 && x2 && y2) {
-                    if ((obj.flag_required == false || all_flags.includes(obj.flag_required)) && !all_flags.includes(obj.event_name)) {
+                    if ((obj.flag_required == false || has_flag(obj.flag_required, all_flags)) && !has_flag(obj.event_name, all_flags) && !has_flag(obj.flag_kill, all_flags)) {
 
                         //Push the player back 1 step if they collide with an NPC to trigger this event
                         if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {
@@ -252,10 +277,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         stop_moving = true;
                         await update_position(user_id, map_name, playerx, playery, previous_positions);
 
-                        //moveDisable = true; to do we need to update the buttons *during* the event, this doesn't disable them until after it
                         await event_process(user_id, thread, events_data.get(`${obj.event_name}`), 0, obj.event_name);
 
-                        //updat the profile information as it has likely changed since the event_process
+                        //update the profile information as it has likely changed since the event_process
                         profile_data = await profile.get(`${user_id}`); 
                         player_location = profile_data.location_data;
                         map_name = player_location.area;
@@ -270,29 +294,32 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         //NPCs
         if(!stop_moving){
             for(let obj of map_npcs){
-                if(stop_moving){ break; } //Only interact with one NPC at a time (come back to this later maybe)
-
                 let npc_flag = `${Flags.NPC}${obj.name}${obj.npc_id}`;
 
+                //Stop searching if the player no-longer should be moving
+                if(stop_moving){ break; } 
+
                 //Skip NPCs if they meet any of these conditions
-                if( (all_flags.includes(obj.flag_kill)) || //The player has the NPC's kill flag
-                    (obj.flag_required != "" && !all_flags.includes(obj.flag_required)) || //The NPC requres a flag, and the player does not have that flag
-                    (obj.remove_on_finish && all_flags.includes(npc_flag))){ continue; } //The NPC gets removed on finish, and the player has the NPC's personal flag
-                if(stop_moving){ break; } //Stop searching if the player no-longer should be moving
-                
-                
-                if(obj.x == playerx && obj.y == playery){ //Check if player collides with this NPC's position
+                if( ((obj.flag_kill != false) && has_flag(obj.flag_kill, all_flags)) || //The player has the NPC's kill flag
+                    ((obj.flag_required != "") && !has_flag(obj.flag_required, all_flags)) || //The NPC requires a flag, and the player does not have that flag
+                    (obj.remove_on_finish && has_flag(npc_flag, all_flags))){ //The NPC gets removed on finish, and the player has the NPC's personal flag
+                        continue; 
+                    } 
+
+                //Check if player collides with this NPC's position
+                if(obj.x == playerx && obj.y == playery){ 
+                    //console.log(obj);
+
                     stop_moving = true;
                     playerx -= xmove;
                     playery -= ymove;
-                    
+
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let npc_event_obj = await event_from_npc(obj, user_id);
-                    //console.log(npc_event_obj);
                     event_process(user_id, thread, npc_event_obj);
                 }
-                else if ((obj.team.length > 0) && (!all_flags.includes(npc_flag))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
+                else if ((obj.team.length > 0) && (!has_flag(npc_flag, all_flags))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                     let quarter_circle_radians = 90 * Math.PI / 180;
                     let steps = obj.aggro_range;
                     let stop_check = false;
@@ -367,13 +394,12 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 if(obj.x == playerx && obj.y == playery){
                     //prompt the player 
                     stop_moving = true;
-                    moveDisable = true;
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let page_num = 0;
                     let pages = 9;
-                    let savepoint_options = [confirm_buttons_tp];
+                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
 
                     // Setup teleport menu
                     if (profile_data.areas_visited.length > 0 && profile.get(`${user_id}`, 'flags').includes('teleport_enable')) {
@@ -396,8 +422,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         
                         savepoint_options.push(teleport_menu);
                     }
-
-                    thread.send({ content: `\n## Checkpoint`, components: savepoint_options }).then(async msg => {
+                    
+                    await thread.messages.fetch(msg_to_edit).then(async msg => {
+                        msg.edit({ components: savepoint_options })
                         profile.set(user_id, PlayerState.Encounter, 'player_state');
                         confirm_collector = msg.createMessageComponentCollector();
 
@@ -444,12 +471,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 let playspace_str = await setup_playspace_str(user_id);
 
                                 profile_data = profile.get(`${user_id}`);
-
-                                selected.update({ content: `## Checkpoint\n\n**Warped to ${biome_to_data.map_info.map_name}!**`})
-
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0] }).catch(() => {});
-                                });
+                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
                             }
                             
                             else if (selected.customId == 'set_checkpoint') {
@@ -461,24 +483,20 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
                                     profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
                                     profile.set(user_id, true, `ooch_party[${i}].alive`);
+            
                                 }
                                 profile.set(user_id, PlayerState.Playspace, 'player_state');
                                 let playspace_str = await setup_playspace_str(user_id);
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                });
-                                await selected.update({ content: 'Set a checkpoint and healed all your Oochamon.', components: [] });
-                                await wait(5000);
-                                await msg.delete().catch(() => {});
+                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                                let quickMsg = await thread.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
                                 await confirm_collector.stop();
+                                await wait(5000);
+                                await quickMsg.delete().catch(() => {});
                             } else {
                                 profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                await msg.delete().catch(() => {});
                                 await confirm_collector.stop();
                                 let playspace_str = await setup_playspace_str(user_id);
-                                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                                    msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                });
+                                selected.update({ components: playspace_str[1] }).catch(() => {});
                             }
                         });
                     });
@@ -494,21 +512,19 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 playerx -= xmove;
                 playery -= ymove;
 
-                
                 await update_position(user_id, map_name, playerx, playery, previous_positions);
                 profile.set(user_id, PlayerState.Shop, 'player_state');
 
                 let profile_flags = profile.get(`${user_id}`, 'flags');
-                let shopSelectOptions = await shop_list_from_flags(obj, profile_flags)
+                let shopSelectOptions = shop_list_from_flags(obj, profile_flags)
 
                 shopSelectOptions = shopSelectOptions.flat(1);
                 shopSelectOptions = [...new Set(shopSelectOptions)];
                 shopSelectOptions = shopSelectOptions.map(id => {
                     let db_item_data = item_data.get(`${id}`);
-                    let item_amount = profile.get(`${user_id}`, `${db_item_data.category}.${id}`);
-                    if (item_amount == undefined) item_amount = 0;
+                    let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
                     return { 
-                        label: `${db_item_data.name} (${item_amount}/50) [$${db_item_data.price}]`,
+                        label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
                         description: db_item_data.description_short,
                         value: `${id}`,
                         emoji: db_item_data.emote,
@@ -577,18 +593,14 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             }
                         }
 
-                        profile.ensure(user_id, 0, `${item.category}.${item_id}`);
-                        let amtHeld = profile.get(`${user_id}`, `${item.category}.${item_id}`); 
-                        if (amtHeld < 0) {
-                            profile.set(user_id, 0, `${item.category}.${item_id}`);
-                            amtHeld = 0;
-                        }
+                        let inv_item = get_inv_item(user_id, item.category, item_id);
+                        if (!inv_item) inv_item = { id: item_id, quantity: 0 }
 
                         let maxAmt = Math.floor(oochabux / item.price);
                         if (maxAmt > 50) maxAmt = 50;
-                        if (maxAmt > amtHeld) maxAmt -= amtHeld;
+                        if (maxAmt > inv_item.quantity) maxAmt -= inv_item.quantity;
 
-                        if (amtHeld >= 50) {
+                        if (inv_item.quantity >= 50) {
                             await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
                             return;
                         }
@@ -600,26 +612,13 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         item_qty_collector.on('collect', async m => {
                             let new_inv_qty = 0;
                             let buyAmount = Math.abs(parseInt(m.content));
-                            if (buyAmount > (50 - amtHeld)) buyAmount = (50 - amtHeld);
+                            if (buyAmount > (50 - inv_item.quantity)) buyAmount = (50 - inv_item.quantity);
                             oochabux -= item.price * buyAmount;
                             profile.set(user_id, oochabux, 'oochabux')
-                            switch (item.category) {
-                                case 'heal_inv': 
-                                    profile.ensure(user_id, 0, `heal_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `heal_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `heal_inv.${item_id}`);
-                                break;
-                                case 'prism_inv': 
-                                    profile.ensure(user_id, 0, `prism_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `prism_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `prism_inv.${item_id}`);
-                                break;
-                                case 'other_inv': 
-                                    profile.ensure(user_id, 0, `other_inv.${item_id}`)
-                                    profile.math(user_id, '+', buyAmount, `other_inv.${item_id}`);
-                                    new_inv_qty = profile.get(`${user_id}`, `other_inv.${item_id}`);
-                                break;
-                            }
+                            
+                            add_item(user_id, item_id, buyAmount);
+
+                            new_inv_qty = get_inv_item(user_id, item.category, item_id).quantity;
                             
                             await m.delete().catch(() => {});
                             let followUpMsg;
@@ -631,8 +630,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                             shopSelectOptions = shopSelectOptions.map(id => {
                                 let db_item_data = item_data.get(`${id}`);
+                                let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
                                 return { 
-                                    label: `${db_item_data.name} (${profile.get(`${user_id}`, `${db_item_data.category}.${id}`)}/50) [$${db_item_data.price}]`,
+                                    label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
                                     description: db_item_data.description_short,
                                     value: `${id}`,
                                     emoji: db_item_data.emote,
@@ -682,6 +682,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             }
         }
 
+        let cancel_grass = false;
         switch (tile.use) {
             case Tile.Board:
                 stop_moving = true;
@@ -702,8 +703,17 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 }
             break;
             case Tile.Grass:
-                if ((Math.random() <= encounter_chance) && (!stop_moving)) {
-                    let spawn_zone, x1,y1,x2,y2;
+                //Check if we're on a savepoint, and ignore underlying grass tiles if so
+                for(let obj of map_savepoints){
+                    if(obj.x == playerx && obj.y == playery){
+                        cancel_grass = true;
+                        break;
+                    }
+                }
+
+                if ((Math.random() <= encounter_chance) && (!stop_moving) && (!cancel_grass)) {
+
+                   let spawn_zone, x1,y1,x2,y2;
                     for(let j = 0; j < map_spawns.length; j++){
                         if(stop_moving){ break;}
                         spawn_zone = map_spawns[j];
@@ -716,6 +726,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             stop_moving = true;
                             await update_position(user_id, map_name, playerx, playery, previous_positions);
 
+                            //Increase chances of battling i if the player has beaten the campaign an not-yet encountered it, or if the player is on the quest to capture i
+                            let encountered_i = has_flag('encountered_i', all_flags);
+                            let boost_i_chance = (has_flag('i_mission', all_flags) && !has_flag('i_mission_complete', all_flags)) || ((!encountered_i) && has_flag('finished_campaign1', all_flags))
+                            let encounter_has_i = false;
+
                             let battle_user_array = []
                             let mons_to_add = [];
                             let mon_count = 1 + profile_data.allies_list.length;
@@ -725,13 +740,14 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
 
-                                if(random(0, 1000) > 999){ //This is the index of _i (the mon that randomly spawns 1/1,000 battles)
+                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){ 
                                     let new_slot = {
-                                        id : -1,
+                                        id : -1, //This is the index of the oochamon _i
                                         level : random(slot.min_level, slot.max_level)
                                     }
                                     slot = new_slot;
-                                    mons_to_add = [slot]
+                                    mons_to_add = [slot];
+                                    encounter_has_i = true;
                                     break;
                                 } 
                                 else{
@@ -743,9 +759,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             let mon_name = monster_data.get(`${mons_to_add[0].id.toString()}`, 'name');
                             let mon_emote = monster_data.get(`${mons_to_add[0].id.toString()}`, 'emote');
 
-                            // let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
+                            let primary_ooch = profile_data.ooch_party[profile_data.ooch_active_slot];
                             let encounter_buttons = [wild_encounter_buttons];
-                            // if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
+                            if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
                             
                             //use mons_to_add .id, .level to setup the encounter
                             await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
@@ -773,6 +789,11 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                     }
 
                                     if (sel.customId == 'fight') {
+
+                                        if(encounter_has_i && !encountered_i){ 
+                                            profile.push(user_id, 'encountered_i', 'flags'); 
+                                        }
+
                                         await msg.delete();
                                         await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                     } else {
@@ -781,6 +802,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                         if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
 
                                         if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
+                                            if(encounter_has_i && !encountered_i){ 
+                                                profile.push(user_id, 'encountered_i', 'flags'); 
+                                            }
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                             await msg.delete();
                                         }
@@ -814,6 +838,10 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
         }
     }
 
+    if (relax_steps_end) {
+        await event_process(user_id, thread, events_data.get(`${'ev_meet_al_access_tunnel'}`), 0, 'ev_meet_al_access_tunnel')
+        return;
+    }
 
     //Update the player's profile with their new x & y positions
     await update_position(user_id, map_name, playerx, playery, previous_positions);
@@ -821,31 +849,17 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     // Update player position in the player positions array (don't do this right now)
     //db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
-    let playspace_str = await setup_playspace_str(user_id);
-    playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
-    //Send reply displaying the player's location on the map
-    await thread.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch((err) => { console.log(`Err: ${err}`)});
-    }).catch(async () => {
-        await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
-            await profile.set(user_id, newMsg.id, 'display_msg_id');
-        }).catch((err) => { console.log(`Err 2: ${err}`) });
-    });
-
-    if (moveDisable == true) {
-        await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-            const newComponents = msg.components.map((row) => {
-                const newRow = row.toJSON(); 
-                newRow.components = newRow.components.map((button) => {
-                    button.disabled = true; 
-                    return button;
-                });
-                return newRow;
-            });
-
-            await msg.edit({ components: newComponents }).catch(() => {});
-
-        }).catch((err) => { console.log(err) });
+    if (direction != '') {
+        let playspace_str = await setup_playspace_str(user_id);
+        playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
+        //Send reply displaying the player's location on the map
+        await thread.messages.fetch(msg_to_edit).then((msg) => {
+            msg.edit({ content: playspace_str[0] }).catch((err) => { console.log(`Err: ${err}`)});
+        }).catch(async () => {
+            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
+                await profile.set(user_id, newMsg.id, 'display_msg_id');
+            }).catch((err) => { console.log(`Err 2: ${err}`) });
+        });
     }
 }
 
@@ -902,22 +916,33 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
         xx = obj.x - x_pos + x_center;
         yy = obj.y - y_pos + y_center;
         if ((xx >= 0) && (xx <= x_center * 2) && (yy >= 0) && (yy <= y_center * 2)) {
-            if (obj.flag_required == '' || obj.flag_required == false || all_flags.includes(obj.flag_required)) {
-                let plr_interacted = all_flags.includes(npc_flag); //check if the player has defeated this npc
-                let plain_tile = emote_map_array_base[xx][yy];
+            
+            if (obj.flag_required == false || has_flag(obj.flag_required, all_flags)) {
+
+                let plr_interacted = has_flag(npc_flag, all_flags); //check if the player has defeated this npc
                 let npcZoneId = parseInt(emote_map_array_base[xx][yy].split(':')[1].split('_')[0].replace('c', '').replace('t', ''));
+
+                //NPC has been interacted with/beaten by the player and needs to be removed, skip it
+                if ((plr_interacted && obj.remove_on_finish) || ((obj.flag_kill != false) && has_flag(obj.flag_kill, all_flags))) { 
+                    continue;
+                }
+
+
                 tile = tile_data.get(`${obj.sprite_id.slice(0, 1) + obj.sprite_id.slice(3)}`);
                 if (tile.use === Tile.Int) npcZoneId = 0;
-                emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
-
-                //NPC has been interacted with/beaten by the player and needs to be removed, we'll remove it here
-                if ((plr_interacted && obj.remove_on_finish) || (all_flags.includes(obj.flag_kill))) { 
-                    emote_map_array[xx][yy] = plain_tile;
+                if (tile.zone_emote_ids[npcZoneId] == undefined) {
+                    emote_map_array[xx][yy] = get_emote_string('error');
+                } else {
+                    emote_map_array[xx][yy] = tile.zone_emote_ids[npcZoneId].emote;
                 }
+                
+
+                
             }
         }
     }
 
+    //Draw allies following the player
     for(let i = 0; i < allies_list.length; i++){
         if(previous_positions.length <= i){ break; }
         
@@ -1004,7 +1029,7 @@ export async function setup_playspace_str(user_id) {
     player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
     let moveBtns = [];
-    let spdEmotes = ['<:wlk1:1307858678229110937>', '<:wlk2:1307858664119336982>', '<:wlk3:1307858651297349652>', '<:wlk4:1307858636793577514>'];
+    let spdEmotes = [get_emote_string('wlk1'), get_emote_string('wlk2'), get_emote_string('wlk3'), get_emote_string('wlk4')];
 
     if (profile.get(`${user_id}`, 'settings.discord_move_buttons') === true) {
         const row = new ActionRowBuilder()
@@ -1020,7 +1045,7 @@ export async function setup_playspace_str(user_id) {
                 .setStyle(ButtonStyle.Primary),
         ).addComponents(
             new ButtonBuilder()
-                .setCustomId('play_menu')
+                .setCustomId('play_menu_btn')
                 .setLabel('≡')
                 .setStyle(ButtonStyle.Secondary),
         )
@@ -1047,21 +1072,6 @@ export async function setup_playspace_str(user_id) {
     }
 
     return [map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id), moveBtns];
-}
-
-/**
- * Gives a specific amount of an item to a user.
- * @param {String} user_id The user ID of the user who is receiving this item
- * @param {Number} item_id The ID of the item being given
- * @param {Number} item_count The amount of the item to give.
- */
-export function give_item(user_id, item_id, item_count) {
-    let item = item_data.get(`${item_id}`);
-    if (profile.get(`${user_id}`, `${item.category}.${item_id}`) != undefined) {
-        profile.math(user_id, '+', item_count, `${item.category}.${item_id}`);
-    } else {
-        profile.set(user_id, item_count, `${item.category}.${item_id}`);
-    }
 }
 
 /**
@@ -1191,7 +1201,7 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
     // Back to save (exit)
     else if (selected.customId == 'box_back_to_save') {
         profile.set(user_id, user_profile);
-        let options = [confirm_buttons_tp];
+        let options = [confirm_buttons_tp, confirm_buttons_tp_exit];
 
         if (user_profile.areas_visited.length > 0 && user_profile.flags.includes('teleport_enable')) { 
         teleport_menu = new ActionRowBuilder();
@@ -1214,7 +1224,8 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
             options.push(teleport_menu);
         }
 
-        selected.update({ content: `## Checkpoint`, components: options });
+        let playspace_str = await setup_playspace_str(user_id);
+        selected.update({ content: playspace_str[0], components: options, embeds: [], files: [] });
     } 
 
     // Finalize team for box in pvp
@@ -1300,17 +1311,17 @@ export async function box_collector_event(user_id, selected, page_num, user_prof
     return false;
 }
 
-export async function shop_list_from_flags(shop_obj, profile_flags){
+export function shop_list_from_flags(shop_obj, profile_flags){
     let shopBuildOptions = [
         //Potions
         [Item.Potion,           false], //Potion
         [Item.HiPotion,         'to_lava_town_begin'], //Med Potion
-        [Item.MaxPotion,        'PLACEHOLDER'], //Hi Potion
+        [Item.MaxPotion,        'to_restricted_tunnel'], //Hi Potion
 
         //Prisms
         [Item.Prism,            false], //Prism
         [Item.GreaterPrism,     'to_lava_town_begin'], //Greater Prism
-        [Item.GrandPrism,       'PLACEHOLDER'], //Grand Prism
+        [Item.GrandPrism,       'to_restricted_tunnel'], //Grand Prism
 
         //Other
         [Item.Repulsor,         'to_lava_town_begin'], // Repulsor
@@ -1324,9 +1335,23 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
         [Item.Antiparasite,     'cromet_quest_end'], //Antiparasite
         [Item.DebugChip,        'cromet_quest_end'], //Debug Chip
         [Item.CoolingBalm,      'cromet_quest_end'], //Cooling Balm
+        [Item.NullSphere,       'to_restricted_tunnel'],
 
         //Evolution Items
         [Item.SporeFeather,     'obtained_sporefeather'],
+        [Item.OddBulb,          'obtained_odd_bulb'],
+
+        //Treats
+        [Item.TreatBasic,       'ev_tamagoochi'],
+        // [Item.TreatFungal,      'anne2'],
+        // [Item.TreatFlame,       'anne2'],
+        // [Item.TreatStone,       'anne2'],
+        // [Item.TreatOoze,        'anne2'],
+        // [Item.TreatTech,        'anne2'],
+        // [Item.TreatMagic,       'anne2'],
+        // [Item.TreatCrystal,     'anne2'],
+        // [Item.TreatCloth,       'anne2'],
+        // [Item.TreatSound,       'anne2']
     ];
         
     let shopSelectOptions = [];
@@ -1342,4 +1367,49 @@ export async function shop_list_from_flags(shop_obj, profile_flags){
     shopSelectOptions = shopSelectOptions.flat(1)
 
     return(shopSelectOptions);
+}
+
+export function add_item(user_id, item_id, qty) {
+    let item = item_data.get(`${item_id}`);
+    let inventory = profile.get(user_id, `inventory.${item.category}`);
+    const existing = inventory.find(i => i.id == item_id);
+
+    if (existing) {
+        existing.quantity += qty;
+    } else {
+        inventory.push({ id: item_id, quantity: qty });
+    }
+
+    profile.set(user_id, inventory, `inventory.${item.category}`);
+}
+
+export function remove_item(user_id, item_id, qty) {
+    let item = item_data.get(`${item_id}`);
+    let inventory = profile.get(user_id, `inventory.${item.category}`);
+    const existing = inventory.find(i => i.id == item_id);
+
+    if (existing) {
+        existing.quantity -= qty;
+        if (existing.quantity <= 0) {
+            inventory = inventory.filter(i => i.id !== item_id);
+        }
+    } else {
+        inventory.push({ id: item_id, quantity: qty });
+    }
+    
+    profile.set(user_id, inventory, `inventory.${item.category}`,);
+}
+
+export function get_inv_item(user_id, category, item_id) {
+    const inventory = profile.get(user_id, `inventory.${category}`);
+    return inventory.find(i => i.id == item_id);
+}
+
+export function get_all_item_type(user_id, category, type) {
+    const inventory = profile.get(user_id, `inventory.${category}`);
+    return inventory.filter(i => {
+        const db_item_data = item_data.get(`${i.id}`);
+        return db_item_data.type == type;
+    });
+    
 }

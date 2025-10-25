@@ -26,8 +26,6 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_file_dialog_set_file_paths_dir_selected(dir):
-	var data_path = DirAccess.open(dir)
-	
 	if DirAccess.dir_exists_absolute(dir):
 		Global.DataPath = dir
 		save_preferences()
@@ -161,7 +159,7 @@ func refresh_data():
 		#print(png_name)
 		
 		var key = str(int(mon_id))
-		print([mon_id, _mon.id])
+		#print([mon_id, _mon.id])
 		Global.DataOochamon[key] =  {
 			ooch_index = _mon.id,
 			ooch_emote = _mon.emote,
@@ -181,14 +179,14 @@ func refresh_data():
 			ooch_texture = -1
 		}
 		
-		print(Global.DataOochamon[key].ooch_index)
+		#print(Global.DataOochamon[key].ooch_index)
 	
 	#Tiles
 	var f_tiles = FileAccess.open(data_location + "/tiles_data.txt", FileAccess.READ)
 	ln = f_tiles.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
-		print(lnsplit)
+		#print(lnsplit)
 		var index = lnsplit[1].split(":")[1]
 		var emote = lnsplit[1].split(":")[2]
 		emote = emote.replace(">","")
@@ -210,7 +208,7 @@ func refresh_data():
 	ln = f_npcs.get_line()
 	while ln != "":
 		lnsplit = ln.split("|")
-		
+		#print(ln)
 		var index = lnsplit[1].split(":")[1]
 		var emote = lnsplit[1].split(":")[2]
 		emote = emote.replace(">","")

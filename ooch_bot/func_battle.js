@@ -1,9 +1,9 @@
 import { battle_data, profile, move_data, stance_data, monster_data, item_data, status_data, ability_data, global_data, player_positions } from "./db.js";
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status } from "./types.js";
-import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar } from "./func_other.js";
+import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
+import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType, EventMode } from "./types.js";
+import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
 
@@ -132,9 +132,8 @@ export async function generate_battle_user(type, options) {
             party = db_profile.ooch_party;
             active_slot = db_profile.ooch_active_slot;
             user_info.display_msg_id = db_profile.display_msg_id;
-            user_info.heal_inv = db_profile.heal_inv;
-            user_info.prism_inv = db_profile.prism_inv;
-            user_info.other_inv = db_profile.other_inv;
+            user_info.inventory = db_profile.inventory;
+            user_info.hp_style = 'plr';
         break;
     }
 
@@ -194,21 +193,28 @@ export function reset_this_turn_triggers(db_battle_data){
 /**
  * Sets up an Oochamon battle and begins prompting for input.
  * @param {Object} users The user object
- * @param {Number} weather The weather enum
+ * @param {Number} field_effect The weather enum
  * @param {Number} oochabux The amount of Oochabux to give
  * @param {Number} turn_timer The amount of time to do a turn before timeout (0 does not activate this)
  * @param {Boolean} allow_items Allow the use of items in the battle
  * @param {Boolean} give_rewards Give rewards at the end of a battle
  * @param {Boolean} allow_run Allow running from the battle
  */
-export async function setup_battle (users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
+export async function setup_battle (users, field_effect, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
     const { botClient } = await import("./index.js");
+
+    let i_quest_do_transformation = false;
 
     // Add index to users
     for (let i = 0; i < users.length; i++) {
         users[i].user_index = i;
         if (users[i].is_player) {
             profile.set(users[i].user_id, PlayerState.BattleSetup, 'player_state');
+
+            let flags = profile.get(users[i].user_id, 'flags');
+            if(flags.includes('i_mission')){
+                i_quest_do_transformation = true;
+            }
         }
     }
 
@@ -235,11 +241,11 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         allow_items : allow_items,
         give_rewards : give_rewards,
         allow_run : allow_run,
-        weather : weather,
         field_effect : FieldEffect.None,
         oochabux: oochabux,
-        amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+        amount_of_teams: 2, // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
 
+        i_transformation_bool : i_quest_do_transformation,
     }
 
     if (fake_battle) {
@@ -264,18 +270,23 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
     let battleStartText, sendOutText, active_ooch, types_string, stancesEnabled = true;
     battleDataObj.battle_msg_counter += 2;
 
-        //Handle switch-in abilities
+    //Handle switch-in abilities
     let switch_in_text = '';
     let switch_in_embed = false;
     for(let user of battleDataObj.users){
-        switch_in_text += use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
+        for (let ooch of user.party) {
+            if (ooch.starting_stance) {
+                ooch.stance = ooch.starting_stance;
+            }
+        }
+        switch_in_text += await use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
     }
 
-    switch(weather){
-        case Weather.Heatwave: 
+    switch(field_effect){
+        case FieldEffect.Heatwave: 
             switch_in_text += '\n☀️ *The extreme heat of the area makes the Oochamon start to sweat...*'
         break;
-        case Weather.Thunderstorm:
+        case FieldEffect.Thunderstorm:
             switch_in_text += '\n⛈️ *A thunderstorm starts to brew...*'
         break;
     }
@@ -310,7 +321,7 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
                     else if (user2.is_catchable) { //Wild oochamon
                         battleStartText += `## A Wild ${active_ooch.name} appeared!\n`;
                         if (profile.get(`${user.user_id}`, `oochadex[${active_ooch.id}].caught`) == 0) {
-                            battleStartText += `<:item_prism:1274937161262698536> ***Uncaught Oochamon!***\n`
+                            battleStartText += `${get_emote_string('item_prism')} ***Uncaught Oochamon!***\n`
                         }
                         sendOutText += `The wild ${active_ooch.emote} **${active_ooch.name}** wants to battle! ${types_string}\n`
                     }
@@ -330,8 +341,8 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
             profile.set(`${user.user_id}`, battleDataObj.battle_id, 'cur_battle_id');
 
             // Delete playspace to enter battle
-            let playspace_msg = await thread.messages.fetch(profile.get(`${user.user_id}`, 'display_msg_id'));
-            await playspace_msg.delete().catch(() => {});
+            let playspace_msg = await thread.messages.fetch(profile.get(`${user.user_id}`, 'display_msg_id')).catch(() => {});
+            if (playspace_msg) await playspace_msg.delete().catch(() => {});
 
             // Generate intro to battle image
             let battle_image = await generate_battle_image(battleDataObj, user.user_index, battle_bg);
@@ -534,7 +545,6 @@ export function new_battle_action_other(db_battle_data, user_index, item_id){
         action_type : BattleAction.Other,
         priority : BattleAction.Other,
         user_index : user_index,
-
         item_id : item_id
     }
 
@@ -568,14 +578,15 @@ export function get_ai_action(user_obj, db_battle_data) {
 
     switch (user_obj.user_type) {
         case UserType.Wild:
-            target_user = sample(users_enemy);
+            users_to_choose = users_enemy.filter((u) => u.defeated == false);
+            target_user = sample(users_to_choose);
             move_id = sample(moves);
             new_battle_action_attack(db_battle_data, user_obj.user_index, target_user.user_index, move_id);
         break;
         case UserType.NPCSmart:
         case UserType.NPCTrainer:
             //move_intentions.filter((move) => move.priority > 1);
-            users_to_choose = users_enemy.filter((u) => u.defeated == false)
+            users_to_choose = users_enemy.filter((u) => u.defeated == false);
             target_user = sample(users_to_choose);
             target_mon = target_user.party[target_user.active_slot];
             move_intentions = get_move_intention(moves, target_mon.type);
@@ -663,6 +674,7 @@ export function sort_action_priority(db_battle_data){
     //Add the speed of the user's active oochamon
     for(let action of action_list){
         
+
         let user_index = action.user_index;
         let user = db_battle_data.users[user_index];
 
@@ -820,7 +832,7 @@ export async function prompt_battle_actions(battle_id) {
             new ButtonBuilder()
                 .setCustomId('switch')
                 .setLabel('Switch')
-                .setEmoji('<:item_prism:1274937161262698536>')
+                .setEmoji(get_emote_string('item_prism'))
                 .setStyle(ButtonStyle.Success),
         );
 
@@ -858,13 +870,13 @@ export async function prompt_battle_actions(battle_id) {
                 .setCustomId('heal')
                 .setLabel('Healing')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_potion_magic:1274937146423115922>'),
+                .setEmoji(get_emote_string('item_potion_magic')),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('prism')
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('<:item_prism:1274937161262698536>')
+                .setEmoji(get_emote_string('item_prism'))
                 .setDisabled(true),
         )
 
@@ -921,7 +933,6 @@ export async function prompt_battle_actions(battle_id) {
     // Handle users
     let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
     await db_battle_data.users.forEach(async (user) => {
-        //console.log([user.name, num_catchable])
         let ooch_disable
         if (user.user_type != UserType.Player) {
             get_ai_action(user, db_battle_data);
@@ -1225,21 +1236,19 @@ export async function prompt_battle_actions(battle_id) {
                     
                 } else if (customId == BattleInput.BagHeal) {
                     
-                    let heal_inv = user.heal_inv;
-                    let heal_inv_keys = Object.keys(heal_inv);
+                    let consumable_inv = user.inventory[ItemCategory.Consumable];
                     let bag_select = new ActionRowBuilder();
                     let heal_select_options = [];
                     
-                    for (let i = 0; i < heal_inv_keys.length; i++) {
-                        let id = heal_inv_keys[i];
-                        let amount = heal_inv[heal_inv_keys[i]];
-
-                        if (amount > 0 && amount != undefined) {
+                    for (let c of consumable_inv) {
+                        const consumable_data = item_data.get(`${c.id}`);
+                        if (consumable_data.type != ItemType.Potion && consumable_data.type != ItemType.Status) continue;
+                        if (c.quantity > 0 && c.quantity != undefined) {
                             heal_select_options.push({ 
-                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
-                                value: `${id}`,
-                                emoji: item_data.get(`${id}`, 'emote'),
+                                label: `${consumable_data.name} (${c.quantity})`,
+                                description: consumable_data.description_short.slice(0, 100),
+                                value: `${consumable_data.id}`,
+                                emoji: consumable_data.emote,
                             })
                         }
                     }
@@ -1248,7 +1257,7 @@ export async function prompt_battle_actions(battle_id) {
                         bag_select.addComponents(
                             new StringSelectMenuBuilder()
                                 .setCustomId('heal_item_select')
-                                .setPlaceholder('Select an item in your heal inventory to use!')
+                                .setPlaceholder('Select a healing item to use!')
                                 .addOptions(heal_select_options),
                         );
 
@@ -1259,21 +1268,18 @@ export async function prompt_battle_actions(battle_id) {
 
                 } else if (customId == BattleInput.BagPrism) {
 
-                    let prism_inv = user.prism_inv;
-                    let prism_inv_keys = Object.keys(prism_inv);
+                    let prism_inv = user.inventory[ItemCategory.Prism];
                     let bag_select = new ActionRowBuilder();
                     let prism_select_options = [];
                     
-                    for (let i = 0; i < prism_inv_keys.length; i++) {
-                        let id = prism_inv_keys[i];
-                        let amount = prism_inv[prism_inv_keys[i]];
-
-                        if (amount > 0 && amount != undefined) {
+                    for (let p of prism_inv) {
+                        const prism_data = item_data.get(`${p.id}`);
+                        if (p.quantity > 0 && p.quantity != undefined) {
                             prism_select_options.push({ 
-                                label: `${item_data.get(`${id}`, 'name')} (${amount})`,
-                                description: item_data.get(`${id}`, 'description_short').slice(0, 100),
-                                value: `${id}`,
-                                emoji: item_data.get(`${id}`, 'emote'),
+                                label: `${prism_data.name} (${p.quantity})`,
+                                description: prism_data.description_short.slice(0, 100),
+                                value: `${prism_data.id}`,
+                                emoji: prism_data.emote,
                             })
                         }
                     }
@@ -1281,7 +1287,7 @@ export async function prompt_battle_actions(battle_id) {
                     bag_select.addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('prism_item_select')
-                            .setPlaceholder('Select an item in your inventory to use!')
+                            .setPlaceholder('Select a prism to use!')
                             .addOptions(prism_select_options),
                     );
 
@@ -1353,7 +1359,7 @@ export async function prompt_battle_actions(battle_id) {
                     
                     let oochPrisms = '';
                     for (let ooch of user.party) {
-                        oochPrisms += ooch.alive ? '<:item_prism:1274937161262698536>' : `❌`;
+                        oochPrisms += ooch.alive ? get_emote_string('item_prism') : `❌`;
                     }
     
                     let oochInfoFields = [];
@@ -1416,13 +1422,9 @@ export async function process_battle_actions(battle_id){
     let db_battle_data = battle_data.get(`${battle_id}`);
     let actions = db_battle_data.battle_action_queue;
     let finish_battle = false;
-    let action, text, faint_check;
+    let action, text, faint_check, first_turn = true;
 
-    //console.log('MESSAGE ROUND START')
-    await distribute_messages(db_battle_data, { content: `# ------ Round ${db_battle_data.turn_counter + 1} ------` });
-
-    //Reset all battle triggers
-    reset_this_turn_triggers(db_battle_data);
+    let roundHeader = `# ------ Round ${db_battle_data.turn_counter + 1} ------`;
 
     while(actions.length > 0 && !finish_battle){
         //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
@@ -1441,9 +1443,7 @@ export async function process_battle_actions(battle_id){
         finish_battle = turn_data.finish_battle;
         
         //Check if anything fainted
-        //console.log(user.party[0]);
         faint_check = battle_faint_check(db_battle_data) //.text, .finish_battle
-        //console.log(user.party[0]);
         text += faint_check.text;
         finish_battle = finish_battle || faint_check.finish_battle;
         if (!finish_battle) text += faint_check.finish_text;
@@ -1470,7 +1470,9 @@ export async function process_battle_actions(battle_id){
                 battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
                 battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
 
-                if (action.action_type == BattleAction.Attack) {
+                if (action.action_type == BattleAction.Attack ||
+                action.action_type == BattleAction.Heal ||
+                action.action_type == BattleAction.StanceChange) {
                     let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
                     battle_sprite_files.push(get_ooch_art(name_space_replaced));
                     ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
@@ -1480,36 +1482,39 @@ export async function process_battle_actions(battle_id){
                 let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
                 battle_sprite_files = [get_ooch_art(name_space_replaced)]
                 battle_sprite_icon = `attachment://${name_space_replaced}.png`;
-                if (action.action_type == BattleAction.Attack) ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
+                if (action.action_type == BattleAction.Attack ||
+                action.action_type == BattleAction.Heal ||
+                action.action_type == BattleAction.StanceChange) {
+                    ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
+                } 
             }
 
             author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, 
                         iconURL: battle_sprite_icon }
             battle_thumbnail = ooch_sprite_icon;
         }
+
+        let embedList = [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)];
         
-        //console.log('MESSAGE FIRST DISTRIBUTE')
-        await distribute_messages(db_battle_data, { embeds: [battle_embed_create(text, turn_data.embed_color, author_obj, false, battle_thumbnail)], files: battle_sprite_files });
 
         //Clear any remaining actions if we're meant to finish the battle
         //Also send any final messages for the action
-        let embed, png;
         if(finish_battle == true){
             if(('finish_data' in turn_data) && turn_data.finish_data != false){
                 let finish_data = turn_data.finish_data;
                 switch(finish_data.type) {
                     case 'capture':
-                        embed = turn_data.finish_data.info_embed;
-                        png = turn_data.finish_data.ooch_png
-
-                        //console.log('CAPTURE DISTRIBUTE')
-                        await distribute_messages(db_battle_data, { embeds: [embed], files: [png] });
+                        embedList.push(turn_data.finish_data.info_embed);
+                        battle_sprite_files.push(turn_data.finish_data.ooch_png);
                     break;
                 }
             }
 
             db_battle_data.actions = [];
         }
+
+        await distribute_messages(db_battle_data, { content: (first_turn == true ? roundHeader : null), embeds: embedList, files: battle_sprite_files });
+        first_turn = false;
 
         await wait(db_battle_data.battle_speed);
     }
@@ -1569,7 +1574,7 @@ export async function process_battle_actions(battle_id){
                             slot.this_turn_vanished = false;
                         }
                         else{
-                            end_of_round_text += `\n<:status_vanish:1274938531864776735> ${ooch.emote} **${ooch.nickname}** reappeared!`;
+                            end_of_round_text += `\n${get_emote_string('status_vanish')} ${ooch.emote} **${ooch.nickname}** reappeared!`;
                             end_of_round_text +=  `\n${add_status_effect(ooch, Status.Revealed, slot)}`;
                             ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Vanish);
                         }
@@ -1580,7 +1585,7 @@ export async function process_battle_actions(battle_id){
                             slot.this_turn_revealed = false;
                         }
                         else {
-                            end_of_round_text += `\n<:status_reveal:1339448769871220866> ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
+                            end_of_round_text += `\n${get_emote_string('status_reveal')} ${ooch.emote} **${ooch.nickname}** is no longer revealed.`;
                             ooch.status_effects = ooch.status_effects.filter(v => v !== Status.Revealed);
                         }
                     break;
@@ -1588,13 +1593,13 @@ export async function process_battle_actions(battle_id){
                         sleep_val = Math.round(ooch.stats.hp/10);
                         ooch.current_hp += sleep_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
-                        end_of_round_text += `\n<:status_sleep:1335446202275070034> ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
+                        end_of_round_text += `\n${get_emote_string('status_sleep')} ${ooch.emote} **${ooch.nickname}** is resting peacefully and recovered **${sleep_val} HP**.`;
                     break;
                     case Status.Burn:
                         burn_val = Math.round(ooch.stats.hp * 0.07);
                         ooch.current_hp -= burn_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
-                        end_of_round_text += `\n<:status_burned:1274938453569830997> ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
+                        end_of_round_text += `\n${get_emote_string('status_burned')} ${ooch.emote} **${ooch.nickname}** was hurt by its burn and lost **${burn_val} HP**.`;
                     break;
                     case Status.Infect:
                         if(!Object.prototype.hasOwnProperty.call(slot, "status_counter_infect")){
@@ -1606,10 +1611,10 @@ export async function process_battle_actions(battle_id){
                         ooch.current_hp -= infect_val;
                         ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
                         if(infect_val == 0){
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s doesn't look so good!`;
+                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}** doesn't look so good!`;
                         }
                         else{
-                            end_of_round_text += `\n<:status_infected:1274938506225123358> ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
+                            end_of_round_text += `\n${get_emote_string('status_infected')} ${ooch.emote} **${ooch.nickname}**'s infection gets worse, it lost **${infect_val} HP**!`;  
                         }                         
                     break;
                     case Status.Doom:
@@ -1617,21 +1622,21 @@ export async function process_battle_actions(battle_id){
                         if (ooch.doom_timer == 0) {
                             ooch.current_hp = 0;
                             //ooch.alive = false;
-                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
+                            end_of_round_text += `\n${get_emote_string('status_doomed')} ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer hit 0!`
                         } else {
-                            end_of_round_text += `\n<:status_doomed:1274938483924009062> ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
+                            end_of_round_text += `\n${get_emote_string('status_doomed')} ${ooch.emote} **${ooch.nickname}**'s **DOOM** timer ticked down to **${ooch.doom_timer}!**`
                         }
                     break;
                     case Status.Digitize:
                         if(ooch.type != [OochType.Tech]){
                             ooch.type = [OochType.Tech];
-                            end_of_round_text += `\n<:status_digitized:1274938471034654770> ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
+                            end_of_round_text += `\n${get_emote_string('status_digitized')} ${ooch.emote} **${ooch.nickname}** was DIGITIZED and had its type changed to **Tech**!.`;
                         }
                     break;
                     case Status.Petrify:
                         if(ooch.type != [OochType.Stone]){
                             ooch.type = [OochType.Stone];
-                            end_of_round_text += `\n<:status_petrify:1335446218393784454> ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
+                            end_of_round_text += `\n${get_emote_string('status_petrified')} ${ooch.emote} **${ooch.nickname}** was PETRIFIED and had its type changed to **Stone**!.`;
                         }
                     break;
                 }
@@ -1646,7 +1651,6 @@ export async function process_battle_actions(battle_id){
 
         if(end_of_round_text.replaceAll("\n","") != ''){
             await wait(db_battle_data.battle_speed);
-            //console.log('END ROUND DISTRIBUTE')
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
 
@@ -1670,7 +1674,6 @@ export async function process_battle_actions(battle_id){
         }
         
         if(faint_switch_text != ''){
-            //console.log('FAINT SWITCH DISTRIBUTE')
             await distribute_messages(db_battle_data, { content: faint_switch_header, embeds: [battle_embed_create(faint_switch_text)]});
         }
 
@@ -1681,6 +1684,10 @@ export async function process_battle_actions(battle_id){
     
     //Do stuff depending on whether the battle is finished
     if(!finish_battle) {
+
+        //Reset all battle triggers
+        reset_this_turn_triggers(db_battle_data);
+        
         await wait(db_battle_data.battle_speed);
         await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
         battle_data.set(battle_id, db_battle_data);
@@ -1799,7 +1806,7 @@ export async function action_process_add_user(db_battle_data, action){
         return_string += `${user.name} has joined the battle!`
     }
 
-    new_battle_action_switch(db_battle_data, user.user_index, user.active_slot, false);
+    new_battle_action_switch(db_battle_data, user.user_index, user.active_slot, true);
 
     return {
         finish_battle : finish_battle,
@@ -1856,12 +1863,7 @@ export async function action_process_switch(db_battle_data, action){
         : `\n${user.name} sent out ${monster_data.get(`${ooch_to.id}`, 'emote')} **${ooch_to.nickname}**.\n`
     )
 
-    
-    return_string += use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
-    user.active_slot = action.slot_target;
-
-    if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
-
+    //These value resets need to happen before use_switch_ability
     ooch_from.stats.atk_mul = 0;
     ooch_from.stats.def_mul = 0;
     ooch_from.stats.spd_mul = 0;
@@ -1873,6 +1875,13 @@ export async function action_process_switch(db_battle_data, action){
     ooch_from.stance_cooldown = 0;
     ooch_from.stance = StanceForms.Base;
 
+    return_string += await use_switch_ability(db_battle_data, action.user_index, user.active_slot, action.slot_target, action.is_switching);
+    user.active_slot = action.slot_target;
+
+    if (action.skip_text || user.user_type == UserType.Wild) {return_string = '';}
+
+    
+
 
     return {
         finish_battle : finish_battle,
@@ -1882,12 +1891,16 @@ export async function action_process_switch(db_battle_data, action){
     }
 }
 
-export function use_switch_ability(db_battle_data, user_index, slot_from, slot_to) {
+export async function use_switch_ability(db_battle_data, user_index, slot_from, slot_to) {
+
+    const { create_ooch } = await import('./func_play.js');
+
     let user = db_battle_data.users[user_index]
     let ooch_to = user.party[slot_to];
     let ooch_from = user.party[slot_from];
     let string_to_send = '';
-    let status_types = []
+    let status_types = [];
+    
 
     //If the ooch is affected by Digitize make it a tech type again
     if (ooch_to.status_effects.includes(Status.Digitize)) {
@@ -1901,9 +1914,18 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
     }
 
     let incAmount = 0;
+    let i_transformation = db_battle_data.i_transformation_bool;
+
     
     //Effects of the mon to switching in
     switch (ooch_to.ability) {
+        case Ability.InvalidEntry:
+            if(i_transformation){
+                string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`;
+                ooch_to = await create_ooch(OochID.Purif_i, ooch_to.level);
+                user.party[0] = ooch_to;
+            }
+        break;
         case Ability.Miniscule: 
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Miniscule**:`;
             string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Evasion, 1)}\n`;
@@ -1920,10 +1942,6 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
         case Ability.Immobile:
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Immobile**:`;
             string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Defense, 1)}\n`;
-        break;
-        case Ability.Gentle:
-            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Gentle**:`;
-            string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, -1)}\n`;
         break;
         case Ability.Conflicted:
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Conflicted**:`;
@@ -1990,12 +2008,83 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, incAmount)}\n`;
             }
         break;
+        case Ability.OnIce: 
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **On Ice**:`;
+            add_status_effect(ooch_to, Status.Drained, slot_to);
+            string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** feels drained and heavy!\n`;
+        break;
+        case Ability.Equalized:
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Equalized**:`;
+            ooch_to.type = [OochType.Neutral];
+            string_to_send += `\n--- ${ooch_to.emote} **${ooch_to.nickname}** is equalized and had it's ability changed to ${type_to_emote(ooch_to.type)} **Neutral**!\n`;
+        break;
+        
+        case Ability.AncientWardNeutral:
+            ooch_to.type = [OochType.Neutral];
+            ooch_to.emote = get_emote_string('ophicore_neutral')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Neutral-type moves.`
+        break;
+        case Ability.AncientWardVoid:
+            ooch_to.type = [OochType.Void];
+            ooch_to.emote = get_emote_string('ophicore_void')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Void-type moves.`
+        break;
+        case Ability.AncientWardFungal:
+            ooch_to.type = [OochType.Fungal];
+            ooch_to.emote = get_emote_string('ophicore_fungal')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Fungal-type moves.`
+        break;
+        case Ability.AncientWardFlame:
+            ooch_to.type = [OochType.Flame];
+            ooch_to.emote = get_emote_string('ophicore_flame')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Flame-type moves.`
+        break;
+        case Ability.AncientWardStone:
+            ooch_to.type = [OochType.Stone];
+            ooch_to.emote = get_emote_string('ophicore_stone')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Stone-type moves.`
+        break;
+        case Ability.AncientWardTech:
+            ooch_to.type = [OochType.Tech];
+            ooch_to.emote = get_emote_string('ophicore_tech')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Tech-type moves.`
+        break;
+        case Ability.AncientWardMagic:
+            ooch_to.type = [OochType.Magic];
+            ooch_to.emote = get_emote_string('ophicore_magic')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Magic-type moves.`
+        break;
+        case Ability.AncientWardOoze:
+            ooch_to.type = [OochType.Ooze];
+            ooch_to.emote = get_emote_string('ophicore_ooze')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Ooze-type moves.`
+        break;
+        case Ability.AncientWardCrystal:
+            ooch_to.type = [OochType.Crystal];
+            ooch_to.emote = get_emote_string('ophicore_crystal')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Crystal-type moves.`
+        break;
+        case Ability.AncientWardCloth:
+            ooch_to.type = [OochType.Cloth];
+            ooch_to.emote = get_emote_string('ophicore_cloth')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Cloth-type moves.`
+        break;
+        case Ability.AncientWardSound:
+            ooch_to.type = [OochType.Sound];
+            ooch_to.emote = get_emote_string('ophicore_sound')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Sound-type moves.`
+        break;
+        case Ability.AncientWardMartial:
+            ooch_to.type = [OochType.Martial];
+            ooch_to.emote = get_emote_string('ophicore_neutral')
+            string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Ancient Ward** reduces the power of ${type_to_emote(ooch_to.type)} Martial-type moves.`
+        break;
     }
 
     //Switch-out abilities
     switch(ooch_from.ability){
         case Ability.Martyr:
-            if(ooch_from.hp_current == 0){
+            if(ooch_from.current_hp == 0){
                 string_to_send += `\n${ooch_from.emote} **${ooch_from.nickname}**'s **Martyr**:`;
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Attack, 1)}`;
                 string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Defense, 1)}`;
@@ -2022,7 +2111,7 @@ export function use_switch_ability(db_battle_data, user_index, slot_from, slot_t
 
     //Check abilities vs other users
     for(let u of db_battle_data.users){
-        let every_target_list = [Ability.Gentle]
+        let every_target_list = [Ability.Gentle] //include abilities that should also affect the user of that ability
         
         if((u.team_id != user.team_id || every_target_list.includes(ooch_to.ability)) && u.party[u.active_slot].alive){
             let ooch_enemy = u.party[u.active_slot];
@@ -2108,10 +2197,11 @@ export async function action_process_prism(db_battle_data, action) {
     let ooch_target = target_user.party[target_user.active_slot];
     let return_string = `${user.name} threw a ${item.emote} **${item.name}**.`;
 
-    let prism_result = item_use(`${user.user_id}`, ooch_target, action.item_id, true); //True if successful catch, False if not
+    let prism_result = await item_use(`${user.user_id}`, ooch_target, action.item_id, true); //True if successful catch, False if not
     let prism_pulses = prism_result[1];
     prism_result = prism_result[0];
-    db_battle_data.users[action.user_index].prism_inv[action.item_id] -= 1;
+    let db_item = db_battle_data.users[action.user_index].inventory[ItemCategory.Prism].find(item => item.id == action.item_id)
+    db_item.quantity -= 1;
 
     let exp_earned = 0;
 
@@ -2160,8 +2250,14 @@ export async function action_process_prism(db_battle_data, action) {
             //distribute_messages(db_battle_data, {})
             //await item_sel.update({ content: `## ------ ${user.name}'s Turn ------`, embeds: [capture_embed], components: []});
 
-            // Heal the caught Oochamon when you catch it.
+            // Heal the caught Oochamon when you catch it. Also clear any of its status effects and stat stage changes
             ooch_target.current_hp = ooch_target.stats.hp;
+            ooch_target.status = []
+            ooch_target.stats.atk_mul = 0;
+            ooch_target.stats.def_mul = 0;
+            ooch_target.stats.spd_mul = 0;
+            ooch_target.stats.acc_mul = 0;
+            ooch_target.stats.eva_mul = 0;
 
             // Have it check here if you want to send the Oochamon to your party or not
             if (user.party.length < 4) {
@@ -2170,6 +2266,13 @@ export async function action_process_prism(db_battle_data, action) {
                 profile.push(user_id, ooch_target, `ooch_pc`)
             }
             profile.math(user_id, '+', 1, `oochadex[${ooch_target.id}].caught`)
+
+            // If oochamon is purif-i, add the i_mission_complete flag
+            if (ooch_target.id == OochID.Purif_i) {
+                if (!profile.get(user_id, 'flags').includes('i_mission_complete')) {
+                    profile.push(user_id, 'i_mission_complete', 'flags');
+                }
+            }
 
             let info_embed = await ooch_info_embed(ooch_target, false, true);
             let ooch_png = info_embed[1];
@@ -2211,8 +2314,14 @@ export async function action_process_heal(db_battle_data, action) {
     let ooch = user.party[action.slot_target];
     let return_string = `${user.name} used 1 ${item.emote} **${item.name}**.`;
     let extra_text = await item_use(user.user_index, ooch, action.item_id, true); 
-    db_battle_data.users[action.user_index].heal_inv[action.item_id] -= 1;
+
+    let db_item = db_battle_data.users[action.user_index].inventory[ItemCategory.Consumable].find(item => item.id == action.item_id)
+    db_item.quantity -= 1;
     return_string += extra_text;
+
+    if (extra_text.includes('HP')) {
+        return_string += `\n${generate_hp_bar(ooch, user.hp_style, 9, true)}`;
+    }
 
     return {
         finish_battle : finish_battle,
@@ -2637,17 +2746,25 @@ export function add_status_effect(ooch, status, slot) {
         return return_string;
     }
 
-    //Ignore if we already have this status
+    //Ignore Vanish if the mon is currently Revealed
     if(status == Status.Vanish){
         if (ooch.status_effects.includes(Status.Revealed)) {
-            return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is <:status_reveal:1339448769871220866> **REVEALED**!`
+            return_string += `${ooch.emote} **${ooch.nickname}** cannot ${statusEmote} **VANISH** because it is ${get_emote_string('status_reveal')} **REVEALED**!`
             return return_string;
         }
         else{
             slot.this_turn_vanished = true;
         }
     }
-    
+
+    if(status == Status.Doom){
+        if (ooch.ability == Ability.TwilightHour){
+            return_string += `${ooch.emote} **${ooch.nickname}**'s **Twilight Hour**:`
+            return_string += `\n--- ${modify_stat(ooch, Stats.Attack, 2)}`;
+            return_string += `\n--- ${modify_stat(ooch, Stats.Defense, 2)}`;
+            return_string += `\n--- ${modify_stat(ooch, Stats.Speed, 2)}`;
+        }
+    }
 
     //Mundane ignores status effects
     if (ooch.ability == Ability.Mundane){
@@ -2805,10 +2922,12 @@ export function type_effectiveness(attack_type, target_type) {
     return([multiplier, string])
 }
 
-export function item_use(user_id, ooch, item_id, in_battle=false) {
+export async function item_use(user_id, ooch, item_id, in_battle=false, remove=false) {
+    const { remove_item } = await import('./func_play.js');
     let db_item_data = item_data.get(`${item_id}`); 
+    if (remove) remove_item(user_id, item_id, 1);
 
-    if (db_item_data.type == 'potion') {
+    if (db_item_data.type == ItemType.Potion) {
         if (in_battle && ooch.alive == true) {
             let prev_hp = ooch.current_hp;
             ooch.current_hp += db_item_data.potency;
@@ -2824,7 +2943,7 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
             return ooch;
         } 
         
-    } else if (db_item_data.type == 'prism') {
+    } else if (db_item_data.type == ItemType.Prism) {
         let status_bonus = 1;
         let prism_multiplier = db_item_data.potency;
         let prism_chance = prism_multiplier / (ooch.level) * (ooch.stats.hp / ooch.current_hp) * status_bonus * 2;
@@ -2836,7 +2955,7 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         } else {
             return [false, prism_wiggles];
         }
-    } else if (db_item_data.type == 'status') {
+    } else if (db_item_data.type == ItemType.Status) {
         let return_string = false;
         if (db_item_data.potency !== 'All') {
             let db_status_data = status_data.get(`${db_item_data.potency}`)
@@ -2847,9 +2966,9 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
             return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
         }
         return return_string == false ? ooch : return_string;
-    } else if (db_item_data.type == 'repel') {
+    } else if (db_item_data.type == ItemType.Repel) {
         profile.set(user_id, db_item_data.potency, 'repel_steps'); 
-    } else if (db_item_data.type == 'teleport') {
+    } else if (db_item_data.type == ItemType.Teleport) {
         let biome_from = profile.get(`${user_id}`, 'location_data.area');
         let checkpoint = profile.get(`${user_id}`, 'checkpoint_data');
         let biome_to = checkpoint.area;
@@ -2867,12 +2986,12 @@ export function item_use(user_id, ooch, item_id, in_battle=false) {
         profile.set(user_id, PlayerState.Playspace, 'player_state');
         return;
 
-    } else if (db_item_data.type == 'level_up') {
+    } else if (db_item_data.type == ItemType.LevelUp) {
         let exp_to_give = exp_to_next_level(ooch.level);
         ooch.current_exp += exp_to_give;
         ooch = level_up(ooch);
         return ooch; // [ooch, output_text]
-    } else if (db_item_data.type == 'give_exp') {
+    } else if (db_item_data.type == ItemType.GiveExp) {
         ooch.current_exp += Math.round(db_item_data.potency);
         let output = [ooch, `${ooch.emote} **${ooch.nickname}** gained ${db_item_data.potency} exp!`];
         
@@ -2902,11 +3021,14 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
     let ability_text = ``;
     let user = db_battle_data.users[user_index];
-    
 
     let ooch = user.party[user.active_slot];
     let slot_info = user.slot_actions[user.active_slot];
-    
+    let status_list = [
+        Status.Burn, Status.Infect, Status.Blind, Status.Doom, Status.Expose, 
+        Status.Digitize, Status.Petrify, Status.Focus, Status.Revealed, 
+        Status.Snare, Status.Sleep, Status.Vanish
+    ];
 
     //Used for checking how much HP was lost
     let hp_before = slot_info.hp_starting;
@@ -2914,6 +3036,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
     let chunks_lost = 0;
 
     let randomStat, randomStatDecrease;
+    let statusLength, otherStatusArr, newStatusEffects;
 
     switch(ooch.ability) {
         case Ability.EscalationProtocol:
@@ -2932,11 +3055,49 @@ export async function use_eot_ability(db_battle_data, user_index) {
                 let user_num = db_battle_data.users.length
                 //Spawn a Slime Head for each
                 for(let i = 0; i < chunks_lost; i++){
-                    ability_text += `\n--- A strange <:c_027:1347440606204399707> **Slime Head** breaks off from the main body...`
-                    await new_battle_action_add_user(db_battle_data, user_num + i, "The split off <:c_027:1347440606204399707> **Slime Head** joins the battle!", 
+                    ability_text += `\n--- A strange ${get_emote_string('c_027')} **Slime Head** breaks off from the main body...`
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The split off ${get_emote_string('c_027')} **Slime Head** joins the battle!\n`, 
                         "Slime Head", "c_027", user.team_id, [
                         {   id : -4, level : ooch.level, moveset : [Move.MagicBolt, Move.Glob, Move.Siphon, Move.Mud], 
                             ability : Ability.Icky, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
+                    ])
+                }
+            }
+        break;
+        case Ability.AncientPlating:
+            // TODO: GET THIS SETUP
+            chunks_lost = hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
+            if (chunks_lost > 0 && ooch.current_hp > 0) {
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Ancient Plating**:`
+                ability_text += `\n--- ${ooch.emote} **${ooch.nickname}** cleared its Status Effects!`
+                let user_num = db_battle_data.users.length
+
+                let last_type = slot_info.last_damage_type_taken;
+                let ward_emoteStr = "ophicore_";
+                let ward_ability = Ability.AncientWardNeutral;
+                switch(last_type) {
+                    case OochType.Neutral:  ward_emoteStr += "neutral"; ward_ability = Ability.AncientWardNeutral; break;
+                    case OochType.Void:     ward_emoteStr += "void";    ward_ability = Ability.AncientWardVoid; break;
+                    case OochType.Fungal:   ward_emoteStr += "fungal";  ward_ability = Ability.AncientWardFungal; break;
+                    case OochType.Flame:    ward_emoteStr += "flame";   ward_ability = Ability.AncientWardFlame; break;
+                    case OochType.Stone:    ward_emoteStr += "stone";   ward_ability = Ability.AncientWardStone; break;
+                    case OochType.Tech:     ward_emoteStr += "tech";    ward_ability = Ability.AncientWardTech; break;
+                    case OochType.Magic:    ward_emoteStr += "magic";   ward_ability = Ability.AncientWardMagic; break;
+                    case OochType.Ooze:     ward_emoteStr += "ooze";    ward_ability = Ability.AncientWardOoze; break;
+                    case OochType.Crystal:  ward_emoteStr += "crystal"; ward_ability = Ability.AncientWardCrystal; break;
+                    case OochType.Sound:    ward_emoteStr += "sound";   ward_ability = Ability.AncientWardSound; break;
+                    case OochType.Cloth:    ward_emoteStr += "cloth";   ward_ability = Ability.AncientWardCloth; break;
+                    case OochType.Martial:  ward_emoteStr += "martial"; ward_ability = Ability.AncientWardMartial; break;
+                }
+                let ward_emote = get_emote_string(ward_emoteStr)
+
+                //Spawn an Ancient Rune for each chunk lost      
+                for(let i = 0; i < chunks_lost; i++){
+                    ability_text += `\n--- An ${ward_emote} **Ancient Rune** appears out of thin air...`
+                    await new_battle_action_add_user(db_battle_data, user_num + i, `The ${ward_emote} **Ancient Rune** joins the battle!\n`, 
+                        "Ancient Rune", ward_emote, user.team_id, [
+                        {   id : OochID.AncientRune, level : ooch.level, moveset : [Move.SyncStrike], 
+                            ability : ward_ability, hp_iv : 0, atk_iv : 0, def_iv : 0, spd_iv : 0}
                     ])
                 }
             }
@@ -2990,6 +3151,29 @@ export async function use_eot_ability(db_battle_data, user_index) {
             randomStatDecrease = sample([Stats.Attack, Stats.Defense, Stats.Speed, Stats.Accuracy, Stats.Evasion]);
             ability_text += `\n--- ${modify_stat(ooch, randomStatDecrease, -1)}\n`;
         break;
+        case Ability.OnIce:
+            if (slot_info.this_turn_switched_in) {
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **On Ice**:`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}\n`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Defense, 1)}\n`;
+                ability_text += `\n--- ${modify_stat(ooch, Stats.Speed, 1)}\n`;
+            }
+        break;
+        case Ability.Flux:
+            statusLength = ooch.status_effects.length
+            if(statusLength > 0){
+                ability_text += `${ooch.emote} **${ooch.nickname}**'s **Flux**:`;
+                
+                otherStatusArr = shuffle(status_list);
+                newStatusEffects = take(otherStatusArr, statusLength);
+
+                ooch.status_effects = [];
+
+                for (let status of newStatusEffects) {
+                    ability_text += `\n--- ${add_status_effect(ooch, status, slot_info)}`;
+                }
+            }
+        break;
     }
 
     slot_info.hp_starting = hp_current
@@ -3021,29 +3205,29 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
     let hp_lost;
 
-    //Weather effects
-    switch(db_battle_data.weather){
-        case Weather.Clear: break; //Do Nothing
-        case Weather.None: break; //Do Nothing
-        case Weather.Heatwave: 
+    //Field Effects
+    switch(db_battle_data.field_effect){
+        case FieldEffect.Clear: break; //Do Nothing
+        case FieldEffect.None: break; //Do Nothing
+        case FieldEffect.Heatwave: 
             if(!ooch.type.includes(OochType.Flame)) {
                 let hp_lost = Math.floor(ooch.stats.hp * 0.05);
                 ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
-                ability_text += `\n\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
+                ability_text += `\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
             }
         break;
-        case Weather.Thunderstorm:
+        case FieldEffect.Thunderstorm:
             slot_info.counter_thunderstorm++;
             switch(slot_info.counter_thunderstorm){
                 case 1:
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** begins to spark...`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** begins to spark...`;
                 break;
                 case 2:
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is being enveloped in electricity...`;
                 break;
                 case 3:
                     hp_lost = Math.floor(ooch.stats.hp / 2);
-                    ability_text += `\n\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
+                    ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is struck by lightning and **loses ${hp_lost} HP!**`;
                     if(ooch.type.includes(OochType.Tech)){
                         ability_text += `\n⛈️ ${ooch.emote} **${ooch.nickname}** is energized by the lightning!`;
                         ability_text += `\n--- ${modify_stat(ooch, Stats.Attack, 1)}`;
@@ -3068,7 +3252,7 @@ export async function use_eot_ability(db_battle_data, user_index) {
  * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
  * @returns The emote string
  */
-export function type_to_emote(type_array, text_emote = false) {
+export function type_to_emote(type_array) {
     let return_string = '';
 
     if (!Array.isArray(type_array)) {
@@ -3077,18 +3261,18 @@ export function type_to_emote(type_array, text_emote = false) {
 
     for (let type of type_array) {
         switch(type) {
-            case OochType.Flame:   return_string +=  text_emote ? '<:icon_flame_txt:1274936258811920414>'   : '<:icon_flame:1274936249484050472>';   break;
-            case OochType.Fungal:  return_string +=  text_emote ? '<:icon_fungal_txt:1274936284497969203>'  : '<:icon_fungal:1274936267884199947>';  break;
-            case OochType.Magic:   return_string +=  text_emote ? '<:icon_magic_txt:1274936569790468096>'   : '<:icon_magic:1274936558595866787>';   break;
-            case OochType.Stone:   return_string +=  text_emote ? '<:icon_stone_txt:1274936655236563055>'   : '<:icon_stone:1274936641433243781>';   break;
-            case OochType.Neutral: return_string +=  text_emote ? '<:icon_neutral_txt:1274936596155863080>' : '<:icon_neutral:1274936582583091210>'; break;
-            case OochType.Ooze:    return_string +=  text_emote ? '<:icon_ooze_txt:1274936617320316928>'    : '<:icon_ooze:1274936607136288810>';    break;
-            case OochType.Tech:    return_string +=  text_emote ? '<:icon_tech_txt:1274936688589803613>'    : '<:icon_tech:1274936672022298624>';    break;
-            case OochType.Void:    return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_void:1274936702959485011>';    break;
-            case OochType.Sound:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_sound:1296312531068911616>';   break;
-            case OochType.Crystal: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_crystal:1296312529126948894>'; break;
-            case OochType.Cloth:   return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_cloth:1296312526882996234>';   break;
-            case OochType.Martial: return_string +=  text_emote ? '<:icon_void_txt:1274936717383569409>'    : '<:icon_martial:1296312529949036575>'; break;
+            case OochType.Flame:   return_string += get_emote_string('icon_flame');   break;
+            case OochType.Fungal:  return_string += get_emote_string('icon_fungal');  break;
+            case OochType.Magic:   return_string += get_emote_string('icon_magic');   break;
+            case OochType.Stone:   return_string += get_emote_string('icon_stone');   break;
+            case OochType.Neutral: return_string += get_emote_string('icon_neutral'); break;
+            case OochType.Ooze:    return_string += get_emote_string('icon_ooze');    break;
+            case OochType.Tech:    return_string += get_emote_string('icon_tech');    break;
+            case OochType.Void:    return_string += get_emote_string('icon_void');    break;
+            case OochType.Sound:   return_string += get_emote_string('icon_sound');   break;
+            case OochType.Crystal: return_string += get_emote_string('icon_crystal'); break;
+            case OochType.Cloth:   return_string += get_emote_string('icon_cloth');   break;
+            case OochType.Martial: return_string += get_emote_string('icon_martial'); break;
         }
     }
 
@@ -3201,10 +3385,15 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     //Figure out whether we're going first or last for misc values
     let going_first = true;
     let going_last = true;
+    let mons_in_battle = [];
+    let ooch_order_check;
     for(let user of db_battle_data.users) {
+        ooch_order_check = user.party[user.active_slot]
+        mons_in_battle.push(ooch_order_check);
+
         if (user.user_index == user_index_attacker) continue;
         if (user.slot_actions[user.active_slot].this_turn_did_attack) going_first = false
-        else going_last = false
+        else if (ooch_order_check.current_hp > 0) going_last = false
     }
 
     slot_attacker.this_turn_did_attack = true;
@@ -3234,11 +3423,12 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
 
     //For moves that match the user's type
+    let move_type_change_to_users_text = ""
     if (move_effects.some(effect => effect.status === 'typematch')) {
         let type_to = attacker.type[0];
         move_type = type_to;
         move_type_emote =      type_to_emote(move_type);
-        string_to_send += `\n✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${capitalize(move_type)}**!\n`
+        move_type_change_to_users_text += `\n---✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${capitalize(move_type)}**!\n`
     }
 
     //For interactions that depend on going last/first
@@ -3251,7 +3441,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
             first_last_failed_text += `it missed its chance!`
         }
     }
-
     if(move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
         if(going_last){
             move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
@@ -3262,26 +3451,84 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     }
 
     //For moves with a weather-dependant type
+    let weather_type_change_text = ""
     if(move_effects.some(effect => effect.status === Status.WeatherDependent)){
-        switch(db_battle_data.weather){
-            case Weather.None: break; //Do nothing
-            case Weather.Heatwave: 
+        switch(db_battle_data.field_effect){
+            case FieldEffect.None: break; //Do nothing
+            case FieldEffect.Heatwave: 
                 move_type = OochType.Flame; 
-                string_to_send += `\n${move_name}'s type was changed to ${type_to_emote([OochType.Flame])} **Flame**!`
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Flame])} **Flame**!`
                 move_effects.push({status : Status.Burn, chance : 30, target : MoveTarget.Enemy})
                 break;
-            case Weather.Thunderstorm: 
+            case FieldEffect.Thunderstorm: 
+                move_type = OochType.Tech; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Tech])} **Tech**!`
+                move_effects.push({status : Status.Revealed, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.EchoChamber: 
                 move_type = OochType.Sound; 
-                string_to_send += `\n${move_name}'s type was changed to ${type_to_emote([OochType.Sound])} **Sound**!`
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Sound])} **Sound**!`
                 move_effects.push({status : Status.Expose, chance : 30, target : MoveTarget.Enemy})
                 break;
+            case FieldEffect.JaggedGround: 
+                move_type = OochType.Stone; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Stone])} **Stone**!`
+                move_effects.push({status : Status.Petrify, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.Wetlands: 
+                move_type = OochType.Ooze; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Ooze])} **Ooze**!`
+                move_effects.push({status : Status.Weak, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.TwistedReality: 
+                move_type = OochType.Magic; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Magic])} **Magic**!`
+                move_effects.push({status : Status.Doom, chance : 30, target : MoveTarget.Enemy})
+                break;
+            
         }
     }
 
+
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
+    if ((defender.ability == Ability.PureCore) && (type_multiplier[0] <= 1.0)){ 
+        type_multiplier[0] *= 0.8; 
+    }
+    if ((defender.ability == Ability.Purification) && (type_multiplier[0] > 1.0)){ 
+        type_multiplier[0] *= 0.5; 
+    }
+    
+
+    //AlwaysSuperEff makes the move always deal super-effective damage
+    if(move_effects.includes(Status.AlwaysSuperEff)){ type_multiplier[0] = 2.0; type_multiplier[1] = '*Super effective!*'; }
+
     //Weak status reduces the move's power by 10
-    if(attacker.status_effects.includes(Status.Weak)){
-        move_damage = _max(move_damage - 10, 5)
+    if(attacker.status_effects.includes(Status.Weak)) move_damage = Math.max(move_damage - 10, 5);
+
+    let ancient_ward_text = ""
+    for(let mon of mons_in_battle){
+        switch(mon.ability){
+
+            //Ancient Ward go brrrrrrr
+            case Ability.AncientWardNeutral:
+            case Ability.AncientWardVoid:
+            case Ability.AncientWardFungal:
+            case Ability.AncientWardFlame:
+            case Ability.AncientWardStone:
+            case Ability.AncientWardTech:
+            case Ability.AncientWardMagic:
+            case Ability.AncientWardOoze:
+            case Ability.AncientWardCrystal:
+            case Ability.AncientWardSound:
+            case Ability.AncientWardCloth:
+            case Ability.AncientWardMartial:
+                if(mon.type == move_type){
+                    move_damage *= .75;
+                    ancient_ward_text = `\n${monster_data.get(`${mon.id}`, 'emote')} **${mon.name}**'s **Ancient Ward** reduces the attack's damage!`;
+                }
+            break;
+
+        }
     }
     
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
@@ -3293,7 +3540,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let ability_dmg_multiplier = 1;
     let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
 
-    let move_weather = (move_effects.find(effect => effect.status === "weather")?.chance || Weather.None);
     let move_field = (move_effects.find(effect => effect.status === "field")?.chance || FieldEffect.None);
 
     //Make sure accuracy is a positive value (we might not need to do this anymore)
@@ -3352,7 +3598,9 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                                 move_type, attacker, defender, db_battle_data.turn_counter) * crit_multiplier;
     }
 
-    vampire_heal = Math.ceil(vampire_heal * dmg); //used later
+    //Vampire heal is calculated here but used later
+    vampire_heal = Math.ceil(vampire_heal * dmg);
+
     // Remove Exposed status effect
     if (status_exposed != 1) {
         defender.status_effects = defender.status_effects.filter(v => v != Status.Expose);
@@ -3384,7 +3632,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         attacker.status_effects = attacker.status_effects.filter(v => v != Status.Drained);
     }
     else if(!do_wakeup && attacker.status_effects.includes(Status.Sleep)){ //If we sleep, we sleep, do nothing
-        string_to_send = `\n${attacker_emote} **${atkOochName}** is <:status_sleep:1335446202275070034> SLEEPING...`;
+        string_to_send = `\n${attacker_emote} **${atkOochName}** is ${get_emote_string('status_sleep')} SLEEPING...`;
     }
     else if(first_last_failed_text != ''){
         string_to_send += `${tried_to_text} ${first_last_failed_text}`;
@@ -3418,6 +3666,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         slot_attacker.this_turn_did_damage = true;
         slot_defender.this_turn_was_damaged = true;
+        slot_defender.last_damage_type_taken = move_type;
 
         // When the Oochamon attacker hits the defender and we aren't targetting ourself
         let hp_prev, damage_taken, randomStatus, prev_hp, reflect_dmg;
@@ -3429,7 +3678,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 break;
                 case Ability.Leech:
                     hp_prev = attacker.current_hp;
-                    attacker.current_hp = clamp(attacker.current_hp + Math.ceil(dmg * 0.1), 0, attacker.stats.hp); 
+                    attacker.current_hp = clamp(attacker.current_hp + Math.ceil(dmg * 0.2), 0, attacker.stats.hp); 
 
                     if(attacker.current_hp - hp_prev > 0){
                         defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Leech**:`
@@ -3449,8 +3698,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     defender.current_hp = clamp(defender.current_hp - damage_taken, 0, defender.stats.hp);
                     defender_field_text += `\n------ ${defender_emote} **${defOochName}** lost ${damage_taken} HP!\n`;
                 break;
-                case Ability.Frostbite:
-                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Frostbite**:`
+                case Ability.Chilltouch:
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Chilltouch**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, -1)}\n`;
                 break;
                 case Ability.StringsAttached:
@@ -3469,6 +3718,25 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     if(move_type == OochType.Flame){
                         defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Turbine**:`
                         defender_field_text += `\n------ ${modify_stat(attacker, Stats.Attack, 1)}\n`;
+                    }
+                break;
+                case Ability.Lullaby:
+                    if (move_type == OochType.Sound && check_chance(25)) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Lullaby**:`;
+                        defender_field_text += `\n------ ${add_status_effect(defender, Status.Sleep, slot_defender)}`;
+                    }
+                break;
+                case Ability.Cacophony:
+                    if (move_type == OochType.Sound) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Cacophony**:`
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Attack, 1)}\n`;
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Defense, -1)}\n`;
+                    }
+                break;
+                case Ability.Accelerando:
+                    if (move_type == OochType.Sound) {
+                        defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Accelerando**:`
+                        defender_field_text += `\n------ ${modify_stat(attacker, Stats.Speed, 1)}\n`;
                     }
                 break;
             }
@@ -3515,37 +3783,51 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                     defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Bloodrush**:`
                     defender_field_text += `\n------ ${modify_stat(defender, Stats.Speed, 1)}\n`;
                 break;
+                case Ability.Usurper:
+                    new_battle_action_attack(db_battle_data, user_index_defender, user_index_attacker, atk_id);
+                    defender_field_text += `\n--- ${defender_emote} **${defOochName}**'s **Usurper**:`
+                    defender_field_text += `\n------ The attack is being reflected!\n`;
+                break;
             }
         }
 
-        
+        // Attacker on move use ability
+        switch (attacker.ability) {
+            case Ability.Patchwork:
+                if (move_type == OochType.Cloth) {
+                    defender_field_text += `\n--- ${attacker_emote} **${atkOochName}**'s **Patchwork**:`
+                    attacker.current_hp = clamp(Math.round(attacker.current_hp + attacker.stats.hp * 0.05), 0, attacker.stats.hp);
+                    defender_field_text += `\n------ ❤️ ${attacker_emote} **${atkOochName}** healed **${clamp(Math.round(attacker.stats.hp * 0.05), 0, attacker.stats.hp)}** HP.`;
+                }
+            break;
+        }
 
         if (ogMoveId !== atk_id) {
             string_to_send += `\n🎲 **${move_data.get(`${ogMoveId}`, 'name')}** changed into **${move_name}**!\n`;
         }
 
+        //Base move use dialog
+        string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
         
-
         //Add one of the battle description flavor texts if applicable
         let move_battle_desc = await move_data.get(`${atk_id}`, 'battle_desc');
         if(typeof move_battle_desc == "string") {
             move_battle_desc = move_battle_desc.replaceAll("USER", `${attacker_emote} ${atkOochName}`);
             move_battle_desc = move_battle_desc.replaceAll("TARGET", `${defender_emote} ${defOochName}`);
 
-            string_to_send += `\n--- *${move_battle_desc}*`;
+            string_to_send += `\n*${move_battle_desc}*`;
         }
 
-        string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
+        //For when the move changes type based on the user
+        string_to_send += move_type_change_to_users_text;
+
+        //From weather based move effects
+        string_to_send += weather_type_change_text;
+
+        //From the ancient ward ability
+        string_to_send += ancient_ward_text;
+        
         if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
-
-        //Handle Weather
-        if(move_weather != Weather.None){
-            if(move_weather == Weather.Clear){
-                db_battle_data.weather = Weather.None;
-                string_to_send += `\n--- The weather was cleared!`
-            }
-            else{ db_battle_data.weather = move_weather; }
-        }
 
         //Handle Field Effects
         if(move_field != FieldEffect.None){
@@ -3558,7 +3840,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         //If the target has the Exposed status effect, usually 2, but if the attacker has Exploiter, it is 3
         if(status_exposed != 1 && move_damage > 0) {
-            string_to_send += `\n--- **The damage was <:status_exposed:1335433347345813624> ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
+            string_to_send += `\n--- **The damage was ${get_emote_string('status_exposed')} ${status_exposed == 2 ? 'doubled' : `tripled by ${attacker_emote} ${atkOochName}'s Exploiter`}!**`
         }
 
         //If a crit lands
@@ -3583,8 +3865,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         if (recoil_damage > 0) {
             string_to_send += `\n--- 💥 ${attacker_emote} **${atkOochName}** lost **${recoil_damage}** HP from recoil!`
         }
-
-        
 
         if (move_effects.length != 0) {
             for (let eff of move_effects) {
@@ -3708,6 +3988,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 monster_data.set('-1', 1, 'def');
                 monster_data.set('-1', 1, 'spd');
                 monster_data.set('-1', 1, 'hp');
+                
             break;
             case Ability.Ravenous:
                 hp_prev = attacker.current_hp;
@@ -3764,6 +4045,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         }
     }
 
+    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += `\n${generate_hp_bar(defender, user_defender.hp_style, 9, true)}`;
+
     string_to_send = `${string_to_send}${defender_field_text}` 
     return string_to_send;
 }
@@ -3810,12 +4093,11 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
     let hp_string = ``;
     let user_name, active_ooch;
     if (db_battle_data.field_effect != FieldEffect.None && db_battle_data.field_effect != FieldEffect.Clear) hp_string += `\`Field Effect: ${startCase(db_battle_data.field_effect)}\``;
-    if (db_battle_data.weather != Weather.None && db_battle_data.weather != Weather.Clear) hp_string += `\`Weather: ${startCase(db_battle_data.weather)}\``;
     for(let user of db_battle_data.users){
         user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
         active_ooch = user.party[user.active_slot];
         hp_string += `\n\`` + trim(`${user_name} ${active_ooch.nickname} (Lv.${active_ooch.level})\` ${type_to_emote(active_ooch.type)}`);
-        hp_string += generate_hp_bar(active_ooch, 'plr'); 
+        hp_string += generate_hp_bar(active_ooch, user.hp_style, 9); 
         if (stances_enabled) {
             hp_string += `\n`;
             hp_string += `\`Stance: ${stance_data.get(`${active_ooch.stance}`, 'name')}\``
@@ -3831,41 +4113,46 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
  * Generate a custom emote HP bar for use in Oochamon battles.
  * @param {Object} ooch The oochamon data.
  * @param {String} style The style of the HP bar (plr/enemy)
+ * @param {Number} hp_sections The number of hp sections
+ * @param {Boolean} in_turn If this is part of a battle turn embed
  * @returns The generated HP emote string for the Oochamon.
  */
-export function generate_hp_bar(ooch, style) {
+export function generate_hp_bar(ooch, style, hp_sections = 9, in_turn = false) {
     let hp_string = ``;
     let hp_sec = (ooch.current_hp / ooch.stats.hp);
-    let sections = Math.ceil(hp_sec * 10);
-    if(ooch.current_hp != ooch.stats.hp){ sections = Math.min(sections, 9); }
+    let sections = Math.ceil(hp_sec * hp_sections);
+    if(ooch.current_hp != ooch.stats.hp){ sections = Math.min(sections, hp_sections - 1); }
     let piece_type;
 
-    hp_string += `\n${monster_data.get(`${ooch.id}`, 'emote')} `;
+    hp_string += `\n`;
 
     if (style == 'plr') {
-        piece_type = `<:p_f_hm:1274936333277855775>`
-        if (sections <= 5) piece_type = `<:p_m_hm:1274936384779714680>`;
-        if (sections <= 2) piece_type = `<:p_l_hm:1274936321890193501>`;
+        piece_type = get_emote_string('p_f_hm');
+        if (sections <= 5) piece_type = get_emote_string('p_m_hm');
+        if (sections <= 2) piece_type = get_emote_string('p_l_hm');
 
-        hp_string += `<:p_hs:1274936342677028905>`;
+        hp_string += get_emote_string('p_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:p_g_hm:1274936302529155115>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:p_he:1274936313123967016>\n`;
+        hp_string += `${get_emote_string('p_e_hm').repeat(hp_sections - sections)}` // Empty slots
+        hp_string += `${get_emote_string('p_he')}\n`;
     } else {
-        piece_type = `<:e_f_hm:1274935813758521416>`;
-        if (sections <= 5) piece_type = `<:e_m_hm:1274936005777948744>`;
-        if (sections <= 2) piece_type = `<:e_l_hm:1274935997037154417>`;
+        piece_type = get_emote_string('e_f_hm');
+        if (sections <= 5) piece_type = get_emote_string('e_m_hm');
+        if (sections <= 2) piece_type = get_emote_string('e_l_hm');
 
-        hp_string += `<:e_hs:1274935985289039915>`;
+        hp_string += get_emote_string('e_hs');
         hp_string += `${piece_type.repeat(sections)}` // Filled slots
-        hp_string += `${`<:e_g_hm:1274935806301048974>`.repeat(10 - sections)}` // Empty slots
-        hp_string += `<:e_he:1274935824173240372>\n`;
+        hp_string += `${get_emote_string('e_e_hm').repeat(hp_sections - sections)}` // Empty slots
+        hp_string += `${get_emote_string('e_he')}\n`;
     }
 
+    hp_string += `${monster_data.get(`${ooch.id}`, 'emote')} `;
     hp_string += `\`HP: ${ooch.current_hp}/${ooch.stats.hp}\` `;
 
-    for (let status of ooch.status_effects) {
-        hp_string += status_data.get(`${status}`, 'emote');
+    if (!in_turn) {
+        for (let status of ooch.status_effects) {
+            hp_string += status_data.get(`${status}`, 'emote');
+        }
     }
 
     return hp_string;
@@ -4214,6 +4501,7 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
             ooch.stats.eva_mul = 0;
             ooch.ability = ooch.og_ability;
             ooch.type = ooch.og_type;
+            ooch.emote = ooch.og_emote;
             ooch.doom_timer = 4;
             ooch.stance = StanceForms.Base;
             ooch.stance_cooldown = 0;
@@ -4227,14 +4515,21 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
 
         //Set the party as needed
         profile.set(user_id, user_info.party, `ooch_party`);
-        profile.set(user_id, user_info.prism_inv, `prism_inv`);
-        profile.set(user_id, user_info.heal_inv, `heal_inv`);
-        profile.set(user_id, user_info.other_inv, `other_inv`);
+        profile.set(user_id, user_info.inventory, `inventory`);
         profile.set(user_id, 0, 'ooch_active_slot');
 
         // If we lost, go back to the teleporter location.
         if (battle_won === false) {
             profile.set(user_id, profile.get(`${user_id}`, 'checkpoint_data'), 'location_data');
+
+            // Check for add and remove ally event
+            let cur_event_array_check = profile.get(user_id, 'cur_event_array');
+            cur_event_array_check = cur_event_array_check.filter(ev => ev[0] == EventMode.AddAlly || ev[0] == EventMode.RemoveAlly);
+            cur_event_array_check = cur_event_array_check.map(ev => ev[0]);
+            if (cur_event_array_check.includes(EventMode.AddAlly) && cur_event_array_check.includes(EventMode.RemoveAlly)) {
+                profile.set(user_id, [], 'allies_list');
+            }
+
             profile.set(user_id, [], 'cur_event_array');
             profile.set(user_id, 0, 'cur_event_pos')
             profile.set(user_id, false, 'cur_battle_id');

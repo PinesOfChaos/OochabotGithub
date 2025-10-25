@@ -24,15 +24,15 @@ func _ready() -> void:
 		
 		for part in event_data:
 			if(typeof(part[1]) == TYPE_STRING) or (part[1].has("text") and part[1].text == event_name):
-				print("event not repeatable")
+				#print("event not repeatable")
 				#this node tells the event to be not repeatable, but should not create segment
 				event_repeatable = false
 				check_button_repeatable.set_pressed_no_signal(false)
 			else:
 				new_node(part[0], part[1])
 			
-			print(part[0])
-			print(part[1])
+			#print(part[0])
+			#print(part[1])
 	else: #set a default event name, leave everything else alone
 		event_name = "ev_"
 	
@@ -109,6 +109,9 @@ func _on_new_b_group_start_pressed() -> void:
 
 func _on_new_b_group_end_pressed() -> void:
 	new_node(Global.EVENT_BATTLEGROUP_END)
+	
+func _on_new_skin_select_pressed() -> void:
+	new_node(Global.EVENT_SET_SKIN)
 
 func _on_button_save_pressed() -> void:
 	var data = []

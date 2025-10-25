@@ -20,21 +20,6 @@ const GenmapTheme = {
     ObsidianPath : 1
 }
 
-const TypeEmote = {
-    Flame:      '<:icon_flame:1274936249484050472>',
-    Fungal:     '<:icon_fungal:1274936267884199947>',
-    Magic:      '<:icon_magic:1274936558595866787>',
-    Neutral:    '<:icon_neutral:1274936582583091210>',
-    Ooze:       '<:icon_ooze:1274936607136288810>',
-    Stone:      '<:icon_stone:1274936641433243781>',
-    Tech:       '<:icon_tech:1274936672022298624>',
-    Void:       '<:icon_void:1274936702959485011>',
-    Crystal:    '<:icon_crystal:1306340490857418893>',
-    Cloth:      '<:icon_cloth:1306340508762771559>',
-    Sound:      '<:icon_sound:1306340525376540773>',
-    Martial:    '<:icon_martial:1306340540513517588>'
-}
-
 const GraphicsMode = {
     Quality: 0,
     Performance: 1
@@ -59,7 +44,8 @@ const EventMode = {
     AddAlly: 9,
     RemoveAlly: 10,
     BattleGroupStart: 11,
-    BattleGroupEnd: 12
+    BattleGroupEnd: 12,
+    SetSkin: 13
 }
 
 const DialogueType = {
@@ -113,7 +99,8 @@ const Status = {
     GoingFirstBonus: 'going_first',
     GoingLastBonus: 'going_last',
     TrueDamage: 'true_damage',
-    SweepDamage: 'sweep_damage'
+    SweepDamage: 'sweep_damage',
+    AlwaysSuperEff: 'always_super_effective'
 }
 
 const OochType = {
@@ -135,7 +122,11 @@ const Weather = {
     None : 'none', //No weather
     Clear : 'clear', //Used to clear weather
     Heatwave : 'heatwave',
-    Thunderstorm : 'thunderstorm'
+    Thunderstorm : 'thunderstorm',
+    JaggedGround : 'jagged ground',
+    EchoChamber : 'echo chamber',
+    Wetlands : 'wetlands',
+    TwistedReality : 'twisted reality'
 }
 
 const TameStatus = {
@@ -152,16 +143,18 @@ const StanceForms = {
     Attack: 1,
     Defense: 2,
     Speed: 3,
-    Sniper: 4,
-    //TODO: stances below this line probably don't work yet if this message is still here
-    Corrupt: 5,
-    Pure: 6,
-    Elemental : 7
+    Sniper: 4
+    //Stances below this line probably don't work yet if this message is still here
+    //Corrupt: 5,
+    //Pure: 6,
+    //Elemental : 7
 }
 
 const FieldEffect = {
     None : 'none', //No field effect
     Clear : 'clear', //Used to clear field
+    Heatwave : 'heatwave',
+    Thunderstorm : 'thunderstorm',
     JaggedGround : 'jagged ground',
     EchoChamber : 'echo chamber',
     Wetlands : 'wetlands',
@@ -300,7 +293,164 @@ const Move = {
     Frostbite: 128,
     LaserSweep: 129,
     Annihilate: 130,
-    TargetLock: 131
+    TargetLock: 131,
+    Calamity: 132,
+    ShootingStar: 133,
+    BattleCry: 134,
+    MostAnnoyingSound: 135,
+    Wub: 136,
+    BoneTone: 137,
+    Silkstorm: 138,
+    SpoolUp: 139,
+    TieDown: 140,
+    RugRash: 141,
+    HymnOfDread: 142,
+    SoulScale: 143,
+    CoreBurst: 144,
+    CoreDelete: 145
+}
+
+const OochID = {
+    Sporbee:0,
+    Stingrowth:1,
+    Queenect:2,
+    Roocky:3,
+    Graknight:4,
+    Kracking:5,
+    Puppyre:6,
+    Dogglow:7,
+    Hounuke:8,
+    Glither:9,
+    Sparafura:10,
+    Constone:11,
+    Amephyst:12,
+    Widew:13,
+    Tarotula:14,
+    Moldot:15,
+    Moldire:16,
+    Charlite:17,
+    Darcoal:18,
+    Torchoir:19,
+    Chantern:20,
+    Eluslug:21,
+    Jellime:22,
+    Meduslime:23,
+    Tisparc:24,
+    Wizzap:25,
+    Blipoint:26,
+    Rerune:27,
+    Temporath:28,
+    Nucleorb:29,
+    Amebite:30,
+    Amalgrime:31,
+    Drilline:32,
+    Erwrek:33,
+    Purif_i:34,
+    Cromet:35,
+    Lobstar:36,
+    Spoolette:37,
+    Thimbite:38,
+    Digityke:39,
+    Codet:40,
+    Heatri:41,
+    Moistri:42,
+    Crystri:43,
+    Solidifyr:44,
+    Obstaggard:45,
+    Droplunk:46,
+    Brykurse:47,
+    Polyplute:48,
+    Reefest:49,
+    Frigook:50,
+    Boreyuc:51,
+    Vrumbox:52,
+    Folduo:53,
+    Hexyclone:54,
+    Doubud:55,
+    Hedfren:56,
+    Kindeep:57,
+    Ablayzz:58,
+    Krakle:59,
+    Lightuft:60,
+    Infernowl:61,
+    Fluffly:62,
+    Decavian:63,
+    Phaegrim:64,
+    Plaghast:65,
+    Grubbit:66,
+    Culcoon:67,
+    Speculidae:68,
+    Nisythe:69,
+    Tidoll:70,
+    Marinette:71,
+    Durble:72,
+    Durubull:73,
+    Rustail:74,
+    Oxydrake:75,
+    Chakreye:76,
+    Sabrink:77,
+    Sapler:78,
+    Radient:79,
+    Lasangato:80,
+    Crudoil:81,
+    Oilantern:82,
+    Saporite:83,
+    Faering:84,
+    Kerkobble:85,
+    Korkobble:86,
+    Ilushand:87,
+    Miroraj:88,
+    Fritarge:89,
+    Wardred:90,
+    Congsume:91,
+    Fevour:92,
+    Taditty:93,
+    Silentoad:94,
+    Bansheet:95,
+    Tryptid:96,
+    Roswier:97,
+    Chemerai:98,
+    Shieldome:99,
+    Rietor:100,
+    Pondorb:101,
+    Maglobe:102,
+    Stakulb:103,
+    Matryion:104,
+    Lacerize:105,
+    Rendive:106,
+    Drascend:107,
+    Nullifly:108,
+    Gnayme:109,
+    Mysnome:110,
+    Shellamp:111,
+    Caracar:112,
+    Larvibe:113,
+    Virtuito:114,
+    Parmanyan:115,
+    Regulush:116,
+    Chewdee:117,
+    Rhodent:118,
+    Coimble:119,
+    Crabandit:120,
+    Bismote:121,
+    Iridusk:122,
+    Priseroth:123,
+    Talto:124,
+    Sectrip:125,
+    Orchestryd:126,
+    Heraloom:127,
+    Symaat:128,
+    Ophicore:129,
+
+    i_:-1,
+    Oochabit:-2,
+    Oochabound:-3,
+    SlimeHead:-4,
+    GiantSlimeHead:-5,
+    EnforcementSystemΔ:-6,
+    Ophicorupt:-7,
+    AncientRune:-8,
+    Serpsis:-9
 }
 
 const Ability = {
@@ -342,7 +492,7 @@ const Ability = {
     Lacerating: 35,
     Gravity: 36,
     Sporespray: 37,
-    Frostbite: 38,
+    Chilltouch: 38,
     Bipolar: 39,
     Hexiply: 40,
     Nullify: 41,
@@ -393,10 +543,29 @@ const Ability = {
     EscalationProtocol: 86,
     SpreadingSludge: 87,
     AncientPlating: 88,
-    AncientWard: 89,
-    Usurper: 90,
-    PureCore: 91,
-    Lullaby: 92
+    PureCore: 89,
+    AncientWardNeutral: 90,
+    AncientWardVoid: 91,
+    AncientWardFungal: 92,
+    AncientWardFlame: 93,
+    AncientWardStone: 94,
+    AncientWardTech: 95,
+    AncientWardMagic: 96,
+    AncientWardOoze: 97,
+    AncientWardCrystal: 98,
+    AncientWardSound: 99,
+    AncientWardCloth: 100,
+    AncientWardMartial: 101,
+    Lullaby: 102,
+    TwilightHour: 103,
+    Cacophony: 104,
+    Accelerando: 105,
+    OnIce: 106,
+    Flux: 107,
+    Equalized: 108,
+    Patchwork: 109,
+    Usurper: 110,
+    Purification: 111
 }
 
 const Item = {
@@ -424,17 +593,73 @@ const Item = {
     Lavaboard: 21,
     Repulsor: 22,
     Teleporter: 23,
-
+    MapHub: 24,
+    MapStoneTunnel: 25,
+    MapFungalCaves: 26,
+    MapLavaPath: 27,
+    MapOldTrainingFacility: 28,
+    MapThunderPeak: 29,
+    MapAncientBridge: 30,
+    MapFlowerFields: 31,
+    MapAccessTunnel: 32,
+    MapScaffolds: 33,
+    MapGooLake: 34,
+    MapOldPowerplant: 35,
+    MapRestrictedArea: 36,
+    MapCrystalCaves: 37,
+    FlowerSample: 38,
+    DataDisc: 39,
+    OldDisc: 40,
+    AbilitySphere: 41,
     EssenceMonolith: 42,
     EssenceFragment: 43,
     EssenceShard: 44,
-    EssenceChunk: 45
-}
+    EssenceChunk: 45,
+    OddBulb: 46,
+    MagicMirror: 47,
+    SkinPlayerA: 48,
+    SkinPlayerB: 49,
+    SkinScout: 50,
+    SkinGuard: 51,
+    SkinRaider: 52,
+    SkinSeerSister: 53,
+    SkinResearcher: 54,
+    SkinProfLyra: 55,
+    SkinRivalCade: 56,
+    SkinEngineerAl: 57,
+    SkinFungalCorrupted: 58,
+    SkinShopkeeper: 59,
+    SkinCrew: 60,
+    SkinTechCorrupted: 61,
+    SkinCFOKaterina: 62,
+    SkinMrNice: 63,
+    SkinSlimeCorrupted: 64,
+    SkinKaterinaCorrupted: 65,
+    SkinExplorerDave: 66,
+    SkinDrAnne: 67,
+    SkinBalancer: 68,
+    SkinEvergreenCultist: 69,
+    SkinForsythe: 70,
+    SkinEngineer: 71,
+    SkinTamagoochiGirl: 72,
+    SkinJeffdev: 73,
+    SkinTerarabe: 74,
+    SkinJEKYLLPOWERSTANCE: 75,
+    SkinNeo: 76,
+    SkinSign: 77,
+    TreatBasic: 78,
+    TreatFungal: 79,
+    TreatFlame: 80,
+    TreatStone: 81,
+    TreatOoze: 82,
+    TreatMagic: 83,
+    TreatTech: 84,
+    TreatCloth: 85,
+    TreatSound: 86,
+    TreatCrystal: 87,
+    PrismPurifying: 88,
+    Oochagotchi: 89
 
-const ItemType = {
-    Heal: 0,
-    Prism: 1,
-    Misc: 2,
 }
 
 const BattleState = {
@@ -526,11 +751,45 @@ const BattleAi = {
     Smart : 1
 }
 
+const ItemCategory = {
+    Consumable: 'consumable',
+    Prism:      'prism',
+    Map:        'map',
+    Key:        'key',
+    Skin:       'skin'
+}
+
+const ItemType = {
+    Potion: 0,
+    Prism: 1,
+    Key: 2,
+    Status: 3,
+    IV: 4,
+    Evolve: 5,
+    Repel: 6,
+    Teleport: 7,
+    Map: 8,
+    AbilitySwap: 9,
+    LevelUp: 10,
+    GiveExp: 11,
+    Skin: 12,
+    Treat: 13,
+    MoveUnlock: 14,
+}
+
+const TamingAction = {
+    Default: 0,
+    Feed: 1,
+    Pet: 2,
+    Walk: 3
+}
+
 export {
-    PlayerState, TypeEmote, GraphicsMode, Flags, 
+    PlayerState, GraphicsMode, Flags, 
     EventMode, DialogueType, UserType, 
     Stats, Status, OochType, Move, Ability, Item,
     ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
-    BattleAction, BattleInput, FieldEffect, GenmapTheme
+    BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID,
+    ItemCategory, TamingAction
 };

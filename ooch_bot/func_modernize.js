@@ -1,5 +1,5 @@
 import { profile, battle_data, monster_data } from "./db.js";
-import { PlayerState, UserType, Weather, FieldEffect, StanceForms } from './types.js';
+import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType } from './types.js';
 import { merge, random } from 'lodash-es';
 
 
@@ -17,22 +17,53 @@ export async function modernize_all() {
     }
 }
 
-
 export async function modernize_profile(user_id) {
     let db_profile = await profile.get(`${user_id}`);
     let blank_profile = get_blank_profile();
     merge(blank_profile, db_profile);
     db_profile = blank_profile;
 
-
     db_profile.ooch_pc = await modernize_box(db_profile.ooch_pc);
     db_profile.ooch_party = await modernize_party(db_profile.ooch_party);
     db_profile.oochadex = await modernize_oochadex(db_profile.oochadex);
 
-
-    //TODO SET THE db_profile Info in the database, this is todo so that nothing breaks
     profile.set(user_id, db_profile);
 }
+
+// export async function modernize_inventory(db_profile) { 
+//     db_profile.inventory = {
+//         [ItemCategory.Consumable]: [],
+//         [ItemCategory.Prism]: [],
+//         [ItemCategory.Map]: [],
+//         [ItemCategory.Key]: [],
+//         [ItemCategory.Skin]: [],
+//     }
+
+//     if (db_profile.heal_inv) {
+//         for (let healEntries of Object.entries(db_profile.heal_inv)) {
+//             db_profile.inventory[ItemCategory.Consumable].push({ id: parseInt(healEntries[0]), quantity: healEntries[1] })
+//         }
+//     }
+
+//     if (db_profile.prism_inv) {
+//         for (let prismEntries of Object.entries(db_profile.prism_inv)) {
+//             db_profile.inventory[ItemCategory.Prism].push({ id: parseInt(prismEntries[0]), quantity: prismEntries[1] })
+//         }
+//     }
+
+//     if (db_profile.other_inv) {
+//         for (let keyEntries of Object.entries(db_profile.other_inv)) {
+//             let keyData = item_data.get(keyEntries[0]);
+//             db_profile.inventory[keyData.category].push({ id: parseInt(keyEntries[0]), quantity: keyEntries[1] })
+//         }
+//     }
+
+//     if (db_profile.skin_inv) {
+//         for (let skinEntries of Object.entries(db_profile.skin_inv)) {
+//             db_profile.inventory[ItemCategory.Skin].push({ id: parseInt(skinEntries[0]), quantity: skinEntries[1] })
+//         }
+//     }
+// }
 
 export async function modernize_box(box_data) {
     for(let i = 0; i < box_data.length; i++){
@@ -112,12 +143,20 @@ export function get_blank_profile() {
         player_sprite : 'c_000',
         ooch_pc : [],
         ooch_active_slot : 0,
-        other_inv : {},
-        prism_inv : {},
-        heal_inv : {},
+        inventory: {
+            [ItemCategory.Consumable]: [],
+            [ItemCategory.Prism]: [],
+            [ItemCategory.Map]: [],
+            [ItemCategory.Key]: [],
+            [ItemCategory.Skin]: [],
+        },
 
         oochabux : 0,
         repel_steps : 0,
+        step_counter : 0,
+        relax_step_counter : 100,
+        walk_taken : false,
+        
         player_state : PlayerState.Intro,
         location_data : false,
         checkpoint_data : false,
@@ -158,6 +197,7 @@ export function get_blank_profile() {
 
 export function get_blank_oochamon() {
     let ooch_obj = { 
+        shiny : Math.random() < .001,
         id: 0,
         name: "", 
         nickname: "",
@@ -191,6 +231,7 @@ export function get_blank_oochamon() {
         type: 0,
         og_type: 0,
         doom_timer: 4, // Used for the doomed status effect
+        og_emote : "",
         emote: "",
         starting_stance: StanceForms.Base,
         stance: StanceForms.Base,
@@ -243,9 +284,7 @@ export function get_blank_battle_user(){
             name_possessive: '',
             battle_sprite: '',
             user_id: `${random(5, 1_000_000)}`,
-            heal_inv: [],
-            prism_inv: [],
-            other_inv: [],
+            inventory: {},
             team_id: 0,
             user_type: UserType.Wild,
             thread_id: '',
@@ -261,7 +300,8 @@ export function get_blank_battle_user(){
             oochabux: 0,
             stance_list : [StanceForms.Base],
             ooch_overwrites_name : false,
-            custom_start_text : ''
+            custom_start_text : '',
+            hp_style : 'enemy'
     }
 
     return(battle_user_obj);
@@ -271,6 +311,8 @@ export function get_blank_slot_actions(){
     let slot_actions_obj = {
         move_used_first : false,
         move_used_last : false,
+
+        last_damage_type_taken : OochType.Neutral,
 
         this_turn_did_attack : false,
         this_turn_did_damage : false,

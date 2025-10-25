@@ -51,8 +51,8 @@ func _process(delta):
 		if Input.is_action_just_released("mouse_left"):
 			dragging_scale = false
 			
-			print([origin_x, origin_y, mpos.x, mpos.y])
-			print([pos_x, pos_y, scale_x, scale_y])
+			#print([origin_x, origin_y, mpos.x, mpos.y])
+			#print([pos_x, pos_y, scale_x, scale_y])
 
 func _on_anchor_top_left_button_down():
 	Global.ObjSelected = get_parent().get_instance_id()

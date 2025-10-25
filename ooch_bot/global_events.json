@@ -322,6 +322,452 @@
 			}
 		]
 	],
+	"ev_final_battle1": [
+		[
+			0.0,
+			{
+				"description": "*A creature of crystal and flesh rises before you...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "ophicorupt",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*A large glowing eye shines brightly...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "ophicorupt",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*The creature attacks!*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "ophicorupt",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 1.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "",
+				"sprite": 54.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_054",
+				"team": [
+					{
+						"ability": 88.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": -7.0,
+						"item": -1.0,
+						"level": 40.0,
+						"moveset": [
+							120.0,
+							129.0,
+							130.0,
+							131.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*The creature is defeated, but from it's body arises a new threat!*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "You didn't think I'd chicken out after our fight in the tunnel now, did you?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Let's get do this, can't have you hogging all the glory now!",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			9.0,
+			{
+				"battle_ai": 1.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Rival Cade",
+				"sprite": 7.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_007",
+				"team": [
+					{
+						"ability": 24.0,
+						"atk_iv": 6.0,
+						"def_iv": 6.0,
+						"hp_iv": 6.0,
+						"id": 28.0,
+						"item": -1.0,
+						"level": 38.0,
+						"moveset": [
+							31.0,
+							116.0,
+							9.0,
+							66.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 6.0
+					}
+				],
+				"user_type": 3.0
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 1.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "",
+				"sprite": 54.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_054",
+				"team": [
+					{
+						"ability": 110.0,
+						"atk_iv": 5.0,
+						"def_iv": 2.0,
+						"hp_iv": 10.0,
+						"id": -9.0,
+						"item": -1.0,
+						"level": 45.0,
+						"moveset": [
+							92.0,
+							46.0,
+							75.0,
+							6.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			10.0,
+			{
+
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "cade_crystal_caves_appear"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*the serpent seems to be defeated*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*it disappears into an inky black void*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "We... we did it, right?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Ahahaha, I knew it couldn't be *too* difficult.",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I mean, uh, you were good to, yeah.",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*radio static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "{player}? Cade? Are you two safe?",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Oh thank goodness, you are. Katerina just came stumbling out of the Restricted Tunnel.",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I passed her on the way here, she doin' okay?",
+				"dialogue_portrait": "portrait_rival",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Well, she could certainly be better, but she tells me she wouldn't have made it out of there without you two.",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "What are you--",
+				"dialogue_portrait": "portrait_prof_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Hey, I hate to break up the happy talk and stuff, but {player} and Cade need to get out of there, now!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "That section of the cave's about to collapse! Hurry on back topside, pronto!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Well, you heard 'em, let's get back to the Hub. Race ya there!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Rival Cade"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*Cade sprints on ahead, and you are quick to follow as the cave begins to collapse*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "endcampaign1",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "So the story comes to a close, but there's still more for you to do, {player}.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "endcampaign1",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Note from the Devs"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Keep on exploring, discovering, and trying new things!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "endcampaign1",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Note from the Devs"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "And most importantly, thank you for playing!!!",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "endcampaign1",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Note from the Devs"
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "hub",
+				"x_to": 46.0,
+				"y_to": 50.0
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "finished_campaign1"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_final_battle1"
+			}
+		]
+	],
 	"ev_get_moistri": [
 		[
 			3.0,
@@ -359,14 +805,154 @@
 			}
 		]
 	],
+	"ev_goo_lake_tp": [
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "goo_lake",
+				"x_to": 33.0,
+				"y_to": 11.0
+			}
+		]
+	],
+	"ev_goo_lake_tp_confirm": [
+		[
+			6.0,
+			{
+				"description": "Return to the Shores of Goo Lake?",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"emote": "",
+						"event": "ev_goo_lake_tp",
+						"flag": "",
+						"price": 0.0,
+						"style": 2.0,
+						"text": "Yes"
+					},
+					{
+						"emote": "",
+						"event": "",
+						"flag": "",
+						"price": 0.0,
+						"style": 3.0,
+						"text": "No"
+					}
+				],
+				"title": ""
+			}
+		]
+	],
+	"ev_heraloom": [
+		[
+			0.0,
+			{
+				"description": "*ssssshhhhhhhhhhhhh*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": true,
+				"name": "",
+				"sprite": 2.0,
+				"sprite_combat": "",
+				"sprite_id": "",
+				"team": [
+					{
+						"ability": 102.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 127.0,
+						"item": -1.0,
+						"level": 45.0,
+						"moveset": [
+							142.0,
+							140.0,
+							56.0,
+							134.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*shhhhhh.....*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": true,
+				"map_to": "lava_path",
+				"x_to": 40.0,
+				"y_to": 48.0
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_heraloom"
+			}
+		]
+	],
+	"ev_heraloom_tp": [
+		[
+			0.0,
+			{
+				"description": "*shhhhh*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "flower_fields",
+				"x_to": 53.0,
+				"y_to": 33.0
+			}
+		]
+	],
 	"ev_intro": [
 		[
 			0.0,
 			{
-				"description": "Welcome to the Oochamon Beta Test!",
+				"description": "`Waking Oochcorp employee, {player}, from stasis...`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -376,10 +962,75 @@
 		[
 			0.0,
 			{
-				"description": "This game is currently VERY WIP, and many changes could and will be made, so we appreciate any and all feedback you may give!",
+				"description": "`Scanning employee's data for discrepancies.`",
 				"dialogue_portrait": "",
 				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`Error: Unable to load appearance data. Loading visualizer now.`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			13.0,
+			{
+				"description": "Select your appearance.",
+				"dialogue_portrait": "",
 				"image": "",
+				"options": [
+					48.0,
+					49.0
+				],
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`Scanning for additional discrepancies...`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`...`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Intro"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "`No additional discrepancies detected. Proceeding to Oochamon partner selection.`",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -389,9 +1040,9 @@
 		[
 			3.0,
 			{
-				"description": "Let's begin with selecting an Oochamon.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
+				"description": "Please select an Oochamon to join you.\n- **Sporbee** is a Fungal type Oochamon\n- **Roocky** is a Stone type Oochamon.\n- **Puppyre** is a Flame type Oochamon.",
 				"dialogue_portrait": "",
-				"image": "starter.png",
+				"image": "starter",
 				"options": [
 					{
 						"ability": 9999.0,
@@ -454,9 +1105,9 @@
 		[
 			6.0,
 			{
-				"description": "Great. Now would you like to do the tutorial? This will teach you how the game works and how it is controlled.",
+				"description": "Would you like to play a tutorial? This will teach you the basics if you're new to the game.",
 				"dialogue_portrait": "",
-				"image": "",
+				"image": "intro",
 				"options": [
 					{
 						"emote": "",
@@ -481,10 +1132,10 @@
 		[
 			0.0,
 			{
-				"description": "Perfect! With that, we shall continue onto the game! Enjoy the wonderful world of Oochamon!",
+				"description": "`Skipping tutorial session. Please, enjoy your flight to the planet's surface, {player}.`",
 				"dialogue_portrait": "",
 				"flags": [],
-				"image": "",
+				"image": "intro",
 				"items": [],
 				"money": 0.0,
 				"objective": "",
@@ -494,16 +1145,583 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "hub",
-				"x_to": 0.0,
-				"y_to": 0.0
+				"x_to": 46.0,
+				"y_to": 50.0
 			}
 		],
 		[
 			2.0,
 			{
 				"text": "ev_intro"
+			}
+		]
+	],
+	"ev_lyra_al_post_powerplant": [
+		[
+			0.0,
+			{
+				"description": "Ah, welcome back, and thank you for the rescue, {player}.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Seriously, thanks, I had no idea the Prof was in so much danger.",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Oh, and Prof, have you heard anything back from Cade?",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Not yet, but I have left him some messages, hopefully he'll reach out soon.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Before we proceed further, {player}, it's probably best to make sure you're ready to deal with what's ahead. Prepare yourself!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 1.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Professor Lyra",
+				"sprite": 6.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_006",
+				"team": [
+					{
+						"ability": 14.0,
+						"atk_iv": 4.0,
+						"def_iv": 2.0,
+						"hp_iv": 5.0,
+						"id": 73.0,
+						"item": -1.0,
+						"level": 34.0,
+						"moveset": [
+							42.0,
+							109.0,
+							14.0,
+							36.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 8.0
+					},
+					{
+						"ability": 28.0,
+						"atk_iv": 2.0,
+						"def_iv": 9.0,
+						"hp_iv": 4.0,
+						"id": 36.0,
+						"item": -1.0,
+						"level": 35.0,
+						"moveset": [
+							102.0,
+							11.0,
+							50.0,
+							49.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 7.0
+					},
+					{
+						"ability": 2.0,
+						"atk_iv": 4.0,
+						"def_iv": 3.0,
+						"hp_iv": 4.0,
+						"id": 80.0,
+						"item": -1.0,
+						"level": 36.0,
+						"moveset": [
+							56.0,
+							78.0,
+							39.0,
+							80.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 4.0
+					},
+					{
+						"ability": 0.0,
+						"atk_iv": 8.0,
+						"def_iv": 2.0,
+						"hp_iv": 1.0,
+						"id": 86.0,
+						"item": -1.0,
+						"level": 37.0,
+						"moveset": [
+							73.0,
+							35.0,
+							56.0,
+							66.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 3.0
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Now, I suppose I owe you an explanation for everything that's been going on.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "As I'm sure you've noticed, some researchers have been corrupted by some sort of influence within the planet.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I'm afraid that influence is some sort of Oochamon, deep below the planet's surface.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Kat seems to have come under its influence and is attempting to reach it via the Restricted Tunnel.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I don't know what she's getting out of this, but I know it can't be good for us or the Oochamon on this planet.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Please, try to stop her.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I'll try to pull some strings on my end. For now, I think Lyra and I can both place our trust in you, {player}.",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I'll let you know if I have any luck!",
+				"dialogue_portrait": "portrait_engineer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Thank you, both of you, so much! I know you can do this, {player}.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Travel South and through the Restricted Tunnel",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "to_restricted_tunnel"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_lyra_al_post_powerplant"
+			}
+		]
+	],
+	"ev_lyra_kat_dialog": [
+		[
+			0.0,
+			{
+				"description": "-don't you understand, Kat? You're making the wrong decision here!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It's too late for that, I'm taking the data, and making that deal with the Core.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "No, please don't, I can't lose you too. Not after your parents made the same mistake.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Look, this is what I have to do. I promise I'll make it work.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I've even made a discovery that should fix this deeper within the powerplant, just trust me.",
+				"dialogue_portrait": "portrait_cfo",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "CFO Katerina"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "...",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "lyra_kat_dialog_finished"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_lyra_kat_dialog"
+			}
+		]
+	],
+	"ev_lyra_locked": [
+		[
+			0.0,
+			{
+				"description": "Oh, thank goodness you're here, {player}!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I don't know what's gotten into my granddaughter, she's barely been herself recently.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "After we got the data she needed, she locked me in here and ran off to the Restricted Tunnel.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "There's some sort of main security system up ahead keeping me locked in here, destroy it and I think we might just be able to catch up with her.",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Destroy the Security System",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I know you can do it, {player}!",
+				"dialogue_portrait": "portrait_prof",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Professor Lyra"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_lyra_locked"
+			}
+		]
+	],
+	"ev_magic_mirror": [
+		[
+			0.0,
+			{
+				"description": "*a magical mirror is embedded in the floor*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*as you approach it, a piece breaks off*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [
+					{
+						"count": 1.0,
+						"id": 47.0
+					}
+				],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "With the Magic Mirror, you can use Skins.\nTo equip a skin:\n- Go to your Bag\n- Look for the Skins tab\n- Use the skin you want to equip",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Tutorial"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_magic_mirror"
+			}
+		]
+	],
+	"ev_meet_al_access_tunnel": [
+		[
+			0.0,
+			{
+				"description": "*radio static*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Hey there, {player}, you have a minute?",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "I'm a bit preoccupied at the moment, but could you meet me at the southern entrance of the Access Tunnel?",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It'd be just a bit North of the Hub. Thanks, see you there!",
+				"dialogue_portrait": "portrait_engineer_radio",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Meet Al at the Access Tunnel entrance north of the Hub",
+				"title": "Engineer Al"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*click*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
 			}
 		]
 	],
@@ -621,6 +1839,121 @@
 			2.0,
 			{
 				"text": "ev_moldire_boss"
+			}
+		]
+	],
+	"ev_nullifly": [
+		[
+			0.0,
+			{
+				"description": "*You approach the researcher...*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "nullifly_kill_researcher"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*As they're about to say something to you, they vanish into nothingness and where they once were an unknown Oochamon appears!*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*The wild Oochamon attacks!*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "",
+				"sprite": 2.0,
+				"sprite_combat": "",
+				"sprite_id": "",
+				"team": [
+					{
+						"ability": 41.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 108.0,
+						"item": -1.0,
+						"level": 40.0,
+						"moveset": [
+							34.0,
+							90.0,
+							92.0,
+							26.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			3.0,
+			{
+				"description": "*The Oochamon, now calmed, collapses into a single point and disappears into a prism.*",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					{
+						"ability": 41.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 0.0,
+						"id": 108.0,
+						"item": -1.0,
+						"level": 40.0,
+						"moveset": [
+							90.0,
+							34.0,
+							92.0,
+							26.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"title": "???"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_nullifly"
 			}
 		]
 	],
@@ -751,6 +2084,144 @@
 			2.0,
 			{
 				"text": "ev_rival_intro"
+			}
+		]
+	],
+	"ev_roswier": [
+		[
+			0.0,
+			{
+				"description": "The computer screen seems to glow with an eerie light.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "A glowing eye appears in the screen's center.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "It seems to get closer.",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Closer...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Closer...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "...",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": ""
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "*bvzzzzzzt*",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "???"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": true,
+				"name": "",
+				"sprite": 41.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_041",
+				"team": [
+					{
+						"ability": 59.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 97.0,
+						"item": -1.0,
+						"level": 35.0,
+						"moveset": [
+							48.0,
+							34.0,
+							51.0,
+							9.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_roswier"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_roswier"
 			}
 		]
 	],
@@ -1092,12 +2563,130 @@
 			}
 		]
 	],
+	"ev_security_boss": [
+		[
+			0.0,
+			{
+				"description": "Main Systems Online",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Deploying Battle Pattern Delta",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Activating Combat Mode",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			1.0,
+			{
+				"battle_ai": 0.0,
+				"coin": 0.0,
+				"is_catchable": false,
+				"name": "Security System Δ",
+				"sprite": 52.0,
+				"sprite_combat": "",
+				"sprite_id": "c00_901",
+				"team": [
+					{
+						"ability": 86.0,
+						"atk_iv": 0.0,
+						"def_iv": 0.0,
+						"hp_iv": 2.0,
+						"id": -6.0,
+						"item": -1.0,
+						"level": 35.0,
+						"moveset": [
+							121.0,
+							129.0,
+							130.0,
+							131.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 0.0
+					}
+				],
+				"user_type": 1.0
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Integrity Depleted",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "Returning to Hybernation and Repair Mode",
+				"dialogue_portrait": "",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "Return to Lyra in the Powerplant",
+				"title": "Security System Δ"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "security_boss_defeated"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_security_boss"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_security_boss"
+			}
+		]
+	],
 	"ev_seer_battle": [
 		[
 			0.0,
 			{
 				"description": "You've reached the highest peak...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1110,7 +2699,7 @@
 			0.0,
 			{
 				"description": "And the depest depths...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1123,7 +2712,7 @@
 			0.0,
 			{
 				"description": "And you've returned to see us...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1136,7 +2725,7 @@
 			0.0,
 			{
 				"description": "And now, we fight as one!",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1260,7 +2849,7 @@
 			0.0,
 			{
 				"description": "And together...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1273,7 +2862,7 @@
 			0.0,
 			{
 				"description": "We have...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1286,7 +2875,7 @@
 			0.0,
 			{
 				"description": "Been defeated...",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1299,7 +2888,7 @@
 			0.0,
 			{
 				"description": "You have proven yourself worthy.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1312,7 +2901,7 @@
 			0.0,
 			{
 				"description": "Go forth, and challenge the master of Thunder Peak.",
-				"dialogue_portrait": "",
+				"dialogue_portrait": "portrait_seer",
 				"flags": [],
 				"image": "",
 				"items": [],
@@ -1588,43 +3177,70 @@
 			}
 		]
 	],
-	"ev_test": [
+	"ev_symaat": [
 		[
-			11.0,
+			0.0,
 			{
-
+				"description": "Ah, you must be... no...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
 			}
 		],
 		[
-			12.0,
+			0.0,
 			{
-
+				"description": "You may call me the Balancer...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
 			}
 		],
 		[
-			9.0,
+			0.0,
+			{
+				"description": "Well, let us see if you're worthy of Syma-at's power as well...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			1.0,
 			{
 				"battle_ai": 0.0,
 				"coin": 0.0,
 				"is_catchable": false,
-				"name": "pizzalad",
-				"sprite": 2.0,
+				"name": "The Balancer",
+				"sprite": 53.0,
 				"sprite_combat": "",
-				"sprite_id": "",
+				"sprite_id": "c00_053",
 				"team": [
 					{
-						"ability": 50.0,
+						"ability": 108.0,
 						"atk_iv": 5.0,
 						"def_iv": 5.0,
 						"hp_iv": 5.0,
-						"id": 9.0,
+						"id": 128.0,
 						"item": -1.0,
-						"level": 5.0,
+						"level": 45.0,
 						"moveset": [
-							1.0,
-							64.0,
-							3.0,
-							9999.0
+							93.0,
+							77.0,
+							7.0,
+							21.0
 						],
 						"nickname": "",
 						"slot_enabled": true,
@@ -1635,9 +3251,85 @@
 			}
 		],
 		[
-			10.0,
+			0.0,
 			{
-
+				"description": "Ahaha, you truly a worthy weilder of it's power! ",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			3.0,
+			{
+				"description": "Now, now, don't be shy. Wield Syma-at's power as you see fit!",
+				"dialogue_portrait": "balancer",
+				"image": "",
+				"options": [
+					{
+						"ability": 108.0,
+						"atk_iv": 5.0,
+						"def_iv": 5.0,
+						"hp_iv": 5.0,
+						"id": 128.0,
+						"item": -1.0,
+						"level": 45.0,
+						"moveset": [
+							21.0,
+							7.0,
+							77.0,
+							93.0
+						],
+						"nickname": "",
+						"slot_enabled": true,
+						"spd_iv": 5.0
+					}
+				],
+				"title": "The Balancer"
+			}
+		],
+		[
+			0.0,
+			{
+				"description": "May you continue your journey , we will be watching...",
+				"dialogue_portrait": "balancer",
+				"flags": [],
+				"image": "",
+				"items": [],
+				"money": 0.0,
+				"objective": "",
+				"title": "The Balancer"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_symaat"
+			}
+		],
+		[
+			2.0,
+			{
+				"text": "ev_symaat"
+			}
+		]
+	],
+	"ev_test": [
+		[
+			13.0,
+			{
+				"description": "Select your appearance.",
+				"dialogue_portrait": "",
+				"image": "",
+				"options": [
+					48.0,
+					49.0
+				],
+				"title": "Intro"
 			}
 		]
 	],
@@ -1690,6 +3382,58 @@
 				"map_to": "thunderpeak",
 				"x_to": 32.0,
 				"y_to": 48.0
+			}
+		]
+	],
+	"ev_training_down": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 14.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "training_facility",
+				"x_to": 60.0,
+				"y_to": 57.0
+			}
+		]
+	],
+	"ev_training_up": [
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "elevator",
+				"x_to": 4.0,
+				"y_to": 5.0
+			}
+		],
+		[
+			8.0,
+			{
+				"duration": 5.0
+			}
+		],
+		[
+			4.0,
+			{
+				"default_tp": false,
+				"map_to": "training_facility",
+				"x_to": 23.0,
+				"y_to": 58.0
 			}
 		]
 	],
@@ -2449,10 +4193,10 @@
 		[
 			4.0,
 			{
-				"default_tp": true,
+				"default_tp": false,
 				"map_to": "hub",
-				"x_to": 0.0,
-				"y_to": 0.0
+				"x_to": 46.0,
+				"y_to": 50.0
 			}
 		],
 		[
@@ -2631,7 +4375,7 @@
 				"options": [
 					{
 						"emote": "",
-						"event": "ev_warp_hub",
+						"event": "ev_goo_lake_tp",
 						"flag": "",
 						"price": 0.0,
 						"style": 2.0,

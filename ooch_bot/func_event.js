@@ -1,10 +1,11 @@
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import { profile, item_data, maps, monster_data, player_positions, events_data } from './db.js';
 import { sample } from 'lodash-es';
-import { PlayerState, EventMode, Flags, UserType, Weather } from './types.js';
+import { PlayerState, EventMode, Flags, UserType, Weather, ItemCategory } from './types.js';
 import { get_art_file } from './func_other.js';
 import { generate_battle_user, setup_battle } from './func_battle.js';
 import wait from 'wait';
+import { add_item } from './func_play.js';
 
 /**
  * Runs an event based on event array
@@ -16,7 +17,7 @@ import wait from 'wait';
  */
 export async function event_process(user_id, thread, event_array, start_pos = 0, event_name = false) {
     
-    const { give_item, setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
+    const { setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
 
     let next_buttons = new ActionRowBuilder()
         .addComponents(
@@ -38,6 +39,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     let battleGroupBattleArr = [];
     let filter = i => i.user.id == user_id;
     let oochamonPicks = new ActionRowBuilder();
+    let skinPicks = new ActionRowBuilder();
     let optionsRow = new ActionRowBuilder();
     let event_buttons = next_buttons
 
@@ -78,16 +80,18 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
         if (obj_content.image) {
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
             event_embed.setImage(`attachment://${obj_content.image}`)
             imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
@@ -103,7 +107,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 for (let item of obj_content.items) {
                     let itemData = item_data.get(`${item.id}`);
                     info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
-                    give_item(user_id, item.id, item.count);
+                    add_item(user_id, item.id, item.count);
                 }
             }
         } 
@@ -129,6 +133,8 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             if (confirm_collector !== undefined) confirm_collector.stop();
         }
 
+        profile_data = await profile.get(`${user_id}`);
+
         obj_content.team_id = 1;
         if (battle_group_arr.length == 0) {
             let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
@@ -142,6 +148,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             ally.team_id = 0;
             let user_type = UserType.NPCTrainer;
             let trainerObj = await generate_battle_user(user_type, ally);
+            trainerObj.hp_style = 'plr';
             allyList.push(trainerObj);
         }
 
@@ -200,16 +207,18 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
         if (obj_content.image) {
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
             event_embed.setImage(`attachment://${obj_content.image}`)
             imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
@@ -239,7 +248,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 profile.set(user_id, {area: 'access_tunnel', x : 23, y : 22}, 'checkpoint_data')
             }
 
-            if (!obj_content.text.includes('NPC|')) {
+            if (!obj_content.text.toLowerCase().includes('npc|')) {
                 let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
                 let playspace_str = await setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
@@ -313,16 +322,18 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
         // Set NPC dialogue portrait
         if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
-            if (obj_content.dialogue_portrait.includes('NPC|')) {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
                 event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
                 imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
             } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}.png`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}.png`));
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
             }
         }
 
         if (obj_content.image) {
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
             event_embed.setImage(`attachment://${obj_content.image}`)
             imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
         }
@@ -342,7 +353,46 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
         if (event == EventMode.RemoveAlly) profile.set(user_id, [], 'allies_list');
     }
 
+    async function setSkinEvent(obj_content) {
+        skinPicks = new ActionRowBuilder();
+
+        for (let skin of obj_content.options) {
+            let skinData = item_data.get(`${skin}`)
+            skinPicks.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`skin|${skin}`)
+                    .setLabel(`‎`)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(`${skinData.emote}`),
+            );
+        }
+
+        if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+        if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+
+        // Set NPC dialogue portrait
+        if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+            } else {
+                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+            }
+        }
+
+        if (obj_content.image) {
+            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+            event_embed.setImage(`attachment://${obj_content.image}`)
+            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+        }
+
+        event_buttons = skinPicks;
+    }
+
     while (!quit_init_loop) {
+        profile_data = await profile.get(`${user_id}`);
         event_mode = event_array[current_place][0];
         obj_content = event_array[current_place][1];
 
@@ -391,6 +441,11 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             case EventMode.BattleGroupStart:
                 await battleGroupEvent();
             break;
+
+            case EventMode.SetSkin:
+                await setSkinEvent(obj_content);
+                quit_init_loop = true;
+            break;
         }
 
         // If we are at the end of the event_array, quit out entirely
@@ -403,7 +458,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 profile.set(user_id, 0, 'cur_event_pos');
                 let playspace_str = await setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                    msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
                 }).catch(() => {});
                 //await move(thread, user_id, '', 1);
                 return;
@@ -417,18 +472,19 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     }
 
     //Send Embed and Await user input before proceeding
-    let msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
+    let msg;
     if (msg_to_edit == false) {
-        await profile.set(user_id, msg.id, 'display_msg_id');
+        msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
+        profile.set(user_id, msg.id, 'display_msg_id');
         profile_data = await profile.get(`${user_id}`);
         msg_to_edit = profile_data.display_msg_id;
-    }
-
-    // Hide movement buttons
-    if (event_name !== 'ev_intro') {
-        await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-            await msg.edit({ components: [] }).catch(() => {});
-        }).catch(() => {});
+    } else {
+        msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+        if (msg != undefined) {
+            await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        } else {
+            return console.log("Failed to find message to edit, kicking out");
+        }
     }
 
     const confirm_collector = await msg.createMessageComponentCollector({ filter });
@@ -471,6 +527,13 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 current_place = event_array.length;
                 await event_process(user_id, thread, events_data.get(`${eventName}`), 0, eventName);
             }
+        } else if (sel.customId.includes('skin')) {
+            let skinButtonData = sel.customId.split('|');
+            
+            let skinId = skinButtonData[1];
+            let skinData = item_data.get(`${skinId}`);
+
+            profile.set(user_id, skinData.potency, 'player_sprite');
         }
 
         current_place++;
@@ -485,13 +548,13 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             profile.set(user_id, [], 'cur_event_array');
             profile.set(user_id, 0, 'cur_event_pos');
             let playspace_str = await setup_playspace_str(user_id);
-            await thread.messages.fetch(msg_to_edit).then((msg) => {
-                msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
-            }).catch(() => {});
+            await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
             return;
         }
 
         while (!quit) {
+            imageFiles = [];
+            
             event_mode = event_array[current_place][0];
             obj_content = event_array[current_place][1];
 
@@ -512,7 +575,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.OochamonPick:
                     quit = true;
                     await oochPickEvent(obj_content);
-                    sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
+                    await sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
                 break;
 
                 //No Visual representation, just sets appropriate flags in the player
@@ -531,7 +594,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.Options:
                     quit = true;
                     optionsEvent(obj_content);
-                    sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
+                    await sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
                 break;
 
                 case EventMode.Wait:
@@ -546,6 +609,12 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 case EventMode.BattleGroupStart:
                     quit = true;
                     battleGroupEvent();
+                break;
+
+                case EventMode.SetSkin:
+                    quit = true;
+                    await setSkinEvent(obj_content);
+                    await sel.update({ embeds: [event_embed], components: [skinPicks], files: imageFiles });
                 break;
             }
 
@@ -564,25 +633,28 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
                         // Reset other values upon tutorial completion
                         profile.set(user_id, 0, 'oochabux');
-                        profile.set(user_id, {}, 'other_inv')
-                        profile.set(user_id, {}, 'prism_inv')
-                        profile.set(user_id, {}, 'heal_inv')
+                        profile.set(user_id, {
+                            [ItemCategory.Consumable]: [],
+                            [ItemCategory.Prism]: [],
+                            [ItemCategory.Map]: [],
+                            [ItemCategory.Key]: [],
+                            [ItemCategory.Skin]: [],
+                        }, 'inventory');
                         profile.set(user_id, 0, `oochadex[52].caught`);
                     }
 
                     await confirm_collector.stop();
                     if (msg.id != msg_to_edit) await msg.delete();
-                    await profile.set(user_id, PlayerState.Playspace, 'player_state');
-                    await profile.set(user_id, false, 'cur_event_name');
-                    await profile.set(user_id, [], 'cur_event_array');
-                    await profile.set(user_id, 0, 'cur_event_pos');
+                    profile.set(user_id, PlayerState.Playspace, 'player_state');
+                    profile.set(user_id, false, 'cur_event_name');
+                    profile.set(user_id, [], 'cur_event_array');
+                    profile.set(user_id, 0, 'cur_event_pos');
                     quit = true; 
                     let playspace_str = await setup_playspace_str(user_id);
-                    await thread.messages.fetch(msg_to_edit).then(async (msg) => {
-                        await msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [] });
+                    await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async () => {
+                        await move(thread, user_id, '', 2);
                     }).catch((err) => { console.log(err) });
-
-                    await move(thread, user_id, '', 2);
+                    current_place++;
                     return;
                 } else {
                     current_place++;
@@ -649,7 +721,7 @@ export async function event_from_npc (npc_obj, user_id) {
                 items: false,
                 flags: [],
                 objective: false,
-                dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`,
+                dialogue_portrait: npc_obj.sprite_dialog == false ? `NPC|${npc_obj.sprite_id.slice(0, 1) + npc_obj.sprite_id.slice(3)}.png` : `${npc_obj.sprite_dialog}.png`
             }])
         }
 

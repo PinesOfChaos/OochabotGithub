@@ -73,7 +73,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -267,7 +267,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -297,7 +297,7 @@
 			"remove_on_finish": false,
 			"sprite": 18.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_nice",
 			"sprite_id": "c00_018",
 			"stance_list": [
 				0.0
@@ -327,7 +327,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -382,7 +382,7 @@
 			"remove_on_finish": true,
 			"sprite": 2,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0
@@ -412,7 +412,7 @@
 			"remove_on_finish": true,
 			"sprite": 2,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0

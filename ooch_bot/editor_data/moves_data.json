@@ -606,7 +606,7 @@
     "id": 41,
     "name": "Precision Strike",
     "type": "neutral",
-    "damage": 20,
+    "damage": 40,
     "accuracy": 100,
     "effect": [
       {
@@ -680,7 +680,7 @@
     "effect": [
       {
         "status": "vampire",
-        "chance": 10,
+        "chance": 25,
         "target": 0
       }
     ],
@@ -692,8 +692,8 @@
     "id": 46,
     "name": "Drain Life",
     "type": "magic",
-    "damage": 50,
-    "accuracy": 50,
+    "damage": 60,
+    "accuracy": 80,
     "effect": [
       {
         "status": "vampire",
@@ -1346,7 +1346,7 @@
   },
   {
     "id": 83,
-    "name": "Firey Bullet",
+    "name": "Firey Horn",
     "type": "flame",
     "damage": 70,
     "accuracy": 100,
@@ -1697,7 +1697,7 @@
   },
   {
     "id": 103,
-    "name": "Ear Shatter",
+    "name": "Shatter",
     "type": "sound",
     "damage": 80,
     "accuracy": 95,
@@ -1882,7 +1882,7 @@
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "heatwave",
         "target": 3
       }
@@ -1894,13 +1894,13 @@
   },
   {
     "id": 114,
-    "name": "Thunderstorm",
+    "name": "Static Storm",
     "type": "magic",
     "damage": 0,
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "thunderstorm",
         "target": 3
       }
@@ -1918,13 +1918,13 @@
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "clear",
         "target": 3
       }
     ],
-    "description": "Clears any weather affecting the battle.",
-    "battle_desc": "The weather begins to clear!",
+    "description": "Clears any field changes affecting the battle.",
+    "battle_desc": "A gust of wind blows through the battlefield!",
     "self_target": true,
     "tags": []
   },
@@ -1941,7 +1941,7 @@
         "target": 3
       }
     ],
-    "description": "Launches a wave of compressed air at the target. The move's type and status effects change depending on the current Weather.",
+    "description": "Launches a wave of compressed air at the target. The move's type and status effects change depending on the current FieldEffect.",
     "self_target": false,
     "tags": []
   },
@@ -2199,6 +2199,279 @@
       }
     ],
     "description": "Carefullly on to the target, REVEALING and EXPOSING them.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 132,
+    "name": "Calamity",
+    "type": "magic",
+    "damage": 100,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": 6,
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "A high damaging move that DOOMS the user.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 133,
+    "name": "Shooting Star",
+    "type": "stone",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "priority_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "A high damaging move that DOOMS the user.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 134,
+    "name": "Battle Cry",
+    "type": "sound",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "An intimidating shout that raises the user's ATK and lowers the enemy's ATK.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 135,
+    "name": "The Most Annoying Sound in the World",
+    "type": "sound",
+    "damage": 1,
+    "accuracy": -1,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Hey.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 136,
+    "name": "Wub",
+    "type": "sound",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "A deafening bass that can freeze enemies in their tracks. Has a chance to lower SPD.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 137,
+    "name": "Bone Tone",
+    "type": "sound",
+    "damage": 40,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": 10,
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "An odd sound changes the targets internal structure to PETRIFY it.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 138,
+    "name": "Silkstorm",
+    "type": "cloth",
+    "damage": 80,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": "-_spd_3",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "-_spd_3",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Densely woven silk strikes the target, greatly reducing its SPD as well as the user's.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 139,
+    "name": "Spool Up",
+    "type": "cloth",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "clear_status",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "The user takes some time to get organized reducing its SPD and clearing any Status Effects.",
+    "self_target": true,
+    "tags": []
+  },
+  {
+    "id": 140,
+    "name": "Tie Down",
+    "type": "cloth",
+    "damage": 40,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": 4,
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": 7,
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Flailing ropes tie the target down to SNARE and EXPOSE them.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 141,
+    "name": "Rug Rash",
+    "type": "cloth",
+    "damage": 50,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": 0,
+        "chance": 40,
+        "target": 1
+      }
+    ],
+    "description": "High friction on rough cloth damages the target, with a chance to BURN.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 142,
+    "name": "Hymn of Dread",
+    "type": "sound",
+    "damage": 70,
+    "accuracy": 90,
+    "effect": [
+      {
+        "status": 11,
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "A ancient and horrid song that leaves the target WEAKENED.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 143,
+    "name": "Soul Scale",
+    "type": "magic",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 1
+      },
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Giant scales tip in your favor, lowering the target's ATK and raising the user's.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 144,
+    "name": "Core Burst",
+    "type": "neutral",
+    "damage": 50,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "always_super_effective",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Unleash a burst of energy from the core. It is always super effective!",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 145,
+    "name": "Core Delete",
+    "type": "crystal",
+    "damage": 120,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_atk_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "Erase a large area of matter from existence to deal massive damage. Doing so lowers the user's ATK.",
     "self_target": false,
     "tags": []
   }

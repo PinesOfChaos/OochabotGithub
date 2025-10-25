@@ -1,10 +1,13 @@
 // For functions that don't fit into the other categories
 import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { TypeEmote, PlayerState, Item, TameStatus } from './types.js';
+import { PlayerState, TameStatus, TamingAction } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
-import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
+import { inRange, capitalize, toLower, replace, clamp, sample } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
+import { Canvas, loadImage } from "skia-canvas";
+import { clientEmojis } from "./index.js";
+import { genmap_loot_by_level } from "./func_level_gen.js";
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -76,11 +79,11 @@ export function buildBoxData(user_profile, page_num) {
  */
 export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     const { type_to_emote } = await import('./func_battle.js');
-    const { get_ooch_art } = await import('./func_other.js'); // This should ideally be a direct import if func_other.js also uses named exports
+    const { get_ooch_art } = await import('./func_other.js'); 
 
     let ooch_title = `${ooch.nickname}`;
-    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[capitalize(v)]).join('')}` 
-        : ooch_title += ` [Lv. ${ooch.level}] ${ooch.type.map(v => TypeEmote[capitalize(v)]).join('')}`;
+    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}}` 
+        : ooch_title += ` [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`;
     let moveset_str = ``;
     let ooch_data = monster_data.get(`${ooch.id}`);
     // let user_data = false;
@@ -93,7 +96,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let infoEmbed = new EmbedBuilder()
         .setColor('#808080')
         .setTitle(ooch_title)
-        .setThumbnail(`attachment://${toLower(ooch.name)}.png`)
+        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}.png`)
         .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${ability_data.get(`${ooch.ability}`, 'name')}**\nType: **${ooch.type.map(v => capitalize(v)).join(' | ')}**`);
 
     for (let move_id of ooch.moveset) {
@@ -112,20 +115,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let iv_def = Math.round((ooch.stats.def_iv - 1) * 20)
     let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20)
 
-    let tame_status = ooch.tame_value;
-    if (inRange(tame_status, 0, 40)){
-        tame_status = TameStatus.Hostile;
-    } else if (inRange(tame_status, 41, 80)) {
-        tame_status = TameStatus.Angry;
-    } else if (inRange(tame_status, 81, 120)) {
-        tame_status = TameStatus.Neutral;
-    } else if (inRange(tame_status, 121, 160)) {
-        tame_status = TameStatus.Happy;
-    } else if (inRange(tame_status, 161, 199)) {
-        tame_status = TameStatus.Loyal;
-    } else if (ooch.tame_value >= 200) {
-        tame_status = TameStatus.BestFriend;
-    }
+    let tame_status = get_tame_string(ooch.tame_value);  
 
     infoEmbed.addFields([{ name: 'Moveset', value: moveset_str, inline: true }]);
     infoEmbed.addFields([{ name: 'Stats', value: `HP: **${ooch.stats.hp}** (${get_iv_stars(iv_hp)})` + 
@@ -144,10 +134,10 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
         if (oochadex_check == undefined) {
             oochadex_check = { caught: 0 }
         } 
-        infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level ${ooch_data.evo_lvl}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
+        infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
     }
 
-    return [infoEmbed, get_ooch_art(ooch.name)];
+    return [infoEmbed, get_ooch_art(ooch_data.name)];
 }
 
 /**
@@ -159,14 +149,20 @@ export function check_chance(percent) {
 }
 
 /**
- * Returns the emote text for a specified Oochamon.
- * @param {Collection} applicationEmojis The collection of emojis
- * @param {String} ooch_name Name of the Oochamon to get emote from.
+ * Returns the emote text for a specified attribute
+ * @param {String} emote_name Name to get emote from.
  */
-export function get_emote_string(applicationEmojis, ooch_name) {
-    let emojiList = applicationEmojis.filter(v => v.name === toLower(ooch_name)); // Changed to 'let'
+export function get_emote_string(name) {
+    let emojiList = clientEmojis.filter(v => v.name === toLower(name));
     emojiList = Array.from(emojiList.values());
-    if (emojiList.length === 0) throw Error(`Unable to find Oochamon emote for the name ${ooch_name}!`);
+    if (emojiList.length === 0) {
+
+        console.log(`EMOJI ERROR: ${name} not found.`);
+
+        emojiList = clientEmojis.filter(v => v.name === 'error');
+        emojiList = Array.from(emojiList.values());
+    }
+
     return `<:${emojiList[0].name}:${emojiList[0].id}>`;
 }
 
@@ -176,7 +172,7 @@ export function get_emote_string(applicationEmojis, ooch_name) {
  * @returns The attachment file object.
  */
 export function get_ooch_art(ooch_name) {
-    let file_name = `./Art/ResizedArt/${replace(toLower(ooch_name), RegExp(" ", "g"), "_")}.png`
+    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}.png`
     let file = new AttachmentBuilder(file_name);
     
     return file;
@@ -198,9 +194,9 @@ export function get_art_file(path) {
  * @returns The star emote string.
  */
 export function get_iv_stars(iv) {
-    const star_empty = "<:star_empty:1346318267324825651>";
-    const star_half = "<:star_half:1346318282562605086>";
-    const star_full = "<:star_full:1346318298660343990>";
+    const star_empty = get_emote_string('star_empty');
+    const star_half = get_emote_string('star_half');
+    const star_full = get_emote_string('star_full');
 
     let stars = [];
     for (let i = 0; i < 5; i++) {
@@ -245,40 +241,6 @@ export async function reset_oochamon(user_id) {
     // Setup user data
     let db_profile = get_blank_profile();
     profile.set(user_id, db_profile);
-    //TO DO, once we confirm this works, replace the below db.db_profile.set lines
-
-    profile.set(user_id, 'c_000', 'player_sprite');
-    profile.set(user_id, [], 'ooch_pc')
-    profile.set(user_id, 0, 'ooch_active_slot')
-    profile.set(user_id, {}, 'other_inv')
-    profile.set(user_id, {}, 'prism_inv')
-    profile.set(user_id, {}, 'heal_inv')
-    profile.set(user_id, 0, 'oochabux')
-    profile.set(user_id, 0, 'repel_steps')
-    await profile.set(user_id, PlayerState.Intro, 'player_state')
-    profile.set(user_id, {}, 'ooch_enemy')
-    profile.set(user_id, false, 'location_data')
-    profile.set(user_id, false, 'checkpoint_data');
-    profile.set(user_id, false, 'display_msg_id');
-    profile.set(user_id, false, 'play_thread_id');
-    profile.set(user_id, false, 'play_guild_id');
-    profile.set(user_id, 0, 'battle_msg_counter');
-    profile.set(user_id, 0, 'battle_turn_counter');
-    profile.set(user_id, 0, 'turn_msg_counter');
-    profile.set(user_id, [], 'oochadex');
-    profile.set(user_id, [], 'flags');
-    profile.set(user_id, [], 'ooch_party');
-    profile.set(user_id, [Item.Potion, Item.Prism], 'global_shop_items');
-    profile.set(user_id, [], 'friends_list');
-    profile.set(user_id, 1, 'move_speed');
-    profile.set(user_id, 'Talk to the professor.', 'objective');
-    profile.set(user_id, false, 'cur_event_name');
-    
-    // These values are used because when we enter a battle, we have to drop the event loop to handle the battle.
-    // With these values, we can keep track of our event data position, and the event data related to the NPC that is being battled.
-    profile.set(user_id, [], 'cur_event_array'); 
-    profile.set(user_id, 0, 'cur_event_pos');
-    profile.set(user_id, false, 'cur_battle_id');
     
     // Settings
     profile.set(user_id, {
@@ -321,10 +283,157 @@ export async function quit_oochamon(thread, user_id, client) {
         } 
     } 
 
-    await thread.bulkDelete(5);
+    // await thread.bulkDelete(5);
     await thread.members.remove(user_id);
     await thread.leave();
     await thread.setLocked(true);
     await thread.setArchived(true);
     await profile.set(user_id, PlayerState.NotPlaying, 'player_state');
+}
+
+/**
+ * Get the tame value string
+ * @param {number} tame_value the tame value to check
+ * @returns The tame string
+ */
+export function get_tame_string(tame_value) {
+    let tame_status = TameStatus.Hostile;
+
+    if (inRange(tame_value, 41, 80)) {
+        tame_status = TameStatus.Angry;
+    } else if (inRange(tame_value, 81, 120)) {
+        tame_status = TameStatus.Neutral;
+    } else if (inRange(tame_value, 121, 160)) {
+        tame_status = TameStatus.Happy;
+    } else if (inRange(tame_value, 161, 199)) {
+        tame_status = TameStatus.Loyal;
+    } else if (tame_value >= 200) {
+        tame_status = TameStatus.BestFriend;
+    }
+
+    return tame_status;
+
+}
+
+/**
+ * Setup the oochamon taming picture
+ * @param {Object} ooch The oochamon to add to the taming background
+ * @param {Object} action The taming action happening
+ * @returns The taming picture
+ */
+export async function setup_taming_picture(ooch, action = TamingAction.Default) {
+    let canvas = new Canvas(250, 250);
+    let ctx = canvas.getContext("2d");
+    
+    // Draw the background
+    const background = await loadImage(`./Art/ArtFiles/taming_background.png`);
+    ctx.drawImage(background, 0, 0, 250, 250);
+
+    ctx.imageSmoothingEnabled = false;
+    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}.png`)
+    const shadow_image = await loadImage(`./Art/BattleArt/shadow_64x32.png`);
+
+    let shadow = {
+        x : (canvas.width / 2) - (shadow_image.width),
+        y : (canvas.height * .75) - (shadow_image.height)
+    }
+
+    ctx.drawImage(shadow_image, shadow.x, shadow.y, shadow_image.width * 2, shadow_image.height * 2);
+    ctx.drawImage(ooch_image, (canvas.width / 2) - (ooch_image.width), (canvas.height * .75) - (ooch_image.height * 2), ooch_image.width * 2, ooch_image.height * 2)
+
+    switch (action) {
+        case TamingAction.Feed:
+
+        break;
+        case TamingAction.Pet:
+            ctx.font = '48px Arial';
+            ctx.fillText('🫳', 80, 80);
+            ctx.font = '30px Arial';
+            ctx.fillText('❤️', 160, 80);
+        break;
+        case TamingAction.Walk:
+
+        break;
+    }
+
+    let pngData = canvas.toBufferSync('png');
+    return pngData;
+}
+
+export function pet_text(name, tame_value){
+    let tame_status = get_tame_string(tame_value)
+    switch(tame_status){
+        case TameStatus.Hostile:
+            return `${name} wants to break your kneecaps, run off, kill you, stab you, kill you again, stab you a little more, then piss on your dead body.`
+        case TameStatus.Angry:
+            return `${name} is going to piss on your grave, respectfully.`
+        case TameStatus.Neutral:
+            return (sample([
+                `${name} looks at you curiously.`,
+                `${name} trots off to a corner.`,
+                `${name} is staring off into the distance.`,
+                `${name} looks like it wants something to eat.`,
+            ]))
+        case TameStatus.Happy:
+            return (sample([
+                `${name} happily accepts the pets.`,
+                `${name} leans into your hand.`,
+                `${name} stares into your eyes.`,
+                `${name} spins in a circle.`,
+            ]))
+        case TameStatus.Loyal:
+            return (sample([
+                `${name} gladly accepts the pets.`,
+                `${name} begins to purr.`,
+                `${name} leans into your hand.`,
+                `${name} stretches.`,
+            ]))
+        case TameStatus.BestFriend:
+            return (sample([
+                `${name} eagerly accepts the pets.`,
+                `${name} wants even more pets.`,
+                `${name} does a sick flip.`,
+                `${name} shows off some of its moves.`,
+            ]))
+    }
+
+}
+
+export function feed_text(name, result){
+    if (result) {
+        return (sample([
+            `${name} eats the treat.`,
+            `${name} eagerly devours the treat.`,
+            `${name} doesn't leave a single crumb.`,
+            `${name} looks like it wants another.`,
+        ]))
+    } else {
+        return (sample([
+            `${name} eats it begrudingly. It doesn't look very happy about it.`,
+            `${name} gives you a death glare while it eats the treat.`,
+            `${name} looks at you with a look of betrayal. How could you do this?`,
+            `${name} is sad. It doesn't seem to want another one of those.`
+        ]))
+    }
+}
+
+export function walk_get_rewards(name, tame_value, level){
+    let modified_level = Math.ceil((tame_value/200) * level); //This scales the mon's level based on its affection
+
+    //Makes an array of 5 items {count, id}
+    let loot = [];
+    for(let i = 0; i < 5; i++){
+        loot.push(genmap_loot_by_level(modified_level));
+    }
+
+    let walk_text = sample([
+        `${name} and you go on a walk.`,
+        `${name} and you have a relaxing stroll.`,
+        `${name} wanders off on your walk but finds its way back to you.`,
+    ]);
+
+    return ({
+        walk_text : walk_text,
+        loot : loot
+    })
 }

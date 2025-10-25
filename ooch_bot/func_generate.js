@@ -1,14 +1,13 @@
 import { tile_data, monster_data, move_data, item_data, ability_data, status_data, stance_data } from "./db.js";
 import { Zone } from './types.js';
 import { access } from "fs";
+import { clientEmojis } from "./index.js";
 
-export function create_tile(id, use, emojis, is_GIF = false) {
+export function create_tile(id, use, is_GIF = false) {
 
     // This line IDs the ID so I can set the ID
     tile_data.set(id, id, 'id');
     tile_data.set(id, use, 'use');
-
-
 
     // Set specific IDs
     if (id.includes('c')) {
@@ -24,13 +23,13 @@ export function create_tile(id, use, emojis, is_GIF = false) {
         for (let zoneId of Object.values(Zone)) {
             let gif_str = is_GIF ? 'a' : '';
             zoneId = zoneId < 10 ? `0${zoneId}` : zoneId;
-            let emoji = emojis.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`);
+            let emoji = clientEmojis.find(emoji => emoji.name === `c${zoneId}_${splitId[1]}`);
             if (emoji != undefined) {
                 zoneEmoteIds[parseInt(zoneId)] = { emote_id: emoji.id, emote: `<${gif_str}:c${zoneId}_${splitId[1]}:${emoji.id}>`, file: `c${zoneId}_${splitId[1]}.png` };
             }
         }
     } else {
-        let emoji = emojis.find(emoji => emoji.name === id);
+        let emoji = clientEmojis.find(emoji => emoji.name === id);
         if (emoji != undefined) {
             let gif_str = emoji.animated ? 'a' : '';
             tile_data.set(id, emoji.id, 'emote_id');
@@ -85,9 +84,16 @@ export function create_monster(monster) {
     let key_id = monster.id.toString();
     monster_data.set(key_id, monster);
 
+    let art_exceptions_list = [
+        'Slime Head',
+        'Giant Slime Head',
+        'Enforcement System Δ',
+        'Ancient Rune'
+    ]
+
     // Check if the artwork exists
     access(`./Art/ResizedArt/${monster.name.toLowerCase()}.png`, (err) => {
-        if (err) {
+        if (err && !art_exceptions_list.includes(monster.name)) {
             console.log(`ART ERROR: ${monster.name}`);
         }
     });
@@ -108,6 +114,20 @@ export function create_monster(monster) {
             }
         }
         if (has_hidden_move == false) { console.log(`MOVE ERROR: ${monster.name} does not have a Hidden Move`); }
+
+        let seen_moves = [];
+        for (let test_move of monster.move_list) {
+            let move_level = test_move[0];
+            let move_id = test_move[1];
+            if (move_id == null) continue;
+            if (seen_moves.includes(move_id)) {
+                let move_info = move_data.get(`${move_id}`);
+                let move_name = move_info ? move_info.name : 'N/A';
+                console.log(`MOVE DUPLICATE: ${monster.name} has duplicate move ${move_id} (${move_name}) at level ${move_level}`);
+            } else {
+                seen_moves.push(move_id);
+            }
+        }
     }
 }
 export function create_move(move) {

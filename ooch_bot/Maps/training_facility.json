@@ -17,6 +17,33 @@
 			"width": 0.0,
 			"x": 35.0,
 			"y": 31.0
+		},
+		{
+			"event_name": "ev_roswier",
+			"flag_kill": "ev_roswier",
+			"flag_required": "",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 53.0,
+			"y": 45.0
+		},
+		{
+			"event_name": "ev_training_down",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 23.0,
+			"y": 57.0
+		},
+		{
+			"event_name": "ev_training_up",
+			"flag_kill": "",
+			"flag_required": "",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 60.0,
+			"y": 56.0
 		}
 	],
 	"map_info": {
@@ -30,15 +57,15 @@
 			"battle_ai": 0.0,
 			"coin": 0.0,
 			"flag_given": "",
-			"flag_kill": "",
+			"flag_kill": "pass_roswier",
 			"flag_required": "",
 			"is_catchable": false,
 			"items": [],
 			"name": "Patient Researcher",
 			"npc_id": "744353527747836894",
 			"objective": "",
-			"post_combat_dialogue": "I'm waiting for one of my fellow researchers to return.\nLast I heard he was looking for an old passphrase.",
-			"pre_combat_dialogue": "I'm waiting for one of my fellow researchers to return.\nLast I heard he was looking for an old passphrase.",
+			"post_combat_dialogue": "I can't let you through without the passphrase.",
+			"pre_combat_dialogue": "I'm waiting for one of my fellow researchers to return.\nHe's the only one with the passphrase.",
 			"remove_on_finish": false,
 			"sprite": 5.0,
 			"sprite_combat": "",
@@ -505,7 +532,7 @@
 			"remove_on_finish": false,
 			"sprite": 4.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_seer",
 			"sprite_id": "c00_004",
 			"stance_list": [
 				0.0
@@ -597,7 +624,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -627,7 +654,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -657,7 +684,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -687,7 +714,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -717,7 +744,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -747,7 +774,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -777,7 +804,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -857,7 +884,7 @@
 			"remove_on_finish": true,
 			"sprite": 39.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_explorer",
 			"sprite_id": "c00_039",
 			"stance_list": [
 				0.0
@@ -929,9 +956,9 @@
 			"y": 31.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -939,7 +966,7 @@
 			"items": [
 				{
 					"count": 4.0,
-					"id": 43
+					"id": 43.0
 				}
 			],
 			"name": "Chest",
@@ -947,21 +974,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 43.0,
 			"y": 19.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -969,7 +996,7 @@
 			"items": [
 				{
 					"count": 1.0,
-					"id": 44
+					"id": 44.0
 				}
 			],
 			"name": "Chest",
@@ -977,16 +1004,46 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "You opened the chest...",
 			"remove_on_finish": true,
-			"sprite": 2,
+			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 6.0,
 			"y": 60.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "ev_tamagoochi",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 89
+				}
+			],
+			"name": "Dr. Anne",
+			"npc_id": "964854476164186106",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Hmmm...\nHmmmmm...\nOh, hey there! You must be {player}, I've heard how you're helping out around here!\nWould you mind testing my new invention?\nIt's the Oochagotchi!\n...the name's still a bit of a work in progress.\nAnyway, try giving it a try, it should help you grow closer with your Oochamon!\nHopefully I'll see you around, {player}.",
+			"remove_on_finish": true,
+			"sprite": 52.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_052",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 10.0,
+			"y": 9.0
 		}
 	],
 	"map_savepoints": [

@@ -79,7 +79,7 @@ export async function execute(interaction) {
     }
 
     let otherUserThread = profile.get(`${otherBattleUser.id}`, 'play_thread_id');
-    otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherBattleUser.id)}`, 'play_thread_id');
+    otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherBattleUser.id, 'play_thread_id')}`);
     if (!otherUserThread || !otherUserThread.isThread()) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is not in game right now.`, flags: MessageFlags.Ephemeral });
     }

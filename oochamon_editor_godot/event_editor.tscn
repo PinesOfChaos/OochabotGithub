@@ -107,6 +107,10 @@ text = "+ BattleGroupStart"
 layout_mode = 2
 text = "+ Battlegroup End"
 
+[node name="NewSkinSelect" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Select Skin"
+
 [connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonNew" to="." method="_on_button_new_pressed"]
@@ -125,3 +129,4 @@ text = "+ Battlegroup End"
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewRemoveAlly" to="." method="_on_new_remove_ally_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupStart" to="." method="_on_new_b_group_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupEnd" to="." method="_on_new_b_group_end_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewSkinSelect" to="." method="_on_new_skin_select_pressed"]

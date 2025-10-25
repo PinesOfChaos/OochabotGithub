@@ -138,7 +138,7 @@
 			"remove_on_finish": true,
 			"sprite": 13.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0

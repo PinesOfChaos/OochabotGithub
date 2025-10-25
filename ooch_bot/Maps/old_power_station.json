@@ -1,5 +1,33 @@
 {
-	"map_events": [],
+	"map_events": [
+		{
+			"event_name": "ev_lyra_locked",
+			"flag_kill": "ev_lyra_locked",
+			"flag_required": "",
+			"height": 1.0,
+			"width": 2.0,
+			"x": 49.0,
+			"y": 49.0
+		},
+		{
+			"event_name": "ev_security_boss",
+			"flag_kill": "ev_security_boss",
+			"flag_required": "",
+			"height": 1.0,
+			"width": 2.0,
+			"x": 49.0,
+			"y": 37.0
+		},
+		{
+			"event_name": "ev_lyra_kat_dialog",
+			"flag_kill": "ev_lyra_kat_dialog",
+			"flag_required": "",
+			"height": 0.0,
+			"width": 0.0,
+			"x": 45.0,
+			"y": 5.0
+		}
+	],
 	"map_info": {
 		"map_battleback": "battle_bg_powerstation",
 		"map_generated": false,
@@ -341,56 +369,6 @@
 			"is_catchable": false,
 			"items": [],
 			"name": "CHANGE THIS YA DINGUS",
-			"npc_id": "552371486737572468",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": false,
-			"sprite": 19.0,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_019",
-			"stance_list": [
-				0.0
-			],
-			"team": [],
-			"x": 49.0,
-			"y": 45.0
-		},
-		{
-			"aggro_range": 3.0,
-			"battle_ai": 0.0,
-			"coin": 0.0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
-			"npc_id": "270593010913023000",
-			"post_combat_dialogue": "",
-			"pre_combat_dialogue": "",
-			"remove_on_finish": false,
-			"sprite": 19.0,
-			"sprite_combat": "",
-			"sprite_dialog": "",
-			"sprite_id": "c00_019",
-			"stance_list": [
-				0.0
-			],
-			"team": [],
-			"x": 51.0,
-			"y": 46.0
-		},
-		{
-			"aggro_range": 3.0,
-			"battle_ai": 0.0,
-			"coin": 0.0,
-			"flag_given": "",
-			"flag_kill": "",
-			"flag_required": "",
-			"is_catchable": false,
-			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
 			"npc_id": "375563550825775031",
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
@@ -403,7 +381,7 @@
 				0.0
 			],
 			"team": [],
-			"x": 43.0,
+			"x": 44.0,
 			"y": 4.0
 		},
 		{
@@ -491,8 +469,8 @@
 			"is_catchable": false,
 			"items": [
 				{
-					"count": 3.0,
-					"id": 2.0
+					"count": 5.0,
+					"id": 5.0
 				}
 			],
 			"name": "Chest",
@@ -502,7 +480,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -532,7 +510,7 @@
 			"remove_on_finish": true,
 			"sprite": 2.0,
 			"sprite_combat": "",
-			"sprite_dialog": "",
+			"sprite_dialog": "portrait_chest",
 			"sprite_id": "c00_013",
 			"stance_list": [
 				0.0
@@ -638,8 +616,8 @@
 				0.0
 			],
 			"team": [],
-			"x": 13.0,
-			"y": 15.0
+			"x": 50.0,
+			"y": 47.0
 		},
 		{
 			"aggro_range": 3.0,
@@ -738,13 +716,13 @@
 				0.0
 			],
 			"team": [],
-			"x": 13.0,
-			"y": 15.0
+			"x": 50.0,
+			"y": 47.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -755,21 +733,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 41,
+			"sprite": 41.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_041",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 49.0,
 			"y": 55.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -780,21 +758,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 41,
+			"sprite": 41.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_041",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 46.0,
 			"y": 57.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -805,21 +783,21 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 41,
+			"sprite": 41.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_041",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 46.0,
 			"y": 59.0
 		},
 		{
-			"aggro_range": 3,
-			"battle_ai": 0,
-			"coin": 0,
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
 			"flag_required": "",
@@ -830,27 +808,818 @@
 			"post_combat_dialogue": "",
 			"pre_combat_dialogue": "",
 			"remove_on_finish": false,
-			"sprite": 41,
+			"sprite": 41.0,
 			"sprite_combat": "",
 			"sprite_dialog": "",
 			"sprite_id": "c00_041",
 			"stance_list": [
-				0
+				0.0
 			],
 			"team": [],
 			"x": 49.0,
 			"y": 59.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "939247808394028182",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 46.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_046",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 49.0,
+			"y": 37.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "079049372459092923",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 47.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_047",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 50.0,
+			"y": 37.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "177634289357116546",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 48.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_048",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 51.0,
+			"y": 37.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "022437776004840073",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 43.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_043",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 49.0,
+			"y": 36.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "566819580357081620",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 44.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_044",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 50.0,
+			"y": 36.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "754666446196006991",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 45.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_045",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 51.0,
+			"y": 36.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "376579033685308088",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 42.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_042",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 50.0,
+			"y": 35.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "982944611898754343",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 21.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_021",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 52.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "131720068165398675",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 21.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_021",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 52.0,
+			"y": 50.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "security_boss_defeated",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "350910109853962516",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 6.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 53.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "toggle_ps_lever4",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "854486672220419534",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 21.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_021",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "toggle_ps_lever4",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "550876905947634440",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 21.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_021",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 50.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "lyra_freed",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Prof Lyra",
+			"npc_id": "311665293752297215",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Oh, thank goodness, you've managed to defeat that dreadful machine.\nI suppose I owe you an explanation...\nMy granddaughter - Kat - she wants to do the unthinkable.\nShe thinks she'll be able to tame the corrupting forces that afflicted so many of our researchers.\nI'm sure you're well aware of the effects it's had on them, but something has her convinced she can use it to expand the company's influence.\nMeet me back at the Hub, I'll try to get in contact with everyone. We can make more plans from there... {objective:Meet Lyra at the Hub}",
+			"remove_on_finish": true,
+			"sprite": 6.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 57.0,
+			"y": 49.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 40.0
+				}
+			],
+			"name": "Chest",
+			"npc_id": "059027522933388180",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2.0,
+			"sprite_combat": "",
+			"sprite_dialog": "portrait_chest",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 39.0,
+			"y": 33.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "obtained_odd_bulb",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 46.0
+				}
+			],
+			"name": "Chest",
+			"npc_id": "101456258502173145",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2.0,
+			"sprite_combat": "",
+			"sprite_dialog": "portrait_chest",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 38.0,
+			"y": 23.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Scout Rusty",
+			"npc_id": "661874870174133348",
+			"post_combat_dialogue": "Ahahaha, I'm finally free!\nThanks for the battle, buddy!",
+			"pre_combat_dialogue": "I've been exploring this facility for what feels like days.\nOh, hey, if I lose to you I can just be returned to a Save Point.\nGuess I'll do that then.",
+			"remove_on_finish": true,
+			"sprite": 1.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_001",
+			"stance_list": [
+				0.0
+			],
+			"team": [
+				{
+					"ability": 29.0,
+					"atk_iv": 0.0,
+					"def_iv": 0.0,
+					"hp_iv": 0.0,
+					"id": 33.0,
+					"item": -1.0,
+					"level": 35.0,
+					"moveset": [
+						44.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 0.0
+				}
+			],
+			"x": 57.0,
+			"y": 18.0
+		},
+		{
+			"aggro_range": 1.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Guard Rian",
+			"npc_id": "462565360456954094",
+			"post_combat_dialogue": "I must tell Katerina about this!\nYou stay right there...",
+			"pre_combat_dialogue": "Halt! The boss hasn't granted you permission to enter!",
+			"remove_on_finish": true,
+			"sprite": 3.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_003",
+			"stance_list": [
+				0.0
+			],
+			"team": [
+				{
+					"ability": 26.0,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 76.0,
+					"item": -1.0,
+					"level": 28.0,
+					"moveset": [
+						84.0,
+						59.0,
+						42.0,
+						56.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				},
+				{
+					"ability": 66.0,
+					"atk_iv": 4.0,
+					"def_iv": 7.0,
+					"hp_iv": 7.0,
+					"id": 100.0,
+					"item": -1.0,
+					"level": 29.0,
+					"moveset": [
+						85.0,
+						91.0,
+						69.0,
+						98.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 9.0
+				},
+				{
+					"ability": 9999.0,
+					"atk_iv": 10.0,
+					"def_iv": 6.0,
+					"hp_iv": 6.0,
+					"id": 106.0,
+					"item": -1.0,
+					"level": 31.0,
+					"moveset": [
+						119.0,
+						116.0,
+						102.0,
+						86.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 4.0
+				}
+			],
+			"x": 13.0,
+			"y": 50.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "Raider Greta",
+			"npc_id": "227904262051499119",
+			"post_combat_dialogue": "Fine, fine, it's yours, take it.",
+			"pre_combat_dialogue": "You can't have this chest, I found it first!",
+			"remove_on_finish": true,
+			"sprite": 2.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_002",
+			"stance_list": [
+				0.0
+			],
+			"team": [
+				{
+					"ability": 74.0,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 94.0,
+					"item": -1.0,
+					"level": 32.0,
+					"moveset": [
+						100.0,
+						119.0,
+						103.0,
+						116.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 10.0
+				},
+				{
+					"ability": 35.0,
+					"atk_iv": 5.0,
+					"def_iv": 5.0,
+					"hp_iv": 5.0,
+					"id": 68.0,
+					"item": -1.0,
+					"level": 32.0,
+					"moveset": [
+						120.0,
+						106.0,
+						104.0,
+						11.0
+					],
+					"nickname": "",
+					"slot_enabled": true,
+					"spd_iv": 5.0
+				}
+			],
+			"x": 38.0,
+			"y": 24.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "lyra_kat_dialog_finished",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "338110317691373004",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 6.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_006",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 46.0,
+			"y": 7.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "lyra_kat_dialog_finished",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [],
+			"name": "CHANGE THIS YA DINGUS",
+			"npc_id": "303671517037881525",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "",
+			"remove_on_finish": false,
+			"sprite": 16.0,
+			"sprite_combat": "",
+			"sprite_dialog": "",
+			"sprite_id": "c00_016",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 47.0,
+			"y": 7.0
+		},
+		{
+			"aggro_range": 3.0,
+			"battle_ai": 0.0,
+			"coin": 0.0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 5.0,
+					"id": 2.0
+				}
+			],
+			"name": "Chest",
+			"npc_id": "963108285510405323",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "You opened the chest...",
+			"remove_on_finish": true,
+			"sprite": 2.0,
+			"sprite_combat": "",
+			"sprite_dialog": "portrait_chest",
+			"sprite_id": "c00_013",
+			"stance_list": [
+				0.0
+			],
+			"team": [],
+			"x": 50.0,
+			"y": 55.0
+		},
+		{
+			"aggro_range": 3,
+			"battle_ai": 0,
+			"coin": 0,
+			"flag_given": "",
+			"flag_kill": "",
+			"flag_required": "",
+			"is_catchable": false,
+			"items": [
+				{
+					"count": 1.0,
+					"id": 35
+				}
+			],
+			"name": "Explorer Dave",
+			"npc_id": "700007158702269860",
+			"post_combat_dialogue": "",
+			"pre_combat_dialogue": "Hey there, {player}, just a heads up the guards really don't want us around here.\nSounds like the CFO has been beefing up security around here...\nI wonder what she's up to...\nAnyway, I wasn't able to explore too deep, but here's a copy of my map. I'll see ya around!",
+			"remove_on_finish": true,
+			"sprite": 39,
+			"sprite_combat": "",
+			"sprite_dialog": "portrait_explorer",
+			"sprite_id": "c00_039",
+			"stance_list": [
+				0
+			],
+			"team": [],
+			"x": 11.0,
+			"y": 57.0
 		}
 	],
 	"map_savepoints": [
 		{
-			"is_default": false,
+			"is_default": true,
 			"x": 16.0,
 			"y": 22.0
 		}
 	],
 	"map_shops": [],
-	"map_spawn_zones": [],
+	"map_spawn_zones": [
+		{
+			"height": 12.0,
+			"spawn_slots": [
+				{
+					"max_level": 28.0,
+					"min_level": 26.0,
+					"ooch_id": 10.0
+				},
+				{
+					"max_level": 27.0,
+					"min_level": 24.0,
+					"ooch_id": 52.0
+				},
+				{
+					"max_level": 28.0,
+					"min_level": 26.0,
+					"ooch_id": 53.0
+				},
+				{
+					"max_level": 28.0,
+					"min_level": 25.0,
+					"ooch_id": 56.0
+				}
+			],
+			"width": 12.0,
+			"x": 17.0,
+			"y": 23.0
+		},
+		{
+			"height": 14.0,
+			"spawn_slots": [
+				{
+					"max_level": 29.0,
+					"min_level": 27.0,
+					"ooch_id": 53.0
+				},
+				{
+					"max_level": 29.0,
+					"min_level": 27.0,
+					"ooch_id": 117.0
+				},
+				{
+					"max_level": 29.0,
+					"min_level": 27.0,
+					"ooch_id": 12.0
+				},
+				{
+					"max_level": 28.0,
+					"min_level": 25.0,
+					"ooch_id": 11.0
+				}
+			],
+			"width": 19.0,
+			"x": 38.0,
+			"y": 19.0
+		},
+		{
+			"height": 3.0,
+			"spawn_slots": [
+				{
+					"max_level": 27.0,
+					"min_level": 25.0,
+					"ooch_id": 21.0
+				},
+				{
+					"max_level": 30.0,
+					"min_level": 27.0,
+					"ooch_id": 53.0
+				},
+				{
+					"max_level": 30.0,
+					"min_level": 27.0,
+					"ooch_id": 12.0
+				},
+				{
+					"max_level": 31.0,
+					"min_level": 27.0,
+					"ooch_id": 10.0
+				}
+			],
+			"width": 15.0,
+			"x": 9.0,
+			"y": 11.0
+		},
+		{
+			"height": 10.0,
+			"spawn_slots": [
+				{
+					"max_level": 27.0,
+					"min_level": 25.0,
+					"ooch_id": 9.0
+				},
+				{
+					"max_level": 27.0,
+					"min_level": 25.0,
+					"ooch_id": 60.0
+				},
+				{
+					"max_level": 28.0,
+					"min_level": 26.0,
+					"ooch_id": 76.0
+				},
+				{
+					"max_level": 29.0,
+					"min_level": 27.0,
+					"ooch_id": 79.0
+				}
+			],
+			"width": 7.0,
+			"x": 13.0,
+			"y": 50.0
+		}
+	],
 	"map_tiles": [
 		[
 			"t00_000",
@@ -1726,7 +2495,7 @@
 			"t06_011",
 			"t06_000",
 			"t06_008",
-			"t06_000",
+			"t00_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -1792,7 +2561,7 @@
 			"t06_010",
 			"t06_000",
 			"t06_000",
-			"t06_000",
+			"t00_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -3927,10 +4696,10 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t15_001",
-			"t15_080",
-			"t15_000",
-			"t15_090",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4123,8 +4892,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_001",
-			"t15_006",
-			"t15_016",
+			"t15_000",
+			"t15_000",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4189,8 +4958,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_004",
-			"t15_007",
-			"t15_017",
+			"t15_000",
+			"t15_000",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4255,8 +5024,8 @@
 			"t00_000",
 			"t00_000",
 			"t15_002",
-			"t15_008",
-			"t15_018",
+			"t15_000",
+			"t15_000",
 			"t15_000",
 			"t15_000",
 			"t15_000",
@@ -4269,7 +5038,7 @@
 			"t15_000",
 			"t15_000",
 			"t15_000",
-			"t15_091",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4333,9 +5102,9 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_001",
+			"t15_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4388,7 +5157,7 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t15_001",
+			"t15_003",
 			"t15_081",
 			"t15_000",
 			"t15_000",
@@ -4399,9 +5168,9 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_004",
+			"t15_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4455,19 +5224,19 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t15_003",
-			"t15_081",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t00_000",
+			"t15_001",
 			"t15_000",
-			"t15_091",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4529,12 +5298,12 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_001",
+			"t15_005",
+			"t15_015",
+			"t15_000",
+			"t15_000",
+			"t15_090",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4595,12 +5364,12 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_002",
+			"t15_006",
+			"t15_016",
+			"t15_000",
+			"t15_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4661,12 +5430,12 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_001",
+			"t15_007",
+			"t15_017",
+			"t15_000",
+			"t15_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4727,12 +5496,12 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_001",
+			"t15_008",
+			"t15_018",
+			"t15_000",
+			"t15_000",
+			"t15_000",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -4793,12 +5562,12 @@
 			"t00_000",
 			"t00_000",
 			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
-			"t00_000",
+			"t15_003",
+			"t15_005",
+			"t15_015",
+			"t15_000",
+			"t15_000",
+			"t15_091",
 			"t00_000",
 			"t00_000",
 			"t00_000",
@@ -5182,6 +5951,13 @@
 			"connect_y": 31.0,
 			"x": 36.0,
 			"y": 8.0
+		},
+		{
+			"connect_map": "hub",
+			"connect_x": 55.0,
+			"connect_y": 42.0,
+			"x": 8.0,
+			"y": 59.0
 		}
 	],
 	"map_weather": []

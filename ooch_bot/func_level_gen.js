@@ -1,11 +1,12 @@
 import { sample, round, shuffle, random } from 'lodash-es';
-import { OochType, GenmapTheme, Weather, BattleAi, StanceForms } from "./types.js";
+import { OochType, GenmapTheme, Weather, BattleAi, StanceForms, OochID } from "./types.js";
 import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
 
 let whitelist_everchange_wild = [
-    0, 3, 6, 9, 11, 13, 15, 17, 19, 
+    OochID.Sporbee, OochID.Puppyre, OochID.Roocky, 
+    9, 11, 13, 15, 17, 19, 
     22, 24, 26, 29, 32, 35, 37, 39, 
     44, 46, 48, 50, 52, 55, 57, 59, 
     64, 66, 70, 72, 74, 76, 78, 80, 
@@ -19,15 +20,16 @@ let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 
 export async function genmap_allmaps(client) {
     
+    let everchange_cave_floor_count = 3;
     let everchange_cave_themes = [];
-    for(let i = 0; i < 2; i++){
+    for(let i = 0; i < everchange_cave_floor_count; i++){
         everchange_cave_themes.push(sample([
             GenmapTheme.ObsidianPath,
             GenmapTheme.FungalCave,
             GenmapTheme.Powerplant
         ]))
     }
-    genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 22, 30, 'lava_path', 3, 52)
+    await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'lava_path', 3, 52)
 
     
     console.log('Generated daily maps.');
@@ -43,6 +45,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
         let level_filename = './Maps/' + level_lowername + '.json'
         
+
         //
         let em = `${area_name} - Floor ${i+2}`.toLowerCase().replaceAll(' ', '_')
         let ex = -1;
@@ -68,10 +71,8 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
             lv_min = round(level_min + (alpha1 * (level_max - level_min)));
             lv_max = round(level_min + (alpha2 * (level_max - level_min)));
         }
-
         
 
-        
         let new_level = await genmap_new(level_name, size, size, genmap_theme(themes_array[i]), lv_min, lv_max, em, ex, ey);
         writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
         maps.set(level_lowername, new_level);
@@ -79,7 +80,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
 
         console.log(`Generated: ${level_name}`)
     }
-    
+
     //Kick players back to their last checkpoint if they're in one of the generated levels
     for (let key of profile.keys()) { 
         let db_profile = profile.get(`${key}`);
@@ -155,7 +156,7 @@ export function genmap_theme(theme){
 
                 map_naturalness : 0.1,
 
-                weather_options : [],
+                weather_options : [Weather.None],
                 battle_bg : "battle_bg_powerstation"
             })
     }
@@ -177,9 +178,11 @@ export function genmap_theme(theme){
  * @returns Map data ready to be converted to a .js file
  */
 export async function genmap_new(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints = false, has_shops = false){
+
     //Filter out user's flags to any that don't include the map's name
     let all_users = profile.values()
-    for(let user of all_users){
+    for(let user of all_users) {
+        if (user.flags == undefined) continue;
         user.flags = user.flags.filter((flag) => !flag.includes(name));
     }
 
@@ -253,11 +256,11 @@ export async function genmap_new(name, width, height, theme, level_min, level_ma
 
     //fill the misc positions with npcs/chests
     misc_positions = shuffle(misc_positions);
-    let npc_count = Math.floor(misc_positions.length * .8)
+    let npc_count = Math.floor(misc_positions.length * .8);
 
     //Add npcs
     for(let i = 0; i < npc_count; i++){
-        let npc = await genmap_npc(misc_positions[i].x, misc_positions[i].y,level_min, level_max);
+        let npc = await genmap_npc(misc_positions[i].x, misc_positions[i].y, level_min, level_max);
         npc.npc_id += name;//Append the map name to the NPC to be removed later
         npcs.push(npc);
     }
@@ -292,7 +295,6 @@ export async function genmap_new(name, width, height, theme, level_min, level_ma
         x : end_pos.x,
         y : end_pos.y
     })
-
 
     let map_data = {
         map_events : [],
@@ -381,20 +383,14 @@ export function genmap_empty_npc() {
 }
 
 /**
- * Creates a chest NPC with a filled with loot depending on the level of the chest
- * @param {Int} x Position of the chest
- * @param {Int} y Position of the chest
- * @param {Int} level_min Minimum level for the chest to generate at
- * @param {Int} level_max Maximum level for the chest to generate at
- * @returns NPC object that comes with all the usual chest values
+ * Gets a random piece of loot based on the level provided
+ * @param {Int} level Level of the item to return
+ * @returns an item {count, id}
  */
-export function genmap_chest(x, y, level_min, level_max) {
-    let chest_level = random(level_min, level_max, false);
-    let chest_num = random(1, 3, false);
+export function genmap_loot_by_level(level){
     let loot_table = [];
-    let chest_loot = [];
 
-    if(chest_level < 30){
+    if(level < 30){
         loot_table = loot_table.concat([
             {count : 5, id :  0}, //potion
             {count : 2, id :  1}, //med-potion
@@ -419,7 +415,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level > 20){
+    if(level > 20){
         loot_table = loot_table.concat([
             {count : 5, id :  1}, //med-potion
             {count : 2, id :  2}, //hi-potion
@@ -437,7 +433,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level >= 30){
+    if(level >= 30){
         loot_table = loot_table.concat([
             {count : 5, id :  1}, //med-potion
             {count : 5, id :  2}, //hi-potion
@@ -453,7 +449,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level >= 40){
+    if(level >= 40){
         loot_table = loot_table.concat([
             {count : 5, id :  2}, //hi-potion
             {count : 5, id :  5}, //grand prism
@@ -464,11 +460,25 @@ export function genmap_chest(x, y, level_min, level_max) {
         ])
     }
 
+    return(sample(loot_table))
+}
+
+/**
+ * Creates a chest NPC with a filled with loot depending on the level of the chest
+ * @param {Int} x Position of the chest
+ * @param {Int} y Position of the chest
+ * @param {Int} level_min Minimum level for the chest to generate at
+ * @param {Int} level_max Maximum level for the chest to generate at
+ * @returns NPC object that comes with all the usual chest values
+ */
+export function genmap_chest(x, y, level_min, level_max) {
+    let chest_level = random(level_min, level_max, false);
+    let chest_num = random(1, 3, false);
+    let chest_loot = [];
+
     for(let i = 0; i < chest_num; i++){
-        chest_loot.push(sample(loot_table));
+        chest_loot.push(genmap_loot_by_level(chest_level));
     }
-
-
 
     let npc = genmap_empty_npc();
     npc.x = x;
@@ -575,12 +585,13 @@ export async function genmap_npc(x, y, level_min, level_max){
 
     
 
+
     //Add mons to the npc's team
     let team = [];
     let npc_ooch_options = genmap_ooch_list(level_min);
     for(let i = 0; i < teamsize; i++){
         let ooch = sample(npc_ooch_options);
-        let ooch_level = avg_level + random(0, 2, false);
+        let ooch_level = Math.min(avg_level + random(0, 2, false), 50);
         let ooch_new = await create_ooch(ooch.id, ooch_level)
         team.push(genmap_ooch_convert(ooch_new));
     }
@@ -900,7 +911,7 @@ export function genmap_layout(width, height, room_cols, room_rows, room_size_avg
         layout[spot.x][spot.y] = "misc";
     }
 
-    // var layout_text = '';
+    // let layout_text = '';
     // for(let j = 1; j < height; j++){
     //     for(let i = 0; i < width; i++){
     //         switch(layout[i][j]){

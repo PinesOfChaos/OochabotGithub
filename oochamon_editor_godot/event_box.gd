@@ -9,8 +9,8 @@ var child_node = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(event_slot_type == Global.EVENT_DIALOG)
-	print([event_slot_type, Global.EVENT_DIALOG])
+	#print(event_slot_type == Global.EVENT_DIALOG)
+	#print([event_slot_type, Global.EVENT_DIALOG])
 	var spawn_child = ""
 	if event_slot_type == Global.EVENT_DIALOG:
 		label.text = "Dialog"
@@ -48,6 +48,9 @@ func _ready() -> void:
 	elif event_slot_type == Global.EVENT_BATTLEGROUP_END:
 		label.text = "Battle Group End"
 		spawn_child = "res://event_type_battle_group_end.tscn"
+	elif event_slot_type == Global.EVENT_SET_SKIN:
+		label.text = "Select Skin"
+		spawn_child = "res://event_type_select_skin.tscn"
 	
 	if(spawn_child != ""):
 		if typeof(event_data) == TYPE_STRING:
@@ -66,7 +69,6 @@ func _ready() -> void:
 	box_container.queue_sort()
 	queue_sort()
 	
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass

@@ -112,7 +112,7 @@
   {
     "id": 22,
     "name": "Leech",
-    "description": "Restores HP equal to 10% of damage done to the enemy."
+    "description": "Restores HP equal to 20% of damage done to the enemy."
   },
   {
     "id": 23,
@@ -437,31 +437,126 @@
   {
     "id": 87,
     "name": "Spreading Sludge",
-    "description": "Spawns a helpful Slime Head per 20% HP lost."
+    "description": "Spawns a helpful Slime Head per 25% HP lost."
   },
   {
     "id": 88,
     "name": "Ancient Plating",
-    "description": "Spawns a Ancient Rune per 20% HP lost."
+    "description": "Clears the Oochamon's Status Effects and Spawns a Ancient Rune per 20% HP lost."
   },
   {
     "id": 89,
-    "name": "Ancient Ward",
-    "description": "Allied Oochamon take reduced damage for attacks that match this Oochamon's type."
-  },
-  {
-    "id": 90,
-    "name": "Usurper",
-    "description": "Queues the same attack after an enemy Oochamon attacks."
-  },
-  {
-    "id": 91,
     "name": "Pure Core",
     "description": "Reduces the damage of incoming non-Super Effective moves."
   },
   {
+    "id": 90,
+    "name": "Ancient Ward (Neutral)",
+    "description": "Reduces the damage of all Neutral-type attacks."
+  },
+  {
+    "id": 91,
+    "name": "Ancient Ward (Void)",
+    "description": "Reduces the damage of all Void-type attacks"
+  },
+  {
     "id": 92,
+    "name": "Ancient Ward (Fungal)",
+    "description": "Reduces the damage of all Fungal-type attacks"
+  },
+  {
+    "id": 93,
+    "name": "Ancient Ward (Flame)",
+    "description": "Reduces the damage of all Flame-type attacks"
+  },
+  {
+    "id": 94,
+    "name": "Ancient Ward (Stone)",
+    "description": "Reduces the damage of all Stone-type attacks"
+  },
+  {
+    "id": 95,
+    "name": "Ancient Ward (Tech)",
+    "description": "Reduces the damage of all Tech-type attacks"
+  },
+  {
+    "id": 96,
+    "name": "Ancient Ward (Magic)",
+    "description": "Reduces the damage of all Magic-type attacks"
+  },
+  {
+    "id": 97,
+    "name": "Ancient Ward (Ooze)",
+    "description": "Reduces the damage of all Ooze-type attacks"
+  },
+  {
+    "id": 98,
+    "name": "Ancient Ward (Crystal)",
+    "description": "Reduces the damage of all Crystal-type attacks"
+  },
+  {
+    "id": 99,
+    "name": "Ancient Ward (Sound)",
+    "description": "Reduces the damage of all Sound-type attacks"
+  },
+  {
+    "id": 100,
+    "name": "Ancient Ward (Cloth)",
+    "description": "Reduces the damage of all Cloth-type attacks"
+  },
+  {
+    "id": 101,
+    "name": "Ancient Ward (Martial)",
+    "description": "Reduces the damage of all Martial-type attacks"
+  },
+  {
+    "id": 102,
     "name": "Lullaby",
-    "description": "Sound-type moves have a chance to put the target to SLEEP."
+    "description": "Sound-type attacks have a 25% chance to put the target to SLEEP."
+  },
+  {
+    "id": 103,
+    "name": "Twilight Hour",
+    "description": "If this oochamon gets DOOMED, it gains +2 ATK, DEF, & SPD stages."
+  },
+  {
+    "id": 104,
+    "name": "Cacophony",
+    "description": "Using a Sound-type move raises the users ATK by 1 stage, but lowers their DEF 1 stage."
+  },
+  {
+    "id": 105,
+    "name": "Accelerando",
+    "description": "Using a Sound-type move raises the users SPD by 1 stage."
+  },
+  {
+    "id": 106,
+    "name": "On Ice",
+    "description": "Starts with the DRAINED status, but increases ATK, DEF, and SPD by 1 stage at the end of the switch in turn."
+  },
+  {
+    "id": 107,
+    "name": "Flux",
+    "description": "Status effects on this Oochamon are randomized at the end of each turn."
+  },
+  {
+    "id": 108,
+    "name": "Equalized",
+    "description": "Sets the Oochamon's type to Neutral when they are switched in."
+  },
+  {
+    "id": 109,
+    "name": "Patchwork",
+    "description": "Using Cloth-type moves heals the user for 5% of max HP."
+  },
+  {
+    "id": 110,
+    "name": "Usurper",
+    "description": "Queues the same attack after an enemy Oochamon attacks."
+  },
+  {
+    "id": 111,
+    "name": "Purification",
+    "description": "Reduces damage taken by super effective moves by 50%"
   }
 ]

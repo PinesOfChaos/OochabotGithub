@@ -7,7 +7,7 @@ var event_data = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(event_data)
+	#print(event_data)
 	spin_box.value = event_data.duration
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
