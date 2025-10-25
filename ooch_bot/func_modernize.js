@@ -155,6 +155,8 @@ export function get_blank_profile() {
         repel_steps : 0,
         step_counter : 0,
         relax_step_counter : 100,
+        walk_taken : false,
+        
         player_state : PlayerState.Intro,
         location_data : false,
         checkpoint_data : false,
@@ -195,6 +197,7 @@ export function get_blank_profile() {
 
 export function get_blank_oochamon() {
     let ooch_obj = { 
+        shiny : Math.random() < .001,
         id: 0,
         name: "", 
         nickname: "",

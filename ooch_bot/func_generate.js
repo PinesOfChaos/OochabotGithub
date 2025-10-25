@@ -1,10 +1,9 @@
 import { tile_data, monster_data, move_data, item_data, ability_data, status_data, stance_data } from "./db.js";
 import { Zone } from './types.js';
 import { access } from "fs";
-import { getClientEmojis } from "./index.js";
+import { clientEmojis } from "./index.js";
 
 export function create_tile(id, use, is_GIF = false) {
-    let clientEmojis = getClientEmojis();
 
     // This line IDs the ID so I can set the ID
     tile_data.set(id, id, 'id');

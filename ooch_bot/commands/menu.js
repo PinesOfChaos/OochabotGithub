@@ -2,10 +2,10 @@ import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Str
 import { profile, move_data, monster_data, item_data, ability_data } from '../db.js';
 import { inRange, clamp } from 'lodash-es';
 import wait from 'wait';
-import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item } from '../func_play.js';
-import { ItemCategory, ItemType, PlayerState } from '../types.js';
+import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item, add_item } from '../func_play.js';
+import { ItemCategory, ItemType, PlayerState, TamingAction } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string, setup_taming_picture, get_tame_string } from '../func_other.js';
+import { ooch_info_embed, get_ooch_art, get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards } from '../func_other.js';
  
 export const data = new SlashCommandBuilder()
     .setName('menu')
@@ -119,11 +119,11 @@ export async function execute(interaction) {
     // Taming Buttons
     let taming_buttons = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('taming_feed').setLabel('Feed').setEmoji('🍪').setStyle(ButtonStyle.Success).setDisabled(true)
+            new ButtonBuilder().setCustomId('taming_feed').setLabel('Feed').setEmoji('🍪').setStyle(ButtonStyle.Success).setDisabled(false)
         ).addComponents(
-            new ButtonBuilder().setCustomId('taming_pet').setLabel('Pet').setEmoji('🫳').setStyle(ButtonStyle.Success).setDisabled(true)
+            new ButtonBuilder().setCustomId('taming_pet').setLabel('Pet').setEmoji('🫳').setStyle(ButtonStyle.Success).setDisabled(false)
         ).addComponents(
-            new ButtonBuilder().setCustomId('taming_walk').setLabel('Walk').setEmoji('🚶').setStyle(ButtonStyle.Success).setDisabled(true)
+            new ButtonBuilder().setCustomId('taming_walk').setLabel('Walk').setEmoji('🚶').setStyle(ButtonStyle.Success).setDisabled(false)
         );
 
     // Preference Select Menu
@@ -638,7 +638,7 @@ export async function execute(interaction) {
                             label: `${db_item_data.name} (${item.quantity})`,
                             description: db_item_data.description_short,
                             value: `${item.id}`,
-                            emoji: item_data.emote,
+                            emoji: db_item_data.emote,
                         });
                     }
                 }
@@ -856,20 +856,104 @@ export async function execute(interaction) {
             const taming_status = await get_tame_string(selected_ooch.tame_value)
             const taming_embed = new EmbedBuilder()
                 .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
-                .addFields([{ name: `Taming Status:`, value: `${taming_status}` }])
                 .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
 
-            if (selected_ooch.tame_value >= 41) taming_buttons.components[0].setDisabled(false)
-            if (selected_ooch.tame_value >= 81) taming_buttons.components[1].setDisabled(false)
-            if (selected_ooch.tame_value >= 121) taming_buttons.components[2].setDisabled(false)
+            // if (selected_ooch.tame_value >= 41) taming_buttons.components[0].setDisabled(false)
+            // if (selected_ooch.tame_value >= 81) taming_buttons.components[1].setDisabled(false)
+            // if (selected_ooch.tame_value >= 121) taming_buttons.components[2].setDisabled(false)
+            if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
 
             i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
-        } else if (selected == 'taming_pet') {
-            // TODO: Add
         } else if (selected == 'taming_feed') {
-            // TODO: Add
+
+            let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Treat);
+
+            let treat_select = new ActionRowBuilder();
+            let treat_select_options = [];
+            for (let item of treat_inv) {
+                let db_item_data = item_data.get(`${item.id}`);
+
+                if (item.quantity != 0) {
+                    treat_select_options.push({
+                        label: `${db_item_data.name} (${item.quantity})`,
+                        description: db_item_data.description_short,
+                        value: `taming_feed_id_${item.id}`,
+                        emoji: db_item_data.emote,
+                    });
+                }
+            }
+
+            treat_select.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('taming_feed_item_select')
+                    .setPlaceholder(`Select a treat for ${selected_ooch.nickname}!`)
+                    .addOptions(treat_select_options));
+
+            i.update({ components: [treat_select, sel_ooch_back_button] });
+
+        } else if (selected.includes('taming_feed_id_')) {
+            const feed_item_id = selected.split('_')[3];
+            const food_data = item_data.get(feed_item_id);
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Feed);
+            
+            let feed_result = selected_ooch.type.includes(food_data.potency) || food_data.potency == -1;
+            if (feed_result) {
+                selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value + (food_data.potency == -1 ? 5 : 10))
+            } else {
+                selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value - 10)
+            }
+            remove_item(interaction.user.id, feed_item_id, 1);
+
+            user_profile.ooch_party[party_idx] = selected_ooch
+
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_feed_text = feed_text(selected_ooch.nickname, feed_result);
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_feed_text}*`)
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: `Taming Status: ${taming_status}` })
+
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+
+        } else if (selected == 'taming_pet') {
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Pet);
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_pet_text = pet_text(selected_ooch.nickname, selected_ooch.tame_value);
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_pet_text}*`)
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
+                
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+
         } else if (selected == 'taming_walk') {
-            // TODO: Add
+            const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Walk);
+            const taming_status = get_tame_string(selected_ooch.tame_value)
+            const taming_walk_data = walk_get_rewards(selected_ooch.nickname, selected_ooch.tame_value, selected_ooch.level);
+
+            for (let loot of taming_walk_data.loot) {
+                add_item(interaction.user.id, loot.id, loot.count)
+            }
+
+            let loot_field_str = taming_walk_data.loot.map(item => {
+                let db_item_data = item_data.get(`${item.id}`);
+                return `- ${db_item_data.emote} ${db_item_data.name} (${item.count}x)`;
+            }).join('\n');
+
+            profile.set(interaction.user.id, true, 'walk_taken');
+            taming_buttons.components[2].setDisabled(true)
+
+            const taming_embed = new EmbedBuilder()
+                .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
+                .setDescription(`*${taming_walk_data.walk_text}*`)
+                .addFields([{ name: 'Items Received From Walking:', value: `${loot_field_str}` }])
+                .setImage(`attachment://file.jpg`)
+                .setFooter({ text: taming_status })
+                
+            i.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
         }
 
 

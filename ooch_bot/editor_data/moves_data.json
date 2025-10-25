@@ -1882,7 +1882,7 @@
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "heatwave",
         "target": 3
       }
@@ -1900,7 +1900,7 @@
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "thunderstorm",
         "target": 3
       }
@@ -1918,13 +1918,13 @@
     "accuracy": -1,
     "effect": [
       {
-        "status": "weather",
+        "status": "field",
         "chance": "clear",
         "target": 3
       }
     ],
-    "description": "Clears any weather affecting the battle.",
-    "battle_desc": "The weather begins to clear!",
+    "description": "Clears any field changes affecting the battle.",
+    "battle_desc": "A gust of wind blows through the battlefield!",
     "self_target": true,
     "tags": []
   },
@@ -1941,7 +1941,7 @@
         "target": 3
       }
     ],
-    "description": "Launches a wave of compressed air at the target. The move's type and status effects change depending on the current Weather.",
+    "description": "Launches a wave of compressed air at the target. The move's type and status effects change depending on the current FieldEffect.",
     "self_target": false,
     "tags": []
   },

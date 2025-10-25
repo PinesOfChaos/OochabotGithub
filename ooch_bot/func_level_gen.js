@@ -383,20 +383,14 @@ export function genmap_empty_npc() {
 }
 
 /**
- * Creates a chest NPC with a filled with loot depending on the level of the chest
- * @param {Int} x Position of the chest
- * @param {Int} y Position of the chest
- * @param {Int} level_min Minimum level for the chest to generate at
- * @param {Int} level_max Maximum level for the chest to generate at
- * @returns NPC object that comes with all the usual chest values
+ * Gets a random piece of loot based on the level provided
+ * @param {Int} level Level of the item to return
+ * @returns an item {count, id}
  */
-export function genmap_chest(x, y, level_min, level_max) {
-    let chest_level = random(level_min, level_max, false);
-    let chest_num = random(1, 3, false);
+export function genmap_loot_by_level(level){
     let loot_table = [];
-    let chest_loot = [];
 
-    if(chest_level < 30){
+    if(level < 30){
         loot_table = loot_table.concat([
             {count : 5, id :  0}, //potion
             {count : 2, id :  1}, //med-potion
@@ -421,7 +415,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level > 20){
+    if(level > 20){
         loot_table = loot_table.concat([
             {count : 5, id :  1}, //med-potion
             {count : 2, id :  2}, //hi-potion
@@ -439,7 +433,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level >= 30){
+    if(level >= 30){
         loot_table = loot_table.concat([
             {count : 5, id :  1}, //med-potion
             {count : 5, id :  2}, //hi-potion
@@ -455,7 +449,7 @@ export function genmap_chest(x, y, level_min, level_max) {
             
         ])
     }
-    if(chest_level >= 40){
+    if(level >= 40){
         loot_table = loot_table.concat([
             {count : 5, id :  2}, //hi-potion
             {count : 5, id :  5}, //grand prism
@@ -466,11 +460,25 @@ export function genmap_chest(x, y, level_min, level_max) {
         ])
     }
 
+    return(sample(loot_table))
+}
+
+/**
+ * Creates a chest NPC with a filled with loot depending on the level of the chest
+ * @param {Int} x Position of the chest
+ * @param {Int} y Position of the chest
+ * @param {Int} level_min Minimum level for the chest to generate at
+ * @param {Int} level_max Maximum level for the chest to generate at
+ * @returns NPC object that comes with all the usual chest values
+ */
+export function genmap_chest(x, y, level_min, level_max) {
+    let chest_level = random(level_min, level_max, false);
+    let chest_num = random(1, 3, false);
+    let chest_loot = [];
+
     for(let i = 0; i < chest_num; i++){
-        chest_loot.push(sample(loot_table));
+        chest_loot.push(genmap_loot_by_level(chest_level));
     }
-
-
 
     let npc = genmap_empty_npc();
     npc.x = x;

@@ -1,12 +1,13 @@
 // For functions that don't fit into the other categories
 import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { PlayerState, TameStatus } from './types.js';
+import { PlayerState, TameStatus, TamingAction } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
-import { inRange, capitalize, toLower, replace, clamp } from 'lodash-es';
+import { inRange, capitalize, toLower, replace, clamp, sample } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
-import { getClientEmojis } from "./index.js";
 import { Canvas, loadImage } from "skia-canvas";
+import { clientEmojis } from "./index.js";
+import { genmap_loot_by_level } from "./func_level_gen.js";
 
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
@@ -152,7 +153,6 @@ export function check_chance(percent) {
  * @param {String} emote_name Name to get emote from.
  */
 export function get_emote_string(name) {
-    let clientEmojis = getClientEmojis();
     let emojiList = clientEmojis.filter(v => v.name === toLower(name));
     emojiList = Array.from(emojiList.values());
     if (emojiList.length === 0) {
@@ -318,9 +318,10 @@ export function get_tame_string(tame_value) {
 /**
  * Setup the oochamon taming picture
  * @param {Object} ooch The oochamon to add to the taming background
+ * @param {Object} action The taming action happening
  * @returns The taming picture
  */
-export async function setup_taming_picture(ooch) {
+export async function setup_taming_picture(ooch, action = TamingAction.Default) {
     let canvas = new Canvas(250, 250);
     let ctx = canvas.getContext("2d");
     
@@ -340,6 +341,99 @@ export async function setup_taming_picture(ooch) {
     ctx.drawImage(shadow_image, shadow.x, shadow.y, shadow_image.width * 2, shadow_image.height * 2);
     ctx.drawImage(ooch_image, (canvas.width / 2) - (ooch_image.width), (canvas.height * .75) - (ooch_image.height * 2), ooch_image.width * 2, ooch_image.height * 2)
 
+    switch (action) {
+        case TamingAction.Feed:
+
+        break;
+        case TamingAction.Pet:
+            ctx.font = '48px Arial';
+            ctx.fillText('🫳', 80, 80);
+            ctx.font = '30px Arial';
+            ctx.fillText('❤️', 160, 80);
+        break;
+        case TamingAction.Walk:
+
+        break;
+    }
+
     let pngData = canvas.toBufferSync('png');
     return pngData;
+}
+
+export function pet_text(name, tame_value){
+    let tame_status = get_tame_string(tame_value)
+    switch(tame_status){
+        case TameStatus.Hostile:
+            return `${name} wants to break your kneecaps, run off, kill you, stab you, kill you again, stab you a little more, then piss on your dead body.`
+        case TameStatus.Angry:
+            return `${name} is going to piss on your grave, respectfully.`
+        case TameStatus.Neutral:
+            return (sample([
+                `${name} looks at you curiously.`,
+                `${name} trots off to a corner.`,
+                `${name} is staring off into the distance.`,
+                `${name} looks like it wants something to eat.`,
+            ]))
+        case TameStatus.Happy:
+            return (sample([
+                `${name} happily accepts the pets.`,
+                `${name} leans into your hand.`,
+                `${name} stares into your eyes.`,
+                `${name} spins in a circle.`,
+            ]))
+        case TameStatus.Loyal:
+            return (sample([
+                `${name} gladly accepts the pets.`,
+                `${name} begins to purr.`,
+                `${name} leans into your hand.`,
+                `${name} stretches.`,
+            ]))
+        case TameStatus.BestFriend:
+            return (sample([
+                `${name} eagerly accepts the pets.`,
+                `${name} wants even more pets.`,
+                `${name} does a sick flip.`,
+                `${name} shows off some of its moves.`,
+            ]))
+    }
+
+}
+
+export function feed_text(name, result){
+    if (result) {
+        return (sample([
+            `${name} eats the treat.`,
+            `${name} eagerly devours the treat.`,
+            `${name} doesn't leave a single crumb.`,
+            `${name} looks like it wants another.`,
+        ]))
+    } else {
+        return (sample([
+            `${name} eats it begrudingly. It doesn't look very happy about it.`,
+            `${name} gives you a death glare while it eats the treat.`,
+            `${name} looks at you with a look of betrayal. How could you do this?`,
+            `${name} is sad. It doesn't seem to want another one of those.`
+        ]))
+    }
+}
+
+export function walk_get_rewards(name, tame_value, level){
+    let modified_level = Math.ceil((tame_value/200) * level); //This scales the mon's level based on its affection
+
+    //Makes an array of 5 items {count, id}
+    let loot = [];
+    for(let i = 0; i < 5; i++){
+        loot.push(genmap_loot_by_level(modified_level));
+    }
+
+    let walk_text = sample([
+        `${name} and you go on a walk.`,
+        `${name} and you have a relaxing stroll.`,
+        `${name} wanders off on your walk but finds its way back to you.`,
+    ]);
+
+    return ({
+        walk_text : walk_text,
+        loot : loot
+    })
 }

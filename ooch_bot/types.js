@@ -122,7 +122,11 @@ const Weather = {
     None : 'none', //No weather
     Clear : 'clear', //Used to clear weather
     Heatwave : 'heatwave',
-    Thunderstorm : 'thunderstorm'
+    Thunderstorm : 'thunderstorm',
+    JaggedGround : 'jagged ground',
+    EchoChamber : 'echo chamber',
+    Wetlands : 'wetlands',
+    TwistedReality : 'twisted reality'
 }
 
 const TameStatus = {
@@ -149,6 +153,8 @@ const StanceForms = {
 const FieldEffect = {
     None : 'none', //No field effect
     Clear : 'clear', //Used to clear field
+    Heatwave : 'heatwave',
+    Thunderstorm : 'thunderstorm',
     JaggedGround : 'jagged ground',
     EchoChamber : 'echo chamber',
     Wetlands : 'wetlands',
@@ -771,6 +777,13 @@ const ItemType = {
     MoveUnlock: 14,
 }
 
+const TamingAction = {
+    Default: 0,
+    Feed: 1,
+    Pet: 2,
+    Walk: 3
+}
+
 export {
     PlayerState, GraphicsMode, Flags, 
     EventMode, DialogueType, UserType, 
@@ -778,5 +791,5 @@ export {
     ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
     BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID,
-    ItemCategory
+    ItemCategory, TamingAction
 };

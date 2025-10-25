@@ -2,7 +2,7 @@ import { battle_data, profile, move_data, stance_data, monster_data, item_data, 
 import wait from 'wait';
 import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, Weather, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType, EventMode } from "./types.js";
+import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType, EventMode } from "./types.js";
 import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
 import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
 import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
@@ -193,14 +193,14 @@ export function reset_this_turn_triggers(db_battle_data){
 /**
  * Sets up an Oochamon battle and begins prompting for input.
  * @param {Object} users The user object
- * @param {Number} weather The weather enum
+ * @param {Number} field_effect The weather enum
  * @param {Number} oochabux The amount of Oochabux to give
  * @param {Number} turn_timer The amount of time to do a turn before timeout (0 does not activate this)
  * @param {Boolean} allow_items Allow the use of items in the battle
  * @param {Boolean} give_rewards Give rewards at the end of a battle
  * @param {Boolean} allow_run Allow running from the battle
  */
-export async function setup_battle (users, weather, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
+export async function setup_battle (users, field_effect, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
     const { botClient } = await import("./index.js");
 
     let i_quest_do_transformation = false;
@@ -241,7 +241,6 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         allow_items : allow_items,
         give_rewards : give_rewards,
         allow_run : allow_run,
-        weather : weather,
         field_effect : FieldEffect.None,
         oochabux: oochabux,
         amount_of_teams: 2, // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
@@ -283,11 +282,11 @@ export async function setup_battle (users, weather, oochabux, turn_timer, allow_
         switch_in_text += await use_switch_ability(battleDataObj, user.user_index, user.active_slot, user.active_slot, false);
     }
 
-    switch(weather){
-        case Weather.Heatwave: 
+    switch(field_effect){
+        case FieldEffect.Heatwave: 
             switch_in_text += '\n☀️ *The extreme heat of the area makes the Oochamon start to sweat...*'
         break;
-        case Weather.Thunderstorm:
+        case FieldEffect.Thunderstorm:
             switch_in_text += '\n⛈️ *A thunderstorm starts to brew...*'
         break;
     }
@@ -3206,18 +3205,18 @@ export async function use_eot_ability(db_battle_data, user_index) {
 
     let hp_lost;
 
-    //Weather effects
-    switch(db_battle_data.weather){
-        case Weather.Clear: break; //Do Nothing
-        case Weather.None: break; //Do Nothing
-        case Weather.Heatwave: 
+    //Field Effects
+    switch(db_battle_data.field_effect){
+        case FieldEffect.Clear: break; //Do Nothing
+        case FieldEffect.None: break; //Do Nothing
+        case FieldEffect.Heatwave: 
             if(!ooch.type.includes(OochType.Flame)) {
                 let hp_lost = Math.floor(ooch.stats.hp * 0.05);
                 ooch.current_hp = clamp(ooch.current_hp - hp_lost, 0, ooch.stats.hp);
                 ability_text += `\n☀️ ${ooch.emote} **${ooch.nickname}** is damaged by the intense heat and **loses ${hp_lost} HP!**`;
             }
         break;
-        case Weather.Thunderstorm:
+        case FieldEffect.Thunderstorm:
             slot_info.counter_thunderstorm++;
             switch(slot_info.counter_thunderstorm){
                 case 1:
@@ -3424,11 +3423,12 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
 
     //For moves that match the user's type
+    let move_type_change_to_users_text = ""
     if (move_effects.some(effect => effect.status === 'typematch')) {
         let type_to = attacker.type[0];
         move_type = type_to;
         move_type_emote =      type_to_emote(move_type);
-        string_to_send += `\n✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${capitalize(move_type)}**!\n`
+        move_type_change_to_users_text += `\n---✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${capitalize(move_type)}**!\n`
     }
 
     //For interactions that depend on going last/first
@@ -3441,7 +3441,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
             first_last_failed_text += `it missed its chance!`
         }
     }
-
     if(move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
         if(going_last){
             move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
@@ -3452,21 +3451,44 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     }
 
     //For moves with a weather-dependant type
+    let weather_type_change_text = ""
     if(move_effects.some(effect => effect.status === Status.WeatherDependent)){
-        switch(db_battle_data.weather){
-            case Weather.None: break; //Do nothing
-            case Weather.Heatwave: 
+        switch(db_battle_data.field_effect){
+            case FieldEffect.None: break; //Do nothing
+            case FieldEffect.Heatwave: 
                 move_type = OochType.Flame; 
-                string_to_send += `\n${move_name}'s type was changed to ${type_to_emote([OochType.Flame])} **Flame**!`
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Flame])} **Flame**!`
                 move_effects.push({status : Status.Burn, chance : 30, target : MoveTarget.Enemy})
                 break;
-            case Weather.Thunderstorm: 
+            case FieldEffect.Thunderstorm: 
+                move_type = OochType.Tech; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Tech])} **Tech**!`
+                move_effects.push({status : Status.Revealed, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.EchoChamber: 
                 move_type = OochType.Sound; 
-                string_to_send += `\n${move_name}'s type was changed to ${type_to_emote([OochType.Sound])} **Sound**!`
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Sound])} **Sound**!`
                 move_effects.push({status : Status.Expose, chance : 30, target : MoveTarget.Enemy})
                 break;
+            case FieldEffect.JaggedGround: 
+                move_type = OochType.Stone; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Stone])} **Stone**!`
+                move_effects.push({status : Status.Petrify, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.Wetlands: 
+                move_type = OochType.Ooze; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Ooze])} **Ooze**!`
+                move_effects.push({status : Status.Weak, chance : 30, target : MoveTarget.Enemy})
+                break;
+            case FieldEffect.TwistedReality: 
+                move_type = OochType.Magic; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Magic])} **Magic**!`
+                move_effects.push({status : Status.Doom, chance : 30, target : MoveTarget.Enemy})
+                break;
+            
         }
     }
+
 
     let type_multiplier = move_damage == 0 ? [1, ''] : type_effectiveness(move_type, defender.type); //Returns [multiplier, string] 
     if ((defender.ability == Ability.PureCore) && (type_multiplier[0] <= 1.0)){ 
@@ -3518,7 +3540,6 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let ability_dmg_multiplier = 1;
     let selfTarget = (move_damage == 0 && move_effects.some(effect => effect.target === MoveTarget.Self));
 
-    let move_weather = (move_effects.find(effect => effect.status === "weather")?.chance || Weather.None);
     let move_field = (move_effects.find(effect => effect.status === "field")?.chance || FieldEffect.None);
 
     //Make sure accuracy is a positive value (we might not need to do this anymore)
@@ -3577,7 +3598,9 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                                 move_type, attacker, defender, db_battle_data.turn_counter) * crit_multiplier;
     }
 
-    vampire_heal = Math.ceil(vampire_heal * dmg); //used later
+    //Vampire heal is calculated here but used later
+    vampire_heal = Math.ceil(vampire_heal * dmg);
+
     // Remove Exposed status effect
     if (status_exposed != 1) {
         defender.status_effects = defender.status_effects.filter(v => v != Status.Expose);
@@ -3783,29 +3806,28 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
             string_to_send += `\n🎲 **${move_data.get(`${ogMoveId}`, 'name')}** changed into **${move_name}**!\n`;
         }
 
-        //From the ancient ward ability
-        string_to_send += ancient_ward_text;
-
+        //Base move use dialog
+        string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
+        
         //Add one of the battle description flavor texts if applicable
         let move_battle_desc = await move_data.get(`${atk_id}`, 'battle_desc');
         if(typeof move_battle_desc == "string") {
             move_battle_desc = move_battle_desc.replaceAll("USER", `${attacker_emote} ${atkOochName}`);
             move_battle_desc = move_battle_desc.replaceAll("TARGET", `${defender_emote} ${defOochName}`);
 
-            string_to_send += `\n--- *${move_battle_desc}*`;
+            string_to_send += `\n*${move_battle_desc}*`;
         }
 
-        string_to_send += `\n${attacker_emote} **${atkOochName}** ${attacker.ability === Ability.Uncontrolled ? 'is uncontrollable and randomly used' : 'used'} **${move_type_emote}** **${move_name}**!`;
+        //For when the move changes type based on the user
+        string_to_send += move_type_change_to_users_text;
+
+        //From weather based move effects
+        string_to_send += weather_type_change_text;
+
+        //From the ancient ward ability
+        string_to_send += ancient_ward_text;
+        
         if (dmg !== 0) string_to_send += `\n--- ${defender_emote} **${defOochName}** took **${dmg} damage**! ${type_multiplier[1]}`;
-
-        //Handle Weather
-        if(move_weather != Weather.None){
-            if(move_weather == Weather.Clear){
-                db_battle_data.weather = Weather.None;
-                string_to_send += `\n--- The weather was cleared!`
-            }
-            else{ db_battle_data.weather = move_weather; }
-        }
 
         //Handle Field Effects
         if(move_field != FieldEffect.None){
@@ -4071,7 +4093,6 @@ export function generate_round_start_embed(db_battle_data, stances_enabled) {
     let hp_string = ``;
     let user_name, active_ooch;
     if (db_battle_data.field_effect != FieldEffect.None && db_battle_data.field_effect != FieldEffect.Clear) hp_string += `\`Field Effect: ${startCase(db_battle_data.field_effect)}\``;
-    if (db_battle_data.weather != Weather.None && db_battle_data.weather != Weather.Clear) hp_string += `\`Weather: ${startCase(db_battle_data.weather)}\``;
     for(let user of db_battle_data.users){
         user_name = user.ooch_overwrites_name ? '' : (user.is_catchable ? 'Wild' : `${user.name}'s`)
         active_ooch = user.party[user.active_slot];

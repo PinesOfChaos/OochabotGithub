@@ -266,7 +266,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 x2 = (obj.x + obj.width) >= playerx;
                 y2 = (obj.y + obj.height) >= playery;
                 if (x1 && y1 && x2 && y2) {
-                    if ((obj.flag_required == false || has_flag(obj.flag_required, all_flags)) && !has_flag(obj.event_name, all_flags)) {
+                    if ((obj.flag_required == false || has_flag(obj.flag_required, all_flags)) && !has_flag(obj.event_name, all_flags) && !has_flag(obj.flag_kill, all_flags)) {
 
                         //Push the player back 1 step if they collide with an NPC to trigger this event
                         if (map_npcs.some((element) => element.x == playerx && element.y == playery)) {

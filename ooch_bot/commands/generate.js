@@ -2,7 +2,7 @@ import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
 import { readdirSync, readFile, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
-import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, Weather, FieldEffect, StanceForms, OochID, Item, ItemType, ItemCategory } from '../types.js';
+import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, FieldEffect, StanceForms, OochID, Item, ItemType, ItemCategory } from '../types.js';
 import { get_emote_string } from '../func_other.js';
 import { refresh_global_variables } from '../func_global_data.js';
 import { modernize_all } from '../func_modernize.js';
@@ -1812,7 +1812,7 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.Heatwave, name: 'Heatwave', type: OochType.Flame,
         damage: 0, accuracy: -1,
-        effect: [{ status: Status.Weather, chance: Weather.Heatwave, target: MoveTarget.None }],
+        effect: [{ status: Status.Field, chance: FieldEffect.Heatwave, target: MoveTarget.None }],
         description: 'The atmosphere is superheated! Non-Flame-type Oochamon will take damage at the end of each round.',
         battle_desc: 'The local temperature begins to skyrocket!',
         self_target: true,
@@ -1820,7 +1820,7 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.Thunderstorm, name: 'Static Storm', type: OochType.Magic,
         damage: 0, accuracy: -1,
-        effect: [{ status: Status.Weather, chance: Weather.Thunderstorm, target: MoveTarget.None }],
+        effect: [{ status: Status.Field, chance: FieldEffect.Thunderstorm, target: MoveTarget.None }],
         description: 'Creates a magical thunderstorm. Oochamon that stay in battle too long will be struck by lightning.',
         battle_desc: 'Dark stormclouds swirl above the battlefield!',
         self_target: true,
@@ -1828,16 +1828,16 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.SkyClear, name: 'Sky Clear', type: OochType.Neutral,
         damage: 0, accuracy: -1,
-        effect: [{ status: Status.Weather, chance: Weather.Clear, target: MoveTarget.None }],
-        description: 'Clears any weather affecting the battle.',
-        battle_desc: 'The weather begins to clear!',
+        effect: [{ status: Status.Field, chance: FieldEffect.Clear, target: MoveTarget.None }],
+        description: 'Clears any field changes affecting the battle.',
+        battle_desc: 'A gust of wind blows through the battlefield!',
         self_target: true,
     });
     create_move({
         id: Move.PressureWave, name: 'Pressure Wave', type: OochType.Neutral,
         damage: 80, accuracy: 100,
         effect: [{ status: Status.WeatherDependent, chance: 100, target: MoveTarget.None }],
-        description: 'Launches a wave of compressed air at the target. The move\'s type and status effects change depending on the current Weather.',
+        description: 'Launches a wave of compressed air at the target. The move\'s type and status effects change depending on the current FieldEffect.',
         self_target: false,
     });
     create_move({
