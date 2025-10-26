@@ -197,7 +197,7 @@ export function get_blank_profile() {
 
 export function get_blank_oochamon() {
     let ooch_obj = { 
-        shiny : Math.random() < .001,
+        variant : Math.random() <= .001 ? "_prismatic" : "",
         id: 0,
         name: "", 
         nickname: "",
