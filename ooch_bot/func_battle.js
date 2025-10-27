@@ -1,11 +1,75 @@
-import { battle_data, profile, move_data, stance_data, monster_data, item_data, status_data, ability_data, global_data, player_positions } from "./db.js";
+import {
+    ability_data,
+    battle_data,
+    global_data,
+    item_data,
+    monster_data,
+    move_data,
+    player_positions,
+    profile,
+    stance_data,
+    status_data
+} from "./db.js";
 import wait from 'wait';
-import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { random, isUndefined, merge, sample, shuffle, capitalize, replace, toLower, clamp, startCase, max as _max, isNumber, toUpper, round, ceil, trim, lowerCase, inRange, take } from 'lodash-es';
-import { PlayerState, UserType, Stats, Ability, OochType, Move, MoveTarget, BattleState, BattleAction, BattleInput, FieldEffect, StanceForms, BattleAi, Status, OochID, ItemCategory, ItemType, EventMode } from "./types.js";
-import { ooch_info_embed, check_chance, get_ooch_art, update_tame_value, formatStatBar, get_emote_string } from "./func_other.js";
-import { Canvas, loadImage, FontLibrary } from 'skia-canvas';
-import { get_blank_slot_actions, get_blank_battle_user } from './func_modernize.js';
+import {
+    ActionRowBuilder,
+    AttachmentBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    StringSelectMenuBuilder
+} from 'discord.js';
+import {
+    capitalize,
+    ceil,
+    clamp,
+    inRange,
+    isNumber,
+    isUndefined,
+    lowerCase,
+    max as _max,
+    merge,
+    random,
+    replace,
+    round,
+    sample,
+    shuffle,
+    startCase,
+    take,
+    toLower,
+    toUpper,
+    trim
+} from 'lodash-es';
+import {
+    Ability,
+    BattleAction,
+    BattleAi,
+    BattleInput,
+    BattleState,
+    EventMode,
+    FieldEffect,
+    ItemCategory,
+    ItemType,
+    Move,
+    MoveTarget,
+    OochID,
+    OochType,
+    PlayerState,
+    StanceForms,
+    Stats,
+    Status,
+    UserType
+} from "./types.js";
+import {
+    check_chance,
+    formatStatBar,
+    get_emote_string,
+    get_ooch_art,
+    ooch_info_embed,
+    update_tame_value
+} from "./func_other.js";
+import {Canvas, FontLibrary, loadImage} from 'skia-canvas';
+import {get_blank_battle_user, get_blank_slot_actions} from './func_modernize.js';
 
 const closeButton = new ActionRowBuilder()
     .addComponents(
@@ -199,6 +263,10 @@ export function reset_this_turn_triggers(db_battle_data){
  * @param {Boolean} allow_items Allow the use of items in the battle
  * @param {Boolean} give_rewards Give rewards at the end of a battle
  * @param {Boolean} allow_run Allow running from the battle
+ * @param {Boolean} fake_battle Whether the battle is fake or not
+ * @param {Boolean} scale_to_level Whether to scale the level of the party to be the same for both players
+ * @param {String} battle_bg The battle bg to use
+ * @param {Boolean} is_online Whether the battle is online or not
  */
 export async function setup_battle (users, field_effect, oochabux, turn_timer, allow_items, give_rewards, allow_run, fake_battle = false, scale_to_level = false, battle_bg = 'battle_bg_tutorial', is_online = false) {
     const { botClient } = await import("./index.js");
@@ -566,8 +634,7 @@ export function get_ai_action(user_obj, db_battle_data) {
     let move_intentions = []
 
     let users_enemy = users.filter(u => u.team_id != user_obj.team_id);
-    // eslint-disable-next-line no-unused-vars
-    let users_friendly = users.filter(u => u.team_id == user_obj.team_id && u.user_index != user_obj.user_index);
+    // let users_friendly = users.filter(u => u.team_id == user_obj.team_id && u.user_index != user_obj.user_index);
     let party_alive_slots = [];
     user_obj.party.forEach((mon, i) => {
         if(mon.hp > 0){party_alive_slots.push(i)}
@@ -646,7 +713,7 @@ export function get_ai_action(user_obj, db_battle_data) {
 /**
  * Gets a sorted list of moves
  * @param {Array} moves_list 
- * @param {Enum} target_type 
+ * @param {Object} target_type
  * @returns Array of moves shuffled and then sorted by their priority
  */
 export function get_move_intention(moves_list, target_type){
@@ -998,8 +1065,8 @@ export async function prompt_battle_actions(battle_id) {
 
             const inputFilter = async i => {
                 if (i.user.id != user.user_id) return false;
-                if (profile.get(`${i.user.id}`, 'cur_battle_id') != db_battle_data.battle_id) return false;
-                return true;
+                return profile.get(`${i.user.id}`, 'cur_battle_id') == db_battle_data.battle_id;
+
             }
 
             const inputCollector = userThread.createMessageComponentCollector({ time: 1.8e+6, filter: inputFilter });
@@ -1086,9 +1153,8 @@ export async function prompt_battle_actions(battle_id) {
                             ooch_emote = monster_data.get(`${[ooch_check.id]}`, 'emote');
                             ooch_name = ooch_check.nickname;
                             ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-                            ooch_disable = false;
 
-                            if (ooch_check.alive == false) ooch_disable = true;
+                            ooch_disable = ooch_check.alive == false;
         
                             ((i <= 1) ? targetButtons1 : targetButtons2).addComponents(
                                 new ButtonBuilder()
@@ -1553,14 +1619,14 @@ export async function process_battle_actions(battle_id){
 
             // Handle status effects ORDER HERE MATTERS!!!
             let status_checks = []
-            if (ooch.status_effects.includes(Status.Sleep))     {status_checks.push(Status.Sleep)};
-            if (ooch.status_effects.includes(Status.Burn))      {status_checks.push(Status.Burn)};
-            if (ooch.status_effects.includes(Status.Infect))    {status_checks.push(Status.Infect)};
-            if (ooch.status_effects.includes(Status.Doom))      {status_checks.push(Status.Doom)};
-            if (ooch.status_effects.includes(Status.Digitize))  {status_checks.push(Status.Digitize)};
-            if (ooch.status_effects.includes(Status.Petrify))   {status_checks.push(Status.Petrify)};
-            if (ooch.status_effects.includes(Status.Vanish))    {status_checks.push(Status.Vanish)};
-            if (ooch.status_effects.includes(Status.Revealed))  {status_checks.push(Status.Revealed)};
+            if (ooch.status_effects.includes(Status.Sleep))     {status_checks.push(Status.Sleep)}
+            if (ooch.status_effects.includes(Status.Burn))      {status_checks.push(Status.Burn)}
+            if (ooch.status_effects.includes(Status.Infect))    {status_checks.push(Status.Infect)}
+            if (ooch.status_effects.includes(Status.Doom))      {status_checks.push(Status.Doom)}
+            if (ooch.status_effects.includes(Status.Digitize))  {status_checks.push(Status.Digitize)}
+            if (ooch.status_effects.includes(Status.Petrify))   {status_checks.push(Status.Petrify)}
+            if (ooch.status_effects.includes(Status.Vanish))    {status_checks.push(Status.Vanish)}
+            if (ooch.status_effects.includes(Status.Revealed))  {status_checks.push(Status.Revealed)}
 
             for(let effect of status_checks){
                 if(finish_battle){ break; }
@@ -1728,10 +1794,10 @@ export async function process_battle_actions(battle_id){
 /**
  * Creates a simple embed for the battle
  * @param {String} text the text to display in the body of the embed
- * @param {Color} color the color along the edge of the embed
+ * @param {String} color the color along the edge of the embed
  * @param {Object} author the setAuthor object
- * @param {String} header the text to display at the top of the embed
- * @param {String} thumbnail the thumbnail to display on the embed to the side
+ * @param {Boolean} header the text to display at the top of the embed
+ * @param {Boolean} thumbnail the thumbnail to display on the embed to the side
  * @returns a simple embed
  */
 export function battle_embed_create(text, color = '#808080', author = false, header = false, thumbnail = false,) {
@@ -1847,7 +1913,7 @@ export async function action_process_switch(db_battle_data, action){
 
     let ooch_to = user.party[action.slot_target];
     let ooch_from = user.party[user.active_slot];
-
+    
     let slot_info_to = user.slot_actions[action.slot_target];
     let slot_info_from = user.slot_actions[user.active_slot];
     slot_info_to.this_turn_switched_in = true;
@@ -1855,8 +1921,6 @@ export async function action_process_switch(db_battle_data, action){
     slot_info_to.move_used_last = false;
 
     slot_info_from.status_counter_infect = 0;
-
-    
     
     let return_string = (action.is_switching
         ? `\n${user.name} switched from ${monster_data.get(`${ooch_from.id}`, 'emote')} **${ooch_from.nickname}** to ${monster_data.get(`${ooch_to.id}`, 'emote')} **${ooch_to.nickname}**.`
@@ -1917,7 +1981,7 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
     let i_transformation = db_battle_data.i_transformation_bool;
 
     
-    //Effects of the mon to switching in
+    //Effects of the mon to switching infjiasfjioastjoiastjoiastjoiastjioastojiastoitasjoiast
     switch (ooch_to.ability) {
         case Ability.InvalidEntry:
             if(i_transformation){
@@ -2402,7 +2466,7 @@ export function battle_faint_check(db_battle_data) {
     let finish_string_to_send = '';
     let level_up_string = '';
     let active_teams = [];
-    let player_teams = [];
+    // let player_teams = [];
     let finish_battle = false;
     let has_living_player = false;
     let total_oochabux = 0;
@@ -2413,7 +2477,7 @@ export function battle_faint_check(db_battle_data) {
     for(let user of db_battle_data.users) {
         if(user.user_type == UserType.Player){
             player_count ++;
-            player_teams.push(user.team_id);
+            // player_teams.push(user.team_id);
             if(first_player == null){ first_player = user; }
         }
         
@@ -2487,7 +2551,7 @@ export function battle_faint_check(db_battle_data) {
                         let ooch_party = other_user.party;
                         let other_ooch = ooch_party[other_user.active_slot];
                         let exp_main = Math.floor(total_exp * 1.25);
-                        let max_level = global_data.get(`${"max_level"}`);
+                        let max_level = global_data.get(`max_level`);
                         if (max_level == false || max_level == undefined) max_level = 50;
 
                         
@@ -2664,9 +2728,9 @@ export async function end_of_round_prompt_switch(db_battle_data){
 
 /**
  * Selects a random target player in the battle
- * @param {Arrays} users The current battle users array
+ * @param {Array} users The current battle users array
  * @param {Number} my_team_id The id of the mon checking this value
- * @param {Number} my_user_id The id of the user
+ * @param {Number} my_user_index The index of the user
  * @param {Number} max_num The maximum number to return (default 1)
  * @param {Boolean} other_team whether to check for other teams (default true)
  * @param {Boolean} same_team whether to check for allies (default false)
@@ -2732,6 +2796,7 @@ export function get_stats(species_id, level, hp_iv, atk_iv, def_iv, spd_iv) {
  * Add a status effect to an oochamon.
  * @param {Object} ooch The oochamon to add a status effect to
  * @param {String} status The status effect to add
+ * @param {Number} slot The slot of the oochamon to add the status effect to
  * @returns The affected Oochamon object, with its status added
  */
 export function add_status_effect(ooch, status, slot) {
@@ -2984,7 +3049,6 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
         }
 
         profile.set(user_id, PlayerState.Playspace, 'player_state');
-        return;
 
     } else if (db_item_data.type == ItemType.LevelUp) {
         let exp_to_give = exp_to_next_level(ooch.level);
@@ -3249,7 +3313,6 @@ export async function use_eot_ability(db_battle_data, user_index) {
 /**
  * Converts a type string to an emote for that type.
  * @param {Array} type_array The type array to turn into a type string
- * @param {Boolean} text_emote Whether you want text emotes or icon emotes for the type
  * @returns The emote string
  */
 export function type_to_emote(type_array) {
@@ -3359,12 +3422,10 @@ export function battle_calc_damage(move_damage, move_type, ooch_attacker, ooch_d
 /**
  * A helper function that handles doing an attack and using a move on
  * another Oochamon in an Oochamon battle.
- * @param {Object} thread The thread Oochamon is being played in.
- * @param {String} user_id The user id of the user playing Oochamon.
- * @param {String} atk_id The ID of the attack being used
- * @param {Object} attacker The Oochamon data of the attacker
- * @param {Object} defender The Oochamon data of the defender
- * @param {String} header The header string displaying whos turn it is in the battle
+ * @param {Object} db_battle_data The battle data of the Oochamon game
+ * @param {Number} user_index_attacker The index of the attacker in battle_data.users
+ * @param {Number} user_index_defender The index of the defender in battle_data.users
+ * @param {Number} atk_id The ID of the move to use
  * @returns An array of the attacker and defender Oochamon data, after the attacks.
  */
 export async function attack(db_battle_data, user_index_attacker, user_index_defender, atk_id) {
@@ -3425,8 +3486,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     //For moves that match the user's type
     let move_type_change_to_users_text = ""
     if (move_effects.some(effect => effect.status === 'typematch')) {
-        let type_to = attacker.type[0];
-        move_type = type_to;
+        move_type = attacker.type[0];
         move_type_emote =      type_to_emote(move_type);
         move_type_change_to_users_text += `\n---✨ **${move_name}** changed into the ${attacker_emote} **${atkOochName}**'s type, **${move_type_emote}** **${capitalize(move_type)}**!\n`
     }
@@ -4190,11 +4250,11 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
     
         // Return the result to use in the actual canvas
         return context.font;
-    };
+    }
 
     function deg_to_rad(degrees){
         return degrees * (Math.PI / 180);
-    };
+    }
 
 
     //Sort everyone into their teams
@@ -4329,7 +4389,7 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
 
     //Sort sprites by y-value for the illusion of depth on crowded scenes
     sprites.sort((a, b) => {
-        a.y - b.y
+        return a.y - b.y
     })
 
     let canvas = new Canvas(width, height);
@@ -4432,9 +4492,7 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
         }
     }
 
-    let pngData = canvas.toBufferSync('png');
-
-    return pngData;
+    return canvas.toBufferSync('png');
 }
 
 /**
@@ -4457,8 +4515,7 @@ export function get_stat_multiplier(stage, scalar = 2) {
 export function type_to_string(type, do_capitalize = true) {
     if (!Array.isArray(type)) type = [type];
     if (do_capitalize) type = type.map(v => capitalize(v));
-    type = type.join('/');
-    return type;
+    return type.join('/');
 }
 
 /**

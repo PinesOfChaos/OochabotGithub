@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { InteractionType } from 'discord-api-types/v9';
 import { startCase } from 'lodash-es';
 
-import { MessageFlags, Events } from 'discord.js';
+import { MessageFlags, Events, InteractionType } from 'discord.js';
 import { profile, monster_data, item_data, ability_data, move_data, status_data } from '../db.js';
 import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
@@ -168,6 +167,15 @@ export default {
                 }
             break;
         }
+    }
+
+    // SELECT MENU COLLECTORS
+    if (interaction.isStringSelectMenu()) {
+        
+    }
+
+    // BUTTON COLLECTOR
+    if (interaction.isButton()) {
     }
 
     // Handle move buttons
