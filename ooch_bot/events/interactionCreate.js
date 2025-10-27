@@ -176,6 +176,9 @@ export default {
 
     // BUTTON COLLECTOR
     if (interaction.isButton()) {
+        if (interaction.customId.startsWith('menu_')) {
+            await menuHandler()
+        }
     }
 
     // Handle move buttons
