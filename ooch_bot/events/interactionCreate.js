@@ -179,6 +179,9 @@ export default {
         if (interaction.customId.startsWith('menu_')) {
             await menuHandler()
         }
+        if (interaction.customId.startsWith('battle_')) {
+            await battleHandler()
+        }
     }
 
     // Handle move buttons

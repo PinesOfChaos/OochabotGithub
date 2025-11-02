@@ -139,6 +139,7 @@ const TameStatus = {
 }
 
 const StanceForms = {
+    NoChange: -1,
     Base: 0,
     Attack: 1,
     Defense: 2,
