@@ -17,7 +17,6 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
-    StringSelectMenuBuilder
 } from 'discord.js';
 import {
     capitalize,
@@ -44,7 +43,6 @@ import {
     Ability,
     BattleAction,
     BattleAi,
-    BattleInput,
     BattleState,
     EventMode,
     FieldEffect,
@@ -70,6 +68,8 @@ import {
 } from "./func_other.js";
 import {Canvas, FontLibrary, loadImage} from 'skia-canvas';
 import {get_blank_battle_user, get_blank_slot_actions} from './func_modernize.js';
+import { battle_input_create } from "./event_handlers/battle_handler.js";
+import { botClient } from "./index.js";
 
 const closeButton = new ActionRowBuilder()
     .addComponents(
@@ -439,7 +439,37 @@ export async function setup_battle (users, field_effect, oochabux, turn_timer, a
     }
 }
 
-// #region Battle Action New
+// #region Prompt Battle Actions
+export async function prompt_battle_actions(battle_id) {
+    let db_battle_data = battle_data.get(`${battle_id}`);
+
+    // Handle users
+    await db_battle_data.users.forEach(async (user) => {
+        let [inputRow, inputRow2, inputRow3] = await battle_input_create(battle_id, user.user_index);
+        if (user.user_type != UserType.Player) {
+            get_ai_action(user, db_battle_data);
+            user.action_selected = true;
+
+            // Can't run from enemy battles whose IDs are less than 0
+            if (user.party[user.active_slot].id < 0) {
+                inputRow2.components[1].setDisabled(true);
+            }
+
+            // Continue on if everyone has selected (which should happen at the end)
+            if (db_battle_data.users.every(u => u.action_selected !== false)) {
+                battle_data.set(battle_id, db_battle_data);
+                await process_battle_actions(battle_id);
+            }
+        } else {
+            let userThread = botClient.channels.cache.get(`${user.thread_id}`);
+            if (userThread == undefined) return;
+
+            await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
+        }
+    }); 
+
+    battle_data.set(`${battle_id}`, db_battle_data);
+}
 // #endregion
 
 /**
@@ -811,9 +841,8 @@ export function sort_action_priority(db_battle_data){
  * Sends messages to all player-type users in an array of users
  * @param {Object} db_battle_data The battle data
  * @param {Object} message anything that can be sent as a discord message
- * @param {Boolean} end_battle_msg If this is the end of battle message with a button
  */
-export async function distribute_messages(db_battle_data, message, end_battle_msg = false){
+export async function distribute_messages(db_battle_data, message){
     const { botClient } = await import("./index.js");
 
     db_battle_data.battle_msg_counter += 1;
@@ -823,17 +852,6 @@ export async function distribute_messages(db_battle_data, message, end_battle_ms
         if(user.is_player){
             let thread = botClient.channels.cache.get(`${user.thread_id}`);
             await thread.send(message);
-
-            if (end_battle_msg == true) {
-                const collector = thread.createMessageComponentCollector({ max: 1 });
-
-                collector.on('collect', async i => {
-                    await i.update({ content: 'Ending battle...', components: [] }).catch(() => {});
-                    await i.deleteReply().catch(() => {});
-
-                    await finish_battle(db_battle_data, user.user_index);
-                })
-            }
         }
     }
 }
@@ -864,617 +882,6 @@ export async function delete_messages_in_threads(db_battle_data, num_to_delete) 
             }
         }
     }
-}
-
-/* TODOs: 
-    - Ensure the turn msg counters are correct after this is correct globally
-    - Make sure messages are updated properly
-    - Disable the switch button if you have no oochamon is selected
-    - Setup submenu to select Oochamon to heal, rather than only being able to heal the currently sent out Oochamon.
-*/
-
-/** Gather input for battle actions
- * @param battle_id The ID of the battle being prompted for
- */
-export async function prompt_battle_actions(battle_id) {
-
-    const { botClient } = await import("./index.js");
-
-    battle_data.math(battle_id, '+', 1, 'battle_msg_counter');
-    let db_battle_data = battle_data.get(`${battle_id}`);
-    battle_data.set(battle_id, 1, 'turn_msg_counter');
-
-
-    let stanceSelectMenu, healSelectButtons1, healSelectButtons2
-
-    //#region Setup buttons and select menus
-    const inputRow = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('fight')
-                .setLabel('Fight')
-                .setEmoji('⚔️')
-                .setStyle(ButtonStyle.Primary),
-        ) .addComponents(
-            new ButtonBuilder()
-                .setCustomId('switch')
-                .setLabel('Switch')
-                .setEmoji(get_emote_string('item_prism'))
-                .setStyle(ButtonStyle.Success),
-        );
-
-    const inputRow2 = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('bag')
-                .setLabel('Item')
-                .setEmoji('🎒')
-                .setStyle(ButtonStyle.Danger)
-                .setDisabled(!db_battle_data.allow_items),
-        ) .addComponents(
-            new ButtonBuilder()
-                .setCustomId('run')
-                .setLabel('Run')
-                .setStyle(ButtonStyle.Secondary)
-                .setEmoji('🏃‍♂️')
-                .setDisabled(!db_battle_data.allow_run),
-        );
-
-    let inputRow3 = new ActionRowBuilder();
-            
-    let moveButtons1 = new ActionRowBuilder();
-    let moveButtons2 = new ActionRowBuilder();
-    let moveInfoViewing = false;
-
-    let targetButtons1 = new ActionRowBuilder();
-    let targetButtons2 = new ActionRowBuilder();
-    
-    let switchButtons1 = new ActionRowBuilder();
-    let switchButtons2 = new ActionRowBuilder();
-    let bagButtons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('heal')
-                .setLabel('Healing')
-                .setStyle(ButtonStyle.Primary)
-                .setEmoji(get_emote_string('item_potion_magic')),
-        ).addComponents(
-            new ButtonBuilder()
-                .setCustomId('prism')
-                .setLabel('Prism')
-                .setStyle(ButtonStyle.Primary)
-                .setEmoji(get_emote_string('item_prism'))
-                .setDisabled(true),
-        )
-
-    const backButton = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('back')
-                .setLabel('Back')
-                .setStyle(ButtonStyle.Danger),
-        )
-
-    const moveBackButton = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('back')
-                .setLabel('Back')
-                .setStyle(ButtonStyle.Danger),
-        )
-
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('view_move_info')
-                .setLabel('View Moves Info')
-                .setStyle(ButtonStyle.Secondary)
-                .setEmoji('🗒️'),
-        )
-        
-    //#endregion
-
-    // Sub-function for handling end of input
-    async function end_prompt_input(db_battle_data, i, inputCollector) {
-        if (db_battle_data.users.every(u => u.action_selected !== false)) {
-            db_battle_data.battle_msg_counter -= 1;
-            battle_data.set(battle_id, db_battle_data);
-            inputCollector.stop();
-            await i.update({ content: `Waiting for other players...` }).catch(() => {});
-
-            // Delete all input messages
-            for (let user of db_battle_data.users) {
-                if (user.is_player) {
-                    let thread = botClient.channels.cache.get(`${user.thread_id}`);
-                    await thread.bulkDelete(1).catch(() => {});
-                }
-            }
-
-            await inputCollector.stop();
-            await process_battle_actions(battle_id);
-        } else {
-            await inputCollector.stop();
-            await i.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
-        }
-    }
-
-    // Handle users
-    let num_catchable = 0; //This tracks how many users have catchable mons, the player should only be able to catch if there is exactly 1
-    await db_battle_data.users.forEach(async (user) => {
-        let ooch_disable
-        if (user.user_type != UserType.Player) {
-            get_ai_action(user, db_battle_data);
-            user.action_selected = true;
-
-            if(user.is_catchable && user.party[user.active_slot].id >= 0 && user.party[user.active_slot].current_hp > 0){
-                num_catchable++;
-                
-                bagButtons.components[1].setDisabled(num_catchable != 1);
-            }
-
-            // Can't run from void enemy battles, whose IDs are less than 0
-            if (user.party[user.active_slot].id < 0) {
-                inputRow2.components[1].setDisabled(true);
-            }
-
-            // Continue on if everyone has selected (which should happen at the end)
-            if (db_battle_data.users.every(u => u.action_selected !== false)) {
-                battle_data.set(battle_id, db_battle_data);
-                await process_battle_actions(battle_id);
-            }
-        } else {
-            let userThread = botClient.channels.cache.get(`${user.thread_id}`);
-            if (userThread == undefined) return;
-
-            let activeOoch = user.party[user.active_slot];
-            let stancesEnabled = true;
-
-            inputRow3 = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('info')
-                    .setLabel('Info')
-                    .setEmoji('📒')
-                    .setStyle(ButtonStyle.Secondary),
-            ) .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('shift_stance')
-                    .setLabel('Stance')
-                    .setEmoji('🤺')
-                    .setStyle(ButtonStyle.Secondary)
-            )
-
-            if (!(profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) {   
-                stancesEnabled = false;    
-                inputRow3 = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('info')
-                        .setLabel('View Battle Info')
-                        .setEmoji('📒')
-                        .setStyle(ButtonStyle.Secondary),
-                )
-            } else {
-                if (activeOoch.stance_cooldown != 0) {
-                    inputRow3.components[1].setDisabled(true);
-                } else {
-                    inputRow3.components[1].setDisabled(false);
-                }
-            }
-
-            await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
-
-            const inputFilter = async i => {
-                if (i.user.id != user.user_id) return false;
-                return profile.get(`${i.user.id}`, 'cur_battle_id') == db_battle_data.battle_id;
-
-            }
-
-            const inputCollector = userThread.createMessageComponentCollector({ time: 1.8e+6, filter: inputFilter });
-            
-            await inputCollector.on('collect', async i => {
-                let customId = i.customId;
-                activeOoch = user.party[user.active_slot];
-
-                if (customId == BattleInput.Back) {
-                    await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
-                    
-                } else if (customId == BattleInput.Attack) {
-                    let move_id, move_name, move_type, move_damage, move_effective_emote = '',
-                        buttonStyle = ButtonStyle.Primary;
-
-                    moveButtons1 = new ActionRowBuilder()
-                    moveButtons2 = new ActionRowBuilder()
-
-                    // Get the Oochamon's Attack options
-                    for (let i = 0; i < activeOoch.moveset.length; i++) {
-                        move_id = activeOoch.moveset[i];
-                        move_name = move_data.get(`${move_id}`, 'name')
-                        move_type = move_data.get(`${move_id}`, 'type')
-                        move_damage = move_data.get(`${move_id}`, 'damage')
-
-                        if (db_battle_data.users.length == 2) {
-                            let enemy_user = db_battle_data.users.filter(u => u.team_id != user.team_id)[0];
-                            move_effective_emote = type_effectiveness(move_type, enemy_user.party[enemy_user.active_slot].type);
-                            if (move_effective_emote[0] > 1) {
-                                move_effective_emote = ' △';
-                                buttonStyle = ButtonStyle.Success
-                            } else if (move_effective_emote[0] < 1) {
-                                move_effective_emote = ' ▽';
-                                buttonStyle = ButtonStyle.Danger
-                            } else {
-                                move_effective_emote = '';
-                                buttonStyle = ButtonStyle.Primary
-                            }
-        
-                            if (move_damage == 0) {
-                                move_effective_emote = '';
-                                buttonStyle = ButtonStyle.Secondary
-                            }
-                        }
-    
-                        ((i <= 1) ? moveButtons1 : moveButtons2).addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`atk_${move_id}`)
-                                .setLabel(`${move_name} ${move_effective_emote}`)
-                                .setStyle(buttonStyle)
-                                .setEmoji(`${type_to_emote(move_type)}`)
-                        )
-                    }
-
-                    if (stancesEnabled) inputRow3.components[1].setDisabled((activeOoch.stance_cooldown != 0))
-    
-                    // Switch message to be about using the move input
-                    let moveSelMsg = `Select a move to use!\n**Current Stance: ${stance_data.get(`${activeOoch.stance}`, 'name')}**`;
-                    if (!stancesEnabled) moveSelMsg = `Select a move to use!`;
-                    await i.update({ content: moveSelMsg, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
-                } else if (customId.includes('atk_')) {
-                    let move_id = customId.replace('atk_', '');
-                    let self_target = move_data.get(`${move_id}`, 'self_target');
-
-                    if (db_battle_data.users.length == 2 || self_target == true) {
-                        let enemy_user = db_battle_data.users.filter(u => u.team_id != user.team_id)[0];
-                        user.action_selected = true;
-                        new_battle_action_attack(db_battle_data, user.user_index, enemy_user.user_index, move_id);
-
-                        // Continue on if everyone has selected (which should happen at the end)
-                        await end_prompt_input(db_battle_data, i, inputCollector);
-
-                    } else {
-                        // Select an Oochamon to attack
-                        let user_list = db_battle_data.users.filter(usr => usr.team_id != user.team_id);
-                        let ooch_options = user_list.map(usr => [usr.party[usr.active_slot], usr]);
-                        let ooch_check, ooch_emote, ooch_name, ooch_hp;
-                        
-                        targetButtons1 = new ActionRowBuilder();
-                        targetButtons2 = new ActionRowBuilder();
-
-                        for (let i = 0; i < ooch_options.length; i++) {
-                            ooch_check = ooch_options[i][0];
-                            ooch_emote = monster_data.get(`${[ooch_check.id]}`, 'emote');
-                            ooch_name = ooch_check.nickname;
-                            ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-
-                            ooch_disable = ooch_check.alive == false;
-        
-                            ((i <= 1) ? targetButtons1 : targetButtons2).addComponents(
-                                new ButtonBuilder()
-                                    // target_teamId_userId_atkId
-                                    .setCustomId(`target_${ooch_options[i][1].team_id}_${ooch_options[i][1].user_id}_${move_id}`)
-                                    .setLabel(`${ooch_name} (${ooch_hp})`)
-                                    .setStyle(ButtonStyle.Primary)
-                                    .setEmoji(ooch_emote)
-                                    .setDisabled(ooch_disable),
-                            )
-                        }
-
-                        await i.update({ content: `**-- Select An Oochamon To Use Move On --**`, components: (targetButtons2.components.length != 0) ? [targetButtons1, targetButtons2, backButton] : [targetButtons1, backButton] });
-                    }
-                } else if (customId.includes('target_')) {
-                    
-                    let parts = customId.split('_');
-                    let team_id = parts[1]; 
-                    let user_id = parts[2];
-                    let move_id = parts[3];
-
-                    let enemy_user = db_battle_data.users.filter(u => u.team_id == team_id && u.user_id == user_id)[0];
-                    user.action_selected = true;
-                    new_battle_action_attack(db_battle_data, user.user_index, enemy_user.user_index, move_id);
-
-                    // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(db_battle_data, i, inputCollector);
-
-                } else if (customId == 'view_move_info') {
-
-                    let moveInfoEmbed = new EmbedBuilder()
-                        .setTitle('Move Info');
-                    let moveInfoFields = [];
-
-                    // Get the Oochamon's Attack options
-                    for (let i = 0; i < activeOoch.moveset.length; i++) {
-                        let move_id = activeOoch.moveset[i];
-                        let db_move_data = move_data.get(`${move_id}`);
-                        if (db_move_data.accuracy == -1) db_move_data.accuracy = 100;
-                        let move_string = `
-                        ${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**
-                            *${db_move_data.description}*
-                        `;
-                        
-                        moveInfoFields.push({
-                            name: `${type_to_emote([db_move_data.type])} ${db_move_data.name}`,
-                            value: move_string,
-                            inline: true
-                            });
-                    }
-
-                    moveInfoFields.splice(2, 0, { name: '\u200B', value: '\u200B', inline: true });
-                    moveInfoFields.splice(5, 0, { name: '\u200B', value: '\u200B', inline: true });
-                    moveInfoEmbed.addFields(moveInfoFields);
-
-                    if (moveInfoViewing == true) {
-                        moveBackButton.components[1].setLabel('View Move Info');
-                        i.update({ embeds: [], components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-                        moveInfoViewing = false;
-                    } else {
-                        moveBackButton.components[1].setLabel('Close Move Info');
-                        i.update({ embeds: [moveInfoEmbed],  components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-                        moveInfoViewing = true;
-                    }
-
-                } else if (customId == 'shift_stance') {
-                    let stance_list = get_stance_options(activeOoch);
-                    
-                    stanceSelectMenu = new ActionRowBuilder();
-                    let stanceSelectOptions = [];
-                    
-                    for (let stance of stance_list) {
-                        stanceSelectOptions.push({ 
-                            label: `${stance.name}`,
-                            description: stance.description_short.slice(0, 100),
-                            value: `stance_sel_${stance.id}`
-                        })
-                    }
-
-                    stanceSelectMenu.addComponents(
-                        new StringSelectMenuBuilder()
-                            .setCustomId('stance_shift_select')
-                            .setPlaceholder('Select a stance to shift to.')
-                            .addOptions(stanceSelectOptions),
-                    );
-
-                    await i.update({ content: `**Select the new stance to shift to! (You will be unable to switch off of this for the next 2 turns)**\n**Current Stance: ${stance_data.get(`${activeOoch.stance}`, 'name')}**`, components: [stanceSelectMenu, backButton] });
-
-                } else if (customId == 'stance_shift_select') {
-
-                    let stance_id = i.values[0].split('_')[2];
-                    activeOoch.stance = stance_id;
-                    activeOoch.stance_cooldown = 3;
-
-                    new_battle_action_stance_change(db_battle_data, user.user_index, stance_id);
-                    inputRow3.components[1].setDisabled(true)
-
-                    await i.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
-
-                } else if (customId == BattleInput.Switch) {
-
-                    let ooch_inv = user.party;
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_disable;
-                    
-                    switchButtons1 = new ActionRowBuilder();
-                    switchButtons2 = new ActionRowBuilder();
-
-                    for (let i = 0; i < ooch_inv.length; i++) {
-                        ooch_check = ooch_inv[i];
-                        ooch_emote = monster_data.get(`${ooch_check.id}`, 'emote');
-                        ooch_name = ooch_check.nickname;
-                        ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-                        ooch_button_color = ButtonStyle.Primary;
-                        ooch_disable = false;
-    
-                        if (i == user.active_slot) {
-                            ooch_button_color = ButtonStyle.Success;
-                            // ooch_prev = ooch_check;
-                            ooch_disable = true;
-                        }
-                        else if (ooch_check.current_hp <= 0) {
-                            ooch_disable = true;
-                        }
-    
-                        ((i <= 1) ? switchButtons1 : switchButtons2).addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`switch_${i}`)
-                                .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
-                                .setStyle(ooch_button_color)
-                                .setEmoji(ooch_emote)
-                                .setDisabled(ooch_disable),
-                        )
-                    }
-
-                    await i.update({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2, backButton] : [switchButtons1, backButton] });
-
-                } else if (customId.includes('switch_')) {
-                    user.action_selected = new_battle_action_switch(db_battle_data, user.user_index, customId.replace('switch_', ''), true, false);
-
-                    // Continue on if everyone has selected (which should happen at the end
-                    await end_prompt_input(db_battle_data, i, inputCollector);
-
-                } else if (customId == BattleInput.Bag) {
-                    await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
-                    
-                } else if (customId == BattleInput.BagHeal) {
-                    
-                    let consumable_inv = user.inventory[ItemCategory.Consumable];
-                    let bag_select = new ActionRowBuilder();
-                    let heal_select_options = [];
-                    
-                    for (let c of consumable_inv) {
-                        const consumable_data = item_data.get(`${c.id}`);
-                        if (consumable_data.type != ItemType.Potion && consumable_data.type != ItemType.Status) continue;
-                        if (c.quantity > 0 && c.quantity != undefined) {
-                            heal_select_options.push({ 
-                                label: `${consumable_data.name} (${c.quantity})`,
-                                description: consumable_data.description_short.slice(0, 100),
-                                value: `${consumable_data.id}`,
-                                emoji: consumable_data.emote,
-                            })
-                        }
-                    }
-
-                    if (heal_select_options.length > 0) {
-                        bag_select.addComponents(
-                            new StringSelectMenuBuilder()
-                                .setCustomId('heal_item_select')
-                                .setPlaceholder('Select a healing item to use!')
-                                .addOptions(heal_select_options),
-                        );
-
-                        await i.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bagButtons, backButton] })
-                    } else {
-                        await i.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] })
-                    }
-
-                } else if (customId == BattleInput.BagPrism) {
-
-                    let prism_inv = user.inventory[ItemCategory.Prism];
-                    let bag_select = new ActionRowBuilder();
-                    let prism_select_options = [];
-                    
-                    for (let p of prism_inv) {
-                        const prism_data = item_data.get(`${p.id}`);
-                        if (p.quantity > 0 && p.quantity != undefined) {
-                            prism_select_options.push({ 
-                                label: `${prism_data.name} (${p.quantity})`,
-                                description: prism_data.description_short.slice(0, 100),
-                                value: `${prism_data.id}`,
-                                emoji: prism_data.emote,
-                            })
-                        }
-                    }
-
-                    bag_select.addComponents(
-                        new StringSelectMenuBuilder()
-                            .setCustomId('prism_item_select')
-                            .setPlaceholder('Select a prism to use!')
-                            .addOptions(prism_select_options),
-                    );
-
-                    await i.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bagButtons, backButton] });
-
-                } else if (customId.includes('_item_select')) {
-
-                    let ooch_inv = user.party;
-                    let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_disable;
-                    
-                    healSelectButtons1 = new ActionRowBuilder();
-                    healSelectButtons2 = new ActionRowBuilder();
-
-                    if (customId == 'heal_item_select') {
-                        for (let slot = 0; slot < ooch_inv.length; slot++) {
-                            ooch_check = ooch_inv[slot];
-                            ooch_emote = monster_data.get(`${ooch_check.id}`, 'emote');
-                            ooch_name = ooch_check.nickname;
-                            ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
-                            ooch_button_color = ButtonStyle.Primary;
-                            ooch_disable = false;
-        
-                            if (i == user.active_slot) {
-                                ooch_button_color = ButtonStyle.Success;
-                                ooch_disable = true;
-                            }
-                            else if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
-                                ooch_disable = true;
-                            }
-        
-                            ((slot <= 1) ? healSelectButtons1 : healSelectButtons2).addComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`${i.values[0]}_${slot}_item_sel_target`)
-                                    .setLabel(`Lv. ${ooch_check.level} ${ooch_name} (${ooch_hp})`)
-                                    .setStyle(ooch_button_color)
-                                    .setEmoji(ooch_emote)
-                                    .setDisabled(ooch_disable),
-                            )
-                        }
-
-                        await i.update({ content: `**-- Select An Oochamon To Heal --**`, components: (healSelectButtons2.components.length != 0) ? [healSelectButtons1, healSelectButtons2, backButton] : [healSelectButtons1, backButton] });
-                    } else {
-                        let user_to_catch;
-                        for(let catch_target of db_battle_data.users){
-                            if(catch_target.is_catchable && catch_target.party[catch_target.active_slot].current_hp > 0){
-                                user_to_catch = catch_target.user_index;
-                            }
-                        }
-                        
-                        user.action_selected = new_battle_action_prism(db_battle_data, user.user_index, i.values[0], user_to_catch);
-
-                        // Continue on if everyone has selected (which should happen at the end)
-                        await end_prompt_input(db_battle_data, i, inputCollector);                                
-                    }
-                } else if (customId.includes('_item_sel_target')) {
-                    let custom_id_data = customId.split('_');
-                    user.action_selected = new_battle_action_heal(db_battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
-
-                    // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(db_battle_data, i, inputCollector); 
-                } else if (customId == BattleInput.Run) {
-                    user.action_selected = new_battle_action_run(db_battle_data, user.user_index);
-
-                    // Continue on if everyone has selected (which should happen at the end)
-                    await end_prompt_input(db_battle_data, i, inputCollector);  
-                    
-                } else if (customId == BattleInput.Info) {
-                    // TODO: Make this a page system to show enemy data
-                    
-                    let oochPrisms = '';
-                    for (let ooch of user.party) {
-                        oochPrisms += ooch.alive ? get_emote_string('item_prism') : `❌`;
-                    }
-    
-                    let oochInfoFields = [];
-    
-                    // Setup field info for the embed about both oochamon
-                    for (let ooch of [user.party[user.active_slot]]) {
-                        let oochStatusEffects = ooch.status_effects.map(v => status_data.get(`${v}`, 'emote'));
-                        
-                        let infoStr = `**Oochamon Left:** ${oochPrisms}\n` +
-                                    `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n` +
-                                    `**Ability:** ${ability_data.get(`${ooch.ability}`, 'name')}\n` +
-                                    `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                                    `**Stat Changes:**\n` +
-                                    `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                                    `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                                    `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                                    `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                                    `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
-    
-                        // let moveset_str = ``;
-                        // for (let move_id of ooch.moveset) {
-                        //     let move = await db.db_move_data.get(`${move_id}`);
-                        //     move.accuracy = Math.abs(move.accuracy);
-                        //     if (move.damage !== 0) {
-                        //         moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-                        //     } else {
-                        //         moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-                        //     }
-                        // }
-                        // infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
-    
-                        oochInfoFields.push({
-                            name: `${user.name_possessive} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                            value: infoStr,
-                            inline: true,
-                        });
-                    }
-    
-    
-                    let battleInfoEmbed = new EmbedBuilder()
-                        .setTitle('Battle Information 📒')
-                        .setDescription(`**Turn #${db_battle_data.turn_counter + 1}**\n`)
-                        .addFields(oochInfoFields)
-                        
-                    await i.update({ content: null, embeds: [battleInfoEmbed], components: [backButton] });
-                }
-            });
-        }
-    }); 
 }
 
 /**
@@ -1765,7 +1172,7 @@ export async function process_battle_actions(battle_id){
         const endButton = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-                .setCustomId('end_battle')
+                .setCustomId(`battle_${battle_id}_0_end_battle`)
                 .setLabel('Continue To Playspace')
                 .setStyle(ButtonStyle.Primary),
         )
@@ -1783,9 +1190,9 @@ export async function process_battle_actions(battle_id){
                 victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
             }
 
-            await distribute_messages(db_battle_data, { components: [endButton], embeds: [victorEmbed] }, true);
+            await distribute_messages(db_battle_data, { components: [endButton], embeds: [victorEmbed] });
         } else {
-            await distribute_messages(db_battle_data, { components: [endButton], embeds: [] }, true);
+            await distribute_messages(db_battle_data, { components: [endButton], embeds: [] });
         }
         battle_data.set(battle_id, db_battle_data);
     }

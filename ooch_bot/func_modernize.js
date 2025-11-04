@@ -182,6 +182,11 @@ export function get_blank_profile() {
         notifications : [], //TODO
         stance_list   : [StanceForms.Base], //TODO
 
+        //PVP stats for matchmaking
+        pvp_wins : 0,
+        pvp_losses : 0,
+        pvp_dcs : 0, //number of times this player has DC'd in matchmaking, reduced by 1/day until it hits 0, higher value = lower priority in pvp
+
         settings : {
             controls_msg: false,
             battle_cleanup: true,
@@ -198,6 +203,7 @@ export function get_blank_profile() {
 export function get_blank_oochamon() {
     let ooch_obj = { 
         variant : Math.random() <= .001 ? "_prismatic" : "",
+        prism_type : "",
         id: 0,
         name: "", 
         nickname: "",

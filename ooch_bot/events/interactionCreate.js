@@ -9,6 +9,8 @@ import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
 import { quit_oochamon } from '../func_other.js';
 import { botClient, inactivityTrackers } from '../index.js';
+import { battle_handler } from '../event_handlers/battle_handler.js';
+import { menu_handler } from '../event_handlers/menu_handler.js';
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 export default {
@@ -171,16 +173,16 @@ export default {
 
     // SELECT MENU COLLECTORS
     if (interaction.isStringSelectMenu()) {
-        
+        // TODO: Add
     }
 
     // BUTTON COLLECTOR
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('menu_')) {
-            await menuHandler()
+            await menu_handler(interaction);
         }
         if (interaction.customId.startsWith('battle_')) {
-            await battleHandler()
+            await battle_handler(interaction);
         }
     }
 

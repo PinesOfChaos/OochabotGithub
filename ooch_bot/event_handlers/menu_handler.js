@@ -7,7 +7,10 @@ import { ItemCategory, ItemType, PlayerState, TamingAction } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
 import { ooch_info_embed, get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards, get_ooch_art } from '../func_other.js';
 
-let settings_row_1 = new ActionRowBuilder()
+// Menu operation is handled in this
+export async function menu_handler(interaction, init=false) {
+
+    let settings_row_1 = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder().setCustomId('menu_party').setLabel('Oochamon').setStyle(ButtonStyle.Success).setEmoji(get_emote_string('item_prism'))).addComponents(
                 new ButtonBuilder().setCustomId('menu_bag').setLabel('Oochabag').setStyle(ButtonStyle.Danger).setEmoji('🎒'));
@@ -26,12 +29,12 @@ let settings_row_1 = new ActionRowBuilder()
     // Back Buttons
     let back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_back').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_main_back').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
         );
 
     let ooch_back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_back').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_main_back').setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
         )
         .addComponents(
             new ButtonBuilder().setCustomId('menu_quick_heal').setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️').setDisabled(true)
@@ -39,22 +42,22 @@ let settings_row_1 = new ActionRowBuilder()
 
     let sel_ooch_back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_back_ooch').setLabel('Back').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_oochamon_back').setLabel('Back').setStyle(ButtonStyle.Danger)
         );
 
     let party_back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_back_party').setLabel('Back').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_party_back').setLabel('Back').setStyle(ButtonStyle.Danger)
         );
 
     let moves_back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_moves').setLabel('Back').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_moves_back').setLabel('Back').setStyle(ButtonStyle.Danger)
         );
 
     let item_back_button = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('menu_back').setLabel('Back').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_main_back').setLabel('Back').setStyle(ButtonStyle.Danger)
         );
 
     // Party Menu Extra Buttons
@@ -89,7 +92,7 @@ let settings_row_1 = new ActionRowBuilder()
         ).addComponents(
             new ButtonBuilder().setCustomId('menu_dex_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
         ).addComponents(
-            new ButtonBuilder().setCustomId('menu_back').setLabel('Back').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId('menu_main_back').setLabel('Back').setStyle(ButtonStyle.Danger)
         );
 
     // Taming Buttons
@@ -112,42 +115,47 @@ let settings_row_1 = new ActionRowBuilder()
                     {
                         label: 'Show Controls Msg',
                         description: 'Set whether you want to see the controls msg when starting up Oochamon.',
-                        value: 'controls_msg',
+                        value: 'menu_controls_msg',
                     },
                     {
                         label: 'Battle Text Cleanup',
                         description: 'Set whether battle text should be deleted after a battle or not.',
-                        value: 'battle_cleanup',
+                        value: 'menu_battle_cleanup',
                     },
                     {
                         label: 'Zoom Level',
                         description: 'Set the window size of the game. (5x5, 7x7, 7x9, 9x7)',
-                        value: 'zoom_level',
+                        value: 'menu_zoom_level',
                     },
                     {
                         label: 'Battle Speed',
                         description: 'Set the battle event speed.',
-                        value: 'battle_speed',
+                        value: 'menu_battle_speed',
                     },
                     {
                         label: 'Discord Move Buttons',
                         description: 'Add buttons you can click to move your character.',
-                        value: 'discord_move_buttons',
+                        value: 'menu_discord_move_buttons',
                     },
                     {
                         label: 'Objective Indicator',
                         description: 'See a message displaying your current objective.',
-                        value: 'objective',
+                        value: 'menu_objective',
                     }));
 
-// Menu operation is handled in this
-export async function menu_handler(interaction) {
     // Initialize all variables used across multiple sub menus here
-    let selected, bag_select;
+    let customId, selected, bag_select;
     let ooch_party, pa_components, party_idx, move_sel_idx, selected_ooch, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
     dexEmbed, bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, map_inv, skin_inv, display_inv, dex_page_num, prefEmbed, pref_data, pref_desc;
     let user_profile = profile.get(`${interaction.user.id}`);
     let menuMsg;
+
+    ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
+
+    if (init) {
+        await interaction.editReply({ content: `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        return;
+    }
 
     // Builds the action rows for the move selector, since this also needs to be run multiple times
     function buildMoveData(selected_ooch) {
@@ -213,7 +221,7 @@ export async function menu_handler(interaction) {
             if (for_item == false) {
                 ((i <= 1) ? party : party_2).addComponents(
                     new ButtonBuilder()
-                        .setCustomId(`par_ooch_id_${i}`)
+                        .setCustomId(`menu_par_ooch_id_${i}`)
                         .setLabel(`Lv. ${ooch_party[i].level} ${ooch_party[i].nickname} (HP: ${ooch_party[i].current_hp}/${ooch_party[i].stats.hp})${canEvolve == true ? ' ⏫' : ``}`)
                         .setStyle((ooch_party[i].alive) ? ((i == 0) ? ButtonStyle.Success : ButtonStyle.Secondary) : ButtonStyle.Danger)
                         .setEmoji(monster_data.get(`${ooch_party[i].id}`, 'emote'))
@@ -355,10 +363,10 @@ export async function menu_handler(interaction) {
 
     // Initialize used variables
     if (interaction.componentType == ComponentType.Button) {
+        customId = interaction.customId;
         selected = interaction.customId;
-        collectorId = interaction.customId;
     } else {
-        collectorId = interaction.customId;
+        customId = interaction.customId;
         selected = interaction.values[0];
     }
 
@@ -374,20 +382,20 @@ export async function menu_handler(interaction) {
 
     //#region Back Buttons
     // Back to Main Menu
-    if (selected == 'back_to_menu') {
+    if (customId == 'menu_main_back') {
         let user_profile = profile.get(`${interaction.user.id}`);
         await interaction.update({ content: `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, embeds: [], components: [settings_row_1, settings_row_2, settings_row_3], files: [] });
     }
 
     // Back to Party Select
-    else if (selected == 'back_to_party') {
+    if (customId == 'menu_party_back') {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         pa_components = buildPartyData(ooch_party);
         interaction.update({ content: `**Oochamon Party:**`, components: pa_components, files: [], embeds: [] });
     }
 
     // Back to Oochamon View
-    else if (selected == 'back_to_ooch') {
+    if (customId == 'menu_oochamon_back') {
         let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
         let dexPng = dexEmbed[1];
         dexEmbed = dexEmbed[0];
@@ -403,7 +411,7 @@ export async function menu_handler(interaction) {
     }
 
     // Back to Item Select
-    else if (selected == 'back_to_item') {
+    if (customId == 'menu_item_back') {
         let box_row = await buildItemData(ItemCategory.Consumable);
         bagEmbed.setDescription(box_row[0]);
         interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
@@ -412,14 +420,14 @@ export async function menu_handler(interaction) {
     //#endregion
     //#region Party / Party Submenu
     // Main Party Menu Button
-    else if (selected == 'party') {
+    if (customId == 'menu_party') {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         pa_components = buildPartyData(ooch_party);
         interaction.update({ content: `**Oochamon Party:**`, components: pa_components });
     }
 
     // Quick Party Heal Oochamon
-    else if (selected == 'quick_heal') {
+    if (customId == 'menu_quick_heal') {
         let healInv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
         let healOptions = [];
 
@@ -490,8 +498,8 @@ export async function menu_handler(interaction) {
     }
 
     // Party Oochamon Details Menu Button
-    else if (selected.includes('par_ooch_id_')) {
-        selected = parseInt(selected.replace('par_ooch_id_', ''));
+    if (customId.includes('menu_par_ooch_id_')) {
+        selected = parseInt(selected.replace('menu_par_ooch_id_', ''));
         party_idx = parseInt(selected);
         selected_ooch = ooch_party[party_idx];
         heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
@@ -561,7 +569,7 @@ export async function menu_handler(interaction) {
     }
 
     // Set to Primary Button
-    else if (selected == 'primary') {
+    if (customId == 'menu_primary') {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         // Swap the position of the selected ooch and the ooch in position 0.
         [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
@@ -574,7 +582,7 @@ export async function menu_handler(interaction) {
     }
 
     // Heal Oochamon button
-    else if (selected == 'party_heal') {
+    if (customId == 'menu_party_heal') {
         heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
         bag_select = new ActionRowBuilder();
@@ -604,7 +612,7 @@ export async function menu_handler(interaction) {
     }
 
     // Oochamon Heal Select Menu
-    else if (collectorId == 'party_heal_select') {
+    if (customId == 'menu_party_heal_select') {
         let db_item_data = item_data.get(`${selected}`);
         selected_ooch = await item_use(interaction.user.id, selected_ooch, selected, false, true);
         profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
@@ -626,7 +634,7 @@ export async function menu_handler(interaction) {
     }
 
     // Evolve button
-    else if (selected == 'evolve') {
+    if (customId == 'menu_evolve') {
         let oochData = monster_data.get(`${selected_ooch.id}`);
         // Nicknames by default are the oochamons name, so we use this to ensure we have the right nickname
         let nickname = selected_ooch.nickname == selected_ooch.name ? false : selected_ooch.nickname;
@@ -659,7 +667,7 @@ export async function menu_handler(interaction) {
     }
 
     // Set a nickname button
-    else if (selected == 'nickname') {
+    if (customId == 'menu_nickname') {
         let nick_filter = m => {
             if (m.author.id !== interaction.user.id) return false;
 
@@ -711,7 +719,7 @@ export async function menu_handler(interaction) {
         });
     }
 
-    else if (collectorId == 'stance_select') {
+    if (customId == 'menu_stance_select') {
         selected = parseInt(selected.replace('stance_sel_', ''));
         profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].starting_stance`);
 
@@ -722,13 +730,13 @@ export async function menu_handler(interaction) {
     }
 
     // Move switcher button
-    else if (selected == 'moves') {
+    if (customId == 'menu_moves') {
         let move_buttons = buildMoveData(selected_ooch);
         interaction.update({ content: `**Moves Switcher for ${selected_ooch.emote} ${selected_ooch.nickname}:**`, embeds: [], components: [move_buttons[0], move_buttons[1], sel_ooch_back_button], files: [] });
     }
 
     // Move switcher button/select menu handler
-    else if (selected.includes('move_') && selected !== 'discord_move_buttons') {
+    if (customId.includes('menu_move_') && selected !== 'discord_move_buttons') {
         if (interaction.componentType == ComponentType.Button) { // if a move is selected
             move_list_select = new ActionRowBuilder();
             move_list_select_options = [];
@@ -801,7 +809,7 @@ export async function menu_handler(interaction) {
     //#endregion
     //#region Taming Menu
 
-    else if (selected == 'taming') {
+    if (customId == 'menu_taming') {
         const taming_image = await setup_taming_picture(selected_ooch);
         const taming_status = await get_tame_string(selected_ooch.tame_value)
         const taming_embed = new EmbedBuilder()
@@ -815,7 +823,9 @@ export async function menu_handler(interaction) {
         if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
 
         interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
-    } else if (selected == 'taming_feed') {
+    }
+
+    if (customId == 'menu_taming_feed') {
 
         let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Treat);
 
@@ -841,8 +851,9 @@ export async function menu_handler(interaction) {
                 .addOptions(treat_select_options));
 
         interaction.update({ components: [treat_select, sel_ooch_back_button] });
+    }
 
-    } else if (selected.includes('taming_feed_id_')) {
+    if (customId.includes('menu_taming_feed_id_')) {
         const feed_item_id = selected.split('_')[3];
         const food_data = item_data.get(feed_item_id);
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Feed);
@@ -866,8 +877,9 @@ export async function menu_handler(interaction) {
             .setFooter({ text: `Taming Status: ${taming_status}` })
 
         interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+    }
 
-    } else if (selected == 'taming_pet') {
+    if (customId == 'menu_taming_pet') {
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Pet);
         const taming_status = get_tame_string(selected_ooch.tame_value)
         const taming_pet_text = pet_text(selected_ooch.nickname, selected_ooch.tame_value);
@@ -878,8 +890,9 @@ export async function menu_handler(interaction) {
             .setFooter({ text: taming_status })
             
         interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+    }
 
-    } else if (selected == 'taming_walk') {
+    if (customId == 'menu_taming_walk') {
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Walk);
         const taming_status = get_tame_string(selected_ooch.tame_value)
         const taming_walk_data = walk_get_rewards(selected_ooch.nickname, selected_ooch.tame_value, selected_ooch.level);
@@ -910,7 +923,7 @@ export async function menu_handler(interaction) {
 
     //#endregion
     //#region Bag / Bag Submenu
-    else if (selected == 'bag') {
+    if (customId == 'menu_bag') {
         consumable_inv = user_profile.inventory[ItemCategory.Consumable];
         prism_inv = user_profile.inventory[ItemCategory.Prism];
         key_inv = user_profile.inventory[ItemCategory.Key];
@@ -973,7 +986,7 @@ export async function menu_handler(interaction) {
     }
 
     // Consumable Button
-    else if (selected == 'consumable_button') {
+    if (selected == 'menu_consumable_button') {
         bagEmbed.setTitle('🎒 Consumable Items');
         bag_buttons.components[0].setStyle(ButtonStyle.Success);
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
@@ -987,7 +1000,7 @@ export async function menu_handler(interaction) {
     }
 
     // Prism Button
-    else if (selected == 'prism_button') {
+    if (selected == 'menu_prism_button') {
         bagEmbed.setTitle(`${get_emote_string('item_prism')} Prisms`);
         bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[1].setStyle(ButtonStyle.Success);
@@ -1006,8 +1019,8 @@ export async function menu_handler(interaction) {
         interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
     }
 
-        // Prism Button
-    else if (selected == 'map_button') {
+    // Map Button
+    if (selected == 'menu_map_button') {
         bagEmbed.setTitle(`${get_emote_string('item_map')} Maps`);
         bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
@@ -1027,7 +1040,7 @@ export async function menu_handler(interaction) {
     }
 
     // Key Button
-    else if (selected == 'key_button') {
+    if (selected == 'menu_key_button') {
         bagEmbed.setTitle('🔑 Misc Items');
         bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
@@ -1046,7 +1059,7 @@ export async function menu_handler(interaction) {
         bagEmbed.setDescription(item_list_str);
         await interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
     }
-    else if (collectorId == `${ItemCategory.Consumable}_select`) {
+    if (customId == `menu_${ItemCategory.Consumable}_select`) {
         if (selected == 'n/a') {
             let keyData = await buildItemData(ItemCategory.Consumable);
             bagEmbed.setDescription(keyData[0]);
@@ -1100,7 +1113,7 @@ export async function menu_handler(interaction) {
             interaction.update({ content: `Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, embeds: [], components: pa_components });
         }
     } 
-    else if (selected == 'skin_button') {
+    if (customId == 'menu_skin_button') {
         bagEmbed.setTitle(`${get_emote_string('c_000')} Skin Items`);
         bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
@@ -1112,7 +1125,8 @@ export async function menu_handler(interaction) {
         bagEmbed.setDescription(skinData[0]);
         await interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, skinData[1], back_button] });
     }
-    else if (collectorId == `${ItemCategory.Skin}_select`) {
+    
+    if (customId == `menu_${ItemCategory.Skin}_select`) {
         if (selected == 'n/a') {
             let keyData = await buildItemData(ItemCategory.Skin);
             bagEmbed.setDescription(keyData[0]);
@@ -1129,8 +1143,10 @@ export async function menu_handler(interaction) {
         let followUpMsg = await interaction.followUp({ content: item_usage_text });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
-    } else if (selected.includes('item_ooch_id_')) {
-        let selData = selected.replace('item_ooch_id_', '');
+    }
+
+    if (selected.includes('menu_item_ooch_id_')) {
+        let selData = selected.replace('menu_item_ooch_id_', '');
         selData = selData.split('_');
         let selItem = item_data.get(`${selData[1]}`);
         let item_usage_text = '';
@@ -1229,7 +1245,7 @@ export async function menu_handler(interaction) {
     //#endregion
     //#region Map Submenu
     // Map
-    else if (selected == 'map') {
+    if (customId == 'menu_map') {
         let map_name = user_profile.location_data.area;
         if (map_name.includes('everchange')) return interaction.update({ content: `**Everchange Cave does not have a map!**` });
         let map_item = item_data.find('potency', map_name);
@@ -1250,7 +1266,7 @@ export async function menu_handler(interaction) {
     //#endregion
     //#region Dex Menu
     // Oochadex Menu Button
-    else if (selected == 'oochadex') {
+    if (customId == 'menu_oochadex') {
         let dexData = await buildDexData(1, 0);
         dex_page_num = 1;
 
@@ -1268,8 +1284,8 @@ export async function menu_handler(interaction) {
     }
 
     // Dex Select Menus
-    else if (selected.includes('dex_left') || selected.includes('dex_right')) {
-        selected == 'dex_left' ? dex_page_num -= 1 : dex_page_num += 1;
+    if (customId.includes('menu_dex_left') || customId.includes('menu_dex_right')) {
+        customId == 'dex_left' ? dex_page_num -= 1 : dex_page_num += 1;
         if (dex_page_num > 5) {
             dex_page_num = 1;
         } else if (dex_page_num < 1) {
@@ -1289,8 +1305,10 @@ export async function menu_handler(interaction) {
                 embeds: [], components: [dexData.sel_row, dex_arrows], files: []
             });
         }
-    } else if (selected.includes('dex_')) {
-        let dexData = await buildDexData(dex_page_num, selected.replace('dex_', ''));
+    }
+
+    if (customId.includes('menu_dex_')) {
+        let dexData = await buildDexData(dex_page_num, customId.replace('dex_', ''));
 
         if (dexData.is_caught) {
             interaction.update({
@@ -1311,7 +1329,7 @@ export async function menu_handler(interaction) {
     //#endregion
     //#region Preferences Menu
     // Preferences Button
-    else if (selected == 'preferences') {
+    if (customId == 'menu_preferences') {
         user_profile = profile.get(`${interaction.user.id}`);
         pref_data = user_profile.settings;
         pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
@@ -1329,7 +1347,7 @@ export async function menu_handler(interaction) {
     }
 
     // Graphics Switcher
-    else if (selected == 'controls_msg') {
+    if (selected == 'menu_controls_msg') {
         await profile.set(interaction.user.id, !(user_profile.settings.controls_msg), 'settings.controls_msg');
         pref_desc[0] = `Show Controls Message: **${profile.get(`${interaction.user.id}`, 'settings.controls_msg') === true ? `✅` : `❌`}**`;
         user_profile = profile.get(`${interaction.user.id}`);
@@ -1338,7 +1356,7 @@ export async function menu_handler(interaction) {
     }
 
     // Battle Cleanup Option
-    else if (selected == 'battle_cleanup') {
+    if (selected == 'menu_battle_cleanup') {
         await profile.set(interaction.user.id, !(user_profile.settings.battle_cleanup), 'settings.battle_cleanup');
         pref_desc[1] = `Battle Text Cleanup: **${profile.get(`${interaction.user.id}`, 'settings.battle_cleanup') === true ? `✅` : `❌`}**`;
         user_profile = profile.get(`${interaction.user.id}`);
@@ -1347,7 +1365,7 @@ export async function menu_handler(interaction) {
     }
 
     // Zoom Level Option
-    else if (selected == 'zoom_level') {
+    if (selected == 'menu_zoom_level') {
         if (user_profile.settings.zoom == '5_5') {
             await profile.set(interaction.user.id, '7_7', 'settings.zoom');
         } else if (user_profile.settings.zoom == '7_7') {
@@ -1365,7 +1383,7 @@ export async function menu_handler(interaction) {
     }
 
     // Battle Speed Option
-    else if (selected == 'battle_speed') {
+    if (selected == 'menu_battle_speed') {
         if (user_profile.settings.battle_speed == 1250) {
             user_profile.settings.battle_speed = 2500;
         } else {
@@ -1380,7 +1398,7 @@ export async function menu_handler(interaction) {
     }
 
     // Discord Movement Buttons Option
-    else if (selected == 'discord_move_buttons') {
+    if (selected == 'menu_discord_move_buttons') {
         await profile.set(interaction.user.id, !(user_profile.settings.discord_move_buttons), 'settings.discord_move_buttons');
         pref_desc[4] = `Discord Move Buttons: ${profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true ? `✅` : `❌`}`;
         user_profile = profile.get(`${interaction.user.id}`);
@@ -1389,7 +1407,7 @@ export async function menu_handler(interaction) {
     }
 
     // Objective Indicator
-    else if (selected == 'objective') {
+    if (selected == 'menu_objective') {
         await profile.set(interaction.user.id, !(user_profile.settings.objective), 'settings.objective');
         pref_desc[5] = `Objective Indicator: ${profile.get(`${interaction.user.id}`, 'settings.objective') === true ? `✅` : `❌`}`;
         user_profile = profile.get(`${interaction.user.id}`);
@@ -1401,9 +1419,8 @@ export async function menu_handler(interaction) {
 
     //#endregion
     //#region Quit Button (back to playspace)
-    else if (selected == 'quit') {
+    if (customId == 'menu_quit') {
         let playspace_str = await setup_playspace_str(interaction.user.id);
-        collector.stop();
 
         await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
             profile.set(interaction.user.id, msg.id, 'display_msg_id');

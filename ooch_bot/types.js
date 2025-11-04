@@ -12,7 +12,8 @@ const PlayerState = {
     Trading: 'trading',
     Invited: 'invited',
     CombatOochSelect: 'combat_ooch_select',
-    BattleSetup: 'battle_setup'
+    BattleSetup: 'battle_setup',
+    HordeWait: 'horde_wait'
 }
 
 const GenmapTheme = {
