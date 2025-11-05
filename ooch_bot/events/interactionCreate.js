@@ -186,6 +186,13 @@ export default {
         }
     }
 
+    // SELECT MENU COLLECTOR FOR MENUS
+    if (interaction.isStringSelectMenu()) {
+        if (interaction.customId.startsWith('menu_')) {
+            await menu_handler(interaction);
+        }
+    }
+
     // Handle move buttons
     if (profile.has(interaction.user.id)) {
         let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
