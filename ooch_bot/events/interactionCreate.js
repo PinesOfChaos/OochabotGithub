@@ -173,7 +173,12 @@ export default {
 
     // SELECT MENU COLLECTORS
     if (interaction.isStringSelectMenu()) {
-        // TODO: Add
+        if (interaction.customId.startsWith('menu_')) {
+            await menu_handler(interaction);
+        }
+        if (interaction.customId.startsWith('battle_')) {
+            await battle_handler(interaction);
+        }
     }
 
     // BUTTON COLLECTOR
@@ -186,15 +191,9 @@ export default {
         }
     }
 
-    // SELECT MENU COLLECTOR FOR MENUS
-    if (interaction.isStringSelectMenu()) {
-        if (interaction.customId.startsWith('menu_')) {
-            await menu_handler(interaction);
-        }
-    }
-
     // Handle move buttons
     if (profile.has(interaction.user.id)) {
+
         let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
         if (profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true && interaction.isButton()) {
             if (['w', 'a', 's', 'd'].includes(interaction.customId)) {

@@ -102,6 +102,7 @@ export async function modernize_mon_data(mon_data) {
     let blank_ooch = get_blank_oochamon();
     merge(blank_ooch, mon_data);
     mon_data = blank_ooch;
+    mon_data.prism_type = ""; //TODO Make this "beta" or something along those lines, REMOVE THIS when releasing 1.0
 
     return mon_data;
 }
@@ -127,8 +128,6 @@ export async function modernize_battle_info(battle_id) {
             slot_actions = slot_actions_blank;
         }
     }
-
-    //TODO SET THE Battle Info in the database, this is todo so that nothing breaks
 }
 
 export function get_blank_profile() {
@@ -178,9 +177,9 @@ export function get_blank_profile() {
         cur_event_pos : 0,
         cur_battle_id : false,
 
-        areas_visited : ["hub"], //TODO
+        areas_visited : ["hub"],
         notifications : [], //TODO
-        stance_list   : [StanceForms.Base], //TODO
+        stance_list   : [StanceForms.Base],
 
         //PVP stats for matchmaking
         pvp_wins : 0,
@@ -200,9 +199,9 @@ export function get_blank_profile() {
     return(profile_obj);
 }
 
-export function get_blank_oochamon() {
+export function get_blank_oochamon(shiny = false) {
     let ooch_obj = { 
-        variant : Math.random() <= .001 ? "_prismatic" : "",
+        variant : shiny ? "_prismatic" : "",
         prism_type : "",
         id: 0,
         name: "", 
@@ -277,7 +276,7 @@ export function get_blank_battle_info(){
         weather : Weather.None,
         field_effect : FieldEffect.None,
         oochabux: 0,
-        amount_of_teams: 2 // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+        amount_of_teams: 2 // DON'T CHANGE.
 
     }
 

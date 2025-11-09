@@ -4,8 +4,6 @@ import { PlayerState } from '../types.js';
 import wait from 'wait';
 import { ooch_info_embed, buildBoxData } from '../func_other.js';
 
-// TODO: HANDLE TIMEOUTS WHILE MID TRADE
-
 export const data = new SlashCommandBuilder()
     .setName('trade')
     .setDescription('Trade Oochamon with other server members!')

@@ -505,8 +505,16 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 }
             }
 
-            let ooch = await create_ooch(oochButtonData[1], oochButtonData[2], oochButtonData[3].split(','), oochButtonData[4], 0, oochButtonData[5],
-                                    oochButtonData[6], oochButtonData[7], oochButtonData[8], oochButtonData[9]);
+            let ooch = await create_ooch(oochButtonData[1],{
+                level: oochButtonData[2], 
+                move_list: oochButtonData[3].split(','), 
+                nickname: oochButtonData[4], 
+                ability: oochButtonData[5],
+                hp_iv: oochButtonData[6], 
+                atk_iv: oochButtonData[7], 
+                def_iv: oochButtonData[8], 
+                spd_iv: oochButtonData[9]
+            });
             // Have it check here if you want to send the Oochamon to your party or not
             if (profile.get(`${user_id}`, 'ooch_party').length < 4) {
                 profile.push(user_id, ooch, `ooch_party`);
@@ -627,7 +635,17 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                         // Remove Vrumbox
                         ooch_party = ooch_party.filter(v => v.id !== 52);
                         let mainOoch = ooch_party[0];
-                        let mainOochFixed = await create_ooch(mainOoch.id, 5, [], mainOoch.nickname, 0, mainOoch.ability, 5, 5, 5, 5);
+                        let mainOochFixed = await create_ooch(mainOoch.id, 
+                            {
+                                level: 5,
+                                move_list : [],
+                                nickname: mainOoch.nickname,
+                                ability: mainOoch.ability,
+                                hp_iv: 5,
+                                atk_iv: 5,
+                                def_iv: 5,
+                                spd_iv: 5
+                            });
                         ooch_party[0] = mainOochFixed;
                         profile.set(user_id, ooch_party, 'ooch_party')
 

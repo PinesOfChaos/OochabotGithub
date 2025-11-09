@@ -96,11 +96,12 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let infoEmbed = new EmbedBuilder()
         .setColor('#808080')
         .setTitle(ooch_title)
-        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}.png`)
+        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}${ooch.variant}.png`)
         .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${ability_data.get(`${ooch.ability}`, 'name')}**\nType: **${ooch.type.map(v => capitalize(v)).join(' | ')}**`);
 
     for (let move_id of ooch.moveset) {
         let move = move_data.get(`${move_id}`)
+        if (!move) continue;
         move.accuracy = Math.abs(move.accuracy);
         if (move.accuracy == 1) move.accuracy = 100;
         if (move.damage !== 0) {
@@ -137,7 +138,7 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
         infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
     }
 
-    return [infoEmbed, get_ooch_art(ooch_data.name)];
+    return [infoEmbed, get_ooch_art(ooch_data.name, ooch.variant)];
 }
 
 /**
@@ -171,8 +172,8 @@ export function get_emote_string(name) {
  * @param {String} ooch_name Name of the Oochamon to get emote from.
  * @returns The attachment file object.
  */
-export function get_ooch_art(ooch_name) {
-    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}.png`
+export function get_ooch_art(ooch_name, variant = ``) {
+    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}${variant}.png`
     let file = new AttachmentBuilder(file_name);
     
     return file;
@@ -330,7 +331,7 @@ export async function setup_taming_picture(ooch, action = TamingAction.Default) 
     ctx.drawImage(background, 0, 0, 250, 250);
 
     ctx.imageSmoothingEnabled = false;
-    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}.png`)
+    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}${ooch.variant}.png`)
     const shadow_image = await loadImage(`./Art/BattleArt/shadow_64x32.png`);
 
     let shadow = {

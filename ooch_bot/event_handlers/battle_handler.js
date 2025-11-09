@@ -127,6 +127,11 @@ export async function battle_handler(interaction) {
     let user_index = parseInt(customId_data[2]);
     let db_battle_data = battle_data.get(`${battle_id}`);
     let user = db_battle_data.users[user_index];
+    let user_profile = profile.get(`${user.user_id}`);
+
+    if (user_profile.play_thread_id != interaction.channel.id) {
+        return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!')
+    }
 
     //Check whether stances are enabled
     let stancesEnabled = (profile.get(`${user.user_id}`, 'flags').includes('stances_enable'));

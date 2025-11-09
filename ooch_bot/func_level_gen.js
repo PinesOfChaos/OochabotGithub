@@ -592,7 +592,7 @@ export async function genmap_npc(x, y, level_min, level_max){
     for(let i = 0; i < teamsize; i++){
         let ooch = sample(npc_ooch_options);
         let ooch_level = Math.min(avg_level + random(0, 2, false), 50);
-        let ooch_new = await create_ooch(ooch.id, ooch_level)
+        let ooch_new = await create_ooch(ooch.id, {level: ooch_level})
         team.push(genmap_ooch_convert(ooch_new));
     }
 

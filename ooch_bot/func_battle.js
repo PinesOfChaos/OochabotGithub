@@ -123,8 +123,15 @@ export async function generate_battle_user(type, options) {
             if(Object.prototype.hasOwnProperty.call(options, "party")){ //This mon is created via an event/ability
                 let ooch_base = options.party[0];
                 let ooch = await create_ooch(
-                    ooch_base.id, ooch_base.level, ooch_base.moveset, false, 0, ooch_base.ability, 
-                    ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv );
+                    ooch_base.id, {
+                        level : ooch_base.level, 
+                        move_list : ooch_base.moveset, 
+                        ability : ooch_base.ability, 
+                        hp_iv : ooch_base.hp_iv, 
+                        atk_iv : ooch_base.atk_iv, 
+                        def_iv : ooch_base.def_iv, 
+                        spd_iv : ooch_base.spd_iv, 
+                        variant: options.variant} );
 
                 party = [ooch];
                 user_info.name = ooch.name
@@ -137,7 +144,10 @@ export async function generate_battle_user(type, options) {
 
             }
             else{
-                let ooch = await create_ooch(options.id, options.level);
+                let ooch = await create_ooch(options.id, {
+                    level : options.level,  
+                    variant : options.variant
+                });
                 party = [ooch];
                 user_info.name = ooch.name
                 user_info.name_possessive = `${ooch.name}'s`
@@ -159,8 +169,16 @@ export async function generate_battle_user(type, options) {
                 let ooch_base = party_base[i];
                 // Filter out 9999 which is "no move"
                 ooch_base.moveset = ooch_base.moveset.filter(v => v != 9999);
-                let ooch = await create_ooch(ooch_base.id, ooch_base.level, ooch_base.moveset, ooch_base.nickname, 0, ooch_base.ability,
-                                    ooch_base.hp_iv, ooch_base.atk_iv, ooch_base.def_iv, ooch_base.spd_iv);
+                let ooch = await create_ooch(ooch_base.id, {
+                    level: ooch_base.level, 
+                    move_list: ooch_base.moveset, 
+                    nickname: ooch_base.nickname, 
+                    ability:  ooch_base.ability,
+                    hp_iv: ooch_base.hp_iv, 
+                    atk_iv: ooch_base.atk_iv, 
+                    def_iv: ooch_base.def_iv, 
+                    spd_iv: ooch_base.spd_iv
+                });
                 party_generated.push(ooch);  
             }
 
@@ -311,7 +329,7 @@ export async function setup_battle (users, field_effect, oochabux, turn_timer, a
         allow_run : allow_run,
         field_effect : FieldEffect.None,
         oochabux: oochabux,
-        amount_of_teams: 2, // TODO: MAKE THIS DYNAMIC, I don't wanna deal with this rn lol -Jeff
+        amount_of_teams: 2, // PINES, DON'T YOU DARE CHANGE THIS. DON'T DO IT. IT WILL ALWAYS BE 2 PINES. IT WILL. I DON'T CARE IF YOU WANT A 1V1V1V1, THE BATTLE SYSTEM WILL NOT HANDLE IT, IT WON'T, THE BUTTONS DON'T ACCOUNT FOR IT, IDK IF I BUILT PROPERLY FOR IT, AND ALSO NO
 
         i_transformation_bool : i_quest_do_transformation,
     }
@@ -932,7 +950,7 @@ export async function process_battle_actions(battle_id){
             let user_data = await botClient.users.fetch(user.user_id);
             author_obj = { name: `${turn_data.turn_emote} ${user.name}'s Turn ${turn_data.turn_emote}`, iconURL: `${user_data.displayAvatarURL()}`}
             if (action.action_type == BattleAction.Attack) {
-                let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}${user.party[user.active_slot].variant}`
                 battle_sprite_files.push(get_ooch_art(name_space_replaced));
                 battle_thumbnail = `attachment://${name_space_replaced}.png`;
             }
@@ -946,13 +964,13 @@ export async function process_battle_actions(battle_id){
                 if (action.action_type == BattleAction.Attack ||
                 action.action_type == BattleAction.Heal ||
                 action.action_type == BattleAction.StanceChange) {
-                    let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                    let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}${user.party[user.active_slot].variant}`
                     battle_sprite_files.push(get_ooch_art(name_space_replaced));
                     ooch_sprite_icon = `attachment://${name_space_replaced}.png`;
                 }
 
             } else {
-                let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}`
+                let name_space_replaced = `${replace(toLower(user.party[user.active_slot].name), RegExp(" ", "g"), "_")}${user.party[user.active_slot].variant}`
                 battle_sprite_files = [get_ooch_art(name_space_replaced)]
                 battle_sprite_icon = `attachment://${name_space_replaced}.png`;
                 if (action.action_type == BattleAction.Attack ||
@@ -1393,7 +1411,10 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
         case Ability.InvalidEntry:
             if(i_transformation){
                 string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`;
-                ooch_to = await create_ooch(OochID.Purif_i, ooch_to.level);
+                ooch_to = await create_ooch(OochID.Purif_i, {
+                    level: ooch_to.level,
+                    variant: ooch_to.variant
+                });
                 user.party[0] = ooch_to;
             }
         break;
@@ -2536,7 +2557,6 @@ export async function use_eot_ability(db_battle_data, user_index) {
             }
         break;
         case Ability.AncientPlating:
-            // TODO: GET THIS SETUP
             chunks_lost = hp_chunks_lost(ooch.stats.hp, hp_before, hp_current, 20);
             if (chunks_lost > 0 && ooch.current_hp > 0) {
                 ability_text += `${ooch.emote} **${ooch.nickname}**'s **Ancient Plating**:`
@@ -3717,6 +3737,7 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
             let team_step = 144 * i +  -40;
 
             let ooch_info = user.party[user.active_slot];
+            console.log(ooch_info);
             let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
             let ooch_y = (Math.sin(rotation) * radius_oochamon * height) + center_y;
             let user_x = (Math.cos(rotation) * radius_user * width) + center_x;
@@ -3734,7 +3755,7 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
                 y : ooch_y,
                 origin_x : 32,
                 origin_y : 64,
-                sprite : `./Art/ResizedArt/${lowerCase(ooch_info.name).replaceAll(" ", "_")}.png`,
+                sprite : `./Art/ResizedArt/${lowerCase(ooch_info.name).replaceAll(" ", "_")}${ooch_info.variant}.png`,
                 x_scale : ooch_x < center_x ? -1 : 1,
                 y_scale : 1,
                 ooch_info : ooch_info,
@@ -4115,9 +4136,6 @@ export function status_to_emote(status) {
  * @returns All available stances.
  */
 export function get_stance_options(ooch, include_base = false) {
-    // TODO: This currently allows all stances to be used except for the one
-    // that the Oochamon is using. This should be changed to only allow a set
-    // that we manually set.
     let stances = stance_data.keys();
     let available_stances = [];
     if (include_base) available_stances.push(stance_data.get(`${StanceForms.Base}`));

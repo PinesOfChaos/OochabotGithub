@@ -21,7 +21,7 @@ export async function execute(interaction) {
     let level = interaction.options.getInteger('lv');
     if (level == null) level = 5;
 
-    let ooch = await create_ooch(ooch_id, level);
+    let ooch = await create_ooch(ooch_id, {level: level});
 
     let dest;
     if (profile.get(`${interaction.user.id}`, 'ooch_party').length == 4) {
