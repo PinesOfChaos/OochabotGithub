@@ -4,7 +4,6 @@ const PlayerState = {
     Playspace: 'playspace',
     Dialogue: 'dialogue',
     Shop: 'shop',
-    ShopInput: 'shop_input',
     Menu: 'menu',
     Combat: 'combat',
     Cutscene: 'cutscene',
