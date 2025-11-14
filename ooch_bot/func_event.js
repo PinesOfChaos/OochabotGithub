@@ -1,11 +1,417 @@
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
-import { profile, item_data, maps, monster_data, player_positions, events_data } from './db.js';
+import { profile, item_data, maps, monster_data, player_positions } from './db.js';
 import { sample } from 'lodash-es';
-import { PlayerState, EventMode, Flags, UserType, Weather, ItemCategory } from './types.js';
+import { PlayerState, EventMode, Flags, UserType, Weather } from './types.js';
 import { get_art_file } from './func_other.js';
 import { generate_battle_user, setup_battle } from './func_battle.js';
 import wait from 'wait';
-import { add_item } from './func_play.js';
+import { add_item, get_map_weather, setup_playspace_str } from './func_play.js';
+
+// Using helper functions here because we have to essentially duplicate this across 2 different while loops,
+// and one for right when we start the event and one for after dialogue options are picked. Helper functions
+// make this easier to work with.
+export async function dialogueEvent(user_id, thread, obj_content) {
+    let event_embed = new EmbedBuilder()
+        .setColor('#808080')
+        .setDescription('Error')
+    let imageFiles = [];
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
+    console.log(msg_to_edit);
+
+    const pre = `event_${user_id}_`;
+
+    let event_buttons = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder().setCustomId(`${pre}next`).setLabel('▶').setStyle(ButtonStyle.Success),
+        );
+
+    if (obj_content.description.includes('{')) {
+        let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
+        if (dialogue_var.includes('player')) {
+            obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(`${user_id}`).displayName);
+        } else if (dialogue_var.includes('objective')) {
+            let match = obj_content.description.match(/\{objective:([^}]+)\}/);
+            obj_content.objective = match ? match[1] : null;
+            profile.set(user_id, obj_content.objective, 'objective');
+
+            // Remove the `{...}` part from the original string
+            obj_content.description = obj_content.description.replace(/\{[^}]+\}/, '').trim();
+        }
+    }
+
+    if (obj_content.description != '') {
+        event_embed.setDescription(obj_content.description);
+    }
+
+    if (obj_content.title != '') {
+        event_embed.setTitle(obj_content.title);
+    }
+
+    // Set NPC dialogue portrait
+    if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
+        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+        } else {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+        }
+    }
+
+    if (obj_content.image) {
+        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+        event_embed.setImage(`attachment://${obj_content.image}`)
+        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+    }
+
+    let info_data = '';
+    if (obj_content.money != 0) {
+        info_data += `**${obj_content.money}** Oochabux\n`;
+        profile.math(user_id, '+', obj_content.money, 'oochabux');
+    } 
+
+    if (obj_content.items != false) {
+        if (obj_content.items.length != 0) {
+            for (let item of obj_content.items) {
+                let itemData = item_data.get(`${item.id}`);
+                info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
+                add_item(user_id, item.id, item.count);
+            }
+        }
+    } 
+
+    if (obj_content.objective != false) {
+        event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
+        profile.set(user_id, obj_content.objective, 'objective');
+    } else if (event_embed.data.fields != undefined) {
+        event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'New Objective');
+    }
+
+    if (info_data.length != 0) {
+        event_embed.addFields({name: 'You Received:', value: info_data });
+    } else if (event_embed.data.fields != undefined) {
+        event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'You Received:');
+    }
+
+    let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+    if (msg != undefined) {
+        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+    } else {
+        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+    }
+}
+
+export async function battleEvent(user_id, thread, obj_content, battle_group_arr = []) {    
+    let profile_data = await profile.get(`${user_id}`);
+    let battleGroupBattleArr = [];
+
+    obj_content.team_id = 1;
+    if (battle_group_arr.length == 0) {
+        let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
+        let trainerObj = await generate_battle_user(user_type, obj_content);
+        battleGroupBattleArr = [trainerObj];
+    }
+
+    let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
+    let allyList = [];
+    for (let ally of profile_data.allies_list) {
+        ally.team_id = 0;
+        let user_type = UserType.NPCTrainer;
+        let trainerObj = await generate_battle_user(user_type, ally);
+        trainerObj.hp_style = 'plr';
+        allyList.push(trainerObj);
+    }
+
+    allyList.unshift(userObj);
+
+    battleGroupBattleArr.unshift(allyList);
+    battleGroupBattleArr = battleGroupBattleArr.flat(1);
+    let map_data = maps.get(`${profile_data.location_data.area}`);
+    let battle_bg = map_data.map_info.map_battleback;
+
+    // Setup the battle for trainers
+    await setup_battle(battleGroupBattleArr, get_map_weather(map_data.map_weather, profile_data.location_data), obj_content.coin, 0, true, true, false, false, false, battle_bg);
+
+    // Increment by one so that after the battle we end up in the next part of the event.
+    profile.set(user_id, profile_data.cur_event_pos + 1, 'cur_event_pos');
+}
+
+export async function battleGroupEvent(user_id, thread) {
+    let event_array = profile.set(user_id, 'cur_event_array');
+    let current_place = profile.set(user_id, 'cur_event_pos');
+    current_place++;
+    let battleGroupBattleArr = [];
+    let event_mode = event_array[current_place][0];
+    let obj_content  = event_array[current_place][1];
+    while (event_mode != EventMode.BattleGroupEnd) {
+        obj_content.team_id = 1;
+        if (event_mode == EventMode.Battle) {
+            let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
+            let trainerObj = await generate_battle_user(user_type, obj_content);
+            battleGroupBattleArr.push(trainerObj)
+        }
+
+        current_place++;
+        event_mode = event_array[current_place][0];
+        obj_content = event_array[current_place][1];
+    }
+
+    await battleEvent(user_id, thread, obj_content, false, battleGroupBattleArr)
+}
+
+export async function oochPickEvent(user_id, thread, obj_content) {
+    let oochamonPicks = new ActionRowBuilder();
+
+    let event_embed = new EmbedBuilder()
+        .setColor('#808080')
+        .setDescription('Error')
+    let imageFiles = [];
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
+    const pre = `event_${user_id}_`;
+
+    for (let ooch of obj_content.options) {
+        let oochData = monster_data.get(`${ooch.id}`)
+        ooch.moveset = ooch.moveset.filter(v => v != 9999);
+        oochamonPicks.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`${pre}ooch|${ooch.id}|${ooch.level}|${ooch.moveset.join(',')}|${ooch.nickname}|${ooch.ability}|${ooch.hp_iv}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}`)
+                .setLabel(`${oochData.name}`)
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji(`${oochData.emote}`),
+        );
+    }
+
+    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+
+    // Set NPC dialogue portrait
+    if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+        } else {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+        }
+    }
+
+    if (obj_content.image) {
+        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+        event_embed.setImage(`attachment://${obj_content.image}`)
+        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+    }
+
+    let event_buttons = oochamonPicks;
+
+    let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+    if (msg != undefined) {
+        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+    } else {
+        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+    }
+
+}
+
+export async function flagEvent(user_id, thread, obj_content) {
+    let flags = profile.get(`${user_id}`, 'flags');
+    if (!flags.includes(obj_content.text) || obj_content.text.includes('toggle')) {
+        if (!obj_content.text.includes('toggle')) {
+            profile.push(user_id, obj_content.text, 'flags');
+        } else {
+            let index = flags.indexOf(obj_content.text);
+            
+            if (index === -1) {
+                profile.push(user_id, obj_content.text, 'flags');
+            } else {
+                flags.splice(index, 1);
+                profile.set(user_id, flags, 'flags');
+            }
+        }
+
+        //Trap the player in the Access Tunnel after Cade battle
+        if(obj_content.text == 'cade_battle_tunnel'){
+            profile.set(user_id, {area: 'access_tunnel', x : 23, y : 22}, 'checkpoint_data')
+        }
+
+        if (!obj_content.text.toLowerCase().includes('npc|')) {
+            let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
+            let playspace_str = await setup_playspace_str(user_id);
+            await thread.messages.fetch(msg_to_edit).then((msg) => {
+                msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+            }).catch(() => {});
+        }
+    }
+}
+
+export async function transitionEvent(user_id, thread, obj_content) {
+
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
+
+    //remove the player's info from the old biome and add it to the new one
+    let ogBiome = profile.get(`${user_id}`, 'location_data.area');
+    if (ogBiome == undefined) ogBiome = 'hub';
+    if (obj_content.map_to == false) obj_content.map_to = ogBiome;
+    let mapData = maps.get(`${obj_content.map_to}`);
+    let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
+    if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
+        map_default = [mapData.map_savepoints[0]];
+    }
+
+    profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
+    profile.set(user_id, [], 'previous_positions')
+
+    if (obj_content.default_tp === true) {
+        obj_content.x_to = map_default[0].x;
+        obj_content.y_to = map_default[0].y;
+    }
+
+    player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
+    player_positions.delete(ogBiome, user_id);
+    profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
+    
+    let playspace_str = await setup_playspace_str(user_id);
+    await thread.messages.fetch(msg_to_edit).then((msg) => {
+        msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+    }).catch(() => {});
+}
+
+export function objectiveEvent(user_id, obj_content) {
+    profile.set(user_id, obj_content.objective, 'objective');
+}
+
+export async function optionsEvent(user_id, thread, obj_content) {
+    let optionsRow = new ActionRowBuilder();
+    let event_embed = new EmbedBuilder()
+        .setColor('#808080')
+        .setDescription('Error')
+    let imageFiles = [];
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
+    const pre = `event_${user_id}_`;
+
+    let event_buttons;
+
+    for (let option of obj_content.options) {
+        // Convert button style
+        switch (option.style) {
+            case 0: option.style = ButtonStyle.Primary; break;
+            case 1: option.style = ButtonStyle.Secondary; break;
+            case 2: option.style = ButtonStyle.Success; break;
+            case 3: option.style = ButtonStyle.Danger; break;
+        }
+
+        if (profile_data.flags.includes(option.flag) || option.flag == false) {
+            optionsRow.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${pre}option|${option.event}|${option.price}`)
+                    .setLabel(`${option.text}`)
+                    .setStyle(option.style)
+                    //.setEmoji(`${option.emote == ""}`)
+                    .setDisabled(option.price > profile_data.oochabux),
+            );
+        }
+    }
+
+    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+
+    // Set NPC dialogue portrait
+    if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+        } else {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+        }
+    }
+
+    if (obj_content.image) {
+        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+        event_embed.setImage(`attachment://${obj_content.image}`)
+        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+    }
+
+    event_buttons = optionsRow;
+    
+    let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+    if (msg != undefined) {
+        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+    } else {
+        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+    }
+
+}
+
+export async function waitEvent(obj_content) {
+    await wait(obj_content.duration * 1000);
+}
+
+export function allyChangeEvent(user_id, obj_content, event) {
+    if (event == EventMode.AddAlly) {
+        obj_content.coin = 5;
+        profile.push(user_id, obj_content, 'allies_list');
+    }
+    if (event == EventMode.RemoveAlly) profile.set(user_id, [], 'allies_list');
+}
+
+export async function setSkinEvent(user_id, thread, obj_content) {
+    let skinPicks = new ActionRowBuilder();
+    let event_embed = new EmbedBuilder()
+        .setColor('#808080')
+        .setDescription('Error')
+    let imageFiles = [];
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
+    const pre = `event_${user_id}_`;
+
+    for (let skin of obj_content.options) {
+        let skinData = item_data.get(`${skin}`)
+        skinPicks.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`${pre}skin|${skin}`)
+                .setLabel(`‎`)
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji(`${skinData.emote}`),
+        );
+    }
+
+    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
+    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+
+    // Set NPC dialogue portrait
+    if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
+        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
+            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+        } else {
+            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
+            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+        }
+    }
+
+    if (obj_content.image) {
+        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+        event_embed.setImage(`attachment://${obj_content.image}`)
+        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+    }
+
+    let event_buttons = skinPicks;
+
+    let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
+    if (msg != undefined) {
+        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+    } else {
+        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+    }
+}
 
 /**
  * Runs an event based on event array
@@ -17,12 +423,7 @@ import { add_item } from './func_play.js';
  */
 export async function event_process(user_id, thread, event_array, start_pos = 0, event_name = false) {
     
-    const { setup_playspace_str, create_ooch, move, get_map_weather } = await import('./func_play.js');
-
-    let next_buttons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId('next').setLabel('▶').setStyle(ButtonStyle.Success),
-        );
+    const { setup_playspace_str } = await import('./func_play.js');
     
     profile.set(user_id, event_name, 'cur_event_name');
     profile.set(user_id, event_array, 'cur_event_array');
@@ -30,402 +431,52 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     let current_place = start_pos;
     let event_mode = event_array[current_place][0];
     let obj_content = event_array[current_place][1];
-    let placeholder_desc = 'Error';
-    let info_data;
     let quit_init_loop = false;
-    let profile_data = profile.get(`${user_id}`);
-    let msg_to_edit = profile_data.display_msg_id;
-    let imageFiles = [];
-    let battleGroupBattleArr = [];
-    let filter = i => i.user.id == user_id;
-    let oochamonPicks = new ActionRowBuilder();
-    let skinPicks = new ActionRowBuilder();
-    let optionsRow = new ActionRowBuilder();
-    let event_buttons = next_buttons
-
-    let event_embed = new EmbedBuilder()
-        .setColor('#808080')
-        .setDescription(placeholder_desc)
 
     // Switch state to dialogue if coming from the playspace
     if (profile.get(`${user_id}`, 'player_state') == PlayerState.Playspace) {
         profile.set(user_id, PlayerState.Dialogue, 'player_state');
     }
 
-    // Using helper functions here because we have to essentially duplicate this across 2 different while loops,
-    // and one for right when we start the event and one for after dialogue options are picked. Helper functions
-    // make this easier to work with.
-    async function dialogueEvent(obj_content) {
-        if (obj_content.description.includes('{')) {
-            let dialogue_var = obj_content.description.split('{').pop().split('}')[0];
-            if (dialogue_var.includes('player')) {
-                obj_content.description = obj_content.description.replace('{player}', thread.guild.members.cache.get(`${user_id}`).displayName);
-            } else if (dialogue_var.includes('objective')) {
-                let match = obj_content.description.match(/\{objective:([^}]+)\}/);
-                obj_content.objective = match ? match[1] : null;
-                profile.set(user_id, obj_content.objective, 'objective');
-
-                // Remove the `{...}` part from the original string
-                obj_content.description = obj_content.description.replace(/\{[^}]+\}/, '').trim();
-            }
-        }
-
-        if (obj_content.description != '') {
-            event_embed.setDescription(obj_content.description);
-        }
-
-        if (obj_content.title != '') {
-            event_embed.setTitle(obj_content.title);
-        }
-
-        // Set NPC dialogue portrait
-        if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
-            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
-            } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
-            }
-        }
-
-        if (obj_content.image) {
-            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
-        }
-
-        info_data = '';
-        if (obj_content.money != 0) {
-            info_data += `**${obj_content.money}** Oochabux\n`;
-            profile.math(user_id, '+', obj_content.money, 'oochabux');
-        } 
-
-        if (obj_content.items != false) {
-            if (obj_content.items.length != 0) {
-                for (let item of obj_content.items) {
-                    let itemData = item_data.get(`${item.id}`);
-                    info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
-                    add_item(user_id, item.id, item.count);
-                }
-            }
-        } 
-
-        if (obj_content.objective != false) {
-            event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
-            profile.set(user_id, obj_content.objective, 'objective');
-        } else if (event_embed.data.fields != undefined) {
-            event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'New Objective');
-        }
-
-        if (info_data.length != 0) {
-            event_embed.addFields({name: 'You Received:', value: info_data });
-        } else if (event_embed.data.fields != undefined) {
-            event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'You Received:');
-        }
-    }
-
-    async function battleEvent(obj_content, initial=false, battle_group_arr = []) {    
-        if (initial == false) {
-            // Delete the embed message to prep for battle, and kill the collector as well.
-            await msg.delete();
-            if (confirm_collector !== undefined) confirm_collector.stop();
-        }
-
-        profile_data = await profile.get(`${user_id}`);
-
-        obj_content.team_id = 1;
-        if (battle_group_arr.length == 0) {
-            let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
-            let trainerObj = await generate_battle_user(user_type, obj_content);
-            battleGroupBattleArr = [trainerObj];
-        }
-
-        let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
-        let allyList = [];
-        for (let ally of profile_data.allies_list) {
-            ally.team_id = 0;
-            let user_type = UserType.NPCTrainer;
-            let trainerObj = await generate_battle_user(user_type, ally);
-            trainerObj.hp_style = 'plr';
-            allyList.push(trainerObj);
-        }
-
-        allyList.unshift(userObj);
-
-        battleGroupBattleArr.unshift(allyList);
-        battleGroupBattleArr = battleGroupBattleArr.flat(1);
-        let map_data = maps.get(`${profile_data.location_data.area}`);
-        let battle_bg = map_data.map_info.map_battleback;
-
-        // Setup the battle for trainers
-        await setup_battle(battleGroupBattleArr, get_map_weather(map_data.map_weather, profile_data.location_data), obj_content.coin, 0, true, true, false, false, false, battle_bg);
-
-        // Increment by one so that after the battle we end up in the next part of the event.
-        profile.set(user_id, current_place+1, 'cur_event_pos');
-    }
-
-    async function battleGroupEvent() {
-        current_place++;
-        battleGroupBattleArr = [];
-        let event_mode = event_array[current_place][0];
-        let obj_content  = event_array[current_place][1];
-        while (event_mode != EventMode.BattleGroupEnd) {
-            obj_content.team_id = 1;
-            if (event_mode == EventMode.Battle) {
-                let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
-                let trainerObj = await generate_battle_user(user_type, obj_content);
-                battleGroupBattleArr.push(trainerObj)
-            }
-
-            current_place++;
-            event_mode = event_array[current_place][0];
-            obj_content = event_array[current_place][1];
-        }
-
-        await battleEvent(obj_content, false, battleGroupBattleArr)
-    }
-
-    async function oochPickEvent(obj_content) {
-        oochamonPicks = new ActionRowBuilder();
-
-        for (let ooch of obj_content.options) {
-            let oochData = monster_data.get(`${ooch.id}`)
-            ooch.moveset = ooch.moveset.filter(v => v != 9999);
-            oochamonPicks.addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`ooch|${ooch.id}|${ooch.level}|${ooch.moveset.join(',')}|${ooch.nickname}|${ooch.ability}|${ooch.hp_iv}|${ooch.atk_iv}|${ooch.def_iv}|${ooch.spd_iv}`)
-                    .setLabel(`${oochData.name}`)
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji(`${oochData.emote}`),
-            );
-        }
-
-        if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-        if (obj_content.description != '') event_embed.setDescription(obj_content.description);
-
-        // Set NPC dialogue portrait
-        if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
-            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
-            } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
-            }
-        }
-
-        if (obj_content.image) {
-            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
-        }
-
-        event_buttons = oochamonPicks;
-
-    }
-
-    async function flagEvent(obj_content) {
-        let flags = profile.get(`${user_id}`, 'flags');
-        if (!flags.includes(obj_content.text) || obj_content.text.includes('toggle')) {
-            if (!obj_content.text.includes('toggle')) {
-                profile.push(user_id, obj_content.text, 'flags');
-            } else {
-                let index = flags.indexOf(obj_content.text);
-                
-                if (index === -1) {
-                    profile.push(user_id, obj_content.text, 'flags');
-                } else {
-                    flags.splice(index, 1);
-                    profile.set(user_id, flags, 'flags');
-                }
-            }
-
-            //Trap the player in the Access Tunnel after Cade battle
-            if(obj_content.text == 'cade_battle_tunnel'){
-                profile.set(user_id, {area: 'access_tunnel', x : 23, y : 22}, 'checkpoint_data')
-            }
-
-            if (!obj_content.text.toLowerCase().includes('npc|')) {
-                let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
-                let playspace_str = await setup_playspace_str(user_id);
-                await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: playspace_str[0], components: playspace_str[1] });
-                }).catch(() => {});
-            }
-        }
-    }
-
-    async function transitionEvent(obj_content) {
-        //remove the player's info from the old biome and add it to the new one
-        let ogBiome = profile.get(`${user_id}`, 'location_data.area');
-        if (ogBiome == undefined) ogBiome = 'hub';
-        if (obj_content.map_to == false) obj_content.map_to = ogBiome;
-        let mapData = maps.get(`${obj_content.map_to}`);
-        let map_default = mapData.map_savepoints.filter(v => v.is_default !== false);
-        if (mapData.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-            map_default = [mapData.map_savepoints[0]];
-        }
-
-        profile.set(user_id, { area: obj_content.map_to, x: map_default[0].x, y: map_default[0].y }, 'checkpoint_data');
-        profile.set(user_id, [], 'previous_positions')
-
-        if (obj_content.default_tp === true) {
-            obj_content.x_to = map_default[0].x;
-            obj_content.y_to = map_default[0].y;
-        }
-
-        player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
-        player_positions.delete(ogBiome, user_id);
-        profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
-        
-
-        let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
-        let playspace_str = await setup_playspace_str(user_id);
-        await thread.messages.fetch(msg_to_edit).then((msg) => {
-            msg.edit({ content: playspace_str[0], components: playspace_str[1] });
-        }).catch(() => {});
-    }
-
-    function objectiveEvent(obj_content) {
-        profile.set(user_id, obj_content.objective, 'objective');
-    }
-
-    function optionsEvent(obj_content, initial=false) {
-        optionsRow = new ActionRowBuilder();
-
-        for (let option of obj_content.options) {
-            // Convert button style
-            switch (option.style) {
-                case 0: option.style = ButtonStyle.Primary; break;
-                case 1: option.style = ButtonStyle.Secondary; break;
-                case 2: option.style = ButtonStyle.Success; break;
-                case 3: option.style = ButtonStyle.Danger; break;
-            }
-
-            if (profile_data.flags.includes(option.flag) || option.flag == false) {
-                optionsRow.addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`option|${option.event}|${option.price}`)
-                        .setLabel(`${option.text}`)
-                        .setStyle(option.style)
-                        //.setEmoji(`${option.emote == ""}`)
-                        .setDisabled(option.price > profile_data.oochabux),
-                );
-            }
-        }
-
-        if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-        if (obj_content.description != '') event_embed.setDescription(obj_content.description);
-
-        // Set NPC dialogue portrait
-        if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
-            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
-            } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
-            }
-        }
-
-        if (obj_content.image) {
-            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
-        }
-
-        if (initial) event_buttons = optionsRow;
-    }
-
-    async function waitEvent(obj_content) {
-        await wait(obj_content.duration * 1000);
-    }
-
-    function allyChangeEvent(obj_content, event) {
-        if (event == EventMode.AddAlly) {
-            obj_content.coin = 5;
-            profile.push(user_id, obj_content, 'allies_list');
-        }
-        if (event == EventMode.RemoveAlly) profile.set(user_id, [], 'allies_list');
-    }
-
-    async function setSkinEvent(obj_content) {
-        skinPicks = new ActionRowBuilder();
-
-        for (let skin of obj_content.options) {
-            let skinData = item_data.get(`${skin}`)
-            skinPicks.addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`skin|${skin}`)
-                    .setLabel(`‎`)
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji(`${skinData.emote}`),
-            );
-        }
-
-        if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-        if (obj_content.description != '') event_embed.setDescription(obj_content.description);
-
-        // Set NPC dialogue portrait
-        if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
-            if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-            if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-                imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
-            } else {
-                event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-                imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
-            }
-        }
-
-        if (obj_content.image) {
-            if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-            event_embed.setImage(`attachment://${obj_content.image}`)
-            imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
-        }
-
-        event_buttons = skinPicks;
-    }
+    let profile_data = profile.get(`${user_id}`);
+    let msg_to_edit = profile_data.display_msg_id;
 
     while (!quit_init_loop) {
-        profile_data = await profile.get(`${user_id}`);
         event_mode = event_array[current_place][0];
         obj_content = event_array[current_place][1];
+
+        console.log(event_array, event_mode, obj_content, current_place);
 
         switch (event_mode) {
             //Basic Text Event
             case EventMode.Dialogue: 
-                await dialogueEvent(obj_content, true);
+                await dialogueEvent(user_id, thread, obj_content, true);
                 quit_init_loop = true;
             break;
 
             case EventMode.Battle:
-                await battleEvent(obj_content, true);
+                await battleEvent(user_id, thread, obj_content, true);
             return;
 
             case EventMode.OochamonPick:
-                await oochPickEvent(obj_content, true);
+                await oochPickEvent(user_id, thread, obj_content, true);
                 quit_init_loop = true;
             break;
             
             case EventMode.Flags: 
-                await flagEvent(obj_content);
+                await flagEvent(user_id, thread, obj_content);
             break;
 
             case EventMode.Transition:
-                await transitionEvent(obj_content);
+                await transitionEvent(user_id, thread, obj_content);
             break;
 
             case EventMode.Objective:
-                objectiveEvent(obj_content);
+                objectiveEvent(user_id, obj_content);
             break;
 
             case EventMode.Options:
-                optionsEvent(obj_content, true);
+                await optionsEvent(user_id, thread, obj_content, true);
                 quit_init_loop = true;
             break;
 
@@ -435,15 +486,15 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
 
             case EventMode.AddAlly:
             case EventMode.RemoveAlly:
-                allyChangeEvent(obj_content, event_mode);
+                allyChangeEvent(user_id, obj_content, event_mode);
             break;
 
             case EventMode.BattleGroupStart:
-                await battleGroupEvent();
+                await battleGroupEvent(user_id, thread);
             break;
 
             case EventMode.SetSkin:
-                await setSkinEvent(obj_content);
+                await setSkinEvent(user_id, thread, obj_content);
                 quit_init_loop = true;
             break;
         }
@@ -470,218 +521,6 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
             profile.set(user_id, current_place, 'cur_event_pos');
         }
     }
-
-    //Send Embed and Await user input before proceeding
-    let msg;
-    if (msg_to_edit == false) {
-        msg = await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles });
-        profile.set(user_id, msg.id, 'display_msg_id');
-        profile_data = await profile.get(`${user_id}`);
-        msg_to_edit = profile_data.display_msg_id;
-    } else {
-        msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
-        if (msg != undefined) {
-            await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
-        } else {
-            return console.log("Failed to find message to edit, kicking out");
-        }
-    }
-
-    const confirm_collector = await msg.createMessageComponentCollector({ filter });
-
-    await confirm_collector.on('collect', async sel => {
-        let quit = false;
-        imageFiles = [];
-
-        // If we collect an Oochamon data type, handle that first then move on
-        if (sel.customId.includes('ooch')) {
-            let oochChoices = event_array[current_place][1].options.map(v => v = v.id);
-            let oochButtonData = sel.customId.split('|');
-
-            // Oochadex update
-            for (let ooch_id of oochChoices) {
-                if (ooch_id == parseInt(oochButtonData[1])) {
-                    profile.math(user_id, '+', 1, `oochadex[${ooch_id}].caught`);
-                }
-            }
-
-            let ooch = await create_ooch(oochButtonData[1],{
-                level: oochButtonData[2], 
-                move_list: oochButtonData[3].split(','), 
-                nickname: oochButtonData[4], 
-                ability: oochButtonData[5],
-                hp_iv: oochButtonData[6], 
-                atk_iv: oochButtonData[7], 
-                def_iv: oochButtonData[8], 
-                spd_iv: oochButtonData[9]
-            });
-            // Have it check here if you want to send the Oochamon to your party or not
-            if (profile.get(`${user_id}`, 'ooch_party').length < 4) {
-                profile.push(user_id, ooch, `ooch_party`);
-            } else {
-                profile.push(user_id, ooch, `ooch_pc`)
-            }
-        } else if (sel.customId.includes('option')) {
-            let optionButtonData = sel.customId.split('|');
-            
-            let eventName = optionButtonData[1];
-            let buttonPrice = optionButtonData[2];
-
-            // Remove price
-            profile.math(user_id, '-', buttonPrice, 'oochabux');
-            profile_data.oochabux -= buttonPrice;
-
-            if (eventName != false) {
-                current_place = event_array.length;
-                await event_process(user_id, thread, events_data.get(`${eventName}`), 0, eventName);
-            }
-        } else if (sel.customId.includes('skin')) {
-            let skinButtonData = sel.customId.split('|');
-            
-            let skinId = skinButtonData[1];
-            let skinData = item_data.get(`${skinId}`);
-
-            profile.set(user_id, skinData.potency, 'player_sprite');
-        }
-
-        current_place++;
-        profile.set(user_id, current_place, 'cur_event_pos');
-
-        // Check if we are at the end of the event array, and if we are, cut back to the normal player state.
-        if (current_place >= event_array.length) {
-            await confirm_collector.stop();
-            if (msg.id !== msg_to_edit) await msg.delete();
-            profile.set(user_id, PlayerState.Playspace, 'player_state');
-            profile.set(user_id, false, 'cur_event_name');
-            profile.set(user_id, [], 'cur_event_array');
-            profile.set(user_id, 0, 'cur_event_pos');
-            let playspace_str = await setup_playspace_str(user_id);
-            await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
-            return;
-        }
-
-        while (!quit) {
-            imageFiles = [];
-            
-            event_mode = event_array[current_place][0];
-            obj_content = event_array[current_place][1];
-
-            //Customize Embed
-            switch (event_mode) {
-                //Basic Text Event
-                case EventMode.Dialogue: 
-                    quit = true;
-                    await dialogueEvent(obj_content);
-                    await sel.update({ embeds: [event_embed], components: [next_buttons], files: imageFiles });
-                break;
-
-                case EventMode.Battle:
-                    quit = true;
-                    await battleEvent(obj_content);
-                break;
-
-                case EventMode.OochamonPick:
-                    quit = true;
-                    await oochPickEvent(obj_content);
-                    await sel.update({ embeds: [event_embed], components: [oochamonPicks], files: imageFiles });
-                break;
-
-                //No Visual representation, just sets appropriate flags in the player
-                case EventMode.Flags: 
-                    await flagEvent(obj_content);
-                break;
-
-                case EventMode.Transition:
-                    await transitionEvent(obj_content);
-                break;
-
-                case EventMode.Objective:
-                    objectiveEvent(obj_content);
-                break;
-
-                case EventMode.Options:
-                    quit = true;
-                    optionsEvent(obj_content);
-                    await sel.update({ embeds: [event_embed], components: [optionsRow], files: imageFiles });
-                break;
-
-                case EventMode.Wait:
-                    await waitEvent(obj_content);
-                break;
-
-                case EventMode.AddAlly:
-                case EventMode.RemoveAlly:
-                    allyChangeEvent(obj_content, event_mode);
-                break;
-
-                case EventMode.BattleGroupStart:
-                    quit = true;
-                    battleGroupEvent();
-                break;
-
-                case EventMode.SetSkin:
-                    quit = true;
-                    await setSkinEvent(obj_content);
-                    await sel.update({ embeds: [event_embed], components: [skinPicks], files: imageFiles });
-                break;
-            }
-
-            if ([EventMode.Transition, EventMode.Flags, EventMode.Objective, EventMode.AddAlly, EventMode.RemoveAlly].includes(event_mode)) {
-                // If we are at the end of the event_array, quit out entirely
-                if (current_place + 1 == event_array.length) {
-                    // Manual event check just to help reset us back for the tutorial
-                    if (event_name == 'ev_tutorial_8') {
-                        let ooch_party = profile.get(`${user_id}`, 'ooch_party');
-                        // Remove Vrumbox
-                        ooch_party = ooch_party.filter(v => v.id !== 52);
-                        let mainOoch = ooch_party[0];
-                        let mainOochFixed = await create_ooch(mainOoch.id, 
-                            {
-                                level: 5,
-                                move_list : [],
-                                nickname: mainOoch.nickname,
-                                ability: mainOoch.ability,
-                                hp_iv: 5,
-                                atk_iv: 5,
-                                def_iv: 5,
-                                spd_iv: 5
-                            });
-                        ooch_party[0] = mainOochFixed;
-                        profile.set(user_id, ooch_party, 'ooch_party')
-
-                        // Reset other values upon tutorial completion
-                        profile.set(user_id, 0, 'oochabux');
-                        profile.set(user_id, {
-                            [ItemCategory.Consumable]: [],
-                            [ItemCategory.Prism]: [],
-                            [ItemCategory.Map]: [],
-                            [ItemCategory.Key]: [],
-                            [ItemCategory.Skin]: [],
-                        }, 'inventory');
-                        profile.set(user_id, 0, `oochadex[52].caught`);
-                    }
-
-                    await confirm_collector.stop();
-                    if (msg.id != msg_to_edit) await msg.delete();
-                    profile.set(user_id, PlayerState.Playspace, 'player_state');
-                    profile.set(user_id, false, 'cur_event_name');
-                    profile.set(user_id, [], 'cur_event_array');
-                    profile.set(user_id, 0, 'cur_event_pos');
-                    quit = true; 
-                    let playspace_str = await setup_playspace_str(user_id);
-                    await sel.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async () => {
-                        await move(thread, user_id, '', 2);
-                    }).catch((err) => { console.log(err) });
-                    current_place++;
-                    return;
-                } else {
-                    current_place++;
-                    profile.set(user_id, current_place, 'cur_event_pos');
-                }
-            }
-        
-        }
-    });
 }
 
 /**
@@ -725,6 +564,10 @@ export async function event_from_npc (npc_obj, user_id) {
     // Sign NPCs should display all their info at once
     npc_obj.pre_combat_dialogue = npc_obj.name == 'Sign' ? [npc_obj.pre_combat_dialogue] : npc_obj.pre_combat_dialogue.split('\n');
     npc_obj.post_combat_dialogue = npc_obj.name == 'Sign' ? [npc_obj.post_combat_dialogue] : npc_obj.post_combat_dialogue.split('\n');
+
+    if (npc_obj.name == 'Sign') {
+        npc_obj.post_combat_dialogue = npc_obj.pre_combat_dialogue;
+    }
     
     // If we don't have the NPCs flag, it means they haven't been beaten yet.
     if (!user_flags.includes(npc_flag) && battle_npc == true) {

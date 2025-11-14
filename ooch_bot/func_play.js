@@ -90,10 +90,10 @@ let back_button = new ActionRowBuilder()
         new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
     );
 
-let qty_back_button = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('quantity_back').setLabel('Cancel Purchase').setStyle(ButtonStyle.Danger),
-    );
+// let qty_back_button = new ActionRowBuilder()
+//     .addComponents(
+//         new ButtonBuilder().setCustomId('quantity_back').setLabel('Cancel Purchase').setStyle(ButtonStyle.Danger),
+//     );
 
 export function get_map_weather(map_weather, location_data) {
     let weather_options = []

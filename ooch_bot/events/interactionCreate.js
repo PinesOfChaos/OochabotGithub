@@ -11,6 +11,7 @@ import { quit_oochamon } from '../func_other.js';
 import { botClient, inactivityTrackers } from '../index.js';
 import { battle_handler } from '../event_handlers/battle_handler.js';
 import { menu_handler } from '../event_handlers/menu_handler.js';
+import { event_handler } from '../event_handlers/event_handler.js';
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 export default {
@@ -171,23 +172,16 @@ export default {
         }
     }
 
-    // SELECT MENU COLLECTORS
-    if (interaction.isStringSelectMenu()) {
+    // COLLECTORS
+    if (interaction.isStringSelectMenu() || interaction.isButton()) {
         if (interaction.customId.startsWith('menu_')) {
             await menu_handler(interaction);
         }
         if (interaction.customId.startsWith('battle_')) {
             await battle_handler(interaction);
         }
-    }
-
-    // BUTTON COLLECTOR
-    if (interaction.isButton()) {
-        if (interaction.customId.startsWith('menu_')) {
-            await menu_handler(interaction);
-        }
-        if (interaction.customId.startsWith('battle_')) {
-            await battle_handler(interaction);
+        if (interaction.customId.startsWith('event_')) {
+            await event_handler(interaction);
         }
     }
 

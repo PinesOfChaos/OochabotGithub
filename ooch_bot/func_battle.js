@@ -1989,7 +1989,7 @@ export function battle_faint_check(db_battle_data) {
                                                 ` (EXP: **${clamp(other_ooch.current_exp + exp_main, 0, other_ooch.next_lvl_exp)}/${other_ooch.next_lvl_exp})**`
                         }
                         if (other_user.party.length > 1) {
-                            finish_string_to_send += `\nThe rest of the team earned **${total_exp}** exp.\n`;
+                            finish_string_to_send += `\nThe rest of the team earned **${total_exp}** exp.`;
                         }
 
                         for (let i = 0; i < ooch_party.length; i++) {
@@ -2032,7 +2032,7 @@ export function battle_faint_check(db_battle_data) {
         if(!isNumber(total_oochabux)){ total_oochabux = 1000; } //placeholder fix for weird oochabux issue
         if (total_oochabux > 0) {
             profile.math(first_player.user_id, '+', total_oochabux, 'oochabux');
-            finish_string_to_send += `\nReceived **${total_oochabux} oochabux** for winning the battle!`
+            finish_string_to_send += `Received **${total_oochabux} oochabux** for winning the battle!`
         }
     }
     else{
