@@ -2,7 +2,8 @@ import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, Mess
 import { profile } from '../db.js';
 import { PlayerState } from '../types.js';
 import wait from 'wait';
-import { ooch_info_embed, buildBoxData } from '../func_other.js';
+import { buildBoxData } from '../func_other.js';
+import { trade_handler } from '../event_handlers/trade_handler.js';
 
 export const data = new SlashCommandBuilder()
     .setName('trade')
@@ -77,21 +78,6 @@ export async function execute(interaction) {
             new ButtonBuilder().setCustomId('party_label').setLabel('Party').setStyle(ButtonStyle.Success)
         );
 
-    // These buttons are used when we are viewing Oochamon info before confirming to send
-    let oochTradeButtons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger)).addComponents(
-                new ButtonBuilder().setCustomId('offer').setLabel('Offer Trade').setStyle(ButtonStyle.Success));
-
-    let tradeWaitButtons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger));
-
-    let tradeConfirmButtons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger)).addComponents(
-                new ButtonBuilder().setCustomId('confirm').setLabel('Confirm').setStyle(ButtonStyle.Success));
-
     let intUserTradeMsg;
     await interaction.reply({ content: `Trade invitation sent to **${otherTradeMember.displayName}**! Waiting for response...` });
     await interaction.fetchReply().then(msg => {
@@ -163,144 +149,8 @@ export async function execute(interaction) {
                 break;
         }
 
-        // Label buttons
-        if (i.customId.includes('emp') || i.customId.includes('label')) {
-            await i.update({ embeds: [] });
-        } else if (i.customId == 'exit') {
-            await profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
-            await profile.set(otherTradeUser.id, PlayerState.Playspace, 'player_state');
-            await userPageData.trade_msg.delete();
-            await oppTradeMsg.edit({ content: `**${userPageData.member.displayName}** has left the trade.`, embeds: [], components: [] });
-            await wait(5000);
-            await oppTradeMsg.delete();
-        }
-
-        // Page buttons
-        else if (i.customId == 'left' || i.customId == 'right') {
-            i.customId == 'left' ? userPageData.page_num -= 1 : userPageData.page_num += 1;
-            userPageData.page_num = (userPageData.page_num + userPageData.pages) % userPageData.pages; // Handle max page overflow
-
-            userPageData.box_row = buildBoxData(profile.get(userPageData.user.id), userPageData.page_num);
-            userPageData.box_buttons.components[3].setLabel(`${userPageData.page_num + 1}`);
-            await i.update({ components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
-        } else if (i.customId.includes('box_ooch')) {
-            let user_profile = profile.get(`${userPageData.user.id}`);
-            let slot_data = i.customId.split('_');
-            let slot_num = slot_data[3];
-            let party_slot = false;
-            let ooch_user_data;
-            if (i.customId.includes('_party')) party_slot = true;
-
-            if (party_slot == false) {
-                ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
-            } else {
-                ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
-            }
-
-            let dexEmbed = await ooch_info_embed(ooch_user_data);
-            let dexPng = dexEmbed[1];
-            dexEmbed = dexEmbed[0];
-            userPageData.ooch_selected = ooch_user_data;
-            userPageData.ooch_is_party = party_slot;
-            userPageData.ooch_slot_num = slot_num;
-
-            await i.update({ embeds: [dexEmbed], files: [dexPng], components: [oochTradeButtons] });
-        } else if (i.customId == 'back') {
-            userPageData.box_row = buildBoxData(profile.get(userPageData.user.id), userPageData.page_num);
-            userPageData.ready_to_trade = false;
-            userPageData.ooch_selected = null;
-            userPageData.ooch_is_party = false;
-            userPageData.ooch_slot_num = 0;
-
-            oppUserPageData.box_row = buildBoxData(profile.get(oppUserPageData.user.id), oppUserPageData.page_num);
-            oppUserPageData.ready_to_trade = false;
-            oppUserPageData.ooch_selected = null;
-            oppUserPageData.ooch_is_party = false;
-            oppUserPageData.ooch_slot_num = 0;
-
-            await i.update({ content: `**Trade with ${userPageData.other_member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
-            await oppTradeMsg.edit({ content: `**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], components: [oppUserPageData.box_row[0], oppUserPageData.box_row[1], oppUserPageData.box_row[2], oppUserPageData.box_row[3], oppUserPageData.box_buttons] });
-
-            if (tradeState == 'confirm') {
-                let cancelMsg = await userPageData.thread.send(`### Trade Cancelled.\nYou cancelled the trade.`);
-                let oppCancelMsg = await oppUserThread.send(`### Trade Cancelled.\n**${userPageData.member.displayName}** cancelled the trade.`);
-                tradeState = 'trading';
-
-                await wait(5000);
-                await cancelMsg.delete();
-                await oppCancelMsg.delete();
-            }
-
-        } else if (i.customId == 'offer') {
-            userPageData.ready_to_trade = true;
-            await i.update({ content: `Trading ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.nickname}**! Waiting for response from other user...`, embeds: [], components: [tradeWaitButtons] });
-
-            // Update opposing players message
-            if (oppUserPageData.ready_to_trade == false) {
-                await oppTradeMsg.edit(`**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!\n✅ **${userPageData.member.displayName} has selected an Oochamon to trade.**`);
-            }
-        }
-
-        if (userPageData.ready_to_trade == true && oppUserPageData.ready_to_trade == true && tradeState == 'trading') {
-            let oppUserDexEmbed = await ooch_info_embed(oppUserPageData.ooch_selected);
-            let oppUserDexPng = oppUserDexEmbed[1];
-            oppUserDexEmbed = oppUserDexEmbed[0];
-
-            let userDexEmbed = await ooch_info_embed(userPageData.ooch_selected);
-            let userDexPng = userDexEmbed[1];
-            userDexEmbed = userDexEmbed[0];
-
-            await userPageData.trade_msg.edit({ content: `Trading ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.nickname}**!\n${oppTradeMember.displayName} has offered up a ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [oppUserDexEmbed], files: [oppUserDexPng], components: [tradeConfirmButtons] });
-            await oppUserPageData.trade_msg.edit({ content: `Trading ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.nickname}**!\n${userPageData.member.displayName} has offered up a ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** for trade!\nDo you accept?`, embeds: [userDexEmbed], files: [userDexPng], components: [tradeConfirmButtons] });
-            tradeState = 'confirm';
-
-        } else if (tradeState == 'confirm' && i.customId == 'confirm' && oppUserPageData.trade_confirmed == false) {
-
-            // Confirm but don't finish, wait for other input
-            await i.update({ content: `Trade confirmed! Waiting for response...`, components: [] });
-            await oppTradeMsg.edit({
-                content: `Trading ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.nickname}**!\n${userPageData.member.displayName} has offered up a ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** for trade!\nDo you accept?` +
-                    `\n✅ **${userPageData.member.displayName} confirmed their trade.**`
-            });
-            userPageData.trade_confirmed = true;
-
-        } else if (tradeState == 'confirm' && i.customId == 'confirm' && oppUserPageData.trade_confirmed == true) {
-            // Do the trade here
-            let userProfile = profile.get(`${userPageData.user.id}`);
-            let oppUserProfile = profile.get(`${userPageData.other_user.id}`);
-
-            // Add Ooch to PC or party based on
-            userPageData.ooch_is_party ? userProfile.ooch_party[userPageData.ooch_slot_num] = oppUserPageData.ooch_selected : userProfile.ooch_pc[userPageData.ooch_slot_num] = oppUserPageData.ooch_selected;
-            oppUserPageData.ooch_is_party ? oppUserProfile.ooch_party[oppUserPageData.ooch_slot_num] = userPageData.ooch_selected : oppUserProfile.ooch_pc[oppUserPageData.ooch_slot_num] = userPageData.ooch_selected;
-
-            // Change database
-            await profile.set(userPageData.user.id, userProfile);
-            await profile.set(userPageData.other_user.id, oppUserProfile);
-
-            // Cleanup
-            userPageData.box_row = buildBoxData(profile.get(`${userPageData.user.id}`), userPageData.page_num);
-            oppUserPageData.box_row = buildBoxData(profile.get(`${oppUserPageData.user.id}`), oppUserPageData.page_num);
-
-            await i.update({ content: `**Trade with ${userPageData.other_member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [userPageData.box_row[0], userPageData.box_row[1], userPageData.box_row[2], userPageData.box_row[3], userPageData.box_buttons] });
-            await oppTradeMsg.edit({ content: `**Trade with ${userPageData.member.displayName}:**\nPlease select an Oochamon to trade!`, embeds: [], files: [], components: [oppUserPageData.box_row[0], oppUserPageData.box_row[1], oppUserPageData.box_row[2], oppUserPageData.box_row[3], oppUserPageData.box_buttons] });
-            let confirmMsg = await userPageData.thread.send(`# Confirmed trade!\nYou have received ${oppUserPageData.ooch_selected.emote} **${oppUserPageData.ooch_selected.name}** from **${oppTradeMember.displayName}**!`);
-            let oppConfirmMsg = await oppUserThread.send(`# Confirmed trade!\nYou have received ${userPageData.ooch_selected.emote} **${userPageData.ooch_selected.name}** from **${userPageData.member.displayName}**!`);
-
-            userPageData.ready_to_trade = false;
-            userPageData.ooch_selected = null;
-            userPageData.ooch_is_party = false;
-            userPageData.ooch_slot_num = 0;
-
-            oppUserPageData.ready_to_trade = false;
-            oppUserPageData.ooch_selected = null;
-            oppUserPageData.ooch_is_party = false;
-            oppUserPageData.ooch_slot_num = 0;
-            tradeState = 'trading';
-
-            await wait(7500);
-            await confirmMsg.delete();
-            await oppConfirmMsg.delete();
-        }
+        // Call the trade handler and update tradeState
+        tradeState = await trade_handler(i, userPageData, oppUserPageData, oppUserThread, oppTradeMember, oppTradeMsg, tradeState);
     }
     //#endregion
     // Start the trading invitation process

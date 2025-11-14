@@ -1,11 +1,11 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags } from 'discord.js';
 import { profile } from '../db.js';
-import { box_collector_event } from '../func_play.js';
 import { PlayerState, UserType, Weather } from '../types.js';
 import wait from 'wait';
 import { buildBoxData } from '../func_other.js';
 import { generate_battle_user, setup_battle } from '../func_battle.js';
 import { clamp } from 'lodash-es';
+import { battle_setup_handler } from '../event_handlers/battle_setup_handler.js';
 
 // Create box action rows
 let box_battle_buttons = new ActionRowBuilder()
@@ -153,62 +153,39 @@ export async function execute(interaction) {
             let intBoxCollector = intUserThread.createMessageComponentCollector();
 
             intBoxCollector.on('collect', async (selected) => {
-                let intBoxRow;
-                // Page buttons
-                if (selected.customId == 'box_left' || selected.customId == 'box_right') {
-                    selected.customId == 'box_left' ? intPageNum -= 1 : intPageNum += 1;
-                    intPageNum = (intPageNum + pages) % pages; // Handle max page overflow
+                let result = await battle_setup_handler(selected, intBattleUser.id, intProfile, intPageNum, box_battle_buttons, pages);
+                intIsReady = result.isReady;
+                intPageNum = result.pageNum;
 
-                    intBoxRow = buildBoxData(intProfile, intPageNum);
-                    box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
-                    selected.update({ content: `**Oochabox**`, components: [intBoxRow[0], intBoxRow[1], intBoxRow[2], intBoxRow[3], box_battle_buttons], files: [] });
-                }
-
-                else if (selected.customId.includes('box')) {
-                    intIsReady = await box_collector_event(intBattleUser.id, selected, intPageNum, intProfile, true);
-
-                    if (intIsReady) {
-                        if (otherIsReady && intIsReady) {
-                            await intBoxCollector.stop();
-                            await otherBoxCollector.stop();
-                            await confirm_collector.stop();
-                            await cancel_collector.stop();
-                            selected.update({ content: 'Starting up battle...', components: [] });
-                            await start_battle(intProfile, otherProfile);
-                        } else {
-                            selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
-                        }
+                if (intIsReady) {
+                    if (otherIsReady && intIsReady) {
+                        await intBoxCollector.stop();
+                        await otherBoxCollector.stop();
+                        await confirm_collector.stop();
+                        await cancel_collector.stop();
+                        await selected.update({ content: 'Starting up battle...', components: [] });
+                        await start_battle(intProfile, otherProfile);
+                    } else {
+                        await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     }
                 }
             });
 
             otherBoxCollector.on('collect', async (selected) => {
-                let otherBoxRow;
-                // Page buttons
-                if (selected.customId == 'box_left' || selected.customId == 'box_right') {
-                    selected.customId == 'box_left' ? otherPageNum -= 1 : otherPageNum += 1;
-                    otherPageNum = (otherPageNum + pages) % pages; // Handle max page overflow
+                let result = await battle_setup_handler(selected, otherBattleUser.id, otherProfile, otherPageNum, box_battle_buttons, pages);
+                otherIsReady = result.isReady;
+                otherPageNum = result.pageNum;
 
-                    otherBoxRow = buildBoxData(otherProfile, otherPageNum);
-                    box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
-                    selected.update({ content: `**Oochabox**`, components: [otherBoxRow[0], otherBoxRow[1], otherBoxRow[2], otherBoxRow[3], box_battle_buttons], files: [] });
-                }
-
-                else if (selected.customId.includes('box')) {
-                    otherIsReady = await box_collector_event(otherBattleUser.id, selected, otherPageNum, otherProfile, true);
-
-                    if (otherIsReady) {
-                        otherIsReady = true;
-                        if (otherIsReady && intIsReady) {
-                            await intBoxCollector.stop();
-                            await otherBoxCollector.stop();
-                            await confirm_collector.stop();
-                            await cancel_collector.stop();
-                            selected.update({ content: 'Starting up battle...', components: [] });
-                            await start_battle(intProfile, otherProfile);
-                        } else {
-                            selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
-                        }
+                if (otherIsReady) {
+                    if (otherIsReady && intIsReady) {
+                        await intBoxCollector.stop();
+                        await otherBoxCollector.stop();
+                        await confirm_collector.stop();
+                        await cancel_collector.stop();
+                        await selected.update({ content: 'Starting up battle...', components: [] });
+                        await start_battle(intProfile, otherProfile);
+                    } else {
+                        await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     }
                 }
             });
