@@ -12,7 +12,7 @@ import { genmap_loot_by_level } from "./func_level_gen.js";
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
 // Needs to be updated in a lot of cases, so easier to put it in a function!
-export function buildBoxData(user_profile, page_num) {
+export function buildBoxData(user_id, user_profile, page_num) {
     let box_row = []; // Changed to 'let' as 'box_row' was undeclared
     box_row[0] = new ActionRowBuilder();
     box_row[1] = new ActionRowBuilder();
@@ -23,6 +23,8 @@ export function buildBoxData(user_profile, page_num) {
     let party_data = user_profile.ooch_party;
     let offset = (16 * page_num)
 
+    const pre = `other_${user_id}_`;
+
     for (let i = (0 + offset); i < (16 + offset); i++) {
         if (inRange(i, 0+offset, 3+offset)) box_idx = 0; 
         if (inRange(i, 4+offset, 7+offset)) box_idx = 1; 
@@ -32,7 +34,7 @@ export function buildBoxData(user_profile, page_num) {
         if (oochabox_data[i] == undefined) {
             box_row[box_idx].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_emp_${i}`)
+                    .setCustomId(`${pre}box_emp_${i}`)
                     .setLabel('‎')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(true)
@@ -41,7 +43,7 @@ export function buildBoxData(user_profile, page_num) {
             let ooch_data = monster_data.get(`${oochabox_data[i].id}`);
             box_row[box_idx].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_ooch_${oochabox_data[i].id}_${i}`)
+                    .setCustomId(`${pre}box_ooch_${oochabox_data[i].id}_${i}`)
                     .setEmoji(ooch_data.emote)
                     .setStyle(ButtonStyle.Secondary)
             )
@@ -52,7 +54,7 @@ export function buildBoxData(user_profile, page_num) {
         if (party_data[i] == undefined) {
             box_row[i].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_emp_${i}_party`)
+                    .setCustomId(`${pre}box_emp_${i}_party`)
                     .setLabel('‎')
                     .setStyle(ButtonStyle.Success)
                     .setDisabled(true)
@@ -61,7 +63,7 @@ export function buildBoxData(user_profile, page_num) {
             let ooch_data = monster_data.get(`${party_data[i].id}`);
             box_row[i].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_ooch_${party_data[i].id}_${i}_party`)
+                    .setCustomId(`${pre}box_ooch_${party_data[i].id}_${i}_party`)
                     .setEmoji(ooch_data.emote)
                     .setStyle(ButtonStyle.Success)
             )

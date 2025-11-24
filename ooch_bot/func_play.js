@@ -1,93 +1,25 @@
 import { profile, maps, tile_data, events_data, player_positions, monster_data, item_data } from "./db.js";
 import { Flags, PlayerState, Tile, Zone, UserType, Weather, Item, StanceForms } from './types.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder } from 'discord.js';
-import wait from 'wait';
 import { sample, clamp, random } from 'lodash-es';
 import { event_process, event_from_npc } from './func_event.js';
-import { buildBoxData, get_emote_string, ooch_info_embed } from "./func_other.js";
-
-let slot_num, ooch_user_data, box_row;
-
-// Create box action rows
-let box_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_back_to_save').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_num_label').setLabel('1').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_party_label').setLabel('Party').setStyle(ButtonStyle.Success)
-    )
-
-// Create box action rows
-let box_battle_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_finalize_team').setLabel('Ready').setStyle(ButtonStyle.Success)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_num_label').setLabel('1').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_party_label').setLabel('Party').setStyle(ButtonStyle.Success)
-    )
-
-let box_sel_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_add_ooch').setLabel('Add To Party').setStyle(ButtonStyle.Success)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_release').setLabel('Release').setStyle(ButtonStyle.Danger)
-    )
-
-let box_party_sel_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_add_to_box').setLabel('Add To Box').setStyle(ButtonStyle.Secondary)
-    )
-
-let box_confirm_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_no').setLabel('No').setStyle(ButtonStyle.Danger),
-    );
-
-let confirm_buttons_tp = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Save').setEmoji('🏳️').setStyle(ButtonStyle.Success),
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_oochabox').setLabel('Oochabox').setEmoji('🎒').setStyle(ButtonStyle.Primary),
-    )
-
-let confirm_buttons_tp_exit = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back').setLabel('Exit').setStyle(ButtonStyle.Danger)
-    )
-
-let teleport_menu = new ActionRowBuilder();    
+import { get_emote_string } from "./func_other.js";
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('fight').setLabel('Fight').setStyle(ButtonStyle.Success).setEmoji('⚔️'),
+        new ButtonBuilder().setCustomId(`fight`).setLabel(`Fight`).setStyle(ButtonStyle.Success).setEmoji(`⚔️`),
     ).addComponents(
-        new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
+        new ButtonBuilder().setCustomId(`run`).setLabel(`Run`).setStyle(ButtonStyle.Danger).setEmoji(`🏃‍♂️`),
     );
 
 let wild_encounter_instakill_btn = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
+        new ButtonBuilder().setCustomId(`instakill`).setLabel(`Autofight`).setStyle(ButtonStyle.Primary).setEmoji(`🗡️`),
     )
 
 let back_button = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
+        new ButtonBuilder().setCustomId(`back`).setLabel(`Back`).setStyle(ButtonStyle.Danger),
     );
 
 // let qty_back_button = new ActionRowBuilder()
@@ -149,7 +81,6 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
     let profile_data = await profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
-    let confirm_collector;
     let wild_encounter_collector;
     
     // Max limit of 4 tiles that you can move at once
@@ -395,13 +326,23 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
-                    let page_num = 0;
-                    let pages = 9;
-                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
+                    let confirm_buttons_tp = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_set_checkpoint`).setLabel(`Save`).setEmoji(`🏳️`).setStyle(ButtonStyle.Success),
+                        ).addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_box_oochabox`).setLabel(`Oochabox`).setEmoji(`🎒`).setStyle(ButtonStyle.Primary),
+                        )
 
+                    let confirm_buttons_tp_exit = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_exit`).setLabel(`Exit`).setStyle(ButtonStyle.Danger)
+                        )
+                    
+                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
+                    
                     // Setup teleport menu
-                    if (profile_data.areas_visited.length > 0 && profile.get(`${user_id}`, 'flags').includes('teleport_enable')) {
-                        teleport_menu = new ActionRowBuilder();
+                    if (profile_data.areas_visited.length > 0 && profile_data.flags.includes('teleport_enable')) {
+                        let teleport_menu = new ActionRowBuilder();
                         let teleport_select_options = profile_data.areas_visited.map(name => 
                             {
                                 let map_data = maps.get(`${name}`);
@@ -420,83 +361,10 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         
                         savepoint_options.push(teleport_menu);
                     }
-                    
+
                     await thread.messages.fetch(msg_to_edit).then(async msg => {
                         msg.edit({ components: savepoint_options })
                         profile.set(user_id, PlayerState.Encounter, 'player_state');
-                        confirm_collector = msg.createMessageComponentCollector();
-
-                        confirm_collector.on('collect', async selected => {
-
-                            // Page buttons
-                            if (selected.customId == 'box_left' || selected.customId == 'box_right') {
-                                selected.customId == 'box_left' ? page_num -= 1 : page_num += 1;
-                                page_num = (page_num + pages) % pages; // Handle max page overflow
-                                
-                                box_row = buildBoxData(profile_data, page_num);
-                                box_buttons.components[3].setLabel(`${page_num + 1}`);
-                                selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-                            }
-
-                            else if (selected.customId.includes('box')) {
-                                box_collector_event(user_id, selected, page_num, profile_data)
-                            } 
-
-                            else if (selected.customId.includes('teleport_menu')) {
-                                let biome_from = profile.get(`${user_id}`, 'location_data.area');
-                                let biome_to = selected.values[0];
-                                map_name = biome_to;
-                                let biome_to_data = maps.get(`${biome_to}`);
-                                let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);
-                                if (biome_to_data.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-                                    map_default = [biome_to_data.map_savepoints[0]];
-                                }
-
-                                obj.x = map_default[0].x;
-                                obj.y = map_default[0].y;
-    
-                                //remove the player's info from the old biome and add it to the new one
-                                player_positions.set(biome_to, { x: map_default[0].x, y: map_default[0].y }, user_id);
-                                player_positions.delete(biome_from, user_id);
-                                profile.set(user_id, { area: biome_to, x: map_default[0].x, y: map_default[0].y }, 'location_data')
-    
-                                for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
-                                    profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                    profile.set(user_id, true, `ooch_party[${i}].alive`);
-                                }
-    
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                let playspace_str = await setup_playspace_str(user_id);
-
-                                profile_data = profile.get(`${user_id}`);
-                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                            }
-                            
-                            else if (selected.customId == 'set_checkpoint') {
-                                profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
-                                if (!profile.get(`${user_id}`, 'areas_visited').includes(map_name)) {
-                                    profile.push(user_id, map_name, 'areas_visited');
-                                }
-
-                                for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
-                                    profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                    profile.set(user_id, true, `ooch_party[${i}].alive`);
-            
-                                }
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                let playspace_str = await setup_playspace_str(user_id);
-                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                let quickMsg = await thread.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
-                                await confirm_collector.stop();
-                                await wait(5000);
-                                await quickMsg.delete().catch(() => {});
-                            } else {
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                await confirm_collector.stop();
-                                let playspace_str = await setup_playspace_str(user_id);
-                                selected.update({ components: playspace_str[1] }).catch(() => {});
-                            }
-                        });
                     });
                 }
             }
@@ -1099,130 +967,6 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
     ooch_obj.moveset = move_list
 
     return(ooch_obj)
-}
-
-export async function box_collector_event(user_id, selected, page_num, user_profile, battle_box=false) {
-    let bottom_buttons = battle_box ? box_battle_buttons : box_buttons;
-
-    if (selected.customId == 'box_oochabox') {  
-        box_row = buildBoxData(user_profile, page_num);
-        selected.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    } else if (selected.customId == 'back_to_box') {
-        box_row = buildBoxData(user_profile, page_num);
-        selected.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons] });
-    } 
-    
-    // Back to save (exit)
-    else if (selected.customId == 'box_back_to_save') {
-        profile.set(user_id, user_profile);
-        let options = [confirm_buttons_tp, confirm_buttons_tp_exit];
-
-        if (user_profile.areas_visited.length > 0 && user_profile.flags.includes('teleport_enable')) { 
-        teleport_menu = new ActionRowBuilder();
-            let teleport_select_options = user_profile.areas_visited.map(name => 
-                {
-                    let map_data = maps.get(`${name}`);
-                    return { 
-                        label: `${map_data.map_info.map_name}`,
-                        value: `${name}`
-                    }
-                });
-
-            teleport_menu.addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId('teleport_menu')
-                    .setPlaceholder(`Teleport To Visited Area`)
-                    .addOptions(teleport_select_options),
-            );
-
-            options.push(teleport_menu);
-        }
-
-        let playspace_str = await setup_playspace_str(user_id);
-        selected.update({ content: playspace_str[0], components: options, embeds: [], files: [] });
-    } 
-
-    // Finalize team for box in pvp
-    else if (selected.customId == 'box_finalize_team') {
-        return true;
-    } 
-
-    // Label buttons
-    else if (selected.customId.includes('box_emp') || selected.customId.includes('box_label')) {
-        selected.update({ content: `**Oochabox**`, files: [] });
-    }
-
-    // Oochamon in Box View
-    else if (selected.customId.includes('box_ooch')) {
-        let slot_data = selected.customId.split('_');
-        slot_num = slot_data[3];
-        let party_slot = false;
-        if (selected.customId.includes('_party')) party_slot = true;
-
-        if (party_slot == false) {
-            ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
-        } else {
-            ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
-        }
-
-        // Disable the "add to box" button if we only have one party member.
-        box_party_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 1))
-        // Disable the "add to party" button if we have 4 party members.
-        box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
-
-        let dexEmbed = await ooch_info_embed(ooch_user_data, user_id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
-
-        selected.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
-    }
-    // Add Oochamon to Box
-    else if (selected.customId == 'box_add_to_box') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        // Put the specified oochamon into the box.
-        user_profile.ooch_pc.push(ooch_user_data);
-        user_profile.ooch_party.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    } 
-    // Add Oochamon to team
-    else if (selected.customId == 'box_add_ooch') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        // Put the specified oochamon into our team
-        user_profile.ooch_party.push(ooch_user_data);
-        user_profile.ooch_pc.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    
-    }
-    // Release an Oochamon
-    else if (selected.customId == 'box_release') {
-        await selected.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [box_confirm_buttons], files: [] });
-    }
-    // Confirm to release an Oochamon
-    else if (selected.customId == 'box_yes') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        user_profile.ooch_pc.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    }
-    // Confirm to not release an Oochamon
-    else if (selected.customId == 'box_no') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    }
-    
-    return false;
 }
 
 export function shop_list_from_flags(shop_obj, profile_flags){
