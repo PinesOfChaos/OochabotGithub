@@ -192,7 +192,6 @@ export async function battle_handler(interaction) {
 
     // #endregion
 
-    // Sub-function for handling end of input
     async function end_prompt_input(db_battle_data, interaction) {
         console.log(db_battle_data.users);
         if (db_battle_data.users.every(u => u.action_selected !== false)) {

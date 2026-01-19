@@ -4,6 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, 
 import { sample, clamp, random } from 'lodash-es';
 import { event_process, event_from_npc } from './func_event.js';
 import { get_emote_string } from "./func_other.js";
+import { init_shop_state } from "./event_handlers/shop_handler.js";
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
@@ -389,9 +390,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 shopSelectOptions = shopSelectOptions.map(id => {
                     let db_item_data = item_data.get(`${id}`);
                     let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
-                    return { 
+                    return {
                         label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
-                        description: db_item_data.description_short,
+                        description: db_item_data.description_short.slice(0, 100),
                         value: `${id}`,
                         emoji: db_item_data.emote,
                     }
@@ -399,14 +400,24 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                 let oochabux = profile.get(`${user_id}`, 'oochabux');
 
-                // Setup shop select menu
+                init_shop_state(user_id, obj);
+
+                let shop_pre = `shop_${user_id}_`;
                 let shopSelectMenu = new ActionRowBuilder()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('shop_items')
+                        .setCustomId(`${shop_pre}items`)
                         .setPlaceholder(`Select an item to buy! ($${oochabux})`)
                         .addOptions(shopSelectOptions),
                 );
+
+                let shop_back_button = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`${shop_pre}back`)
+                            .setLabel('Back')
+                            .setStyle(ButtonStyle.Danger)
+                    );
 
                 let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`)
                 let shopEmbed = new EmbedBuilder()
@@ -415,7 +426,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     .setImage(`attachment://shopPlaceholder.png`)
                     .setDescription(obj.greeting_dialogue)
 
-                await thread.send({ embeds: [shopEmbed], files: [shopImage], components: [shopSelectMenu, back_button] });
+                await thread.send({ embeds: [shopEmbed], files: [shopImage], components: [shopSelectMenu, shop_back_button] });
                 
                 // Delete the current playspace
                 let playspace_msg = await thread.messages.fetch(profile.get(`${user_id}`, 'display_msg_id')).catch(() => {});

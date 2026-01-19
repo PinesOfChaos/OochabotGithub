@@ -15,6 +15,7 @@ import { event_handler } from '../event_handlers/event_handler.js';
 import { trade_handler } from '../event_handlers/trade_handler.js';
 import { netbattle_handler } from '../event_handlers/netbattle_handler.js';
 import { other_handler } from '../event_handlers/other_handler.js';
+import { shop_handler } from '../event_handlers/shop_handler.js';
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 export default {
@@ -194,6 +195,9 @@ export default {
         }
         if (interaction.customId.startsWith('other_')) {
             await other_handler(interaction);
+        }
+        if (interaction.customId.startsWith('shop_')) {
+            await shop_handler(interaction);
         }
     }
 
