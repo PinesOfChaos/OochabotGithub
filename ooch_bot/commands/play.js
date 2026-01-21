@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { profile, battle_data, events_data } from '../db.js';
 import { setup_playspace_str, move } from '../func_play.js';
 import { EventMode, PlayerState } from '../types.js';
@@ -64,7 +64,11 @@ export async function execute(interaction, client) {
         await thread.bulkDelete(100);
     }
 
-    let playspace_str = ['**Intro**', []];
+    let playspace_str = {
+        components: [new TextDisplayBuilder().setContent('**Intro**')],
+        flags: MessageFlags.IsComponentsV2,
+        mapString: '**Intro**'
+    };
     if (profile.get(`${interaction.user.id}`, 'player_state') != PlayerState.Intro) {
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         playspace_str = await setup_playspace_str(interaction.user.id);
@@ -102,7 +106,7 @@ export async function execute(interaction, client) {
         }
 
         //Send reply displaying the player's location on the map
-        await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async (msg) => {
+        await thread.send({ components: playspace_str.components, flags: playspace_str.flags }).then(async (msg) => {
             await profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
 
@@ -112,7 +116,7 @@ export async function execute(interaction, client) {
             await move(thread, interaction.user.id, '', 1, 0);
         }
 
-        if (playspace_str[0] != "**Intro**") {
+        if (playspace_str.mapString != "**Intro**") {
             if (outputMsg != false) {
                 if (thread != interaction.channel) {
                     let tipMsg = await thread.send({ content: outputMsg, flags: MessageFlags.Ephemeral });

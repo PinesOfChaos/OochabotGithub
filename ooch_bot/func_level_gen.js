@@ -3,6 +3,7 @@ import { OochType, GenmapTheme, Weather, BattleAi, StanceForms, OochID } from ".
 import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
+import { TextDisplayBuilder } from 'discord.js';
 
 let whitelist_everchange_wild = [
     OochID.Sporbee, OochID.Puppyre, OochID.Roocky, 
@@ -90,13 +91,16 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
             if(loc_data.area == level){
                 let checkpoint = db_profile.checkpoint_data;
                 profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
-                let playspace_str = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n" + await setup_playspace_str(key);
+                let playspace_str = await setup_playspace_str(key);
+                // Prepend notification to the map content
+                const notificationText = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n";
+                playspace_str.components[0] = new TextDisplayBuilder().setContent(notificationText + playspace_str.mapString);
                 let thread = client.channels.cache.get(`${db_profile.play_thread_id}`);
                 let msg_to_edit = profile.get(`${key}`, 'display_msg_id');
 
                 if (thread != undefined && thread != false) {
                     await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
-                        await msg.edit({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+                        await msg.edit({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
                     }).catch(() => {});
                 }
             }

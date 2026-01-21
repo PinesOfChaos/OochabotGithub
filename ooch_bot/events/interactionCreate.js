@@ -230,7 +230,7 @@ export default {
                 case 'play_dist':
                     profile.set(interaction.user.id, (curSpeed % 4) + 1, 'move_speed');
                     playspace_str = await setup_playspace_str(interaction.user.id);
-                    await interaction.update({ components: playspace_str[1] });
+                    await interaction.update({ components: playspace_str.components, flags: playspace_str.flags });
                 break;
             }
         }

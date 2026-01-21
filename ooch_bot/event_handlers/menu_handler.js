@@ -194,7 +194,10 @@ export async function menu_handler(interaction, init=false) {
         .setTitle('⚙️ Preferences ⚙️')
         .setDescription(pref_desc.join('\n'));
 
-    let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
+    let dexEmbed;
+    if (selected_ooch) {
+        dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
+    }
 
     ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
 
@@ -1196,7 +1199,7 @@ export async function menu_handler(interaction, init=false) {
                 case ItemType.Teleport:
                     await item_use(interaction.user.id, selected_ooch, selected, false, true);
                     playspace_str = await setup_playspace_str(interaction.user.id);
-                    await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+                    await interaction.channel.send({ components: playspace_str.components, flags: playspace_str.flags }).then(msg => {
                         profile.set(interaction.user.id, msg.id, 'display_msg_id');
                     });
 
@@ -1489,6 +1492,14 @@ export async function menu_handler(interaction, init=false) {
         } else if (user_profile.settings.zoom == '9_7') {
             await profile.set(interaction.user.id, '7_9', 'settings.zoom');
         } else if (user_profile.settings.zoom == '7_9') {
+            await profile.set(interaction.user.id, '9_9', 'settings.zoom');
+        } else if (user_profile.settings.zoom == '9_9') {
+            await profile.set(interaction.user.id, '9_11', 'settings.zoom');
+        } else if (user_profile.settings.zoom == '9_11') {
+            await profile.set(interaction.user.id, '11_9', 'settings.zoom');
+        } else if (user_profile.settings.zoom == '11_9') {
+            await profile.set(interaction.user.id, '11_11', 'settings.zoom');
+        } else if (user_profile.settings.zoom == '11_11') {
             await profile.set(interaction.user.id, '5_5', 'settings.zoom');
         }
 
@@ -1540,7 +1551,7 @@ export async function menu_handler(interaction, init=false) {
         menu_data.delete(menu_id);
         let playspace_str = await setup_playspace_str(interaction.user.id);
 
-        await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+        await interaction.channel.send({ components: playspace_str.components, flags: playspace_str.flags }).then(msg => {
             profile.set(interaction.user.id, msg.id, 'display_msg_id');
         });
 

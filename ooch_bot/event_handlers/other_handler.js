@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags, StringSelectMenuBuilder } from "discord.js";
 import { maps, other_menu_data, player_positions, profile } from "../db.js";
 import { PlayerState } from "../types.js";
 import { buildBoxData, ooch_info_embed } from "../func_other.js";
@@ -155,7 +155,7 @@ export async function other_handler(interaction) {
             }
 
             let playspace_str = await setup_playspace_str(interaction.user.id);
-            interaction.update({ content: playspace_str[0], components: options, embeds: [], files: [] });
+            interaction.update({ components: [playspace_str.components[0], ...options], flags: playspace_str.flags, embeds: [], files: [] });
         } 
 
         // Finalize team for box in pvp
@@ -262,9 +262,9 @@ export async function other_handler(interaction) {
         let playspace_str = await setup_playspace_str(interaction.user.id);
 
         profile_data = profile.get(`${interaction.user.id}`);
-        selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+        selected.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
     }
-    
+
     else if (action == 'set_checkpoint') {
         profile.set(interaction.user.id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
         if (!profile.get(`${interaction.user.id}`, 'areas_visited').includes(map_name)) {
@@ -278,14 +278,14 @@ export async function other_handler(interaction) {
         }
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(interaction.user.id);
-        selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
+        selected.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
         let quickMsg = await interaction.channel.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
         await wait(5000);
         await quickMsg.delete().catch(() => {});
     } else {
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(interaction.user.id);
-        interaction.update({ components: playspace_str[1] }).catch(() => {});
+        interaction.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
     }
 
     other_menu_data.set(menu_id, { ...other_menu_state });

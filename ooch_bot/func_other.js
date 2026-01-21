@@ -249,13 +249,11 @@ export async function reset_oochamon(user_id) {
     profile.set(user_id, {
         controls_msg: false,
         battle_cleanup: true,
-        zoom: '9_7',
+        zoom: '9_9',
         battle_speed: 2500,
         discord_move_buttons: true,
         objective: true,
     }, 'settings');
-
-    
 
     // Setup Oochadex template
     for (const ooch_id in monster_data.keys()) { // Changed to 'const'

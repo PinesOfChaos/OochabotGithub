@@ -42,7 +42,7 @@ export async function execute(interaction) {
     let playspace_str = await setup_playspace_str(interaction.user.id);
     let msg_to_edit = profile.get(`${interaction.user.id}`, 'display_msg_id');
     await interaction.channel.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+        msg.edit({ components: playspace_str.components, flags: playspace_str.flags });
     }).catch(() => { });
 
     let reply_msg = await interaction.reply({ content: string_to_send });

@@ -1,4 +1,4 @@
-import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ActionRowBuilder, ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MediaGalleryBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } from 'discord.js';
 import { profile, item_data, maps, monster_data, player_positions } from './db.js';
 import { sample } from 'lodash-es';
 import { PlayerState, EventMode, Flags, UserType, Weather } from './types.js';
@@ -11,13 +11,9 @@ import { add_item, get_map_weather, setup_playspace_str } from './func_play.js';
 // and one for right when we start the event and one for after dialogue options are picked. Helper functions
 // make this easier to work with.
 export async function dialogueEvent(user_id, thread, obj_content) {
-    let event_embed = new EmbedBuilder()
-        .setColor('#808080')
-        .setDescription('Error')
     let imageFiles = [];
     let profile_data = profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
-    console.log(msg_to_edit);
 
     const pre = `event_${user_id}_`;
 
@@ -40,39 +36,23 @@ export async function dialogueEvent(user_id, thread, obj_content) {
         }
     }
 
-    if (obj_content.description != '') {
-        event_embed.setDescription(obj_content.description);
+    // Build dialogue text content
+    let dialogueText = '';
+    if (obj_content.title != '' && obj_content.title != undefined) {
+        dialogueText += `## ${obj_content.title}\n`;
+    }
+    if (obj_content.description != '' && obj_content.description != undefined) {
+        dialogueText += obj_content.description;
     }
 
-    if (obj_content.title != '') {
-        event_embed.setTitle(obj_content.title);
-    }
-
-    // Set NPC dialogue portrait
-    if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
-        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
-        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
-        } else {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
-        }
-    }
-
-    if (obj_content.image) {
-        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-        event_embed.setImage(`attachment://${obj_content.image}`)
-        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
-    }
-
+    // Handle money and items
     let info_data = '';
-    if (obj_content.money != 0) {
+    if (obj_content.money != 0 && obj_content.money != undefined) {
         info_data += `**${obj_content.money}** Oochabux\n`;
         profile.math(user_id, '+', obj_content.money, 'oochabux');
-    } 
+    }
 
-    if (obj_content.items != false) {
+    if (obj_content.items != false && obj_content.items != undefined) {
         if (obj_content.items.length != 0) {
             for (let item of obj_content.items) {
                 let itemData = item_data.get(`${item.id}`);
@@ -80,26 +60,77 @@ export async function dialogueEvent(user_id, thread, obj_content) {
                 add_item(user_id, item.id, item.count);
             }
         }
-    } 
+    }
 
-    if (obj_content.objective != false) {
-        event_embed.addFields([{ name: 'New Objective', value: `*${obj_content.objective}*` }])
+    if (obj_content.objective != false && obj_content.objective != undefined) {
+        dialogueText += `\n\n**New Objective:** *${obj_content.objective}*`;
         profile.set(user_id, obj_content.objective, 'objective');
-    } else if (event_embed.data.fields != undefined) {
-        event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'New Objective');
     }
 
     if (info_data.length != 0) {
-        event_embed.addFields({name: 'You Received:', value: info_data });
-    } else if (event_embed.data.fields != undefined) {
-        event_embed.data.fields = event_embed.data.fields.filter(field => field.name !== 'You Received:');
+        dialogueText += `\n\n**You Received:**\n${info_data}`;
     }
+
+    // Ensure dialogueText is never empty (required for TextDisplayBuilder)
+    if (dialogueText.trim() === '') {
+        dialogueText = '\u200B'; // Zero-width space as fallback
+    }
+
+    // Build the event container
+    let dialogueContainer = new ContainerBuilder();
+
+    // Check if we have a portrait to show alongside text
+    if (obj_content.dialogue_portrait != '' && obj_content.dialogue_portrait != undefined) {
+        if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        let portraitFileName;
+        if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
+            portraitFileName = obj_content.dialogue_portrait.split('|')[1];
+            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
+        } else {
+            portraitFileName = obj_content.dialogue_portrait;
+            imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
+        }
+
+        // Use SectionBuilder to put portrait on the side of text
+        let dialogueSection = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(dialogueText))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${portraitFileName}`));
+
+        dialogueContainer.addSectionComponents(dialogueSection);
+    } else {
+        // No portrait, just add text
+        dialogueContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(dialogueText));
+    }
+
+    // Add main event image if exists
+    if (obj_content.image) {
+        if (!obj_content.image.includes('.png')) obj_content.image += '.png';
+        imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+        let eventImageGallery = new MediaGalleryBuilder().addItems({ media: { url: `attachment://${obj_content.image}` } });
+        dialogueContainer.addMediaGalleryComponents(eventImageGallery);
+    }
+
+    // Add separator and buttons
+    dialogueContainer
+        .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents(event_buttons);
+
+    // Get playspace to show map above the event
+    let playspace_str = await setup_playspace_str(user_id);
+    let mapDisplay = playspace_str.components[0]; // The TextDisplayBuilder with the map
+
+    // Combine map display + separator + event container
+    let combinedComponents = [
+        mapDisplay,
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small),
+        dialogueContainer
+    ];
 
     let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
     if (msg != undefined) {
-        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        await msg.edit({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2, embeds: [] }).catch(() => {});
     } else {
-        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+        await thread.send({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
 }
 
@@ -163,10 +194,6 @@ export async function battleGroupEvent(user_id, thread) {
 
 export async function oochPickEvent(user_id, thread, obj_content) {
     let oochamonPicks = new ActionRowBuilder();
-
-    let event_embed = new EmbedBuilder()
-        .setColor('#808080')
-        .setDescription('Error')
     let imageFiles = [];
     let profile_data = profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
@@ -184,36 +211,67 @@ export async function oochPickEvent(user_id, thread, obj_content) {
         );
     }
 
-    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+    // Build text content
+    let pickText = '';
+    if (obj_content.title != '') pickText += `## ${obj_content.title}\n`;
+    if (obj_content.description != '') pickText += obj_content.description;
 
-    // Set NPC dialogue portrait
+    // Build the container
+    let pickContainer = new ContainerBuilder();
+
+    // Check if we have a portrait to show alongside text
     if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
         if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+            portraitFileName = obj_content.dialogue_portrait.split('|')[1];
+            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
         } else {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+            portraitFileName = obj_content.dialogue_portrait;
+            imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
         }
+
+        // Use SectionBuilder to put portrait on the side of text
+        let pickSection = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(pickText))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${portraitFileName}`));
+
+        pickContainer.addSectionComponents(pickSection);
+    } else {
+        // No portrait, just add text
+        pickContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(pickText));
     }
 
+    // Add main event image if exists
     if (obj_content.image) {
         if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-        event_embed.setImage(`attachment://${obj_content.image}`)
         imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+        let eventImageGallery = new MediaGalleryBuilder().addItems({ media: { url: `attachment://${obj_content.image}` } });
+        pickContainer.addMediaGalleryComponents(eventImageGallery);
     }
 
-    let event_buttons = oochamonPicks;
+    // Add separator and buttons
+    pickContainer
+        .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents(oochamonPicks);
+
+    // Get playspace to show map above the event
+    let playspace_str = await setup_playspace_str(user_id);
+    let mapDisplay = playspace_str.components[0];
+
+    // Combine map display + separator + event container
+    let combinedComponents = [
+        mapDisplay,
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small),
+        pickContainer
+    ];
 
     let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
     if (msg != undefined) {
-        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        await msg.edit({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2, embeds: [] }).catch(() => {});
     } else {
-        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+        await thread.send({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
-
 }
 
 export async function flagEvent(user_id, thread, obj_content) {
@@ -241,7 +299,7 @@ export async function flagEvent(user_id, thread, obj_content) {
             let msg_to_edit = profile.get(`${user_id}`, 'display_msg_id');
             let playspace_str = await setup_playspace_str(user_id);
             await thread.messages.fetch(msg_to_edit).then((msg) => {
-                msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+                msg.edit({ components: playspace_str.components, flags: playspace_str.flags });
             }).catch(() => {});
         }
     }
@@ -276,7 +334,7 @@ export async function transitionEvent(user_id, thread, obj_content) {
     
     let playspace_str = await setup_playspace_str(user_id);
     await thread.messages.fetch(msg_to_edit).then((msg) => {
-        msg.edit({ content: playspace_str[0], components: playspace_str[1] });
+        msg.edit({ components: playspace_str.components, flags: playspace_str.flags });
     }).catch(() => {});
 }
 
@@ -286,15 +344,10 @@ export function objectiveEvent(user_id, obj_content) {
 
 export async function optionsEvent(user_id, thread, obj_content) {
     let optionsRow = new ActionRowBuilder();
-    let event_embed = new EmbedBuilder()
-        .setColor('#808080')
-        .setDescription('Error')
     let imageFiles = [];
     let profile_data = profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
     const pre = `event_${user_id}_`;
-
-    let event_buttons;
 
     for (let option of obj_content.options) {
         // Convert button style
@@ -311,42 +364,72 @@ export async function optionsEvent(user_id, thread, obj_content) {
                     .setCustomId(`${pre}option|${option.event}|${option.price}`)
                     .setLabel(`${option.text}`)
                     .setStyle(option.style)
-                    //.setEmoji(`${option.emote == ""}`)
                     .setDisabled(option.price > profile_data.oochabux),
             );
         }
     }
 
-    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+    // Build text content
+    let optionsText = '';
+    if (obj_content.title != '') optionsText += `## ${obj_content.title}\n`;
+    if (obj_content.description != '') optionsText += obj_content.description;
 
-    // Set NPC dialogue portrait
+    // Build the container
+    let optionsContainer = new ContainerBuilder();
+
+    // Check if we have a portrait to show alongside text
     if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
         if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+            portraitFileName = obj_content.dialogue_portrait.split('|')[1];
+            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
         } else {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+            portraitFileName = obj_content.dialogue_portrait;
+            imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
         }
+
+        // Use SectionBuilder to put portrait on the side of text
+        let optionsSection = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(optionsText))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${portraitFileName}`));
+
+        optionsContainer.addSectionComponents(optionsSection);
+    } else {
+        // No portrait, just add text
+        optionsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(optionsText));
     }
 
+    // Add main event image if exists
     if (obj_content.image) {
         if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-        event_embed.setImage(`attachment://${obj_content.image}`)
         imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+        let eventImageGallery = new MediaGalleryBuilder().addItems({ media: { url: `attachment://${obj_content.image}` } });
+        optionsContainer.addMediaGalleryComponents(eventImageGallery);
     }
 
-    event_buttons = optionsRow;
-    
+    // Add separator and buttons
+    optionsContainer
+        .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents(optionsRow);
+
+    // Get playspace to show map above the event
+    let playspace_str = await setup_playspace_str(user_id);
+    let mapDisplay = playspace_str.components[0];
+
+    // Combine map display + separator + event container
+    let combinedComponents = [
+        mapDisplay,
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small),
+        optionsContainer
+    ];
+
     let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
     if (msg != undefined) {
-        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        await msg.edit({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2, embeds: [] }).catch(() => {});
     } else {
-        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+        await thread.send({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
-
 }
 
 export async function waitEvent(obj_content) {
@@ -363,9 +446,6 @@ export function allyChangeEvent(user_id, obj_content, event) {
 
 export async function setSkinEvent(user_id, thread, obj_content) {
     let skinPicks = new ActionRowBuilder();
-    let event_embed = new EmbedBuilder()
-        .setColor('#808080')
-        .setDescription('Error')
     let imageFiles = [];
     let profile_data = profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
@@ -382,34 +462,71 @@ export async function setSkinEvent(user_id, thread, obj_content) {
         );
     }
 
-    if (obj_content.title != '') event_embed.setTitle(obj_content.title);
-    if (obj_content.description != '') event_embed.setDescription(obj_content.description);
+    // Build text content
+    let skinText = '';
+    if (obj_content.title != '' && obj_content.title != undefined) skinText += `## ${obj_content.title}\n`;
+    if (obj_content.description != '' && obj_content.description != undefined) skinText += obj_content.description;
 
-    // Set NPC dialogue portrait
+    // Ensure skinText is never empty (required for TextDisplayBuilder)
+    if (skinText.trim() === '') {
+        skinText = '\u200B'; // Zero-width space as fallback
+    }
+
+    // Build the container
+    let skinContainer = new ContainerBuilder();
+
+    // Check if we have a portrait to show alongside text
     if (obj_content.dialogue_portrait != false && obj_content.dialogue_portrait != '') {
         if (!obj_content.dialogue_portrait.includes('.png')) obj_content.dialogue_portrait += '.png';
+        let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait.split('|')[1]}`)
-            imageFiles.push(get_art_file(`./Art/NPCs/${obj_content.dialogue_portrait.split('|')[1]}`));
+            portraitFileName = obj_content.dialogue_portrait.split('|')[1];
+            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
         } else {
-            event_embed.setThumbnail(`attachment://${obj_content.dialogue_portrait}`)
-            imageFiles.push(get_art_file(`./Art/Portraits/${obj_content.dialogue_portrait}`));
+            portraitFileName = obj_content.dialogue_portrait;
+            imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
         }
+
+        // Use SectionBuilder to put portrait on the side of text
+        let skinSection = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(skinText))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${portraitFileName}`));
+
+        skinContainer.addSectionComponents(skinSection);
+    } else {
+        // No portrait, just add text
+        skinContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(skinText));
     }
 
+    // Add main event image if exists
     if (obj_content.image) {
         if (!obj_content.image.includes('.png')) obj_content.image += '.png';
-        event_embed.setImage(`attachment://${obj_content.image}`)
         imageFiles.push(get_art_file(`./Art/EventImages/${obj_content.image}`));
+        let eventImageGallery = new MediaGalleryBuilder().addItems({ media: { url: `attachment://${obj_content.image}` } });
+        skinContainer.addMediaGalleryComponents(eventImageGallery);
     }
 
-    let event_buttons = skinPicks;
+    // Add separator and buttons
+    skinContainer
+        .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents(skinPicks);
+
+    // Get playspace to show map above the event
+    let playspace_str = await setup_playspace_str(user_id);
+    let mapDisplay = playspace_str.components[0];
+
+    // Combine map display + separator + event container
+    let combinedComponents = [
+        mapDisplay,
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small),
+        skinContainer
+    ];
 
     let msg = await thread.messages.fetch(msg_to_edit).catch(() => {});
     if (msg != undefined) {
-        await msg.edit({ embeds: [event_embed], components: [event_buttons], files: imageFiles }).catch(() => {});
+        await msg.edit({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2, embeds: [] }).catch(() => {});
     } else {
-        await thread.send({ embeds: [event_embed], components: [event_buttons], files: imageFiles}).catch(() => {});
+        await thread.send({ components: combinedComponents, files: imageFiles, flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
 }
 
@@ -444,8 +561,6 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
     while (!quit_init_loop) {
         event_mode = event_array[current_place][0];
         obj_content = event_array[current_place][1];
-
-        console.log(event_array, event_mode, obj_content, current_place);
 
         switch (event_mode) {
             //Basic Text Event
@@ -509,7 +624,7 @@ export async function event_process(user_id, thread, event_array, start_pos = 0,
                 profile.set(user_id, 0, 'cur_event_pos');
                 let playspace_str = await setup_playspace_str(user_id);
                 await thread.messages.fetch(msg_to_edit).then((msg) => {
-                    msg.edit({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
+                    msg.edit({ components: playspace_str.components, flags: playspace_str.flags, embeds: [], files: [] });
                 }).catch(() => {});
                 //await move(thread, user_id, '', 1);
                 return;

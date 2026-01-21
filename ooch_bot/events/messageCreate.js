@@ -4,7 +4,7 @@ dotenv.config();
 import wait from 'wait';
 import { toUpper } from 'lodash-es';
 
-import { Events } from 'discord.js';
+import { Events, MessageFlags } from 'discord.js';
 import { profile } from '../db.js';
 import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
@@ -76,7 +76,7 @@ export default {
                             let playspace_str = await setup_playspace_str(message.author.id);
 
                             let playspace_msg = await message.channel.messages.fetch(profile.get(`${message.author.id}`, 'display_msg_id')).catch(() => {});
-                            await playspace_msg.edit({ components: playspace_str[1] }).catch(() => {});
+                            await playspace_msg.edit({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
                             
                             await message.delete().catch(() => {});
                         } else {

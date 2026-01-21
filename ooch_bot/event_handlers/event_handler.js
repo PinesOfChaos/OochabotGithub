@@ -1,4 +1,4 @@
-import { ComponentType, MessageFlags } from "discord.js";
+import { ComponentType } from "discord.js";
 import { events_data, item_data, profile } from "../db.js";
 import { create_ooch, move, setup_playspace_str } from "../func_play.js";
 import { allyChangeEvent, battleEvent, battleGroupEvent, dialogueEvent, event_process, flagEvent, objectiveEvent, oochPickEvent, optionsEvent, setSkinEvent, transitionEvent, waitEvent } from "../func_event.js";
@@ -90,7 +90,7 @@ export async function event_handler(interaction) {
         profile.set(interaction.user.id, [], 'cur_event_array');
         profile.set(interaction.user.id, 0, 'cur_event_pos');
         let playspace_str = await setup_playspace_str(interaction.user.id);
-        await interaction.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] });
+        await interaction.update({ components: playspace_str.components, flags: playspace_str.flags, embeds: [], files: [] });
         return;
     }
 
@@ -101,26 +101,26 @@ export async function event_handler(interaction) {
         //Customize Embed
         switch (event_mode) {
             //Basic Text Event
-            case EventMode.Dialogue: 
+            case EventMode.Dialogue:
                 quit = true;
                 await dialogueEvent(interaction.user.id, interaction.channel, obj_content);
-                interaction.update({ flags: [MessageFlags.Ephemeral] });
+                await interaction.deferUpdate().catch(() => {});
             break;
 
             case EventMode.Battle:
                 quit = true;
                 await battleEvent(interaction.user.id, interaction.channel, obj_content);
-                interaction.update({ flags: [MessageFlags.Ephemeral] });
+                await interaction.deferUpdate().catch(() => {});
             break;
 
             case EventMode.OochamonPick:
                 quit = true;
                 await oochPickEvent(interaction.user.id, interaction.channel, obj_content);
-                interaction.update({ flags: [MessageFlags.Ephemeral] });
+                await interaction.deferUpdate().catch(() => {});
             break;
 
             //No Visual representation, just sets appropriate flags in the player
-            case EventMode.Flags: 
+            case EventMode.Flags:
                 await flagEvent(interaction.user.id, interaction.channel, obj_content);
             break;
 
@@ -135,7 +135,7 @@ export async function event_handler(interaction) {
             case EventMode.Options:
                 quit = true;
                 await optionsEvent(interaction.user.id, interaction.channel, obj_content);
-                interaction.update({ flags: [MessageFlags.Ephemeral] });
+                await interaction.deferUpdate().catch(() => {});
             break;
 
             case EventMode.Wait:
@@ -150,12 +150,13 @@ export async function event_handler(interaction) {
             case EventMode.BattleGroupStart:
                 quit = true;
                 await battleGroupEvent(interaction.user.id, interaction.channel);
+                await interaction.deferUpdate().catch(() => {});
             break;
 
             case EventMode.SetSkin:
                 quit = true;
                 await setSkinEvent(interaction.user.id, interaction.channel, obj_content);
-                interaction.update({ flags: [MessageFlags.Ephemeral] });
+                await interaction.deferUpdate().catch(() => {});
             break;
         }
 
@@ -199,9 +200,9 @@ export async function event_handler(interaction) {
                 profile.set(interaction.user.id, false, 'cur_event_name');
                 profile.set(interaction.user.id, [], 'cur_event_array');
                 profile.set(interaction.user.id, 0, 'cur_event_pos');
-                quit = true; 
+                quit = true;
                 let playspace_str = await setup_playspace_str(interaction.user.id);
-                await interaction.update({ content: playspace_str[0], components: playspace_str[1], embeds: [], files: [] }).then(async () => {
+                await interaction.update({ components: playspace_str.components, flags: playspace_str.flags, embeds: [], files: [] }).then(async () => {
                     await move(interaction.channel, interaction.user.id, '', 2);
                 }).catch((err) => { console.log(err) });
                 current_place++;

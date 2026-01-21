@@ -1,10 +1,7 @@
-import wait from "wait";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
-import { item_data, profile } from "../db.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ContainerBuilder, MediaGalleryBuilder, MessageFlags, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder, TextDisplayBuilder } from "discord.js";
+import { item_data, profile, shop_data } from "../db.js";
 import { get_inv_item, setup_playspace_str, shop_list_from_flags, add_item } from "../func_play.js";
 import { PlayerState } from "../types.js";
-
-const shop_data = new Map();
 
 export async function shop_handler(interaction) {
     let customId, selected;
@@ -75,11 +72,34 @@ export async function shop_handler(interaction) {
         return shopSelectMenu;
     }
 
+    function buildShopContainer(shopTextContent, actionRows) {
+        console.log(shop_state);
+        let greetingDialogue = shop_state.shop_obj?.greeting_dialogue || '';
+        let shopHeader = new TextDisplayBuilder().setContent(`## Shop`);
+        let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });
+        let shopGreeting = new TextDisplayBuilder().setContent(greetingDialogue);
+        let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large);
+        let shopText = new TextDisplayBuilder().setContent(shopTextContent);
+
+        let shopContainer = new ContainerBuilder()
+            .addTextDisplayComponents(shopHeader)
+            .addMediaGalleryComponents(shopGallery)
+            .addTextDisplayComponents(shopGreeting)
+            .addSeparatorComponents(shopSpacer)
+            .addTextDisplayComponents(shopText);
+
+        for (let row of actionRows) {
+            shopContainer.addActionRowComponents(row);
+        }
+
+        return shopContainer;
+    }
+
     if (action == 'back') {
         shop_data.delete(user_id);
         profile.set(user_id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(user_id);
-        let play_msg = await interaction.channel.send({ content: playspace_str[0], components: playspace_str[1] });
+        let play_msg = await interaction.channel.send({ components: playspace_str.components, flags: playspace_str.flags });
         profile.set(user_id, play_msg.id, 'display_msg_id');
         await msg.delete().catch(() => {});
         return;
@@ -94,29 +114,25 @@ export async function shop_handler(interaction) {
 
         if (item.price > oochabux) {
             let shopSelectMenu = await buildShopMenu();
-            let shopEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle('Shop')
-                .setDescription(`You do not have enough Oochabux to purchase ${item.emote} **${item.name}**.`);
+            let shopContainer = buildShopContainer(
+                `You do not have enough Oochabux to purchase ${item.emote} **${item.name}**.`,
+                [shopSelectMenu, back_button]
+            );
 
-            await interaction.update({ embeds: [shopEmbed], components: [shopSelectMenu, back_button] });
+            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
         if (current_qty >= 50) {
             let shopSelectMenu = await buildShopMenu();
-            let shopEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle('Shop')
-                .setDescription(`Your inventory is full! You cannot carry any more ${item.emote} **${item.name}**.`);
+            let shopContainer = buildShopContainer(
+                `Your inventory is full! You cannot carry any more ${item.emote} **${item.name}**.`,
+                [shopSelectMenu, back_button]
+            );
 
-            await interaction.update({ embeds: [shopEmbed], components: [shopSelectMenu, back_button] });
+            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
-
-        let maxAffordable = Math.floor(oochabux / item.price);
-        let maxCarryable = 50 - current_qty;
-        let maxAmount = Math.min(maxAffordable, maxCarryable, 10);
 
         shop_state.selected_item = item_id;
         shop_data.set(user_id, shop_state);
@@ -124,7 +140,7 @@ export async function shop_handler(interaction) {
         let qtyButtons1 = new ActionRowBuilder();
         let qtyButtons2 = new ActionRowBuilder();
 
-        for (let i = 1; i <= Math.min(maxAmount, 5); i++) {
+        for (let i = 1; i <= 5; i++) {
             qtyButtons1.addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${pre}buy_${i}`)
@@ -133,18 +149,22 @@ export async function shop_handler(interaction) {
             );
         }
 
-        if (maxAmount > 5) {
-            for (let i = 6; i <= maxAmount; i++) {
-                qtyButtons2.addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`${pre}buy_${i}`)
-                        .setLabel(`${i}`)
-                        .setStyle(ButtonStyle.Primary)
-                );
-            }
+        for (let i = 10; i <= 50; i += 10) {
+            qtyButtons2.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${pre}buy_${i}`)
+                    .setLabel(`${i}`)
+                    .setStyle(ButtonStyle.Primary)
+            );
         }
 
-        let cancelButton = new ActionRowBuilder()
+        let extraButtons = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${pre}buy_9999`)
+                    .setLabel('Buy Max')
+                    .setStyle(ButtonStyle.Success)
+            )
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${pre}cancel`)
@@ -152,16 +172,14 @@ export async function shop_handler(interaction) {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        let purchaseEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setTitle('Shop')
-            .setDescription(`**${item.emote} ${item.name}**\n*${item.description_short}*\n\nPrice: **$${item.price}** each\nYou have: **$${oochabux}**\nCurrently owned: **${current_qty}/50**\n\nHow many would you like to buy?`);
+        let purchaseTextContent = `**${item.emote} ${item.name}**\n*${item.description_short}*\n\nPrice: **$${item.price}** each\nYou have: **$${oochabux}**\nCurrently owned: **${current_qty}/50**\n\nHow many would you like to buy?`;
 
-        let components = [qtyButtons1];
-        if (qtyButtons2.components.length > 0) components.push(qtyButtons2);
-        components.push(cancelButton);
+        let actionRows = [qtyButtons1, qtyButtons2];
+        actionRows.push(extraButtons);
 
-        await interaction.update({ embeds: [purchaseEmbed], components: components });
+        let shopContainer = buildShopContainer(purchaseTextContent, actionRows);
+
+        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
         return;
     }
 
@@ -170,19 +188,19 @@ export async function shop_handler(interaction) {
         shop_data.set(user_id, shop_state);
 
         let shopSelectMenu = await buildShopMenu();
-        oochabux = profile.get(`${user_id}`, 'oochabux');
 
-        let shopEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setTitle('Shop')
-            .setFooter({ text: `Oochabux: $${oochabux}` });
+        let shopContainer = buildShopContainer(
+            ``,
+            [shopSelectMenu, back_button]
+        );
 
-        await interaction.update({ embeds: [shopEmbed], components: [shopSelectMenu, back_button] });
+        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
         return;
     }
 
     if (action.startsWith('buy_')) {
         let buyAmount = parseInt(action.replace('buy_', ''));
+        if (isNaN(buyAmount)) buyAmount = 999;
         let item_id = shop_state.selected_item;
         let item = item_data.get(`${item_id}`);
         let inv_item = get_inv_item(user_id, item.category, item_id);
@@ -202,12 +220,12 @@ export async function shop_handler(interaction) {
 
         if (buyAmount <= 0) {
             let shopSelectMenu = await buildShopMenu();
-            let shopEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle('Shop')
-                .setDescription(`Unable to buy.`);
+            let shopContainer = buildShopContainer(
+                `Unable to buy.`,
+                [shopSelectMenu, back_button]
+            );
 
-            await interaction.update({ embeds: [shopEmbed], components: [shopSelectMenu, back_button] });
+            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -221,19 +239,12 @@ export async function shop_handler(interaction) {
         shop_data.set(user_id, shop_state);
 
         let shopSelectMenu = await buildShopMenu();
-        let shopEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setTitle('Shop')
-            .setFooter({ text: `Oochabux: $${oochabux}` });
+        let shopContainer = buildShopContainer(
+            `Successfully purchased **${buyAmount}x** ${item.emote} **${item.name}** for **$${totalCost}**!\nYou now have **${new_qty} ${item.name}${new_qty > 1 ? 's' : ''}** in your inventory.`,
+            [shopSelectMenu, back_button]
+        );
 
-        await interaction.update({ embeds: [shopEmbed], components: [shopSelectMenu, back_button] });
-
-        let followUpMsg = await interaction.channel.send({
-            content: `Successfully purchased **${buyAmount}x** ${item.emote} **${item.name}** for **$${totalCost}**!\nYou now have **${new_qty} ${item.name}${new_qty > 1 ? 's' : ''}** in your inventory.`
-        });
-
-        await wait(5000);
-        await followUpMsg.delete().catch(() => {});
+        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
     }
 }
 

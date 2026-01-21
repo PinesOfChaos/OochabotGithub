@@ -3,7 +3,7 @@ import { profile } from '../db.js';
 import { PlayerState } from '../types.js';
 import wait from 'wait';
 import { buildBoxData } from '../func_other.js';
-import { create_trade_session, trade_sessions } from '../event_handlers/trade_handler.js';
+import { create_trade_session } from '../event_handlers/trade_handler.js';
 
 export const data = new SlashCommandBuilder()
     .setName('trade')

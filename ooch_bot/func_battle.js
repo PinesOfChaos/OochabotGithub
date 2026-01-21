@@ -4022,10 +4022,10 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
     }
 
     // Setup playspace
-    let playspace_str = await await setup_playspace_str(user_id);
+    let playspace_str = await setup_playspace_str(user_id);
     await profile.set(user_id, PlayerState.Playspace, 'player_state');
 
-    await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(msg => {
+    await thread.send({ components: playspace_str.components, flags: playspace_str.flags }).then(msg => {
         profile.set(user_id, msg.id, 'display_msg_id');
     });
 
