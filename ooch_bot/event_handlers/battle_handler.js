@@ -33,7 +33,7 @@ Battle Menu
 
 */
 
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ContainerBuilder, EmbedBuilder, MessageFlags, StringSelectMenuBuilder, TextDisplayBuilder } from "discord.js";
 import { ability_data, battle_data, item_data, monster_data, move_data, profile, stance_data, status_data } from "../db.js";
 import { finish_battle, get_stance_options, new_battle_action_attack, new_battle_action_heal, new_battle_action_prism, new_battle_action_run, new_battle_action_stance_change, new_battle_action_switch, process_battle_actions, type_effectiveness, type_to_emote } from "../func_battle.js";
 import { formatStatBar, get_emote_string } from "../func_other.js";
@@ -197,7 +197,9 @@ export async function battle_handler(interaction) {
         if (db_battle_data.users.every(u => u.action_selected !== false)) {
             db_battle_data.battle_msg_counter -= 1;
             battle_data.set(battle_id, db_battle_data);
-            await interaction.update({ content: `Waiting for other players...` }).catch(() => {});
+            const waitText = new TextDisplayBuilder().setContent(`Waiting for other players...`);
+            const waitContainer = new ContainerBuilder().addTextDisplayComponents(waitText);
+            await interaction.update({ components: [waitContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
 
             // Delete all input messages
             for (let user of db_battle_data.users) {
@@ -209,7 +211,9 @@ export async function battle_handler(interaction) {
 
             await process_battle_actions(battle_id);
         } else {
-            await interaction.update({ content: 'Waiting for other players...', components: [], embeds: [] }).catch(() => {});
+            const waitText2 = new TextDisplayBuilder().setContent('Waiting for other players...');
+            const waitContainer2 = new ContainerBuilder().addTextDisplayComponents(waitText2);
+            await interaction.update({ components: [waitContainer2], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
         }
     }
 
@@ -217,7 +221,9 @@ export async function battle_handler(interaction) {
 
     // END BATTLE
     if (customId.startsWith(`battle_${battle_id}_0_end_battle`)) {
-        await interaction.update({ content: 'Ending battle...', components: [] }).catch(() => {});
+        const endText = new TextDisplayBuilder().setContent('Ending battle...');
+        const endContainer = new ContainerBuilder().addTextDisplayComponents(endText);
+        await interaction.update({ components: [endContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
         await interaction.deleteReply().catch(() => {});
 
         for(let user of db_battle_data.users) {
@@ -229,7 +235,11 @@ export async function battle_handler(interaction) {
 
     // MAIN BACK
     if (customId == `${pre}back`) {
-        await interaction.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
+        const header = new TextDisplayBuilder().setContent(`**-- Select An Action --**`);
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addActionRowComponents(inputRow, inputRow2, inputRow3);
+        await interaction.update({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 
 
@@ -287,7 +297,17 @@ export async function battle_handler(interaction) {
         // Switch message to be about using the move input
         let moveSelMsg = `Select a move to use!\n**Current Stance: ${stance_data.get(`${activeOoch.stance}`, 'name')}**`;
         if (!stancesEnabled) moveSelMsg = `Select a move to use!`;
-        await interaction.update({ content: moveSelMsg, components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton]}).catch(() => {});
+
+        const moveHeader = new TextDisplayBuilder().setContent(moveSelMsg);
+        const moveContainer = new ContainerBuilder().addTextDisplayComponents(moveHeader);
+
+        if (moveButtons2.components.length != 0) {
+            moveContainer.addActionRowComponents(moveButtons1, moveButtons2, moveBackButton);
+        } else {
+            moveContainer.addActionRowComponents(moveButtons1, moveBackButton);
+        }
+
+        await interaction.update({ components: [moveContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
 
     // PROCESS ATTACK
@@ -331,7 +351,16 @@ export async function battle_handler(interaction) {
                 )
             }
 
-            await interaction.update({ content: `**-- Select An Oochamon To Use Move On --**`, components: (targetButtons2.components.length != 0) ? [targetButtons1, targetButtons2, backButton] : [targetButtons1, backButton] });
+            const targetHeader = new TextDisplayBuilder().setContent(`**-- Select An Oochamon To Use Move On --**`);
+            const targetContainer = new ContainerBuilder().addTextDisplayComponents(targetHeader);
+
+            if (targetButtons2.components.length != 0) {
+                targetContainer.addActionRowComponents(targetButtons1, targetButtons2, backButton);
+            } else {
+                targetContainer.addActionRowComponents(targetButtons1, backButton);
+            }
+
+            await interaction.update({ components: [targetContainer], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
@@ -351,44 +380,74 @@ export async function battle_handler(interaction) {
     }
 
     if (customId == `${pre}view_move_info`) {
-        let moveInfoEmbed = new EmbedBuilder()
-            .setTitle('Move Info');
-        let moveInfoFields = [];
         let activeOoch = user.party[user.active_slot];
-        
-        // Get the Oochamon's Attack options
+
+        // Populate move buttons (same logic as fight handler)
+        let move_id, move_name, move_type, move_damage, move_effective_emote = '',
+        buttonStyle = ButtonStyle.Primary;
+
+        moveButtons1 = new ActionRowBuilder();
+        moveButtons2 = new ActionRowBuilder();
+
         for (let i = 0; i < activeOoch.moveset.length; i++) {
-            let move_id = activeOoch.moveset[i];
-            let db_move_data = move_data.get(`${move_id}`);
+            move_id = activeOoch.moveset[i];
+            move_name = move_data.get(`${move_id}`, 'name');
+            move_type = move_data.get(`${move_id}`, 'type');
+            move_damage = move_data.get(`${move_id}`, 'damage');
+
+            if (db_battle_data.users.length == 2) {
+                let enemy_user = db_battle_data.users.filter(u => u.team_id != user.team_id)[0];
+                move_effective_emote = type_effectiveness(move_type, enemy_user.party[enemy_user.active_slot].type);
+                if (move_effective_emote[0] > 1) {
+                    move_effective_emote = ' △';
+                    buttonStyle = ButtonStyle.Success;
+                } else if (move_effective_emote[0] < 1) {
+                    move_effective_emote = ' ▽';
+                    buttonStyle = ButtonStyle.Danger;
+                } else {
+                    move_effective_emote = '';
+                    buttonStyle = ButtonStyle.Primary;
+                }
+
+                if (move_damage == 0) {
+                    move_effective_emote = '';
+                    buttonStyle = ButtonStyle.Secondary;
+                }
+            }
+
+            ((i <= 1) ? moveButtons1 : moveButtons2).addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${pre}atk_${move_id}`)
+                    .setLabel(`${move_name} ${move_effective_emote}`)
+                    .setStyle(buttonStyle)
+                    .setEmoji(`${type_to_emote(move_type)}`)
+            );
+        }
+
+        // Show move info
+        let moveInfoText = `## Move Info\n\n`;
+        for (let i = 0; i < activeOoch.moveset.length; i++) {
+            let mid = activeOoch.moveset[i];
+            let db_move_data = move_data.get(`${mid}`);
             if (db_move_data.accuracy == -1) db_move_data.accuracy = 100;
-            let move_string = `
-            ${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**
-                *${db_move_data.description}*
-            `;
-            
-            moveInfoFields.push({
-                name: `${type_to_emote([db_move_data.type])} ${db_move_data.name}`,
-                value: move_string,
-                inline: true
-                });
+
+            moveInfoText += `**${type_to_emote([db_move_data.type])} ${db_move_data.name}**\n`;
+            moveInfoText += `${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**\n`;
+            moveInfoText += `*${db_move_data.description}*\n\n`;
         }
 
-        moveInfoFields.splice(2, 0, { name: '\u200B', value: '\u200B', inline: true });
-        moveInfoFields.splice(5, 0, { name: '\u200B', value: '\u200B', inline: true });
-        moveInfoEmbed.addFields(moveInfoFields);
+        const moveInfoDisplay = new TextDisplayBuilder().setContent(moveInfoText);
+        const container = new ContainerBuilder().addTextDisplayComponents(moveInfoDisplay);
 
-        if (moveInfoViewing == true) {
-            moveBackButton.components[1].setLabel('View Move Info');
-            interaction.update({ embeds: [], components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-            moveInfoViewing = false;
+        if (moveButtons2.components.length != 0) {
+            container.addActionRowComponents(moveButtons1, moveButtons2, moveBackButton);
         } else {
-            moveBackButton.components[1].setLabel('Close Move Info');
-            interaction.update({ embeds: [moveInfoEmbed],  components: (moveButtons2.components.length != 0) ? [moveButtons1, moveButtons2, moveBackButton] : [moveButtons1, moveBackButton] });
-            moveInfoViewing = true;
+            container.addActionRowComponents(moveButtons1, moveBackButton);
         }
+        await interaction.update({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 
-    if (customId == `${pre}stance_shift`) {
+    if (customId == `${pre}shift_stance`) {
         let activeOoch = user.party[user.active_slot];
         let stance_list = get_stance_options(activeOoch);
                         
@@ -410,7 +469,12 @@ export async function battle_handler(interaction) {
                 .addOptions(stanceSelectOptions),
         );
 
-        await interaction.update({ content: `**Select the new stance to shift to! (You will be unable to switch off of this for the next 2 turns)**\n**Current Stance: ${stance_data.get(`${activeOoch.stance}`, 'name')}**`, components: [stanceSelectMenu, backButton] });
+        const stanceHeader = new TextDisplayBuilder().setContent(`**Select the new stance to shift to! (You will be unable to switch off of this for the next 2 turns)**\n**Current Stance: ${stance_data.get(`${activeOoch.stance}`, 'name')}**`);
+        const stanceContainer = new ContainerBuilder()
+            .addTextDisplayComponents(stanceHeader)
+            .addActionRowComponents(stanceSelectMenu, backButton);
+
+        await interaction.update({ components: [stanceContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // THIS IS A SELECT MENU INTERACTION
@@ -423,7 +487,11 @@ export async function battle_handler(interaction) {
         new_battle_action_stance_change(db_battle_data, user.user_index, stance_id);
         inputRow3.components[1].setDisabled(true)
 
-        await interaction.update({ content: `**-- Select An Action --**`, embeds: [], components: [inputRow, inputRow2, inputRow3] });
+        const header = new TextDisplayBuilder().setContent(`**-- Select An Action --**`);
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addActionRowComponents(inputRow, inputRow2, inputRow3);
+        await interaction.update({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (customId == `${pre}switch`) {
@@ -460,7 +528,16 @@ export async function battle_handler(interaction) {
             )
         }
 
-        await interaction.update({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2, backButton] : [switchButtons1, backButton] });
+        const switchHeader = new TextDisplayBuilder().setContent(`**-- Select An Oochamon To Switch To --**`);
+        const switchContainer = new ContainerBuilder().addTextDisplayComponents(switchHeader);
+
+        if (switchButtons2.components.length != 0) {
+            switchContainer.addActionRowComponents(switchButtons1, switchButtons2, backButton);
+        } else {
+            switchContainer.addActionRowComponents(switchButtons1, backButton);
+        }
+
+        await interaction.update({ components: [switchContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (customId.startsWith(`${pre}switch_`)) {
@@ -471,7 +548,11 @@ export async function battle_handler(interaction) {
     }
 
     if (customId == `${pre}bag`) {
-        await interaction.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] });
+        const bagHeader = new TextDisplayBuilder().setContent(`Select the item category you'd like to use an item in!`);
+        const bagContainer = new ContainerBuilder()
+            .addTextDisplayComponents(bagHeader)
+            .addActionRowComponents(bagButtons, backButton);
+        await interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (customId == `${pre}bag_heal`) {
@@ -500,9 +581,17 @@ export async function battle_handler(interaction) {
                     .addOptions(heal_select_options),
             );
 
-            await interaction.update({ content: `Select the healing item you'd like to use!`, components: [bag_select, bagButtons, backButton] })
+            const healHeader = new TextDisplayBuilder().setContent(`Select the healing item you'd like to use!`);
+            const healContainer = new ContainerBuilder()
+                .addTextDisplayComponents(healHeader)
+                .addActionRowComponents(bag_select, bagButtons, backButton);
+            await interaction.update({ components: [healContainer], flags: MessageFlags.IsComponentsV2 })
         } else {
-            await interaction.update({ content: `Select the item category you'd like to use an item in!`, components: [bagButtons, backButton] })
+            const bagHeader = new TextDisplayBuilder().setContent(`Select the item category you'd like to use an item in!`);
+            const bagContainer = new ContainerBuilder()
+                .addTextDisplayComponents(bagHeader)
+                .addActionRowComponents(bagButtons, backButton);
+            await interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 })
         }
     }
 
@@ -530,7 +619,11 @@ export async function battle_handler(interaction) {
                 .addOptions(prism_select_options),
         );
 
-        await interaction.update({ content: `Select the prism you'd like to use!`, components: [bag_select, bagButtons, backButton] });
+        const prismHeader = new TextDisplayBuilder().setContent(`Select the prism you'd like to use!`);
+        const prismContainer = new ContainerBuilder()
+            .addTextDisplayComponents(prismHeader)
+            .addActionRowComponents(bag_select, bagButtons, backButton);
+        await interaction.update({ components: [prismContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (customId.includes('_item_select') && interaction.startsWith(`${pre}`)) {
@@ -569,7 +662,16 @@ export async function battle_handler(interaction) {
                 )
             }
 
-            await interaction.update({ content: `**-- Select An Oochamon To Heal --**`, components: (healSelectButtons2.components.length != 0) ? [healSelectButtons1, healSelectButtons2, backButton] : [healSelectButtons1, backButton] });
+            const healTargetHeader = new TextDisplayBuilder().setContent(`**-- Select An Oochamon To Heal --**`);
+            const healTargetContainer = new ContainerBuilder().addTextDisplayComponents(healTargetHeader);
+
+            if (healSelectButtons2.components.length != 0) {
+                healTargetContainer.addActionRowComponents(healSelectButtons1, healSelectButtons2, backButton);
+            } else {
+                healTargetContainer.addActionRowComponents(healSelectButtons1, backButton);
+            }
+
+            await interaction.update({ components: [healTargetContainer], flags: MessageFlags.IsComponentsV2 });
         } else {
             let user_to_catch;
             for(let catch_target of db_battle_data.users){
@@ -600,56 +702,72 @@ export async function battle_handler(interaction) {
         await end_prompt_input(db_battle_data, interaction);  
     }
 
-    if (customId == `${pre}info`) {
-        // TODO: Make this a page system to show enemy data
+    if (customId == `${pre}info` || customId.startsWith(`${pre}info_page_`)) {
+        // Get current page (default to 0 for player)
+        let currentPage = 0;
+        if (customId.startsWith(`${pre}info_page_`)) {
+            currentPage = parseInt(customId.split('_page_')[1]);
+        }
+
+        // Get all participants to show info for
+        let allParticipants = db_battle_data.users;
+        let totalPages = allParticipants.length;
+
+        // Wrap around pages
+        if (currentPage < 0) currentPage = totalPages - 1;
+        if (currentPage >= totalPages) currentPage = 0;
+
+        let targetUser = allParticipants[currentPage];
+
+        // Build info text for the current page
         let oochPrisms = '';
-        for (let ooch of user.party) {
+        for (let ooch of targetUser.party) {
             oochPrisms += ooch.alive ? get_emote_string('item_prism') : `❌`;
         }
 
-        let oochInfoFields = [];
+        let ooch = targetUser.party[targetUser.active_slot];
+        let oochStatusEffects = ooch.status_effects.map(v => status_data.get(`${v}`, 'emote'));
 
-        // Setup field info for the embed about both oochamon
-        for (let ooch of [user.party[user.active_slot]]) {
-            let oochStatusEffects = ooch.status_effects.map(v => status_data.get(`${v}`, 'emote'));
-            
-            let infoStr = `**Oochamon Left:** ${oochPrisms}\n` +
-                        `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n` +
-                        `**Ability:** ${ability_data.get(`${ooch.ability}`, 'name')}\n` +
-                        `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
-                        `**Stat Changes:**\n` +
-                        `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
-                        `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
-                        `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
-                        `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
-                        `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
+        let battleInfoText = `## Battle Information 📒\n` +
+                    `**Turn #${db_battle_data.turn_counter + 1}** | Page ${currentPage + 1}/${totalPages}\n\n` +
+                    `**${targetUser.name_possessive} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})**\n` +
+                    `**Oochamon Left:** ${oochPrisms}\n` +
+                    `**Type:** ${type_to_emote(ooch.type)} **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n` +
+                    `**Ability:** ${ability_data.get(`${ooch.ability}`, 'name')}\n` +
+                    `**Status Effects:** ${oochStatusEffects.length != 0 ? `${oochStatusEffects.join('')}` : `None`}\n\n` +
+                    `**Stat Changes:**\n` +
+                    `Atk: ${formatStatBar(ooch.stats.atk_mul)}\n` +
+                    `Def: ${formatStatBar(ooch.stats.def_mul)}\n` +
+                    `Spd: ${formatStatBar(ooch.stats.spd_mul)}\n` +
+                    `Eva: ${formatStatBar(ooch.stats.eva_mul)}\n` +
+                    `Acc: ${formatStatBar(ooch.stats.acc_mul)}\n`;
 
-            // let moveset_str = ``;
-            // for (let move_id of ooch.moveset) {
-            //     let move = await db.db_move_data.get(`${move_id}`);
-            //     move.accuracy = Math.abs(move.accuracy);
-            //     if (move.damage !== 0) {
-            //         moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${move.accuracy}%** accuracy\n`;
-            //     } else {
-            //         moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.accuracy}%** accuracy\n`;
-            //     }
-            // }
-            // infoStr += `\n**${ooch.emote} ${ooch.nickname}'s Moveset:**\n${moveset_str}`;
+        const infoText = new TextDisplayBuilder().setContent(battleInfoText);
+        const infoContainer = new ContainerBuilder().addTextDisplayComponents(infoText);
 
-            oochInfoFields.push({
-                name: `${user.name_possessive} (Lv. ${ooch.level} ${ooch.emote} ${ooch.nickname})`,
-                value: infoStr,
-                inline: true,
-            });
+        // Add pagination buttons if there are multiple participants
+        if (totalPages > 1) {
+            const pageButtons = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`${pre}info_page_${currentPage - 1}`)
+                        .setLabel('Previous')
+                        .setStyle(ButtonStyle.Primary)
+                        .setEmoji('⬅️'),
+                )
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`${pre}info_page_${currentPage + 1}`)
+                        .setLabel('Next')
+                        .setStyle(ButtonStyle.Primary)
+                        .setEmoji('➡️'),
+                );
+            infoContainer.addActionRowComponents(pageButtons, backButton);
+        } else {
+            infoContainer.addActionRowComponents(backButton);
         }
 
-
-        let battleInfoEmbed = new EmbedBuilder()
-            .setTitle('Battle Information 📒')
-            .setDescription(`**Turn #${db_battle_data.turn_counter + 1}**\n`)
-            .addFields(oochInfoFields)
-            
-        await interaction.update({ content: null, embeds: [battleInfoEmbed], components: [backButton] });
+        await interaction.update({ components: [infoContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
 

@@ -16,7 +16,10 @@ import {
     AttachmentBuilder,
     ButtonBuilder,
     ButtonStyle,
+    ContainerBuilder,
     EmbedBuilder,
+    MessageFlags,
+    TextDisplayBuilder,
 } from 'discord.js';
 import {
     capitalize,
@@ -482,7 +485,12 @@ export async function prompt_battle_actions(battle_id) {
             let userThread = botClient.channels.cache.get(`${user.thread_id}`);
             if (userThread == undefined) return;
 
-            await userThread.send({ content: `**-- Select An Action --**`, components: [inputRow, inputRow2, inputRow3] });
+            const header = new TextDisplayBuilder().setContent(`# Select An Action`);
+            const container = new ContainerBuilder()
+                .addTextDisplayComponents(header)
+                .addActionRowComponents(inputRow, inputRow2, inputRow3);
+
+            await userThread.send({ components: [container], flags: MessageFlags.IsComponentsV2 });
         }
     }); 
 
@@ -2085,10 +2093,9 @@ export async function end_of_round_prompt_switch(db_battle_data){
                     notify_death = true;
                     users_to_wait_for.push(user.user_id);
                     ooch_inv = user.party;
-                    
+
                     switchButtons1 = new ActionRowBuilder();
                     switchButtons2 = new ActionRowBuilder();
-                    
                     for (let i = 0; i < ooch_inv.length; i++) {
                         ooch_check = ooch_inv[i];
                         ooch_emote = monster_data.get(`${ooch_check.id}`, 'emote');
@@ -2096,14 +2103,14 @@ export async function end_of_round_prompt_switch(db_battle_data){
                         ooch_hp = `${ooch_check.current_hp}/${ooch_check.stats.hp} HP`;
                         ooch_button_color = ButtonStyle.Primary;
                         ooch_disable = false;
-    
+
                         if (i == user.active_slot) {
                             ooch_button_color = ButtonStyle.Success;
                             ooch_disable = true;
                         } else if (ooch_check.current_hp <= 0) {
                             ooch_disable = true;
                         }
-    
+
                         ((i <= 1) ? switchButtons1 : switchButtons2).addComponents(
                             new ButtonBuilder()
                                 .setCustomId(`switch_${i}`)
@@ -2115,12 +2122,26 @@ export async function end_of_round_prompt_switch(db_battle_data){
                     }
 
                     thread = botClient.channels.cache.get(`${user.thread_id}`);
-                    await thread.send({ content: `**-- Select An Oochamon To Switch To --**`, components: (switchButtons2.components.length != 0) ? [switchButtons1, switchButtons2] : [switchButtons1] });
+
+                    const switchHeader = new TextDisplayBuilder().setContent(`# Select An Oochamon To Switch To`);
+                    const switchContainer = new ContainerBuilder()
+                        .addTextDisplayComponents(switchHeader);
+
+                    // Add switch button rows
+                    if (switchButtons2.components.length != 0) {
+                        switchContainer.addActionRowComponents(switchButtons1, switchButtons2);
+                    } else {
+                        switchContainer.addActionRowComponents(switchButtons1);
+                    }
+
+                    await thread.send({ components: [switchContainer], flags: MessageFlags.IsComponentsV2 });
 
                     collector = thread.createMessageComponentCollector({ max: 1 });
 
                     collector.on('collect', async i => {
-                        await i.update({ content: 'Sending out new mon...', components: [] });
+                        const confirmText = new TextDisplayBuilder().setContent('Sending out new mon...');
+                        const confirmContainer = new ContainerBuilder().addTextDisplayComponents(confirmText);
+                        await i.update({ components: [confirmContainer], flags: MessageFlags.IsComponentsV2 });
                         await i.deleteReply();
 
                         next_slot = parseInt(i.customId.replace('switch_', ''));
@@ -2129,7 +2150,7 @@ export async function end_of_round_prompt_switch(db_battle_data){
                         new_battle_action_switch(db_battle_data, user.user_index, next_slot, false);
                         users_to_wait_for = users_to_wait_for.filter(u => u != user.user_id);
                     });
-                    
+
                 break;
                 default:
                     for(let [i, ooch] of user.party.entries()){
@@ -4047,7 +4068,11 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
     }
 
     if (play_end && is_online) {
-        await thread.send({ content: 'A player has quit the battle, so it has been closed.', components: [closeButton] });
+        const quitText = new TextDisplayBuilder().setContent('A player has quit the battle, so it has been closed.');
+        const quitContainer = new ContainerBuilder()
+            .addTextDisplayComponents(quitText)
+            .addActionRowComponents(closeButton);
+        await thread.send({ components: [quitContainer], flags: MessageFlags.IsComponentsV2 });
     }
 }
 
