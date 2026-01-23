@@ -195,7 +195,6 @@ export async function battle_handler(interaction) {
     async function end_prompt_input(db_battle_data, interaction) {
         console.log(db_battle_data.users);
         if (db_battle_data.users.every(u => u.action_selected !== false)) {
-            db_battle_data.battle_msg_counter -= 1;
             battle_data.set(battle_id, db_battle_data);
             const waitText = new TextDisplayBuilder().setContent(`Waiting for other players...`);
             const waitContainer = new ContainerBuilder().addTextDisplayComponents(waitText);
