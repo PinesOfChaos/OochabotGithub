@@ -79,13 +79,15 @@ export async function shop_handler(interaction) {
         let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });
         let shopGreeting = new TextDisplayBuilder().setContent(greetingDialogue);
         let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large);
-        let shopText = new TextDisplayBuilder().setContent(shopTextContent);
+        let shopText = false;
+        if (shopTextContent) shopText = new TextDisplayBuilder().setContent(shopTextContent);
 
         let shopContainer = new ContainerBuilder()
             .addTextDisplayComponents(shopHeader)
             .addMediaGalleryComponents(shopGallery)
             .addTextDisplayComponents(shopGreeting)
-            .addSeparatorComponents(shopSpacer)
+            .addSeparatorComponents(shopSpacer);
+        if (shopText) shopContainer
             .addTextDisplayComponents(shopText);
 
         for (let row of actionRows) {
