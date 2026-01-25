@@ -144,6 +144,83 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
 }
 
 /**
+ * Creates and returns an info container (Components v2) based on the Oochamon you pass in
+ * For use with menu systems using Components v2.
+ * @param {Object} ooch The oochamon to make an info container for
+ * @param {String} user_id The user ID who owns the Oochamon
+ * @returns Object with { section, file, footerText }
+ */
+export async function ooch_info_container(ooch, user_id = false) {
+    const { type_to_emote } = await import('./func_battle.js');
+    const { get_ooch_art } = await import('./func_other.js');
+
+    let ooch_title = `# ${ooch.nickname}`;
+    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`
+        : ooch_title += ` [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`;
+
+    let ooch_data = monster_data.get(`${ooch.id}`);
+    let expBar = filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
+
+    // Build moveset string
+    let moveset_str = ``;
+    for (let move_id of ooch.moveset) {
+        let move = move_data.get(`${move_id}`);
+        if (!move) continue;
+        let accuracy = Math.abs(move.accuracy);
+        if (accuracy == 1) accuracy = 100;
+        if (move.damage !== 0) {
+            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${accuracy}%** accuracy\n`;
+        } else {
+            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${accuracy}%** accuracy\n`;
+        }
+    }
+
+    let iv_hp = Math.round((ooch.stats.hp_iv - 1) * 20);
+    let iv_atk = Math.round((ooch.stats.atk_iv - 1) * 20);
+    let iv_def = Math.round((ooch.stats.def_iv - 1) * 20);
+    let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20);
+
+    let tame_status = get_tame_string(ooch.tame_value);
+
+    // Build the info text for the section
+    let infoText = `${ooch_title}\n`;
+    infoText += `HP: **${ooch.current_hp}/${ooch.stats.hp}**\n`;
+    infoText += `Ability: **${ability_data.get(`${ooch.ability}`, 'name')}**\n`;
+    infoText += `Type: **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n`;
+
+    infoText += `## Moveset: \n${moveset_str}`;
+
+    infoText += `## Stats:\n`;
+    infoText += `HP: **${ooch.stats.hp}** (${get_iv_stars(iv_hp)})\n`;
+    infoText += `ATK: **${ooch.stats.atk}** (${get_iv_stars(iv_atk)})\n`;
+    infoText += `DEF: **${ooch.stats.def}** (${get_iv_stars(iv_def)})\n`;
+    infoText += `SPD: **${ooch.stats.spd}** (${get_iv_stars(iv_spd)})\n`;
+
+    if (ooch.level != 50) {
+        infoText += `\n**EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):**\n${expBar}\n`;
+    }
+
+    infoText += `\n**Taming Status:** ${tame_status}`;
+
+    // Build footer text for evolution info
+    let footerText = '';
+    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
+        let oochadex_check = profile.get(`${user_id}`, `oochadex[${ooch_data.evo_id}]`);
+        if (oochadex_check == undefined) {
+            oochadex_check = { caught: 0 };
+        }
+        footerText = `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
+    }
+
+    return {
+        infoText: infoText,
+        file: get_ooch_art(ooch_data.name, ooch.variant),
+        fileName: `${ooch_data.name.toLowerCase()}${ooch.variant}.png`,
+        footerText: footerText
+    };
+}
+
+/**
  * Returns true or false based on a percent chance out of 100.
  * @param {Number} percent Percent chance to return true.
  */

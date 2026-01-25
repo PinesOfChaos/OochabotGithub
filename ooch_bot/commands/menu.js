@@ -41,6 +41,4 @@ export async function execute(interaction) {
     // oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
     // if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
 
-    // // Taming button undisable with flag
-    // if (user_profile.flags.includes('ev_tamagoochi')) party_extra_buttons_2.components[2].setDisabled(false);
 }

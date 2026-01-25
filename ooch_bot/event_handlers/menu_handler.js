@@ -1,11 +1,12 @@
-import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags, ButtonBuilder } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags, ButtonBuilder, ContainerBuilder, TextDisplayBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, ThumbnailBuilder, SeparatorSpacingSize } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data, menu_data } from '../db.js';
-import { inRange, clamp } from 'lodash-es';
+import { inRange, clamp, capitalize } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item, add_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState, TamingAction } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { ooch_info_embed, get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards, get_ooch_art } from '../func_other.js';
+import { get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards, get_ooch_art, get_iv_stars, ooch_info_container } from '../func_other.js';
+import { filledBar } from 'string-progressbar';
 
 // Menu operation is handled in this
 export async function menu_handler(interaction, init=false) {
@@ -152,10 +153,210 @@ export async function menu_handler(interaction, init=false) {
                         value: `${pre}objective`,
                     }));
 
+    /**
+     * Builds a standard menu container with header text and action rows
+     * @param {string} headerText - The header/content text for the menu
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @param {Object} options - Optional settings like footerText, imageUrl
+     * @returns {ContainerBuilder}
+     */
+    function buildMenuContainer(headerText, actionRows, options = {}) {
+        const container = new ContainerBuilder();
+
+        if (headerText) {
+            const header = new TextDisplayBuilder().setContent(headerText);
+            container.addTextDisplayComponents(header);
+        }
+
+        if (options.imageUrl) {
+            const gallery = new MediaGalleryBuilder().addItems({ media: { url: options.imageUrl } });
+            container.addMediaGalleryComponents(gallery);
+        }
+
+        if (options.addSeparator) {
+            container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+        }
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        if (options.footerText) {
+            container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+            const footer = new TextDisplayBuilder().setContent(`*${options.footerText}*`);
+            container.addTextDisplayComponents(footer);
+        }
+
+        return container;
+    }
+
+    /**
+     * Builds an Oochamon info container using SectionBuilder with thumbnail
+     * @param {Object} oochInfo - Result from ooch_info_container()
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @returns {ContainerBuilder}
+     */
+    function buildOochInfoContainer(oochInfo, actionRows) {
+        const container = new ContainerBuilder();
+
+        const section = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(oochInfo.infoText))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${oochInfo.fileName}`));
+
+        container.addSectionComponents(section);
+
+        if (oochInfo.footerText) {
+            container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+            container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`*${oochInfo.footerText}*`));
+        }
+
+        container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        return container;
+    }
+
+    /**
+     * Builds a bag/inventory container
+     * @param {string} title - The bag category title
+     * @param {string} itemList - The formatted item list string
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @param {number} oochabux - The user's oochabux amount
+     * @returns {ContainerBuilder}
+     */
+    function buildBagContainer(title, itemList, actionRows, oochabux) {
+        const container = new ContainerBuilder();
+
+        const header = new TextDisplayBuilder().setContent(`## ${title}`);
+        container.addTextDisplayComponents(header);
+
+        if (itemList) {
+            const content = new TextDisplayBuilder().setContent(itemList);
+            container.addTextDisplayComponents(content);
+        }
+
+        container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        const footer = new TextDisplayBuilder().setContent(`*Oochabux: $${oochabux}*`);
+        container.addTextDisplayComponents(footer);
+
+        return container;
+    }
+
+    /**
+     * Builds an Oochadex entry container
+     * @param {Object} dexData - Data from buildDexData
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @returns {ContainerBuilder}
+     */
+    function buildDexContainer(dexData, actionRows) {
+        const container = new ContainerBuilder();
+
+        if (dexData.is_caught && dexData.oochData) {
+            const ooch = dexData.oochData;
+            let headerText = `# ${ooch.name} ${type_to_emote(ooch.type)}`;
+            const header = new TextDisplayBuilder().setContent(headerText);
+            container.addTextDisplayComponents(header);
+
+            let statsText = `*${ooch.oochive_entry}*\n`;
+            statsText += `### Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
+            statsText += `### Abilities:\n${dexData.abilities.join(', ')}`;
+
+            const section = new SectionBuilder()
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(statsText))
+                .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${ooch.name.toLowerCase().replace("'", "")}.png`));
+
+            container.addSectionComponents(section);
+
+            if (dexData.evoText) {
+                container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+                container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`*${dexData.evoText}*`));
+            }
+        } else {
+            container.addTextDisplayComponents(new TextDisplayBuilder().setContent('You have not caught this Oochamon yet! Go out there and catch it in the wild!'));
+        }
+
+        container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        return container;
+    }
+
+    /**
+     * Builds a taming UI container with image
+     * @param {Object} ooch - The oochamon being tamed
+     * @param {string} tamingStatus - The current taming status string
+     * @param {string} description - Optional description text
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @param {Object} options - Additional options like fieldsText
+     * @returns {ContainerBuilder}
+     */
+    function buildTamingContainer(ooch, tamingStatus, description, actionRows, options = {}) {
+        const container = new ContainerBuilder();
+
+        const header = new TextDisplayBuilder().setContent(`## Oochamon Taming for ${ooch.nickname}`);
+        container.addTextDisplayComponents(header);
+
+        const gallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://file.jpg' } });
+        container.addMediaGalleryComponents(gallery);
+
+        if (description) {
+            container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`*${description}*`));
+        }
+
+        if (options.fieldsText) {
+            container.addTextDisplayComponents(new TextDisplayBuilder().setContent(options.fieldsText));
+        }
+
+        container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`*Taming Status: ${tamingStatus}*`));
+
+        return container;
+    }
+
+    /**
+     * Builds a preferences container
+     * @param {Array} prefDescriptions - Array of preference description strings
+     * @param {Array} actionRows - Array of ActionRowBuilder objects
+     * @returns {ContainerBuilder}
+     */
+    function buildPreferencesContainer(prefDescriptions, actionRows) {
+        const container = new ContainerBuilder();
+
+        const header = new TextDisplayBuilder().setContent(`## ⚙️ Preferences ⚙️`);
+        container.addTextDisplayComponents(header);
+
+        const content = new TextDisplayBuilder().setContent(prefDescriptions.join('\n'));
+        container.addTextDisplayComponents(content);
+
+        container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+
+        for (let row of actionRows) {
+            container.addActionRowComponents(row);
+        }
+
+        return container;
+    }
+
     // Initialize all variables used across multiple sub menus here
     let customId, selected, bag_select;
     let ooch_party, pa_components, move_list_select = new ActionRowBuilder(), move_list_select_options = [],
-    bagEmbed, heal_inv, consumable_inv, prism_inv, key_inv, map_inv, skin_inv, display_inv, prefEmbed;
+    heal_inv, consumable_inv, prism_inv, key_inv, map_inv, skin_inv, display_inv;
     let user_profile = profile.get(`${interaction.user.id}`);
     let menuMsg = interaction.message;
 
@@ -168,11 +369,6 @@ export async function menu_handler(interaction, init=false) {
     key_inv = user_profile.inventory[ItemCategory.Key];
     skin_inv = user_profile.inventory[ItemCategory.Skin];
     map_inv = user_profile.inventory[ItemCategory.Map];
-
-    bagEmbed = new EmbedBuilder()
-        .setColor('#808080')
-        .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-        .setTitle('🔑 Misc Items');
 
     // Get persistent data from menu_data
     let menu_state = menu_data.get(menu_id);
@@ -189,20 +385,15 @@ export async function menu_handler(interaction, init=false) {
         `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`,
         `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`];
 
-    prefEmbed = new EmbedBuilder()
-        .setColor('#808080')
-        .setTitle('⚙️ Preferences ⚙️')
-        .setDescription(pref_desc.join('\n'));
-
-    let dexEmbed;
-    if (selected_ooch) {
-        dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-    }
-
     ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
 
     if (init) {
-        await interaction.editReply({ content: `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, components: [settings_row_1, settings_row_2, settings_row_3] });
+        let menuHeaderText = `# Menu`;
+        if (user_profile.settings.objective) menuHeaderText += `\n**Current Objective:** ***${user_profile.objective}***`;
+        if (user_profile.repel_steps > 0) menuHeaderText += `\n*Repulsor Steps: ${user_profile.repel_steps}*`;
+
+        const initContainer = buildMenuContainer(menuHeaderText, [settings_row_1, settings_row_2, settings_row_3]);
+        await interaction.editReply({ components: [initContainer], flags: MessageFlags.IsComponentsV2 });
         return;
     }
 
@@ -386,28 +577,31 @@ export async function menu_handler(interaction, init=false) {
         ooch_data = monster_data.get(`${ooch_id}`);
         let ooch_img_file;
         let is_caught = false;
+        let ooch_abilities = [];
+        let evoText = '';
+
         if (ooch_data != undefined) {
-            let ooch_abilities = ooch_data.abilities.map(v => v = ability_data.get(`${v}`, 'name'));
+            ooch_abilities = ooch_data.abilities.map(v => ability_data.get(`${v}`, 'name'));
             ooch_img_file = get_ooch_art(ooch_data.name);
-            dexEmbed = new EmbedBuilder()
-                .setColor('#808080')
-                .setTitle(`${ooch_data.name} (Type: ${type_to_emote(ooch_data.type)}`)
-                .setThumbnail(`attachment://${(ooch_data.name).toLowerCase().replace('\'', '')}.png`)
-                .setDescription(`*${ooch_data.oochive_entry}*`)
-                .addFields([{ name: 'Stats', value: `HP: **${ooch_data.hp}**\nATK: **${ooch_data.atk}**\nDEF: **${ooch_data.def}**\nSPD: **${ooch_data.spd}**` }])
-                .addFields([{ name: 'Abilities', value: ooch_abilities.join(', ') }]);
 
             if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
-                if (oochadex_data[ooch_data.evo_id].caught != 0) {
-                    dexEmbed.setFooter({ text: `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
+                if (oochadex_data[ooch_data.evo_id] && oochadex_data[ooch_data.evo_id].caught != 0) {
+                    evoText = `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
                 } else {
-                    dexEmbed.setFooter({ text: `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''} • Caught: ${oochadex_data[0].caught}` });
+                    evoText = `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
                 }
             }
-            is_caught = oochadex_data[ooch_data.id].caught > 0;
+            is_caught = oochadex_data[ooch_data.id] && oochadex_data[ooch_data.id].caught > 0;
         }
 
-        return { embed: dexEmbed, sel_row: oochadex_sel_1, img: ooch_img_file, is_caught: is_caught };
+        return {
+            sel_row: oochadex_sel_1,
+            img: ooch_img_file,
+            is_caught: is_caught,
+            oochData: ooch_data,
+            abilities: ooch_abilities,
+            evoText: evoText
+        };
     }
 
 
@@ -437,21 +631,25 @@ export async function menu_handler(interaction, init=false) {
     // Back to Main Menu
     if (action == 'main_back') {
         let user_profile = profile.get(`${interaction.user.id}`);
-        await interaction.update({ content: `## Menu${user_profile.settings.objective ? `\n**Current Objective:** ***${user_profile.objective}***` : ``}${user_profile.repel_steps > 0 ? `\n*Repulsor Steps: ${user_profile.repel_steps}*` : ``}`, embeds: [], components: [settings_row_1, settings_row_2, settings_row_3], files: [] });
+        let menuHeaderText = `# Menu`;
+        if (user_profile.settings.objective) menuHeaderText += `\n**Current Objective:** ***${user_profile.objective}***`;
+        if (user_profile.repel_steps > 0) menuHeaderText += `\n*Repulsor Steps: ${user_profile.repel_steps}*`;
+
+        const mainMenuContainer = buildMenuContainer(menuHeaderText, [settings_row_1, settings_row_2, settings_row_3]);
+        await interaction.update({ components: [mainMenuContainer], files: [], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Back to Party Select
     if (action == 'party_back') {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         pa_components = buildPartyData(ooch_party);
-        interaction.update({ content: `**Oochamon Party:**`, components: pa_components, files: [], embeds: [] });
+        const partyContainer = buildMenuContainer(`## Oochamon Party:`, pa_components);
+        interaction.update({ components: [partyContainer], files: [], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Back to Oochamon View
     if (action == 'oochamon_back') {
-        let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
+        let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
         let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
         if (inRange(selected_ooch.tame_value, 121, 200)) {
@@ -460,14 +658,16 @@ export async function menu_handler(interaction, init=false) {
 
         party_buttons.push(party_back_button);
 
-        await interaction.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: party_buttons });
+        const oochBackContainer = buildOochInfoContainer(oochInfo, party_buttons);
+        await interaction.update({ components: [oochBackContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Back to Item Select
     if (action == 'item_back') {
         let box_row = await buildItemData(ItemCategory.Consumable);
-        bagEmbed.setDescription(box_row[0]);
-        interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, box_row[1], back_button] });
+        user_profile = profile.get(`${interaction.user.id}`);
+        const bagContainer = buildBagContainer('🎒 Consumable Items', box_row[0], [bag_buttons, box_row[1], back_button], user_profile.oochabux);
+        interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     //#endregion
@@ -476,7 +676,8 @@ export async function menu_handler(interaction, init=false) {
     if (action == 'party') {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         pa_components = buildPartyData(ooch_party);
-        interaction.update({ content: `**Oochamon Party:**`, components: pa_components });
+        const partyContainer = buildMenuContainer(`## Oochamon Party:`, pa_components);
+        interaction.update({ components: [partyContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Quick Party Heal Oochamon
@@ -545,7 +746,8 @@ export async function menu_handler(interaction, init=false) {
         pa_components = buildPartyData(oochParty);
 
         let followUpMsg = await interaction.followUp({ content: outputMsg });
-        await interaction.update({ content: `**Oochamon Party:**`, components: pa_components });
+        const quickHealContainer = buildMenuContainer(`## Oochamon Party:`, pa_components);
+        await interaction.update({ components: [quickHealContainer], flags: MessageFlags.IsComponentsV2 });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
     }
@@ -593,9 +795,10 @@ export async function menu_handler(interaction, init=false) {
             party_extra_buttons.components[2].setDisabled(true);
         }
 
-        dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
+        // If we have the tamagoochi flag, then enable oochamon taming.
+        /*if (user_profile.flags.includes('ev_tamagoochi'))*/ party_extra_buttons_2.components[2].setDisabled(false);
+
+        let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
         let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
         if (inRange(selected_ooch.tame_value, 121, 201)) {
@@ -621,7 +824,8 @@ export async function menu_handler(interaction, init=false) {
 
         party_buttons.push(party_back_button);
 
-        interaction.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: party_buttons });
+        const partyOochContainer = buildOochInfoContainer(oochInfo, party_buttons);
+        interaction.update({ components: [partyOochContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Set to Primary Button
@@ -631,7 +835,10 @@ export async function menu_handler(interaction, init=false) {
         [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
         profile.set(interaction.user.id, ooch_party, 'ooch_party');
         party_extra_buttons.components[0].setDisabled(true);
-        interaction.update({ content: null, embeds: [dexEmbed], components: dex_components });
+
+        let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
+        const primaryContainer = buildOochInfoContainer(oochInfo, dex_components);
+        interaction.update({ components: [primaryContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
         let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
@@ -664,7 +871,8 @@ export async function menu_handler(interaction, init=false) {
                 .setPlaceholder('Select an item in your inventory to heal with!')
                 .addOptions(heal_select_options));
 
-        await interaction.update({ content: `**Select the healing item you'd like to use on this Oochamon!**`, components: [bag_select, back_button] });
+        const healSelectContainer = buildMenuContainer(`**Select the healing item you'd like to use on this Oochamon!**`, [bag_select, back_button]);
+        await interaction.update({ components: [healSelectContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Oochamon Heal Select Menu
@@ -679,10 +887,9 @@ export async function menu_handler(interaction, init=false) {
         party_extra_buttons.components[1].setDisabled(heal_inv.length == 0 ? true : false);
 
         if (selected_ooch.current_hp == selected_ooch.stats.hp) party_extra_buttons.components[1].setDisabled(true);
-        let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
-        await interaction.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
+        let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
+        const healedContainer = buildOochInfoContainer(oochInfo, dex_components);
+        await interaction.update({ components: [healedContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
 
         let followUpMsg = await interaction.followUp({ content: `Healed **${amountHealed} HP** on ${selected_ooch.emote} **${selected_ooch.nickname}** with ${db_item_data.emote} **${db_item_data.name}**` });
         await wait(2500);
@@ -696,10 +903,10 @@ export async function menu_handler(interaction, init=false) {
         let nickname = selected_ooch.nickname == selected_ooch.name ? false : selected_ooch.nickname;
 
         let newEvoOoch = await create_ooch(oochData.evo_id, {
-            level: selected_ooch.level, 
-            move_list: selected_ooch.moveset, 
-            nickname: nickname, 
-            cur_exp: selected_ooch.current_exp, 
+            level: selected_ooch.level,
+            move_list: selected_ooch.moveset,
+            nickname: nickname,
+            cur_exp: selected_ooch.current_exp,
             hp_iv : (selected_ooch.stats.hp_iv - 1) * 20,
             atk_iv: (selected_ooch.stats.atk_iv - 1) * 20,
             def_iv: (selected_ooch.stats.def_iv - 1) * 20,
@@ -707,9 +914,7 @@ export async function menu_handler(interaction, init=false) {
             variant: selected_ooch.variant
 
         });
-        let dexEmbed = await ooch_info_embed(newEvoOoch, interaction.user.id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
+        let oochInfo = await ooch_info_container(newEvoOoch, interaction.user.id);
 
         oochData = monster_data.get(`${newEvoOoch.id}`);
 
@@ -717,13 +922,14 @@ export async function menu_handler(interaction, init=false) {
             party_extra_buttons.components[2].setDisabled(true);
         }
 
-        interaction.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: dex_components });
+        const evolveContainer = buildOochInfoContainer(oochInfo, dex_components);
+        interaction.update({ components: [evolveContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
 
         // Finalize putting the ooch into the database and in our menu
         profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
         profile.math(interaction.user.id, '+', 1, `oochadex[${newEvoOoch.id}].caught`);
 
-        let followUpMsg = await interaction.followUp({ content: `# You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**! 🎉🎉` });
+        let followUpMsg = await interaction.followUp({ content: `# You successfully evolved ${selected_ooch.emote} **${selected_ooch.name}** into ${newEvoOoch.emote} **${newEvoOoch.name}**!` });
         selected_ooch = newEvoOoch;
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
@@ -765,22 +971,20 @@ export async function menu_handler(interaction, init=false) {
             return true;
         };
 
-        interaction.update({ content: `Enter a nickname for your ${selected_ooch.name}! (16 characters max, Type \`reset\` to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, components: [], embeds: [] });
+        const nicknameContainer = buildMenuContainer(`Enter a nickname for your ${selected_ooch.name}! (16 characters max, Type \`reset\` to remove the nickname.)\nCurrent Nickname is: **${selected_ooch.nickname}**`, []);
+        interaction.update({ components: [nicknameContainer], flags: MessageFlags.IsComponentsV2 });
         let nick_msg_collector = menuMsg.channel.createMessageCollector({ filter: nick_filter, max: 1 });
         nick_msg_collector.on('collect', async (msg) => {
             let new_nick = (msg.content.toLowerCase() != 'reset' ? msg.content : selected_ooch.name);
             selected_ooch.nickname = new_nick;
 
-            // Generate a new ooch title to place into our embed
-            let ooch_title = `${selected_ooch.nickname}`;
-            selected_ooch.nickname != selected_ooch.name ? ooch_title += ` (${selected_ooch.name}) ${type_to_emote(selected_ooch.type)}` : ooch_title += ` ${type_to_emote(selected_ooch.type)}`;
-
             profile.set(interaction.user.id, new_nick, `ooch_party[${party_idx}].nickname`);
 
-            let dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
+            let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
+            const nicknameResultContainer = buildOochInfoContainer(oochInfo, dex_components);
 
-            menuMsg.edit({ content: null, embeds: [dexEmbed], components: dex_components });
-            await msg.delete().catch(() => { });;
+            menuMsg.edit({ components: [nicknameResultContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
+            await msg.delete().catch(() => { });
         });
     }
 
@@ -788,7 +992,9 @@ export async function menu_handler(interaction, init=false) {
         selected = parseInt(selected.replace('stance_sel_', ''));
         profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].starting_stance`);
 
-        interaction.update({ content: null, embeds: [dexEmbed], components: dex_components });
+        let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
+        const stanceContainer = buildOochInfoContainer(oochInfo, dex_components);
+        interaction.update({ components: [stanceContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
         let followUpMsg = await interaction.followUp({ content: 'You\'ve changed your starting stance!' });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
@@ -797,7 +1003,8 @@ export async function menu_handler(interaction, init=false) {
     // Move switcher button
     if (action == 'moves') {
         let move_buttons = buildMoveData(selected_ooch);
-        interaction.update({ content: `**Moves Switcher for ${selected_ooch.emote} ${selected_ooch.nickname}:**`, embeds: [], components: [move_buttons[0], move_buttons[1], sel_ooch_back_button], files: [] });
+        const moveSwitcherContainer = buildMenuContainer(`**Moves Switcher for ${selected_ooch.emote} ${selected_ooch.nickname}:**`, [move_buttons[0], move_buttons[1], sel_ooch_back_button]);
+        interaction.update({ components: [moveSwitcherContainer], files: [], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Move switcher button/select menu handler
@@ -811,7 +1018,7 @@ export async function menu_handler(interaction, init=false) {
             for (let db_move_at_lv of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
                 if (db_move_at_lv[0] <= selected_ooch.level && !selected_ooch.moveset.includes(db_move_at_lv[1])) {
                     if (db_move_at_lv[0] == -1 && selected_ooch.unlocked_special_move == false) continue;
-                    
+
                     let db_move_data = move_data.get(`${db_move_at_lv[1]}`);
                     move_list_select_options.push(
                         new StringSelectMenuOptionBuilder()
@@ -832,37 +1039,27 @@ export async function menu_handler(interaction, init=false) {
             // Update menu state with move selection index
             menu_data.set(menu_id, { ...menu_state, move_sel_idx });
 
-            let displayContent = `Select a move to use!`;
-            let moveEmbed;
+            let displayContent = `**Selected Move:**\n`;
             if (move_sel_id) {
                 let db_move_data = move_data.get(`${move_sel_id}`);
                 if (db_move_data.accuracy == -1) db_move_data.accuracy = 100;
-                let move_string = `
-                    ${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**
-                        *${db_move_data.description}*
-                    `;
-
-                moveEmbed = new EmbedBuilder()
-                    .setTitle('Selected Move')
-                    .addFields([{
-                        name: `${type_to_emote([db_move_data.type])} ${db_move_data.name}`,
-                        value: move_string,
-                        inline: true
-                    }]);
-
-                displayContent = ``;
+                displayContent += `${type_to_emote([db_move_data.type])} **${db_move_data.name}**\n`;
+                displayContent += `${db_move_data.damage > 0 ? `**${db_move_data.damage} Power / ` : `**`}${db_move_data.accuracy}% Accuracy**\n`;
+                displayContent += `*${db_move_data.description}*`;
+            } else {
+                displayContent = `Select a move to use!`;
             }
 
-            interaction.update({ content: displayContent, embeds: [moveEmbed], components: [move_list_select, sel_ooch_back_button], files: [] });
+            const moveSelectContainer = buildMenuContainer(displayContent, [move_list_select, sel_ooch_back_button]);
+            interaction.update({ components: [moveSelectContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         } else if (selected.includes('move_sel_')) { // if a select menu move is selected
             selected = parseInt(selected.replace(`move_sel_`, ''));
             profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].moveset[${move_sel_idx}]`);
             selected_ooch.moveset[move_sel_idx] = selected;
 
-            dexEmbed = await ooch_info_embed(selected_ooch, interaction.user.id);
-
             let move_buttons = buildMoveData(selected_ooch);
-            interaction.update({ content: '**Moves Switcher:**', embeds: [], components: [move_buttons[0], move_buttons[1], sel_ooch_back_button], files: [] });
+            const moveSwitcherConfirmContainer = buildMenuContainer(`**Moves Switcher:**`, [move_buttons[0], move_buttons[1], sel_ooch_back_button]);
+            interaction.update({ components: [moveSwitcherConfirmContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
@@ -873,18 +1070,12 @@ export async function menu_handler(interaction, init=false) {
 
     if (action == 'taming') {
         const taming_image = await setup_taming_picture(selected_ooch);
-        const taming_status = await get_tame_string(selected_ooch.tame_value)
-        const taming_embed = new EmbedBuilder()
-            .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
-            .setImage(`attachment://file.jpg`)
-            .setFooter({ text: taming_status })
+        const taming_status = await get_tame_string(selected_ooch.tame_value);
 
-        // if (selected_ooch.tame_value >= 41) taming_buttons.components[0].setDisabled(false)
-        // if (selected_ooch.tame_value >= 81) taming_buttons.components[1].setDisabled(false)
-        // if (selected_ooch.tame_value >= 121) taming_buttons.components[2].setDisabled(false)
         if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
 
-        interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        const tamingContainer = buildTamingContainer(selected_ooch, taming_status, null, [taming_buttons, sel_ooch_back_button]);
+        interaction.update({ components: [tamingContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (action == 'taming_feed') {
@@ -912,55 +1103,52 @@ export async function menu_handler(interaction, init=false) {
                 .setPlaceholder(`Select a treat for ${selected_ooch.nickname}!`)
                 .addOptions(treat_select_options));
 
-        interaction.update({ components: [treat_select, sel_ooch_back_button] });
+        const feedSelectContainer = buildMenuContainer(`**Select a treat for ${selected_ooch.nickname}:**`, [treat_select, sel_ooch_back_button]);
+        interaction.update({ components: [feedSelectContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (action.includes('taming_feed_id_') || customId.includes('taming_feed_item_select')) {
         const feed_item_id = selected.split('_')[3];
         const food_data = item_data.get(feed_item_id);
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Feed);
-        
+
         let feed_result = selected_ooch.type.includes(food_data.potency) || food_data.potency == -1;
         if (feed_result) {
-            selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value + (food_data.potency == -1 ? 5 : 10))
+            selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value + (food_data.potency == -1 ? 5 : 10));
         } else {
-            selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value - 10)
+            selected_ooch = update_tame_value(selected_ooch, selected_ooch.tame_value - 10);
         }
         remove_item(interaction.user.id, feed_item_id, 1);
 
-        user_profile.ooch_party[party_idx] = selected_ooch
+        user_profile.ooch_party[party_idx] = selected_ooch;
 
-        const taming_status = get_tame_string(selected_ooch.tame_value)
+        const taming_status = get_tame_string(selected_ooch.tame_value);
         const taming_feed_text = feed_text(selected_ooch.nickname, feed_result);
-        const taming_embed = new EmbedBuilder()
-            .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
-            .setDescription(`*${taming_feed_text}*`)
-            .setImage(`attachment://file.jpg`)
-            .setFooter({ text: `Taming Status: ${taming_status}` })
 
-        interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
+
+        const feedResultContainer = buildTamingContainer(selected_ooch, taming_status, taming_feed_text, [taming_buttons, sel_ooch_back_button]);
+        interaction.update({ components: [feedResultContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (action == 'taming_pet') {
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Pet);
-        const taming_status = get_tame_string(selected_ooch.tame_value)
+        const taming_status = get_tame_string(selected_ooch.tame_value);
         const taming_pet_text = pet_text(selected_ooch.nickname, selected_ooch.tame_value);
-        const taming_embed = new EmbedBuilder()
-            .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
-            .setDescription(`*${taming_pet_text}*`)
-            .setImage(`attachment://file.jpg`)
-            .setFooter({ text: taming_status })
-            
-        interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+
+        if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
+
+        const petContainer = buildTamingContainer(selected_ooch, taming_status, taming_pet_text, [taming_buttons, sel_ooch_back_button]);
+        interaction.update({ components: [petContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });
     }
 
     if (action == 'taming_walk') {
         const taming_image = await setup_taming_picture(selected_ooch, TamingAction.Walk);
-        const taming_status = get_tame_string(selected_ooch.tame_value)
+        const taming_status = get_tame_string(selected_ooch.tame_value);
         const taming_walk_data = walk_get_rewards(selected_ooch.nickname, selected_ooch.tame_value, selected_ooch.level);
 
         for (let loot of taming_walk_data.loot) {
-            add_item(interaction.user.id, loot.id, loot.count)
+            add_item(interaction.user.id, loot.id, loot.count);
         }
 
         let loot_field_str = taming_walk_data.loot.map(item => {
@@ -969,16 +1157,11 @@ export async function menu_handler(interaction, init=false) {
         }).join('\n');
 
         profile.set(interaction.user.id, true, 'walk_taken');
-        taming_buttons.components[2].setDisabled(true)
+        user_profile.walk_taken = true;
+        taming_buttons.components[2].setDisabled(true);
 
-        const taming_embed = new EmbedBuilder()
-            .setTitle(`Oochamon Taming for ${selected_ooch.nickname}`)
-            .setDescription(`*${taming_walk_data.walk_text}*`)
-            .addFields([{ name: 'Items Received From Walking:', value: `${loot_field_str}` }])
-            .setImage(`attachment://file.jpg`)
-            .setFooter({ text: taming_status })
-            
-        interaction.update({ embeds: [taming_embed], components: [taming_buttons, sel_ooch_back_button], files: [taming_image] });
+        const walkContainer = buildTamingContainer(selected_ooch, taming_status, taming_walk_data.walk_text, [taming_buttons, sel_ooch_back_button], { fieldsText: `**Items Received From Walking:**\n${loot_field_str}` });
+        interaction.update({ components: [walkContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });
     }
 
 
@@ -991,9 +1174,8 @@ export async function menu_handler(interaction, init=false) {
         key_inv = user_profile.inventory[ItemCategory.Key];
         skin_inv = user_profile.inventory[ItemCategory.Skin];
         map_inv = user_profile.inventory[ItemCategory.Map];
-        //console.log(consumable_inv);
         display_inv = consumable_inv;
-        let display_title = 'Consumable Items 🎒';
+        let display_title = '🎒 Consumable Items';
         let item_list_str = '';
 
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
@@ -1020,12 +1202,13 @@ export async function menu_handler(interaction, init=false) {
                 display_title = `${get_emote_string('item_prism')} Prisms`;
                 bag_buttons.components[1].setStyle(ButtonStyle.Success);
             }
-            
+
             bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         }
 
         if (consumable_inv.length == 0 && prism_inv.length == 0 && key_inv.length == 0 && map_inv.length == 0 && (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror'))) {
-            interaction.update({ content: `**You have no items in your bag.**`, embeds: [], components: [back_button] });
+            const emptyBagContainer = buildMenuContainer(`**You have no items in your bag.**`, [back_button]);
+            interaction.update({ components: [emptyBagContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -1033,33 +1216,24 @@ export async function menu_handler(interaction, init=false) {
         let consumableData = await buildItemData(ItemCategory.Consumable);
         item_list_str = consumableData[0];
 
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle(display_title)
-            .setDescription(item_list_str.length != 0 ? item_list_str : `You have no items in your bag.`);
-
         if (item_list_str.length != 0) {
-            interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+            const bagContainer = buildBagContainer(display_title, item_list_str, [bag_buttons, consumableData[1], back_button], user_profile.oochabux);
+            interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 });
         } else {
-            interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+            const bagContainer = buildBagContainer(display_title, 'You have no items in your bag.', [bag_buttons, back_button], user_profile.oochabux);
+            interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 });
         }
 
     }
 
     // Consumable Button
     if (action == 'consumable_button') {
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle('🎒 Consumable Items')
-
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
         if (prism_inv.length == 0) bag_buttons.components[1].setDisabled(true);
         if (map_inv.length == 0) bag_buttons.components[2].setDisabled(true);
         if (key_inv.length == 0) bag_buttons.components[3].setDisabled(true);
         if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[4].setDisabled(true);
-        
+
         bag_buttons.components[0].setStyle(ButtonStyle.Success);
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
@@ -1067,18 +1241,12 @@ export async function menu_handler(interaction, init=false) {
         bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
 
         let consumableData = await buildItemData(ItemCategory.Consumable);
-        bagEmbed.setDescription(consumableData[0]);
-        
-        interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+        const consumableContainer = buildBagContainer('🎒 Consumable Items', consumableData[0], [bag_buttons, consumableData[1], back_button], user_profile.oochabux);
+        interaction.update({ components: [consumableContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Prism Button
     if (action == 'prism_button') {
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle(`${get_emote_string('item_prism')} Prisms`);
-
         prism_inv = user_profile.inventory[ItemCategory.Prism];
 
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
@@ -1086,7 +1254,7 @@ export async function menu_handler(interaction, init=false) {
         if (map_inv.length == 0) bag_buttons.components[2].setDisabled(true);
         if (key_inv.length == 0) bag_buttons.components[3].setDisabled(true);
         if (skin_inv.length == 0 || !profile.get(`${interaction.user.id}`, 'flags').includes('ev_magic_mirror')) bag_buttons.components[4].setDisabled(true);
-        
+
         bag_buttons.components[0].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[1].setStyle(ButtonStyle.Success);
         bag_buttons.components[2].setStyle(ButtonStyle.Secondary);
@@ -1100,17 +1268,12 @@ export async function menu_handler(interaction, init=false) {
             item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
         }
 
-        bagEmbed.setDescription(item_list_str);
-        interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+        const prismContainer = buildBagContainer(`${get_emote_string('item_prism')} Prisms`, item_list_str, [bag_buttons, back_button], user_profile.oochabux);
+        interaction.update({ components: [prismContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Map Button
     if (action == 'map_button') {
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle(`${get_emote_string('item_map')} Maps`);
-
         map_inv = user_profile.inventory[ItemCategory.Map];
 
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
@@ -1123,7 +1286,7 @@ export async function menu_handler(interaction, init=false) {
         bag_buttons.components[1].setStyle(ButtonStyle.Secondary);
         bag_buttons.components[2].setStyle(ButtonStyle.Success);
         bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
-        bag_buttons.components[3].setStyle(ButtonStyle.Secondary);
+        bag_buttons.components[4].setStyle(ButtonStyle.Secondary);
         display_inv = map_inv;
         let item_list_str = '';
 
@@ -1132,17 +1295,12 @@ export async function menu_handler(interaction, init=false) {
             item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
         }
 
-        bagEmbed.setDescription(item_list_str);
-        interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+        const mapBagContainer = buildBagContainer(`${get_emote_string('item_map')} Maps`, item_list_str, [bag_buttons, back_button], user_profile.oochabux);
+        interaction.update({ components: [mapBagContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Key Button
     if (action == 'key_button') {
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle('🔑 Misc Items');
-
         key_inv = user_profile.inventory[ItemCategory.Key];
 
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
@@ -1159,28 +1317,27 @@ export async function menu_handler(interaction, init=false) {
         display_inv = key_inv;
         let item_list_str = '';
 
-        // Setup default item list for the default value, healing
         for (const item of display_inv) {
             let item_obj = item_data.get(`${item.id}`);
             item_list_str += `${item_obj.emote} ${item_obj.name}${item.quantity > 1 ? ` | **${item.quantity}x**\n` : `\n`}`;
         }
 
-        bagEmbed.setDescription(item_list_str);
-        await interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, back_button] });
+        const keyContainer = buildBagContainer('🔑 Misc Items', item_list_str, [bag_buttons, back_button], user_profile.oochabux);
+        await interaction.update({ components: [keyContainer], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId == `${pre}${ItemCategory.Consumable}_select`) {
         if (selected == 'n/a') {
             let keyData = await buildItemData(ItemCategory.Consumable);
-            bagEmbed.setDescription(keyData[0]);
-            interaction.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            const cantUseContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
+            interaction.update({ components: [cantUseContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
         let db_item_data = item_data.get(`${selected}`);
 
         if (db_item_data.type == ItemType.Teleport && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
             let keyData = await buildItemData(ItemCategory.Consumable);
-            bagEmbed.setDescription(keyData[0]);
-            interaction.update({ content: `Can't use a teleport right now!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            const cantTeleportContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
+            interaction.update({ components: [cantTeleportContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -1210,8 +1367,8 @@ export async function menu_handler(interaction, init=false) {
 
             if (db_item_data.type != ItemType.Teleport) {
                 let consumableData = await buildItemData(ItemCategory.Consumable);
-                bagEmbed.setDescription(consumableData[0]);
-                interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+                const repelContainer = buildBagContainer('🎒 Consumable Items', consumableData[0], [bag_buttons, consumableData[1], back_button], user_profile.oochabux);
+                interaction.update({ components: [repelContainer], flags: MessageFlags.IsComponentsV2 });
             }
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
@@ -1219,15 +1376,11 @@ export async function menu_handler(interaction, init=false) {
             await followUpMsg.delete().catch(() => { });
         } else {
             let pa_components = buildPartyData(user_profile.ooch_party, true, db_item_data);
-            interaction.update({ content: `Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, embeds: [], components: pa_components });
+            const itemOochSelectContainer = buildMenuContainer(`Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, pa_components);
+            interaction.update({ components: [itemOochSelectContainer], flags: MessageFlags.IsComponentsV2 });
         }
-    } 
+    }
     if (action == 'skin_button') {
-        bagEmbed = new EmbedBuilder()
-            .setColor('#808080')
-            .setFooter({ text: `Oochabux: $${user_profile.oochabux}` })
-            .setTitle(`${get_emote_string('c_000')} Skin Items`);
-
         if (consumable_inv.length == 0) bag_buttons.components[0].setDisabled(true);
         if (prism_inv.length == 0) bag_buttons.components[1].setDisabled(true);
         if (map_inv.length == 0) bag_buttons.components[2].setDisabled(true);
@@ -1241,23 +1394,25 @@ export async function menu_handler(interaction, init=false) {
         bag_buttons.components[4].setStyle(ButtonStyle.Success);
 
         let skinData = await buildItemData(ItemCategory.Skin);
-        bagEmbed.setDescription(skinData[0] == '' ? 'None' : skinData[0]);
-        await interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, skinData[1], back_button] });
+        const skinContainer = buildBagContainer(`${get_emote_string('c_000')} Skin Items`, skinData[0] == '' ? 'None' : skinData[0], [bag_buttons, skinData[1], back_button], user_profile.oochabux);
+        await interaction.update({ components: [skinContainer], flags: MessageFlags.IsComponentsV2 });
     }
-    
+
     if (customId == `${pre}${ItemCategory.Skin}_select`) {
         if (selected == 'n/a') {
             let keyData = await buildItemData(ItemCategory.Skin);
-            bagEmbed.setDescription(keyData[0]);
-            interaction.update({ content: `Can't use this item!`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+            const cantUseSkinContainer = buildBagContainer(`${get_emote_string('c_000')} Skin Items`, keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
+            interaction.update({ components: [cantUseSkinContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
-        
+
         let db_item_data = item_data.get(`${selected}`);
         let item_usage_text = `Changed your skin to ${get_emote_string(db_item_data.potency)}!`;
-        profile.set(interaction.user.id, db_item_data.potency, 'player_sprite')
+        profile.set(interaction.user.id, db_item_data.potency, 'player_sprite');
 
-        await interaction.update({ content: `` });
+        let skinData = await buildItemData(ItemCategory.Skin);
+        const skinChangedContainer = buildBagContainer(`${get_emote_string('c_000')} Skin Items`, skinData[0], [bag_buttons, skinData[1], back_button], user_profile.oochabux);
+        await interaction.update({ components: [skinChangedContainer], flags: MessageFlags.IsComponentsV2 });
 
         let followUpMsg = await interaction.followUp({ content: item_usage_text });
         await wait(5000);
@@ -1327,8 +1482,11 @@ export async function menu_handler(interaction, init=false) {
             case ItemType.GiveExp:
                 if (user_profile.ooch_party[selData[0]].level >= 50) {
                     let keyData = await buildItemData(ItemCategory.Consumable);
-                    bagEmbed.setDescription(keyData[0]);
-                    interaction.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                    const maxLevelExpContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
+                    interaction.update({ components: [maxLevelExpContainer], flags: MessageFlags.IsComponentsV2 });
+                    let maxLvlMsg = await interaction.followUp({ content: `This Oochamon is level 50, and cannot level up any further.` });
+                    await wait(3000);
+                    await maxLvlMsg.delete().catch(() => { });
                     return;
                 }
 
@@ -1340,8 +1498,11 @@ export async function menu_handler(interaction, init=false) {
             case ItemType.LevelUp:
                 if (user_profile.ooch_party[selData[0]].level >= 50) {
                     let keyData = await buildItemData(ItemCategory.Consumable);
-                    bagEmbed.setDescription(keyData[0]);
-                    interaction.update({ content: `This Oochamon is level 50, and cannot level up any further.`, embeds: [bagEmbed], components: [bag_buttons, keyData[1], back_button] });
+                    const maxLevelContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
+                    interaction.update({ components: [maxLevelContainer], flags: MessageFlags.IsComponentsV2 });
+                    let maxLvlMsg = await interaction.followUp({ content: `This Oochamon is level 50, and cannot level up any further.` });
+                    await wait(3000);
+                    await maxLvlMsg.delete().catch(() => { });
                     return;
                 }
 
@@ -1355,8 +1516,8 @@ export async function menu_handler(interaction, init=false) {
         profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
 
         let consumableData = await buildItemData(ItemCategory.Consumable);
-        bagEmbed.setDescription(consumableData[0]);
-        interaction.update({ content: ``, embeds: [bagEmbed], components: [bag_buttons, consumableData[1], back_button] });
+        const itemUsedContainer = buildBagContainer('🎒 Consumable Items', consumableData[0], [bag_buttons, consumableData[1], back_button], user_profile.oochabux);
+        interaction.update({ components: [itemUsedContainer], flags: MessageFlags.IsComponentsV2 });
 
         let followUpMsg = await interaction.channel.send({ content: item_usage_text });
         await wait(5000);
@@ -1372,16 +1533,23 @@ export async function menu_handler(interaction, init=false) {
     // Map
     if (action == 'map') {
         let map_name = user_profile.location_data.area;
-        if (map_name.includes('everchange')) return interaction.update({ content: `**Everchange Cave does not have a map!**` });
-        let map_item = item_data.find('potency', map_name);
-        if (map_item == undefined) return interaction.update({ content: `**You don't have the map for this area yet...**`, components: [back_button] });
-
-        if (get_inv_item(interaction.user.id, ItemCategory.Map, map_item.id) ) {
-            let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
-            interaction.update({ content: `**Map**`, files: [mapImage], components: [back_button] });
+        if (map_name.includes('everchange')) {
+            const noMapContainer = buildMenuContainer(`**Everchange Cave does not have a map!**`, [back_button]);
+            return interaction.update({ components: [noMapContainer], flags: MessageFlags.IsComponentsV2 });
         }
-        else {
-            interaction.update({ content: `**You don't have the map for this area yet...**`, components: [back_button] });
+        let map_item = item_data.find('potency', map_name);
+        if (map_item == undefined) {
+            const noMapYetContainer = buildMenuContainer(`**You don't have the map for this area yet...**`, [back_button]);
+            return interaction.update({ components: [noMapYetContainer], flags: MessageFlags.IsComponentsV2 });
+        }
+
+        if (get_inv_item(interaction.user.id, ItemCategory.Map, map_item.id)) {
+            let mapImage = get_art_file(`./Art/MapArt/map_${map_name}.png`);
+            const mapDisplayContainer = buildMenuContainer(`## Map`, [back_button], { imageUrl: `attachment://map_${map_name}.png` });
+            interaction.update({ components: [mapDisplayContainer], files: [mapImage], flags: MessageFlags.IsComponentsV2 });
+        } else {
+            const noMapFoundContainer = buildMenuContainer(`**You don't have the map for this area yet...**`, [back_button]);
+            interaction.update({ components: [noMapFoundContainer], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
@@ -1398,16 +1566,11 @@ export async function menu_handler(interaction, init=false) {
         // Update menu state
         menu_data.set(menu_id, { ...menu_state, dex_page_num });
 
+        const dexContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
         if (dexData.is_caught) {
-            interaction.update({
-                content: null,
-                embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img]
-            });
+            interaction.update({ components: [dexContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
-            interaction.update({
-                content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
-                embeds: [], components: [dexData.sel_row, dex_arrows], files: []
-            });
+            interaction.update({ components: [dexContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
@@ -1425,32 +1588,22 @@ export async function menu_handler(interaction, init=false) {
 
         let dexData = await buildDexData(dex_page_num, dex_page_num * 25);
 
+        const dexNavContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
         if (dexData.is_caught) {
-            interaction.update({
-                content: null,
-                embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img]
-            });
+            interaction.update({ components: [dexNavContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
-            interaction.update({
-                content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
-                embeds: [], components: [dexData.sel_row, dex_arrows], files: []
-            });
+            interaction.update({ components: [dexNavContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
     if (customId.includes('oochadex_sel_1')) {
         let dexData = await buildDexData(dex_page_num, selected.replace('dex_', ''));
 
+        const dexSelContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
         if (dexData.is_caught) {
-            interaction.update({
-                content: null,
-                embeds: [dexData.embed], components: [dexData.sel_row, dex_arrows], files: [dexData.img]
-            });
+            interaction.update({ components: [dexSelContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
-            interaction.update({
-                content: 'You have not caught this Oochamon yet! Go out there and catch it in the wild!',
-                embeds: [], components: [dexData.sel_row, dex_arrows], files: []
-            });
+            interaction.update({ components: [dexSelContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         }
     }
 
@@ -1461,8 +1614,9 @@ export async function menu_handler(interaction, init=false) {
     //#region Preferences Menu
     // Preferences Button
     if (action == 'preferences') {
-        user_profile = profile.get(`${interaction.user.id}`);        
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        user_profile = profile.get(`${interaction.user.id}`);
+        const prefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [prefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Graphics Switcher
@@ -1470,8 +1624,8 @@ export async function menu_handler(interaction, init=false) {
         await profile.set(interaction.user.id, !(user_profile.settings.controls_msg), 'settings.controls_msg');
         pref_desc[0] = `Show Controls Message: **${profile.get(`${interaction.user.id}`, 'settings.controls_msg') === true ? `✅` : `❌`}**`;
         user_profile = profile.get(`${interaction.user.id}`);
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const controlsPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [controlsPrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Battle Cleanup Option
@@ -1479,8 +1633,8 @@ export async function menu_handler(interaction, init=false) {
         await profile.set(interaction.user.id, !(user_profile.settings.battle_cleanup), 'settings.battle_cleanup');
         pref_desc[1] = `Battle Text Cleanup: **${profile.get(`${interaction.user.id}`, 'settings.battle_cleanup') === true ? `✅` : `❌`}**`;
         user_profile = profile.get(`${interaction.user.id}`);
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const cleanupPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [cleanupPrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Zoom Level Option
@@ -1505,8 +1659,8 @@ export async function menu_handler(interaction, init=false) {
 
         user_profile = await profile.get(`${interaction.user.id}`);
         pref_desc[2] = `Zoom Level: **\`${user_profile.settings.zoom.split('_')[0]}x${user_profile.settings.zoom.split('_')[1]}\`**`;
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const zoomPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [zoomPrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Battle Speed Option
@@ -1520,8 +1674,8 @@ export async function menu_handler(interaction, init=false) {
         await profile.set(interaction.user.id, user_profile.settings.battle_speed, 'settings.battle_speed');
         pref_desc[3] = `Battle Speed: **\`${user_profile.settings.battle_speed == 1250 ? `Fast` : `Normal`}\`**`;
         user_profile = profile.get(`${interaction.user.id}`);
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const speedPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [speedPrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Discord Movement Buttons Option
@@ -1529,8 +1683,8 @@ export async function menu_handler(interaction, init=false) {
         await profile.set(interaction.user.id, !(user_profile.settings.discord_move_buttons), 'settings.discord_move_buttons');
         pref_desc[4] = `Discord Move Buttons: ${profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true ? `✅` : `❌`}`;
         user_profile = profile.get(`${interaction.user.id}`);
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const moveBtnPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [moveBtnPrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
     // Objective Indicator
@@ -1538,8 +1692,8 @@ export async function menu_handler(interaction, init=false) {
         await profile.set(interaction.user.id, !(user_profile.settings.objective), 'settings.objective');
         pref_desc[5] = `Objective Indicator: ${profile.get(`${interaction.user.id}`, 'settings.objective') === true ? `✅` : `❌`}`;
         user_profile = profile.get(`${interaction.user.id}`);
-        await prefEmbed.setDescription(pref_desc.join('\n'));
-        await interaction.update({ content: '**Preferences:**', embeds: [prefEmbed], components: [pref_sel_menu, back_button] });
+        const objectivePrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [objectivePrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
 

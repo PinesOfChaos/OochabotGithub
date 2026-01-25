@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 import {clamp, random, sample} from 'lodash-es';
 import {event_from_npc, event_process} from './func_event.js';
-import {get_emote_string} from "./func_other.js";
+import {check_chance, get_emote_string} from "./func_other.js";
 import {init_shop_state} from "./event_handlers/shop_handler.js";
 import wait from "wait";
 
@@ -519,7 +519,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 let slot_index = Math.floor(random(0, spawn_zone.spawn_slots.length - 1));
                                 let slot = spawn_zone.spawn_slots[slot_index];
                                 
-                                variant = Math.random() < .501 ? "_prismatic" : "";
+                                variant = check_chance(0.1) ? "_prismatic" : "";
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
                                 slot.variant = variant;
