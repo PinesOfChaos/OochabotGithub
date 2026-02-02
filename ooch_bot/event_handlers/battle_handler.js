@@ -33,7 +33,7 @@ Battle Menu
 
 */
 
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ContainerBuilder, EmbedBuilder, MessageFlags, StringSelectMenuBuilder, TextDisplayBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ContainerBuilder, MessageFlags, StringSelectMenuBuilder, TextDisplayBuilder } from "discord.js";
 import { ability_data, battle_data, item_data, monster_data, move_data, profile, stance_data, status_data } from "../db.js";
 import { finish_battle, get_stance_options, new_battle_action_attack, new_battle_action_heal, new_battle_action_prism, new_battle_action_run, new_battle_action_stance_change, new_battle_action_switch, process_battle_actions, type_effectiveness, type_to_emote } from "../func_battle.js";
 import { formatStatBar, get_emote_string } from "../func_other.js";
@@ -144,27 +144,27 @@ export async function battle_handler(interaction) {
             
     let moveButtons1 = new ActionRowBuilder();
     let moveButtons2 = new ActionRowBuilder();
-    let moveInfoViewing = false;
 
     let targetButtons1 = new ActionRowBuilder();
     let targetButtons2 = new ActionRowBuilder();
 
     let switchButtons1 = new ActionRowBuilder();
     let switchButtons2 = new ActionRowBuilder();
+    let hasCatchableTarget = db_battle_data.users.some(u => u.is_catchable);
     let bagButtons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-                .setCustomId(`${pre}heal`)
+                .setCustomId(`${pre}bag_heal`)
                 .setLabel('Healing')
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji(get_emote_string('item_potion_magic')),
         ).addComponents(
             new ButtonBuilder()
-                .setCustomId(`${pre}prism`)
+                .setCustomId(`${pre}bag_prism`)
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji(get_emote_string('item_prism'))
-                .setDisabled(true),
+                .setDisabled(!hasCatchableTarget),
         )
 
     const backButton = new ActionRowBuilder()
@@ -625,7 +625,7 @@ export async function battle_handler(interaction) {
         await interaction.update({ components: [prismContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
-    if (customId.includes('_item_select') && interaction.startsWith(`${pre}`)) {
+    if (customId.includes('_item_select') && customId.startsWith(`${pre}`)) {
 
         let ooch_inv = user.party;
         let ooch_check, ooch_emote, ooch_name, ooch_hp, ooch_button_color, ooch_disable;
@@ -634,7 +634,7 @@ export async function battle_handler(interaction) {
         healSelectButtons1 = new ActionRowBuilder();
         healSelectButtons2 = new ActionRowBuilder();
 
-        if (customId == 'heal_item_select') {
+        if (customId == `${pre}heal_item_select`) {
             for (let slot = 0; slot < ooch_inv.length; slot++) {
                 ooch_check = ooch_inv[slot];
                 ooch_emote = monster_data.get(`${ooch_check.id}`, 'emote');
@@ -687,7 +687,7 @@ export async function battle_handler(interaction) {
     } 
 
     if (customId.includes('_item_sel_target') && customId.startsWith(`${pre}`)) {
-        let custom_id_data = customId.split('_');
+        let custom_id_data = customId.replace(pre, '').split('_');
         user.action_selected = new_battle_action_heal(db_battle_data, user.user_index, custom_id_data[0], custom_id_data[1]);
 
         // Continue on if everyone has selected (which should happen at the end)

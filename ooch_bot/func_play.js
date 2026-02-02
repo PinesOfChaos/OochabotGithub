@@ -342,6 +342,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
+                    let playspace_str = await setup_playspace_str(user_id);
+
                     let confirm_buttons_tp = new ActionRowBuilder()
                         .addComponents(
                             new ButtonBuilder().setCustomId(`other_${user_id}_set_checkpoint`).setLabel(`Save`).setEmoji(`🏳️`).setStyle(ButtonStyle.Success),
@@ -353,16 +355,16 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         .addComponents(
                             new ButtonBuilder().setCustomId(`other_${user_id}_exit`).setLabel(`Exit`).setStyle(ButtonStyle.Danger)
                         )
-                    
-                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
-                    
+
+                    let savepoint_components = [...playspace_str.components, confirm_buttons_tp, confirm_buttons_tp_exit];
+
                     // Setup teleport menu
                     if (profile_data.areas_visited.length > 0 && profile_data.flags.includes('teleport_enable')) {
                         let teleport_menu = new ActionRowBuilder();
-                        let teleport_select_options = profile_data.areas_visited.map(name => 
+                        let teleport_select_options = profile_data.areas_visited.map(name =>
                             {
                                 let map_data = maps.get(`${name}`);
-                                return { 
+                                return {
                                     label: `${map_data.map_info.map_name}`,
                                     value: `${name}`
                                 }
@@ -370,18 +372,19 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                         teleport_menu.addComponents(
                             new StringSelectMenuBuilder()
-                                .setCustomId('teleport_menu')
+                                .setCustomId(`other_${user_id}_teleport_menu`)
                                 .setPlaceholder(`Teleport To Visited Area`)
                                 .addOptions(teleport_select_options),
                         );
-                        
-                        savepoint_options.push(teleport_menu);
+
+                        savepoint_components.push(teleport_menu);
                     }
 
                     await thread.messages.fetch(msg_to_edit).then(async msg => {
-                        msg.edit({ components: savepoint_options })
+                        msg.edit({ components: savepoint_components, flags: MessageFlags.IsComponentsV2 })
                         profile.set(user_id, PlayerState.Encounter, 'player_state');
                     });
+                    return;
                 }
             }
         }

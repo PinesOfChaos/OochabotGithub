@@ -1,12 +1,14 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
 import { maps, other_menu_data, player_positions, profile } from "../db.js";
 import { PlayerState } from "../types.js";
-import { buildBoxData, ooch_info_embed } from "../func_other.js";
+import { buildBoxData, ooch_info_container } from "../func_other.js";
 import { setup_playspace_str } from "../func_play.js";
+import wait from 'wait';
 
 export async function other_handler(interaction) {
 
     let customId, selected;
+    let end = false;
 
     // Initialize used variables
      if (interaction.componentType == ComponentType.Button) {
@@ -98,7 +100,7 @@ export async function other_handler(interaction) {
         
         box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
         box_buttons.components[3].setLabel(`${other_menu_state.box_page_num + 1}`);
-        interaction.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
+        interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], flags: MessageFlags.IsComponentsV2, files: [] });
     }
 
     else if (action.includes('box')) {
@@ -107,16 +109,19 @@ export async function other_handler(interaction) {
 
         if (action == 'box_oochabox') {
             box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
-            interaction.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, files: [] });
         } else if (action == 'back_to_box') {
             box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
-            interaction.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         } 
         
         // Back to save (exit)
         else if (action == 'box_back_to_save') {
             profile.set(interaction.user.id, profile_data);
             other_menu_data.delete(menu_id);
+
+            let playspace_str = await setup_playspace_str(interaction.user.id);
+
             let confirm_buttons_tp = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder().setCustomId(`${pre}set_checkpoint`).setLabel(`Save`).setEmoji(`🏳️`).setStyle(ButtonStyle.Success),
@@ -129,33 +134,30 @@ export async function other_handler(interaction) {
                     new ButtonBuilder().setCustomId(`${pre}exit`).setLabel(`Exit`).setStyle(ButtonStyle.Danger)
                 )
 
-            let teleport_menu = new ActionRowBuilder();    
+            let savepoint_components = [...playspace_str.components, confirm_buttons_tp, confirm_buttons_tp_exit];
 
-            let options = [confirm_buttons_tp, confirm_buttons_tp_exit];
-
-            if (profile_data.areas_visited.length > 0 && profile_data.flags.includes('teleport_enable')) { 
-            teleport_menu = new ActionRowBuilder();
-                let teleport_select_options = profile_data.areas_visited.map(name => 
+            if (profile_data.areas_visited.length > 0 && profile_data.flags.includes('teleport_enable')) {
+                let teleport_select_options = profile_data.areas_visited.map(name =>
                     {
                         let map_data = maps.get(`${name}`);
-                        return { 
+                        return {
                             label: `${map_data.map_info.map_name}`,
                             value: `${name}`
                         }
                     });
 
+                let teleport_menu = new ActionRowBuilder();
                 teleport_menu.addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('teleport_menu')
+                        .setCustomId(`${pre}teleport_menu`)
                         .setPlaceholder(`Teleport To Visited Area`)
                         .addOptions(teleport_select_options),
                 );
 
-                options.push(teleport_menu);
+                savepoint_components.push(teleport_menu);
             }
 
-            let playspace_str = await setup_playspace_str(interaction.user.id);
-            interaction.update({ components: [playspace_str.components[0], ...options], flags: playspace_str.flags, embeds: [], files: [] });
+            interaction.update({ components: savepoint_components, flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         } 
 
         // Finalize team for box in pvp
@@ -165,7 +167,7 @@ export async function other_handler(interaction) {
 
         // Label buttons
         else if (action.includes('box_emp') || action.includes('box_label')) {
-            interaction.update({ content: `**Oochabox**`, files: [] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**')], flags: MessageFlags.IsComponentsV2, files: [] });
         }
 
         // Oochamon in Box View
@@ -186,11 +188,19 @@ export async function other_handler(interaction) {
             // Disable the "add to party" button if we have 4 party members.
             box_sel_buttons.components[1].setDisabled((profile_data.ooch_party.length == 4))
 
-            let dexEmbed = await ooch_info_embed(other_menu_state.ooch_user_data, interaction.user.id);
-            let dexPng = dexEmbed[1];
-            dexEmbed = dexEmbed[0];
+            let oochInfo = await ooch_info_container(other_menu_state.ooch_user_data, interaction.user.id);
+            let section = new SectionBuilder()
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(oochInfo.infoText))
+                .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${oochInfo.fileName}`));
 
-            interaction.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
+            let oochComponents = [section];
+            if (oochInfo.footerText) {
+                oochComponents.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
+                oochComponents.push(new TextDisplayBuilder().setContent(`*${oochInfo.footerText}*`));
+            }
+            oochComponents.push(party_slot == false ? box_sel_buttons : box_party_sel_buttons);
+
+            interaction.update({ components: oochComponents, files: [oochInfo.file], flags: MessageFlags.IsComponentsV2, embeds: [] });
         }
         // Add Oochamon to Box
         else if (action == 'box_add_to_box') {
@@ -202,8 +212,8 @@ export async function other_handler(interaction) {
             // Build new PC button rows
             box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
             // Kick back to PC screen
-            interaction.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-        } 
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
+        }
         // Add Oochamon to team
         else if (action == 'box_add_ooch') {
             bottom_buttons.components[3].setLabel(`${other_menu_state.box_page_num+1}`);
@@ -214,12 +224,12 @@ export async function other_handler(interaction) {
             // Build new PC button rows
             box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
             // Kick back to PC screen
-            interaction.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
 
         }
         // Release an Oochamon
         else if (action == 'box_release') {
-            await interaction.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [box_confirm_buttons], files: [] });
+            await interaction.update({ components: [new TextDisplayBuilder().setContent('**Are you sure you want to release this Oochamon?**'), box_confirm_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         }
         // Confirm to release an Oochamon
         else if (action == 'box_yes') {
@@ -229,19 +239,19 @@ export async function other_handler(interaction) {
             // Build new PC button rows
             box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
             // Kick back to PC screen
-            interaction.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         }
         // Confirm to not release an Oochamon
         else if (action == 'box_no') {
             bottom_buttons.components[3].setLabel(`${other_menu_state.box_page_num+1}`);
 
-            interaction.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
+            interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         }
     } 
 
     else if (action.includes('teleport_menu')) {
         let biome_from = profile.get(`${interaction.user.id}`, 'location_data.area');
-        let biome_to = selected.values[0];
+        let biome_to = selected;
         let biome_to_data = maps.get(`${biome_to}`);
         let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);
         if (biome_to_data.map_savepoints.filter(v => v.is_default !== false).length == 0) {
@@ -262,32 +272,38 @@ export async function other_handler(interaction) {
         let playspace_str = await setup_playspace_str(interaction.user.id);
 
         profile_data = profile.get(`${interaction.user.id}`);
-        selected.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
+        await interaction.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
+        end = true;
     }
 
     else if (action == 'set_checkpoint') {
-        profile.set(interaction.user.id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
-        if (!profile.get(`${interaction.user.id}`, 'areas_visited').includes(map_name)) {
-            profile.push(interaction.user.id, map_name, 'areas_visited');
+        let location_data = profile.get(`${interaction.user.id}`, 'location_data');
+        profile.set(interaction.user.id, { area: location_data.area, x: location_data.x, y: location_data.y }, 'checkpoint_data');
+        if (!profile.get(`${interaction.user.id}`, 'areas_visited').includes(location_data.area)) {
+            profile.push(interaction.user.id, location_data.area, 'areas_visited');
         }
 
         for (let i = 0; i < profile.get(`${interaction.user.id}`, 'ooch_party').length; i++) {
             profile.set(interaction.user.id, profile.get(`${interaction.user.id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
             profile.set(interaction.user.id, true, `ooch_party[${i}].alive`);
-
         }
+
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(interaction.user.id);
-        selected.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
+        interaction.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
         let quickMsg = await interaction.channel.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
+        end = true;
         await wait(5000);
         await quickMsg.delete().catch(() => {});
     } else {
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(interaction.user.id);
         interaction.update({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
+        return;
     }
 
-    other_menu_data.set(menu_id, { ...other_menu_state });
-    profile.set(interaction.user.id, profile_data);
+    if (!end) {
+        other_menu_data.set(menu_id, { ...other_menu_state });
+        profile.set(interaction.user.id, profile_data);
+    }
 }

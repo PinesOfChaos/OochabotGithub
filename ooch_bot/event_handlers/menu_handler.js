@@ -1,12 +1,11 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, ButtonStyle, ComponentType, StringSelectMenuOptionBuilder, MessageFlags, ButtonBuilder, ContainerBuilder, TextDisplayBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, ThumbnailBuilder, SeparatorSpacingSize } from 'discord.js';
 import { profile, move_data, monster_data, item_data, ability_data, menu_data } from '../db.js';
-import { inRange, clamp, capitalize } from 'lodash-es';
+import { inRange, clamp } from 'lodash-es';
 import wait from 'wait';
 import { setup_playspace_str, create_ooch, remove_item, get_all_item_type, get_inv_item, add_item } from '../func_play.js';
 import { ItemCategory, ItemType, PlayerState, TamingAction } from '../types.js';
 import { type_to_emote, item_use, get_stance_options } from '../func_battle.js';
-import { get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards, get_ooch_art, get_iv_stars, ooch_info_container } from '../func_other.js';
-import { filledBar } from 'string-progressbar';
+import { get_art_file, get_emote_string, setup_taming_picture, get_tame_string, pet_text, feed_text, update_tame_value, walk_get_rewards, get_ooch_art, ooch_info_container } from '../func_other.js';
 
 // Menu operation is handled in this
 export async function menu_handler(interaction, init=false) {
@@ -134,7 +133,7 @@ export async function menu_handler(interaction, init=false) {
                     },
                     {
                         label: 'Zoom Level',
-                        description: 'Set the window size of the game. (5x5, 7x7, 7x9, 9x7)',
+                        description: 'Set the window size of the game. (5x5 to 11x11)',
                         value: `${pre}zoom_level`,
                     },
                     {
@@ -1360,7 +1359,7 @@ export async function menu_handler(interaction, init=false) {
                         profile.set(interaction.user.id, msg.id, 'display_msg_id');
                     });
 
-                    await interaction.update({ content: 'Loading playspace' });
+                    await interaction.update({ components: [] });
                     await interaction.deleteReply();
                     break;
             }
