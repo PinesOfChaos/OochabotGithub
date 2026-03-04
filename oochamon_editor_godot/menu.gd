@@ -28,8 +28,8 @@ extends Control
 
 @export var map_name = ""
 @export var map_battle_bg = ""
-@export var map_width = 64
-@export var map_height = 64
+@export var map_width = Global.MapSize
+@export var map_height = Global.MapSize
 @export var map_tiles = []
 var mouse_x_prev = 0
 var mouse_y_prev = 0
@@ -43,6 +43,8 @@ var file_known = false
 var file_last_path = ""
 var post_ready_complete = false
 var tiles_visible = true
+var tiles_clipboard = [[]]
+var tiles_clipboard_coords = {x1 = -1, y1 = -1, x2 = -1, y2 = -1}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -73,9 +75,9 @@ func _ready():
 			tile_id_temp = k
 			break
 	#Set all tile ids to the black square
-	for i in 100:
+	for i in Global.MapSize:
 		var arr = []
-		arr.resize(100)
+		arr.resize(Global.MapSize)
 		arr.fill(tile_id_temp)
 		map_tiles.push_back(arr)
 	#print(map_tiles)
@@ -92,15 +94,19 @@ func _process(delta):
 			
 func _draw():
 	if(tiles_visible):
+		var xstart = clamp((Global.CamX - 64 ) / Global.TileSize, 0, Global.MapSize - 1)
+		var xend = clamp(xstart + 65, 0, Global.MapSize - 1)
+		var ystart = clamp((Global.CamY - 64) / Global.TileSize, 0, Global.MapSize - 1)
+		var yend = clamp(ystart + 35, 0, Global.MapSize - 1)
+	
 		var x1 = 0
 		var y1 = 0
-		for i in map_width:
-			for j in map_height:
+		for i in range(xstart, xend):
+			for j in range(ystart, yend):
 				x1 = i * Global.TileSize
 				y1 = j * Global.TileSize
-				if x1 >= Global.CamX - 64 and x1 < Global.CamX + 10000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 10000:
-					draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
-					draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
+				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
+				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
 
 func refresh_all_children():
 	for child in o_menu.get_children(true):
@@ -237,7 +243,11 @@ func step():
 			var xx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
 			var yy = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
 			if Input.is_action_pressed("mouse_left"):
-				if Input.is_action_pressed("vk_control"):
+				if Input.is_action_pressed("vk_alt"):
+					tiles_clipboard_coords.x1 = xx
+					tiles_clipboard_coords.y1 = yy
+					clipboard_coords_recalc()
+				elif Input.is_action_pressed("vk_control"):
 					var from = map_tiles[xx][yy]
 					var list = [[xx, yy]]
 					var cx
@@ -277,7 +287,11 @@ func step():
 						map_tiles[xx][yy] = Global.TileSelected
 				queue_redraw()
 			elif Input.is_action_pressed("mouse_right"):
-				if Input.is_action_pressed("vk_control"):
+				if Input.is_action_pressed("vk_alt"):
+					tiles_clipboard_coords.x2 = xx
+					tiles_clipboard_coords.y2 = yy
+					clipboard_coords_recalc()
+				elif Input.is_action_pressed("vk_control"):
 					Global.TileSelected = map_tiles[xx][yy]
 				else:
 					map_tiles[xx][yy] = 0
@@ -287,6 +301,38 @@ func step():
 				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
 				grid_tiles.visible = true
 				tooltips_paint.visible = false
+			elif Input.is_action_just_pressed("ui_copy"):
+				if(tiles_clipboard_coords.x1 != -1 and tiles_clipboard_coords.x2 != -1):
+					tiles_clipboard = []
+					var w = tiles_clipboard_coords.x2 - tiles_clipboard_coords.x1
+					var h = tiles_clipboard_coords.y2 - tiles_clipboard_coords.y1
+					for ix in range(w):
+						tiles_clipboard.push_back([])
+						for iy in range(h):
+							tiles_clipboard[ix].push_back(map_tiles[ix + tiles_clipboard_coords.x1][iy + tiles_clipboard_coords.y1])
+				queue_redraw()
+				notify("Tiles Copied")
+				
+			elif Input.is_action_just_pressed("ui_paste"):
+				var pastepos: Vector2
+				for tx in tiles_clipboard.size():
+					for ty in tiles_clipboard[tx].size():
+						pastepos = Vector2(tx + xx, ty + yy)
+						if(pastepos.x >= 0 and pastepos.y >= 0 and pastepos.x < Global.MapSize and pastepos.y < Global.MapSize):
+							map_tiles[pastepos.x][pastepos.y] = tiles_clipboard[tx][ty]
+				queue_redraw()
+				notify("Tiles Pasted")
+							
+func clipboard_coords_recalc():
+	var x1 = clamp(tiles_clipboard_coords.x1, 0, Global.MapSize - 1)
+	var y1 = clamp(tiles_clipboard_coords.y1, 0, Global.MapSize - 1)
+	var x2 = clamp(tiles_clipboard_coords.x2, 0, Global.MapSize - 1)
+	var y2 = clamp(tiles_clipboard_coords.y2, 0, Global.MapSize - 1)
+	tiles_clipboard_coords.x1 = min(x1, x2)
+	tiles_clipboard_coords.y1 = min(y1, y2)
+	tiles_clipboard_coords.x2 = max(x1, x2)
+	tiles_clipboard_coords.y2 = max(y1, y2)
+	
 
 func step_end():
 	mouse_x_prev = get_local_mouse_position().x
@@ -313,6 +359,9 @@ func set_node_owners_to_menu():
 		n.owner = o_menu
 		set_node_owners(n)
 
+func notify(text_to_show):
+	label_notification.notify(text_to_show)
+
 func set_node_owners(node):
 	for n in node.get_children():
 		n.owner = o_menu
@@ -328,7 +377,7 @@ func _on_file_dialog_save_file_selected(path):
 	set_node_owners_to_menu()
 	
 	if FileAccess.file_exists(path):
-		label_notification.notify("File Saved")
+		notify("File Saved")
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		print(path.left(path.rfindn("/")))
 		
@@ -474,7 +523,7 @@ func _on_file_dialog_load_file_selected(path):
 		
 		var f = FileAccess.open(path, FileAccess.READ)
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
-		var _text = f.get_as_text(true)
+		var _text = f.get_as_text()
 		var _json = JSON.parse_string(_text)
 		
 		#Modernize the map data
@@ -501,7 +550,7 @@ func _on_file_dialog_load_file_selected(path):
 		_inst.owner = _main
 		_inst.file_known = true
 		_inst.file_last_path = path
-		_inst.label_notification.notify("File Loaded")
+		_inst.notify("File Loaded")
 		
 		
 		var _events = _inst.menu_events
@@ -624,8 +673,8 @@ func _on_button_load_pressed():
 	
 # Clear the map
 func _on_button_new_pressed():
-	map_width = 64
-	map_height = 64
+	map_width = Global.MapSize
+	map_height = Global.MapSize
 	file_known = false
 	file_last_path = ""
 	

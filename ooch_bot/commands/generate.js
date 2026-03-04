@@ -462,11 +462,11 @@ export async function execute(interaction, client) {
     create_tile(`t${zTu}_071`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_072`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_073`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_080`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_081`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_080`, Tile.Floor); //Elevator
+    create_tile(`t${zTu}_081`, Tile.Floor); //Elevator
     create_tile(`t${zTu}_082`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_090`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_091`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_090`, Tile.Floor); //Elevator
+    create_tile(`t${zTu}_091`, Tile.Floor); //Elevator
     create_tile(`t${zTu}_092`, Tile.Wall); //Elevator
 
 

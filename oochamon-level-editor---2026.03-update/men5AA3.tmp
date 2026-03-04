@@ -1,0 +1,140 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4dhr42a1mqo6"]
+
+[ext_resource type="Script" path="res://menu.gd" id="1_ift6h"]
+[ext_resource type="Script" path="res://GridOoch.gd" id="2_c15v4"]
+[ext_resource type="Script" path="res://GridTiles.gd" id="3_idg2d"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ift6h")
+
+[node name="FileDialogSave" type="FileDialog" parent="."]
+title = "Save Map File"
+initial_position = 2
+size = Vector2i(500, 400)
+access = 2
+filters = PackedStringArray(".txt")
+
+[node name="FileDialogLoad" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 2
+size = Vector2i(500, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray(".txt")
+
+[node name="FileDialogSetFilePaths" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 2
+size = Vector2i(500, 400)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+filters = PackedStringArray(".txt")
+
+[node name="VBoxMenu" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxFile" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="ButtonNew" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "New Level"
+
+[node name="ButtonLoad" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Load Level"
+
+[node name="ButtonSave" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Save Level"
+
+[node name="ButtonSetFilepaths" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Set Data Filepaths"
+
+[node name="ButtonRefreshData" type="Button" parent="VBoxMenu/HBoxFile"]
+layout_mode = 2
+text = "Refresh Data"
+
+[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
+layout_mode = 2
+
+[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+focus_mode = 1
+text = "Map Default Name"
+placeholder_text = "Map Name"
+expand_to_text_length = true
+caret_blink = true
+
+[node name="LineEditMapW" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+tooltip_text = "Map Width"
+focus_mode = 1
+text = "32"
+placeholder_text = "Map Width"
+expand_to_text_length = true
+caret_blink = true
+
+[node name="LineEditMapH" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+layout_mode = 2
+tooltip_text = "Map Height"
+focus_mode = 1
+text = "32"
+placeholder_text = "Map Height"
+expand_to_text_length = true
+caret_blink = true
+
+[node name="GridOoch" type="GridContainer" parent="."]
+visible = false
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.108
+anchor_top = 0.213
+anchor_right = 0.533
+anchor_bottom = 0.625
+offset_left = -0.416
+offset_top = -0.0240021
+offset_right = -0.0160522
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 10
+script = ExtResource("2_c15v4")
+
+[node name="GridTiles" type="GridContainer" parent="."]
+visible = false
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.484
+anchor_top = 0.208
+anchor_right = 0.74
+anchor_bottom = 0.637
+offset_left = 0.431946
+offset_top = 0.216003
+offset_right = 0.52002
+offset_bottom = 0.223999
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+script = ExtResource("3_idg2d")
+
+[connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
+[connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
+[connection signal="dir_selected" from="FileDialogSetFilePaths" to="." method="_on_file_dialog_set_file_paths_dir_selected"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonLoad" to="." method="_on_button_load_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSetFilepaths" to="." method="_on_button_set_filepaths_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonRefreshData" to="." method="_on_button_refresh_data_pressed"]

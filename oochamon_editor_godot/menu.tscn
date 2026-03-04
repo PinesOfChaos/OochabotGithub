@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4dhr42a1mqo6"]
+[gd_scene format=3 uid="uid://d4dhr42a1mqo6"]
 
 [ext_resource type="Script" uid="uid://cltqg3t5i1s65" path="res://menu.gd" id="1_ift6h"]
 [ext_resource type="Script" uid="uid://c5kfp4jtre2gt" path="res://GridOoch.gd" id="2_c15v4"]
 [ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
 [ext_resource type="Script" uid="uid://d3nsuy2ovm7xl" path="res://label_notification.gd" id="4_5s007"]
 
-[node name="Menu" type="Control" groups=["MainMenu"]]
+[node name="Menu" type="Control" unique_id=1019263905 groups=["MainMenu"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,15 +13,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ift6h")
+map_width = 128
+map_height = 128
 
-[node name="FileDialogSave" type="FileDialog" parent="."]
+[node name="FileDialogSave" type="FileDialog" parent="." unique_id=1660631597]
 title = "Save Map File"
 initial_position = 2
 size = Vector2i(500, 400)
 access = 2
 filters = PackedStringArray("*.json")
 
-[node name="FileDialogLoad" type="FileDialog" parent="."]
+[node name="FileDialogLoad" type="FileDialog" parent="." unique_id=1148002673]
 title = "Open a File"
 initial_position = 2
 size = Vector2i(500, 400)
@@ -30,32 +32,32 @@ file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
 
-[node name="VBoxMenu" type="VBoxContainer" parent="."]
+[node name="VBoxMenu" type="VBoxContainer" parent="." unique_id=541114386]
 z_index = 3
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="HBoxFile" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxFile" type="HBoxContainer" parent="VBoxMenu" unique_id=985431666]
 layout_mode = 2
 
-[node name="ButtonMainMenu" type="Button" parent="VBoxMenu/HBoxFile"]
+[node name="ButtonMainMenu" type="Button" parent="VBoxMenu/HBoxFile" unique_id=1771466604]
 layout_mode = 2
 text = "Main Menu"
 
-[node name="ButtonNew" type="Button" parent="VBoxMenu/HBoxFile"]
+[node name="ButtonNew" type="Button" parent="VBoxMenu/HBoxFile" unique_id=600700979]
 layout_mode = 2
 text = "New Level"
 
-[node name="ButtonLoad" type="Button" parent="VBoxMenu/HBoxFile"]
+[node name="ButtonLoad" type="Button" parent="VBoxMenu/HBoxFile" unique_id=1377463144]
 layout_mode = 2
 text = "Load Level"
 
-[node name="ButtonSave" type="Button" parent="VBoxMenu/HBoxFile"]
+[node name="ButtonSave" type="Button" parent="VBoxMenu/HBoxFile" unique_id=636014512]
 layout_mode = 2
 text = "Save Level"
 
-[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxFile"]
+[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxFile" unique_id=194540586]
 layout_mode = 2
 focus_mode = 1
 text = "Map Default Name"
@@ -63,158 +65,158 @@ placeholder_text = "Map Name"
 expand_to_text_length = true
 caret_blink = true
 
-[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu" unique_id=1786150146]
 layout_mode = 2
 
-[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo"]
+[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo" unique_id=960669855]
 layout_mode = 2
 placeholder_text = "Battle BG Sprite"
 expand_to_text_length = true
 
-[node name="Label" type="Label" parent="VBoxMenu/HBoxMapInfo"]
+[node name="Label" type="Label" parent="VBoxMenu/HBoxMapInfo" unique_id=710480482]
 layout_mode = 2
 text = "Grid Opacity: "
 
-[node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo"]
+[node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo" unique_id=1865971841]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 value = 10.0
 ticks_on_borders = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxMenu" unique_id=854485650]
 layout_mode = 2
 
-[node name="ButtonVisibleTile" type="CheckBox" parent="VBoxMenu/HBoxContainer"]
+[node name="ButtonVisibleTile" type="CheckBox" parent="VBoxMenu/HBoxContainer" unique_id=1189240668]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxContainer"]
+[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxContainer" unique_id=774150303]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 1"
 text = "Paint Tiles"
 
-[node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu" unique_id=258011300]
 layout_mode = 2
 
-[node name="ButtonVisibleEvent" type="CheckBox" parent="VBoxMenu/HBoxEvent"]
+[node name="ButtonVisibleEvent" type="CheckBox" parent="VBoxMenu/HBoxEvent" unique_id=600853231]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewEvent" type="Button" parent="VBoxMenu/HBoxEvent"]
+[node name="ButtonNewEvent" type="Button" parent="VBoxMenu/HBoxEvent" unique_id=1945105949]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 2"
 text = "New Event Trigger"
 
-[node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu" unique_id=514539939]
 layout_mode = 2
 
-[node name="ButtonVisibleSpawnzone" type="CheckBox" parent="VBoxMenu/HBoxSpawnzone"]
+[node name="ButtonVisibleSpawnzone" type="CheckBox" parent="VBoxMenu/HBoxSpawnzone" unique_id=199912920]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu/HBoxSpawnzone"]
+[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu/HBoxSpawnzone" unique_id=381454768]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 3"
 text = "New Spawn Area"
 
-[node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu" unique_id=930658149]
 layout_mode = 2
 
-[node name="ButtonVisibleTransition" type="CheckBox" parent="VBoxMenu/HBoxTransition"]
+[node name="ButtonVisibleTransition" type="CheckBox" parent="VBoxMenu/HBoxTransition" unique_id=1058098899]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewTransition" type="Button" parent="VBoxMenu/HBoxTransition"]
+[node name="ButtonNewTransition" type="Button" parent="VBoxMenu/HBoxTransition" unique_id=531705791]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 4"
 text = "New Transition"
 
-[node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu" unique_id=571185851]
 layout_mode = 2
 
-[node name="ButtonVisibleSavePoint" type="CheckBox" parent="VBoxMenu/HBoxSavePoint"]
+[node name="ButtonVisibleSavePoint" type="CheckBox" parent="VBoxMenu/HBoxSavePoint" unique_id=1003157072]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu/HBoxSavePoint"]
+[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu/HBoxSavePoint" unique_id=1545428704]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 5"
 text = "New Save Point"
 
-[node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu" unique_id=42680075]
 layout_mode = 2
 
-[node name="ButtonVisibleShop" type="CheckBox" parent="VBoxMenu/HBoxShop"]
+[node name="ButtonVisibleShop" type="CheckBox" parent="VBoxMenu/HBoxShop" unique_id=2019769766]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewShop" type="Button" parent="VBoxMenu/HBoxShop"]
+[node name="ButtonNewShop" type="Button" parent="VBoxMenu/HBoxShop" unique_id=1648917456]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 6"
 text = "New Shop"
 
-[node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu" unique_id=1094675672]
 layout_mode = 2
 
-[node name="ButtonVisibleNPC" type="CheckBox" parent="VBoxMenu/HBoxNPC"]
+[node name="ButtonVisibleNPC" type="CheckBox" parent="VBoxMenu/HBoxNPC" unique_id=636933070]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewNPC" type="Button" parent="VBoxMenu/HBoxNPC"]
+[node name="ButtonNewNPC" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=1636396015]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New NPC"
 
-[node name="ButtonNewChest" type="Button" parent="VBoxMenu/HBoxNPC"]
+[node name="ButtonNewChest" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=578962269]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New Chest"
 
-[node name="ButtonNewSign" type="Button" parent="VBoxMenu/HBoxNPC"]
+[node name="ButtonNewSign" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=978957439]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New Sign"
 
-[node name="HBoxWeather" type="HBoxContainer" parent="VBoxMenu"]
+[node name="HBoxWeather" type="HBoxContainer" parent="VBoxMenu" unique_id=1903893080]
 layout_mode = 2
 
-[node name="ButtonVisibleWeather" type="CheckBox" parent="VBoxMenu/HBoxWeather"]
+[node name="ButtonVisibleWeather" type="CheckBox" parent="VBoxMenu/HBoxWeather" unique_id=1283883915]
 layout_mode = 2
 tooltip_text = "Toggle Visible"
 button_pressed = true
 
-[node name="ButtonNewWeather" type="Button" parent="VBoxMenu/HBoxWeather"]
+[node name="ButtonNewWeather" type="Button" parent="VBoxMenu/HBoxWeather" unique_id=1372065533]
 layout_direction = 2
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New Weather Zone"
 
-[node name="GridOoch" type="GridContainer" parent="."]
+[node name="GridOoch" type="GridContainer" parent="." unique_id=498984524]
 visible = false
 layout_direction = 2
 layout_mode = 0
@@ -227,7 +229,7 @@ theme_override_constants/v_separation = 4
 columns = 16
 script = ExtResource("2_c15v4")
 
-[node name="TileSelect" parent="." instance=ExtResource("4_5duw6")]
+[node name="TileSelect" parent="." unique_id=423445131 instance=ExtResource("4_5duw6")]
 visible = false
 layout_mode = 0
 anchors_preset = 0
@@ -240,71 +242,76 @@ offset_bottom = 453.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="TooltipsPaint" type="RichTextLabel" parent="."]
+[node name="TooltipsPaint" type="RichTextLabel" parent="." unique_id=1939568176]
 visible = false
 layout_mode = 0
-offset_left = 917.0
-offset_right = 1152.0
-offset_bottom = 121.0
-text = "LMB					- Paint
-LMB + Ctrl			- Fill
-RMB					- Erase
-RMB + Ctrl			- Select Tile
-Escape				- Return"
+offset_right = 298.0
+offset_bottom = 434.0
+text = "Escape			- Return
 
-[node name="MenuChildren" type="Control" parent="."]
+LMB				- Paint
+LMB + Ctrl		- Fill
+RMB				- Erase
+RMB + Ctrl		- Select Tile
+
+LMB + Alt		- Set Selection Anchor 1
+RMB + Alt		- Set Selection Anchor 2
+Ctrl + C			- Copy Selection Area
+Ctrl + V			- Paste Selection Area"
+
+[node name="MenuChildren" type="Control" parent="." unique_id=1293140352]
 z_index = 2
 z_as_relative = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="npcs" type="Control" parent="MenuChildren"]
+[node name="npcs" type="Control" parent="MenuChildren" unique_id=57233237]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="shops" type="Control" parent="MenuChildren"]
+[node name="shops" type="Control" parent="MenuChildren" unique_id=2129410673]
 z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="events" type="Control" parent="MenuChildren"]
+[node name="events" type="Control" parent="MenuChildren" unique_id=1903211876]
 z_index = -2
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="transitions" type="Control" parent="MenuChildren"]
+[node name="transitions" type="Control" parent="MenuChildren" unique_id=181106147]
 z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="save_points" type="Control" parent="MenuChildren"]
+[node name="save_points" type="Control" parent="MenuChildren" unique_id=215119042]
 z_index = -1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="spawn_zones" type="Control" parent="MenuChildren"]
+[node name="spawn_zones" type="Control" parent="MenuChildren" unique_id=386272157]
 z_index = -2
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="weather_zones" type="Control" parent="MenuChildren"]
+[node name="weather_zones" type="Control" parent="MenuChildren" unique_id=1490419187]
 z_index = -2
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1874065158]
 wait_time = 60.0
 autostart = true
 
-[node name="LabelNotification" type="Label" parent="."]
+[node name="LabelNotification" type="Label" parent="." unique_id=1233386383]
 layout_mode = 0
 offset_left = 1074.0
 offset_top = -1.0
@@ -313,7 +320,7 @@ offset_bottom = 22.0
 text = "File Saved"
 script = ExtResource("4_5s007")
 
-[node name="LabelMousePosition" type="Label" parent="."]
+[node name="LabelMousePosition" type="Label" parent="." unique_id=1235639381]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
