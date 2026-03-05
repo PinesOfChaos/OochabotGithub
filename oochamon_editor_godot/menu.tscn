@@ -216,6 +216,42 @@ size_flags_horizontal = 0
 tooltip_text = "Keybind: 7"
 text = "New Weather Zone"
 
+[node name="MoveMapButtons" type="GridContainer" parent="VBoxMenu" unique_id=745978875]
+layout_mode = 2
+columns = 3
+
+[node name="EmptyNode" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=222445896]
+layout_mode = 2
+
+[node name="ShiftUp" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=359809825]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▲"
+
+[node name="EmptyNode2" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=70322188]
+layout_mode = 2
+
+[node name="ShiftLeft" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=1906612340]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "◀"
+
+[node name="EmptyNode3" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=1263097573]
+layout_mode = 2
+
+[node name="ShiftRight" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=1403432294]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▶"
+
+[node name="EmptyNode4" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=1439129328]
+layout_mode = 2
+
+[node name="ShiftDown" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=995683889]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▼"
+
 [node name="GridOoch" type="GridContainer" parent="." unique_id=498984524]
 visible = false
 layout_direction = 2
@@ -355,4 +391,8 @@ text = "0, 0"
 [connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewSign" to="." method="_on_button_new_sign_button_down"]
 [connection signal="toggled" from="VBoxMenu/HBoxWeather/ButtonVisibleWeather" to="." method="_on_button_visible_weather_toggled"]
 [connection signal="pressed" from="VBoxMenu/HBoxWeather/ButtonNewWeather" to="." method="_on_button_new_weather_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftUp" to="." method="_on_shift_up_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftLeft" to="." method="_on_shift_left_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftRight" to="." method="_on_shift_right_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftDown" to="." method="_on_shift_down_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

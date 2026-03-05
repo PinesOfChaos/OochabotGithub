@@ -45,6 +45,7 @@ var post_ready_complete = false
 var tiles_visible = true
 var tiles_clipboard = [[]]
 var tiles_clipboard_coords = {x1 = -1, y1 = -1, x2 = -1, y2 = -1}
+var tile_mouse_pos = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -94,10 +95,10 @@ func _process(delta):
 			
 func _draw():
 	if(tiles_visible):
-		var xstart = clamp((Global.CamX - 64 ) / Global.TileSize, 0, Global.MapSize - 1)
-		var xend = clamp(xstart + 65, 0, Global.MapSize - 1)
-		var ystart = clamp((Global.CamY - 64) / Global.TileSize, 0, Global.MapSize - 1)
-		var yend = clamp(ystart + 35, 0, Global.MapSize - 1)
+		var xstart = clamp((Global.CamX - 64 ) / Global.TileSize, 0, Global.MapSize)
+		var xend = clamp(xstart + 65, 0, Global.MapSize)
+		var ystart = clamp((Global.CamY - 64) / Global.TileSize, 0, Global.MapSize)
+		var yend = clamp(ystart + 35, 0, Global.MapSize)
 	
 		var x1 = 0
 		var y1 = 0
@@ -107,7 +108,30 @@ func _draw():
 				y1 = j * Global.TileSize
 				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
 				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
-
+		
+		#this draws the box that highlights the tiles selection
+		if [	Global.MapMode.MAP_PAINT, 
+				Global.MapMode.MAP_PAINT_BRUSH_SELECT,
+				Global.MapMode.MAP_PAINT_BRUSH_SELECT_WAIT
+			].has(Global.CurrentMapMode):
+			draw_texture_rect(highlightbox_tex, Rect2(
+				(tiles_clipboard_coords.x1 * Global.TileSize) - Global.CamX, 
+				(tiles_clipboard_coords.y1 * Global.TileSize) - Global.CamY,
+				((tiles_clipboard_coords.x2 - tiles_clipboard_coords.x1) * Global.TileSize), 
+				((tiles_clipboard_coords.y2 - tiles_clipboard_coords.y1) * Global.TileSize)
+				), false, Color(1.0, 1.0, 1.0,.7)
+			)
+	
+	if Input.is_action_pressed("preview_cam"):
+		draw_texture_rect(highlightbox_tex, Rect2(
+				((tile_mouse_pos.x - 4) * Global.TileSize) - Global.CamX, 
+				((tile_mouse_pos.y - 4) * Global.TileSize) - Global.CamY,
+				(9 * Global.TileSize), 
+				(9 * Global.TileSize)
+				), false, Color(1.0, 0.5, 0.0, .7)
+			)
+		
+		
 func refresh_all_children():
 	for child in o_menu.get_children(true):
 		child.owner = o_menu
@@ -116,6 +140,11 @@ func step_begin():
 	pass
 
 func step():
+	tile_mouse_pos = Vector2(
+		floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize),
+		floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize))
+	
+	
 	#Update tile position of the mouse
 	if Input.is_action_pressed("show_coord"):
 		var tx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
@@ -215,6 +244,8 @@ func step():
 				_on_button_new_shop_button_down()
 			if Input.is_action_just_pressed("quick_npc"):
 				_on_button_new_npc_button_down()
+			if Input.is_action_pressed("preview_cam"):
+				queue_redraw()
 				
 		Global.MapMode.MAP_OBJ_EDIT:
 			if Input.is_action_just_pressed("ui_cancel"):
@@ -288,8 +319,8 @@ func step():
 				queue_redraw()
 			elif Input.is_action_pressed("mouse_right"):
 				if Input.is_action_pressed("vk_alt"):
-					tiles_clipboard_coords.x2 = xx
-					tiles_clipboard_coords.y2 = yy
+					tiles_clipboard_coords.x2 = xx + 1
+					tiles_clipboard_coords.y2 = yy + 1
 					clipboard_coords_recalc()
 				elif Input.is_action_pressed("vk_control"):
 					Global.TileSelected = map_tiles[xx][yy]
@@ -324,15 +355,19 @@ func step():
 				notify("Tiles Pasted")
 							
 func clipboard_coords_recalc():
-	var x1 = clamp(tiles_clipboard_coords.x1, 0, Global.MapSize - 1)
-	var y1 = clamp(tiles_clipboard_coords.y1, 0, Global.MapSize - 1)
-	var x2 = clamp(tiles_clipboard_coords.x2, 0, Global.MapSize - 1)
-	var y2 = clamp(tiles_clipboard_coords.y2, 0, Global.MapSize - 1)
-	tiles_clipboard_coords.x1 = min(x1, x2)
-	tiles_clipboard_coords.y1 = min(y1, y2)
-	tiles_clipboard_coords.x2 = max(x1, x2)
-	tiles_clipboard_coords.y2 = max(y1, y2)
+	var tc = tiles_clipboard_coords.duplicate()
 	
+	var vx1 = clamp(tc.x1, 0, Global.MapSize - 1)
+	var vy1 = clamp(tc.y1, 0, Global.MapSize - 1)
+	var vx2 = clamp(tc.x2, 0, Global.MapSize - 1)
+	var vy2 = clamp(tc.y2, 0, Global.MapSize - 1)
+	
+	tiles_clipboard_coords.x1 = min(vx1, vx2)
+	tiles_clipboard_coords.y1 = min(vy1, vy2)
+	tiles_clipboard_coords.x2 = max(vx1, vx2)
+	tiles_clipboard_coords.y2 = max(vy1, vy2)
+	
+	queue_redraw()
 
 func step_end():
 	mouse_x_prev = get_local_mouse_position().x
@@ -515,6 +550,62 @@ func _on_file_dialog_save_file_selected(path):
 		
 #endregion 
 
+func _shift_map(vec:Vector2):
+	var _size = Global.MapSize
+	var new_tiles = []
+	
+	for i in _size:
+		new_tiles.push_back([])
+		for j in _size:
+			var xx = i - vec.x
+			var yy = j - vec.y
+			if xx >= 0 and xx < _size and yy >= 0 and yy < _size:
+				new_tiles[i].push_back(map_tiles[xx][yy])
+			else:
+				new_tiles[i].push_back(0)
+			
+		if new_tiles[i].size() >= _size:
+			new_tiles[i].resize(_size)
+	if new_tiles.size() >= _size:
+		new_tiles.resize(_size)
+		
+	map_tiles = new_tiles
+	
+	for child in menu_npcs.get_children():
+		child.npc_data.x += vec.x
+		child.npc_data.y += vec.y
+	
+	for child in menu_shops.get_children():
+		child.shop_data.x += vec.x
+		child.shop_data.y += vec.y
+		
+	for child in menu_transitions.get_children():
+		child.transition_data.x += vec.x
+		child.transition_data.y += vec.y
+	
+	for child in menu_save_points.get_children():
+		child.savepoint_data.x += vec.x
+		child.savepoint_data.y += vec.y
+	
+	for child in menu_spawnzones.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+	
+	for child in menu_weather.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+		
+	for child in menu_events.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+	
+	do_screen_refresh = true
+	queue_redraw()
+			
+
 # Load map data
 #region LOAD
 func _on_file_dialog_load_file_selected(path):
@@ -561,13 +652,20 @@ func _on_file_dialog_load_file_selected(path):
 		var _npcs = _inst.menu_npcs
 		var _weather = _inst.menu_weather
 		
-		
-		
-		
 		#Tiles
-		var _tiles = _json.map_tiles
-		for i in _tiles.size():
-			for j in _tiles[i].size():
+		var _tiles : Array = _json.map_tiles
+		var _size = Global.MapSize
+		for i in _size:
+			# add extra rows
+			if _tiles.size() < _size:
+				_tiles.push_back([])
+				
+			for j in _size:
+				# add extra columns
+				if _tiles[i].size() < _size:
+					_tiles[i].push_back("t00_000")
+				
+				#convert to the tile data value
 				for k in Global.DataTiles.size():
 					if(Global.DataTiles[k].tile_index == _tiles[i][j]):
 						_inst.map_tiles[i][j] = k
@@ -887,3 +985,16 @@ func _on_button_new_sign_button_down() -> void:
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
 	instance.owner = o_menu
 	refresh_all_children()
+
+
+func _on_shift_up_pressed() -> void:
+	_shift_map(Vector2(0, -1))
+
+func _on_shift_down_pressed() -> void:
+	_shift_map(Vector2(0, 1))
+
+func _on_shift_left_pressed() -> void:
+	_shift_map(Vector2(-1, 0))
+
+func _on_shift_right_pressed() -> void:
+	_shift_map(Vector2(1, 0))
