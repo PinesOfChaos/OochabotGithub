@@ -26,19 +26,4 @@ export async function execute(interaction) {
     await playspace_msg.delete().catch(() => { });;
 
     await menu_handler(interaction, true);
-    
-    // // Enable party healing button if we have healing items
-    // let healItems = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
-    // if (healItems.length != 0) {
-    //     for (let item of healItems) {
-    //         ooch_back_button.components[1].setDisabled(item.quantity == 0);
-    //     }
-    // }
-
-    // // Disable the party healing button if all Oochamon are at full HP
-    // let oochHpCheck = profile.get(`${interaction.user.id}`, 'ooch_party');
-    // //console.log(oochHpCheck)
-    // oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
-    // if (oochHpCheck.length === 0) ooch_back_button.components[1].setDisabled(true);
-
 }

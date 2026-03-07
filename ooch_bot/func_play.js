@@ -114,6 +114,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     let relax_steps_end = false;
 
     let previous_positions = profile_data.previous_positions;
+    let clear_previous_positions = false;
 
     //Get the map array based on the player's current map
     let map_obj =   maps.get(`${map_name.toLowerCase()}`);
@@ -320,6 +321,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     map_info =          map_obj.map_info;
                     if (map_shops == undefined) map_shops = [];
                     previous_positions = [];
+                    clear_previous_positions = true;
 
                     //If the map has a failsafe pos and the position to is invalid, go to the failsafe pos
                     //This should only occur in generated maps, as their connection positions may change
@@ -665,7 +667,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             break;
         }
 
-        if(x_start != playerx || y_start != playery){
+        
+        if((x_start != playerx || y_start != playery) && !clear_previous_positions){
             previous_positions.unshift({x : x_start, y: y_start})
             if(previous_positions.length > 3){ previous_positions.pop(); }
             profile.set(user_id, previous_positions, 'previous_positions')
@@ -727,6 +730,7 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
     let player_sprite_id = profile.get(`${user_id}`, 'player_sprite');
     let allies_list = player_info.allies_list;
     let previous_positions = player_info.previous_positions;
+    let clear_previous_positions = false;
 
     //Plain map tiles
     for (let i = -x_center; i < x_center + 1; i++) {

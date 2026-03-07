@@ -69,8 +69,11 @@ export async function execute(interaction, client) {
         flags: MessageFlags.IsComponentsV2,
         mapString: '**Intro**'
     };
-    if (profile.get(`${interaction.user.id}`, 'player_state') != PlayerState.Intro) {
+    const currentState = profile.get(`${interaction.user.id}`, 'player_state');
+    if (currentState != PlayerState.Intro && currentState != PlayerState.Dialogue) {
         profile.set(interaction.user.id, PlayerState.Playspace, 'player_state');
+        playspace_str = await setup_playspace_str(interaction.user.id);
+    } else if (currentState == PlayerState.Dialogue) {
         playspace_str = await setup_playspace_str(interaction.user.id);
     }
 
@@ -112,6 +115,11 @@ export async function execute(interaction, client) {
 
         if (profile.get(`${interaction.user.id}`, 'player_state') == PlayerState.Intro) {
             await event_process(interaction.user.id, thread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
+        } else if (profile.get(`${interaction.user.id}`, 'player_state') == PlayerState.Dialogue) {
+            const eventArray = profile.get(`${interaction.user.id}`, 'cur_event_array');
+            const eventPos = profile.get(`${interaction.user.id}`, 'cur_event_pos');
+            const eventName = profile.get(`${interaction.user.id}`, 'cur_event_name');
+            await event_process(interaction.user.id, thread, eventArray, eventPos, eventName);
         } else {
             await move(thread, interaction.user.id, '', 1, 0);
         }

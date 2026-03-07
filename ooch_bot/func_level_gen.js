@@ -30,7 +30,7 @@ export async function genmap_allmaps(client) {
             GenmapTheme.Powerplant
         ]))
     }
-    await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'lava_path', 3, 52)
+    await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'lava_path', 3, 75)
 
     
     console.log('Generated daily maps.');

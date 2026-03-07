@@ -51,7 +51,7 @@ export async function menu_handler(interaction, init=false) {
             new ButtonBuilder().setCustomId(`${pre}main_back`).setLabel('Back To Menu').setStyle(ButtonStyle.Danger)
         )
         .addComponents(
-            new ButtonBuilder().setCustomId(`${pre}quick_heal`).setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️').setDisabled(true)
+            new ButtonBuilder().setCustomId(`${pre}quick_heal`).setLabel('Quick Heal Party').setStyle(ButtonStyle.Success).setEmoji('❤️')
         );
 
     let sel_ooch_back_button = new ActionRowBuilder()
@@ -648,10 +648,41 @@ export async function menu_handler(interaction, init=false) {
 
     // Back to Oochamon View
     if (action == 'oochamon_back') {
+        selected_ooch = profile.get(interaction.user.id, `ooch_party[${party_idx}]`);
+        heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
+
+        party_extra_buttons.components[0].setDisabled(party_idx == 0 ? true : false);
+        party_extra_buttons.components[1].setDisabled((selected_ooch.current_hp == selected_ooch.stats.hp || heal_inv.length == 0) ? true : false);
+
+        let available_moves = 0;
+        for (let move of monster_data.get(`${selected_ooch.id}`, 'move_list')) {
+            if (move[0] <= selected_ooch.level && move[0] != -1) available_moves += 1;
+        }
+        party_extra_buttons_2.components[1].setDisabled(Boolean(available_moves < 5));
+
+        let evoLvl = monster_data.get(`${selected_ooch.id}`, 'evo_lvl');
+        if (selected_ooch.level >= evoLvl && evoLvl != -1) {
+            party_extra_buttons.components[2].setDisabled(false);
+        } else {
+            party_extra_buttons.components[2].setDisabled(true);
+        }
+
+        if (monster_data.get(`${selected_ooch.id}`, 'form_change_evo') == true) {
+            party_extra_buttons.components[2].setLabel('Change Form').setEmoji('🔁');
+        } else {
+            party_extra_buttons.components[2].setLabel('Evolve').setEmoji('⬆️');
+        }
+
+        if (selected_ooch.id == 109 && selected_ooch.name == selected_ooch.nickname) {
+            party_extra_buttons.components[2].setDisabled(true);
+        }
+
+        /*if (user_profile.flags.includes('ev_tamagoochi'))*/ party_extra_buttons_2.components[2].setDisabled(false);
+
         let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
         let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
-        if (inRange(selected_ooch.tame_value, 121, 200)) {
+        if (inRange(selected_ooch.tame_value, 121, 201)) {
             party_buttons.push(party_extra_stance_sel);
         }
 
@@ -681,6 +712,15 @@ export async function menu_handler(interaction, init=false) {
 
     // Quick Party Heal Oochamon
     if (action == 'quick_heal') {
+
+        // Stop the if all Oochamon are at full HP
+        let oochHpCheck = profile.get(`${interaction.user.id}`, 'ooch_party');
+        oochHpCheck = oochHpCheck.filter(ooch => ooch.current_hp !== ooch.stats.hp);
+        if (oochHpCheck.length === 0) {
+            return await interaction.followUp({ content: 'You already have full healed Oochamon!' })
+        }
+
+
         let healInv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
         let healOptions = [];
 
@@ -744,9 +784,9 @@ export async function menu_handler(interaction, init=false) {
         });
         pa_components = buildPartyData(oochParty);
 
-        let followUpMsg = await interaction.followUp({ content: outputMsg });
         const quickHealContainer = buildMenuContainer(`## Oochamon Party:`, pa_components);
         await interaction.update({ components: [quickHealContainer], flags: MessageFlags.IsComponentsV2 });
+        let followUpMsg = await interaction.followUp({ content: outputMsg });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
     }
@@ -832,12 +872,14 @@ export async function menu_handler(interaction, init=false) {
         ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         // Swap the position of the selected ooch and the ooch in position 0.
         [ooch_party[0], ooch_party[party_idx]] = [ooch_party[party_idx], ooch_party[0]];
+        party_idx = 0;
         profile.set(interaction.user.id, ooch_party, 'ooch_party');
+        menu_data.set(menu_id, { ...menu_state, party_idx, selected_ooch });
         party_extra_buttons.components[0].setDisabled(true);
 
         let oochInfo = await ooch_info_container(selected_ooch, interaction.user.id);
         const primaryContainer = buildOochInfoContainer(oochInfo, dex_components);
-        interaction.update({ components: [primaryContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
+        await interaction.update({ components: [primaryContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
         let followUpMsg = await interaction.followUp({ content: 'This Oochamon is now the primary member of your party, meaning they will be sent out first in a battle.' });
         await wait(5000);
         await followUpMsg.delete().catch(() => { });
@@ -922,7 +964,7 @@ export async function menu_handler(interaction, init=false) {
         }
 
         const evolveContainer = buildOochInfoContainer(oochInfo, dex_components);
-        interaction.update({ components: [evolveContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
+        await interaction.update({ components: [evolveContainer], files: [oochInfo.file], flags: MessageFlags.IsComponentsV2 });
 
         // Finalize putting the ooch into the database and in our menu
         profile.set(interaction.user.id, newEvoOoch, `ooch_party[${party_idx}]`);
@@ -1121,8 +1163,8 @@ export async function menu_handler(interaction, init=false) {
 
         user_profile.ooch_party[party_idx] = selected_ooch;
 
-        const taming_status = get_tame_string(selected_ooch.tame_value);
         const taming_feed_text = feed_text(selected_ooch.nickname, feed_result);
+        const taming_status = get_tame_string(selected_ooch.tame_value);
 
         if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
 
