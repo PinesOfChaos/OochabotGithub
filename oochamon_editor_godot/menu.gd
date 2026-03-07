@@ -124,10 +124,10 @@ func _draw():
 	
 	if Input.is_action_pressed("preview_cam"):
 		draw_texture_rect(highlightbox_tex, Rect2(
-				((tile_mouse_pos.x - 4) * Global.TileSize) - Global.CamX, 
-				((tile_mouse_pos.y - 4) * Global.TileSize) - Global.CamY,
-				(9 * Global.TileSize), 
-				(9 * Global.TileSize)
+				((tile_mouse_pos.x - 5) * Global.TileSize) - Global.CamX, 
+				((tile_mouse_pos.y - 5) * Global.TileSize) - Global.CamY,
+				(11 * Global.TileSize), 
+				(11 * Global.TileSize)
 				), false, Color(1.0, 0.5, 0.0, .7)
 			)
 		
