@@ -17,7 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="oochamon_level_editor"
 run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
-run/max_fps=165
+run/max_fps=60
 config/icon="res://icon.svg"
 
 [autoload]

@@ -24,11 +24,13 @@ access = 2
 filters = PackedStringArray("*.json")
 
 [node name="FileDialogLoad" type="FileDialog" parent="." unique_id=1148002673]
+oversampling_override = 1.0
 title = "Open a File"
 initial_position = 2
-size = Vector2i(500, 400)
+size = Vector2i(515, 400)
 ok_button_text = "Open"
 file_mode = 0
+display_mode = 1
 access = 2
 filters = PackedStringArray("*.json")
 

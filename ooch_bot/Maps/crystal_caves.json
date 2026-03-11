@@ -488,7 +488,7 @@
 			"coin": 0.0,
 			"flag_given": "",
 			"flag_kill": "",
-			"flag_required": "",
+			"flag_required": "dave1&dave2&dave3&dave4&dave5&dave6&dave7",
 			"is_catchable": false,
 			"items": [
 				{

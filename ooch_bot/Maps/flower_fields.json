@@ -473,9 +473,9 @@
 			"aggro_range": 3.0,
 			"battle_ai": 0.0,
 			"coin": 0.0,
-			"flag_given": "",
+			"flag_given": "dave5",
 			"flag_kill": "",
-			"flag_required": "",
+			"flag_required": "dave0",
 			"is_catchable": false,
 			"items": [
 				{
