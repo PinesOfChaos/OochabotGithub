@@ -80,6 +80,8 @@ export function create_monster(monster) {
         }
     }
 
+    monster.spawn_locations = []
+
     // Set the monster data in the enmap database
     let key_id = monster.id.toString();
     monster_data.set(key_id, monster);

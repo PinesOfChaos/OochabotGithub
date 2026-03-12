@@ -514,7 +514,7 @@
 				}
 			],
 			"x": 51.0,
-			"y": 12.0
+			"y": 13.0
 		},
 		{
 			"aggro_range": 0.0,
@@ -17840,7 +17840,7 @@
 		{
 			"connect_map": "",
 			"connect_x": 47.0,
-			"connect_y": 11.0,
+			"connect_y": 13.0,
 			"x": 8.0,
 			"y": 37.0
 		},
@@ -17875,7 +17875,7 @@
 		{
 			"connect_map": "",
 			"connect_x": 53.0,
-			"connect_y": 11.0,
+			"connect_y": 13.0,
 			"x": 18.0,
 			"y": 37.0
 		},
@@ -17896,7 +17896,7 @@
 		{
 			"connect_map": "",
 			"connect_x": 54.0,
-			"connect_y": 19.0,
+			"connect_y": 21.0,
 			"x": 20.0,
 			"y": 48.0
 		},

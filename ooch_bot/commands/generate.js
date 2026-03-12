@@ -4717,23 +4717,38 @@ export async function execute(interaction, client) {
     //#endregion
     //#region Create Maps
     let files = readdirSync('./Maps/');
+    let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
     for (let file of files) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
-
+        
         try {
             readFile(`./Maps/${file}`, 'utf8', (err, data) => {
                 if (err) {
                     console.log(`Error reading file: ${file}`);
                     return;
                 }
+
+                let map_data = JSON.parse(data)
+
+                for(let spawnzone of map_data.map_spawn_zones){
+                    for(let slot of spawnzone.spawn_slots){
+                        oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
+                    }
+                }
+
                 maps.set(map_name, JSON.parse(data));
             });
         } catch (err) {
             console.log(err);
         }
-
     }
+
+    //Add a list of spawn positions to the oochamon
+    for(let i = 0; i < oochadex_spawn_positions.length; i++){
+        monster_data.set(i.toString(), oochadex_spawn_positions[i], 'spawn_locations')
+    }
+
     //#endregion
     // Generate text file for map editor project
     let tiles_output_str = "";

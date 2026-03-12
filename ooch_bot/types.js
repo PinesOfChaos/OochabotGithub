@@ -444,6 +444,8 @@ const OochID = {
     Symaat:128,
     Ophicore:129,
 
+    CountCatchable : 130, //ALWAYS UPDATE THIS TO BE 1 MORE THAN THE NUMBER OF OOCHAMON IN THE CATCHABLE SECTION
+
     i_:-1,
     Oochabit:-2,
     Oochabound:-3,
