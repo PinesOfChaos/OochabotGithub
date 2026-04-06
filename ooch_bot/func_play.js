@@ -730,7 +730,6 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
     let player_sprite_id = profile.get(`${user_id}`, 'player_sprite');
     let allies_list = player_info.allies_list;
     let previous_positions = player_info.previous_positions;
-    let clear_previous_positions = false;
 
     //Plain map tiles
     for (let i = -x_center; i < x_center + 1; i++) {

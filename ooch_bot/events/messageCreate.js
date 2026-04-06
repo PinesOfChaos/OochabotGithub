@@ -4,12 +4,45 @@ dotenv.config();
 import wait from 'wait';
 import { toUpper } from 'lodash-es';
 
-import { Events, MessageFlags } from 'discord.js';
+import { Events } from 'discord.js';
 import { profile } from '../db.js';
 import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
 import { quit_oochamon } from '../func_other.js';
 import { inactivityTrackers } from '../index.js';
+
+const moveQueues = new Map(); // userId -> { channel, moves: [{dir, dist}] }
+const moveTimers = new Map(); // userId -> timer
+
+async function flushMoveQueue(userId) {
+    const entry = moveQueues.get(userId);
+    moveQueues.delete(userId);
+    moveTimers.delete(userId);
+    if (!entry) return;
+
+    const consolidated = [];
+    for (const { dir, dist } of entry.moves) {
+        const last = consolidated[consolidated.length - 1];
+        if (last && last.dir === dir) {
+            last.dist += dist;
+        } else {
+            consolidated.push({ dir, dist });
+        }
+    }
+
+    for (const { dir, dist } of consolidated) {
+        await move(entry.channel, userId, dir, dist);
+        if (profile.get(userId, 'player_state') !== PlayerState.Playspace) break;
+    }
+}
+
+function enqueueMoves(channel, userId, moves) {
+    const existing = moveQueues.get(userId) || { channel, moves: [] };
+    existing.moves.push(...moves);
+    moveQueues.set(userId, existing);
+    if (moveTimers.has(userId)) clearTimeout(moveTimers.get(userId));
+    moveTimers.set(userId, setTimeout(() => flushMoveQueue(userId), 250));
+}
 
 export default {
   name: Events.MessageCreate,
@@ -80,52 +113,42 @@ export default {
                             
                             await message.delete().catch(() => {});
                         } else {
-                            // Do movement stuff
-                            let moveMsg = message.content.toLowerCase().replace(/\s+/g, ''); // Remove spaces
-                            let splitMoves = moveMsg.split(','); // Split by comma first
-                            let moveCount = 0;
-                        
+                            // Parse moves into array, then enqueue for debounced execution
+                            let moveMsg = message.content.toLowerCase().replace(/\s+/g, '');
+                            let splitMoves = moveMsg.split(',');
+                            let parsedMoves = [];
                             let currentDirection = null;
                             let totalDistance = 0;
-                        
+
                             for (let msg of splitMoves) {
-                                if (moveCount >= 3) break; // Stop processing after 3 moves
-                                let moveSequence = msg.match(/([wasd])(\d{1,2})?/g); // Match 'w', 'a', 's', 'd' followed optionally by a number
-                        
-                                if (!moveSequence) continue; // Skip invalid input
-                        
+                                if (parsedMoves.length >= 3) break;
+                                let moveSequence = msg.match(/([wasd])(\d{1,2})?/g);
+                                if (!moveSequence) continue;
+
                                 for (let moveSeq of moveSequence) {
-                                    if (moveCount >= 3) break; // Stop further moves if limit reached
-                                    let direction = moveSeq[0]; // First character (direction)
-                                    let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1; // Get distance if provided, otherwise default to 1
-                        
-                                    if (isNaN(dist)) dist = 1; // Safety check for NaN values
+                                    if (parsedMoves.length >= 3) break;
+                                    let direction = moveSeq[0];
+                                    let dist = moveSeq.length > 1 ? parseInt(moveSeq.slice(1)) : 1;
+                                    if (isNaN(dist)) dist = 1;
                                     if (dist > 4) dist = 4;
-                        
+
                                     if (currentDirection === null) {
                                         currentDirection = direction;
                                         totalDistance = dist;
                                     } else if (currentDirection === direction) {
-                                        totalDistance += dist; // Aggregate distance if the direction is the same
+                                        totalDistance += dist;
                                     } else {
-                                        // Move in the previous direction with the total distance
-                                        await move(message.channel, message.author.id, currentDirection, totalDistance);
-                                        moveCount++;
-
-                                        if (moveCount >= 3) break; // Stop further moves if limit reached                    
-                        
-                                        // Start a new aggregation for the current direction
+                                        parsedMoves.push({ dir: currentDirection, dist: totalDistance });
                                         currentDirection = direction;
                                         totalDistance = dist;
                                     }
                                 }
                             }
-                    
-                            // Call move for the last accumulated direction
-                            if (currentDirection !== null && moveCount < 3) {
-                                await move(message.channel, message.author.id, currentDirection, totalDistance);
+                            if (currentDirection !== null && parsedMoves.length < 3) {
+                                parsedMoves.push({ dir: currentDirection, dist: totalDistance });
                             }
-                        
+
+                            if (parsedMoves.length > 0) enqueueMoves(message.channel, message.author.id, parsedMoves);
                             await message.delete().catch(() => {});
                         }
                     }
