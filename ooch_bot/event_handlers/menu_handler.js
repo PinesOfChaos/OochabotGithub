@@ -86,6 +86,20 @@ export async function menu_handler(interaction, init=false) {
 
     let party_extra_stance_sel = new ActionRowBuilder();
 
+    function buildStanceSel(ooch) {
+        const opts = get_stance_options(ooch, true).map(s => ({
+            label: s.name,
+            description: s.description_short.slice(0, 100),
+            value: `stance_sel_${s.id}`
+        }));
+        return new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('stance_select')
+                .setPlaceholder('Select a stance to start in!')
+                .addOptions(opts)
+        );
+    }
+
     let bag_buttons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder().setCustomId(`${pre}consumable_button`).setStyle(ButtonStyle.Success).setEmoji('🎒')).addComponents(
@@ -620,6 +634,7 @@ export async function menu_handler(interaction, init=false) {
 
     if (selected_ooch) {
         if (inRange(selected_ooch.tame_value, 121, 201)) {
+            party_extra_stance_sel = buildStanceSel(selected_ooch);
             dex_components.push(party_extra_stance_sel);
         }
     }
@@ -683,6 +698,7 @@ export async function menu_handler(interaction, init=false) {
         let party_buttons = [party_extra_buttons, party_extra_buttons_2];
 
         if (inRange(selected_ooch.tame_value, 121, 201)) {
+            party_extra_stance_sel = buildStanceSel(selected_ooch);
             party_buttons.push(party_extra_stance_sel);
         }
 
