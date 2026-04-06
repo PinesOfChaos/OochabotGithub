@@ -1121,7 +1121,7 @@ export async function menu_handler(interaction, init=false) {
 
     if (action == 'taming_feed') {
 
-        let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Treat);
+        let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Treat, ItemType.Treat);
 
         let treat_select = new ActionRowBuilder();
         let treat_select_options = [];

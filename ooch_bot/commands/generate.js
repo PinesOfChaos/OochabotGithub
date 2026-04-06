@@ -1014,61 +1014,61 @@ export async function execute(interaction, client) {
     });
     create_item({
         id: Item.TreatBasic, name: 'Snacky Treat', emote: get_emote_string('item_treat'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 800, potency: -1,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 800, potency: -1,
         description: 'A mass produced treat, Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFungal, name: 'Squishy Treat', emote: get_emote_string('item_treat_fungal'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Fungal,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Fungal,
         description: 'A treat coated in spores, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFlame, name: 'Spicy Treat', emote: get_emote_string('item_treat_flame'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Flame,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Flame,
         description: 'A scalding hot treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatStone, name: 'Crunchy Treat', emote: get_emote_string('item_treat_stone'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Stone,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Stone,
         description: 'A rock-like treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatOoze, name: 'Gooey Treat', emote: get_emote_string('item_treat_ooze'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Ooze,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Ooze,
         description: 'A slimy treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatMagic, name: 'Sparkly Treat', emote: get_emote_string('item_treat_magic'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Magic,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Magic,
         description: 'An ethereal treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatTech, name: 'Metallic Treat', emote: get_emote_string('item_treat_tech'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Tech,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Tech,
         description: 'A finely crafted treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCloth, name: 'Soft Treat', emote: get_emote_string('item_treat_cloth'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Cloth,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Cloth,
         description: 'A silky smooth treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatSound, name: 'Soothing Treat', emote: get_emote_string('item_treat_sound'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Sound,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Sound,
         description: 'A treat that seems to hum a tune, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCrystal, name: 'Rigid Treat', emote: get_emote_string('item_treat_crystal'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Crystal,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Crystal,
         description: 'A sharply sweet treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });

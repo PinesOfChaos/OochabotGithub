@@ -191,6 +191,7 @@ export async function event_handler(interaction) {
                         [ItemCategory.Map]: [],
                         [ItemCategory.Key]: [],
                         [ItemCategory.Skin]: [],
+                        [ItemCategory.Treat]: [],
                     }, 'inventory');
                     profile.set(interaction.user.id, 0, `oochadex[52].caught`);
                 }

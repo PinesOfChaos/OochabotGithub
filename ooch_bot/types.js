@@ -760,7 +760,8 @@ const ItemCategory = {
     Prism:      'prism',
     Map:        'map',
     Key:        'key',
-    Skin:       'skin'
+    Skin:       'skin',
+    Treat:      'treat'
 }
 
 const ItemType = {

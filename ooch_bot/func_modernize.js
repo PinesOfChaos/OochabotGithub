@@ -148,6 +148,7 @@ export function get_blank_profile() {
             [ItemCategory.Map]: [],
             [ItemCategory.Key]: [],
             [ItemCategory.Skin]: [],
+            [ItemCategory.Treat]: [],
         },
 
         oochabux : 0,
