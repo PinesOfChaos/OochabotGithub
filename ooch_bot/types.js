@@ -163,6 +163,11 @@ const FieldEffect = {
     TwistedReality : 'twisted reality'
 }
 
+const OochVariant = {
+    Default : "",
+    Prismatic : "_prismatic"
+}
+
 const Move = {
     Hit: 0,
     Bash: 1,
@@ -796,5 +801,5 @@ export {
     ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
     BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID,
-    ItemCategory, TamingAction
+    ItemCategory, TamingAction, OochVariant
 };

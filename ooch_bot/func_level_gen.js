@@ -1,5 +1,5 @@
 import { sample, round, shuffle, random } from 'lodash-es';
-import { OochType, GenmapTheme, Weather, BattleAi, StanceForms, OochID } from "./types.js";
+import { OochType, GenmapTheme, Weather, BattleAi, StanceForms, OochID, OochVariant, Ability, Move, Item } from "./types.js";
 import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
@@ -15,6 +15,7 @@ let whitelist_everchange_wild = [
     101, 103, 105, 113, 115, 117, 
     119, 121, 124
 ]
+
 
 // eslint-disable-next-line no-unused-vars
 let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
@@ -509,15 +510,18 @@ export function genmap_ooch_list(level) {
         (mon.evo_stage == 0) && //remove all mons that are evolved (we will evolve them later)
         (mon.id >= 0) && //remove uncatchable mons
         !([ //remove special mons the player shouldnt see
-            0, //Sporbee
-            3, //Roocky
-            6, //Puppyre
-            69, //Nisythe
-            34, //Purif-i
-            108, //Nullifly
-            96, //Tryptid
-            97, //Roswier
-            98, //Chemerai
+            OochID.Sporbee, 
+            OochID.Roocky, 
+            OochID.Puppyre, 
+            OochID.Nisythe, 
+            OochID.Purif_i, 
+            OochID.Nullifly, 
+            OochID.Tryptid, 
+            OochID.Roswier, 
+            OochID.Chemerai, 
+            OochID.Symaat,
+            OochID.Heraloom,
+            OochID.Ophicore
         ].includes(mon.id))));
     
     for(let ooch of ooch_list){
@@ -572,6 +576,8 @@ export function genmap_spawnzone(x, y, w, h, min_level, max_level, types_primary
     return spawnzone;
 }
 
+
+
 /**
  * Creates an NPC object with a randomized team and intro quote
  * @param {*} x Position of the npc
@@ -586,8 +592,6 @@ export async function genmap_npc(x, y, level_min, level_max){
 
     let teamsize = Math.floor(Math.random() * 3) + 1;
     let avg_level = lerp(level_max, level_min, teamsize/4); //more team, lower avg level
-
-    
 
 
     //Add mons to the npc's team
@@ -661,6 +665,97 @@ export async function genmap_npc(x, y, level_min, level_max){
     npc.remove_on_finish = true;
 
     return npc;
+}
+
+function genmap_ooch_specific(ooch_id, level, iv_hp, iv_atk, iv_def, iv_spd, ability, moves = [], variant = OochVariant.Default){
+    let ooch = ooch_id;
+    let ooch_new = create_ooch(ooch.id, {level: level, moveset : moves, ability : ability, variant : variant});
+    ooch_new.stats.hp_iv = iv_hp;
+    ooch_new.stats.atk_iv = iv_atk;
+    ooch_new.stats.def_iv = iv_def;
+    ooch_new.stats.spd_iv = iv_spd;
+    
+    return genmap_ooch_convert(ooch_new);
+}
+
+function genmap_npc_reward_ooch(x, y){
+    let npc = genmap_empty_npc();
+    npc.x = x;
+    npc.y = y;
+    npc.name = "Mysterious Chest";
+    npc.pre_combat_dialogue = "You reach out to open the mysterious chest, but a wild Oochamon appears!!";
+    npc.post_combat_dialogue = "The chest vanishes, leaving your reward...";
+    npc.sprite_id = "c00_013" //chest
+    npc.is_catchable = true;
+    npc.aggro_range = 0;
+    npc.flag_required = "everchange_npc_boss_defeated";
+    npc.flag_given = "everchange_reward_finished";
+    npc.flag_kill = "everchange_reward_finished";
+
+    let unique = sample(true, false);
+    let prismatic = unique ? sample(true, false, false, false) : true;
+    let variant = prismatic ? OochVariant.Prismatic : OochVariant.Default;
+    let iv_hp = random(5, 10, false);
+    let iv_atk = random(5, 10, false);
+    let iv_def = random(5, 10, false);
+    let iv_spd = random(5, 10, false);
+
+    let ooch_id = sample(genmap_ooch_list(50));
+    if(unique){
+        ooch_id = sample([
+            OochID.Roswier, OochID.Chemerai, OochID.Tryptid, //pre endgame unique mons
+            OochID.Ophicore, OochID.Symaat, OochID.Heraloom, //post endgame unique mons
+            ])
+    }
+
+    let ooch_new = create_ooch(ooch_id, {level: level, variant : variant });
+    ooch_new.stats.hp_iv = iv_hp;
+    ooch_new.stats.atk_iv = iv_atk;
+    ooch_new.stats.def_iv = iv_def;
+    ooch_new.stats.spd_iv = iv_spd;
+    npc.team = [ooch_new]
+    
+}
+
+function genmap_npc_boss(x, y, force_id = -1){
+    let npc_id = force_id == -1 ? sample([0]) : force_id;
+    let npc = genmap_empty_npc()
+    npc.x = x;
+    npc.y = y;
+    npc.aggro_range = 3;
+    npc.flag_given = "everchange_npc_boss_defeated";
+    npc.flag_kill = "everchange_npc_boss_defeated";
+    npc.items = [
+        {count : 1, id: sample([Item.PerfectPrism, Item.AbilitySphere])},
+        {count : 2, id: sample([Item.RedBoostgem, Item.BlueBoostgem, Item.YellowBoostgem, Item.GreenBoostgem])}
+    ]
+    npc.coin = 8000;
+
+    switch (npc_id) {
+        case 0: //Pines
+            npc.name = "Evergreen Cultist";
+            npc.pre_combat_dialogue = "That's it, you're going to jail! Why? *Tree*son of course!";
+            npc.post_combat_dialogue = "Yeah, but like, what if *you* lost instead?";
+            npc.sprite_id = "c00_055";
+            npc.items.push(Item.SkinEvergreenCultist)
+           
+            npc.team = [
+                genmap_ooch_specific(OochID.Queenect, 50, 10, 10, 10, 10, Ability.Burdened, 
+                    [Move.CausticOrb, Move.RallyingCry, Move.Blight, Move.TakeOver], OochVariant.Prismatic),
+
+                genmap_ooch_specific(OochID.Priseroth, 50, 10, 10, 10, 10, Ability.TwilightHour, 
+                    [Move.Calamity, Move.GemBash, Move.PlasmaCannon, Move.ShootingStar], OochVariant.Default),
+
+                genmap_ooch_specific(OochID.Temporath, 50, 10, 10, 10, 10, Ability.Withering, 
+                    [Move.DebugBomb, Move.TimeWarp, Move.Pulverize, Move.TwistedReality], OochVariant.Default),
+
+                genmap_ooch_specific(OochID.Drascend, 50, 10, 10, 10, 10, Ability.Flux, 
+                    [Move.FiberSlicer, Move.Silkstorm, Move.PressureWave, Move.Flurry], OochVariant.Default)
+            ];
+        break;
+
+    }
+
 }
 
 /**
