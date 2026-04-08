@@ -53,9 +53,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         let ex = -1;
         let ey = -1;
         if(i == themes_array.length - 1){
-            em = exit_map;
-            ex = exit_x;
-            ey = exit_y;
+            em = "everchange_cave_-_final_floor";
         }
 
         //The deeper in the dungeon we go, the closer the more it steps from start size to end size
@@ -80,8 +78,18 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         maps.set(level_lowername, new_level);
         kickout_list.push(level_lowername);
 
-        console.log(`Generated: ${level_name}`)
+        console.log(`- Generated: ${level_name}`)
     }
+
+    //Add the boss floor to the dungeon
+    let level_name = `${area_name} - Final Floor`;
+    let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
+    let level_filename = './Maps/' + level_lowername + '.json';
+    let new_level = await genmap_final_room(level_name, genmap_theme(GenmapTheme.ObsidianPath), exit_map, exit_x, exit_y)
+    writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
+    maps.set(level_lowername, new_level);
+    kickout_list.push(level_lowername);
+    console.log(`- Generated: ${level_name}`)
 
     //Kick players back to their last checkpoint if they're in one of the generated levels
     for (let key of profile.keys()) { 
@@ -165,6 +173,105 @@ export function genmap_theme(theme){
                 battle_bg : "battle_bg_powerstation"
             })
     }
+}
+
+/**
+ * Generates a new map and returns its map data
+ * @param {String} name Name of the map to generate, this this will be converted to snake_case.json in the level name
+ * @param {Theme} theme Use genmap_theme(GenmapTheme.XXXXXX) 
+ * @param {String} exit_map Map where the exit of this level should lead to (examples: lava_path, training_facility, tutorial)
+ * @param {Int} exit_x Where on the map to place the player use -1 to use failsafe position
+ * @param {Int} exit_y Where on the map to place the player use -1 to use failsafe position
+ * */
+export async function genmap_final_room(name, theme, exit_map, exit_x, exit_y){
+
+    let width = 15;
+    let height = 27;
+
+    //Filter out user's flags to any that don't include the map's name
+    let all_users = profile.values()
+    for(let user of all_users) {
+        if (user.flags == undefined) continue;
+        user.flags = user.flags.filter((flag) => !flag.includes(name));
+    }
+
+    let base_layout = genmap_layout_final_room(width, height);
+    let layout = base_layout.layout;
+    let savepoints = [];
+    let spawnzones = [];
+    let transitions = [];
+    let npcs = [];
+    let shops = [];
+    let tiles = [];
+    let weatherzones = [];
+
+    let start_pos = false;
+    let end_pos = false;
+    let boss_pos = {x : 0, y : 0};
+    for(let i = 0; i < width; i++){
+        tiles[i] = [];
+        for(let j = 0; j < height; j++){
+            switch(layout[i][j]){
+                case "wall":    tiles[i][j] = sample(theme.tile_wall); break;
+                case "floor":   tiles[i][j] = sample(theme.tile_floor); break;
+                case "grass":   tiles[i][j] = sample(theme.tile_grass); break;
+                case "edge":    tiles[i][j] = sample(theme.tile_edge); break;
+                case "decor":   tiles[i][j] = sample(theme.tile_decor); break;
+                default: 
+                    tiles[i][j] = sample(theme.tile_floor); 
+                    switch(layout[i][j]){
+                        case "start": 
+                            start_pos = {x : i, y : j}; 
+                            break;
+                        case "end": 
+                            end_pos = {x : i, y : j};
+                            tiles[i][j] = "t00_012"; break;
+                        case "misc": boss_pos = {x : i, y : j}; break;
+                    }
+                break;
+            }
+        }
+    }
+
+    //Add boss npc
+    let npc_boss = await genmap_npc_boss(boss_pos.x, boss_pos.y);
+    npc_boss.npc_id += name;//Append the map name to the NPC to be removed later
+    npcs.push(npc_boss);
+
+    //Add reward oochamon
+    let npc_reward = await genmap_npc_reward_ooch(boss_pos.x, boss_pos.y);
+    npc_reward.npc_id += name;//Append the map name to the NPC to be removed later
+    npcs.push(npc_reward);
+
+    //Add end of floor exit tile
+    transitions.push({
+        connect_map : exit_map,
+        connect_x : exit_x,
+        connect_y : exit_y,
+        x : end_pos.x,
+        y : end_pos.y
+    })
+    
+    let map_data = {
+        map_events : [],
+        map_npcs : npcs,
+        map_savepoints : savepoints,
+        map_shops : shops,
+        map_spawn_zones : spawnzones,
+        map_transitions : transitions,
+
+        map_tiles : tiles,
+        map_weather : weatherzones,
+
+        map_info : {
+            map_battleback : theme.battle_bg,
+            map_name : name,
+            map_generated : true,
+            map_failsafe_pos : start_pos,
+        }
+    }
+
+    return(map_data);
 }
 
 /**
@@ -345,6 +452,7 @@ export function genmap_ooch_convert(ooch_data) {
 
     return(new_ooch)
 }
+
 
 /**
  * Creates a blank slate NPC for use in level gen
@@ -610,7 +718,7 @@ export async function genmap_npc(x, y, level_min, level_max){
     npc.aggro_range = 3;
     npc.team = team;
     npc.sprite_id = sample([
-        "c00_001", "c00_002", "c00_003", "c00_004", "c00_005", "c00_011", "c00_014",
+        "c00_001", "c00_002", "c00_003", "c00_004", "c00_005", "c00_011", "c00_014"
     ]);
     npc.name = "Wandering Trainer";
     npc.pre_combat_dialogue = sample([
@@ -667,18 +775,17 @@ export async function genmap_npc(x, y, level_min, level_max){
     return npc;
 }
 
-function genmap_ooch_specific(ooch_id, level, iv_hp, iv_atk, iv_def, iv_spd, ability, moves = [], variant = OochVariant.Default){
-    let ooch = ooch_id;
-    let ooch_new = create_ooch(ooch.id, {level: level, moveset : moves, ability : ability, variant : variant});
-    ooch_new.stats.hp_iv = iv_hp;
-    ooch_new.stats.atk_iv = iv_atk;
-    ooch_new.stats.def_iv = iv_def;
-    ooch_new.stats.spd_iv = iv_spd;
+async function genmap_ooch_specific(ooch_id, level, iv_hp, iv_atk, iv_def, iv_spd, ability, moves = [], variant = OochVariant.Default){
+    let ooch_new = await create_ooch(`${ooch_id}`, {level: level, moveset : moves, ability : ability, variant : variant});
+    ooch_new.stats.hp_iv = iv_hp / 10;
+    ooch_new.stats.atk_iv = iv_atk / 10;
+    ooch_new.stats.def_iv = iv_def / 10;
+    ooch_new.stats.spd_iv = iv_spd / 10;
     
     return genmap_ooch_convert(ooch_new);
 }
 
-function genmap_npc_reward_ooch(x, y){
+async function genmap_npc_reward_ooch(x, y){
     let npc = genmap_empty_npc();
     npc.x = x;
     npc.y = y;
@@ -700,7 +807,7 @@ function genmap_npc_reward_ooch(x, y){
     let iv_def = random(5, 10, false);
     let iv_spd = random(5, 10, false);
 
-    let ooch_id = sample(genmap_ooch_list(50));
+    let ooch_id = sample(genmap_ooch_list(50)).id;
     if(unique){
         ooch_id = sample([
             OochID.Roswier, OochID.Chemerai, OochID.Tryptid, //pre endgame unique mons
@@ -708,17 +815,19 @@ function genmap_npc_reward_ooch(x, y){
             ])
     }
 
-    let ooch_new = create_ooch(ooch_id, {level: level, variant : variant });
+    let ooch_new = await create_ooch(`${ooch_id}`, {level: 50, variant : variant });
     ooch_new.stats.hp_iv = iv_hp;
     ooch_new.stats.atk_iv = iv_atk;
     ooch_new.stats.def_iv = iv_def;
     ooch_new.stats.spd_iv = iv_spd;
     npc.team = [ooch_new]
     
+    
+    return npc;
 }
 
-function genmap_npc_boss(x, y, force_id = -1){
-    let npc_id = force_id == -1 ? sample([0]) : force_id;
+async function genmap_npc_boss(x, y, force_id = -1){
+    let npc_id = force_id == -1 ? sample([0, 1, 2]) : force_id;
     let npc = genmap_empty_npc()
     npc.x = x;
     npc.y = y;
@@ -737,25 +846,101 @@ function genmap_npc_boss(x, y, force_id = -1){
             npc.pre_combat_dialogue = "That's it, you're going to jail! Why? *Tree*son of course!";
             npc.post_combat_dialogue = "Yeah, but like, what if *you* lost instead?";
             npc.sprite_id = "c00_055";
-            npc.items.push(Item.SkinEvergreenCultist)
+            npc.items.push(Item.SkinEvergreenCultist);
            
             npc.team = [
-                genmap_ooch_specific(OochID.Queenect, 50, 10, 10, 10, 10, Ability.Burdened, 
+                await genmap_ooch_specific(OochID.Queenect, 50, 9, 9, 9, 9, Ability.Burdened, 
                     [Move.CausticOrb, Move.RallyingCry, Move.Blight, Move.TakeOver], OochVariant.Prismatic),
 
-                genmap_ooch_specific(OochID.Priseroth, 50, 10, 10, 10, 10, Ability.TwilightHour, 
+                await genmap_ooch_specific(OochID.Priseroth, 50, 10, 5, 8, 9, Ability.TwilightHour, 
                     [Move.Calamity, Move.GemBash, Move.PlasmaCannon, Move.ShootingStar], OochVariant.Default),
 
-                genmap_ooch_specific(OochID.Temporath, 50, 10, 10, 10, 10, Ability.Withering, 
+                await genmap_ooch_specific(OochID.Temporath, 50, 9, 10, 5, 7, Ability.Withering, 
                     [Move.DebugBomb, Move.TimeWarp, Move.Pulverize, Move.TwistedReality], OochVariant.Default),
 
-                genmap_ooch_specific(OochID.Drascend, 50, 10, 10, 10, 10, Ability.Flux, 
+                await genmap_ooch_specific(OochID.Drascend, 50, 8, 7, 10, 6, Ability.Flux, 
                     [Move.FiberSlicer, Move.Silkstorm, Move.PressureWave, Move.Flurry], OochVariant.Default)
             ];
         break;
+        case 1: //Maus
+            npc.name = "Tamagoochi™ 👌 Girl";
+            npc.pre_combat_dialogue = "This battle is gonna be so Tamagoochi™ 👌!";
+            npc.post_combat_dialogue = "I walk the lonely Rhodent, the only Rhodent I have ever known...";
+            npc.sprite_id = "c00_058";
+            npc.items.push(Item.SkinTamagoochiGirl);
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Rhodent, 50, 7, 10, 8, 3, Ability.Shadow, 
+                    [Move.PlasmaCannon, Move.Sawblade, Move.Lagspike, Move.Lurk], OochVariant.Default),
 
+                await genmap_ooch_specific(OochID.Chewdee, 50, 5, 10, 10, 10, Ability.Phantasmal, 
+                    [Move.BlindingBeam, Move.Micronet, Move.TwistedReality, Move.Wub], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Purif_i, 50, 7, 10, 9, 4, Ability.Purification, 
+                    [Move.NullSphere, Move.PebbleBlast, Move.Kaleidoscope, Move.CursedEye], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Rhodent, 50, 8, 10, 10, 4, Ability.Phantasmal, 
+                    [Move.CallThunder, Move.PrecisionStrike, Move.Lurk, Move.Sawblade], OochVariant.Prismatic)
+            ];
+        break;
+        case 2: //CodRaven
+            npc.name = "Tamagoochi™ 👌 Girl";
+            npc.pre_combat_dialogue = "This battle is gonna be so Tamagoochi™ 👌!";
+            npc.post_combat_dialogue = "I walk the lonely Rhodent, the only Rhodent I have ever known...";
+            npc.sprite_id = "c00_058";
+            npc.items.push(Item.SkinTamagoochiGirl);
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Rhodent, 50, 7, 10, 8, 3, Ability.Shadow, 
+                    [Move.PlasmaCannon, Move.Sawblade, Move.Lagspike, Move.Lurk], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Chewdee, 50, 5, 10, 10, 10, Ability.Phantasmal, 
+                    [Move.BlindingBeam, Move.Micronet, Move.TwistedReality, Move.Wub], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Purif_i, 50, 7, 10, 9, 4, Ability.Purification, 
+                    [Move.NullSphere, Move.PebbleBlast, Move.Kaleidoscope, Move.CursedEye], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Rhodent, 50, 8, 10, 10, 4, Ability.Phantasmal, 
+                    [Move.CallThunder, Move.PrecisionStrike, Move.Lurk, Move.Sawblade], OochVariant.Prismatic)
+            ];
+        break;
     }
 
+    return npc;
+}
+
+export function genmap_layout_final_room(width, height){
+    //Empty room layout
+    let layout = [];
+    let wall_dist = 5;
+    for(let i = 0; i < width; i++){
+        layout[i] = [];
+        for(let j = 0; j < height; j++){
+            if(i >= 5 && i < 10){
+                if(j == 5){
+                    layout[i][j] = "edge";
+                }
+                else if(j > 7 && j < 20 - wall_dist){
+                    layout[i][j] = "floor";
+                }
+                else{
+                    layout[i][j] = "wall";
+                }
+            }
+            else{
+                layout[i][j] = "wall";
+            }
+        }
+    }
+
+    layout[7][14] = "misc";
+    layout[7][19] = "start";
+    layout[7][9] = "end";
+
+    return ({
+        layout : layout,
+        spawnzones : []
+    })
 }
 
 /**

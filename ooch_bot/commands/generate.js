@@ -1958,7 +1958,7 @@ export async function execute(interaction, client) {
         id: Move.ShootingStar, name: 'Shooting Star', type: OochType.Stone,
         damage: 60, accuracy: 100,
         effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
-        description: 'A high damaging move that DOOMS the user.',
+        description: 'A high speed attack that goes first.',
         self_target: false,
     });
     create_move({
@@ -4250,7 +4250,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
             [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
-            [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+            [30, Move.Micronet], [32, Move.Wub], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
             [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
         ],
         abilities: [Ability.Phantasmal, Ability.Shadow],
@@ -4268,7 +4268,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
             [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
-            [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+            [30, Move.Micronet], [32, Move.Wub], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
             [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
         ],
         abilities: [Ability.Phantasmal, Ability.Shadow],

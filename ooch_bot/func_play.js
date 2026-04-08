@@ -960,7 +960,8 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
         def_iv : random(0, 10),
         spd_iv : random(0, 10),
         held_item : false,
-        variant : ""
+        variant : "",
+        ability : false
     }, ...ooch_options}
 
     //Fix IV math
