@@ -12,7 +12,8 @@ const PlayerState = {
     Trading: 'trading',
     Invited: 'invited',
     CombatOochSelect: 'combat_ooch_select',
-    BattleSetup: 'battle_setup'
+    BattleSetup: 'battle_setup',
+    HordeWait: 'horde_wait'
 }
 
 const GenmapTheme = {
@@ -139,6 +140,7 @@ const TameStatus = {
 }
 
 const StanceForms = {
+    NoChange: -1,
     Base: 0,
     Attack: 1,
     Defense: 2,
@@ -159,6 +161,11 @@ const FieldEffect = {
     EchoChamber : 'echo chamber',
     Wetlands : 'wetlands',
     TwistedReality : 'twisted reality'
+}
+
+const OochVariant = {
+    Default : "",
+    Prismatic : "_prismatic"
 }
 
 const Move = {
@@ -441,6 +448,8 @@ const OochID = {
     Heraloom:127,
     Symaat:128,
     Ophicore:129,
+
+    CountCatchable : 130, //ALWAYS UPDATE THIS TO BE 1 MORE THAN THE NUMBER OF OOCHAMON IN THE CATCHABLE SECTION
 
     i_:-1,
     Oochabit:-2,
@@ -756,7 +765,8 @@ const ItemCategory = {
     Prism:      'prism',
     Map:        'map',
     Key:        'key',
-    Skin:       'skin'
+    Skin:       'skin',
+    Treat:      'treat'
 }
 
 const ItemType = {
@@ -791,5 +801,5 @@ export {
     ItemType, Tile, Zone, MoveTag, BattleAi,
     MoveTarget, Weather, TameStatus, StanceForms, BattleState,
     BattleAction, BattleInput, FieldEffect, GenmapTheme, OochID,
-    ItemCategory, TamingAction
+    ItemCategory, TamingAction, OochVariant
 };

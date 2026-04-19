@@ -1,15 +1,21 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { InteractionType } from 'discord-api-types/v9';
 import { startCase } from 'lodash-es';
 
-import { MessageFlags, Events } from 'discord.js';
+import { MessageFlags, Events, InteractionType } from 'discord.js';
 import { profile, monster_data, item_data, ability_data, move_data, status_data } from '../db.js';
 import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
 import { quit_oochamon } from '../func_other.js';
 import { botClient, inactivityTrackers } from '../index.js';
+import { reportCrash } from '../utils/crash_reporter.js';
+import { battle_handler } from '../event_handlers/battle_handler.js';
+import { menu_handler } from '../event_handlers/menu_handler.js';
+import { event_handler } from '../event_handlers/event_handler.js';
+import { trade_handler } from '../event_handlers/trade_handler.js';
+import { other_handler } from '../event_handlers/other_handler.js';
+import { shop_handler } from '../event_handlers/shop_handler.js';
 
 // Listen for interactions (INTERACTION COMMAND HANDLER)
 export default {
@@ -170,8 +176,31 @@ export default {
         }
     }
 
+    // COLLECTORS
+    if (interaction.isStringSelectMenu() || interaction.isButton()) {
+        if (interaction.customId.startsWith('menu_')) {
+            await menu_handler(interaction);
+        }
+        if (interaction.customId.startsWith('battle_')) {
+            await battle_handler(interaction);
+        }
+        if (interaction.customId.startsWith('event_')) {
+            await event_handler(interaction);
+        }
+        if (interaction.customId.startsWith('trade_')) {
+            await trade_handler(interaction);
+        }
+        if (interaction.customId.startsWith('other_')) {
+            await other_handler(interaction);
+        }
+        if (interaction.customId.startsWith('shop_')) {
+            await shop_handler(interaction);
+        }
+    }
+
     // Handle move buttons
     if (profile.has(interaction.user.id)) {
+
         let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
         if (profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true && interaction.isButton()) {
             if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
@@ -198,7 +227,7 @@ export default {
                 case 'play_dist':
                     profile.set(interaction.user.id, (curSpeed % 4) + 1, 'move_speed');
                     playspace_str = await setup_playspace_str(interaction.user.id);
-                    await interaction.update({ components: playspace_str[1] });
+                    await interaction.update({ components: playspace_str.components, flags: playspace_str.flags });
                 break;
             }
         }
@@ -231,8 +260,13 @@ export default {
     try {
         await command.execute(interaction, botClient);
     } catch (error) {
-        await console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        console.error(error);
+        reportCrash(error, `Command: /${interaction.commandName} | User: ${interaction.user.tag}`);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        } else {
+            await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        }
     }
   },
 }

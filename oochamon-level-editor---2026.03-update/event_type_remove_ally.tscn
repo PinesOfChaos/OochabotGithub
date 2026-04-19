@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://tut4u8jf8fe7"]
+
+[ext_resource type="Script" uid="uid://d1u18ma1i0w5c" path="res://event_type_remove_ally.gd" id="1_fwp8f"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_fwp8f")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "X Remove Allies"

@@ -28,8 +28,8 @@ extends Control
 
 @export var map_name = ""
 @export var map_battle_bg = ""
-@export var map_width = 64
-@export var map_height = 64
+@export var map_width = Global.MapSize
+@export var map_height = Global.MapSize
 @export var map_tiles = []
 var mouse_x_prev = 0
 var mouse_y_prev = 0
@@ -43,6 +43,9 @@ var file_known = false
 var file_last_path = ""
 var post_ready_complete = false
 var tiles_visible = true
+var tiles_clipboard = [[]]
+var tiles_clipboard_coords = {x1 = -1, y1 = -1, x2 = -1, y2 = -1}
+var tile_mouse_pos = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -73,9 +76,9 @@ func _ready():
 			tile_id_temp = k
 			break
 	#Set all tile ids to the black square
-	for i in 100:
+	for i in Global.MapSize:
 		var arr = []
-		arr.resize(100)
+		arr.resize(Global.MapSize)
 		arr.fill(tile_id_temp)
 		map_tiles.push_back(arr)
 	#print(map_tiles)
@@ -92,16 +95,43 @@ func _process(delta):
 			
 func _draw():
 	if(tiles_visible):
+		var xstart = clamp((Global.CamX - 64 ) / Global.TileSize, 0, Global.MapSize)
+		var xend = clamp(xstart + 65, 0, Global.MapSize)
+		var ystart = clamp((Global.CamY - 64) / Global.TileSize, 0, Global.MapSize)
+		var yend = clamp(ystart + 35, 0, Global.MapSize)
+	
 		var x1 = 0
 		var y1 = 0
-		for i in map_width:
-			for j in map_height:
+		for i in range(xstart, xend):
+			for j in range(ystart, yend):
 				x1 = i * Global.TileSize
 				y1 = j * Global.TileSize
-				if x1 >= Global.CamX - 64 and x1 < Global.CamX + 10000 and y1 >= Global.CamY - 64 and y1 < Global.CamY + 10000:
-					draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
-					draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
-
+				draw_texture(Global.DataTiles[map_tiles[i][j]].tile_texture, Vector2((x1) - Global.CamX, (y1) - Global.CamY))
+				draw_texture(highlightbox_tex, Vector2((x1) - Global.CamX, (y1) - Global.CamY), Color(1,1,1,grid_alpha))
+		
+		#this draws the box that highlights the tiles selection
+		if [	Global.MapMode.MAP_PAINT, 
+				Global.MapMode.MAP_PAINT_BRUSH_SELECT,
+				Global.MapMode.MAP_PAINT_BRUSH_SELECT_WAIT
+			].has(Global.CurrentMapMode):
+			draw_texture_rect(highlightbox_tex, Rect2(
+				(tiles_clipboard_coords.x1 * Global.TileSize) - Global.CamX, 
+				(tiles_clipboard_coords.y1 * Global.TileSize) - Global.CamY,
+				((tiles_clipboard_coords.x2 - tiles_clipboard_coords.x1) * Global.TileSize), 
+				((tiles_clipboard_coords.y2 - tiles_clipboard_coords.y1) * Global.TileSize)
+				), false, Color(1.0, 1.0, 1.0,.7)
+			)
+	
+	if Input.is_action_pressed("preview_cam"):
+		draw_texture_rect(highlightbox_tex, Rect2(
+				((tile_mouse_pos.x - 5) * Global.TileSize) - Global.CamX, 
+				((tile_mouse_pos.y - 5) * Global.TileSize) - Global.CamY,
+				(11 * Global.TileSize), 
+				(11 * Global.TileSize)
+				), false, Color(1.0, 0.5, 0.0, .7)
+			)
+		
+		
 func refresh_all_children():
 	for child in o_menu.get_children(true):
 		child.owner = o_menu
@@ -110,6 +140,11 @@ func step_begin():
 	pass
 
 func step():
+	tile_mouse_pos = Vector2(
+		floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize),
+		floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize))
+	
+	
 	#Update tile position of the mouse
 	if Input.is_action_pressed("show_coord"):
 		var tx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
@@ -209,6 +244,8 @@ func step():
 				_on_button_new_shop_button_down()
 			if Input.is_action_just_pressed("quick_npc"):
 				_on_button_new_npc_button_down()
+			if Input.is_action_pressed("preview_cam"):
+				queue_redraw()
 				
 		Global.MapMode.MAP_OBJ_EDIT:
 			if Input.is_action_just_pressed("ui_cancel"):
@@ -237,7 +274,11 @@ func step():
 			var xx = floor((get_local_mouse_position().x + Global.CamX)/Global.TileSize)
 			var yy = floor((get_local_mouse_position().y + Global.CamY)/Global.TileSize)
 			if Input.is_action_pressed("mouse_left"):
-				if Input.is_action_pressed("vk_control"):
+				if Input.is_action_pressed("vk_alt"):
+					tiles_clipboard_coords.x1 = xx
+					tiles_clipboard_coords.y1 = yy
+					clipboard_coords_recalc()
+				elif Input.is_action_pressed("vk_control"):
 					var from = map_tiles[xx][yy]
 					var list = [[xx, yy]]
 					var cx
@@ -277,7 +318,11 @@ func step():
 						map_tiles[xx][yy] = Global.TileSelected
 				queue_redraw()
 			elif Input.is_action_pressed("mouse_right"):
-				if Input.is_action_pressed("vk_control"):
+				if Input.is_action_pressed("vk_alt"):
+					tiles_clipboard_coords.x2 = xx + 1
+					tiles_clipboard_coords.y2 = yy + 1
+					clipboard_coords_recalc()
+				elif Input.is_action_pressed("vk_control"):
 					Global.TileSelected = map_tiles[xx][yy]
 				else:
 					map_tiles[xx][yy] = 0
@@ -287,6 +332,42 @@ func step():
 				Global.CurrentMapMode = Global.MapMode.MAP_PAINT_BRUSH_SELECT
 				grid_tiles.visible = true
 				tooltips_paint.visible = false
+			elif Input.is_action_just_pressed("ui_copy"):
+				if(tiles_clipboard_coords.x1 != -1 and tiles_clipboard_coords.x2 != -1):
+					tiles_clipboard = []
+					var w = tiles_clipboard_coords.x2 - tiles_clipboard_coords.x1
+					var h = tiles_clipboard_coords.y2 - tiles_clipboard_coords.y1
+					for ix in range(w):
+						tiles_clipboard.push_back([])
+						for iy in range(h):
+							tiles_clipboard[ix].push_back(map_tiles[ix + tiles_clipboard_coords.x1][iy + tiles_clipboard_coords.y1])
+				queue_redraw()
+				notify("Tiles Copied")
+				
+			elif Input.is_action_just_pressed("ui_paste"):
+				var pastepos: Vector2
+				for tx in tiles_clipboard.size():
+					for ty in tiles_clipboard[tx].size():
+						pastepos = Vector2(tx + xx, ty + yy)
+						if(pastepos.x >= 0 and pastepos.y >= 0 and pastepos.x < Global.MapSize and pastepos.y < Global.MapSize):
+							map_tiles[pastepos.x][pastepos.y] = tiles_clipboard[tx][ty]
+				queue_redraw()
+				notify("Tiles Pasted")
+							
+func clipboard_coords_recalc():
+	var tc = tiles_clipboard_coords.duplicate()
+	
+	var vx1 = clamp(tc.x1, 0, Global.MapSize - 1)
+	var vy1 = clamp(tc.y1, 0, Global.MapSize - 1)
+	var vx2 = clamp(tc.x2, 0, Global.MapSize - 1)
+	var vy2 = clamp(tc.y2, 0, Global.MapSize - 1)
+	
+	tiles_clipboard_coords.x1 = min(vx1, vx2)
+	tiles_clipboard_coords.y1 = min(vy1, vy2)
+	tiles_clipboard_coords.x2 = max(vx1, vx2)
+	tiles_clipboard_coords.y2 = max(vy1, vy2)
+	
+	queue_redraw()
 
 func step_end():
 	mouse_x_prev = get_local_mouse_position().x
@@ -313,6 +394,9 @@ func set_node_owners_to_menu():
 		n.owner = o_menu
 		set_node_owners(n)
 
+func notify(text_to_show):
+	label_notification.notify(text_to_show)
+
 func set_node_owners(node):
 	for n in node.get_children():
 		n.owner = o_menu
@@ -328,7 +412,7 @@ func _on_file_dialog_save_file_selected(path):
 	set_node_owners_to_menu()
 	
 	if FileAccess.file_exists(path):
-		label_notification.notify("File Saved")
+		notify("File Saved")
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
 		print(path.left(path.rfindn("/")))
 		
@@ -466,6 +550,62 @@ func _on_file_dialog_save_file_selected(path):
 		
 #endregion 
 
+func _shift_map(vec:Vector2):
+	var _size = Global.MapSize
+	var new_tiles = []
+	
+	for i in _size:
+		new_tiles.push_back([])
+		for j in _size:
+			var xx = i - vec.x
+			var yy = j - vec.y
+			if xx >= 0 and xx < _size and yy >= 0 and yy < _size:
+				new_tiles[i].push_back(map_tiles[xx][yy])
+			else:
+				new_tiles[i].push_back(0)
+			
+		if new_tiles[i].size() >= _size:
+			new_tiles[i].resize(_size)
+	if new_tiles.size() >= _size:
+		new_tiles.resize(_size)
+		
+	map_tiles = new_tiles
+	
+	for child in menu_npcs.get_children():
+		child.npc_data.x += vec.x
+		child.npc_data.y += vec.y
+	
+	for child in menu_shops.get_children():
+		child.shop_data.x += vec.x
+		child.shop_data.y += vec.y
+		
+	for child in menu_transitions.get_children():
+		child.transition_data.x += vec.x
+		child.transition_data.y += vec.y
+	
+	for child in menu_save_points.get_children():
+		child.savepoint_data.x += vec.x
+		child.savepoint_data.y += vec.y
+	
+	for child in menu_spawnzones.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+	
+	for child in menu_weather.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+		
+	for child in menu_events.get_children():
+		var bbox = child.bounding_box
+		bbox.pos_x += vec.x
+		bbox.pos_y += vec.y
+	
+	do_screen_refresh = true
+	queue_redraw()
+			
+
 # Load map data
 #region LOAD
 func _on_file_dialog_load_file_selected(path):
@@ -474,7 +614,7 @@ func _on_file_dialog_load_file_selected(path):
 		
 		var f = FileAccess.open(path, FileAccess.READ)
 		Global.WorkingDir = path.left(path.rfindn("/"))+"/"
-		var _text = f.get_as_text(true)
+		var _text = f.get_as_text()
 		var _json = JSON.parse_string(_text)
 		
 		#Modernize the map data
@@ -501,7 +641,7 @@ func _on_file_dialog_load_file_selected(path):
 		_inst.owner = _main
 		_inst.file_known = true
 		_inst.file_last_path = path
-		_inst.label_notification.notify("File Loaded")
+		_inst.notify("File Loaded")
 		
 		
 		var _events = _inst.menu_events
@@ -512,13 +652,20 @@ func _on_file_dialog_load_file_selected(path):
 		var _npcs = _inst.menu_npcs
 		var _weather = _inst.menu_weather
 		
-		
-		
-		
 		#Tiles
-		var _tiles = _json.map_tiles
-		for i in _tiles.size():
-			for j in _tiles[i].size():
+		var _tiles : Array = _json.map_tiles
+		var _size = Global.MapSize
+		for i in _size:
+			# add extra rows
+			if _tiles.size() < _size:
+				_tiles.push_back([])
+				
+			for j in _size:
+				# add extra columns
+				if _tiles[i].size() < _size:
+					_tiles[i].push_back("t00_000")
+				
+				#convert to the tile data value
 				for k in Global.DataTiles.size():
 					if(Global.DataTiles[k].tile_index == _tiles[i][j]):
 						_inst.map_tiles[i][j] = k
@@ -624,8 +771,8 @@ func _on_button_load_pressed():
 	
 # Clear the map
 func _on_button_new_pressed():
-	map_width = 64
-	map_height = 64
+	map_width = Global.MapSize
+	map_height = Global.MapSize
 	file_known = false
 	file_last_path = ""
 	
@@ -838,3 +985,16 @@ func _on_button_new_sign_button_down() -> void:
 	Global.ObjSelected = menu_npcs.get_child(menu_npcs.get_child_count() - 1).get_instance_id()
 	instance.owner = o_menu
 	refresh_all_children()
+
+
+func _on_shift_up_pressed() -> void:
+	_shift_map(Vector2(0, -1))
+
+func _on_shift_down_pressed() -> void:
+	_shift_map(Vector2(0, 1))
+
+func _on_shift_left_pressed() -> void:
+	_shift_map(Vector2(-1, 0))
+
+func _on_shift_right_pressed() -> void:
+	_shift_map(Vector2(1, 0))

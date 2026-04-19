@@ -15,4 +15,7 @@ export const tile_data = new Enmap({ name: "tile_data" });
 export const events_data = new Enmap({ name: "events_data" });
 export const global_data = new Enmap({ name: "global_data" });
 export const battle_data = new Enmap({ name: "battle_data" });
+export const menu_data = new Enmap({ name: "menu_data" });
+export const other_menu_data = new Enmap({ name: "other_menu_data" });
+export const shop_data = new Enmap({ name: "shop_data" });
 

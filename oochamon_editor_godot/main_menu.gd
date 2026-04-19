@@ -18,7 +18,7 @@ func _ready() -> void:
 		#print(path)
 		var f = FileAccess.open(path, FileAccess.READ)
 		#print(f)
-		var _text = f.get_as_text(true)
+		var _text = f.get_as_text()
 		Global.DataEvents = JSON.parse_string(_text)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

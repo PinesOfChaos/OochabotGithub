@@ -2232,7 +2232,7 @@
         "target": 0
       }
     ],
-    "description": "A high damaging move that DOOMS the user.",
+    "description": "A high speed attack that goes first.",
     "self_target": false,
     "tags": []
   },

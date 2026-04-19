@@ -12,7 +12,7 @@ import { genmap_loot_by_level } from "./func_level_gen.js";
 // Builds the action rows and places emotes in for the Oochabox, based on the database.
 // Updates with new database info every time the function is run
 // Needs to be updated in a lot of cases, so easier to put it in a function!
-export function buildBoxData(user_profile, page_num) {
+export function buildBoxData(user_id, user_profile, page_num, custom_pre = null) {
     let box_row = []; // Changed to 'let' as 'box_row' was undeclared
     box_row[0] = new ActionRowBuilder();
     box_row[1] = new ActionRowBuilder();
@@ -23,6 +23,8 @@ export function buildBoxData(user_profile, page_num) {
     let party_data = user_profile.ooch_party;
     let offset = (16 * page_num)
 
+    const pre = custom_pre || `other_${user_id}_`;
+
     for (let i = (0 + offset); i < (16 + offset); i++) {
         if (inRange(i, 0+offset, 3+offset)) box_idx = 0; 
         if (inRange(i, 4+offset, 7+offset)) box_idx = 1; 
@@ -32,7 +34,7 @@ export function buildBoxData(user_profile, page_num) {
         if (oochabox_data[i] == undefined) {
             box_row[box_idx].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_emp_${i}`)
+                    .setCustomId(`${pre}box_emp_${i}`)
                     .setLabel('‎')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(true)
@@ -41,7 +43,7 @@ export function buildBoxData(user_profile, page_num) {
             let ooch_data = monster_data.get(`${oochabox_data[i].id}`);
             box_row[box_idx].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_ooch_${oochabox_data[i].id}_${i}`)
+                    .setCustomId(`${pre}box_ooch_${oochabox_data[i].id}_${i}`)
                     .setEmoji(ooch_data.emote)
                     .setStyle(ButtonStyle.Secondary)
             )
@@ -52,7 +54,7 @@ export function buildBoxData(user_profile, page_num) {
         if (party_data[i] == undefined) {
             box_row[i].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_emp_${i}_party`)
+                    .setCustomId(`${pre}box_emp_${i}_party`)
                     .setLabel('‎')
                     .setStyle(ButtonStyle.Success)
                     .setDisabled(true)
@@ -61,7 +63,7 @@ export function buildBoxData(user_profile, page_num) {
             let ooch_data = monster_data.get(`${party_data[i].id}`);
             box_row[i].addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`box_ooch_${party_data[i].id}_${i}_party`)
+                    .setCustomId(`${pre}box_ooch_${party_data[i].id}_${i}_party`)
                     .setEmoji(ooch_data.emote)
                     .setStyle(ButtonStyle.Success)
             )
@@ -96,11 +98,12 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
     let infoEmbed = new EmbedBuilder()
         .setColor('#808080')
         .setTitle(ooch_title)
-        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}.png`)
+        .setThumbnail(`attachment://${ooch_data.name.toLowerCase()}${ooch.variant}.png`)
         .setDescription(`HP: **${ooch.current_hp}/${ooch.stats.hp}**\nAbility: **${ability_data.get(`${ooch.ability}`, 'name')}**\nType: **${ooch.type.map(v => capitalize(v)).join(' | ')}**`);
 
     for (let move_id of ooch.moveset) {
         let move = move_data.get(`${move_id}`)
+        if (!move) continue;
         move.accuracy = Math.abs(move.accuracy);
         if (move.accuracy == 1) move.accuracy = 100;
         if (move.damage !== 0) {
@@ -137,7 +140,84 @@ export async function ooch_info_embed(ooch, user_id=false, caught_embed=false) {
         infoEmbed.setFooter({ text: `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`, iconURL: monster_data.get(`${ooch_data.evo_id}`, 'image') });
     }
 
-    return [infoEmbed, get_ooch_art(ooch_data.name)];
+    return [infoEmbed, get_ooch_art(ooch_data.name, ooch.variant)];
+}
+
+/**
+ * Creates and returns an info container (Components v2) based on the Oochamon you pass in
+ * For use with menu systems using Components v2.
+ * @param {Object} ooch The oochamon to make an info container for
+ * @param {String} user_id The user ID who owns the Oochamon
+ * @returns Object with { section, file, footerText }
+ */
+export async function ooch_info_container(ooch, user_id = false) {
+    const { type_to_emote } = await import('./func_battle.js');
+    const { get_ooch_art } = await import('./func_other.js');
+
+    let ooch_title = `# ${ooch.nickname}`;
+    ooch.nickname != ooch.name ? ooch_title += ` (${ooch.name}) [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`
+        : ooch_title += ` [Lv. ${ooch.level}] ${type_to_emote(ooch.type)}`;
+
+    let ooch_data = monster_data.get(`${ooch.id}`);
+    let expBar = filledBar(ooch.next_lvl_exp, ooch.current_exp, 15, '▱', '▰')[0];
+
+    // Build moveset string
+    let moveset_str = ``;
+    for (let move_id of ooch.moveset) {
+        let move = move_data.get(`${move_id}`);
+        if (!move) continue;
+        let accuracy = Math.abs(move.accuracy);
+        if (accuracy == 1) accuracy = 100;
+        if (move.damage !== 0) {
+            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${move.damage}** power, **${accuracy}%** accuracy\n`;
+        } else {
+            moveset_str += `${type_to_emote(move.type)} **${move.name}**: **${accuracy}%** accuracy\n`;
+        }
+    }
+
+    let iv_hp = Math.round((ooch.stats.hp_iv - 1) * 20);
+    let iv_atk = Math.round((ooch.stats.atk_iv - 1) * 20);
+    let iv_def = Math.round((ooch.stats.def_iv - 1) * 20);
+    let iv_spd = Math.round((ooch.stats.spd_iv - 1) * 20);
+
+    let tame_status = get_tame_string(ooch.tame_value);
+
+    // Build the info text for the section
+    let infoText = `${ooch_title}\n`;
+    infoText += `HP: **${ooch.current_hp}/${ooch.stats.hp}**\n`;
+    infoText += `Ability: **${ability_data.get(`${ooch.ability}`, 'name')}**\n`;
+    infoText += `Type: **${ooch.type.map(v => capitalize(v)).join(' | ')}**\n`;
+
+    infoText += `## Moveset: \n${moveset_str}`;
+
+    infoText += `## Stats:\n`;
+    infoText += `HP: **${ooch.stats.hp}** (${get_iv_stars(iv_hp)})\n`;
+    infoText += `ATK: **${ooch.stats.atk}** (${get_iv_stars(iv_atk)})\n`;
+    infoText += `DEF: **${ooch.stats.def}** (${get_iv_stars(iv_def)})\n`;
+    infoText += `SPD: **${ooch.stats.spd}** (${get_iv_stars(iv_spd)})\n`;
+
+    if (ooch.level != 50) {
+        infoText += `\n**EXP (${ooch.current_exp}/${ooch.next_lvl_exp}):**\n${expBar}\n`;
+    }
+
+    infoText += `\n**Taming Status:** ${tame_status}`;
+
+    // Build footer text for evolution info
+    let footerText = '';
+    if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1 && user_id != false) {
+        let oochadex_check = profile.get(`${user_id}`, `oochadex[${ooch_data.evo_id}]`);
+        if (oochadex_check == undefined) {
+            oochadex_check = { caught: 0 };
+        }
+        footerText = `Evolves into ${oochadex_check.caught != 0 ? monster_data.get(`${ooch_data.evo_id}`, 'name') : `???`} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
+    }
+
+    return {
+        infoText: infoText,
+        file: get_ooch_art(ooch_data.name, ooch.variant),
+        fileName: `${ooch_data.name.toLowerCase()}${ooch.variant}.png`,
+        footerText: footerText
+    };
 }
 
 /**
@@ -171,8 +251,8 @@ export function get_emote_string(name) {
  * @param {String} ooch_name Name of the Oochamon to get emote from.
  * @returns The attachment file object.
  */
-export function get_ooch_art(ooch_name) {
-    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}.png`
+export function get_ooch_art(ooch_name, variant = ``) {
+    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}${variant}.png`
     let file = new AttachmentBuilder(file_name);
     
     return file;
@@ -246,13 +326,11 @@ export async function reset_oochamon(user_id) {
     profile.set(user_id, {
         controls_msg: false,
         battle_cleanup: true,
-        zoom: '9_7',
+        zoom: '9_9',
         battle_speed: 2500,
         discord_move_buttons: true,
         objective: true,
     }, 'settings');
-
-    
 
     // Setup Oochadex template
     for (const ooch_id in monster_data.keys()) { // Changed to 'const'
@@ -330,7 +408,7 @@ export async function setup_taming_picture(ooch, action = TamingAction.Default) 
     ctx.drawImage(background, 0, 0, 250, 250);
 
     ctx.imageSmoothingEnabled = false;
-    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}.png`)
+    const ooch_image = await loadImage(`./Art/ResizedArt/${ooch.name.toLowerCase()}${ooch.variant}.png`)
     const shadow_image = await loadImage(`./Art/BattleArt/shadow_64x32.png`);
 
     let shadow = {

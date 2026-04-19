@@ -2,13 +2,12 @@ import dotenv from 'dotenv';
 import process from 'process';
 dotenv.config();
 
-import { REST } from '@discordjs/rest';
-import { Routes} from 'discord-api-types/v9';
 import { schedule } from 'node-cron';
 
 // create a new Discord client and give it some variables
-import { Client, Partials, GatewayIntentBits, Collection } from 'discord.js';
+import {Client, Partials, GatewayIntentBits, Routes, Collection, REST} from 'discord.js';
 import { genmap_allmaps } from './func_level_gen.js';
+import { reportCrash } from './utils/crash_reporter.js';
 import branchName from 'current-git-branch';
 let branch = branchName();
 
@@ -78,7 +77,7 @@ loadEvents()
 console.log('Events loaded')
 loadCommands()
   .then(async (registerCommands) => {
-     const rest = new REST({ version: '10' }).setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
+     const rest = new REST().setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 
         try {
             await rest.put(
@@ -115,6 +114,16 @@ schedule('00 16 * * *', async () => {
 });
 
 //Log Bot in to the Discord
-client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
+client.login(process.env.DEV_TOKEN);
 
-export const botClient = client; 
+export const botClient = client;
+
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
+    reportCrash(reason, 'Unhandled Promise Rejection');
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    reportCrash(error, 'Uncaught Exception');
+});

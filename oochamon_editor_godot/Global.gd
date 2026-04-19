@@ -63,6 +63,7 @@ var LastFileName = "/"
 var OochSelected = -1
 var TileSelected = -1
 var TileSize = 32
+var MapSize = 128
 var ObjSelected = -1
 var ObjSelectedPrev = ObjSelected
 var CurrentMapMode = MapMode.MAP_NONE
@@ -72,8 +73,8 @@ var CamY = 0
 
 func get_camera_center():
 	var view_size = get_viewport().size
-	var xx =  floor((Global.CamX/2 + view_size.x/4)/Global.TileSize) * Global.TileSize
-	var yy =  floor((Global.CamY/2 + view_size.y/4)/Global.TileSize) * Global.TileSize
+	var xx =  floor((Global.CamX/2 + view_size.x/4.0)/Global.TileSize) * Global.TileSize
+	var yy =  floor((Global.CamY/2 + view_size.y/4.0)/Global.TileSize) * Global.TileSize
 	return(Vector2(xx,yy))
 
 

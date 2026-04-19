@@ -1,99 +1,43 @@
-import { profile, maps, tile_data, events_data, player_positions, monster_data, item_data } from "./db.js";
-import { Flags, PlayerState, Tile, Zone, UserType, Weather, Item, StanceForms } from './types.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder, EmbedBuilder } from 'discord.js';
-import wait from 'wait';
-import { sample, clamp, random } from 'lodash-es';
-import { event_process, event_from_npc } from './func_event.js';
-import { buildBoxData, get_emote_string, ooch_info_embed } from "./func_other.js";
-
-let slot_num, ooch_user_data, box_row;
-
-// Create box action rows
-let box_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_back_to_save').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_num_label').setLabel('1').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_party_label').setLabel('Party').setStyle(ButtonStyle.Success)
-    )
-
-// Create box action rows
-let box_battle_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_finalize_team').setLabel('Ready').setStyle(ButtonStyle.Success)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_left').setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_right').setEmoji('➡️').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_num_label').setLabel('1').setStyle(ButtonStyle.Primary)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_party_label').setLabel('Party').setStyle(ButtonStyle.Success)
-    )
-
-let box_sel_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_add_ooch').setLabel('Add To Party').setStyle(ButtonStyle.Success)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_release').setLabel('Release').setStyle(ButtonStyle.Danger)
-    )
-
-let box_party_sel_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back_to_box').setLabel('Back').setStyle(ButtonStyle.Danger)
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_add_to_box').setLabel('Add To Box').setStyle(ButtonStyle.Secondary)
-    )
-
-let box_confirm_buttons = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('box_yes').setLabel('Yes').setStyle(ButtonStyle.Success),
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_no').setLabel('No').setStyle(ButtonStyle.Danger),
-    );
-
-let confirm_buttons_tp = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('set_checkpoint').setLabel('Save').setEmoji('🏳️').setStyle(ButtonStyle.Success),
-    ).addComponents(
-        new ButtonBuilder().setCustomId('box_oochabox').setLabel('Oochabox').setEmoji('🎒').setStyle(ButtonStyle.Primary),
-    )
-
-let confirm_buttons_tp_exit = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back').setLabel('Exit').setStyle(ButtonStyle.Danger)
-    )
-
-let teleport_menu = new ActionRowBuilder();    
+import {events_data, item_data, maps, monster_data, player_positions, profile, tile_data} from "./db.js";
+import {Flags, Item, PlayerState, StanceForms, Tile, UserType, Weather, Zone} from './types.js';
+import {
+    ActionRowBuilder,
+    AttachmentBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ContainerBuilder,
+    MediaGalleryBuilder,
+    MessageFlags, SeparatorBuilder, SeparatorSpacingSize,
+    StringSelectMenuBuilder,
+    TextDisplayBuilder
+} from 'discord.js';
+import {clamp, random, sample} from 'lodash-es';
+import {event_from_npc, event_process} from './func_event.js';
+import {check_chance, get_emote_string} from "./func_other.js";
+import {init_shop_state} from "./event_handlers/shop_handler.js";
+import wait from "wait";
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('fight').setLabel('Fight').setStyle(ButtonStyle.Success).setEmoji('⚔️'),
+        new ButtonBuilder().setCustomId(`fight`).setLabel(`Fight`).setStyle(ButtonStyle.Success).setEmoji(`⚔️`),
     ).addComponents(
-        new ButtonBuilder().setCustomId('run').setLabel('Run').setStyle(ButtonStyle.Danger).setEmoji('🏃‍♂️'),
+        new ButtonBuilder().setCustomId(`run`).setLabel(`Run`).setStyle(ButtonStyle.Danger).setEmoji(`🏃‍♂️`),
     );
 
 let wild_encounter_instakill_btn = new ActionRowBuilder()
     .addComponents(
-        new ButtonBuilder().setCustomId('instakill').setLabel('Autofight').setStyle(ButtonStyle.Primary).setEmoji('🗡️'),
+        new ButtonBuilder().setCustomId(`instakill`).setLabel(`Autofight`).setStyle(ButtonStyle.Primary).setEmoji(`🗡️`),
     )
 
-let back_button = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('back').setLabel('Back').setStyle(ButtonStyle.Danger),
-    );
+// let back_button = new ActionRowBuilder()
+//     .addComponents(
+//         new ButtonBuilder().setCustomId(`back`).setLabel(`Back`).setStyle(ButtonStyle.Danger),
+//     );
 
-let qty_back_button = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder().setCustomId('quantity_back').setLabel('Cancel Purchase').setStyle(ButtonStyle.Danger),
-    );
+// let qty_back_button = new ActionRowBuilder()
+//     .addComponents(
+//         new ButtonBuilder().setCustomId('quantity_back').setLabel('Cancel Purchase').setStyle(ButtonStyle.Danger),
+//     );
 
 export function get_map_weather(map_weather, location_data) {
     let weather_options = []
@@ -110,7 +54,7 @@ export function get_map_weather(map_weather, location_data) {
     return weather_options.length > 0 ? sample(weather_options) : Weather.None
 }
 
-//Checks if a player has a flag, handles "&"" checks
+//Checks if a player has a flag, handles "&" checks
 export function has_flag(event_name, user_events){
     let ev_split = event_name.split('&');
     if(ev_split.length == 1 && user_events.includes(event_name)){
@@ -149,10 +93,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
     let profile_data = await profile.get(`${user_id}`);
     let msg_to_edit = profile_data.display_msg_id;
-    let confirm_collector;
     let wild_encounter_collector;
-    let shop_collector;
-    let item_qty_collector;
+    let event_processing = false;
     
     // Max limit of 4 tiles that you can move at once
     dist = clamp(dist, 0, 4);
@@ -172,6 +114,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     let relax_steps_end = false;
 
     let previous_positions = profile_data.previous_positions;
+    let clear_previous_positions = false;
 
     //Get the map array based on the player's current map
     let map_obj =   maps.get(`${map_name.toLowerCase()}`);
@@ -186,7 +129,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     let map_shops =         map_obj.map_shops;
     let map_bg =            map_obj.map_info.map_battleback;
     let map_weather =       map_obj.map_weather;
-    if (map_shops == undefined || map_shops == null) map_shops = [];   
+    if (map_shops == undefined) map_shops = [];
 
     let battle_weather = get_map_weather(map_weather, player_location);
     
@@ -278,6 +221,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                         await event_process(user_id, thread, events_data.get(`${obj.event_name}`), 0, obj.event_name);
+                        event_processing = true;
 
                         //update the profile information as it has likely changed since the event_process
                         profile_data = await profile.get(`${user_id}`); 
@@ -317,7 +261,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
                     let npc_event_obj = await event_from_npc(obj, user_id);
-                    event_process(user_id, thread, npc_event_obj);
+                    await event_process(user_id, thread, npc_event_obj);
+                    event_processing = true;
                 }
                 else if ((obj.team.length > 0) && (!has_flag(npc_flag, all_flags))) { //Check line-of sight if the NPC has a team and the NPC hasn't been encountered
                     let quarter_circle_radians = 90 * Math.PI / 180;
@@ -342,7 +287,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 
                                 await update_position(user_id, map_name, playerx, playery, previous_positions);
                                 let npc_event_obj = await event_from_npc(obj, user_id)
-                                event_process(user_id, thread, npc_event_obj);
+                                await event_process(user_id, thread, npc_event_obj);
+                                event_processing = true;
                                 break;
                             }
                         }
@@ -373,8 +319,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     map_events =        map_obj.map_events;
                     map_shops =         map_obj.map_shops;
                     map_info =          map_obj.map_info;
-                    if (map_shops == undefined || map_shops == null) map_shops = []; 
+                    if (map_shops == undefined) map_shops = [];
                     previous_positions = [];
+                    clear_previous_positions = true;
 
                     //If the map has a failsafe pos and the position to is invalid, go to the failsafe pos
                     //This should only occur in generated maps, as their connection positions may change
@@ -397,17 +344,29 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                     await update_position(user_id, map_name, playerx, playery, previous_positions);
 
-                    let page_num = 0;
-                    let pages = 9;
-                    let savepoint_options = [confirm_buttons_tp, confirm_buttons_tp_exit];
+                    let playspace_str = await setup_playspace_str(user_id);
+
+                    let confirm_buttons_tp = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_set_checkpoint`).setLabel(`Save`).setEmoji(`🏳️`).setStyle(ButtonStyle.Success),
+                        ).addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_box_oochabox`).setLabel(`Oochabox`).setEmoji(`🎒`).setStyle(ButtonStyle.Primary),
+                        )
+
+                    let confirm_buttons_tp_exit = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder().setCustomId(`other_${user_id}_exit`).setLabel(`Exit`).setStyle(ButtonStyle.Danger)
+                        )
+
+                    let savepoint_components = [...playspace_str.components, confirm_buttons_tp, confirm_buttons_tp_exit];
 
                     // Setup teleport menu
-                    if (profile_data.areas_visited.length > 0 && profile.get(`${user_id}`, 'flags').includes('teleport_enable')) {
-                        teleport_menu = new ActionRowBuilder();
-                        let teleport_select_options = profile_data.areas_visited.map(name => 
+                    if (profile_data.areas_visited.length > 0 && profile_data.flags.includes('teleport_enable')) {
+                        let teleport_menu = new ActionRowBuilder();
+                        let teleport_select_options = profile_data.areas_visited.map(name =>
                             {
                                 let map_data = maps.get(`${name}`);
-                                return { 
+                                return {
                                     label: `${map_data.map_info.map_name}`,
                                     value: `${name}`
                                 }
@@ -415,91 +374,19 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                         teleport_menu.addComponents(
                             new StringSelectMenuBuilder()
-                                .setCustomId('teleport_menu')
+                                .setCustomId(`other_${user_id}_teleport_menu`)
                                 .setPlaceholder(`Teleport To Visited Area`)
                                 .addOptions(teleport_select_options),
                         );
-                        
-                        savepoint_options.push(teleport_menu);
+
+                        savepoint_components.push(teleport_menu);
                     }
-                    
+
                     await thread.messages.fetch(msg_to_edit).then(async msg => {
-                        msg.edit({ components: savepoint_options })
+                        msg.edit({ components: savepoint_components, flags: MessageFlags.IsComponentsV2 })
                         profile.set(user_id, PlayerState.Encounter, 'player_state');
-                        confirm_collector = msg.createMessageComponentCollector();
-
-                        confirm_collector.on('collect', async selected => {
-
-                            // Page buttons
-                            if (selected.customId == 'box_left' || selected.customId == 'box_right') {
-                                selected.customId == 'box_left' ? page_num -= 1 : page_num += 1;
-                                page_num = (page_num + pages) % pages; // Handle max page overflow
-                                
-                                box_row = buildBoxData(profile_data, page_num);
-                                box_buttons.components[3].setLabel(`${page_num + 1}`);
-                                selected.update({ content: `**Oochabox**`, components: [box_row[0], box_row[1], box_row[2], box_row[3], box_buttons], files: [] });
-                            }
-
-                            else if (selected.customId.includes('box')) {
-                                box_collector_event(user_id, selected, page_num, profile_data)
-                            } 
-
-                            else if (selected.customId.includes('teleport_menu')) {
-                                let biome_from = profile.get(`${user_id}`, 'location_data.area');
-                                let biome_to = selected.values[0];
-                                map_name = biome_to;
-                                let biome_to_data = maps.get(`${biome_to}`);
-                                let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);
-                                if (biome_to_data.map_savepoints.filter(v => v.is_default !== false).length == 0) {
-                                    map_default = [biome_to_data.map_savepoints[0]];
-                                }
-
-                                obj.x = map_default[0].x;
-                                obj.y = map_default[0].y;
-    
-                                //remove the player's info from the old biome and add it to the new one
-                                player_positions.set(biome_to, { x: map_default[0].x, y: map_default[0].y }, user_id);
-                                player_positions.delete(biome_from, user_id);
-                                profile.set(user_id, { area: biome_to, x: map_default[0].x, y: map_default[0].y }, 'location_data')
-    
-                                for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
-                                    profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                    profile.set(user_id, true, `ooch_party[${i}].alive`);
-                                }
-    
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                let playspace_str = await setup_playspace_str(user_id);
-
-                                profile_data = profile.get(`${user_id}`);
-                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                            }
-                            
-                            else if (selected.customId == 'set_checkpoint') {
-                                profile.set(user_id, { area: map_name, x: obj.x, y: obj.y }, 'checkpoint_data');
-                                if (!profile.get(`${user_id}`, 'areas_visited').includes(map_name)) {
-                                    profile.push(user_id, map_name, 'areas_visited');
-                                }
-
-                                for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {
-                                    profile.set(user_id, profile.get(`${user_id}`, `ooch_party[${i}].stats.hp`), `ooch_party[${i}].current_hp`);
-                                    profile.set(user_id, true, `ooch_party[${i}].alive`);
-            
-                                }
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                let playspace_str = await setup_playspace_str(user_id);
-                                selected.update({ content: playspace_str[0], components: playspace_str[1] }).catch(() => {});
-                                let quickMsg = await thread.send({ content: `Set a checkpoint and healed all of your Oochamon.` });
-                                await confirm_collector.stop();
-                                await wait(5000);
-                                await quickMsg.delete().catch(() => {});
-                            } else {
-                                profile.set(user_id, PlayerState.Playspace, 'player_state');
-                                await confirm_collector.stop();
-                                let playspace_str = await setup_playspace_str(user_id);
-                                selected.update({ components: playspace_str[1] }).catch(() => {});
-                            }
-                        });
                     });
+                    return;
                 }
             }
         }
@@ -523,9 +410,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 shopSelectOptions = shopSelectOptions.map(id => {
                     let db_item_data = item_data.get(`${id}`);
                     let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
-                    return { 
+                    return {
                         label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
-                        description: db_item_data.description_short,
+                        description: db_item_data.description_short.slice(0, 100),
                         value: `${id}`,
                         emoji: db_item_data.emote,
                     }
@@ -533,150 +420,48 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
                 let oochabux = profile.get(`${user_id}`, 'oochabux');
 
-                // Setup shop select menu
+                init_shop_state(user_id, obj);
+
+                let shop_pre = `shop_${user_id}_`;
                 let shopSelectMenu = new ActionRowBuilder()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('shop_items')
+                        .setCustomId(`${shop_pre}items`)
                         .setPlaceholder(`Select an item to buy! ($${oochabux})`)
                         .addOptions(shopSelectOptions),
                 );
 
-                let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`)
-                let shopEmbed = new EmbedBuilder()
-                    .setColor('#808080')
-                    .setTitle('Shop')
-                    .setImage(`attachment://shopPlaceholder.png`)
-                    .setDescription(obj.greeting_dialogue)
+                let shop_back_button = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`${shop_pre}back`)
+                            .setLabel('Back')
+                            .setStyle(ButtonStyle.Danger)
+                    );
 
-                let msg = await thread.send({ embeds: [shopEmbed], files: [shopImage], components: [shopSelectMenu, back_button] });
+                let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
+                let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });
+                let shopHeader = new TextDisplayBuilder()
+                    .setContent(`## Shop`);
+                let shopText = new TextDisplayBuilder()
+                    .setContent(`${obj.greeting_dialogue}`);
+                let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large)
+
+                let shopContainer = new ContainerBuilder()
+                    .addTextDisplayComponents(shopHeader)
+                    .addMediaGalleryComponents(shopGallery)
+                    .addTextDisplayComponents(shopText)
+                    .addSeparatorComponents(shopSpacer)
+                    .addActionRowComponents(shopSelectMenu)
+                    .addActionRowComponents(shop_back_button);
+
+                await thread.send({ components: [shopContainer], files: [shopImage], flags: MessageFlags.IsComponentsV2 });
                 
                 // Delete the current playspace
                 let playspace_msg = await thread.messages.fetch(profile.get(`${user_id}`, 'display_msg_id')).catch(() => {});
                 if (playspace_msg !== undefined) {
                     await playspace_msg.delete().catch(() => {});
                 }
-
-                shop_collector = await thread.createMessageComponentCollector({ time: 600000 });
-                shop_collector.on('collect', async sel => {
-                    let oochabux = profile.get(`${user_id}`, 'oochabux');
-                    if (sel.customId == 'back') {
-                        profile.set(user_id, PlayerState.Playspace, 'player_state');
-                        let playspace_str = await setup_playspace_str(user_id);
-                        let play_msg = await thread.send({ content: playspace_str[0], components: playspace_str[1] });
-                        profile.set(user_id, play_msg.id, 'display_msg_id')
-                        profile.set(user_id, oochabux, 'oochabux')
-                        await msg.delete().catch(() => {});
-                        shop_collector.stop();
-                        if (item_qty_collector) item_qty_collector.stop();
-                        return;
-                    } else if (sel.customId == 'quantity_back') {
-                        await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
-                        if (item_qty_collector) item_qty_collector.stop();
-                        return;
-                    }
-                    
-                    let item_id = sel.values[0];
-                    let item = item_data.get(`${item_id}`);
-                    if (item.price <= oochabux) {
-                        const qty_filter = async m => {
-                            if (m.author.id != user_id) return false;
-                            if (!isNaN(parseInt(m.content))) {
-                                if (oochabux < item.price * parseInt(m.content)) {
-                                    m.delete().catch(() => {});
-                                    return false;
-                                }
-                                return true;
-                            } else {
-                                m.delete().catch(() => {});
-                                return false;
-                            }
-                        }
-
-                        let inv_item = get_inv_item(user_id, item.category, item_id);
-                        if (!inv_item) inv_item = { id: item_id, quantity: 0 }
-
-                        let maxAmt = Math.floor(oochabux / item.price);
-                        if (maxAmt > 50) maxAmt = 50;
-                        if (maxAmt > inv_item.quantity) maxAmt -= inv_item.quantity;
-
-                        if (inv_item.quantity >= 50) {
-                            await sel.update({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
-                            return;
-                        }
-                        await sel.update({ content: `How many of the ${item.emote} **${item.name}** would you like to purchase? Type in the amount below.\n` + 
-                            `You have enough Oochabux to buy **${maxAmt}** more of this item.`,
-                                embeds: [], files: [], components: [qty_back_button] });
-                        item_qty_collector = thread.createMessageCollector({ filter: qty_filter, max: 1 });
-
-                        item_qty_collector.on('collect', async m => {
-                            let new_inv_qty = 0;
-                            let buyAmount = Math.abs(parseInt(m.content));
-                            if (buyAmount > (50 - inv_item.quantity)) buyAmount = (50 - inv_item.quantity);
-                            oochabux -= item.price * buyAmount;
-                            profile.set(user_id, oochabux, 'oochabux')
-                            
-                            add_item(user_id, item_id, buyAmount);
-
-                            new_inv_qty = get_inv_item(user_id, item.category, item_id).quantity;
-                            
-                            await m.delete().catch(() => {});
-                            let followUpMsg;
-                                
-                            let profile_flags = profile.get(`${user_id}`, 'flags');
-                            let shopSelectOptions = await shop_list_from_flags(obj, profile_flags);
-
-                            shopSelectOptions = [...new Set(shopSelectOptions)];
-
-                            shopSelectOptions = shopSelectOptions.map(id => {
-                                let db_item_data = item_data.get(`${id}`);
-                                let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
-                                return { 
-                                    label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
-                                    description: db_item_data.description_short,
-                                    value: `${id}`,
-                                    emoji: db_item_data.emote,
-                                }
-                            });
-        
-                            // Setup shop select menu
-                            let shopSelectMenu = new ActionRowBuilder()
-                            .addComponents(
-                                new StringSelectMenuBuilder()
-                                    .setCustomId('shop_items')
-                                    .setPlaceholder(`Select an item to buy! ($${oochabux})`)
-                                    .addOptions(shopSelectOptions),
-                            );
-
-                            if (buyAmount != 0) {
-                                followUpMsg = await sel.followUp({ content: `Successfully purchased ${buyAmount}x ${item.emote} **${item.name}** from the shop!\nYou now have **${new_inv_qty} ${item.name}${new_inv_qty > 1 ? 's' : ''}** in your inventory.` });
-                            } else {
-                                followUpMsg = await sel.followUp({ content: `Nothing was purchased.` });
-                            }
-                            await msg.edit({ content: null, components: [shopSelectMenu, back_button], embeds: [shopEmbed], files: [shopImage] }).catch(() => {});
-                            await wait(7000);
-                            await followUpMsg.delete().catch(() => {});
-                        });
-                        
-                    } else {
-                        let followUpMsg = await sel.reply({ content: `You do not have enough money to purchase a ${item.emote} **${item.name}**.` });
-                        msg.edit({ components: [shopSelectMenu, back_button] }).catch(() => {});
-                        await wait(5000);
-                        await followUpMsg.delete().catch(() => {});
-                    }
-                });
-
-                shop_collector.on('end', async () => {
-                    if (profile.get(`${user_id}`, 'player_state') != PlayerState.Playspace) {
-                        profile.set(user_id, PlayerState.Playspace, 'player_state');
-                        let playspace_str = await setup_playspace_str(user_id);
-                        let play_msg = await thread.send({ content: playspace_str[0], components: playspace_str[1] });
-                        profile.set(user_id, play_msg.id, 'display_msg_id')
-                        profile.set(user_id, oochabux, 'oochabux')
-                        await msg.delete().catch(() => {});
-                        shop_collector.stop();
-                    }
-                });
 
                 return;
             }
@@ -734,18 +519,22 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             let battle_user_array = []
                             let mons_to_add = [];
                             let mon_count = 1 + profile_data.allies_list.length;
+                            let variant = ""
                             for(let m = 0; m < mon_count; m++){
                                 let slot_index = Math.floor(random(0, spawn_zone.spawn_slots.length - 1));
                                 let slot = spawn_zone.spawn_slots[slot_index];
+                                
+                                variant = check_chance(0.1) ? "_prismatic" : "";
                                 slot.id = slot.ooch_id;
                                 slot.level = random(slot.min_level, slot.max_level);
+                                slot.variant = variant;
 
-                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){ 
-                                    let new_slot = {
-                                        id : -1, //This is the index of the oochamon _i
-                                        level : random(slot.min_level, slot.max_level)
-                                    }
-                                    slot = new_slot;
+                                if(random(0, 1000) > (boost_i_chance ? 90 : 999)){
+                                    slot = {
+                                        id: -1, //This is the index of the oochamon _i
+                                        level: random(slot.min_level, slot.max_level),
+                                        variant: variant
+                                    };
                                     mons_to_add = [slot];
                                     encounter_has_i = true;
                                     break;
@@ -753,8 +542,15 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                 else{
                                     mons_to_add.push(slot);
                                 }
+                                
+                                
                             }
                             
+                            let variant_text = "";
+                            switch(mons_to_add[0].variant){
+                                case "_prismatic": variant_text = "✨"; break;
+                            }
+
                             let mon_level = mons_to_add[0].level;
                             let mon_name = monster_data.get(`${mons_to_add[0].id.toString()}`, 'name');
                             let mon_emote = monster_data.get(`${mons_to_add[0].id.toString()}`, 'emote');
@@ -763,8 +559,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             let encounter_buttons = [wild_encounter_buttons];
                             if (primary_ooch.level >= mon_level + 10) encounter_buttons.push(wild_encounter_instakill_btn);
                             
-                            //use mons_to_add .id, .level to setup the encounter
-                            await thread.send({ content: `A wild ${mon_emote} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
+                            //use mons_to_add .id, .level to set up the encounter
+                            await thread.send({ content: `A wild ${mon_emote}${variant_text} ${mon_name} (LV ${mon_level}) appears! Fight or run?`, components: encounter_buttons }).then(async msg =>{
                                 await profile.set(user_id, PlayerState.Encounter, 'player_state');
                                 wild_encounter_collector = msg.createMessageComponentCollector({max: 1});
                                 wild_encounter_collector.on('collect', async sel => {
@@ -784,26 +580,72 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                                     
                                     //Add additional mons
                                     for(let m = 0; m < mons_to_add.length; m++){
-                                        let oochObj = await generate_battle_user(UserType.Wild, { id : mons_to_add[m].id.toString(), level : mons_to_add[m].level, team_id : 1})
+                                        let oochObj = await generate_battle_user(UserType.Wild, { 
+                                            id : mons_to_add[m].id.toString(), 
+                                            level : mons_to_add[m].level, 
+                                            team_id : 1, 
+                                            variant : mons_to_add[m].variant
+                                        })
                                         battle_user_array.push(oochObj)
                                     }
 
                                     if (sel.customId == 'fight') {
 
-                                        if(encounter_has_i && !encountered_i){ 
-                                            profile.push(user_id, 'encountered_i', 'flags'); 
+                                        if(encounter_has_i && !encountered_i){
+                                            profile.push(user_id, 'encountered_i', 'flags');
                                         }
 
                                         await msg.delete();
                                         await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
+                                    } else if (sel.customId == 'instakill') {
+                                        // Autofight: Instantly kill the oochamon and give 75% exp
+                                        const { battle_calc_exp, level_up } = await import('./func_battle.js');
+
+                                        // Get the wild oochamon to calculate exp from
+                                        let wild_ooch = mons_to_add[0];
+                                        let temp_ooch = await create_ooch(wild_ooch.id, {level: wild_ooch.level, variant: wild_ooch.variant});
+
+                                        let base_exp = battle_calc_exp(temp_ooch, 0.75);
+
+                                        let ooch_party = profile_data.ooch_party;
+                                        let level_up_text = '';
+
+                                        // Award exp to party
+                                        for (let i = 0; i < ooch_party.length; i++) {
+                                            let ooch = ooch_party[i];
+                                            if (ooch.level >= 50) continue; // Skip max level ooch
+                                            ooch.current_exp += base_exp;
+
+                                            // Check for level ups
+                                            while (ooch.current_exp >= ooch.next_lvl_exp) {
+                                                let leveled_ooch = level_up(ooch);
+                                                level_up_text += `\n${leveled_ooch[1]}`;
+                                                ooch = leveled_ooch[0];
+                                                ooch_party[i] = ooch;
+                                            }
+                                        }
+
+                                        // Save the updated party
+                                        profile.set(user_id, ooch_party, 'ooch_party');
+
+                                        // Build result message
+                                        let result_msg = `You instakilled the wild ${mon_emote}${variant_text} ${mon_name}!`;
+                                        result_msg += `\nYour Oochamon earned **${base_exp} exp!**`;
+                                        result_msg += level_up_text;
+
+                                        await msg.delete();
+                                        let resultMsg = await thread.send({ content: result_msg });
+                                        profile.set(user_id, PlayerState.Playspace, 'player_state');
+                                        await wait(5000);
+                                        await resultMsg.delete();
                                     } else {
                                         let run_chance = .6;
                                         // If the Oochamon is 10 levels lower or more than our main Oochamon, guarantee run
                                         if (profile_data.ooch_party[profile_data.ooch_active_slot].level >= (mon_level + 10)) run_chance = 1;
 
                                         if (Math.random() > run_chance) { //40% chance to start the battle if 'Run' is chosen
-                                            if(encounter_has_i && !encountered_i){ 
-                                                profile.push(user_id, 'encountered_i', 'flags'); 
+                                            if(encounter_has_i && !encountered_i){
+                                                profile.push(user_id, 'encountered_i', 'flags');
                                             }
                                             await setup_battle(battle_user_array, battle_weather, 0, 0, true, true, true, false, false, map_bg);
                                             await msg.delete();
@@ -825,7 +667,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             break;
         }
 
-        if(x_start != playerx || y_start != playery){
+        
+        if((x_start != playerx || y_start != playery) && !clear_previous_positions){
             previous_positions.unshift({x : x_start, y: y_start})
             if(previous_positions.length > 3){ previous_positions.pop(); }
             profile.set(user_id, previous_positions, 'previous_positions')
@@ -840,6 +683,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
 
     if (relax_steps_end) {
         await event_process(user_id, thread, events_data.get(`${'ev_meet_al_access_tunnel'}`), 0, 'ev_meet_al_access_tunnel')
+        event_processing = true;
         return;
     }
 
@@ -849,14 +693,18 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     // Update player position in the player positions array (don't do this right now)
     //db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
-    if (direction != '') {
+    if (direction != '' && !event_processing) {
         let playspace_str = await setup_playspace_str(user_id);
-        playspace_str[0] += (repel_ran_out ? `*Your Repulsor ran out of power...*` : ``);
+        // If repel ran out, append message to the map string and rebuild TextDisplay
+        if (repel_ran_out) {
+            const updatedContent = playspace_str.mapString + `*Your Repulsor ran out of power...*`;
+            playspace_str.components[0] = new TextDisplayBuilder().setContent(updatedContent);
+        }
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
-            msg.edit({ content: playspace_str[0] }).catch((err) => { console.log(`Err: ${err}`)});
+            msg.edit({ components: playspace_str.components, flags: playspace_str.flags }).catch((err) => { console.log(`Err: ${err}`)});
         }).catch(async () => {
-            await thread.send({ content: playspace_str[0], components: playspace_str[1] }).then(async newMsg => {
+            await thread.send({ components: playspace_str.components, flags: playspace_str.flags }).then(async newMsg => {
                 await profile.set(user_id, newMsg.id, 'display_msg_id');
             }).catch((err) => { console.log(`Err 2: ${err}`) });
         });
@@ -1006,8 +854,9 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
 }
 
 /**
- * Setup a new playspace window, returns the initial playspace string as well as playspace buttons
+ * Setup a new playspace window, returns v2 components format
  * @param {Number} user_id The user id of the user having a playspace setup.
+ * @returns {Object} Object with components array, flags, and raw mapString
  */
 export async function setup_playspace_str(user_id) {
     const { map_emote_string } = await import('./func_play.js');
@@ -1015,14 +864,22 @@ export async function setup_playspace_str(user_id) {
     let biome = player_location.area;
     let playerx = player_location.x;
     let playery = player_location.y;
-    
+
     if(player_location == false){
-        return ["Looks like you never finished the intro, try using `/reset` to start over"];
+        return {
+            components: [new TextDisplayBuilder().setContent("Looks like you never finished the intro, try using `/reset` to start over")],
+            flags: MessageFlags.IsComponentsV2,
+            mapString: "Looks like you never finished the intro, try using `/reset` to start over"
+        };
     }
 
     //Get the map array based on the player's current biome
     let map_obj = maps.get(`${biome.toLowerCase()}`);
-    if (map_obj == undefined) return ['Error, please run /quit', []]
+    if (map_obj == undefined) return {
+        components: [new TextDisplayBuilder().setContent('Error, please run /quit')],
+        flags: MessageFlags.IsComponentsV2,
+        mapString: 'Error, please run /quit'
+    };
     let map_arr = map_obj.map_tiles; //this should be the actual map array
 
     // Set player position data into the global multiplayer player position db
@@ -1071,34 +928,48 @@ export async function setup_playspace_str(user_id) {
         moveBtns = [row, row2];
     }
 
-    return [map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id), moveBtns];
+    const mapString = map_emote_string(biome.toLowerCase(), map_arr, playerx, playery, user_id);
+    const textDisplay = new TextDisplayBuilder().setContent(mapString);
+
+    return {
+        components: [textDisplay, ...moveBtns],
+        flags: MessageFlags.IsComponentsV2,
+        mapString: mapString // Keep raw string for cases where text needs to be appended
+    };
 }
 
 /**
  * Create an Oochamon object
  * @param {Number | String} ooch_id The ID of the Oochamon
- * @param {Number} level The level of the Oochamon (default: 5)
- * @param {Array} move_list The list of moves to give the oochamon (default: random)
- * @param {String} nickname The nickname for the Oochamon (default: normal ooch name)
- * @param {Number} cur_exp The amount of starting XP to give it (default: 0)
- * @param {String} ability The ability of the oochamon (default: random)
- * @param {Number} hp_iv Hp IV (default, random calculation)
- * @param {Number} atk_iv Attack IV (default: random calculation)
- * @param {Number} def_iv Defense IV (default: random calculation)
- * @param {Number} spd_iv Speed IV (default: random calculation)
- * @param {Number} held_item ID of the Item for the Oochamon to hold (default: no item) [UNUSED]
+ * @param {Object} ooch_options the options for the Oochamon
  * @returns The oochamon object
  */
-export async function create_ooch(ooch_id, level = 5, move_list = [], nickname = false, cur_exp = 0, ability = false, hp_iv = random(0,10), atk_iv = random(0,10),
-                        def_iv = random(0,10), spd_iv = random(0,10), held_item = false) {
+export async function create_ooch(ooch_id, ooch_options = {}) {
 
     const { get_stats, level_up, exp_to_next_level } = await import('./func_battle.js');
+    const { get_blank_oochamon } = await import('./func_modernize.js')
+
+    ooch_options = {...{
+        level : 5,
+        move_list : [],
+        nickname : false,
+        cur_exp : 0,
+        ability : false,
+        hp_iv : random(0, 10),
+        atk_iv : random(0, 10),
+        def_iv : random(0, 10),
+        spd_iv : random(0, 10),
+        held_item : false,
+        variant : "",
+        ability : false
+    }, ...ooch_options}
 
     //Fix IV math
-    hp_iv = (hp_iv/20) + 1;
-    atk_iv = (atk_iv/20) + 1;
-    def_iv = (def_iv/20) + 1;
-    spd_iv = (spd_iv/20) + 1;
+    let hp_iv = (ooch_options.hp_iv/20) + 1;
+    let atk_iv = (ooch_options.atk_iv/20) + 1;
+    let def_iv = (ooch_options.def_iv/20) + 1;
+    let spd_iv = (ooch_options.spd_iv/20) + 1;
+    let nickname = ooch_options.nickname;
 
     // Setup ooch_id data
     let learn_list = monster_data.get(`${ooch_id}`, 'move_list');
@@ -1107,18 +978,21 @@ export async function create_ooch(ooch_id, level = 5, move_list = [], nickname =
 
     // Pick a random ability (unless we specify, then force one)
     let rand_ability = ability_list[random(0, ability_list.length - 1)]
-    if (ability !== false && ability != 9999) {
-        rand_ability = ability;
+    if (ooch_options.ability !== false && ooch_options.ability != 9999) {
+        rand_ability = ooch_options.ability;
     }
     
     //Get the stats accounting for the ID, Level, and IVs
-    let stats = get_stats(ooch_id, level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
+    let stats = get_stats(ooch_id, ooch_options.level, hp_iv, atk_iv, def_iv, spd_iv) //Returns [hp, atk, def, spd]
 
-    let ooch_obj = { 
+    let empty_ooch = get_blank_oochamon();
+
+    let new_ooch = { 
         id: ooch_id,
-        name: monster_data.get(`${ooch_id}`, 'name'), 
+        name: monster_data.get(`${ooch_id}`, 'name'),
+        variant: ooch_options.variant,
         nickname: nickname,
-        item: held_item,
+        item: ooch_options.held_item,
         ability: rand_ability,
         og_ability: rand_ability,
         level: 0,
@@ -1140,7 +1014,7 @@ export async function create_ooch(ooch_id, level = 5, move_list = [], nickname =
         },
         status_effects: [],
         current_hp: stats[0],
-        current_exp: cur_exp,
+        current_exp: ooch_options.cur_exp,
         next_lvl_exp: exp_to_next_level(0),
         alive: true,
         evo_stage: monster_data.get(`${ooch_id}`, 'evo_stage'),
@@ -1158,19 +1032,21 @@ export async function create_ooch(ooch_id, level = 5, move_list = [], nickname =
         tame_pet_cooldown: 0,
         tame_walk_cooldown: 0,
         tame_play_cooldown: 0
-        
     }
 
+    let ooch_obj = {...empty_ooch, ...new_ooch}
+
     //Level up the ooch until its at the appropriate level
-    while(ooch_obj.level < level){
+    while(ooch_obj.level < ooch_options.level){
         ooch_obj.current_exp = exp_to_next_level(ooch_obj.level);
         let leveled_ooch = level_up(ooch_obj);
         ooch_obj = leveled_ooch[0];
     }
 
     //Find what moves the mon should know
+    let move_list = ooch_options.move_list;
     if (move_list.length == 0) {
-        learn_list = learn_list.filter(x => x[0] <= level && x[0] != -1)
+        learn_list = learn_list.filter(x => x[0] <= ooch_options.level && x[0] != -1)
         for(let i = 0; i < learn_list.length; i++){
             move_list[i] = learn_list[i][1];
         }
@@ -1185,130 +1061,6 @@ export async function create_ooch(ooch_id, level = 5, move_list = [], nickname =
     ooch_obj.moveset = move_list
 
     return(ooch_obj)
-}
-
-export async function box_collector_event(user_id, selected, page_num, user_profile, battle_box=false) {
-    let bottom_buttons = battle_box ? box_battle_buttons : box_buttons;
-
-    if (selected.customId == 'box_oochabox') {  
-        box_row = buildBoxData(user_profile, page_num);
-        selected.update({ content: `**Oochabox:**`,  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    } else if (selected.customId == 'back_to_box') {
-        box_row = buildBoxData(user_profile, page_num);
-        selected.update({ content: `**Oochabox**`, embeds: [], files: [], components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons] });
-    } 
-    
-    // Back to save (exit)
-    else if (selected.customId == 'box_back_to_save') {
-        profile.set(user_id, user_profile);
-        let options = [confirm_buttons_tp, confirm_buttons_tp_exit];
-
-        if (user_profile.areas_visited.length > 0 && user_profile.flags.includes('teleport_enable')) { 
-        teleport_menu = new ActionRowBuilder();
-            let teleport_select_options = user_profile.areas_visited.map(name => 
-                {
-                    let map_data = maps.get(`${name}`);
-                    return { 
-                        label: `${map_data.map_info.map_name}`,
-                        value: `${name}`
-                    }
-                });
-
-            teleport_menu.addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId('teleport_menu')
-                    .setPlaceholder(`Teleport To Visited Area`)
-                    .addOptions(teleport_select_options),
-            );
-
-            options.push(teleport_menu);
-        }
-
-        let playspace_str = await setup_playspace_str(user_id);
-        selected.update({ content: playspace_str[0], components: options, embeds: [], files: [] });
-    } 
-
-    // Finalize team for box in pvp
-    else if (selected.customId == 'box_finalize_team') {
-        return true;
-    } 
-
-    // Label buttons
-    else if (selected.customId.includes('box_emp') || selected.customId.includes('box_label')) {
-        selected.update({ content: `**Oochabox**`, files: [] });
-    }
-
-    // Oochamon in Box View
-    else if (selected.customId.includes('box_ooch')) {
-        let slot_data = selected.customId.split('_');
-        slot_num = slot_data[3];
-        let party_slot = false;
-        if (selected.customId.includes('_party')) party_slot = true;
-
-        if (party_slot == false) {
-            ooch_user_data = user_profile.ooch_pc[slot_num]; // Personal Oochamon Data in Oochabox
-        } else {
-            ooch_user_data = user_profile.ooch_party[slot_num]; // Personal Oochamon Data in Party
-        }
-
-        // Disable the "add to box" button if we only have one party member.
-        box_party_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 1))
-        // Disable the "add to party" button if we have 4 party members.
-        box_sel_buttons.components[1].setDisabled((user_profile.ooch_party.length == 4))
-
-        let dexEmbed = await ooch_info_embed(ooch_user_data, user_id);
-        let dexPng = dexEmbed[1];
-        dexEmbed = dexEmbed[0];
-
-        selected.update({ content: null, embeds: [dexEmbed], files: [dexPng], components: [party_slot == false ? box_sel_buttons : box_party_sel_buttons] });
-    }
-    // Add Oochamon to Box
-    else if (selected.customId == 'box_add_to_box') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        // Put the specified oochamon into the box.
-        user_profile.ooch_pc.push(ooch_user_data);
-        user_profile.ooch_party.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    } 
-    // Add Oochamon to team
-    else if (selected.customId == 'box_add_ooch') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        // Put the specified oochamon into our team
-        user_profile.ooch_party.push(ooch_user_data);
-        user_profile.ooch_pc.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    
-    }
-    // Release an Oochamon
-    else if (selected.customId == 'box_release') {
-        await selected.update({ content: `**Are you sure you want to release this Oochamon?**`, embeds: [],  components: [box_confirm_buttons], files: [] });
-    }
-    // Confirm to release an Oochamon
-    else if (selected.customId == 'box_yes') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        user_profile.ooch_pc.splice(slot_num, 1);
-        // Build new PC button rows
-        box_row = buildBoxData(user_profile, page_num);
-        // Kick back to PC screen
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    }
-    // Confirm to not release an Oochamon
-    else if (selected.customId == 'box_no') {
-        bottom_buttons.components[3].setLabel(`${page_num+1}`);
-
-        selected.update({ content: `**Oochabox**`, embeds: [],  components: [box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], files: [] });
-    }
-    
-    return false;
 }
 
 export function shop_list_from_flags(shop_obj, profile_flags){

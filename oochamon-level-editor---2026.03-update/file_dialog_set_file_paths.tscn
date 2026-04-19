@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://csa8cegur6sm6"]
+
+[node name="FileDialogSetFilePaths" type="FileDialog"]
+auto_translate_mode = 1
+title = "Open a Directory"
+initial_position = 2
+size = Vector2i(500, 400)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+filters = PackedStringArray(".txt")

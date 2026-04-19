@@ -1,0 +1,132 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2woerypmsqtd"]
+
+[ext_resource type="Script" uid="uid://br25d337c8pqg" path="res://event_editor.gd" id="1_llprn"]
+
+[node name="Control" type="Control" groups=["root"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_llprn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonMainMenu" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+
+[node name="ButtonNew" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "New"
+
+[node name="ButtonSave" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Save"
+
+[node name="ButtonLoad" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="LineEditEventName" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="CheckButtonRepeatable" type="CheckButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Repeatable:"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(1000, 600)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NewButtons" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="NewDialog" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Dialog"
+
+[node name="NewBattle" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Battle"
+
+[node name="NewFlag" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Flag"
+
+[node name="NewOochSelect" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Select Oochamon"
+
+[node name="NewTransition" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Transition"
+
+[node name="NewObjective" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Objective"
+
+[node name="NewOption" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Options"
+
+[node name="NewWait" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Wait"
+
+[node name="NewAddAlly" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Add Ally"
+
+[node name="NewRemoveAlly" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Remove Ally"
+
+[node name="NewBGroupStart" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ BattleGroupStart"
+
+[node name="NewBGroupEnd" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Battlegroup End"
+
+[node name="NewSkinSelect" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons"]
+layout_mode = 2
+text = "+ Select Skin"
+
+[connection signal="size_flags_changed" from="." to="." method="_on_size_flags_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonNew" to="." method="_on_button_new_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonSave" to="." method="_on_button_save_pressed"]
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer/ButtonLoad" to="." method="_on_button_load_item_selected"]
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/CheckButtonRepeatable" to="." method="_on_check_button_repeatable_toggled"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewDialog" to="." method="_on_new_dialog_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBattle" to="." method="_on_new_battle_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewFlag" to="." method="_on_new_flag_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOochSelect" to="." method="_on_new_ooch_select_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewTransition" to="." method="_on_new_transition_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewObjective" to="." method="_on_new_objective_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewOption" to="." method="_on_new_option_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewWait" to="." method="_on_new_wait_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewAddAlly" to="." method="_on_new_add_ally_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewRemoveAlly" to="." method="_on_new_remove_ally_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupStart" to="." method="_on_new_b_group_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewBGroupEnd" to="." method="_on_new_b_group_end_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/VBoxContainer/NewButtons/NewSkinSelect" to="." method="_on_new_skin_select_pressed"]

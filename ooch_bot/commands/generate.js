@@ -462,11 +462,11 @@ export async function execute(interaction, client) {
     create_tile(`t${zTu}_071`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_072`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_073`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_080`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_081`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_080`, Tile.Floor); //Elevator
+    create_tile(`t${zTu}_081`, Tile.Floor); //Elevator
     create_tile(`t${zTu}_082`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_090`, Tile.Wall); //Elevator
-    create_tile(`t${zTu}_091`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_090`, Tile.Floor); //Elevator
+    create_tile(`t${zTu}_091`, Tile.Floor); //Elevator
     create_tile(`t${zTu}_092`, Tile.Wall); //Elevator
 
 
@@ -1014,61 +1014,61 @@ export async function execute(interaction, client) {
     });
     create_item({
         id: Item.TreatBasic, name: 'Snacky Treat', emote: get_emote_string('item_treat'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 800, potency: -1,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 800, potency: -1,
         description: 'A mass produced treat, Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFungal, name: 'Squishy Treat', emote: get_emote_string('item_treat_fungal'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Fungal,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Fungal,
         description: 'A treat coated in spores, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatFlame, name: 'Spicy Treat', emote: get_emote_string('item_treat_flame'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Flame,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Flame,
         description: 'A scalding hot treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatStone, name: 'Crunchy Treat', emote: get_emote_string('item_treat_stone'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Stone,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Stone,
         description: 'A rock-like treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatOoze, name: 'Gooey Treat', emote: get_emote_string('item_treat_ooze'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Ooze,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Ooze,
         description: 'A slimy treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatMagic, name: 'Sparkly Treat', emote: get_emote_string('item_treat_magic'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Magic,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Magic,
         description: 'An ethereal treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatTech, name: 'Metallic Treat', emote: get_emote_string('item_treat_tech'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Tech,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Tech,
         description: 'A finely crafted treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCloth, name: 'Soft Treat', emote: get_emote_string('item_treat_cloth'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Cloth,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Cloth,
         description: 'A silky smooth treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatSound, name: 'Soothing Treat', emote: get_emote_string('item_treat_sound'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Sound,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Sound,
         description: 'A treat that seems to hum a tune, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
     create_item({
         id: Item.TreatCrystal, name: 'Rigid Treat', emote: get_emote_string('item_treat_crystal'),
-        category: ItemCategory.Consumable, type: ItemType.Treat, price: 2000, potency: OochType.Crystal,
+        category: ItemCategory.Treat, type: ItemType.Treat, price: 2000, potency: OochType.Crystal,
         description: 'A sharply sweet treat, certain Oochamon seem to love them!',
         description_short: 'A treat for your Oochamon.'
     });
@@ -1958,7 +1958,7 @@ export async function execute(interaction, client) {
         id: Move.ShootingStar, name: 'Shooting Star', type: OochType.Stone,
         damage: 60, accuracy: 100,
         effect: [{ status: 'priority_1', chance: 100, target: MoveTarget.Self }],
-        description: 'A high damaging move that DOOMS the user.',
+        description: 'A high speed attack that goes first.',
         self_target: false,
     });
     create_move({
@@ -4250,7 +4250,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
             [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
-            [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+            [30, Move.Micronet], [32, Move.Wub], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
             [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
         ],
         abilities: [Ability.Phantasmal, Ability.Shadow],
@@ -4268,7 +4268,7 @@ export async function execute(interaction, client) {
         move_list: [
             [1, Move.Bash], [3, Move.ByteBite], [5, Move.Hasten], [8, Move.PrecisionStrike], [11, Move.Sawblade],
             [14, Move.Slash], [16, Move.Lurk], [19, Move.Digitize], [22, Move.TwistedReality], [27, Move.Lagspike],
-            [30, Move.Micronet], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
+            [30, Move.Micronet], [32, Move.Wub], [34, Move.BlindingBeam], [36, Move.Radiate], [39, Move.Thunderstorm], [43, Move.CallThunder],
             [46, Move.DebugBomb], [-1, Move.PlasmaCannon]
         ],
         abilities: [Ability.Phantasmal, Ability.Shadow],
@@ -4717,23 +4717,38 @@ export async function execute(interaction, client) {
     //#endregion
     //#region Create Maps
     let files = readdirSync('./Maps/');
+    let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
     for (let file of files) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
-
+        
         try {
             readFile(`./Maps/${file}`, 'utf8', (err, data) => {
                 if (err) {
                     console.log(`Error reading file: ${file}`);
                     return;
                 }
+
+                let map_data = JSON.parse(data)
+
+                for(let spawnzone of map_data.map_spawn_zones){
+                    for(let slot of spawnzone.spawn_slots){
+                        oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
+                    }
+                }
+
                 maps.set(map_name, JSON.parse(data));
             });
         } catch (err) {
             console.log(err);
         }
-
     }
+
+    //Add a list of spawn positions to the oochamon
+    for(let i = 0; i < oochadex_spawn_positions.length; i++){
+        monster_data.set(i.toString(), oochadex_spawn_positions[i], 'spawn_locations')
+    }
+
     //#endregion
     // Generate text file for map editor project
     let tiles_output_str = "";
