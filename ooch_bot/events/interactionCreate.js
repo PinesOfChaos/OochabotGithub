@@ -9,6 +9,7 @@ import { move, setup_playspace_str } from '../func_play.js';
 import { PlayerState } from '../types.js';
 import { quit_oochamon } from '../func_other.js';
 import { botClient, inactivityTrackers } from '../index.js';
+import { reportCrash } from '../utils/crash_reporter.js';
 import { battle_handler } from '../event_handlers/battle_handler.js';
 import { menu_handler } from '../event_handlers/menu_handler.js';
 import { event_handler } from '../event_handlers/event_handler.js';
@@ -259,8 +260,13 @@ export default {
     try {
         await command.execute(interaction, botClient);
     } catch (error) {
-        await console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        console.error(error);
+        reportCrash(error, `Command: /${interaction.commandName} | User: ${interaction.user.tag}`);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        } else {
+            await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+        }
     }
   },
 }

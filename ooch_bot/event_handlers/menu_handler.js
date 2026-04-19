@@ -1530,6 +1530,7 @@ export async function menu_handler(interaction, init=false) {
 
                 newAbility = abilityList.find(ability => ability !== currentAbility);
                 user_profile.ooch_party[selData[0]].ability = newAbility;
+                user_profile.ooch_party[selData[0]].og_ability = newAbility;
 
                 item_usage_text = `Swapped ability from **${ability_data.get(`${currentAbility}`, 'name')}** to **${ability_data.get(`${newAbility}`, 'name')}** for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
                 

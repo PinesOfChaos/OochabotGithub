@@ -510,7 +510,6 @@ export async function battle_handler(interaction) {
 
             if (i == user.active_slot) {
                 ooch_button_color = ButtonStyle.Success;
-                // ooch_prev = ooch_check;
                 ooch_disable = true;
             }
             else if (ooch_check.current_hp <= 0) {
@@ -646,7 +645,8 @@ export async function battle_handler(interaction) {
                 if (slot == user.active_slot) {
                     ooch_button_color = ButtonStyle.Success;
                 }
-                else if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
+                
+                if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
                     ooch_disable = true;
                 }
 

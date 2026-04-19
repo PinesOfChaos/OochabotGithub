@@ -7,6 +7,7 @@ import { schedule } from 'node-cron';
 // create a new Discord client and give it some variables
 import {Client, Partials, GatewayIntentBits, Routes, Collection, REST} from 'discord.js';
 import { genmap_allmaps } from './func_level_gen.js';
+import { reportCrash } from './utils/crash_reporter.js';
 import branchName from 'current-git-branch';
 let branch = branchName();
 
@@ -115,4 +116,14 @@ schedule('00 16 * * *', async () => {
 //Log Bot in to the Discord
 client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
 
-export const botClient = client; 
+export const botClient = client;
+
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
+    reportCrash(reason, 'Unhandled Promise Rejection');
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    reportCrash(error, 'Uncaught Exception');
+});
