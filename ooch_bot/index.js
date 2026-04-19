@@ -114,7 +114,7 @@ schedule('00 16 * * *', async () => {
 });
 
 //Log Bot in to the Discord
-client.login(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
+client.login(process.env.DEV_TOKEN);
 
 export const botClient = client;
 
