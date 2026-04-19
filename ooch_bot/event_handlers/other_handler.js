@@ -245,6 +245,9 @@ export async function other_handler(interaction) {
         else if (action == 'box_no') {
             bottom_buttons.components[3].setLabel(`${other_menu_state.box_page_num+1}`);
 
+            // Build new PC button rows
+            box_row = buildBoxData(interaction.user.id, profile_data, other_menu_state.box_page_num);
+
             interaction.update({ components: [new TextDisplayBuilder().setContent('**Oochabox**'), box_row[0], box_row[1], box_row[2], box_row[3], bottom_buttons], flags: MessageFlags.IsComponentsV2, embeds: [], files: [] });
         }
     } 

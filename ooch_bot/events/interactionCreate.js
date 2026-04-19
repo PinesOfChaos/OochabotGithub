@@ -13,7 +13,6 @@ import { battle_handler } from '../event_handlers/battle_handler.js';
 import { menu_handler } from '../event_handlers/menu_handler.js';
 import { event_handler } from '../event_handlers/event_handler.js';
 import { trade_handler } from '../event_handlers/trade_handler.js';
-import { netbattle_handler } from '../event_handlers/netbattle_handler.js';
 import { other_handler } from '../event_handlers/other_handler.js';
 import { shop_handler } from '../event_handlers/shop_handler.js';
 
@@ -189,9 +188,6 @@ export default {
         }
         if (interaction.customId.startsWith('trade_')) {
             await trade_handler(interaction);
-        }
-        if (interaction.customId.startsWith('netbattle_')) {
-            await netbattle_handler(interaction);
         }
         if (interaction.customId.startsWith('other_')) {
             await other_handler(interaction);
