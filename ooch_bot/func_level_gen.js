@@ -827,7 +827,7 @@ async function genmap_npc_reward_ooch(x, y){
 }
 
 async function genmap_npc_boss(x, y, force_id = -1){
-    let npc_id = force_id == -1 ? sample([0, 1, 2]) : force_id;
+    let npc_id = force_id == -1 ? sample([0, 1]) : force_id;
     let npc = genmap_empty_npc()
     npc.x = x;
     npc.y = y;
@@ -844,9 +844,9 @@ async function genmap_npc_boss(x, y, force_id = -1){
         case 0: //Pines
             npc.name = "Evergreen Cultist";
             npc.pre_combat_dialogue = "That's it, you're going to jail! Why? *Tree*son of course!";
-            npc.post_combat_dialogue = "Yeah, but like, what if *you* lost instead?";
+            npc.post_combat_dialogue = "That's it, I'm *logging* out.";
             npc.sprite_id = "c00_055";
-            npc.items.push(Item.SkinEvergreenCultist);
+            npc.items.push({count: 1, id : Item.SkinEvergreenCultist});
            
             npc.team = [
                 await genmap_ooch_specific(OochID.Queenect, 50, 9, 9, 9, 9, Ability.Burdened, 
@@ -867,7 +867,7 @@ async function genmap_npc_boss(x, y, force_id = -1){
             npc.pre_combat_dialogue = "This battle is gonna be so Tamagoochi™ 👌!";
             npc.post_combat_dialogue = "I walk the lonely Rhodent, the only Rhodent I have ever known...";
             npc.sprite_id = "c00_058";
-            npc.items.push(Item.SkinTamagoochiGirl);
+            npc.items.push({count: 1, id : Item.SkinTamagoochiGirl});
            
             npc.team = [
                 await genmap_ooch_specific(OochID.Rhodent, 50, 7, 10, 8, 3, Ability.Shadow, 
@@ -883,27 +883,7 @@ async function genmap_npc_boss(x, y, force_id = -1){
                     [Move.CallThunder, Move.PrecisionStrike, Move.Lurk, Move.Sawblade], OochVariant.Prismatic)
             ];
         break;
-        case 2: //CodRaven
-            npc.name = "Tamagoochi™ 👌 Girl";
-            npc.pre_combat_dialogue = "This battle is gonna be so Tamagoochi™ 👌!";
-            npc.post_combat_dialogue = "I walk the lonely Rhodent, the only Rhodent I have ever known...";
-            npc.sprite_id = "c00_058";
-            npc.items.push(Item.SkinTamagoochiGirl);
-           
-            npc.team = [
-                await genmap_ooch_specific(OochID.Rhodent, 50, 7, 10, 8, 3, Ability.Shadow, 
-                    [Move.PlasmaCannon, Move.Sawblade, Move.Lagspike, Move.Lurk], OochVariant.Default),
-
-                await genmap_ooch_specific(OochID.Chewdee, 50, 5, 10, 10, 10, Ability.Phantasmal, 
-                    [Move.BlindingBeam, Move.Micronet, Move.TwistedReality, Move.Wub], OochVariant.Default),
-
-                await genmap_ooch_specific(OochID.Purif_i, 50, 7, 10, 9, 4, Ability.Purification, 
-                    [Move.NullSphere, Move.PebbleBlast, Move.Kaleidoscope, Move.CursedEye], OochVariant.Prismatic),
-
-                await genmap_ooch_specific(OochID.Rhodent, 50, 8, 10, 10, 4, Ability.Phantasmal, 
-                    [Move.CallThunder, Move.PrecisionStrike, Move.Lurk, Move.Sawblade], OochVariant.Prismatic)
-            ];
-        break;
+        
     }
 
     return npc;
@@ -916,26 +896,29 @@ export function genmap_layout_final_room(width, height){
     for(let i = 0; i < width; i++){
         layout[i] = [];
         for(let j = 0; j < height; j++){
-            if(i >= 5 && i < 10){
-                if(j == 5){
-                    layout[i][j] = "edge";
-                }
-                else if(j > 7 && j < 20 - wall_dist){
-                    layout[i][j] = "floor";
-                }
-                else{
-                    layout[i][j] = "wall";
-                }
-            }
-            else{
                 layout[i][j] = "wall";
-            }
         }
     }
 
-    layout[7][14] = "misc";
-    layout[7][19] = "start";
-    layout[7][9] = "end";
+    //Add floor tiles
+    for(let i = wall_dist; i < width - wall_dist; i++){
+        for(let j = wall_dist - 1; j < height - wall_dist; j++){
+            if(j == wall_dist - j){
+                layout[i][j] = "edge";
+            }
+            else{
+                layout[i][j] = "floor";
+            }
+            
+        }
+    }
+
+    var center_x = floor(width / 2);
+    var center_y = floor(height / 2);
+
+    layout[center_x][center_y] = "misc";
+    layout[center_x][height - wall_dist - 2] = "start";
+    layout[center_x][wall_dist + 2] = "end";
 
     return ({
         layout : layout,
