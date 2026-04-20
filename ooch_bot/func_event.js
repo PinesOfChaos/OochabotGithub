@@ -56,8 +56,11 @@ export async function dialogueEvent(user_id, thread, obj_content) {
         if (obj_content.items.length != 0) {
             for (let item of obj_content.items) {
                 let itemData = item_data.get(`${item.id}`);
-                info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
-                add_item(user_id, item.id, item.count);
+
+                if (itemData) {
+                    info_data += `${itemData.emote} **${itemData.name}** x${item.count}\n`;
+                    add_item(user_id, item.id, item.count);
+                }
             }
         }
     }
