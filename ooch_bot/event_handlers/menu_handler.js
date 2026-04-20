@@ -740,6 +740,10 @@ export async function menu_handler(interaction, init=false) {
         let healInv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
         let healOptions = [];
 
+        if (healInv.length == 0) {
+            return await interaction.followUp({ content: 'You have no potions to use!' })
+        }
+
         for (let item of healInv) {
             if (item.quantity !== 0) {
                 let itemData = item_data.get(`${item.id}`);
@@ -1138,6 +1142,10 @@ export async function menu_handler(interaction, init=false) {
     if (action == 'taming_feed') {
 
         let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Treat, ItemType.Treat);
+
+        if (treat_inv.length == 0) {
+            return interaction.update();
+        }
 
         let treat_select = new ActionRowBuilder();
         let treat_select_options = [];
