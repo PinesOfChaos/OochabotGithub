@@ -1144,7 +1144,7 @@ export async function menu_handler(interaction, init=false) {
         let treat_inv = get_all_item_type(interaction.user.id, ItemCategory.Treat, ItemType.Treat);
 
         if (treat_inv.length == 0) {
-            return interaction.update();
+            return interaction.update({ content: null });
         }
 
         let treat_select = new ActionRowBuilder();
@@ -1425,7 +1425,7 @@ export async function menu_handler(interaction, init=false) {
                         profile.set(interaction.user.id, msg.id, 'display_msg_id');
                     });
 
-                    await interaction.update({ components: [] });
+                    await interaction.update({ content: "Deleting message...", components: [] });
                     await interaction.deleteReply();
                     break;
             }

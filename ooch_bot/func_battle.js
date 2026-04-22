@@ -134,7 +134,7 @@ export async function generate_battle_user(type, options) {
                         atk_iv : ooch_base.atk_iv, 
                         def_iv : ooch_base.def_iv, 
                         spd_iv : ooch_base.spd_iv, 
-                        variant: options.variant} );
+                        variant: options.variant ?? ""} );
 
                 party = [ooch];
                 user_info.name = ooch.name
@@ -148,8 +148,8 @@ export async function generate_battle_user(type, options) {
             }
             else{
                 let ooch = await create_ooch(options.id, {
-                    level : options.level,  
-                    variant : options.variant
+                    level : options.level,
+                    variant : options.variant ?? ""
                 });
                 party = [ooch];
                 user_info.name = ooch.name
@@ -2090,7 +2090,7 @@ export async function end_of_round_prompt_switch(db_battle_data){
             switch(user.user_type){
                 case UserType.Player:
 
-                    notify_death = true;
+                    { notify_death = true;
                     users_to_wait_for.push(user.user_id);
                     ooch_inv = user.party;
 
@@ -2151,7 +2151,7 @@ export async function end_of_round_prompt_switch(db_battle_data){
                         users_to_wait_for = users_to_wait_for.filter(u => u != user.user_id);
                     });
 
-                break;
+                break; }
                 default:
                     for(let [i, ooch] of user.party.entries()){
                         if(ooch.alive){ next_slot = i; break;}

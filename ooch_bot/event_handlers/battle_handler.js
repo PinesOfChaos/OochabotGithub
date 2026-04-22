@@ -365,10 +365,10 @@ export async function battle_handler(interaction) {
 
     // TARGET ATTACK
     if (customId.startsWith(`${pre}target`)) {
-        let parts = customId.split('_'); // REMEMBER TO ACCOUNT FOR PRE
-        let team_id = parts[1]; 
-        let user_id = parts[2];
-        let move_id = parts[3];
+        let parts = customId.split('_'); // format: battle_BATTLEID_USERINDEX_target_TEAMID_USERID_MOVEID
+        let team_id = parts[4];
+        let user_id = parts[5];
+        let move_id = parts[6];
 
         let enemy_user = db_battle_data.users.filter(u => u.team_id == team_id && u.user_id == user_id)[0];
         user.action_selected = true;
