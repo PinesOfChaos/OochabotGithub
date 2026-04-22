@@ -913,8 +913,8 @@ export function genmap_layout_final_room(width, height){
         }
     }
 
-    var center_x = floor(width / 2);
-    var center_y = floor(height / 2);
+    var center_x = Math.floor(width / 2);
+    var center_y = Math.floor(height / 2);
 
     layout[center_x][center_y] = "misc";
     layout[center_x][height - wall_dist - 2] = "start";
