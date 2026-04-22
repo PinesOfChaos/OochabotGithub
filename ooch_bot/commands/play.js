@@ -96,6 +96,7 @@ export async function execute(interaction, client) {
             if (user.is_player) {
                 profile.set(user.user_id, 0, 'cur_event_pos');
                 profile.set(user.user_id, false, 'cur_battle_id');
+                profile.set(user.user_id, [], 'cur_event_array');
                 let userThread = client.channels.cache.get(`${user.thread_id}`);
 
                 await finish_battle(battleData, user.user_index, true);
