@@ -1394,7 +1394,7 @@ export async function menu_handler(interaction, init=false) {
         if (selected == 'n/a') {
             let keyData = await buildItemData(ItemCategory.Consumable);
             const cantUseContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
-            interaction.update({ components: [cantUseContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [cantUseContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
         let db_item_data = item_data.get(`${selected}`);
@@ -1402,7 +1402,7 @@ export async function menu_handler(interaction, init=false) {
         if (db_item_data.type == ItemType.Teleport && profile.get(`${interaction.user.id}`, 'allies_list').length != 0) {
             let keyData = await buildItemData(ItemCategory.Consumable);
             const cantTeleportContainer = buildBagContainer('🎒 Consumable Items', keyData[0], [bag_buttons, keyData[1], back_button], user_profile.oochabux);
-            interaction.update({ components: [cantTeleportContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [cantTeleportContainer], flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -1433,7 +1433,7 @@ export async function menu_handler(interaction, init=false) {
             if (db_item_data.type != ItemType.Teleport) {
                 let consumableData = await buildItemData(ItemCategory.Consumable);
                 const repelContainer = buildBagContainer('🎒 Consumable Items', consumableData[0], [bag_buttons, consumableData[1], back_button], user_profile.oochabux);
-                interaction.update({ components: [repelContainer], flags: MessageFlags.IsComponentsV2 });
+                await interaction.update({ components: [repelContainer], flags: MessageFlags.IsComponentsV2 });
             }
 
             let followUpMsg = await interaction.followUp({ content: item_usage_text });
@@ -1442,7 +1442,7 @@ export async function menu_handler(interaction, init=false) {
         } else {
             let pa_components = buildPartyData(user_profile.ooch_party, true, db_item_data);
             const itemOochSelectContainer = buildMenuContainer(`Which Oochamon would you like to use the ${db_item_data.emote} **${db_item_data.name}** on?`, pa_components);
-            interaction.update({ components: [itemOochSelectContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [itemOochSelectContainer], flags: MessageFlags.IsComponentsV2 });
         }
     }
     if (action == 'skin_button') {
