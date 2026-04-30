@@ -903,7 +903,7 @@ export function genmap_layout_final_room(width, height){
     //Add floor tiles
     for(let i = wall_dist; i < width - wall_dist; i++){
         for(let j = wall_dist - 1; j < height - wall_dist; j++){
-            if(j == wall_dist - j){
+            if(j == wall_dist){
                 layout[i][j] = "edge";
             }
             else{
