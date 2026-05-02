@@ -1851,7 +1851,7 @@ export async function execute(interaction, client) {
         id: Move.Lagspike, name: 'Lagspike', type: OochType.Tech,
         damage: 0, accuracy: 100,
         effect: [{ status: Status.GoingLastBonus, chance: 150, target: MoveTarget.None }, { status: '-_def_2', chance: 100, target: MoveTarget.Enemy }],
-        description: 'A high-damage move that fails if the user doesn\'t go last. Has 150 damage and lowers the target\'s DEF 2 stages if it hits.',
+        description: 'A high-damage move that fails if the user goes first. Has 150 damage and lowers the target\'s DEF 2 stages if it hits.',
         self_target: false,
     });
     create_move({

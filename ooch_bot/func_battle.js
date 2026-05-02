@@ -134,7 +134,7 @@ export async function generate_battle_user(type, options) {
                         atk_iv : ooch_base.atk_iv, 
                         def_iv : ooch_base.def_iv, 
                         spd_iv : ooch_base.spd_iv, 
-                        variant: options.variant ?? ""} );
+                        variant: ooch_base.variant });
 
                 party = [ooch];
                 user_info.name = ooch.name
@@ -181,7 +181,7 @@ export async function generate_battle_user(type, options) {
                     atk_iv: ooch_base.atk_iv, 
                     def_iv: ooch_base.def_iv, 
                     spd_iv: ooch_base.spd_iv, 
-                    variant: options.variant ?? ""
+                    variant: ooch_base.variant
                 });
                 party_generated.push(ooch);  
             }
@@ -2951,7 +2951,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         }
     }
     if(move_effects.some(effect => effect.status === Status.GoingLastBonus)) { 
-        if(going_last){
+        if(!going_first){
             move_damage += Math.round((move_effects.find(effect => effect.status === Status.GoingLastBonus)?.chance || 0))
         }
         else if(move_damage == 0){ 

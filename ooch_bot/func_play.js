@@ -962,9 +962,6 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
         variant : "",
     }, ...ooch_options}
 
-    console.log("CREATE OOCH 1")
-    console.log([ooch_options.nickname, ooch_options.variant])
-
     //Fix IV math
     let hp_iv = (ooch_options.hp_iv/20) + 1;
     let atk_iv = (ooch_options.atk_iv/20) + 1;
@@ -1061,8 +1058,6 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
 
     ooch_obj.moveset = move_list
 
-    console.log("CREATE OOCH 2")
-    console.log([ooch_obj.nickname, ooch_obj.variant])
 
     return(ooch_obj)
 }
