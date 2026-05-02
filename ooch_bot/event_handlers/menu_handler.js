@@ -941,6 +941,7 @@ export async function menu_handler(interaction, init=false) {
         let db_item_data = item_data.get(`${selected}`);
         selected_ooch = await item_use(interaction.user.id, selected_ooch, selected, false, true);
         profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
+        ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
         let amountHealed = clamp(db_item_data.potency, 0, selected_ooch.stats.hp);
         let heal_inv = get_all_item_type(interaction.user.id, ItemCategory.Consumable, ItemType.Potion);
 
@@ -1425,7 +1426,11 @@ export async function menu_handler(interaction, init=false) {
                         profile.set(interaction.user.id, msg.id, 'display_msg_id');
                     });
 
-                    await interaction.update({ content: "Deleting message...", components: [] });
+                    const container = new ContainerBuilder();
+                    const text = new TextDisplayBuilder().setContent("Deleting message...");
+                    container.addTextDisplayComponents(text);
+
+                    await interaction.update({ components: [container] });
                     await interaction.deleteReply();
                     break;
             }

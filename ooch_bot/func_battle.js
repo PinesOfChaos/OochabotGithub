@@ -180,7 +180,8 @@ export async function generate_battle_user(type, options) {
                     hp_iv: ooch_base.hp_iv, 
                     atk_iv: ooch_base.atk_iv, 
                     def_iv: ooch_base.def_iv, 
-                    spd_iv: ooch_base.spd_iv
+                    spd_iv: ooch_base.spd_iv, 
+                    variant: options.variant ?? ""
                 });
                 party_generated.push(ooch);  
             }
@@ -1432,8 +1433,8 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
         break;
         case Ability.Burdened: 
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Burdened**:`;
-            string_to_send += `--- ${modify_stat(ooch_to, Stats.Speed, -1)}`;
-            string_to_send += `--- ${modify_stat(ooch_to, Stats.Defense, 1)}\n`;
+            string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Speed, -1)}`;
+            string_to_send += `\n--- ${modify_stat(ooch_to, Stats.Defense, 1)}\n`;
         break;
         case Ability.Tough:
             string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}**'s **Tough**:`;
@@ -3758,7 +3759,6 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
             let team_step = 144 * i +  -40;
 
             let ooch_info = user.party[user.active_slot];
-            console.log(ooch_info);
             let ooch_x = (Math.cos(rotation) * radius_oochamon * width) + center_x;
             let ooch_y = (Math.sin(rotation) * radius_oochamon * height) + center_y;
             let user_x = (Math.cos(rotation) * radius_user * width) + center_x;

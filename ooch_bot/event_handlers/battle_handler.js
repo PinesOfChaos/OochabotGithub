@@ -193,7 +193,6 @@ export async function battle_handler(interaction) {
     // #endregion
 
     async function end_prompt_input(db_battle_data, interaction) {
-        console.log(db_battle_data.users);
         if (db_battle_data.users.every(u => u.action_selected !== false)) {
             battle_data.set(battle_id, db_battle_data);
             const waitText = new TextDisplayBuilder().setContent(`Waiting for other players...`);
@@ -238,6 +237,7 @@ export async function battle_handler(interaction) {
         const container = new ContainerBuilder()
             .addTextDisplayComponents(header)
             .addActionRowComponents(inputRow, inputRow2, inputRow3);
+        if (user.party[user.active_slot].stance_cooldown != 0) inputRow3.components[1].setDisabled(true);
         await interaction.update({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 
@@ -482,6 +482,8 @@ export async function battle_handler(interaction) {
         let stance_id = selected.split('_')[2];
         activeOoch.stance = stance_id;
         activeOoch.stance_cooldown = 3;
+        battle_data.set(battle_id, activeOoch, `users[${user.user_index}].party[${user.active_slot}]`);
+        db_battle_data = battle_data.get(`${battle_id}`);
 
         new_battle_action_stance_change(db_battle_data, user.user_index, stance_id);
         inputRow3.components[1].setDisabled(true)
@@ -767,15 +769,4 @@ export async function battle_handler(interaction) {
 
         await interaction.update({ components: [infoContainer], flags: MessageFlags.IsComponentsV2 });
     }
-
-
-    //#region PROMPT FUNCTION
-    /* TODOs: 
-        - Ensure the turn msg counters are correct after this is correct globally
-        - Make sure messages are updated properly
-        - Disable the switch button if you have no oochamon is selected
-        - Setup submenu to select Oochamon to heal, rather than only being able to heal the currently sent out Oochamon.
-    */
-
-    //#endregion
 }

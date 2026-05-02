@@ -73,7 +73,6 @@ export async function shop_handler(interaction) {
     }
 
     function buildShopContainer(shopTextContent, actionRows) {
-        console.log(shop_state);
         let greetingDialogue = shop_state.shop_obj?.greeting_dialogue || '';
         let shopHeader = new TextDisplayBuilder().setContent(`## Shop`);
         let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });

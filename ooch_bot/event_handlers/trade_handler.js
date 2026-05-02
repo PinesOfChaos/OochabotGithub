@@ -150,8 +150,6 @@ export async function trade_handler(interaction) {
         let party_slot = action.includes('_party');
         let ooch_user_data;
 
-        console.log(user_profile, slot_data, slot_num);
-
         if (party_slot == false) {
             ooch_user_data = user_profile.ooch_pc[slot_num];
         } else {

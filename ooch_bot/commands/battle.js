@@ -35,8 +35,6 @@ export async function execute(interaction) {
     let disableScaleLevel = interaction.options.getString('dont_scale_levels');
     if (disableScaleLevel == 'yes') levelScale = false;
 
-    console.log("Test");
-
     let intBattleUser = interaction.user;
     let otherBattleMember = await interaction.guild.members.fetch(otherBattleUser.id);
     let intUserState = profile.get(`${interaction.user.id}`, 'player_state');

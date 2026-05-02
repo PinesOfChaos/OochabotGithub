@@ -23,7 +23,7 @@ export async function execute(interaction) {
     profile.set(interaction.user.id, PlayerState.Menu, 'player_state');
     // Delete the current playspace
     let playspace_msg = await interaction.channel.messages.fetch(profile.get(`${interaction.user.id}`, 'display_msg_id')).catch(() => {});
-    await playspace_msg.delete().catch(() => { });;
+    if (playspace_msg) await playspace_msg.delete().catch(() => { });
 
     await menu_handler(interaction, true);
 }

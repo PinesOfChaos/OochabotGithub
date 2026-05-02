@@ -189,10 +189,13 @@ export async function genmap_final_room(name, theme, exit_map, exit_x, exit_y){
     let height = 27;
 
     //Filter out user's flags to any that don't include the map's name
-    let all_users = profile.values()
+    let all_users = profile.entries()
     for(let user of all_users) {
-        if (user.flags == undefined) continue;
-        user.flags = user.flags.filter((flag) => !flag.includes(name));
+        if (user[1].flags == undefined) continue;
+        user[1].flags = user[1].flags.filter((flag) => !flag.includes(name));
+        user[1].flags = user[1].flags.filter((flag) => flag !== "everchange_npc_boss_defeated");
+        user[1].flags = user[1].flags.filter((flag) => flag !== "everchange_reward_finished");
+        profile.set(user[0], user[1].flags, 'flags');
     }
 
     let base_layout = genmap_layout_final_room(width, height);
@@ -442,12 +445,13 @@ export function genmap_ooch_convert(ooch_data) {
         nickname : ooch_data.nickname,
         ability : ooch_data.ability,
         moveset : ooch_data.moveset,
-        hp_iv :  (20 * ooch_data.stats.hp_iv) - 10,
-        atk_iv : (20 * ooch_data.stats.atk_iv) - 10,
-        def_iv : (20 * ooch_data.stats.def_iv) - 10,
-        spd_iv : (20 * ooch_data.stats.spd_iv) - 10,
+        hp_iv :  (20 * ooch_data.stats.hp_iv) - 20,
+        atk_iv : (20 * ooch_data.stats.atk_iv) - 20,
+        def_iv : (20 * ooch_data.stats.def_iv) - 20,
+        spd_iv : (20 * ooch_data.stats.spd_iv) - 20,
         slot_enabled : true,
-        item : -1
+        item : -1, 
+        variant : ooch_data.variant ?? ""
     }
 
     return(new_ooch)
@@ -776,13 +780,23 @@ export async function genmap_npc(x, y, level_min, level_max){
 }
 
 async function genmap_ooch_specific(ooch_id, level, iv_hp, iv_atk, iv_def, iv_spd, ability, moves = [], variant = OochVariant.Default){
-    let ooch_new = await create_ooch(`${ooch_id}`, {level: level, moveset : moves, ability : ability, variant : variant});
-    ooch_new.stats.hp_iv = iv_hp / 10;
-    ooch_new.stats.atk_iv = iv_atk / 10;
-    ooch_new.stats.def_iv = iv_def / 10;
-    ooch_new.stats.spd_iv = iv_spd / 10;
+
+    let ooch_new = {
+        ability : ability,
+        id : ooch_id,
+        level : level,
+        hp_iv : iv_hp,
+        atk_iv : iv_atk,
+        def_iv : iv_def,
+        spd_iv : iv_spd,
+        item : -1,
+        moveset : moves,
+        nickname : false,
+        slot_enabled : true,
+        variant : variant
+    }
     
-    return genmap_ooch_convert(ooch_new);
+    return ooch_new;
 }
 
 async function genmap_npc_reward_ooch(x, y){
@@ -794,6 +808,7 @@ async function genmap_npc_reward_ooch(x, y){
     npc.post_combat_dialogue = "The chest vanishes, leaving your reward...";
     npc.sprite_id = "c00_013" //chest
     npc.is_catchable = true;
+
     npc.aggro_range = 0;
     npc.flag_required = "everchange_npc_boss_defeated";
     npc.flag_given = "everchange_reward_finished";
@@ -814,14 +829,25 @@ async function genmap_npc_reward_ooch(x, y){
             OochID.Ophicore, OochID.Symaat, OochID.Heraloom, //post endgame unique mons
             ])
     }
-
-    let ooch_new = await create_ooch(`${ooch_id}`, {level: 50, variant : variant });
-    ooch_new.stats.hp_iv = iv_hp;
-    ooch_new.stats.atk_iv = iv_atk;
-    ooch_new.stats.def_iv = iv_def;
-    ooch_new.stats.spd_iv = iv_spd;
-    npc.team = [ooch_new]
     
+    let learn_list = monster_data.get(`${ooch_id}`, 'move_list');
+    let ability_list = monster_data.get(`${ooch_id}`, 'abilities');
+
+    let rand_ability = ability_list[random(0, ability_list.length - 1)]
+
+    var rand_moves = []
+    learn_list = learn_list.filter(x => x[0] <= 50)
+    for(let i = 0; i < 4; i++){
+        let n = random(0, learn_list.length - 1)
+
+        rand_moves.push(learn_list[n][1]);
+        learn_list.splice(n, 1);
+    }
+
+    let ooch_new = await genmap_ooch_specific(ooch_id, 50, iv_hp, iv_atk, iv_def, iv_spd, rand_ability, rand_moves, variant)
+    npc.team = [ooch_new]
+    console.log("NPC CREATED")
+    console.log([ooch_new.nickname, ooch_new.variant])
     
     return npc;
 }
@@ -885,6 +911,7 @@ async function genmap_npc_boss(x, y, force_id = -1){
         break;
         
     }
+
 
     return npc;
 }

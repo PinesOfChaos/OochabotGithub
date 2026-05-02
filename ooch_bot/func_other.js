@@ -243,6 +243,10 @@ export function get_emote_string(name) {
         emojiList = Array.from(emojiList.values());
     }
 
+    if (emojiList == undefined || emojiList.length == 0) {
+        return '❌';
+    }
+
     return `<:${emojiList[0].name}:${emojiList[0].id}>`;
 }
 
@@ -252,7 +256,7 @@ export function get_emote_string(name) {
  * @returns The attachment file object.
  */
 export function get_ooch_art(ooch_name, variant = ``) {
-    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase(), RegExp(" ", "g"), "_")}${variant}.png`
+    let file_name = `./Art/ResizedArt/${replace(ooch_name.toLowerCase().replace('\'', '-'), RegExp(" ", "g"), "_")}${variant}.png`
     let file = new AttachmentBuilder(file_name);
     
     return file;
