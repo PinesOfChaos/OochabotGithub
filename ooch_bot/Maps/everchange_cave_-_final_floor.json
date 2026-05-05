@@ -13,11 +13,11 @@
 			"items": [
 				{
 					"count": 1,
-					"id": 41
+					"id": 6
 				},
 				{
 					"count": 2,
-					"id": 18
+					"id": 19
 				},
 				{
 					"count": 1,
@@ -25,7 +25,7 @@
 				}
 			],
 			"name": "Tamagoochi™ 👌 Girl",
-			"npc_id": "812958055559973875Everchange Cave - Final Floor",
+			"npc_id": "234708022576871209Everchange Cave - Final Floor",
 			"pre_combat_dialogue": "This battle is gonna be so Tamagoochi™ 👌!",
 			"post_combat_dialogue": "I walk the lonely Rhodent, the only Rhodent I have ever known...",
 			"sprite": 0,
@@ -128,7 +128,7 @@
 			"is_catchable": true,
 			"items": [],
 			"name": "Mysterious Chest",
-			"npc_id": "606234640996192580Everchange Cave - Final Floor",
+			"npc_id": "790809575556937763Everchange Cave - Final Floor",
 			"pre_combat_dialogue": "You reach out to open the mysterious chest, but a wild Oochamon appears!!",
 			"post_combat_dialogue": "The chest vanishes, leaving your reward...",
 			"sprite": 0,
@@ -141,19 +141,19 @@
 			],
 			"team": [
 				{
-					"ability": 35,
-					"id": 45,
+					"ability": 75,
+					"id": 109,
 					"level": 50,
-					"hp_iv": 5,
-					"atk_iv": 6,
-					"def_iv": 9,
-					"spd_iv": 9,
+					"hp_iv": 7,
+					"atk_iv": 5,
+					"def_iv": 7,
+					"spd_iv": 10,
 					"item": -1,
 					"moveset": [
-						80,
-						47,
-						120,
-						5
+						13,
+						87,
+						114,
+						56
 					],
 					"nickname": false,
 					"slot_enabled": true,
@@ -386,7 +386,7 @@
 			"t04_004",
 			"t04_004",
 			"t04_000",
-			"t04_022",
+			"t04_003",
 			"t04_000",
 			"t00_012",
 			"t04_000",
