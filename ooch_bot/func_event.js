@@ -331,8 +331,8 @@ export async function transitionEvent(user_id, thread, obj_content) {
         obj_content.y_to = map_default[0].y;
     }
 
-    player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
-    player_positions.delete(ogBiome, user_id);
+    //player_positions.set(obj_content.map_to, { x: obj_content.x_to, y: obj_content.y_to }, user_id);
+    //player_positions.delete(ogBiome, user_id);
     profile.set(user_id, { area: obj_content.map_to, x: obj_content.x_to, y: obj_content.y_to }, 'location_data')
     
     let playspace_str = await setup_playspace_str(user_id);

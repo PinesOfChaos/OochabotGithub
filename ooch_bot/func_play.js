@@ -882,7 +882,7 @@ export async function setup_playspace_str(user_id) {
     let map_arr = map_obj.map_tiles; //this should be the actual map array
 
     // Set player position data into the global multiplayer player position db
-    player_positions.set(biome, { x: playerx, y: playery }, user_id);
+    //player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
     let moveBtns = [];
     let spdEmotes = [get_emote_string('wlk1'), get_emote_string('wlk2'), get_emote_string('wlk3'), get_emote_string('wlk4')];

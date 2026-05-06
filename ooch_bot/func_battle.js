@@ -2489,8 +2489,8 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
         let biome_to = checkpoint.area;
 
         //remove the player's info from the old biome and add it to the new one
-        player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, user_id);
-        player_positions.delete(biome_from, user_id);
+        //player_positions.set(biome_to, { x: checkpoint.x, y: checkpoint.y }, user_id);
+        //player_positions.delete(biome_from, user_id);
         profile.set(user_id, { area: biome_to, x: checkpoint.x, y: checkpoint.y }, 'location_data')
 
         for (let i = 0; i < profile.get(`${user_id}`, 'ooch_party').length; i++) {

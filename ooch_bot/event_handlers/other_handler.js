@@ -262,8 +262,8 @@ export async function other_handler(interaction) {
         }
 
         //remove the player's info from the old biome and add it to the new one
-        player_positions.set(biome_to, { x: map_default[0].x, y: map_default[0].y }, interaction.user.id);
-        player_positions.delete(biome_from, interaction.user.id);
+        //player_positions.set(biome_to, { x: map_default[0].x, y: map_default[0].y }, interaction.user.id);
+        //player_positions.delete(biome_from, interaction.user.id);
         profile.set(interaction.user.id, { area: biome_to, x: map_default[0].x, y: map_default[0].y }, 'location_data')
 
         for (let i = 0; i < profile.get(`${interaction.user.id}`, 'ooch_party').length; i++) {

@@ -3,7 +3,7 @@
 		{
 			"event_name": "ev_symaat",
 			"flag_kill": "ev_symaat",
-			"flag_required": "",
+			"flag_required": "finished_campaign1",
 			"height": 2.0,
 			"width": 2.0,
 			"x": 25.0,
