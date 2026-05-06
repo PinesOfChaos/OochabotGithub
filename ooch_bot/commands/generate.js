@@ -4712,9 +4712,14 @@ export async function execute(interaction, client) {
     //Comment/Uncomment this as needed
     //console.log(move_info);
     //#endregion
+
     //#region Generated Maps
+    /*
+        This accounts for all of the maps that get randomly generated
+    */
     await genmap_allmaps(client);
     //#endregion
+
     //#region Create Maps
     let files = readdirSync('./Maps/');
     let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
@@ -4734,6 +4739,13 @@ export async function execute(interaction, client) {
                 for(let spawnzone of map_data.map_spawn_zones){
                     for(let slot of spawnzone.spawn_slots){
                         oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
+                    }
+                }
+
+                //Add an empty variant to all mons that do not have one
+                for(let npc of map_data.map_npcs){
+                    for(let slot of npc.team){
+                        slot.variant = slot.variant ?? ""
                     }
                 }
 
