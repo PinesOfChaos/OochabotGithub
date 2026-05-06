@@ -4,6 +4,7 @@ import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
 import { TextDisplayBuilder } from 'discord.js';
+import { create } from 'domain';
 
 let whitelist_everchange_wild = [
     OochID.Sporbee, OochID.Puppyre, OochID.Roocky, 
@@ -90,6 +91,15 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
     maps.set(level_lowername, new_level);
     kickout_list.push(level_lowername);
     console.log(`- Generated: ${level_name}`)
+
+
+    //Remove all "everchange" flags from players
+    let all_users = profile.entries()
+    for(let user of all_users) {
+        if (user[1].flags == undefined) continue;
+        user[1].flags = user[1].flags.filter((flag) => !flag.includes("everchange"));
+        profile.set(user[0], user[1].flags, 'flags');
+    }
 
     //Kick players back to their last checkpoint if they're in one of the generated levels
     for (let key of profile.keys()) { 
@@ -188,16 +198,6 @@ export async function genmap_final_room(name, theme, exit_map, exit_x, exit_y){
     let width = 15;
     let height = 27;
 
-    //Filter out user's flags to any that don't include the map's name
-    let all_users = profile.entries()
-    for(let user of all_users) {
-        if (user[1].flags == undefined) continue;
-        user[1].flags = user[1].flags.filter((flag) => !flag.includes(name));
-        user[1].flags = user[1].flags.filter((flag) => flag !== "everchange_npc_boss_defeated");
-        user[1].flags = user[1].flags.filter((flag) => flag !== "everchange_reward_finished");
-        profile.set(user[0], user[1].flags, 'flags');
-    }
-
     let base_layout = genmap_layout_final_room(width, height);
     let layout = base_layout.layout;
     let savepoints = [];
@@ -293,13 +293,6 @@ export async function genmap_final_room(name, theme, exit_map, exit_x, exit_y){
  * @returns Map data ready to be converted to a .js file
  */
 export async function genmap_new(name, width, height, theme, level_min, level_max, exit_map, exit_x, exit_y, has_savepoints = false, has_shops = false){
-
-    //Filter out user's flags to any that don't include the map's name
-    let all_users = profile.values()
-    for(let user of all_users) {
-        if (user.flags == undefined) continue;
-        user.flags = user.flags.filter((flag) => !flag.includes(name));
-    }
 
     let base_layout = genmap_layout(width, height, Math.ceil(width / 16), Math.ceil(height / 16), 10, theme.map_naturalness);
     let layout = base_layout.layout;
@@ -781,20 +774,15 @@ export async function genmap_npc(x, y, level_min, level_max){
 
 async function genmap_ooch_specific(ooch_id, level, iv_hp, iv_atk, iv_def, iv_spd, ability, moves = [], variant = OochVariant.Default){
 
-    let ooch_new = {
-        ability : ability,
-        id : ooch_id,
-        level : level,
-        hp_iv : iv_hp,
-        atk_iv : iv_atk,
-        def_iv : iv_def,
-        spd_iv : iv_spd,
-        item : -1,
-        moveset : moves,
-        nickname : false,
-        slot_enabled : true,
-        variant : variant
-    }
+    let ooch_new = await create_ooch(ooch_id, {level : level});
+    ooch_new.ability = ability;
+    ooch_new.moveset = moves;
+    ooch_new.variant = variant;
+
+    ooch_new.hp_iv =  iv_hp;
+    ooch_new.atk_iv = iv_atk;
+    ooch_new.def_iv = iv_def;
+    ooch_new.spd_iv = iv_spd;
     
     return ooch_new;
 }
@@ -813,8 +801,9 @@ async function genmap_npc_reward_ooch(x, y){
     npc.flag_required = "everchange_npc_boss_defeated";
     npc.flag_given = "everchange_reward_finished";
     npc.flag_kill = "everchange_reward_finished";
+    npc.coin = 10000;
 
-    let unique = sample(true, false);
+    let unique = sample([true, false]);
     let prismatic = unique ? sample(true, false, false, false) : true;
     let variant = prismatic ? OochVariant.Prismatic : OochVariant.Default;
     let iv_hp = random(5, 10, false);
@@ -846,14 +835,19 @@ async function genmap_npc_reward_ooch(x, y){
 
     let ooch_new = await genmap_ooch_specific(ooch_id, 50, iv_hp, iv_atk, iv_def, iv_spd, rand_ability, rand_moves, variant)
     npc.team = [ooch_new]
-    console.log("NPC CREATED")
-    console.log([ooch_new.nickname, ooch_new.variant])
+
+    var variant_text = "";
+    switch(variant){
+        case OochVariant.Prismatic: variant_text = " [Prismatic]"; break;
+    }
+
+    console.log(`This week's Everchange Cave Oochamon: ${ooch_new.nickname}${variant_text}`)
     
     return npc;
 }
 
 async function genmap_npc_boss(x, y, force_id = -1){
-    let npc_id = force_id == -1 ? sample([0, 1]) : force_id;
+    let npc_id = force_id == -1 ? sample([0, 1, 2, 3]) : force_id;
     let npc = genmap_empty_npc()
     npc.x = x;
     npc.y = y;
@@ -867,7 +861,7 @@ async function genmap_npc_boss(x, y, force_id = -1){
     npc.coin = 8000;
 
     switch (npc_id) {
-        case 0: //Pines
+        case 0: //Pines (dev i guess)
             npc.name = "Evergreen Cultist";
             npc.pre_combat_dialogue = "That's it, you're going to jail! Why? *Tree*son of course!";
             npc.post_combat_dialogue = "That's it, I'm *logging* out.";
@@ -875,20 +869,20 @@ async function genmap_npc_boss(x, y, force_id = -1){
             npc.items.push({count: 1, id : Item.SkinEvergreenCultist});
            
             npc.team = [
-                await genmap_ooch_specific(OochID.Queenect, 50, 9, 9, 9, 9, Ability.Burdened, 
-                    [Move.CausticOrb, Move.RallyingCry, Move.Blight, Move.TakeOver], OochVariant.Prismatic),
+                await genmap_ooch_specific(OochID.Moldire, 50, 9, 5, 9, 9, Ability.Reactive, 
+                    [Move.SlurpUp, Move.ArcaStrike, Move.FiberSlicer, Move.TakeOver], OochVariant.Prismatic),
 
-                await genmap_ooch_specific(OochID.Priseroth, 50, 10, 5, 8, 9, Ability.TwilightHour, 
-                    [Move.Calamity, Move.GemBash, Move.PlasmaCannon, Move.ShootingStar], OochVariant.Default),
+                await genmap_ooch_specific(OochID.Sparafura, 50, 9, 9, 9, 1, Ability.Reactive, 
+                    [Move.GuidedSpire, Move.HeldStrike, Move.GorgonEye, Move.Grind], OochVariant.Prismatic),
 
-                await genmap_ooch_specific(OochID.Temporath, 50, 9, 10, 5, 7, Ability.Withering, 
-                    [Move.DebugBomb, Move.TimeWarp, Move.Pulverize, Move.TwistedReality], OochVariant.Default),
+                await genmap_ooch_specific(OochID.Faering, 50, 9, 7, 9, 5, Ability.Immense, 
+                    [Move.HeldStrike, Move.TangledThreads, Move.Boulderdash, Move.Entrench], OochVariant.Default),
 
-                await genmap_ooch_specific(OochID.Drascend, 50, 8, 7, 10, 6, Ability.Flux, 
-                    [Move.FiberSlicer, Move.Silkstorm, Move.PressureWave, Move.Flurry], OochVariant.Default)
+                await genmap_ooch_specific(OochID.Drascend, 50, 9, 9, 9, 9, Ability.Flux, 
+                    [Move.FiberSlicer, Move.Silkstorm, Move.PressureWave, Move.Flurry], OochVariant.Prismatic)
             ];
         break;
-        case 1: //Maus
+        case 1: //Maus (tester)
             npc.name = "Tamagoochi™ 👌 Girl";
             npc.pre_combat_dialogue = "This battle is gonna be so Tamagoochi™ 👌!";
             npc.post_combat_dialogue = "I walk the lonely Rhodent, the only Rhodent I have ever known...";
@@ -909,7 +903,48 @@ async function genmap_npc_boss(x, y, force_id = -1){
                     [Move.CallThunder, Move.PrecisionStrike, Move.Lurk, Move.Sawblade], OochVariant.Prismatic)
             ];
         break;
-        
+        case 2: //Jekyll/Kitty/FalseProphet (tester)
+            npc.name = "FALSE PROPHET";
+            npc.pre_combat_dialogue = "No, it's not an outfit, I really am a shark, I swear!";
+            npc.post_combat_dialogue = "*dabs sadly*";
+            npc.sprite_id = "c00_061";
+            npc.items.push({count: 1, id : Item.SkinJEKYLLPOWERSTANCE});
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Kracking, 50, 9, 9, 9, 9, Ability.Darkbright, 
+                    [Move.CallThunder, Move.EarShatter, Move.AsbestosBomb, Move.AshBlast], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Hounuke, 50, 9, 9, 9, 9, Ability.Conflicted, 
+                    [Move.StickyOrb, Move.PlasmaCannon, Move.SlurpUp, Move.HypeUp], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Temporath, 50, 9, 9, 9, 9, Ability.Uncontrolled, 
+                    [Move.DebugBomb, Move.TimeWarp, Move.Pulverize, Move.TwistedReality], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Tryptid, 50, 9, 9, 9, 9, Ability.HoleDweller, 
+                    [Move.ClampDown, Move.DustStorm, Move.ThornShot, Move.Restruct], OochVariant.Default)
+            ];
+        break;
+        case 3: //CodRaven (tester)
+            npc.name = "Terarabe";
+            npc.pre_combat_dialogue = "It is I, the great and Terarable!";
+            npc.post_combat_dialogue = "Oh, you wanted Terraria? That's a totally different game!";
+            npc.sprite_id = "c00_060";
+            npc.items.push({count: 1, id : Item.SkinJEKYLLPOWERSTANCE});
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Priseroth, 50, 10, 10, 10, 10, Ability.TwilightHour, 
+                    [Move.Calamity], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Matryion, 50, 10, 10, 10, 10, Ability.Matryoshka, 
+                    [Move.SlurpUp, Move.Overgrowth, Move.DrainLife, Move.EnfeeblingSpore], OochVariant.StickyOrb),
+
+                await genmap_ooch_specific(OochID.Plaghast, 50, 10, 10, 10, 10, Ability.Leech, 
+                    [Move.DrainLife, Move.EnfeeblingSpore, Move.Tumorize, Move.CursedEye], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Roswier, 50, 10, 10, 10, 10, Ability.LiquidCooled, 
+                    [Move.Flurry, Move.Radiate, Move.Threefold], OochVariant.Prismatic)
+            ];
+        break;
     }
 
 
@@ -930,7 +965,7 @@ export function genmap_layout_final_room(width, height){
     //Add floor tiles
     for(let i = wall_dist; i < width - wall_dist; i++){
         for(let j = wall_dist - 1; j < height - wall_dist; j++){
-            if(j == wall_dist){
+            if(j == wall_dist - 1){
                 layout[i][j] = "edge";
             }
             else{

@@ -882,7 +882,7 @@ export async function setup_playspace_str(user_id) {
     let map_arr = map_obj.map_tiles; //this should be the actual map array
 
     // Set player position data into the global multiplayer player position db
-    player_positions.set(biome, { x: playerx, y: playery }, user_id);
+    //player_positions.set(biome, { x: playerx, y: playery }, user_id);
 
     let moveBtns = [];
     let spdEmotes = [get_emote_string('wlk1'), get_emote_string('wlk2'), get_emote_string('wlk3'), get_emote_string('wlk4')];
@@ -961,9 +961,6 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
         held_item : false,
         variant : "",
     }, ...ooch_options}
-
-    console.log("CREATE OOCH 1")
-    console.log([ooch_options.nickname, ooch_options.variant])
 
     //Fix IV math
     let hp_iv = (ooch_options.hp_iv/20) + 1;
@@ -1061,8 +1058,6 @@ export async function create_ooch(ooch_id, ooch_options = {}) {
 
     ooch_obj.moveset = move_list
 
-    console.log("CREATE OOCH 2")
-    console.log([ooch_obj.nickname, ooch_obj.variant])
 
     return(ooch_obj)
 }

@@ -1980,7 +1980,7 @@
         "target": 1
       }
     ],
-    "description": "A high-damage move that fails if the user doesn't go last. Has 150 damage and lowers the target's DEF 2 stages if it hits.",
+    "description": "A high-damage move that fails if the user goes first. Has 150 damage and lowers the target's DEF 2 stages if it hits.",
     "self_target": false,
     "tags": []
   },
