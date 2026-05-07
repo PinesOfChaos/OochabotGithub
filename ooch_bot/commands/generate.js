@@ -4749,7 +4749,7 @@ export async function execute(interaction, client) {
                     }
                 }
 
-                maps.set(map_name, JSON.parse(data));
+                maps.set(map_name, map_data);
             });
         } catch (err) {
             console.log(err);
