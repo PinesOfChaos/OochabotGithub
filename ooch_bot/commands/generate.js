@@ -4727,33 +4727,35 @@ export async function execute(interaction, client) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
         
-        try {
-            readFile(`./Maps/${file}`, 'utf8', (err, data) => {
-                if (err) {
-                    console.log(`Error reading file: ${file}`);
-                    return;
+        readFile(`./Maps/${file}`, 'utf8', (err, data) => {
+            if (err) {
+                console.log(`Error reading file: ${file}`);
+                return;
+            }
+
+            let map_data;
+            try {
+                map_data = JSON.parse(data);
+            } catch (err) {
+                console.log(`Error parsing JSON for map file: ${file}`, err);
+                return;
+            }
+
+            for(let spawnzone of map_data.map_spawn_zones){
+                for(let slot of spawnzone.spawn_slots){
+                    oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
                 }
+            }
 
-                let map_data = JSON.parse(data)
-
-                for(let spawnzone of map_data.map_spawn_zones){
-                    for(let slot of spawnzone.spawn_slots){
-                        oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
-                    }
+            //Add an empty variant to all mons that do not have one
+            for(let npc of map_data.map_npcs){
+                for(let slot of npc.team){
+                    slot.variant = slot.variant ?? ""
                 }
+            }
 
-                //Add an empty variant to all mons that do not have one
-                for(let npc of map_data.map_npcs){
-                    for(let slot of npc.team){
-                        slot.variant = slot.variant ?? ""
-                    }
-                }
-
-                maps.set(map_name, map_data);
-            });
-        } catch (err) {
-            console.log(err);
-        }
+            maps.set(map_name, map_data);
+        });
     }
 
     //Add a list of spawn positions to the oochamon

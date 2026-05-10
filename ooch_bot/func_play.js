@@ -101,9 +101,10 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     
     //Get the player's location
     let player_location = profile_data.location_data;
-    let map_name = player_location.area;
-    let playerx = player_location.x;
-    let playery = player_location.y;
+    let map_name = player_location?.area;
+    let playerx = player_location?.x;
+    let playery = player_location?.y;
+    if (!map_name) return;
     let player_flags = profile_data.flags;
     let all_flags = [...player_flags];
     for(let ooch of profile_data.ooch_party){
@@ -860,17 +861,26 @@ export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
 export async function setup_playspace_str(user_id) {
     const { map_emote_string } = await import('./func_play.js');
     let player_location = profile.get(`${user_id}`, 'location_data');
-    let biome = player_location.area;
-    let playerx = player_location.x;
-    let playery = player_location.y;
 
-    if(player_location == false){
+    if(!player_location){
+        let playerState = profile.get(`${user_id}`, 'player_state');
+        if (playerState == PlayerState.Intro) {
+            return {
+                components: [new TextDisplayBuilder().setContent('**Intro**')],
+                flags: MessageFlags.IsComponentsV2,
+                mapString: '**Intro**'
+            };
+        }
         return {
             components: [new TextDisplayBuilder().setContent("Looks like you never finished the intro, try using `/reset` to start over")],
             flags: MessageFlags.IsComponentsV2,
             mapString: "Looks like you never finished the intro, try using `/reset` to start over"
         };
     }
+
+    let biome = player_location.area;
+    let playerx = player_location.x;
+    let playery = player_location.y;
 
     //Get the map array based on the player's current biome
     let map_obj = maps.get(`${biome.toLowerCase()}`);

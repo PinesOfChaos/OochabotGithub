@@ -61,7 +61,11 @@ export async function execute(interaction, client) {
     } else {
         await profile.set(interaction.user.id, thread.id, 'play_thread_id');
         await profile.set(interaction.user.id, interaction.guild.id, 'play_guild_id');
-        await thread.bulkDelete(100);
+        try {
+            await thread.bulkDelete(100);
+        } catch (err) {
+            console.log(`Error bulk deleting messages in play thread: ${err}`);
+        }
     }
 
     let playspace_str = {

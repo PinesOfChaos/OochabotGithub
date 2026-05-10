@@ -5,7 +5,6 @@ import {
     item_data,
     monster_data,
     move_data,
-    player_positions,
     profile,
     stance_data,
     status_data
@@ -134,7 +133,7 @@ export async function generate_battle_user(type, options) {
                         atk_iv : ooch_base.atk_iv, 
                         def_iv : ooch_base.def_iv, 
                         spd_iv : ooch_base.spd_iv, 
-                        variant: ooch_base.variant });
+                        variant: ooch_base.variant ?? "" });
 
                 party = [ooch];
                 user_info.name = ooch.name
@@ -181,7 +180,7 @@ export async function generate_battle_user(type, options) {
                     atk_iv: ooch_base.atk_iv, 
                     def_iv: ooch_base.def_iv, 
                     spd_iv: ooch_base.spd_iv, 
-                    variant: ooch_base.variant
+                    variant: ooch_base.variant ?? ""
                 });
                 party_generated.push(ooch);  
             }
@@ -1422,7 +1421,7 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
                 string_to_send += `\n${ooch_to.emote} **${ooch_to.nickname}** reacts to your Purifying Prism, and transforms into ${get_emote_string('purifi')} Purif-i!`;
                 ooch_to = await create_ooch(OochID.Purif_i, {
                     level: ooch_to.level,
-                    variant: ooch_to.variant
+                    variant: ooch_to.variant ?? ""
                 });
                 user.party[0] = ooch_to;
             }
@@ -2484,7 +2483,6 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
     } else if (db_item_data.type == ItemType.Repel) {
         profile.set(user_id, db_item_data.potency, 'repel_steps'); 
     } else if (db_item_data.type == ItemType.Teleport) {
-        let biome_from = profile.get(`${user_id}`, 'location_data.area');
         let checkpoint = profile.get(`${user_id}`, 'checkpoint_data');
         let biome_to = checkpoint.area;
 

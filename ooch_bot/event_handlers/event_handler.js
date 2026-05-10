@@ -24,6 +24,7 @@ export async function event_handler(interaction) {
     let event_name = profile.get(interaction.user.id, 'cur_event_name');
     let event_array = profile.get(interaction.user.id, 'cur_event_array');
     let current_place = profile.get(interaction.user.id, 'cur_event_pos');
+    if (!event_array || event_array[current_place] == undefined) return;
     let event_mode = event_array[current_place][0];
     let obj_content = event_array[current_place][1];
     let msg_to_edit = user_profile.display_msg_id;
