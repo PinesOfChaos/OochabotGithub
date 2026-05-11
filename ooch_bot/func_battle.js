@@ -138,7 +138,7 @@ export async function generate_battle_user(type, options) {
                 party = [ooch];
                 user_info.name = ooch.name
                 user_info.name_possessive = `${ooch.name}'s`
-                user_info.is_catchable = true;
+                user_info.is_catchable = ooch_base.id >= 0;
                 user_info.oochabux = options.coin;
                 user_info.team_id = options.team_id;
                 user_info.name = `${ooch.name}`;
@@ -153,7 +153,7 @@ export async function generate_battle_user(type, options) {
                 party = [ooch];
                 user_info.name = ooch.name
                 user_info.name_possessive = `${ooch.name}'s`
-                user_info.is_catchable = true;
+                user_info.is_catchable = options.id >= 0;
                 user_info.team_id = options.team_id;
                 user_info.oochabux = random(0, 25) + (ooch.level * 5);
                 user_info.name = `Wild ${ooch.name}`;

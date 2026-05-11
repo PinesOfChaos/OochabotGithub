@@ -487,6 +487,7 @@ export async function battle_handler(interaction) {
 
         new_battle_action_stance_change(db_battle_data, user.user_index, stance_id);
         inputRow3.components[1].setDisabled(true)
+        battle_data.set(battle_id, db_battle_data);
 
         const header = new TextDisplayBuilder().setContent(`**-- Select An Action --**`);
         const container = new ContainerBuilder()

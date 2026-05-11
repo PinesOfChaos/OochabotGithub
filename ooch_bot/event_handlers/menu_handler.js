@@ -282,11 +282,23 @@ export async function menu_handler(interaction, init=false) {
             statsText += `### Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
             statsText += `### Abilities:\n${dexData.abilities.join(', ')}`;
 
+            let locText = `Locations:\n- `
+            if(ooch.spawn_locations.length > 0){
+                ooch.spawn_locations.join(`\n- `);
+            }
+            else{
+                locText += `- Unknown`
+            }
+
             const section = new SectionBuilder()
                 .addTextDisplayComponents(new TextDisplayBuilder().setContent(statsText))
                 .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${ooch.name.toLowerCase().replace("'", "")}.png`));
 
             container.addSectionComponents(section);
+
+            const section2 = new SectionBuilder()
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(locText))
+            container.addSectionComponents(section2);
 
             if (dexData.evoText) {
                 container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
@@ -1116,8 +1128,9 @@ export async function menu_handler(interaction, init=false) {
             interaction.update({ components: [moveSelectContainer], files: [], flags: MessageFlags.IsComponentsV2 });
         } else if (selected.includes('move_sel_')) { // if a select menu move is selected
             selected = parseInt(selected.replace(`move_sel_`, ''));
-            profile.set(interaction.user.id, selected, `ooch_party[${party_idx}].moveset[${move_sel_idx}]`);
             selected_ooch.moveset[move_sel_idx] = selected;
+            profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
+            
 
             let move_buttons = buildMoveData(selected_ooch);
             const moveSwitcherConfirmContainer = buildMenuContainer(`**Moves Switcher:**`, [move_buttons[0], move_buttons[1], sel_ooch_back_button]);
@@ -1192,6 +1205,7 @@ export async function menu_handler(interaction, init=false) {
         const taming_status = get_tame_string(selected_ooch.tame_value);
 
         if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
+        profile.set(interaction.user.id, user_profile);
 
         const feedResultContainer = buildTamingContainer(selected_ooch, taming_status, taming_feed_text, [taming_buttons, sel_ooch_back_button]);
         interaction.update({ components: [feedResultContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });

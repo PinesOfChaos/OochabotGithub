@@ -635,7 +635,7 @@
 			"flag_required": "slimehead_big_defeated",
 			"is_catchable": false,
 			"items": [],
-			"name": "CHANGE THIS YA DINGUS",
+			"name": "Rival Cade",
 			"npc_id": "296975329520067150",
 			"post_combat_dialogue": "Go ahead and insert the disk to the slot on the machine.",
 			"pre_combat_dialogue": "Well it's about time!\nWhat was I going to do if you died out there?\nGo ahead and insert the disk to the slot on the machine.",
