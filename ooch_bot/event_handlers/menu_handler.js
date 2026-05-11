@@ -281,13 +281,12 @@ export async function menu_handler(interaction, init=false) {
             let statsText = `*${ooch.oochive_entry}*\n`;
             statsText += `### Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
             statsText += `### Abilities:\n${dexData.abilities.join(', ')}`;
-
-            let locText = `Locations:\n- `
-            if(ooch.spawn_locations.length > 0){
-                ooch.spawn_locations.join(`\n- `);
+            statsText += `### Locations:`;
+            if (ooch.spawn_locations.length > 0) {
+                statsText += ooch.spawn_locations.join(`\n- `);
             }
-            else{
-                locText += `- Unknown`
+            else {
+                statsText += `\n- Unknown`
             }
 
             const section = new SectionBuilder()
@@ -295,10 +294,6 @@ export async function menu_handler(interaction, init=false) {
                 .setThumbnailAccessory(new ThumbnailBuilder().setURL(`attachment://${ooch.name.toLowerCase().replace("'", "")}.png`));
 
             container.addSectionComponents(section);
-
-            const section2 = new SectionBuilder()
-                .addTextDisplayComponents(new TextDisplayBuilder().setContent(locText))
-            container.addSectionComponents(section2);
 
             if (dexData.evoText) {
                 container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
