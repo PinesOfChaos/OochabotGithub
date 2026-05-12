@@ -77,11 +77,11 @@ loadEvents()
 console.log('Events loaded')
 loadCommands()
   .then(async (registerCommands) => {
-     const rest = new REST().setToken(branch != 'dev' ? process.env.BOT_TOKEN : process.env.DEV_TOKEN);
+     const rest = new REST().setToken(process.env.DEV_TOKEN);
 
         try {
             await rest.put(
-                Routes.applicationCommands(branch != 'dev' ? process.env.BOT_CLIENT_ID : process.env.DEV_CLIENT_ID),
+                Routes.applicationCommands(process.env.DEV_CLIENT_ID),
                 { body: registerCommands }
             );
             console.log('Slash commands registered successfully.');
