@@ -17,6 +17,11 @@ export async function execute(interaction) {
     let user = interaction.options.getUser('user');
     let flag = interaction.options.getString('flag_to_check');
     let flag_list = profile.get(user.id, 'flags').filter(f => f.includes(flag));
-    
-    await interaction.reply(`Flags currently in ${user.username}'s profile:\n${flag_list.join(', ')}`);
+
+    let header = `Flags currently in ${user.username}'s profile (${flag_list.length}):\n`;
+    let body = flag_list.join(', ');
+    if (header.length + body.length > 2000) {
+        body = body.slice(0, 2000 - header.length - 3) + '...';
+    }
+    await interaction.reply(header + body);
 }
