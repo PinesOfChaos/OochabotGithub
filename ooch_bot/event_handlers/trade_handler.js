@@ -325,8 +325,16 @@ export async function trade_handler(interaction) {
                 oppProfile.ooch_pc[oppData.ooch_slot_num] = userData.ooch_selected;
             }
 
-            profile.set(userData.user_id, userProfile);
-            profile.set(oppData.user_id, oppProfile);
+            if (userData.ooch_is_party) {
+                profile.set(userData.user_id, userProfile.ooch_party, 'ooch_party');
+            } else {
+                profile.set(userData.user_id, userProfile.ooch_pc, 'ooch_pc');
+            }
+            if (oppData.ooch_is_party) {
+                profile.set(oppData.user_id, oppProfile.ooch_party, 'ooch_party');
+            } else {
+                profile.set(oppData.user_id, oppProfile.ooch_pc, 'ooch_pc');
+            }
 
             let user_profile_fresh = profile.get(`${userData.user_id}`);
             let opp_profile_fresh = profile.get(`${oppData.user_id}`);

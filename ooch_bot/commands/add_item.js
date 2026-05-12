@@ -24,5 +24,5 @@ export async function execute(interaction) {
     let user_to_add = interaction.options.getUser('user');
     add_item(user_to_add.id, id, num_to_add);
 
-    interaction.reply(`Added Item ${item_data.get(`${id}`, 'name')} to your Inventory!`);
+    interaction.reply(`Added ${num_to_add}x ${item_data.get(`${id}`, 'name')} to **${user_to_add.username}**'s inventory!`);
 }

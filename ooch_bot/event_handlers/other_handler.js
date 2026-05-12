@@ -117,7 +117,8 @@ export async function other_handler(interaction) {
         
         // Back to save (exit)
         else if (action == 'box_back_to_save') {
-            profile.set(interaction.user.id, profile_data);
+            profile.set(interaction.user.id, profile_data.ooch_party, 'ooch_party');
+            profile.set(interaction.user.id, profile_data.ooch_pc, 'ooch_pc');
             other_menu_data.delete(menu_id);
 
             let playspace_str = await setup_playspace_str(interaction.user.id);
@@ -307,6 +308,7 @@ export async function other_handler(interaction) {
 
     if (!end) {
         other_menu_data.set(menu_id, { ...other_menu_state });
-        profile.set(interaction.user.id, profile_data);
+        profile.set(interaction.user.id, profile_data.ooch_party, 'ooch_party');
+        profile.set(interaction.user.id, profile_data.ooch_pc, 'ooch_pc');
     }
 }
