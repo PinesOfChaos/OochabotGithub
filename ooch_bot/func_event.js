@@ -173,8 +173,8 @@ export async function battleEvent(user_id, thread, obj_content, battle_group_arr
 }
 
 export async function battleGroupEvent(user_id, thread) {
-    let event_array = profile.set(user_id, 'cur_event_array');
-    let current_place = profile.set(user_id, 'cur_event_pos');
+    let event_array = profile.get(user_id, 'cur_event_array');
+    let current_place = profile.get(user_id, 'cur_event_pos');
     current_place++;
     let battleGroupBattleArr = [];
     let event_mode = event_array[current_place][0];
