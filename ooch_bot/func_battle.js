@@ -1424,6 +1424,7 @@ export async function use_switch_ability(db_battle_data, user_index, slot_from, 
                     variant: ooch_to.variant ?? ""
                 });
                 user.party[0] = ooch_to;
+                user.is_catchable = true;
             }
         break;
         case Ability.Miniscule: 
