@@ -192,7 +192,7 @@ export async function battleGroupEvent(user_id, thread) {
         obj_content = event_array[current_place][1];
     }
 
-    await battleEvent(user_id, thread, obj_content, false, battleGroupBattleArr)
+    await battleEvent(user_id, thread, obj_content, battleGroupBattleArr)
 }
 
 export async function oochPickEvent(user_id, thread, obj_content) {
