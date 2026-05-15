@@ -4716,13 +4716,13 @@ export async function execute(interaction, client) {
     //#region Generated Maps
     /*
         This accounts for all of the maps that get randomly generated
+        This needs to be run AFTER normal maps have been read in order to successfully update outside NPCS
     */
     await genmap_allmaps(client);
     //#endregion
 
     //#region Create Maps
     let files = readdirSync('./Maps/');
-    let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
     for (let file of files) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
@@ -4741,12 +4741,6 @@ export async function execute(interaction, client) {
                 return;
             }
 
-            for(let spawnzone of map_data.map_spawn_zones){
-                for(let slot of spawnzone.spawn_slots){
-                    oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
-                }
-            }
-
             //Add an empty variant to all mons that do not have one
             for(let npc of map_data.map_npcs){
                 for(let slot of npc.team){
@@ -4758,7 +4752,24 @@ export async function execute(interaction, client) {
         });
     }
 
-    //Add a list of spawn positions to the oochamon
+    //#region Generated Maps
+    /*
+        This accounts for all of the maps that get randomly generated
+        This needs to be run AFTER normal maps have been read in order to successfully update outside NPCS
+    */
+    await genmap_allmaps(client);
+    //#endregion
+
+    //Create the list of spawn positions
+    let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
+    let map_entries = maps.entries()
+    for(let map_data of map_entries){
+        for(let spawnzone of map_data.map_spawn_zones){
+            for(let slot of spawnzone.spawn_slots){
+                oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
+            }
+        }
+    }
     for(let i = 0; i < oochadex_spawn_positions.length; i++){
         monster_data.set(i.toString(), oochadex_spawn_positions[i], 'spawn_locations')
     }
