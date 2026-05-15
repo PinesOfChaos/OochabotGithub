@@ -4753,11 +4753,11 @@ export async function execute(interaction, client) {
             }
 
             for(let npc of map_data.map_npcs){
-
                 //Apply updates to npcs from genmap functions
                 for(let update_npc of map_npc_edits){
                     if(update_npc.npc_update_id == npc.npc_id){
-                        npc = npc_update_npc;
+                        npc.pre_combat_dialogue = update_npc.npc_update_npc_dialog_pre;
+                        npc.post_combat_dialogue = update_npc.npc_update_npc_dialog_post;
                     }
                 }
 
