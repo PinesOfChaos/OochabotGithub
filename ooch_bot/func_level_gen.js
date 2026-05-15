@@ -26,22 +26,21 @@ let npc_seer_laurel = "643226616382247130"
 let npc_seer_anna = "885717598905588994"
 let npc_seer_aira = "264114595846561119"
 export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_pre, dialog_post = ""){
-    let check_map_name = `${map_name.toLowerCase()}`
-    let map = maps.get(check_map_name);
+    let map_obj =   maps.get(`${map_name.toLowerCase()}`);
+    let map_npcs =  map_obj.map_npcs;
 
     if(dialog_post == ""){
         dialog_post = dialog_pre;
     }
 
-    for(let i = 0; i < map.map_npcs.length; i++){
-        let npc = map.map_npcs[i];
+    for(let npc of map_npcs){
         if(npc.npc_id == npc_id){
             npc.pre_combat_dialogue = dialog_pre;
             npc.post_combat_dialogue = dialog_post;
         }
     }
 
-    maps.set(check_map_name, map)
+    maps.set(`${map_name.toLowerCase()}`, map_obj)
 }
 
 
