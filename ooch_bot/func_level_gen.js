@@ -27,6 +27,8 @@ let npc_seer_anna = "885717598905588994"
 let npc_seer_aira = "264114595846561119"
 let npc_updates = [];
 export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_pre, dialog_post = ""){
+    if(dialog_post == ""){ dialog_post = dialog_pre; }
+
     npc_updates.push({
         npc_update_map: `${map_name.toLowerCase()}`,
         npc_update_id: npc_id,
