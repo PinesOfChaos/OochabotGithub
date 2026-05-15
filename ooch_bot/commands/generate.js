@@ -4728,9 +4728,7 @@ export async function execute(interaction, client) {
         let map_name = file.replace('.json', '');
 
         //Get a list of npcs to edit from genmap
-        let map_npc_edits = npc_edits.filter(function(element, index){
-            element.npc_update_map == map_name;
-        })
+        let map_npc_edits = npc_edits.filter(v => v.npc_update_map == map_name);
         
         readFile(`./Maps/${file}`, 'utf8', (err, data) => {
             if (err) {
