@@ -25,6 +25,7 @@ let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 let npc_seer_laurel = "643226616382247130"
 let npc_seer_anna = "885717598905588994"
 let npc_seer_aira = "264114595846561119"
+let npc_updates = [];
 export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_pre, dialog_post = ""){
     let map_obj =   maps.get(`${map_name.toLowerCase()}`);
     let map_npcs =  map_obj.map_npcs;
@@ -37,15 +38,24 @@ export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_
         if(npc.npc_id == npc_id){
             npc.pre_combat_dialogue = dialog_pre;
             npc.post_combat_dialogue = dialog_post;
+
+            npc_updates.push({
+                npc_update_map: `${map_name.toLowerCase()}`,
+                npc_update_id: npc_id,
+                npc_update_npc : npc
+            })
+
+            
+            break;
         }
     }
-
-    maps.set(`${map_name.toLowerCase()}`, map_obj)
 }
 
 
 export async function genmap_allmaps(client) {
     
+    npc_updates = [];
+
     let everchange_cave_floor_count = 3;
     let everchange_cave_themes = [];
     for(let i = 0; i < everchange_cave_floor_count; i++){
@@ -57,7 +67,7 @@ export async function genmap_allmaps(client) {
     }
     await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'everchange_cave_entrance', -1, -1)
 
-    
+    return npc_updates;
     console.log('Generated daily maps.');
 }
 
