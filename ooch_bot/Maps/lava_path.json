@@ -18512,9 +18512,9 @@
 			"y": 58.0
 		},
 		{
-			"connect_map": "",
-			"connect_x": 3.0,
-			"connect_y": 78.0,
+			"connect_map": "everchange_cave_entrance",
+			"connect_x": 24.0,
+			"connect_y": 27.0,
 			"x": 8.0,
 			"y": 39.0
 		},

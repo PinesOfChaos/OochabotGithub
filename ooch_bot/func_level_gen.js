@@ -21,6 +21,30 @@ let whitelist_everchange_wild = [
 // eslint-disable-next-line no-unused-vars
 let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 
+//These are known npc ids from existing maps so we can update them upon generating the map with the below function
+let npc_seer_laurel = "643226616382247130"
+let npc_seer_anna = "885717598905588994"
+let npc_seer_aira = "264114595846561119"
+export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_pre, dialog_post = ""){
+    let check_map_name = `${map_name.toLowerCase()}`
+    let map = maps.get(check_map_name);
+
+    if(dialog_post == ""){
+        dialog_post = dialog_pre;
+    }
+
+    for(let i = 0; i < map.map_npcs.length; i++){
+        let npc = map.map_npcs[i];
+        if(npc.npc_id == npc_id){
+            npc.pre_combat_dialogue = dialog_pre;
+            npc.post_combat_dialogue = dialog_post;
+        }
+    }
+
+    maps.set(check_map_name, map)
+}
+
+
 export async function genmap_allmaps(client) {
     
     let everchange_cave_floor_count = 3;
@@ -32,7 +56,7 @@ export async function genmap_allmaps(client) {
             GenmapTheme.Powerplant
         ]))
     }
-    await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'lava_path', 3, 75)
+    await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'everchange_cave_entrance', -1, -1)
 
     
     console.log('Generated daily maps.');
@@ -811,12 +835,26 @@ async function genmap_npc_reward_ooch(x, y){
     let iv_def = random(5, 10, false);
     let iv_spd = random(5, 10, false);
 
+    //Anna tells us if it's something prismatic
+    if(prismatic){
+        await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_anna, "I foresee something sparkly.")
+    }
+    else{
+        await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_anna, "I foresee something plain.")
+    }
+
+    //Aira tells us if it's a unique mon or something commonly catchable
     let ooch_id = sample(genmap_ooch_list(50)).id;
     if(unique){
+        await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_aira, "I foresee something unique.")
         ooch_id = sample([
             OochID.Roswier, OochID.Chemerai, OochID.Tryptid, //pre endgame unique mons
             OochID.Ophicore, OochID.Symaat, OochID.Heraloom, //post endgame unique mons
+            OochID.Nullifly //other single-chance mons
             ])
+    }
+    else{
+        await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_aira, "I foresee something common.")
     }
     
     let learn_list = monster_data.get(`${ooch_id}`, 'move_list');
@@ -839,6 +877,21 @@ async function genmap_npc_reward_ooch(x, y){
     var variant_text = "";
     switch(variant){
         case OochVariant.Prismatic: variant_text = " [Prismatic]"; break;
+    }
+
+    //Laurel tells us the type
+    switch(ooch_new.og_type[0]){
+        case OochType.Flame:    await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something set ablaze."); break;
+        case OochType.Fungal:   await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something covered in spores."); break;
+        case OochType.Stone:    await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something tough and rugged."); break;
+        case OochType.Magic:    await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something mystically attuned."); break;
+        case OochType.Tech:     await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something made of wires and cogs."); break;
+        case OochType.Ooze:     await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something slimy."); break;
+        case OochType.Sound:    await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something causing an uproar."); break;
+        case OochType.Crystal:  await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something as brittle as glass"); break;
+        case OochType.Void:     await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something that doesn't belong."); break;
+        case OochType.Neutral:  await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something perfectly balanced."); break;
+        case OochType.Martial:  await genmap_update_outside_npc_dialog("everchange_cave_entrance", npc_seer_laurel, "I foresee something ready to fight."); break;
     }
 
     console.log(`This week's Everchange Cave Oochamon: ${ooch_new.nickname}${variant_text}`)
@@ -929,7 +982,7 @@ async function genmap_npc_boss(x, y, force_id = -1){
             npc.pre_combat_dialogue = "It is I, the great and Terarable!";
             npc.post_combat_dialogue = "Oh, you wanted Terraria? That's a totally different game!";
             npc.sprite_id = "c00_060";
-            npc.items.push({count: 1, id : Item.SkinJEKYLLPOWERSTANCE});
+            npc.items.push({count: 1, id : Item.SkinTerarabe});
            
             npc.team = [
                 await genmap_ooch_specific(OochID.Priseroth, 50, 10, 10, 10, 10, Ability.TwilightHour, 
