@@ -147,6 +147,9 @@ export async function battleEvent(user_id, thread, obj_content, battle_group_arr
         let trainerObj = await generate_battle_user(user_type, obj_content);
         battleGroupBattleArr = [trainerObj];
     }
+    else if(Array.isArray(battle_group_arr)){
+        battleGroupBattleArr = battle_group_arr;
+    }
 
     let userObj = await generate_battle_user(UserType.Player, { user_id: user_id, team_id: 0, thread_id: thread.id, guild_id: thread.guild.id });
     let allyList = [];
@@ -180,11 +183,26 @@ export async function battleGroupEvent(user_id, thread) {
     let event_mode = event_array[current_place][0];
     let obj_content  = event_array[current_place][1];
     while (event_mode != EventMode.BattleGroupEnd) {
-        obj_content.team_id = 1;
+
+        
+
+        
         if (event_mode == EventMode.Battle) {
+
+            //Set some default values
+            obj_content.team_id = 1;
+            for(let mon of obj_content.team){
+                mon.variant = mon.variant ?? "";
+            }
+
+            console.log(obj_content.team);
+
             let user_type = Object.prototype.hasOwnProperty.call(obj_content, "user_type") ? obj_content.user_type : UserType.NPCTrainer
             let trainerObj = await generate_battle_user(user_type, obj_content);
+
             battleGroupBattleArr.push(trainerObj)
+
+            console.log(trainerObj.party);
         }
 
         current_place++;
@@ -192,6 +210,8 @@ export async function battleGroupEvent(user_id, thread) {
         obj_content = event_array[current_place][1];
     }
 
+    console.log(battleGroupBattleArr);
+    profile.set(user_id, current_place, 'cur_event_pos');
     await battleEvent(user_id, thread, obj_content, battleGroupBattleArr)
 }
 
