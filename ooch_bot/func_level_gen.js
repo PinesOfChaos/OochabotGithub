@@ -895,7 +895,7 @@ async function genmap_npc_reward_ooch(x, y){
 }
 
 async function genmap_npc_boss(x, y, force_id = -1){
-    let npc_id = force_id == -1 ? sample([0, 1, 2, 3]) : force_id;
+    let npc_id = force_id == -1 ? sample([0, 1, 2, 3, 4]) : force_id; //UPDATE THIS WHENEVER ADDING A NEW CUSTOM NPC
     let npc = genmap_empty_npc()
     npc.x = x;
     npc.y = y;
@@ -991,6 +991,28 @@ async function genmap_npc_boss(x, y, force_id = -1){
 
                 await genmap_ooch_specific(OochID.Roswier, 50, 10, 10, 10, 10, Ability.LiquidCooled, 
                     [Move.Flurry, Move.Radiate, Move.Threefold], OochVariant.Prismatic)
+            ];
+        break;
+        case 4: //Marci (tester)
+            npc.name = "The Engineer";
+            npc.pre_combat_dialogue = "Woah, we're halfway there!";
+            npc.post_combat_dialogue = "Woah, engineer's despair!";
+            npc.sprite_id = "c00_057";
+            npc.items.push({count: 1, id : Item.SkinEngineer});
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Kracking, 50, 9, 9, 9, 9, Ability.Darkbright, 
+                    [Move.CallThunder, Move.EarShatter, Move.EchoChamber, Move.DustStorm], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Tarotula, 50, 9, 9, 9, 9, Ability.Alert, 
+                    [Move.FiberSlicer, Move.TieDown, Move.DrainLife, Move.Glimmer], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Lobstar, 50, 9, 9, 9, 9, Ability.Scorching, 
+                    [Move.LavaLance, Move.HighImpact, Move.PlasmaCannon, Move.SonicBoom], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Amephyst, 50, 9, 9, 9, 9, Ability.Dense, 
+                    [Move.Brittle, Move.GemBash, Move.Grind, Move.Boulderdash], OochVariant.Default)
+                
             ];
         break;
     }
