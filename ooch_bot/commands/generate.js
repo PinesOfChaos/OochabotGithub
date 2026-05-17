@@ -4715,7 +4715,7 @@ export async function execute(interaction, client) {
 
     //#region Generated Maps
     /*
-        This accounts for all of the maps that get randomly generated
+        This accounts for all of the maps that get randomly generated and generates a list of edits to outside npcs to make
     */
     let npc_edits = await genmap_allmaps(client);
     //#endregion
@@ -4744,9 +4744,13 @@ export async function execute(interaction, client) {
                 return;
             }
 
+            //Get a list of map names where each oochamon can be found
             for(let spawnzone of map_data.map_spawn_zones){
                 for(let slot of spawnzone.spawn_slots){
-                    oochadex_spawn_positions[slot.ooch_id].push(map_data.map_info.map_name)
+                    let spawn_pos_submit = oochadex_spawn_positions[ parseInt(slot.ooch_id) ];
+                    if(spawn_pos_submit.indexOf(map_data.map_info.map_name) == -1){
+                        spawn_pos_submit.push(map_data.map_info.map_name);
+                    }
                 }
             }
 
@@ -4771,7 +4775,8 @@ export async function execute(interaction, client) {
 
     //Add a list of spawn positions to the oochamon
     for(let i = 0; i < oochadex_spawn_positions.length; i++){
-        monster_data.set(i.toString(), oochadex_spawn_positions[i], 'spawn_locations')
+        let spawn_spots = oochadex_spawn_positions[i];
+        monster_data.set(i.toString(), spawn_spots, 'spawn_locations')
     }
 
     //#endregion

@@ -845,12 +845,13 @@ export function sort_action_priority(db_battle_data){
 
             //Non-ooze mons lose priority in the Wetlands field effect
             if((db_battle_data.field_effect == FieldEffect.Wetlands) && (!ooch_obj.type.includes(OochType.Ooze))){
-                action.priority -= 10_000;
+                move_priority -= 10_000;
             }
 
-            //Reverse the attack order if the Twisted Reality field effect is active
+            //Reverse the attack order if the Twisted Reality field effect is active (this should happen last to ensure swapping)
             if(db_battle_data.field_effect == FieldEffect.TwistedReality){
-                action.priority *= -1;
+                move_priority = -move_priority;
+                speed = -speed;
             }
         }
         
@@ -4108,11 +4109,11 @@ export function level_up(ooch) {
             let new_stats = get_stats(ooch.id, ooch.level, ooch.stats.hp_iv, ooch.stats.atk_iv, ooch.stats.def_iv, ooch.stats.spd_iv);
             let hp_dif = new_stats[0] - ooch.stats.hp //Get the difference between new HP and old HP to be added to the mon
 
-            ooch.stats.hp = new_stats[0]
-            ooch.stats.atk = new_stats[1]
-            ooch.stats.def = new_stats[2]
-            ooch.stats.spd = new_stats[3]
-            ooch.current_hp += hp_dif
+            ooch.stats.hp = new_stats[0];
+            ooch.stats.atk = new_stats[1];
+            ooch.stats.def = new_stats[2];
+            ooch.stats.spd = new_stats[3];
+            ooch.current_hp += hp_dif;
 
             if(ooch.current_hp > 0){
                 ooch.alive = true;

@@ -280,10 +280,10 @@ export async function menu_handler(interaction, init=false) {
 
             let statsText = `*${ooch.oochive_entry}*\n`;
             statsText += `### Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
-            statsText += `### Abilities:\n${dexData.abilities.join(', ')}`;
+            statsText += `### Abilities:\n${dexData.abilities.join(', ')}\n`;
             statsText += `### Locations:`;
             if (ooch.spawn_locations.length > 0) {
-                statsText += ooch.spawn_locations.join(`\n- `);
+                statsText += ooch.spawn_locations.join('\n- ');
             }
             else {
                 statsText += `\n- Unknown`
@@ -1133,7 +1133,7 @@ export async function menu_handler(interaction, init=false) {
         }
     }
 
-
+    
 
     //#endregion
     //#region Taming Menu
