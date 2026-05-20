@@ -21,6 +21,11 @@ export async function event_handler(interaction) {
     let quit = false;
     let user_profile = profile.get(`${interaction.user.id}`);
 
+    // Only allow event buttons to be used in the player's active play thread.
+    if (user_profile.play_thread_id != interaction.channel.id) {
+        return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!').catch(() => {});
+    }
+
     let event_name = profile.get(interaction.user.id, 'cur_event_name');
     let event_array = profile.get(interaction.user.id, 'cur_event_array');
     let current_place = profile.get(interaction.user.id, 'cur_event_pos');

@@ -48,8 +48,9 @@ export async function trade_handler(interaction) {
     let { trade_id, session } = tradeInfo;
     let { userData, oppData } = getUserData(session, user_id);
 
-    if (interaction.user.id != user_id) {
-        return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!');
+    // Only allow trade buttons to be used by their owner in their active play thread.
+    if (interaction.user.id != user_id || profile.get(`${interaction.user.id}`, 'play_thread_id') != interaction.channel.id) {
+        return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!').catch(() => {});
     }
 
     let boxButtons = new ActionRowBuilder()

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, StringSelectMenuBuilder, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
-import { maps, other_menu_data, player_positions, profile } from "../db.js";
+import { maps, other_menu_data, profile } from "../db.js";
 import { PlayerState } from "../types.js";
 import { buildBoxData, ooch_info_container } from "../func_other.js";
 import { setup_playspace_str } from "../func_play.js";
@@ -21,6 +21,11 @@ export async function other_handler(interaction) {
 
     const pre = `other_${interaction.user.id}_`;
     let action = customId.replace(pre, '');
+
+    // Only allow these buttons to be used in the player's active play thread.
+    if (profile.get(`${interaction.user.id}`, 'play_thread_id') != interaction.channel.id) {
+        return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!').catch(() => {});
+    }
 
     profile.set(interaction.user.id, PlayerState.Encounter, 'player_state');
 
@@ -254,7 +259,7 @@ export async function other_handler(interaction) {
     } 
 
     else if (action.includes('teleport_menu')) {
-        let biome_from = profile.get(`${interaction.user.id}`, 'location_data.area');
+        // let biome_from = profile.get(`${interaction.user.id}`, 'location_data.area');
         let biome_to = selected;
         let biome_to_data = maps.get(`${biome_to}`);
         let map_default = biome_to_data.map_savepoints.filter(v => v.is_default !== false);

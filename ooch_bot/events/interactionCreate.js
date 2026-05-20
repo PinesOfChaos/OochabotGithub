@@ -202,7 +202,8 @@ export default {
     if (profile.has(interaction.user.id)) {
 
         let curSpeed = profile.get(`${interaction.user.id}`, 'move_speed');
-        if (profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true && interaction.isButton()) {
+        let onActiveThread = interaction.channel.id == profile.get(`${interaction.user.id}`, 'play_thread_id');
+        if (onActiveThread && profile.get(`${interaction.user.id}`, 'settings.discord_move_buttons') === true && interaction.isButton()) {
             if (['w', 'a', 's', 'd'].includes(interaction.customId)) {
                 await interaction.update({ embeds: [] });
                 await move(interaction.channel, interaction.user.id, interaction.customId, curSpeed);

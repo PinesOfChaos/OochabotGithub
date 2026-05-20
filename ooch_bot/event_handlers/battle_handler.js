@@ -45,6 +45,10 @@ export async function battle_input_create(battle_id, user_index) {
 
     const pre = `battle_${battle_id}_${user_index}_`;
     let db_battle_data = battle_data.get(`${battle_id}`);
+    let user = db_battle_data.users[user_index];
+
+    // Stances are entirely disabled unless the player has the stances_enable flag
+    const stancesEnabled = profile.get(`${user.user_id}`, 'flags').includes('stances_enable');
 
     let inputRow = new ActionRowBuilder()
     .addComponents(
@@ -82,27 +86,21 @@ export async function battle_input_create(battle_id, user_index) {
         .addComponents(
             new ButtonBuilder()
                 .setCustomId(`${pre}info`)
-                .setLabel('Info')
+                .setLabel(stancesEnabled ? 'Info' : 'View Battle Info')
                 .setEmoji('📒')
                 .setStyle(ButtonStyle.Secondary),
-        ) .addComponents(
+        );
+
+    // The Stance button only appears when stances are enabled for this player
+    if (stancesEnabled) {
+        inputRow3.addComponents(
             new ButtonBuilder()
                 .setCustomId(`${pre}shift_stance`)
                 .setLabel('Stance')
                 .setEmoji('🤺')
                 .setStyle(ButtonStyle.Secondary)
-        )
-
-        // if (!(profile.get(`${user.user_id}`, 'flags').includes('stances_enable'))) {   
-        //     inputRow3 = new ActionRowBuilder()
-        //     .addComponents(
-        //         new ButtonBuilder()
-        //             .setCustomId(`${pre}view_battle_info`)
-        //             .setLabel('View Battle Info')
-        //             .setEmoji('📒')
-        //             .setStyle(ButtonStyle.Secondary),
-        //     )
-        // }
+        );
+    }
 
     return [inputRow, inputRow2, inputRow3]
 }
@@ -237,7 +235,7 @@ export async function battle_handler(interaction) {
         const container = new ContainerBuilder()
             .addTextDisplayComponents(header)
             .addActionRowComponents(inputRow, inputRow2, inputRow3);
-        if (user.party[user.active_slot].stance_cooldown != 0) inputRow3.components[1].setDisabled(true);
+        if (stancesEnabled && user.party[user.active_slot].stance_cooldown != 0) inputRow3.components[1].setDisabled(true);
         await interaction.update({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 

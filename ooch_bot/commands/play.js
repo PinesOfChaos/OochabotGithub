@@ -29,11 +29,12 @@ export async function execute(interaction, client) {
 
         if (profile.has(target)) {
             if (profile.get(`${target}`, 'play_thread_id') !== false) {
-                let oldThread = await interaction.guild.channels.cache.get(`${profile.get(interaction.user.id)}`, 'play_thread_id');
+                let oldThread = interaction.guild.channels.cache.get(profile.get(interaction.user.id, 'play_thread_id'));
                 if (oldThread && oldThread.isThread() && thread.id != oldThread.id) {
-                    await oldThread.members.remove(interaction.user.id);
-                    await oldThread.leave();
-                    await oldThread.setArchived(true);
+                    await oldThread.members.remove(interaction.user.id).catch(() => {});
+                    await oldThread.leave().catch(() => {});
+                    await oldThread.setLocked(true).catch(() => {});
+                    await oldThread.setArchived(true).catch(() => {});
                 }
             }
         }
@@ -119,7 +120,14 @@ export async function execute(interaction, client) {
         });
 
         if (profile.get(`${interaction.user.id}`, 'player_state') == PlayerState.Intro) {
-            await event_process(interaction.user.id, thread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
+            // Resume the intro where the player left off instead of restarting it.
+            const introArray = profile.get(`${interaction.user.id}`, 'cur_event_array');
+            const introPos = profile.get(`${interaction.user.id}`, 'cur_event_pos');
+            if (introArray.length != 0) {
+                await event_process(interaction.user.id, thread, introArray, introPos, 'ev_intro');
+            } else {
+                await event_process(interaction.user.id, thread, events_data.get(`${'ev_intro'}`), 0, 'ev_intro');
+            }
         } else if (profile.get(`${interaction.user.id}`, 'player_state') == PlayerState.Dialogue) {
             const eventArray = profile.get(`${interaction.user.id}`, 'cur_event_array');
             const eventPos = profile.get(`${interaction.user.id}`, 'cur_event_pos');

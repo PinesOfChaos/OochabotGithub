@@ -1428,7 +1428,7 @@ export async function menu_handler(interaction, init=false) {
                 case ItemType.Repel:
                     await item_use(interaction.user.id, selected_ooch, selected, false, true);
                     break;
-                case ItemType.Teleport:
+                case ItemType.Teleport: {
                     await item_use(interaction.user.id, selected_ooch, selected, false, true);
                     playspace_str = await setup_playspace_str(interaction.user.id);
                     await interaction.channel.send({ components: playspace_str.components, flags: playspace_str.flags }).then(msg => {
@@ -1442,6 +1442,7 @@ export async function menu_handler(interaction, init=false) {
                     await interaction.update({ components: [container] });
                     await interaction.deleteReply();
                     break;
+                }
             }
 
             if (db_item_data.type != ItemType.Teleport) {

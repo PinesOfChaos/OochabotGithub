@@ -485,6 +485,11 @@ export async function prompt_battle_actions(battle_id) {
             let userThread = botClient.channels.cache.get(`${user.thread_id}`);
             if (userThread == undefined) return;
 
+            // Disable the Stance button while the active Oochamon is still on stance cooldown.
+            if (inputRow3.components[1] && user.party[user.active_slot].stance_cooldown != 0) {
+                inputRow3.components[1].setDisabled(true);
+            }
+
             const header = new TextDisplayBuilder().setContent(`# Select An Action`);
             const container = new ContainerBuilder()
                 .addTextDisplayComponents(header)
