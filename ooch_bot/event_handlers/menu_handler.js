@@ -283,7 +283,7 @@ export async function menu_handler(interaction, init=false) {
             statsText += `### Abilities:\n${dexData.abilities.join(', ')}\n`;
             statsText += `### Locations:`;
             if (ooch.spawn_locations.length > 0) {
-                statsText += ooch.spawn_locations.join('\n- ');
+                statsText += `\n${ooch.spawn_locations.join('\n- ')}`;
             }
             else {
                 statsText += `\n- Unknown`
