@@ -30,8 +30,11 @@ async function flushMoveQueue(userId) {
         }
     }
 
-    for (const { dir, dist } of consolidated) {
-        await move(entry.channel, userId, dir, dist);
+    let repelPending = false;
+    for (let i = 0; i < consolidated.length; i++) {
+        const { dir, dist } = consolidated[i];
+        const isLastSegment = i === consolidated.length - 1;
+        repelPending = await move(entry.channel, userId, dir, dist, false, isLastSegment, repelPending);
         if (profile.get(userId, 'player_state') !== PlayerState.Playspace) break;
     }
 }

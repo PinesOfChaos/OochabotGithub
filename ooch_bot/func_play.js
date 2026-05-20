@@ -69,7 +69,7 @@ export function has_flag(event_name, user_events){
     return true;
 }
 
-export async function move(thread, user_id, direction, dist = 1, encounter_chance = false) {
+export async function move(thread, user_id, direction, dist = 1, encounter_chance = false, is_last_segment = true, repel_already_out = false) {
     /*
         db.player_positions.set(user_id, interaction.member.displayName, 'player_name');
     */
@@ -693,12 +693,16 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
     // Update player position in the player positions array (don't do this right now)
     //db.player_positions.set(map_name, { x: playerx, y: playery }, user_id);
 
-    if (direction != '' && !event_processing) {
+    let display_needed = is_last_segment || profile.get(`${user_id}`, 'player_state') !== PlayerState.Playspace;
+    let repel_msg_pending = repel_ran_out || repel_already_out;
+
+    if (direction != '' && !event_processing && display_needed) {
         let playspace_str = await setup_playspace_str(user_id);
         // If repel ran out, append message to the map string and rebuild TextDisplay
-        if (repel_ran_out) {
+        if (repel_msg_pending) {
             const updatedContent = playspace_str.mapString + `*Your Repulsor ran out of power...*`;
             playspace_str.components[0] = new TextDisplayBuilder().setContent(updatedContent);
+            repel_msg_pending = false; // consumed show on this render
         }
         //Send reply displaying the player's location on the map
         await thread.messages.fetch(msg_to_edit).then((msg) => {
@@ -709,6 +713,9 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
             }).catch((err) => { console.log(`Err 2: ${err}`) });
         });
     }
+
+    // Hand any still-unshown Repulsor message back so the next batched segment can show it.
+    return repel_msg_pending;
 }
 
 export function map_emote_string(map_name, map_tiles, x_pos, y_pos, user_id) {
