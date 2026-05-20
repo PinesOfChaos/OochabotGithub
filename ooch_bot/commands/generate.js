@@ -1,6 +1,6 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { create_monster, create_move, create_item, create_ability, create_tile, create_status, create_stance } from '../func_generate.js';
-import { readdirSync, readFile, writeFile } from 'fs';
+import { readdirSync, readFile, readFileSync, writeFile } from 'fs';
 import { monster_data, move_data, ability_data, tile_data, item_data, status_data, maps, events_data } from '../db.js';
 import { OochType, Move, Ability, Zone, Tile, Status, MoveTag, MoveTarget, Stats, FieldEffect, StanceForms, OochID, Item, ItemType, ItemCategory } from '../types.js';
 import { get_emote_string } from '../func_other.js';
@@ -4722,7 +4722,7 @@ export async function execute(interaction, client) {
 
     //#region Create Maps
     let files = readdirSync('./Maps/');
-    let oochadex_spawn_positions = Array(OochID.CountCatchable).fill([]); //used to check where oochamon spawn
+    let oochadex_spawn_positions = Array.from({ length: OochID.CountCatchable }, () => []); //used to check where oochamon spawn
     for (let file of files) {
         if (!file.includes('.json')) continue;
         let map_name = file.replace('.json', '');
@@ -4730,47 +4730,49 @@ export async function execute(interaction, client) {
         //Get a list of npcs to edit from genmap
         let map_npc_edits = npc_edits.filter(v => v.npc_update_map == map_name);
         
-        readFile(`./Maps/${file}`, 'utf8', (err, data) => {
-            if (err) {
-                console.log(`Error reading file: ${file}`);
-                return;
-            }
+        let data;
+        try {
+            data = readFileSync(`./Maps/${file}`, 'utf8');
+        } catch {
+            console.log(`Error reading file: ${file}`);
+            continue;
+        }
 
-            let map_data;
-            try {
-                map_data = JSON.parse(data);
-            } catch (err) {
-                console.log(`Error parsing JSON for map file: ${file}`, err);
-                return;
-            }
+        let map_data;
+        try {
+            map_data = JSON.parse(data);
+        } catch (err) {
+            console.log(`Error parsing JSON for map file: ${file}`, err);
+            continue;
+        }
 
-            //Get a list of map names where each oochamon can be found
-            for(let spawnzone of map_data.map_spawn_zones){
-                for(let slot of spawnzone.spawn_slots){
-                    let spawn_pos_submit = oochadex_spawn_positions[ parseInt(slot.ooch_id) ];
-                    if(spawn_pos_submit.indexOf(map_data.map_info.map_name) == -1){
-                        spawn_pos_submit.push(map_data.map_info.map_name);
-                    }
+        //Get a list of map names where each oochamon can be found
+        for(let spawnzone of map_data.map_spawn_zones){
+            for(let slot of spawnzone.spawn_slots){
+                let spawn_pos_submit = oochadex_spawn_positions[ parseInt(slot.ooch_id) ];
+                if(spawn_pos_submit == undefined) continue; //ooch_id outside the catchable range
+                if(spawn_pos_submit.indexOf(map_data.map_info.map_name) == -1){
+                    spawn_pos_submit.push(map_data.map_info.map_name);
+                }
+            }
+        }
+
+        for(let npc of map_data.map_npcs){
+            //Apply updates to npcs from genmap functions
+            for(let update_npc of map_npc_edits){
+                if(update_npc.npc_update_id == npc.npc_id){
+                    npc.pre_combat_dialogue = update_npc.npc_update_npc_dialog_pre;
+                    npc.post_combat_dialogue = update_npc.npc_update_npc_dialog_post;
                 }
             }
 
-            for(let npc of map_data.map_npcs){
-                //Apply updates to npcs from genmap functions
-                for(let update_npc of map_npc_edits){
-                    if(update_npc.npc_update_id == npc.npc_id){
-                        npc.pre_combat_dialogue = update_npc.npc_update_npc_dialog_pre;
-                        npc.post_combat_dialogue = update_npc.npc_update_npc_dialog_post;
-                    }
-                }
-
-                //Add an empty variant to all mons that do not have one
-                for(let slot of npc.team){
-                    slot.variant = slot.variant ?? ""
-                }
+            //Add an empty variant to all mons that do not have one
+            for(let slot of npc.team){
+                slot.variant = slot.variant ?? ""
             }
+        }
 
-            maps.set(map_name, map_data);
-        });
+        maps.set(map_name, map_data);
     }
 
     //Add a list of spawn positions to the oochamon
