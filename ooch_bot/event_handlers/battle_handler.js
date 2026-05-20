@@ -47,8 +47,9 @@ export async function battle_input_create(battle_id, user_index) {
     let db_battle_data = battle_data.get(`${battle_id}`);
     let user = db_battle_data.users[user_index];
 
-    // Stances are entirely disabled unless the player has the stances_enable flag
-    const stancesEnabled = profile.get(`${user.user_id}`, 'flags').includes('stances_enable');
+    // Stances are entirely disabled unless the player has the stances_enable flag.
+    const userFlags = user.is_player ? profile.get(`${user.user_id}`, 'flags') : null;
+    const stancesEnabled = Array.isArray(userFlags) && userFlags.includes('stances_enable');
 
     let inputRow = new ActionRowBuilder()
     .addComponents(
