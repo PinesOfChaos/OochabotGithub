@@ -1078,6 +1078,8 @@ export async function menu_handler(interaction, init=false) {
 
     // Move switcher button/select menu handler
     if (action.includes('move_') && !action.includes('discord_move_buttons')) {
+        selected_ooch = profile.get(interaction.user.id, `ooch_party[${party_idx}]`);
+
         if (interaction.componentType == ComponentType.Button) { // if a move is selected
             move_list_select = new ActionRowBuilder();
             move_list_select_options = [];
@@ -1105,8 +1107,8 @@ export async function menu_handler(interaction, init=false) {
                     .setPlaceholder('Select a new move here!')
                     .addOptions(move_list_select_options));
 
-            // Update menu state with move selection index
-            menu_data.set(menu_id, { ...menu_state, move_sel_idx });
+            // Update menu state
+            menu_data.set(menu_id, { ...menu_state, move_sel_idx, selected_ooch });
 
             let displayContent = `**Selected Move:**\n`;
             if (move_sel_id) {
@@ -1125,7 +1127,8 @@ export async function menu_handler(interaction, init=false) {
             selected = parseInt(selected.replace(`move_sel_`, ''));
             selected_ooch.moveset[move_sel_idx] = selected;
             profile.set(interaction.user.id, selected_ooch, `ooch_party[${party_idx}]`);
-            
+            // Keep menu_state in sync (i hate this pain pain pain)
+            menu_data.set(menu_id, { ...menu_state, selected_ooch });
 
             let move_buttons = buildMoveData(selected_ooch);
             const moveSwitcherConfirmContainer = buildMenuContainer(`**Moves Switcher:**`, [move_buttons[0], move_buttons[1], sel_ooch_back_button]);
