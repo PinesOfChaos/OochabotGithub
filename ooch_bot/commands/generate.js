@@ -60,6 +60,8 @@ export async function execute(interaction, client) {
     let zGL = Zone.GooLake < 10 ? `0${Zone.GooLake}` : Zone.GooLake;
     let zCC = Zone.CrystalCave < 10 ? `0${Zone.CrystalCave}` : Zone.CrystalCave;
     let zTu = Zone.Tutorial < 10 ? `0${Zone.Tutorial}` : Zone.Tutorial;
+    let zCa = Zone.Casino < 10 ? `0${Zone.Casino}` : Zone.Casino;
+    let zSn = Zone.Snow < 10 ? `0${Zone.Snow}` : Zone.Snow;
 
     //           ID            Use            applicationEmojis
     // Global
@@ -127,12 +129,55 @@ export async function execute(interaction, client) {
     create_tile(`t${zC}_010`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_011`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_012`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_013`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_014`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_015`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_016`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_017`, Tile.Wall); //Purple Roof
     create_tile(`t${zC}_020`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_021`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_022`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_023`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_024`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_025`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_026`, Tile.Wall); //Purple Roof
+    create_tile(`t${zC}_027`, Tile.Wall); //Purple Roof
     create_tile(`t${zC}_030`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_031`, Tile.Wall); //Cave Big Machine
     create_tile(`t${zC}_032`, Tile.Wall); //Cave Big Machine
+    create_tile(`t${zC}_033`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_034`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_035`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_036`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_037`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_040`, Tile.Wall); //Root Spikes
+    create_tile(`t${zC}_041`, Tile.Grass); //Grass
+    create_tile(`t${zC}_042`, Tile.Wall); //Well
+    create_tile(`t${zC}_043`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_044`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_045`, Tile.Floor); //Cobble Stone Wall - Entrance
+    create_tile(`t${zC}_046`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_047`, Tile.Wall); //Cobble Stone Wall
+    create_tile(`t${zC}_050`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_051`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_052`, Tile.Wall); //Root Spikes
+    create_tile(`t${zC}_053`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_054`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_060`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_061`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_062`, Tile.Wall); //Root Walls
+    create_tile(`t${zC}_063`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_064`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_070`, Tile.Floor); //Cobble Ruins - Tile Floor
+    create_tile(`t${zC}_071`, Tile.Floor); //Cobble Ruins - Tile Floor
+    create_tile(`t${zC}_072`, Tile.Floor); //Cobble Ruins - Tile Floor
+    create_tile(`t${zC}_080`, Tile.Floor); //Cobble Ruins - Tile Floor
+    create_tile(`t${zC}_081`, Tile.Floor); //Cobble Ruins - Tile Floor
+    create_tile(`t${zC}_082`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_090`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_091`, Tile.Wall); //Cobble Ruins
+    create_tile(`t${zC}_092`, Tile.Wall); //Cobble Ruins
+    
 
 
 
@@ -199,24 +244,34 @@ export async function execute(interaction, client) {
     create_tile(`t${zT}_041`, Tile.Wall); //Training Fence
     create_tile(`t${zT}_042`, Tile.Wall); //Training Fence
     create_tile(`t${zT}_043`, Tile.Wall); //Training Wall (crate)
-
-    create_tile(`t${zT}_050`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_051`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_052`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_053`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_060`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_061`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_062`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_063`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_070`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_071`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_072`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_073`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_080`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_081`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_082`, Tile.Wall); //Verdant Wall
-    create_tile(`t${zT}_083`, Tile.Wall); //Verdant Wall
-
+    create_tile(`t${zT}_044`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_045`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_050`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_051`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_052`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_053`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_054`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_055`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_060`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_061`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_062`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_063`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_064`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_065`, Tile.Wall); //Obelisk
+    create_tile(`t${zT}_070`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_071`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_072`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_073`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_074`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_080`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_081`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_082`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_083`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_084`, Tile.Wall); //Purple Tree
+    create_tile(`t${zT}_090`, Tile.Grass); //Flower Grass
+    create_tile(`t${zT}_091`, Tile.Floor); //Purple Leaves
+    create_tile(`t${zT}_092`, Tile.Wall); //Vault Closed
+    create_tile(`t${zT}_093`, Tile.Floor); //Vault Opened
 
 
 
@@ -251,6 +306,20 @@ export async function execute(interaction, client) {
     create_tile(`t${zB}_034`, Tile.Wall); //Interior Wall
     create_tile(`t${zB}_035`, Tile.Wall); //Interior Wall
     create_tile(`t${zB}_036`, Tile.Wall); //Interior Wall
+    create_tile(`t${zB}_040`, Tile.Floor); //Puddle
+    create_tile(`t${zB}_041`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_042`, Tile.Wall); //Vent
+    create_tile(`t${zB}_050`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_051`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_052`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_053`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_054`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_061`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_062`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_063`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_071`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_072`, Tile.Wall); //Pipes
+    create_tile(`t${zB}_073`, Tile.Wall); //Pipes
 
 
     //Lava
@@ -279,13 +348,93 @@ export async function execute(interaction, client) {
     create_tile(`t${zAB}_000`, Tile.Floor); //Ancient Bridge Floor
     create_tile(`t${zAB}_001`, Tile.Wall); //Ancient Bridge Wall
     create_tile(`t${zAB}_002`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_003`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_004`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_005`, Tile.Wall); //Bench
+    create_tile(`t${zAB}_006`, Tile.Wall); //Bench
+    create_tile(`t${zAB}_007`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_008`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_009`, Tile.Wall); //Fountain
     create_tile(`t${zAB}_010`, Tile.Wall); //Ancient Bridge Wall
     create_tile(`t${zAB}_011`, Tile.Wall); //Ancient Bridge Wall
     create_tile(`t${zAB}_012`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_013`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_014`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_015`, Tile.Wall); //Lamp
+    create_tile(`t${zAB}_016`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_017`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_018`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_019`, Tile.Wall); //Fountain
     create_tile(`t${zAB}_020`, Tile.Wall); //Ancient Bridge Wall
     create_tile(`t${zAB}_021`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_022`, Tile.Wall); //Building
+    create_tile(`t${zAB}_023`, Tile.Wall); //Building
+    create_tile(`t${zAB}_024`, Tile.Wall); //Building
+    create_tile(`t${zAB}_025`, Tile.Wall); //Lamp
+    create_tile(`t${zAB}_026`, Tile.Wall); //Shrub
+    create_tile(`t${zAB}_027`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_028`, Tile.Wall); //Fountain
+    create_tile(`t${zAB}_029`, Tile.Wall); //Fountain
     create_tile(`t${zAB}_030`, Tile.Wall); //Ancient Bridge Wall
     create_tile(`t${zAB}_031`, Tile.Wall); //Ancient Bridge Wall
+    create_tile(`t${zAB}_032`, Tile.Floor); //Building - Entrance
+    create_tile(`t${zAB}_033`, Tile.Wall); //Building
+    create_tile(`t${zAB}_034`, Tile.Wall); //Building
+    create_tile(`t${zAB}_035`, Tile.Wall); //Building
+    create_tile(`t${zAB}_036`, Tile.Wall); //Building
+    create_tile(`t${zAB}_037`, Tile.Wall); //Building
+    create_tile(`t${zAB}_040`, Tile.Wall); //Altar
+    create_tile(`t${zAB}_041`, Tile.Wall); //Altar
+    create_tile(`t${zAB}_042`, Tile.Wall); //Altar
+    create_tile(`t${zAB}_043`, Tile.Wall); //Building
+    create_tile(`t${zAB}_044`, Tile.Wall); //Building
+    create_tile(`t${zAB}_045`, Tile.Wall); //Building
+    create_tile(`t${zAB}_050`, Tile.Wall); //Building
+    create_tile(`t${zAB}_051`, Tile.Wall); //Building
+    create_tile(`t${zAB}_052`, Tile.Wall); //Building
+    create_tile(`t${zAB}_053`, Tile.Wall); //Building
+    create_tile(`t${zAB}_054`, Tile.Wall); //Building
+    create_tile(`t${zAB}_055`, Tile.Wall); //Building
+    create_tile(`t${zAB}_060`, Tile.Wall); //Building
+    create_tile(`t${zAB}_061`, Tile.Wall); //Building
+    create_tile(`t${zAB}_062`, Tile.Wall); //Building
+    create_tile(`t${zAB}_063`, Tile.Wall); //Building
+    create_tile(`t${zAB}_064`, Tile.Wall); //Building
+    create_tile(`t${zAB}_065`, Tile.Wall); //Building
+    create_tile(`t${zAB}_066`, Tile.Wall); //Building
+    create_tile(`t${zAB}_067`, Tile.Wall); //Building
+    create_tile(`t${zAB}_068`, Tile.Wall); //Building
+    create_tile(`t${zAB}_069`, Tile.Wall); //Building
+    create_tile(`t${zAB}_070`, Tile.Wall); //Building
+    create_tile(`t${zAB}_071`, Tile.Wall); //Building
+    create_tile(`t${zAB}_072`, Tile.Wall); //Building
+    create_tile(`t${zAB}_073`, Tile.Wall); //Building
+    create_tile(`t${zAB}_074`, Tile.Wall); //Building
+    create_tile(`t${zAB}_075`, Tile.Wall); //Building
+    create_tile(`t${zAB}_076`, Tile.Wall); //Building
+    create_tile(`t${zAB}_077`, Tile.Wall); //Building
+    create_tile(`t${zAB}_078`, Tile.Floor); //Building - Entrance
+    create_tile(`t${zAB}_079`, Tile.Wall); //Building
+    create_tile(`t${zAB}_080`, Tile.Wall); //Building
+    create_tile(`t${zAB}_081`, Tile.Wall); //Building
+    create_tile(`t${zAB}_082`, Tile.Wall); //Building
+    create_tile(`t${zAB}_083`, Tile.Wall); //Building
+    create_tile(`t${zAB}_084`, Tile.Wall); //Building
+    create_tile(`t${zAB}_085`, Tile.Wall); //Building
+    create_tile(`t${zAB}_086`, Tile.Wall); //Building
+    create_tile(`t${zAB}_087`, Tile.Wall); //Building
+    create_tile(`t${zAB}_088`, Tile.Wall); //Building
+    create_tile(`t${zAB}_089`, Tile.Wall); //Building
+    create_tile(`t${zAB}_090`, Tile.Wall); //Building
+    create_tile(`t${zAB}_091`, Tile.Wall); //Building
+    create_tile(`t${zAB}_092`, Tile.Wall); //Building
+    create_tile(`t${zAB}_093`, Tile.Floor); //Building - Entrance
+    create_tile(`t${zAB}_094`, Tile.Wall); //Building
+    create_tile(`t${zAB}_095`, Tile.Wall); //Building
+    create_tile(`t${zAB}_096`, Tile.Wall); //Building
+    create_tile(`t${zAB}_097`, Tile.Wall); //Building
+    create_tile(`t${zAB}_098`, Tile.Wall); //Building
+    create_tile(`t${zAB}_099`, Tile.Wall); //Building
 
 
     //Thunder Peak
@@ -341,7 +490,16 @@ export async function execute(interaction, client) {
     create_tile(`t${zTn}_040`, Tile.Wall); //Tunnel Wall
     create_tile(`t${zTn}_041`, Tile.Wall); //Tunnel Wall
     create_tile(`t${zTn}_042`, Tile.Wall); //Tunnel Wall
-
+    create_tile(`t${zTn}_043`, Tile.Floor); //Halfbrick
+    create_tile(`t${zTn}_050`, Tile.Wall); //Wall
+    create_tile(`t${zTn}_051`, Tile.Wall); //Laser Gate
+    create_tile(`t${zTn}_052`, Tile.Wall); //Wall
+    create_tile(`t${zTn}_053`, Tile.Wall); //Laser Gate
+    create_tile(`t${zTn}_060`, Tile.Wall); //Wall
+    create_tile(`t${zTn}_061`, Tile.Wall); //Laser Gate
+    create_tile(`t${zTn}_063`, Tile.Wall); //Laser Gate
+    create_tile(`t${zTn}_070`, Tile.Grass); //Grass
+    create_tile(`t${zTn}_071`, Tile.Wall); //Rock
 
     //Scaffolds
     create_tile(`t${zSc}_000`, Tile.Floor); //Scaffolds Floor
@@ -361,16 +519,45 @@ export async function execute(interaction, client) {
     create_tile(`t${zGL}_000`, Tile.Floor); //Goo Lake Floor
     create_tile(`t${zGL}_001`, Tile.Grass); //Goo Lake Wall
     create_tile(`t${zGL}_002`, Tile.Wall); //Goo Lake Wall
-    create_tile(`t${zGL}_003`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_003`, Tile.Floor); //Goo Lake Wall - cave entrance
+    create_tile(`t${zGL}_004`, Tile.Wall); //Building
+    create_tile(`t${zGL}_005`, Tile.Wall); //Building
+    create_tile(`t${zGL}_006`, Tile.Wall); //Building
+    create_tile(`t${zGL}_007`, Tile.Wall); //Building - Entrance
+    create_tile(`t${zGL}_008`, Tile.Wall); //Building
     create_tile(`t${zGL}_010`, Tile.Wall); //Goo Lake Wall
     create_tile(`t${zGL}_011`, Tile.Wall); //Goo Lake Wall
     create_tile(`t${zGL}_012`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_013`, Tile.Wall); //Building
+    create_tile(`t${zGL}_014`, Tile.Wall); //Building
+    create_tile(`t${zGL}_015`, Tile.Wall); //Building
+    create_tile(`t${zGL}_016`, Tile.Wall); //Building
     create_tile(`t${zGL}_020`, Tile.Wall); //Goo Lake Wall
     create_tile(`t${zGL}_021`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_022`, Tile.Wall); //Wall
+    create_tile(`t${zGL}_023`, Tile.Wall); //Building
+    create_tile(`t${zGL}_024`, Tile.Wall); //Building
+    create_tile(`t${zGL}_025`, Tile.Wall); //Building
+    create_tile(`t${zGL}_026`, Tile.Wall); //Building
     create_tile(`t${zGL}_030`, Tile.Wall); //Goo Lake Wall
     create_tile(`t${zGL}_031`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_032`, Tile.Wall); //Reeds
+    create_tile(`t${zGL}_033`, Tile.Wall); //Building
+    create_tile(`t${zGL}_034`, Tile.Wall); //Building
+    create_tile(`t${zGL}_035`, Tile.Wall); //Building
+    create_tile(`t${zGL}_036`, Tile.Wall); //Building
     create_tile(`t${zGL}_040`, Tile.Wall); //Goo Lake Wall
     create_tile(`t${zGL}_041`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_042`, Tile.Wall); //Reeds
+    create_tile(`t${zGL}_043`, Tile.Wall); //Structure
+    create_tile(`t${zGL}_050`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_051`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_052`, Tile.Floor); //Stairs
+    create_tile(`t${zGL}_053`, Tile.Wall); //Structure
+    create_tile(`t${zGL}_060`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_061`, Tile.Wall); //Goo Lake Wall
+    create_tile(`t${zGL}_062`, Tile.Grass); //Grass
+    create_tile(`t${zGL}_063`, Tile.Wall); //Structure
 
 
 
@@ -435,9 +622,11 @@ export async function execute(interaction, client) {
     create_tile(`t${zTu}_006`, Tile.Wall); //Tutorial Wall
     create_tile(`t${zTu}_007`, Tile.Wall); //Tutorial Wall
     create_tile(`t${zTu}_008`, Tile.Wall); //Tutorial Wall
+    create_tile(`t${zTu}_010`, Tile.Floor); //Indent
     create_tile(`t${zTu}_011`, Tile.Floor); //Tutorial Door Open
     create_tile(`t${zTu}_012`, Tile.Wall); //Tutorial Wall
     create_tile(`t${zTu}_013`, Tile.Floor); //Spike Floor Deactivated
+    create_tile(`t${zTu}_014`, Tile.Wall); //Shrub
     create_tile(`t${zTu}_015`, Tile.Wall); //Tutorial Wall
     create_tile(`t${zTu}_016`, Tile.Wall); //Tutorial Wall
     create_tile(`t${zTu}_017`, Tile.Wall); //Tutorial Wall
@@ -445,9 +634,15 @@ export async function execute(interaction, client) {
     create_tile(`t${zTu}_020`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_021`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_022`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_023`, Tile.Wall); //Wall
+    create_tile(`t${zTu}_024`, Tile.Wall); //Shrub
+    create_tile(`t${zTu}_025`, Tile.Wall); //Desk
+    create_tile(`t${zTu}_026`, Tile.Wall); //Desk
+    create_tile(`t${zTu}_027`, Tile.Wall); //Desk
     create_tile(`t${zTu}_030`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_031`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_032`, Tile.Wall); //Elevator
+    create_tile(`t${zTu}_033`, Tile.Wall); //Wall
     create_tile(`t${zTu}_040`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_041`, Tile.Wall); //Elevator
     create_tile(`t${zTu}_042`, Tile.Wall); //Elevator
@@ -469,6 +664,81 @@ export async function execute(interaction, client) {
     create_tile(`t${zTu}_091`, Tile.Floor); //Elevator
     create_tile(`t${zTu}_092`, Tile.Wall); //Elevator
 
+    //Casino
+    create_tile(`t${zCa}_000`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_001`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_002`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_003`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_004`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_005`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_006`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_007`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_008`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_009`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_010`, Tile.Wall); //Slots
+    create_tile(`t${zCa}_011`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_012`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_013`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_014`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_015`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_016`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_017`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_018`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_019`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_020`, Tile.Wall); //Slots
+    create_tile(`t${zCa}_021`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_022`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_023`, Tile.Floor); //Casino Floor
+    create_tile(`t${zCa}_024`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_025`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_026`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_027`, Tile.Wall); //Wall
+    create_tile(`t${zCa}_030`, Tile.Wall); //Oochle
+    create_tile(`t${zCa}_034`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_035`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_036`, Tile.Wall); //Poker
+    create_tile(`t${zCa}_040`, Tile.Wall); //Oochle
+
+    //Snow
+    create_tile(`t${zSn}_000`, Tile.Floor); //Ground
+    create_tile(`t${zSn}_001`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_002`, Tile.Floor); //Ground
+    create_tile(`t${zSn}_003`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_004`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_005`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_006`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_007`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_008`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_009`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_010`, Tile.Grass); //Grass
+    create_tile(`t${zSn}_011`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_012`, Tile.Floor); //Ground
+    create_tile(`t${zSn}_013`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_014`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_015`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_016`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_017`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_018`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_019`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_020`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_021`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_022`, Tile.Floor); //Ground
+    create_tile(`t${zSn}_023`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_024`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_025`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_026`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_027`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_028`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_029`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_030`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_031`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_032`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_035`, Tile.Wall); //Wall
+    create_tile(`t${zSn}_036`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_037`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_038`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_039`, Tile.Wall); //Sky
+    create_tile(`t${zSn}_049`, Tile.Wall); //Sky
 
     // NPCs
     create_tile(`c_000`, Tile.Npc); // Main Character

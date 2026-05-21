@@ -739,6 +739,8 @@ const Zone = {
     GooLake: 13,
     CrystalCave: 14,
     Tutorial: 15,
+    Casino: 16,
+    Snow: 17,
 }
 
 const MoveTag = {
