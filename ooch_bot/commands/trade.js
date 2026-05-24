@@ -28,6 +28,8 @@ export async function execute(interaction) {
         return interaction.reply({ content: `You are in the middle of a trade. If you are not mid trade, please restart the game by running \`/play\` again.`, flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Intro) {
         return interaction.reply({ content: `You are unable to trade right now, as you are in the intro.` });
+    } else if (profile.get(`${interaction.user.id}`, 'location_data')?.area?.toLowerCase() === 'tutorial') {
+        return interaction.reply({ content: `You cannot trade in the tutorial map.`, flags: MessageFlags.Ephemeral });
     }
 
     if (otherTradeUser.id == intTradeUser.id) {
@@ -42,6 +44,8 @@ export async function execute(interaction) {
         return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in a battle or in a menu.` });
     } else if (otherUserState == PlayerState.Intro) {
         return interaction.reply({ content: `**${otherTradeMember.displayName}** is unable to trade right now, as they are in the intro.` });
+    } else if (profile.get(`${otherTradeUser.id}`, 'location_data')?.area?.toLowerCase() === 'tutorial') {
+        return interaction.reply({ content: `**${otherTradeMember.displayName}** is in the tutorial map and cannot trade.` });
     }
 
     let otherUserThread = await interaction.guild.channels.cache.get(`${profile.get(otherTradeUser.id, 'play_thread_id')}`);

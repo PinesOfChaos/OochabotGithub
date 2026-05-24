@@ -2481,7 +2481,11 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
         if (db_item_data.potency !== 'All') {
             let db_status_data = status_data.get(`${db_item_data.potency}`)
             ooch.status_effects = ooch.status_effects.filter(v => v != db_item_data.potency);
-            return_string = `\n${ooch.emote} **${ooch.nickname}** recovered from its ${db_status_data.emote} **${db_status_data.name}**.`
+            if (!db_status_data.emote) {
+                return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
+            } else {
+                return_string = `\n${ooch.emote} **${ooch.nickname}** recovered from its ${db_status_data.emote} **${db_status_data.name}**.`
+            }   
         } else {
             ooch.status_effects = [];
             return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`

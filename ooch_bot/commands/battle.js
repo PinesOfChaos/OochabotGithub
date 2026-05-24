@@ -50,6 +50,8 @@ export async function execute(interaction) {
         return interaction.reply({ content: `You currently have a battle invitation.`, flags: MessageFlags.Ephemeral });
     } else if (intUserState == PlayerState.Intro) {
         return interaction.reply({ content: `You cannot battle in the intro.`, flags: MessageFlags.Ephemeral });
+    } else if (profile.get(`${interaction.user.id}`, 'location_data')?.area?.toLowerCase() === 'tutorial') {
+        return interaction.reply({ content: `You cannot battle in the tutorial map.`, flags: MessageFlags.Ephemeral });
     }
 
     if (otherUserState == PlayerState.NotPlaying) {
@@ -62,6 +64,8 @@ export async function execute(interaction) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** has already been invited to a battle.` });
     } else if (otherUserState == PlayerState.Intro) {
         return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the intro, and cannot battle.` });
+    } else if (profile.get(`${otherBattleUser.id}`, 'location_data')?.area?.toLowerCase() === 'tutorial') {
+        return interaction.reply({ content: `**${otherBattleMember.displayName}** is in the tutorial map and cannot battle.` });
     }
 
     let otherUserThreadId = profile.get(`${otherBattleUser.id}`, 'play_thread_id');
