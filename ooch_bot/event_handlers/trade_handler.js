@@ -171,19 +171,13 @@ export async function trade_handler(interaction) {
 
     if (action == 'back') {
         let user_profile = profile.get(`${userData.user_id}`);
-        let opp_profile = profile.get(`${oppData.user_id}`);
+        let wasConfirmState = session.state == 'confirm';
 
         userData.ready_to_trade = false;
         userData.trade_confirmed = false;
         userData.ooch_selected = null;
         userData.ooch_is_party = false;
         userData.ooch_slot_num = 0;
-
-        oppData.ready_to_trade = false;
-        oppData.trade_confirmed = false;
-        oppData.ooch_selected = null;
-        oppData.ooch_is_party = false;
-        oppData.ooch_slot_num = 0;
 
         session.state = 'trading';
 
@@ -197,31 +191,59 @@ export async function trade_handler(interaction) {
             components: [boxRow[0], boxRow[1], boxRow[2], boxRow[3], updatedBoxButtons]
         });
 
-        let oppBoxRow = buildBoxData(oppData.user_id, opp_profile, oppData.page_num, oppPre);
-        let oppBoxButtons = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder().setCustomId(`${oppPre}exit`).setLabel('Exit').setStyle(ButtonStyle.Danger)
-            ).addComponents(
-                new ButtonBuilder().setCustomId(`${oppPre}left`).setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId(`${oppPre}right`).setEmoji('➡️').setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId(`${oppPre}num_label`).setLabel(`${oppData.page_num + 1}`).setStyle(ButtonStyle.Primary)
-            ).addComponents(
-                new ButtonBuilder().setCustomId(`${oppPre}party_label`).setLabel('Party').setStyle(ButtonStyle.Success)
-            );
+        if (wasConfirmState || oppData.ready_to_trade) {
+            let opp_profile = profile.get(`${oppData.user_id}`);
 
-        try {
-            let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
-            await oppMsg.edit({
-                content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
-                embeds: [],
-                files: [],
-                components: [oppBoxRow[0], oppBoxRow[1], oppBoxRow[2], oppBoxRow[3], oppBoxButtons]
-            });
-        } catch (e) {}
+            if (wasConfirmState) {
+                oppData.ready_to_trade = false;
+                oppData.trade_confirmed = false;
+                oppData.ooch_selected = null;
+                oppData.ooch_is_party = false;
+                oppData.ooch_slot_num = 0;
 
-        if (session.state == 'confirm') {
+                let oppBoxRow = buildBoxData(oppData.user_id, opp_profile, oppData.page_num, oppPre);
+                let oppBoxButtons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder().setCustomId(`${oppPre}exit`).setLabel('Exit').setStyle(ButtonStyle.Danger)
+                    ).addComponents(
+                        new ButtonBuilder().setCustomId(`${oppPre}left`).setEmoji('⬅️').setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder().setCustomId(`${oppPre}right`).setEmoji('➡️').setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder().setCustomId(`${oppPre}num_label`).setLabel(`${oppData.page_num + 1}`).setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder().setCustomId(`${oppPre}party_label`).setLabel('Party').setStyle(ButtonStyle.Success)
+                    );
+
+                try {
+                    let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
+                    await oppMsg.edit({
+                        content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
+                        embeds: [],
+                        files: [],
+                        components: [oppBoxRow[0], oppBoxRow[1], oppBoxRow[2], oppBoxRow[3], oppBoxButtons]
+                    });
+                } catch (e) {}
+            } else {
+                // Opponent already offered — just strip the "selected" notification from their message
+                try {
+                    let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
+                    await oppMsg.edit({
+                        content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
+                    });
+                } catch (e) {}
+            }
+        } else {
+            // Opponent hasn't selected yet — just update the header text on their message
+            try {
+                let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
+                await oppMsg.edit({
+                    content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
+                });
+            } catch (e) {}
+        }
+
+        if (wasConfirmState) {
             let cancelMsg = await userThread.send(`### Trade Cancelled.\nYou cancelled the trade.`);
             let oppCancelMsg = await oppThread.send(`### Trade Cancelled.\n**${userData.display_name}** cancelled the trade.`);
 
