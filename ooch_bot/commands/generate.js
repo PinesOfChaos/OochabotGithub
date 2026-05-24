@@ -2318,34 +2318,34 @@ export async function execute(interaction, client) {
 
 
     //New Moves
-    create_move({
-        id: Move.ContainmentField, name: 'Containment Field', type: OochType.Tech,
-        damage: 60, accuracy: 100,
-        effect: [{ status: Status.Snare, chance: 30, target: MoveTarget.Enemy }],
-        description: 'Unleash a blast of energy that can also SNARE the target.',
-        self_target: false,
-    });
-    create_move({
-        id: Move.Honk, name: 'Honk', type: OochType.Sound,
-        damage: 80, accuracy: 100,
-        effect: [{ status: Status.Expose, chance: 30, target: MoveTarget.Enemy }],
-        description: 'Unleash an unnerving sound that has a chance to EXPOSE the target.',
-        self_target: false,
-    });
-    create_move({
-        id: Move.CrushingDebt, name: 'Crushing Debt', type: OochType.Magic,
-        damage: 70, accuracy: 100,
-        effect: [{ status: Status.Doom, chance: 30, target: MoveTarget.Enemy }],
-        description: 'Slam the target with immense debt, which might just leave them DOOMED.',
-        self_target: false,
-    });
-    create_move({
-        id: Move.Collections, name: 'Collections', type: OochType.Tech,
-        damage: 70, accuracy: 100,
-        effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Enemy }, { status: Status.DamageBoostStatus + Status.Doom, chance: 70, target: MoveTarget.Enemy }],
-        description: 'Collect what you are owed from the target, draining some of their HP. Damage is doubled against DOOMED targets.',
-        self_target: false,
-    });
+    // create_move({
+    //     id: Move.ContainmentField, name: 'Containment Field', type: OochType.Tech,
+    //     damage: 60, accuracy: 100,
+    //     effect: [{ status: Status.Snare, chance: 30, target: MoveTarget.Enemy }],
+    //     description: 'Unleash a blast of energy that can also SNARE the target.',
+    //     self_target: false,
+    // });
+    // create_move({
+    //     id: Move.Honk, name: 'Honk', type: OochType.Sound,
+    //     damage: 80, accuracy: 100,
+    //     effect: [{ status: Status.Expose, chance: 30, target: MoveTarget.Enemy }],
+    //     description: 'Unleash an unnerving sound that has a chance to EXPOSE the target.',
+    //     self_target: false,
+    // });
+    // create_move({
+    //     id: Move.CrushingDebt, name: 'Crushing Debt', type: OochType.Magic,
+    //     damage: 70, accuracy: 100,
+    //     effect: [{ status: Status.Doom, chance: 30, target: MoveTarget.Enemy }],
+    //     description: 'Slam the target with immense debt, which might just leave them DOOMED.',
+    //     self_target: false,
+    // });
+    // create_move({
+    //     id: Move.Collections, name: 'Collections', type: OochType.Tech,
+    //     damage: 70, accuracy: 100,
+    //     effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Enemy }, { status: Status.DamageBoostStatus + Status.Doom, chance: 70, target: MoveTarget.Enemy }],
+    //     description: 'Collect what you are owed from the target, draining some of their HP. Damage is doubled against DOOMED targets.',
+    //     self_target: false,
+    // });
 
     //#endregionF
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
