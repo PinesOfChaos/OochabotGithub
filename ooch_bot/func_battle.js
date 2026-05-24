@@ -2818,6 +2818,7 @@ export function battle_calc_damage(move_damage, move_type, ooch_attacker, ooch_d
         attacker_atk_stat += ooch_attacker.stats.def * get_stat_multiplier(ooch_attacker.stats.def_mul) / 4;
     }
 
+
     let damage = Math.round(Math.ceil((.8 * ooch_attacker.level + 2) // Level Adjustment
     * (move_damage + random(-5, 5)) // Damage with random damage variance
     * (ooch_attacker.type.includes(move_type) ? 1.25 : 1) //STAB (same type attack bonus)
@@ -3104,6 +3105,20 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         attacker.status_effects = attacker.status_effects.filter(v => v != Status.Focus);
     }
     if(move_damage == 0){ crit_multiplier = 1; }
+
+    //Check for custom status things
+    for(let effect of move.move_effects){
+
+        //Damage boost from user / target
+        if(effect.status.includes(Status.DamageBoostStatus)){
+            let status_check = effect.status.replace(Status.DamageBoostStatus,"");
+            let mon_check = (effect.target == MoveTarget.Enemy) ? defender : attacker;
+            if(mon_check.status_effects.includes(status_check)){
+                move_damage += effect.chance;
+            }
+        }
+
+    }
 
     //Final damage calc
     let dmg = 0;

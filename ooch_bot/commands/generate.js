@@ -1637,13 +1637,13 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.Siphon, name: 'Siphon', type: OochType.Fungal,
         damage: 20, accuracy: 100,
-        effect: [{ status: 'vampire', chance: 25, target: MoveTarget.Self }],
+        effect: [{ status: Status.Vampire, chance: 25, target: MoveTarget.Self }],
         description: 'The user damages the opponent, slightly Healing itself in the process.',
     });
     create_move({
         id: Move.DrainLife, name: 'Drain Life', type: OochType.Magic,
         damage: 60, accuracy: 80,
-        effect: [{ status: 'vampire', chance: 50, target: MoveTarget.Self }],
+        effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Self }],
         description: 'A horribly innacurate move with the potential to greatly heal the user.',
     });
     create_move({
@@ -1989,8 +1989,8 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.RallyingCry, name: 'Rallying Cry', type: OochType.Sound,
         damage: 0, accuracy: 100,
-        effect: [{ status: '+_atk_1', chance: 50, target: MoveTarget.Self }, { status: '+_def_1', chance: 50, target: MoveTarget.Self }, { status: '+_spd_1', chance: 50, target: MoveTarget.Self }],
-        description: 'Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.',
+        effect: [{ status: '+_atk_1', chance: 100, target: MoveTarget.Self }, { status: '+_def_1', chance: 30, target: MoveTarget.Self }, { status: '+_spd_1', chance: 30, target: MoveTarget.Self }],
+        description: 'Shout into the sky in hope of raising morale, it raises ATK, but may also increase DEF or SPD.',
         self_target: true
     });
     create_move({
@@ -2316,6 +2316,37 @@ export async function execute(interaction, client) {
         self_target: false,
     });
 
+
+    //New Moves
+    create_move({
+        id: Move.ContainmentField, name: 'Containment Field', type: OochType.Tech,
+        damage: 60, accuracy: 100,
+        effect: [{ status: Status.Snare, chance: 30, target: MoveTarget.Enemy }],
+        description: 'Unleash a blast of energy that can also SNARE the target.',
+        self_target: false,
+    });
+    create_move({
+        id: Move.Honk, name: 'Honk', type: OochType.Sound,
+        damage: 80, accuracy: 100,
+        effect: [{ status: Status.Expose, chance: 30, target: MoveTarget.Enemy }],
+        description: 'Unleash an unnerving sound that has a chance to EXPOSE the target.',
+        self_target: false,
+    });
+    create_move({
+        id: Move.CrushingDebt, name: 'Crushing Debt', type: OochType.Magic,
+        damage: 70, accuracy: 100,
+        effect: [{ status: Status.Doom, chance: 30, target: MoveTarget.Enemy }],
+        description: 'Slam the target with immense debt, which might just leave them DOOMED.',
+        self_target: false,
+    });
+    create_move({
+        id: Move.Collections, name: 'Collections', type: OochType.Tech,
+        damage: 70, accuracy: 100,
+        effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Enemy }, { status: Status.DamageBoostStatus + Status.Doom, chance: 70, target: MoveTarget.Enemy }],
+        description: 'Collect what you are owed from the target, draining some of their HP. Damage is doubled against DOOMED targets.',
+        self_target: false,
+    });
+
     //#endregionF
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
     //#region Ability Data
@@ -2432,6 +2463,12 @@ export async function execute(interaction, client) {
     create_ability(Ability.AncientWardMartial, 'Ancient Ward (Martial)','Reduces the damage of all Martial-type attacks'); //Unique - Ophicore's Rune pieces
     create_ability(Ability.Patchwork, 'Patchwork', 'Using Cloth-type moves heals the user for 5% of max HP.');
     create_ability(Ability.Purification, 'Purification', 'Reduces damage taken by super effective moves by 50%'); //Unique - Purif-i
+
+    //Add these abilities pls @jeff c: (if i don't get to them first)
+    create_ability(Ability.Collector_, 'Collector', 'Raises a random stat by 1 stage when another Oochamon switches in.');
+    create_ability(Ability.LoanShark, 'Loan Shark', 'Raises move damage by 10% for each increase to stats the target has.');
+    create_ability(Ability.SillyGoose, 'Silly Goose', 'Raises a random stat to the max when sent out.');
+    create_ability(Ability.AllOrNothing, 'All or Nothing', 'Digital Gamble also randomly raises a stat and lowers another.');
 
     //#endregion
     // ADD TO THE TYPES.JS FILE WHEN ADDING NEW ONES
@@ -4738,6 +4775,152 @@ export async function execute(interaction, client) {
         abilities: [Ability.PureCore],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
+
+    //Expansion 1 - Casino Oochamon
+    // Jawful
+    // create_monster({
+    //     id: OochID.Jawful,
+    //     emote: get_emote_string('jawful'),
+    //     name: 'Jawful',
+    //     oochive_entry: 'A tiny creature with a huge mouth, it enjoys gnawing on precious stones.',
+    //     type: [OochType.Magic],
+    //     hp: 11, atk: 12, def: 10, spd: 7, // total 40
+    //     move_list: [
+    //         [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Blink], [10, Move.ArcaStrike],
+    //         [12, Move.Frostbite], [15, Move.HawkEye], [17, Move.Sedimentation], [20, Move.Entomb], [22, Move.PressureWave],
+    //         [24, Move.SlurpUp], [27, Move.HeldStrike], [30, Move.GemBash], [34, Move.CrushingDebt], [37, Move.Barrage],
+    //         [40, Move.TargetLock], [46, Move.Collections], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Collector_, Ability.Dense],
+    //     pre_evo_id: -1, evo_id: OochID.Makolect, evo_lvl: 35, evo_stage: 0
+    // });
+
+    // // Makolect
+    // create_monster({
+    //     id: OochID.Makolect,
+    //     emote: get_emote_string('makolect'),
+    //     name: 'Makolect',
+    //     oochive_entry: 'It swims through the air and collects any loose valuables, adding them to its hoard.',
+    //     type: [OochType.Magic],
+    //     hp: 17, atk: 16, def: 13, spd: 14, // total 60
+    //     move_list: [
+    //         [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Blink], [10, Move.ArcaStrike],
+    //         [12, Move.Frostbite], [15, Move.HawkEye], [17, Move.Sedimentation], [20, Move.Entomb], [22, Move.PressureWave],
+    //         [24, Move.SlurpUp], [27, Move.HeldStrike], [30, Move.GemBash], [34, Move.CrushingDebt], [37, Move.Barrage],
+    //         [40, Move.TargetLock], [46, Move.Collections], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Collector_, Ability.Dense],
+    //     pre_evo_id: OochID.Jawful, evo_id: OochID.Lendred, evo_lvl: 45, evo_stage: 1
+    // });
+
+    // // Lendred
+    // create_monster({
+    //     id: OochID.Lendred,
+    //     emote: get_emote_string('lendred'),
+    //     name: 'Lendred',
+    //     oochive_entry: 'It seems to let people borrow its belongings, but viciously hunts down those who don\'t return them.',
+    //     type: [OochType.Magic, OochType.Tech],
+    //     hp: 25, atk: 18, def: 20, spd: 17, // total 80
+    //     move_list: [
+    //         [1, Move.Bash], [3, Move.ByteBite], [5, Move.Embolden], [7, Move.Blink], [10, Move.ArcaStrike],
+    //         [12, Move.Frostbite], [15, Move.HawkEye], [17, Move.Sedimentation], [20, Move.Entomb], [22, Move.PressureWave],
+    //         [24, Move.SlurpUp], [27, Move.HeldStrike], [30, Move.GemBash], [34, Move.CrushingDebt], [37, Move.Barrage],
+    //         [40, Move.TargetLock], [46, Move.Collections], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.LoanShark, Ability.Hearty],
+    //     pre_evo_id: OochID.Makolect, evo_id: -1, evo_lvl: -1, evo_stage: 2
+    // });
+
+    // // Pangolm
+    // create_monster({
+    //     id: OochID.Pangolm,
+    //     emote: get_emote_string('pangolm'),
+    //     name: 'Pangolm',
+    //     oochive_entry: 'A heavily armored stone creature, its body is covered in thorny interlocking plates.',
+    //     type: [OochType.Stone],
+    //     hp: 13, atk: 12, def: 13, spd: 12, // total 50
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Armored, Ability.Thorned],
+    //     pre_evo_id: -1, evo_id: OochID.Scalok, evo_lvl: 38, evo_stage: 0
+    // });
+
+    // // Scalok
+    // create_monster({
+    //     id: OochID.Scalok,
+    //     emote: get_emote_string('scalok'),
+    //     name: 'Scalok',
+    //     oochive_entry: 'They evolve from Pangolm once they learn how to make use of magic and will eventually use that magic to create new Pangolms.',
+    //     type: [OochType.Stone, OochType.Magic],
+    //     hp: 20, atk: 16, def: 24, spd: 15, // total 75
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Armored, Ability.Thorned],
+    //     pre_evo_id: OochID.Pangolm, evo_id: -1, evo_lvl: -1, evo_stage: 1
+    // });
+
+    // // Tarat
+    // create_monster({
+    //     id: OochID.Tarat,
+    //     emote: get_emote_string('tarat'),
+    //     name: 'Tarat',
+    //     oochive_entry: 'A rodent-like creature that carries a heavy tablet on its back.',
+    //     type: [OochType.Magic],
+    //     hp: 11, atk: 14, def: 9, spd: 11, // total 45
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.AllOrNothing, Ability.Burdened],
+    //     pre_evo_id: -1, evo_id: OochID.Shadeel, evo_lvl: 21, evo_stage: 0
+    // });
+
+    // // Shadeel
+    // create_monster({
+    //     id: OochID.Shadeel,
+    //     emote: get_emote_string('shadeel'),
+    //     name: 'Shadeel',
+    //     oochive_entry: 'It throws fragments of the tablet which once burdened it, guiding their trajectory with magic.',
+    //     type: [OochType.Magic],
+    //     hp: 15, atk: 20, def: 17, spd: 18, // total 70
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.AllOrNothing, Ability.Alert],
+    //     pre_evo_id: OochID.Tarat, evo_id: -1, evo_lvl: -1, evo_stage: 1
+    // });
+
+    // // Screal
+    // create_monster({
+    //     id: OochID.Screal,
+    //     emote: get_emote_string('screal'),
+    //     name: 'Screal',
+    //     oochive_entry: 'Its cursed with the losses of yesterday and will definitely whine about them.',
+    //     type: [OochType.Magic],
+    //     hp: 11, atk: 13, def: 11, spd: 10, // total 45
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Haunted, Ability.Fleeting],
+    //     pre_evo_id: -1, evo_id: OochID.Ghoulette, evo_lvl: 37, evo_stage: 0
+    // });
+
+    // // Ghoulette
+    // create_monster({
+    //     id: OochID.Ghoulette,
+    //     emote: get_emote_string('ghoulette'),
+    //     name: 'Ghoulette',
+    //     oochive_entry: 'The wheel on its head is constantly spinning while it makes decisions.',
+    //     type: [OochType.Magic, OochType.Stone],
+    //     hp: 19, atk: 22, def: 16, spd: 18, // total 75
+    //     move_list: [
+    //         [1, Move.Bash], [-1, Move.Lagspike]
+    //     ],
+    //     abilities: [Ability.Haunted, Ability.Inertia],
+    //     pre_evo_id: OochID.Screal, evo_id: -1, evo_lvl: -1, evo_stage: 1
+    // });
+
 
     // // Rosun
     // create_monster({

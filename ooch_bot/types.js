@@ -1,3 +1,5 @@
+import { Collector } from "discord.js"
+
 // This file handles all enums and special types
 const PlayerState = {
     Intro: 'intro',
@@ -101,7 +103,10 @@ const Status = {
     GoingLastBonus: 'going_last',
     TrueDamage: 'true_damage',
     SweepDamage: 'sweep_damage',
-    AlwaysSuperEff: 'always_super_effective'
+    AlwaysSuperEff: 'always_super_effective',
+    Vampire: 'vampire',
+
+    DamageBoostStatus: 'damage_boost_status'
 }
 
 const OochType = {
@@ -449,7 +454,20 @@ const OochID = {
     Symaat:128,
     Ophicore:129,
 
-    CountCatchable : 130, //ALWAYS UPDATE THIS TO BE 1 MORE THAN THE NUMBER OF OOCHAMON IN THE CATCHABLE SECTION
+    //Expansion 1 - Casino
+    Jawful: 130,
+    Makolect: 131,
+    Lendred: 132,
+    Pangolm: 133,
+    Scalok: 134,
+    Tarat: 135,
+    Shadeel: 136,
+    Screal: 137,
+    Ghoulette: 138,
+    Castacian: 139,
+    Bonjounk: 140,
+
+    CountCatchable : 141, //ALWAYS UPDATE THIS TO BE 1 MORE THAN THE NUMBER OF OOCHAMON IN THE CATCHABLE SECTION
 
     i_:-1,
     Oochabit:-2,
@@ -459,7 +477,8 @@ const OochID = {
     EnforcementSystemΔ:-6,
     Ophicorupt:-7,
     AncientRune:-8,
-    Serpsis:-9
+    Serpsis:-9,
+    Oochatrain:-10
 }
 
 const Ability = {
@@ -574,7 +593,11 @@ const Ability = {
     Equalized: 108,
     Patchwork: 109,
     Usurper: 110,
-    Purification: 111
+    Purification: 111,
+    Collector_: 112,
+    LoanShark: 113,
+    SillyGoose: 114,
+    AllOrNothing: 115,
 }
 
 const Item = {
