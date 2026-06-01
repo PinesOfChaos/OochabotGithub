@@ -3053,6 +3053,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
     let status_exposed = (defender.status_effects.includes(Status.Expose) ? 2 : 1);
     let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
+    let set_hp_to_1 = false;
+    if(move_effects.find(effect => effect.status === "recoil")?.chance || 0 == 99){ set_hp_to_1 = true; recoil_damage = 0; }
     let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
     let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
     let defender_field_text = ``;
@@ -3195,6 +3197,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         attacker.current_hp += Math.round(vampire_heal);
         attacker.current_hp += Math.round(attacker.stats.hp * move_heal * (attacker.ability == 'Vigorous' ? 1.3 : 1));
         attacker.current_hp -= recoil_damage;
+        
+        if(set_hp_to_1){ attacker.current_hp = 1; }
         attacker.current_hp = clamp(attacker.current_hp, 0, attacker.stats.hp)
 
         slot_attacker.this_turn_did_damage = true;
@@ -3394,9 +3398,16 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
         }
 
+
+
         //If attack has recoil
         if (recoil_damage > 0) {
             string_to_send += `\n--- 💥 ${attacker_emote} **${atkOochName}** lost **${recoil_damage}** HP from recoil!`
+        }
+
+        //If the attack sets hp to 1 due to having 99 recoil
+        if (set_hp_to_1) {
+            string_to_send += `\n--- ❗ ${attacker_emote} **${atkOochName}**'s HP was reduced to **1**!`
         }
 
         if (move_effects.length != 0) {

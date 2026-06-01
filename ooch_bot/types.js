@@ -319,7 +319,21 @@ const Move = {
     HymnOfDread: 142,
     SoulScale: 143,
     CoreBurst: 144,
-    CoreDelete: 145
+    CoreDelete: 145,
+    ContainmentField: 146,
+    Honk: 147,
+    CrushingDebt: 148,
+    Collections: 149,
+    Chop: 150,
+    FlyingKick: 151,
+    Beatdown: 152,
+    DoubleStrike: 153,
+    DeceptiveBlow: 154,
+    DecisiveBlow: 155,
+    Haymaker: 156,
+    Concentrate: 157,
+    FragmentShot: 158,
+    Spear: 159,
 }
 
 const OochID = {
@@ -465,7 +479,32 @@ const OochID = {
     Screal: 137,
     Ghoulette: 138,
     Castacian: 139,
-    Bonjounk: 140,
+    Bonjounk: 140, //Earliest catchable Martial Type
+
+    //Expansion 2 - Entwined Abyss
+    Garnetie: 141,
+    Aventux: 142,
+    Rosun: 143,
+    Morgoun: 144,
+    Galagge: 145,
+    Kilorai: 146,
+    Megarai: 147,
+    Nimoon: 148,
+    Lumant: 149,
+    Niuum: 150,
+    Axlalom: 151,
+    Ghaur: 152,
+    Revelo: 153,
+    Spirex: 154,
+    Flotaunt: 155,
+    Regalich: 156,
+    Hivactory: 157,
+    Dirend: 158,
+    Katakado: 159,
+    Ventroid: 160,
+    Radaemon: 161,
+    Miasmek: 162,
+
 
     CountCatchable : 141, //ALWAYS UPDATE THIS TO BE 1 MORE THAN THE NUMBER OF OOCHAMON IN THE CATCHABLE SECTION
 
@@ -478,7 +517,8 @@ const OochID = {
     Ophicorupt:-7,
     AncientRune:-8,
     Serpsis:-9,
-    Oochatrain:-10
+    Serpreme: -10,
+    Oochatrain:-11
 }
 
 const Ability = {
