@@ -1643,21 +1643,21 @@
     "effect": [
       {
         "status": "+_atk_1",
-        "chance": 50,
+        "chance": 100,
         "target": 0
       },
       {
         "status": "+_def_1",
-        "chance": 50,
+        "chance": 30,
         "target": 0
       },
       {
         "status": "+_spd_1",
-        "chance": 50,
+        "chance": 30,
         "target": 0
       }
     ],
-    "description": "Shout into the sky in hope of raising morale, it has a chance to raise ATK, DEF, and SPD.",
+    "description": "Shout into the sky in hope of raising morale, it raises ATK, but may also increase DEF or SPD.",
     "self_target": true,
     "tags": []
   },

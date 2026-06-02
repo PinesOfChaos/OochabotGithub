@@ -558,5 +558,25 @@
     "id": 111,
     "name": "Purification",
     "description": "Reduces damage taken by super effective moves by 50%"
+  },
+  {
+    "id": 112,
+    "name": "Collector",
+    "description": "Raises a random stat by 1 stage when another Oochamon switches in."
+  },
+  {
+    "id": 113,
+    "name": "Loan Shark",
+    "description": "Raises move damage by 10% for each increase to stats the target has."
+  },
+  {
+    "id": 114,
+    "name": "Silly Goose",
+    "description": "Raises a random stat to the max when sent out."
+  },
+  {
+    "id": 115,
+    "name": "All or Nothing",
+    "description": "Digital Gamble also randomly raises a stat and lowers another."
   }
 ]
