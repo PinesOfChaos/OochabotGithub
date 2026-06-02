@@ -244,7 +244,7 @@ export default {
                 }
 
                 const inactivityTimer = setTimeout(async () => {
-                    await quit_oochamon(interaction.channel, interaction.user.id)
+                    await quit_oochamon(interaction.channel, interaction.user.id, botClient)
                 }, 30 * 60 * 1000);
 
                 inactivityTrackers[interaction.user.id] = inactivityTimer;
