@@ -150,6 +150,7 @@ export async function battle_handler(interaction) {
     let switchButtons1 = new ActionRowBuilder();
     let switchButtons2 = new ActionRowBuilder();
     let hasCatchableTarget = db_battle_data.users.some(u => u.is_catchable);
+    let hasPrisms = user.inventory[ItemCategory.Prism].some(p => p.quantity > 0);
     let bagButtons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
@@ -163,7 +164,7 @@ export async function battle_handler(interaction) {
                 .setLabel('Prism')
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji(get_emote_string('item_prism'))
-                .setDisabled(!hasCatchableTarget),
+                .setDisabled(!hasCatchableTarget || !hasPrisms),
         )
 
     const backButton = new ActionRowBuilder()
@@ -192,8 +193,9 @@ export async function battle_handler(interaction) {
     // #endregion
 
     async function end_prompt_input(db_battle_data, interaction) {
+        battle_data.set(battle_id, db_battle_data);
+
         if (db_battle_data.users.every(u => u.action_selected !== false)) {
-            battle_data.set(battle_id, db_battle_data);
             const waitText = new TextDisplayBuilder().setContent(`Waiting for other players...`);
             const waitContainer = new ContainerBuilder().addTextDisplayComponents(waitText);
             await interaction.update({ components: [waitContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
@@ -612,18 +614,26 @@ export async function battle_handler(interaction) {
             }
         }
 
-        bag_select.addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId(`${pre}prism_item_select`)
-                .setPlaceholder('Select a prism to use!')
-                .addOptions(prism_select_options),
-        );
+        if (prism_select_options.length > 0) {
+            bag_select.addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId(`${pre}prism_item_select`)
+                    .setPlaceholder('Select a prism to use!')
+                    .addOptions(prism_select_options),
+            );
 
-        const prismHeader = new TextDisplayBuilder().setContent(`Select the prism you'd like to use!`);
-        const prismContainer = new ContainerBuilder()
-            .addTextDisplayComponents(prismHeader)
-            .addActionRowComponents(bag_select, bagButtons, backButton);
-        await interaction.update({ components: [prismContainer], flags: MessageFlags.IsComponentsV2 });
+            const prismHeader = new TextDisplayBuilder().setContent(`Select the prism you'd like to use!`);
+            const prismContainer = new ContainerBuilder()
+                .addTextDisplayComponents(prismHeader)
+                .addActionRowComponents(bag_select, bagButtons, backButton);
+            await interaction.update({ components: [prismContainer], flags: MessageFlags.IsComponentsV2 });
+        } else {
+            const bagHeader = new TextDisplayBuilder().setContent(`Select the item category you'd like to use an item in!`);
+            const bagContainer = new ContainerBuilder()
+                .addTextDisplayComponents(bagHeader)
+                .addActionRowComponents(bagButtons, backButton);
+            await interaction.update({ components: [bagContainer], flags: MessageFlags.IsComponentsV2 });
+        }
     }
 
     if (customId.includes('_item_select') && customId.startsWith(`${pre}`)) {

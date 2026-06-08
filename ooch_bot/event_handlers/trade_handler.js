@@ -1,8 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { profile } from "../db.js";
 import { PlayerState } from "../types.js";
 import { buildBoxData, ooch_info_embed } from "../func_other.js";
-import { setup_playspace_str } from "../func_play.js";
 import wait from "wait";
 import { botClient } from "../index.js";
 
@@ -26,14 +25,7 @@ function getUserData(session, user_id) {
 }
 
 export async function trade_handler(interaction) {
-    let customId, selected;
-
-    if (interaction.componentType == ComponentType.Button) {
-        customId = interaction.customId;
-    } else {
-        customId = interaction.customId;
-        selected = interaction.values[0];
-    }
+    let customId = interaction.customId;
 
     const parts = customId.split('_');
     const user_id = parts[1];
@@ -52,19 +44,6 @@ export async function trade_handler(interaction) {
     if (interaction.user.id != user_id || profile.get(`${interaction.user.id}`, 'play_thread_id') != interaction.channel.id) {
         return interaction.user.send('Stop trying to use other peoples buttons! They are not for you!').catch(() => {});
     }
-
-    let boxButtons = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId(`${pre}exit`).setLabel('Exit').setStyle(ButtonStyle.Danger)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}left`).setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}right`).setEmoji('➡️').setStyle(ButtonStyle.Primary)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}num_label`).setLabel(`${userData.page_num + 1}`).setStyle(ButtonStyle.Primary)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}party_label`).setLabel('Party').setStyle(ButtonStyle.Success)
-        );
 
     let oochTradeButtons = new ActionRowBuilder()
         .addComponents(
@@ -116,14 +95,14 @@ export async function trade_handler(interaction) {
         try {
             let userMsg = await userThread.messages.fetch(userData.trade_msg_id);
             await userMsg.delete().catch(() => {});
-        } catch (e) {}
+        } catch { /* ignore */ }
 
         try {
             let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
             await oppMsg.edit({ content: `**${userData.display_name}** has left the trade.`, embeds: [], components: [] });
             await wait(5000);
             await oppMsg.delete().catch(() => {});
-        } catch (e) {}
+        } catch { /* ignore */ }
 
         trade_sessions.delete(trade_id);
         return;
@@ -223,24 +202,15 @@ export async function trade_handler(interaction) {
                         files: [],
                         components: [oppBoxRow[0], oppBoxRow[1], oppBoxRow[2], oppBoxRow[3], oppBoxButtons]
                     });
-                } catch (e) {}
+                } catch { /* ignore */ }
             } else {
-                // Opponent already offered — just strip the "selected" notification from their message
                 try {
                     let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
                     await oppMsg.edit({
-                        content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
+                        content: `Trading ${oppData.ooch_selected.emote} **${oppData.ooch_selected.nickname}**!\nWaiting for **${userData.display_name}** to select an Oochamon...`,
                     });
-                } catch (e) {}
+                } catch { /* ignore */ }
             }
-        } else {
-            // Opponent hasn't selected yet — just update the header text on their message
-            try {
-                let oppMsg = await oppThread.messages.fetch(oppData.trade_msg_id);
-                await oppMsg.edit({
-                    content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!`,
-                });
-            } catch (e) {}
         }
 
         if (wasConfirmState) {
@@ -270,7 +240,7 @@ export async function trade_handler(interaction) {
                 await oppMsg.edit({
                     content: `**Trade with ${userData.display_name}:**\nPlease select an Oochamon to trade!\n✅ **${userData.display_name} has selected an Oochamon to trade.**`
                 });
-            } catch (e) {}
+            } catch { /* ignore */ }
         }
 
         if (userData.ready_to_trade && oppData.ready_to_trade) {
@@ -292,7 +262,7 @@ export async function trade_handler(interaction) {
                     files: [oppDexPng],
                     components: [tradeConfirmButtons]
                 });
-            } catch (e) {}
+            } catch { /* ignore */ }
 
             let oppTradeConfirmButtons = new ActionRowBuilder()
                 .addComponents(
@@ -309,7 +279,7 @@ export async function trade_handler(interaction) {
                     files: [userDexPng],
                     components: [oppTradeConfirmButtons]
                 });
-            } catch (e) {}
+            } catch { /* ignore */ }
         }
         return;
     }
@@ -331,7 +301,7 @@ export async function trade_handler(interaction) {
                 await oppMsg.edit({
                     content: currentContent + `\n✅ **${userData.display_name} confirmed their trade.**`
                 });
-            } catch (e) {}
+            } catch { /* ignore */ }
         } else {
             let userProfile = profile.get(`${userData.user_id}`);
             let oppProfile = profile.get(`${oppData.user_id}`);
@@ -409,7 +379,7 @@ export async function trade_handler(interaction) {
                     files: [],
                     components: [oppBoxRow[0], oppBoxRow[1], oppBoxRow[2], oppBoxRow[3], oppBoxButtons]
                 });
-            } catch (e) {}
+            } catch { /* ignore */ }
 
             let confirmMsg = await userThread.send(`# Confirmed trade!\nYou have received ${tradedOoch.emote} **${tradedOoch.nickname}** from **${oppData.display_name}**!`);
             let oppConfirmMsg = await oppThread.send(`# Confirmed trade!\nYou have received ${userData.ooch_selected ? userData.ooch_selected.emote : ''} **${userData.ooch_selected ? userData.ooch_selected.nickname : 'the Oochamon'}** from **${userData.display_name}**!`);

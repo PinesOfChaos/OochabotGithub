@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ButtonBuilder, MessageFlags } from 'discord.js';
 import { profile } from '../db.js';
 import { PlayerState, UserType, Weather } from '../types.js';
 import wait from 'wait';
@@ -192,6 +192,8 @@ export async function execute(interaction) {
                     intIsReady = true;
                     await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     await checkReady();
+                } else {
+                    await selected.deferUpdate();
                 }
             });
 
@@ -209,6 +211,8 @@ export async function execute(interaction) {
                     otherIsReady = true;
                     await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     await checkReady();
+                } else {
+                    await selected.deferUpdate();
                 }
             });
 
