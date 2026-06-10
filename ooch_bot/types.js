@@ -1,5 +1,3 @@
-import { Collector } from "discord.js"
-
 // This file handles all enums and special types
 const PlayerState = {
     Intro: 'intro',
@@ -334,6 +332,7 @@ const Move = {
     Concentrate: 157,
     FragmentShot: 158,
     Spear: 159,
+    AllIn: 160
 }
 
 const OochID = {
