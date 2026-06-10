@@ -4,7 +4,6 @@ import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
 import { writeFile } from 'fs';
 import { TextDisplayBuilder } from 'discord.js';
-import { create } from 'domain';
 
 let whitelist_everchange_wild = [
     OochID.Sporbee, OochID.Puppyre, OochID.Roocky, 
@@ -53,8 +52,8 @@ export async function genmap_allmaps(client) {
     }
     await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'everchange_cave_entrance', 24, 16)
 
-    return npc_updates;
     console.log('Generated daily maps.');
+    return npc_updates;
 }
 
 export async function genmap_dungeon(client, area_name, start_size, end_size, themes_array = [], level_min, level_max, exit_map, exit_x, exit_y){
@@ -126,6 +125,8 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         let loc_data = db_profile.location_data;
 
         for(let level of kickout_list){
+            if (loc_data == undefined) continue;
+            if (loc_data.area == undefined) continue;
             if(loc_data.area == level){
                 let checkpoint = db_profile.checkpoint_data;
                 profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
