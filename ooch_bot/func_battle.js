@@ -3113,7 +3113,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     if(move_damage == 0){ crit_multiplier = 1; }
 
     //Check for custom status things
-    for(let effect of move.move_effects){
+    for(let effect of move_effects){
 
         //Damage boost from user / target
         if(effect.status.includes(Status.DamageBoostStatus)){
