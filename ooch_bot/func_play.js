@@ -891,28 +891,11 @@ export async function setup_playspace_str(user_id) {
 
     //Get the map array based on the player's current biome
     let map_obj = maps.get(`${biome.toLowerCase()}`);
-    if (map_obj == undefined) {
-        // Current area is invalid: try falling back to the player's checkpoint
-        let checkpoint = profile.get(`${user_id}`, 'checkpoint_data');
-        if (checkpoint && maps.get(`${checkpoint.area?.toLowerCase()}`)) {
-            player_location = checkpoint;
-            biome = checkpoint.area;
-            playerx = checkpoint.x;
-            playery = checkpoint.y;
-            profile.set(user_id, checkpoint, 'location_data');
-            map_obj = maps.get(`${biome.toLowerCase()}`);
-        } else {
-            // Checkpoint also invalid: reset to default spawn
-            const defaultLocation = { area: 'access_tunnel', x: 23, y: 22 };
-            player_location = defaultLocation;
-            biome = defaultLocation.area;
-            playerx = defaultLocation.x;
-            playery = defaultLocation.y;
-            profile.set(user_id, defaultLocation, 'location_data');
-            profile.set(user_id, defaultLocation, 'checkpoint_data');
-            map_obj = maps.get(biome);
-        }
-    }
+    if (map_obj == undefined) return {
+        components: [new TextDisplayBuilder().setContent('Error, please run /quit')],
+        flags: MessageFlags.IsComponentsV2,
+        mapString: 'Error, please run /quit'
+    };
     let map_arr = map_obj.map_tiles; //this should be the actual map array
 
     // Set player position data into the global multiplayer player position db
