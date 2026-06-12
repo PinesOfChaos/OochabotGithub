@@ -91,7 +91,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
             lv_max = round(level_min + (alpha2 * (level_max - level_min)));
         }
         
-
+        console.log(`- Generating: ${level_name}`)
         let new_level = await genmap_new(level_name, size, size, genmap_theme(themes_array[i]), lv_min, lv_max, em, ex, ey);
         writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
         maps.set(level_lowername, new_level);
@@ -111,40 +111,42 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
     console.log(`- Generated: ${level_name}`)
 
 
-    //Remove all "everchange" flags from players
-    let all_users = profile.entries()
-    for(let user of all_users) {
-        if (user[1].flags == undefined) continue;
-        user[1].flags = user[1].flags.filter((flag) => !flag.includes("everchange"));
-        profile.set(user[0], user[1].flags, 'flags');
-    }
-
-    //Kick players back to their last checkpoint if they're in one of the generated levels
+    //Remove all "everchange" flags from players and kick them back to their checkpoint if they are in a generated map
+    console.log(`- Starting: Moving Players out of Generated Maps`);
     for (let key of profile.keys()) { 
         let db_profile = profile.get(`${key}`);
         let loc_data = db_profile.location_data;
+        let flag_data = db_profile.flags
 
-        for(let level of kickout_list){
-            if (loc_data == undefined) continue;
-            if (loc_data.area == undefined) continue;
-            if(loc_data.area == level){
-                let checkpoint = db_profile.checkpoint_data;
-                profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
-                let playspace_str = await setup_playspace_str(key);
-                // Prepend notification to the map content
-                const notificationText = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n";
-                playspace_str.components[0] = new TextDisplayBuilder().setContent(notificationText + playspace_str.mapString);
-                let thread = client.channels.cache.get(`${db_profile.play_thread_id}`);
-                let msg_to_edit = profile.get(`${key}`, 'display_msg_id');
+        //Remove all "everchange" flags from players
+        if (flag_data != undefined) {
+            flag_data = flag_data.filter((flag) => !flag.includes("everchange"));
+            profile.set(user[0], flag_data, 'flags');
+        }
 
-                if (thread != undefined && thread != false) {
-                    await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
-                        await msg.edit({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
-                    }).catch(() => {});
+        //Kick players back to their last checkpoint if they're in one of the generated levels
+        if(loc_data != undefined && loc_data.area != undefined){
+            for(let level of kickout_list){
+                if(loc_data.area == level){
+                    let checkpoint = db_profile.checkpoint_data;
+                    profile.set(key, { area : checkpoint.area, x : checkpoint.x, y : checkpoint.y }, 'location_data');
+                    let playspace_str = await setup_playspace_str(key);
+                    // Prepend notification to the map content
+                    const notificationText = "**Notification:** Daily dungeons were reset. You have been moved to your last used save point.\n\n";
+                    playspace_str.components[0] = new TextDisplayBuilder().setContent(notificationText + playspace_str.mapString);
+                    let thread = client.channels.cache.get(`${db_profile.play_thread_id}`);
+                    let msg_to_edit = profile.get(`${key}`, 'display_msg_id');
+
+                    if (thread != undefined && thread != false) {
+                        await (thread.messages.fetch(msg_to_edit)).then(async (msg) => {
+                            await msg.edit({ components: playspace_str.components, flags: playspace_str.flags }).catch(() => {});
+                        }).catch(() => {});
+                    }
                 }
             }
         }
     }
+    console.log(`- Finished: Moving Players out of Generated Maps`);
 }
 
 /**
@@ -1278,27 +1280,26 @@ export function genmap_layout(width, height, room_cols, room_rows, room_size_avg
     //Place grass patches
     let spawnzones = []
     for(let i = 0; i < room_cols * room_rows; i++){
-        let grass_done = false;
-        while(!grass_done){
-            let gx = Math.floor(Math.random() * (width - 1));
-            let gy = Math.floor(Math.random() * (height - 1));
-            if(layout[gx][gy] != "floor"){ continue; }
+        
+        let gx = Math.floor(Math.random() * (width - 1));
+        let gy = Math.floor(Math.random() * (height - 1));
+        if(layout[gx][gy] != "floor"){ continue; }
 
-            let gw = Math.floor((Math.random() * 2) + 1);
-            let gh = Math.floor((Math.random() * 2) + 1);
-            for(let j = gx - gw; j < gx + gw + 1; j++){
-                for(let k = gy - gh; k < gy + gh + 1; k++){
-                    if(layout[j][k] == "floor"){ layout[j][k] = "grass"; }
-                }
+        let gw = Math.floor((Math.random() * 2) + 1);
+        let gh = Math.floor((Math.random() * 2) + 1);
+        for(let j = gx - gw; j < gx + gw + 1; j++){
+            for(let k = gy - gh; k < gy + gh + 1; k++){
+                if(layout[j][k] == "floor"){ layout[j][k] = "grass"; }
             }
-            grass_done = true;
-            spawnzones.push({
-                x : gx - gw,
-                y : gy - gh,
-                w : gw * 2,
-                h : gh * 2
-            })
         }
+
+        spawnzones.push({
+            x : gx - gw,
+            y : gy - gh,
+            w : gw * 2,
+            h : gh * 2
+        })
+        
     }
 
     
