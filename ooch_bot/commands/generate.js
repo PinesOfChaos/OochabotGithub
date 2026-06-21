@@ -4694,7 +4694,7 @@ export async function execute(interaction, client) {
             [42, Move.GuidedSpire], [-1, Move.FatedThreads]
         ],
         abilities: [Ability.DoubleOrNothing],
-        pre_evo_id: OochID.Coimble, evo_id: OochID.Castacian, evo_lvl: 45, evo_stage: 1
+        pre_evo_id: OochID.Coimble, evo_id: -1, evo_lvl: -1, evo_stage: 1
     });
 
     // Bismote
@@ -5006,7 +5006,7 @@ export async function execute(interaction, client) {
         id: OochID.Castacian,
         emote: get_emote_string('castacian'),
         name: 'Castacian',
-        oochive_entry: 'Its cursed with the losses of yesterday and will definitely whine about them.',
+        oochive_entry: 'It emits colorful glowing lights in order to attract prey in the middle of the night.',
         type: [OochType.Tech, OochType.Stone],
         hp: 11, atk: 13, def: 11, spd: 10, // total 80
         move_list: [
@@ -5019,11 +5019,11 @@ export async function execute(interaction, client) {
         pre_evo_id: -1, evo_id: OochID.Crabandit, evo_lvl: -1, evo_stage: 2
     });
 
-    // Bonjounk
+    // Bonjhounk
     create_monster({
-        id: OochID.Bonjounk,
-        emote: get_emote_string('bonjounk'),
-        name: 'Bonjounk',
+        id: OochID.Bonjhounk,
+        emote: get_emote_string('bonjhounk'),
+        name: 'Bonjhounk',
         oochive_entry: 'An avian Oochamon, it\'s very moody and gets aggressive quite quickly.',
         type: [OochType.Sound, OochType.Martial],
         hp: 15, atk: 15, def: 15, spd: 15, // total 60
@@ -5031,7 +5031,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [-1, Move.Lagspike]
         ],
         abilities: [Ability.SillyGoose],
-        pre_evo_id: OochID.Screal, evo_id: -1, evo_lvl: -1, evo_stage: 0
+        pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0
     });
 
     // // Rosun
@@ -5307,6 +5307,7 @@ export async function execute(interaction, client) {
         try {
             map_data = JSON.parse(data);
         } catch (err) {
+            console.log(data);
             console.log(`Error parsing JSON for map file: ${file}`, err);
             continue;
         }

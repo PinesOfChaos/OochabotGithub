@@ -478,7 +478,7 @@ const OochID = {
     Screal: 137,
     Ghoulette: 138,
     Castacian: 139,
-    Bonjounk: 140, //Earliest catchable Martial Type
+    Bonjhounk: 140, //Earliest catchable Martial Type
 
     //Expansion 2 - Entwined Abyss
     Garnetie: 141,

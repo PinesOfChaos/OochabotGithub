@@ -2474,5 +2474,267 @@
     "description": "Erase a large area of matter from existence to deal massive damage. Doing so lowers the user's ATK.",
     "self_target": false,
     "tags": []
+  },
+  {
+    "id": 146,
+    "name": "Containment Field",
+    "type": "tech",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": 4,
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Unleash a blast of energy that can also SNARE the target.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 147,
+    "name": "Honk",
+    "type": "sound",
+    "damage": 80,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": 7,
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Unleash an unnerving sound that has a chance to EXPOSE the target.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 148,
+    "name": "Crushing Debt",
+    "type": "magic",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": 6,
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "Slam the target with immense debt, which might just leave them DOOMED.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 149,
+    "name": "Collections",
+    "type": "tech",
+    "damage": 70,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "vampire",
+        "chance": 50,
+        "target": 1
+      },
+      {
+        "status": "damage_boost_status6",
+        "chance": 70,
+        "target": 1
+      }
+    ],
+    "description": "Collect what you are owed from the target, draining some of their HP. Damage is doubled against DOOMED targets.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 150,
+    "name": "Chop",
+    "type": "martial",
+    "damage": 30,
+    "accuracy": 100,
+    "effect": [],
+    "description": "The user chops the target with crushing force.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 151,
+    "name": "Flying Kick",
+    "type": "martial",
+    "damage": 65,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_spd_1",
+        "chance": 30,
+        "target": 0
+      }
+    ],
+    "description": "Jump into the air with a high-flying kick. Has a chance to increase the user's SPD.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 152,
+    "name": "Beatdown",
+    "type": "martial",
+    "damage": 40,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "-_def_1",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Launch a series of blows that cripple the target's DEF.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 153,
+    "name": "DoubleStrike",
+    "type": "martial",
+    "damage": 80,
+    "accuracy": 100,
+    "effect": [],
+    "description": "The user blasts the target with concentrated power stored in its limbs.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 154,
+    "name": "Deceptive Blow",
+    "type": "martial",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_eva_1",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user blasts quickly hits the target before dashing away to increase its Evasion.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 155,
+    "name": "Decisive Blow",
+    "type": "martial",
+    "damage": 250,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "recoil",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user uses the last of its strength in a desperate attack.",
+    "battle_desc": "USER put all of their strenghth into this attack!",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 156,
+    "name": "Haymaker",
+    "type": "martial",
+    "damage": 100,
+    "accuracy": 70,
+    "effect": [],
+    "description": "A wild swing that does high damage, but struggles to land consistently",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 157,
+    "name": "Concentrate",
+    "type": "martial",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "+_atk_1",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_acc_2",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user concentrates deeply increasing their ATK and Accuracy.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 158,
+    "name": "Fragment Shot",
+    "type": "stone",
+    "damage": 60,
+    "accuracy": 100,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 100,
+        "target": 1
+      }
+    ],
+    "description": "Fling a barrage of shards that always crit.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 159,
+    "name": "Spear",
+    "type": "martial",
+    "damage": 90,
+    "accuracy": 95,
+    "effect": [
+      {
+        "status": "critical",
+        "chance": 30,
+        "target": 1
+      }
+    ],
+    "description": "The user jabs forward with a precise jab that has a high chance to crit.",
+    "self_target": false,
+    "tags": []
+  },
+  {
+    "id": 160,
+    "name": "All In",
+    "type": "magic",
+    "damage": 0,
+    "accuracy": 100,
+    "effect": [
+      {
+        "chance": 99,
+        "target": 1
+      },
+      {
+        "status": "+_atk_9",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_spd_9",
+        "chance": 100,
+        "target": 0
+      },
+      {
+        "status": "+_acc_9",
+        "chance": 100,
+        "target": 0
+      }
+    ],
+    "description": "The user completely reduces its health in order to maximize its ATK, SPD and Accuracy.",
+    "self_target": true,
+    "tags": []
   }
 ]

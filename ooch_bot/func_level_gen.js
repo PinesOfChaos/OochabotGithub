@@ -121,7 +121,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         //Remove all "everchange" flags from players
         if (flag_data != undefined) {
             flag_data = flag_data.filter((flag) => !flag.includes("everchange"));
-            profile.set(user[0], flag_data, 'flags');
+            profile.set(key, flag_data, 'flags');
         }
 
         //Kick players back to their last checkpoint if they're in one of the generated levels
@@ -648,7 +648,14 @@ export function genmap_ooch_list(level) {
             OochID.Chemerai, 
             OochID.Symaat,
             OochID.Heraloom,
-            OochID.Ophicore
+            OochID.Ophicore,
+
+            OochID.Jawful,
+            OochID.Pangolm,
+            OochID.Tarat,
+            OochID.Screal,
+            OochID.Castacian,
+            OochID.Bonjhounk
         ].includes(mon.id))));
     
     for(let ooch of ooch_list){
@@ -684,6 +691,11 @@ export function genmap_spawnzone(x, y, w, h, min_level, max_level, types_primary
     for(let i = 0; i < types.length; i++){
         let options = genmap_ooch_list(min_level);
         options.filter((o) => o.type.includes(types[i]));
+        if(options.length == 0){
+            i--;
+            continue;
+        }
+        
 
         spawn_slots.push({
             min_level : min_level,
@@ -691,7 +703,7 @@ export function genmap_spawnzone(x, y, w, h, min_level, max_level, types_primary
             ooch_id : sample(options).id
         })
     };
-    
+
     let spawnzone = {
         x : x,
         y : y, 
@@ -1280,29 +1292,29 @@ export function genmap_layout(width, height, room_cols, room_rows, room_size_avg
     //Place grass patches
     let spawnzones = []
     for(let i = 0; i < room_cols * room_rows; i++){
-        
-        let gx = Math.floor(Math.random() * (width - 1));
-        let gy = Math.floor(Math.random() * (height - 1));
-        if(layout[gx][gy] != "floor"){ continue; }
+        let grass_done = false;
+        while(!grass_done){
+            let gx = Math.floor(Math.random() * (width - 1));
+            let gy = Math.floor(Math.random() * (height - 1));
+            if(layout[gx][gy] != "floor"){ continue; }
 
-        let gw = Math.floor((Math.random() * 2) + 1);
-        let gh = Math.floor((Math.random() * 2) + 1);
-        for(let j = gx - gw; j < gx + gw + 1; j++){
-            for(let k = gy - gh; k < gy + gh + 1; k++){
-                if(layout[j][k] == "floor"){ layout[j][k] = "grass"; }
+            let gw = Math.floor((Math.random() * 2) + 1);
+            let gh = Math.floor((Math.random() * 2) + 1);
+            for(let j = gx - gw; j < gx + gw + 1; j++){
+                for(let k = gy - gh; k < gy + gh + 1; k++){
+                    if(layout[j][k] == "floor"){ layout[j][k] = "grass"; }
+                }
             }
+            grass_done = true;
+            spawnzones.push({
+                x : gx - gw,
+                y : gy - gh,
+                w : gw * 2,
+                h : gh * 2
+            })
         }
-
-        spawnzones.push({
-            x : gx - gw,
-            y : gy - gh,
-            w : gw * 2,
-            h : gh * 2
-        })
-        
     }
 
-    
     //Add start and end points
     layout[start_pos.x][start_pos.y] = "start";
     layout[end_pos.x][end_pos.y] = "end";
@@ -1311,24 +1323,6 @@ export function genmap_layout(width, height, room_cols, room_rows, room_size_avg
     for(let spot of optional_spots){
         layout[spot.x][spot.y] = "misc";
     }
-
-    // let layout_text = '';
-    // for(let j = 1; j < height; j++){
-    //     for(let i = 0; i < width; i++){
-    //         switch(layout[i][j]){
-    //             case "wall":    layout_text += "[]"; break;
-    //             case "floor":   layout_text += ".."; break;
-    //             case "grass":   layout_text += "ww"; break;
-    //             case "edge":    layout_text += "II"; break;
-    //             case "decor":   layout_text += "oo"; break;
-                
-    //             case "misc":    layout_text += "XX"; break;
-    //             case "start":   layout_text += "SS"; break;
-    //             case "end":     layout_text += "EE"; break;
-    //         }
-    //     }
-    //     layout_text += "\n"
-    // }
 
     return {
         layout : layout,

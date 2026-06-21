@@ -26,6 +26,7 @@ import {
     clamp,
     inRange,
     isNumber,
+    isString,
     isUndefined,
     lowerCase,
     max as _max,
@@ -3114,9 +3115,8 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
 
     //Check for custom status things
     for(let effect of move_effects){
-
         //Damage boost from user / target
-        if(effect.status.includes(Status.DamageBoostStatus)){
+        if(isString(effect.status) && effect.status.includes(Status.DamageBoostStatus)){
             let status_check = effect.status.replace(Status.DamageBoostStatus,"");
             let mon_check = (effect.target == MoveTarget.Enemy) ? defender : attacker;
             if(mon_check.status_effects.includes(status_check)){
