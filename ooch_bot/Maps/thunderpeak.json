@@ -953,7 +953,6 @@
 	"map_shops": [
 		{
 			"greeting_dialog": "*Bzrrt* Shop protocol initializing...",
-			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
 			"image": "",
 			"special_items": [],
 			"type": "default",

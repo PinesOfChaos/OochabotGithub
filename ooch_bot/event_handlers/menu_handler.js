@@ -497,6 +497,10 @@ export async function menu_handler(interaction, init=false) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'move_list').filter(mv => mv[0] == -1).length == 0 || ooch_party[i].unlocked_special_move == true) disableOochButton = true;
                 } else if (item.type == ItemType.AbilitySwap) {
                     if (monster_data.get(`${ooch_party[i].id}`, 'abilities').length == 1) disableOochButton = true;
+                } else if (item.type == ItemType.Potion) {
+                    if (ooch_party[i].current_hp >= ooch_party[i].stats.hp) disableOochButton = true;
+                } else if (item.type == ItemType.GiveExp || item.type == ItemType.LevelUp) {
+                    if (ooch_party[i].level >= 50) disableOochButton = true;
                 }
 
                 ((i <= 1) ? party : party_2).addComponents(

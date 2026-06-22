@@ -375,7 +375,7 @@ export async function genmap_new(name, width, height, theme, level_min, level_ma
     if(has_shops){
         tiles[start_pos.x + 1][start_pos.y] = "t00_007";
         shops.push({
-            greeting_dialogueue : "Main System Initiating Shopkeep Mode",
+            greeting_dialog : "Main System Initiating Shopkeep Mode",
             image : "",
             special_items : [],
             type : "default",

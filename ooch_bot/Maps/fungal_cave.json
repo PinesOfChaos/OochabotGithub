@@ -646,7 +646,6 @@
 	"map_shops": [
 		{
 			"greeting_dialog": "Please insert Oochabux to despense product!",
-			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
 			"image": "",
 			"special_items": [],
 			"type": "default",

@@ -432,7 +432,6 @@
 	"map_shops": [
 		{
 			"greeting_dialog": "*kzzzt* Please enter `currency` to recieve `product`.",
-			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
 			"image": "",
 			"special_items": [],
 			"type": "default",

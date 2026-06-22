@@ -16,6 +16,7 @@ import {event_from_npc, event_process} from './func_event.js';
 import {check_chance, get_emote_string} from "./func_other.js";
 import {init_shop_state} from "./event_handlers/shop_handler.js";
 import wait from "wait";
+import { Canvas, loadImage } from "skia-canvas";
 
 let wild_encounter_buttons = new ActionRowBuilder()
     .addComponents(
@@ -402,25 +403,41 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                 await update_position(user_id, map_name, playerx, playery, previous_positions);
                 profile.set(user_id, PlayerState.Shop, 'player_state');
 
+                // Setup the background shop image
+                let canvas = new Canvas(600, 600);
+                let ctx = canvas.getContext("2d");
+                
+                // Draw the background
+                const background = await loadImage(`./Art/ShopImages/StorefrontBlank.png`);
+                ctx.drawImage(background, 0, 0, 600, 600);
+
                 let profile_flags = profile.get(`${user_id}`, 'flags');
                 let shopSelectOptions = shop_list_from_flags(obj, profile_flags)
 
                 shopSelectOptions = shopSelectOptions.flat(1);
                 shopSelectOptions = [...new Set(shopSelectOptions)];
-                shopSelectOptions = shopSelectOptions.map(id => {
+                shopSelectOptions = await Promise.all(shopSelectOptions.map(async id => {
                     let db_item_data = item_data.get(`${id}`);
                     let inv_item_data = get_inv_item(user_id, db_item_data.category, id);
+                    let itemImage;
+
+                    // Do quick shop image stuff in between
+                    if (id == Item.Potion && shopSelectOptions.length < 3) {
+                        itemImage = await loadImage(`./Art/ShopImages/${id}alt.png`);
+                    } else {
+                        itemImage = await loadImage(`./Art/ShopImages/${id}.png`);
+                    }
+                    ctx.drawImage(itemImage, 0, 0, 600, 600);
+
                     return {
                         label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
                         description: db_item_data.description_short.slice(0, 100),
                         value: `${id}`,
                         emoji: db_item_data.emote,
                     }
-                });
+                }));
 
                 let oochabux = profile.get(`${user_id}`, 'oochabux');
-
-                init_shop_state(user_id, obj);
 
                 let shop_pre = `shop_${user_id}_`;
                 let shopSelectMenu = new ActionRowBuilder()
@@ -439,23 +456,21 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                             .setStyle(ButtonStyle.Danger)
                     );
 
-                let shopImage = new AttachmentBuilder(`./Art/ShopImages/shopPlaceholder.png`);
-                let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });
-                let shopHeader = new TextDisplayBuilder()
-                    .setContent(`## Shop`);
-                let shopText = new TextDisplayBuilder()
-                    .setContent(`${obj.greeting_dialogue}`);
-                let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large)
+                let pngData = canvas.toBufferSync('png');
+                init_shop_state(user_id, obj, pngData);
+
+                let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shop.png' } });
+                let shopGreeting = new TextDisplayBuilder().setContent(`### ${obj.greeting_dialog}`);
+                let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small);
 
                 let shopContainer = new ContainerBuilder()
-                    .addTextDisplayComponents(shopHeader)
                     .addMediaGalleryComponents(shopGallery)
-                    .addTextDisplayComponents(shopText)
+                    .addTextDisplayComponents(shopGreeting)
                     .addSeparatorComponents(shopSpacer)
                     .addActionRowComponents(shopSelectMenu)
                     .addActionRowComponents(shop_back_button);
 
-                await thread.send({ components: [shopContainer], files: [shopImage], flags: MessageFlags.IsComponentsV2 });
+                await thread.send({ components: [shopContainer], files: [{ attachment: pngData, name: 'shop.png' }], flags: MessageFlags.IsComponentsV2 });
                 
                 // Delete the current playspace
                 let playspace_msg = await thread.messages.fetch(profile.get(`${user_id}`, 'display_msg_id')).catch(() => {});

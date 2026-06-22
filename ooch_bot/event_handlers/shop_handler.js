@@ -3,6 +3,8 @@ import { item_data, profile, shop_data } from "../db.js";
 import { get_inv_item, setup_playspace_str, shop_list_from_flags, add_item } from "../func_play.js";
 import { PlayerState } from "../types.js";
 
+const shop_image_cache = new Map();
+
 export async function shop_handler(interaction) {
     let customId, selected;
     let user_id = interaction.user.id;
@@ -73,21 +75,18 @@ export async function shop_handler(interaction) {
     }
 
     function buildShopContainer(shopTextContent, actionRows) {
-        let greetingDialogue = shop_state.shop_obj?.greeting_dialogue || '';
-        let shopHeader = new TextDisplayBuilder().setContent(`## Shop`);
-        let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shopPlaceholder.png' } });
-        let shopGreeting = new TextDisplayBuilder().setContent(greetingDialogue);
-        let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large);
-        let shopText = false;
-        if (shopTextContent) shopText = new TextDisplayBuilder().setContent(shopTextContent);
+        let greetingDialogue = shop_state.shop_obj?.greeting_dialog || '';
+        let shopGallery = new MediaGalleryBuilder().addItems({ media: { url: 'attachment://shop.png' } });
+        let shopGreeting = new TextDisplayBuilder().setContent(`### ${greetingDialogue}`);
+        let shopSpacer = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small);
+        let shopText = shopTextContent ? new TextDisplayBuilder().setContent(shopTextContent) : null;
 
         let shopContainer = new ContainerBuilder()
-            .addTextDisplayComponents(shopHeader)
             .addMediaGalleryComponents(shopGallery)
             .addTextDisplayComponents(shopGreeting)
             .addSeparatorComponents(shopSpacer);
-        if (shopText) shopContainer
-            .addTextDisplayComponents(shopText);
+
+        if (shopText) shopContainer.addTextDisplayComponents(shopText);
 
         for (let row of actionRows) {
             shopContainer.addActionRowComponents(row);
@@ -96,8 +95,14 @@ export async function shop_handler(interaction) {
         return shopContainer;
     }
 
+    function shopImageFiles() {
+        let img = shop_image_cache.get(user_id);
+        return img ? [{ attachment: img, name: 'shop.png' }] : [];
+    }
+
     if (action == 'back') {
         shop_data.delete(user_id);
+        shop_image_cache.delete(user_id);
         profile.set(user_id, PlayerState.Playspace, 'player_state');
         let playspace_str = await setup_playspace_str(user_id);
         let play_msg = await interaction.channel.send({ components: playspace_str.components, flags: playspace_str.flags });
@@ -120,7 +125,7 @@ export async function shop_handler(interaction) {
                 [shopSelectMenu, back_button]
             );
 
-            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -131,7 +136,7 @@ export async function shop_handler(interaction) {
                 [shopSelectMenu, back_button]
             );
 
-            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -180,7 +185,7 @@ export async function shop_handler(interaction) {
 
         let shopContainer = buildShopContainer(purchaseTextContent, actionRows);
 
-        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+        await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
         return;
     }
 
@@ -195,7 +200,7 @@ export async function shop_handler(interaction) {
             [shopSelectMenu, back_button]
         );
 
-        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+        await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
         return;
     }
 
@@ -226,7 +231,7 @@ export async function shop_handler(interaction) {
                 [shopSelectMenu, back_button]
             );
 
-            await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+            await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
             return;
         }
 
@@ -245,14 +250,15 @@ export async function shop_handler(interaction) {
             [shopSelectMenu, back_button]
         );
 
-        await interaction.update({ components: [shopContainer], flags: MessageFlags.IsComponentsV2 });
+        await interaction.update({ components: [shopContainer], files: shopImageFiles(), flags: MessageFlags.IsComponentsV2 });
     }
 }
 
-export function init_shop_state(user_id, shop_obj) {
+export function init_shop_state(user_id, shop_obj, shop_image = null) {
     shop_data.set(user_id, {
         user_id: user_id,
         selected_item: null,
         shop_obj: shop_obj
     });
+    if (shop_image) shop_image_cache.set(user_id, shop_image);
 }

@@ -45,7 +45,7 @@
 	"map_savepoints": [],
 	"map_shops": [
 		{
-			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
+			"greeting_dialog": "Welcome in. Buy whatever you need then get out.",
 			"image": "",
 			"special_items": [],
 			"type": "default",

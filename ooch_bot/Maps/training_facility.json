@@ -1061,7 +1061,6 @@
 	"map_shops": [
 		{
 			"greeting_dialog": "Initiating shop protocol...",
-			"greeting_dialogue": "Welcome to my store. Buy whatever you need below!",
 			"image": "",
 			"special_items": [],
 			"type": "default",
