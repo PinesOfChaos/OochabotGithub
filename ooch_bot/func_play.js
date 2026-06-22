@@ -428,8 +428,8 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                         } else {
                             itemImage = await loadImage(`./Art/ShopImages/${id}.png`);
                         }
+                        ctx.drawImage(itemImage, 0, 0, 600, 600);
                     }
-                    ctx.drawImage(itemImage, 0, 0, 600, 600);
 
                     return {
                         label: `${db_item_data.name} (${inv_item_data ? inv_item_data.quantity : 0 }/50) [$${db_item_data.price}]`,
