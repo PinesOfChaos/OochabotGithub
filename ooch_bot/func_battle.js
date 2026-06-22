@@ -3054,8 +3054,13 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let status_blind = (attacker.status_effects.includes(Status.Blind) ? .65 : 1);
     let status_exposed = (defender.status_effects.includes(Status.Expose) ? 2 : 1);
     let recoil_damage = Math.round((move_effects.find(effect => effect.status === "recoil")?.chance / 100 || 0) * attacker.stats.hp);
+    //Recoil values of 99 should set the using ooch's HP to 1
     let set_hp_to_1 = false;
-    if(move_effects.find(effect => effect.status === "recoil")?.chance || 0 == 99){ set_hp_to_1 = true; recoil_damage = 0; }
+    if((move_effects.find(effect => effect.status === "recoil")?.chance || 0) == 99){ 
+        set_hp_to_1 = true; 
+        recoil_damage = 0; 
+    }
+
     let vampire_heal = (move_effects.find(effect => effect.status === "vampire")?.chance / 100 || 0)
     let move_heal = (move_effects.find(effect => effect.status === "heal")?.chance / 100 || 0)
     let defender_field_text = ``;
