@@ -1,5 +1,5 @@
 import {events_data, item_data, maps, monster_data, player_positions, profile, tile_data} from "./db.js";
-import {Flags, Item, PlayerState, StanceForms, Tile, UserType, Weather, Zone} from './types.js';
+import {Flags, Item, ItemCategory, PlayerState, StanceForms, Tile, UserType, Weather, Zone} from './types.js';
 import {
     ActionRowBuilder,
     AttachmentBuilder,
@@ -422,10 +422,12 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     let itemImage;
 
                     // Do quick shop image stuff in between
-                    if (id == Item.Potion && shopSelectOptions.length < 3) {
-                        itemImage = await loadImage(`./Art/ShopImages/${id}alt.png`);
-                    } else {
-                        itemImage = await loadImage(`./Art/ShopImages/${id}.png`);
+                    if (db_item_data.category != ItemCategory.Skin) {
+                        if (id == Item.Potion && shopSelectOptions.length < 3) {
+                            itemImage = await loadImage(`./Art/ShopImages/${id}alt.png`);
+                        } else {
+                            itemImage = await loadImage(`./Art/ShopImages/${id}.png`);
+                        }
                     }
                     ctx.drawImage(itemImage, 0, 0, 600, 600);
 
