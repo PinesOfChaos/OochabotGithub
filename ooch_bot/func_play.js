@@ -422,7 +422,7 @@ export async function move(thread, user_id, direction, dist = 1, encounter_chanc
                     let itemImage;
 
                     // Do quick shop image stuff in between
-                    if (db_item_data.category != ItemCategory.Skin) {
+                    if (db_item_data.category != ItemCategory.Skin && db_item_data.category != ItemCategory.Treat) {
                         if (id == Item.Potion && shopSelectOptions.length < 3) {
                             itemImage = await loadImage(`./Art/ShopImages/${id}alt.png`);
                         } else {
