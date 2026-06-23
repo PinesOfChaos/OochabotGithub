@@ -2519,14 +2519,14 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
         }
     } else if (db_item_data.type == ItemType.Status) {
         let return_string = false;
-        if (db_item_data.potency !== 'All') {
+        if (String(db_item_data.potency).toLowerCase() !== 'all') {
             let db_status_data = status_data.get(`${db_item_data.potency}`)
             ooch.status_effects = ooch.status_effects.filter(v => v != db_item_data.potency);
-            if (!db_status_data.emote) {
+            if (!db_status_data?.emote) {
                 return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
             } else {
                 return_string = `\n${ooch.emote} **${ooch.nickname}** recovered from its ${db_status_data.emote} **${db_status_data.name}**.`
-            }   
+            }
         } else {
             ooch.status_effects = [];
             return_string = `\n${ooch.emote} **${ooch.nickname}** had its status effects removed.`
@@ -4220,7 +4220,7 @@ export function level_up(ooch) {
             evoData = monster_data.get(`${monster_data.get(`${ooch.id}`, 'evo_id')}`);
         }
 
-        output =  `\n⬆️ ${monster_data.get(`${ooch.id}`, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
+        output =  `\n\n⬆️ ${monster_data.get(`${ooch.id}`, 'emote')} **${ooch.nickname}** leveled up **${level_counter}** time${level_counter > 1 ? 's' : ''} and is now **level ${ooch.level}**!` +
         `${(evoData != false) ? `\n⬆️ **${ooch.nickname} is now able to evolve in the party menu!**\n` : ``}` +
         `${(possibleMoves.length != 0) ? `\n**${ooch.nickname}** learned ${possibleMoves.length > 1 ? `some new moves` : `a new move`}!\n${possibleMoves.join('\n')}${curOochMoveset.length <= 4 && ooch.moveset.length > 4 ? `\nYou can teach these moves to your Oochamon in the party menu!` : ``}` : `` }`;
     }

@@ -1,38 +1,3 @@
-/*
-
-Battle Menu
-    var battle_str = `battle_${battle_id}`
-
-    `${battle_str}_fight_${StanceForms.NoChange}` //Use StanceForms.NoChange when going into fight from the main battle menu
-        
-        `${battle_str}_fight_move1_${stance}` + move selected
-        `${battle_str}_fight_move2_${stance}` + move selected
-        `${battle_str}_fight_move3_${stance}` + move selected
-        `${battle_str}_fight_move4_${stance}` + move selected
-        `${battle_str}_fight_back`
-        `${battle_str}_fight_stance` //Selecting a stance here goes back to the previous menu level, but replaces StanceForms.NoChange 
-
-
-    `${battle_str}_switch`
-        `${battle_str}_switch_1`
-        `${battle_str}_switch_2`
-        `${battle_str}_switch_3`
-        `${battle_str}_switch_4`
-        `${battle_str}_switch_back`
-
-    `${battle_str}_bag`
-        `${battle_str}_bag_heal`
-        `${battle_str}_bag_prism`
-        `${battle_str}_bag_back`
-    
-        
-    `${battle_str}_battle_end`
-
-    battle_{battle_id}_{userid}_run
-
-
-*/
-
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ContainerBuilder, MessageFlags, StringSelectMenuBuilder, TextDisplayBuilder } from "discord.js";
 import { ability_data, battle_data, item_data, monster_data, move_data, profile, stance_data, status_data } from "../db.js";
 import { finish_battle, get_stance_options, new_battle_action_attack, new_battle_action_heal, new_battle_action_prism, new_battle_action_run, new_battle_action_stance_change, new_battle_action_switch, process_battle_actions, type_effectiveness, type_to_emote } from "../func_battle.js";
@@ -646,6 +611,7 @@ export async function battle_handler(interaction) {
         healSelectButtons2 = new ActionRowBuilder();
 
         if (customId == `${pre}heal_item_select`) {
+            const selected_item_data = item_data.get(`${selected}`);
             for (let slot = 0; slot < ooch_inv.length; slot++) {
                 ooch_check = ooch_inv[slot];
                 ooch_emote = monster_data.get(`${ooch_check.id}`, 'emote');
@@ -657,9 +623,15 @@ export async function battle_handler(interaction) {
                 if (slot == user.active_slot) {
                     ooch_button_color = ButtonStyle.Success;
                 }
-                
-                if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) {
-                    ooch_disable = true;
+
+                if (selected_item_data.type == ItemType.Status) {
+                    const potency = String(selected_item_data.potency).toLowerCase();
+                    const hasRelevantStatus = potency === 'all'
+                        ? ooch_check.status_effects.length > 0
+                        : ooch_check.status_effects.includes(selected_item_data.potency);
+                    if (ooch_check.current_hp <= 0 || !hasRelevantStatus) ooch_disable = true;
+                } else {
+                    if (ooch_check.current_hp <= 0 || ooch_check.current_hp == ooch_check.stats.hp) ooch_disable = true;
                 }
 
                 ((slot <= 1) ? healSelectButtons1 : healSelectButtons2).addComponents(
