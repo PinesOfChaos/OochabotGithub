@@ -65,12 +65,24 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
 
     let selected_db = interaction.options.getSubcommand();
-    let selected_id = selected_db == 'move' ? interaction.options.getString('move') : (selected_db == 'status' ? interaction.options.getString('status') : interaction.options.getString('ability'));
-    if (selected_db == 'item') selected_id = interaction.options.getString('item');
+    const selected_id_map = { move: 'move', ability: 'ability', status: 'status', item: 'item', weather: 'weather', field_effect: 'field_effect' };
+    let selected_id = selected_id_map[selected_db] ? interaction.options.getString(selected_id_map[selected_db]) : null;
 
     if (['move', 'ability', 'status', 'item'].includes(selected_db)) {
         if (isNaN(selected_id)) {
-            return interaction.reply('Make sure you select from one of the drop down options, don\'t type this in manually!');
+            const db_map = { move: move_data, ability: ability_data, status: status_data, item: item_data };
+            const db = db_map[selected_db];
+            const query = selected_id.toLowerCase().trim();
+            const entries = db.values();
+            // Prefer exact name match, then startsWith, then contains
+            const exact = entries.find(e => e.name.toLowerCase() === query);
+            const starts = !exact && entries.find(e => e.name.toLowerCase().startsWith(query));
+            const contains = !exact && !starts && entries.find(e => e.name.toLowerCase().includes(query));
+            const match = exact || starts || contains;
+            if (!match) {
+                return interaction.reply({ content: `Couldn't find a ${selected_db} matching "${selected_id}". Try selecting from the dropdown!`, flags: MessageFlags.Ephemeral });
+            }
+            selected_id = `${match.id}`;
         }
     }
 
