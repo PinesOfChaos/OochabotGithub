@@ -1051,12 +1051,10 @@ export async function process_battle_actions(battle_id){
 
     let switch_needed = false;
     let has_end_of_round_text = false;
+    let end_of_round_header = `## ------ End of Round ------`;
+    let end_of_round_text = ``;
 
-    if (!finish_battle) {
-
-        //End of round stuff
-        let end_of_round_header = `## ------ End of Round ------`;
-        let end_of_round_text = ``;
+    if (!finish_battle) {     
 
         //Apply end of round abilities/effects (burn, stat changes, etc.)
         let ooch, eot_result, slot;
