@@ -90,6 +90,7 @@ export async function battle_handler(interaction) {
     let battle_id = customId_data[1];
     let user_index = parseInt(customId_data[2]);
     let db_battle_data = battle_data.get(`${battle_id}`);
+    if (!db_battle_data) return interaction.deferUpdate().catch(() => {});
     let user = db_battle_data.users[user_index];
     let user_profile = profile.get(`${user.user_id}`);
 
@@ -184,17 +185,13 @@ export async function battle_handler(interaction) {
     // Run functions
 
     // END BATTLE
-    if (customId.startsWith(`battle_${battle_id}_0_end_battle`)) {
+    if (customId.startsWith(`${pre}end_battle`)) {
         const endText = new TextDisplayBuilder().setContent('Ending battle...');
         const endContainer = new ContainerBuilder().addTextDisplayComponents(endText);
         await interaction.update({ components: [endContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
         await interaction.deleteReply().catch(() => {});
 
-        for(let user of db_battle_data.users) {
-            if(user.is_player){
-                await finish_battle(db_battle_data, user.user_index);
-            }
-        }
+        await finish_battle(db_battle_data, user_index);
     }
 
     // MAIN BACK

@@ -4134,6 +4134,8 @@ export async function finish_battle(db_battle_data, user_index, play_end = false
     db_battle_data.users[user_index].is_player = false;
     if (!db_battle_data.users.some((user) => user.is_player)) {
         battle_data.delete(db_battle_data.battle_id);
+    } else {
+        battle_data.set(db_battle_data.battle_id, db_battle_data);
     }
     
     if (battle_won === true && is_online == false && play_end == false) {

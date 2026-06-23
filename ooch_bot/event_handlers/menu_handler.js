@@ -1234,6 +1234,7 @@ export async function menu_handler(interaction, init=false) {
 
         if (user_profile.walk_taken) taming_buttons.components[2].setDisabled(true);
         profile.set(interaction.user.id, user_profile.ooch_party, 'ooch_party');
+        menu_data.set(menu_id, { ...menu_state, selected_ooch });
 
         const feedResultContainer = buildTamingContainer(selected_ooch, taming_status, taming_feed_text, [taming_buttons, sel_ooch_back_button]);
         interaction.update({ components: [feedResultContainer], files: [taming_image], flags: MessageFlags.IsComponentsV2 });
