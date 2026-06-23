@@ -988,7 +988,7 @@ export async function process_battle_actions(battle_id){
         } else {
             if (user.battle_sprite != undefined && user.battle_sprite != false) {
 
-                battle_sprite_files = [new AttachmentBuilder(`./Art/NPCs/${user.battle_sprite}.png`)]
+                battle_sprite_files = [new AttachmentBuilder(`./Art/ResizedArt/${user.battle_sprite}.png`)]
                 battle_sprite_icon = `attachment://${user.battle_sprite}.png`;
 
                 if (action.action_type == BattleAction.Attack ||
@@ -3882,7 +3882,7 @@ export async function generate_battle_image(db_battle_data, user_index, battle_b
                     y : user_y,
                     origin_x : 16,
                     origin_y : 32,
-                    sprite : `./Art/NPCs/${user.battle_sprite}.png`,
+                    sprite : `./Art/ResizedArt/${user.battle_sprite}.png`,
                     x_scale : user_x < center_x ? -1 : 1,
                     y_scale : 1,
                     ooch_info : false,

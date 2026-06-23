@@ -88,7 +88,7 @@ export async function dialogueEvent(user_id, thread, obj_content) {
         let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
             portraitFileName = obj_content.dialogue_portrait.split('|')[1];
-            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
+            imageFiles.push(get_art_file(`./Art/ResizedArt/${portraitFileName}`));
         } else {
             portraitFileName = obj_content.dialogue_portrait;
             imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
@@ -248,7 +248,7 @@ export async function oochPickEvent(user_id, thread, obj_content) {
         let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
             portraitFileName = obj_content.dialogue_portrait.split('|')[1];
-            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
+            imageFiles.push(get_art_file(`./Art/ResizedArt/${portraitFileName}`));
         } else {
             portraitFileName = obj_content.dialogue_portrait;
             imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
@@ -406,7 +406,7 @@ export async function optionsEvent(user_id, thread, obj_content) {
         let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
             portraitFileName = obj_content.dialogue_portrait.split('|')[1];
-            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
+            imageFiles.push(get_art_file(`./Art/ResizedArt/${portraitFileName}`));
         } else {
             portraitFileName = obj_content.dialogue_portrait;
             imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
@@ -504,7 +504,7 @@ export async function setSkinEvent(user_id, thread, obj_content) {
         let portraitFileName;
         if (obj_content.dialogue_portrait.toLowerCase().includes('npc|')) {
             portraitFileName = obj_content.dialogue_portrait.split('|')[1];
-            imageFiles.push(get_art_file(`./Art/NPCs/${portraitFileName}`));
+            imageFiles.push(get_art_file(`./Art/ResizedArt/${portraitFileName}`));
         } else {
             portraitFileName = obj_content.dialogue_portrait;
             imageFiles.push(get_art_file(`./Art/Portraits/${portraitFileName}`));
