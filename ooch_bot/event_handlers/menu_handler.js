@@ -278,7 +278,7 @@ export async function menu_handler(interaction, init=false) {
             container.addTextDisplayComponents(header);
 
             let statsText = `*${ooch.oochive_entry}*\n`;
-            statsText += `### Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
+            statsText += `### Base Stats:\nHP: **${ooch.hp}** | ATK: **${ooch.atk}** | DEF: **${ooch.def}** | SPD: **${ooch.spd}**\n`;
             statsText += `### Abilities:\n${dexData.abilities.join(', ')}\n`;
             statsText += `### Locations:`;
             if (ooch.spawn_locations.length > 0) {
