@@ -18,6 +18,7 @@ export async function menu_handler(interaction, init=false) {
             party_idx: 0,
             move_sel_idx: 0,
             dex_page_num: 1,
+            dex_ooch_id: 0,
             selected_ooch: null
         });
     }
@@ -108,15 +109,13 @@ export async function menu_handler(interaction, init=false) {
             new ButtonBuilder().setCustomId(`${pre}key_button`).setStyle(ButtonStyle.Secondary).setEmoji('🔑')).addComponents(
             new ButtonBuilder().setCustomId(`${pre}skin_button`).setStyle(ButtonStyle.Secondary).setEmoji(get_emote_string('c_000')));
 
-    // Dex arrows
-    let dex_arrows = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setCustomId(`${pre}dex_left`).setEmoji('⬅️').setStyle(ButtonStyle.Primary)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}dex_right`).setEmoji('➡️').setStyle(ButtonStyle.Primary)
-        ).addComponents(
-            new ButtonBuilder().setCustomId(`${pre}main_back`).setLabel('Back').setStyle(ButtonStyle.Danger)
-        );
+    function buildDexNav(is_caught) {
+        return new ActionRowBuilder()
+            .addComponents(new ButtonBuilder().setCustomId(`${pre}dex_left`).setEmoji('⬅️').setStyle(ButtonStyle.Primary))
+            .addComponents(new ButtonBuilder().setCustomId(`${pre}dex_right`).setEmoji('➡️').setStyle(ButtonStyle.Primary))
+            .addComponents(new ButtonBuilder().setCustomId(`${pre}dex_moves`).setLabel('View Moves').setEmoji('📋').setStyle(ButtonStyle.Primary).setDisabled(!is_caught))
+            .addComponents(new ButtonBuilder().setCustomId(`${pre}main_back`).setLabel('Back').setStyle(ButtonStyle.Danger));
+    }
 
     // Taming Buttons
     let taming_buttons = new ActionRowBuilder()
@@ -299,6 +298,7 @@ export async function menu_handler(interaction, init=false) {
                 container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small));
                 container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`*${dexData.evoText}*`));
             }
+
         } else {
             container.addTextDisplayComponents(new TextDisplayBuilder().setContent('You have not caught this Oochamon yet! Go out there and catch it in the wild!'));
         }
@@ -396,6 +396,7 @@ export async function menu_handler(interaction, init=false) {
     let move_sel_idx = menu_state.move_sel_idx;
     let selected_ooch = menu_state.selected_ooch;
     let dex_page_num = menu_state.dex_page_num;
+    let dex_ooch_id = menu_state.dex_ooch_id ?? 0;
 
     let pref_data = user_profile.settings;
     let pref_desc = [`Show Controls Message: **${pref_data.controls_msg === true ? `✅` : `❌`}**`,
@@ -618,13 +619,31 @@ export async function menu_handler(interaction, init=false) {
             is_caught = oochadex_data[ooch_data.id] && oochadex_data[ooch_data.id].caught > 0;
         }
 
+        let moveListText = '';
+        if (is_caught && ooch_data) {
+            let sortedMoves = [...ooch_data.move_list].sort((a, b) => {
+                if (a[0] == -1) return 1;
+                if (b[0] == -1) return -1;
+                return a[0] - b[0];
+            });
+            moveListText = '### Learnable Moves:\n';
+            for (let [lvl, move_id] of sortedMoves) {
+                let mv = move_data.get(`${move_id}`);
+                if (!mv) continue;
+                moveListText += lvl == -1
+                    ? `- ★ **${mv.name}** ${type_to_emote(mv.type)}\n`
+                    : `- Lv. **${lvl}** - ${mv.name} ${type_to_emote(mv.type)}\n`;
+            }
+        }
+
         return {
             sel_row: oochadex_sel_1,
             img: ooch_img_file,
             is_caught: is_caught,
             oochData: ooch_data,
             abilities: ooch_abilities,
-            evoText: evoText
+            evoText: evoText,
+            moveListText: moveListText
         };
     }
 
@@ -1650,11 +1669,11 @@ export async function menu_handler(interaction, init=false) {
     if (action == 'oochadex') {
         let dexData = await buildDexData(1, 0);
         dex_page_num = 1;
+        dex_ooch_id = 0;
 
-        // Update menu state
-        menu_data.set(menu_id, { ...menu_state, dex_page_num });
+        menu_data.set(menu_id, { ...menu_state, dex_page_num, dex_ooch_id });
 
-        const dexContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
+        const dexContainer = buildDexContainer(dexData, [dexData.sel_row, buildDexNav(dexData.is_caught)]);
         if (dexData.is_caught) {
             interaction.update({ components: [dexContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
@@ -1671,12 +1690,12 @@ export async function menu_handler(interaction, init=false) {
             dex_page_num = 5;
         }
 
-        // Update menu state
-        menu_data.set(menu_id, { ...menu_state, dex_page_num });
+        dex_ooch_id = dex_page_num * 25;
+        menu_data.set(menu_id, { ...menu_state, dex_page_num, dex_ooch_id });
 
-        let dexData = await buildDexData(dex_page_num, dex_page_num * 25);
+        let dexData = await buildDexData(dex_page_num, dex_ooch_id);
 
-        const dexNavContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
+        const dexNavContainer = buildDexContainer(dexData, [dexData.sel_row, buildDexNav(dexData.is_caught)]);
         if (dexData.is_caught) {
             interaction.update({ components: [dexNavContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
@@ -1685,9 +1704,12 @@ export async function menu_handler(interaction, init=false) {
     }
 
     if (customId.includes('oochadex_sel_1')) {
-        let dexData = await buildDexData(dex_page_num, selected.replace('dex_', ''));
+        dex_ooch_id = parseInt(selected.replace('dex_', ''));
+        menu_data.set(menu_id, { ...menu_state, dex_ooch_id });
 
-        const dexSelContainer = buildDexContainer(dexData, [dexData.sel_row, dex_arrows]);
+        let dexData = await buildDexData(dex_page_num, dex_ooch_id);
+
+        const dexSelContainer = buildDexContainer(dexData, [dexData.sel_row, buildDexNav(dexData.is_caught)]);
         if (dexData.is_caught) {
             interaction.update({ components: [dexSelContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
         } else {
@@ -1695,7 +1717,28 @@ export async function menu_handler(interaction, init=false) {
         }
     }
 
+    if (action == 'dex_moves') {
+        let dexData = await buildDexData(dex_page_num, dex_ooch_id);
+        let movesContent = dexData.oochData
+            ? `# ${dexData.oochData.name} ${type_to_emote(dexData.oochData.type)}\n${dexData.moveListText}`
+            : 'No moves found.';
 
+        let dexMovesBackBtn = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId(`${pre}dex_moves_back`).setLabel('Back').setStyle(ButtonStyle.Danger)
+        );
+        const movesContainer = buildMenuContainer(movesContent, [dexMovesBackBtn]);
+        interaction.update({ components: [movesContainer], files: [], flags: MessageFlags.IsComponentsV2 });
+    }
+
+    if (action == 'dex_moves_back') {
+        let dexData = await buildDexData(dex_page_num, dex_ooch_id);
+        const dexContainer = buildDexContainer(dexData, [dexData.sel_row, buildDexNav(dexData.is_caught)]);
+        if (dexData.is_caught) {
+            interaction.update({ components: [dexContainer], files: [dexData.img], flags: MessageFlags.IsComponentsV2 });
+        } else {
+            interaction.update({ components: [dexContainer], files: [], flags: MessageFlags.IsComponentsV2 });
+        }
+    }
 
 
     //#endregion
