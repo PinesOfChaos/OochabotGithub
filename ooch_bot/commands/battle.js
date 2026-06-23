@@ -150,8 +150,11 @@ export async function execute(interaction) {
 
     confirm_collector.on('collect', async (i) => {
         if (i.customId == 'yes') {
-            let intBoxData = buildBoxData(intBattleUser.id, profile.get(`${intBattleUser.id}`), 0);
-            let otherBoxData = buildBoxData(otherBattleUser.id, profile.get(`${otherBattleUser.id}`), 0);
+            const intPre = `pvpbx_${intBattleUser.id}_`;
+            const otherPre = `pvpbx_${otherBattleUser.id}_`;
+
+            let intBoxData = buildBoxData(intBattleUser.id, profile.get(`${intBattleUser.id}`), 0, intPre);
+            let otherBoxData = buildBoxData(otherBattleUser.id, profile.get(`${otherBattleUser.id}`), 0, otherPre);
 
             await i.update({ content: `**Oochabox:**`, components: [otherBoxData[0], otherBoxData[1], otherBoxData[2], otherBoxData[3], box_battle_buttons] });
             await intUserBattleMsg.edit({ content: `**Oochabox:**`, components: [intBoxData[0], intBoxData[1], intBoxData[2], intBoxData[3], box_battle_buttons] });
@@ -178,20 +181,53 @@ export async function execute(interaction) {
                 }
             }
 
+            function refreshBoxDisplay(userId, pre, pageNum) {
+                return buildBoxData(userId, profile.get(`${userId}`), pageNum, pre);
+            }
+
+            function swapOoch(userId, action) {
+                const slot_data = action.split('_');
+                const slot_num = parseInt(slot_data[3]);
+                const is_party = action.includes('_party');
+                const user_profile_data = profile.get(`${userId}`);
+
+                if (is_party) {
+                    if (user_profile_data.ooch_party.length > 1) {
+                        user_profile_data.ooch_pc.push(user_profile_data.ooch_party[slot_num]);
+                        user_profile_data.ooch_party.splice(slot_num, 1);
+                        profile.set(userId, user_profile_data.ooch_party, 'ooch_party');
+                        profile.set(userId, user_profile_data.ooch_pc, 'ooch_pc');
+                    }
+                } else {
+                    if (user_profile_data.ooch_party.length < 4) {
+                        user_profile_data.ooch_party.push(user_profile_data.ooch_pc[slot_num]);
+                        user_profile_data.ooch_pc.splice(slot_num, 1);
+                        profile.set(userId, user_profile_data.ooch_party, 'ooch_party');
+                        profile.set(userId, user_profile_data.ooch_pc, 'ooch_pc');
+                    }
+                }
+            }
+
             intBoxCollector.on('collect', async (selected) => {
                 if (selected.user.id !== intBattleUser.id) return selected.reply({ content: 'Not your box!', ephemeral: true });
 
                 if (selected.customId == 'box_left' || selected.customId == 'box_right') {
                     selected.customId == 'box_left' ? intPageNum -= 1 : intPageNum += 1;
                     intPageNum = (intPageNum + pages) % pages;
-                    let intBoxRow = buildBoxData(intBattleUser.id, profile.get(`${intBattleUser.id}`), intPageNum);
                     let local_box_battle_buttons = ActionRowBuilder.from(box_battle_buttons);
                     local_box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
+                    let intBoxRow = refreshBoxDisplay(intBattleUser.id, intPre, intPageNum);
                     await selected.update({ content: `**Oochabox**`, components: [intBoxRow[0], intBoxRow[1], intBoxRow[2], intBoxRow[3], local_box_battle_buttons] });
                 } else if (selected.customId == 'box_finalize_team') {
                     intIsReady = true;
                     await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     await checkReady();
+                } else if (selected.customId.startsWith(intPre + 'box_ooch')) {
+                    swapOoch(intBattleUser.id, selected.customId.replace(intPre, ''));
+                    let local_box_battle_buttons = ActionRowBuilder.from(box_battle_buttons);
+                    local_box_battle_buttons.components[3].setLabel(`${intPageNum + 1}`);
+                    let intBoxRow = refreshBoxDisplay(intBattleUser.id, intPre, intPageNum);
+                    await selected.update({ content: `**Oochabox**`, components: [intBoxRow[0], intBoxRow[1], intBoxRow[2], intBoxRow[3], local_box_battle_buttons] });
                 } else {
                     await selected.deferUpdate();
                 }
@@ -203,14 +239,20 @@ export async function execute(interaction) {
                 if (selected.customId == 'box_left' || selected.customId == 'box_right') {
                     selected.customId == 'box_left' ? otherPageNum -= 1 : otherPageNum += 1;
                     otherPageNum = (otherPageNum + pages) % pages;
-                    let otherBoxRow = buildBoxData(otherBattleUser.id, profile.get(`${otherBattleUser.id}`), otherPageNum);
                     let local_box_battle_buttons = ActionRowBuilder.from(box_battle_buttons);
                     local_box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
+                    let otherBoxRow = refreshBoxDisplay(otherBattleUser.id, otherPre, otherPageNum);
                     await selected.update({ content: `**Oochabox**`, components: [otherBoxRow[0], otherBoxRow[1], otherBoxRow[2], otherBoxRow[3], local_box_battle_buttons] });
                 } else if (selected.customId == 'box_finalize_team') {
                     otherIsReady = true;
                     await selected.update({ content: 'Waiting for other player to choose their team... ', components: [] });
                     await checkReady();
+                } else if (selected.customId.startsWith(otherPre + 'box_ooch')) {
+                    swapOoch(otherBattleUser.id, selected.customId.replace(otherPre, ''));
+                    let local_box_battle_buttons = ActionRowBuilder.from(box_battle_buttons);
+                    local_box_battle_buttons.components[3].setLabel(`${otherPageNum + 1}`);
+                    let otherBoxRow = refreshBoxDisplay(otherBattleUser.id, otherPre, otherPageNum);
+                    await selected.update({ content: `**Oochabox**`, components: [otherBoxRow[0], otherBoxRow[1], otherBoxRow[2], otherBoxRow[3], local_box_battle_buttons] });
                 } else {
                     await selected.deferUpdate();
                 }
