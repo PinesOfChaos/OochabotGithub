@@ -163,6 +163,11 @@ export async function menu_handler(interaction, init=false) {
                         label: 'Objective Indicator',
                         description: 'See a message displaying your current objective.',
                         value: `${pre}objective`,
+                    },
+                    {
+                        label: 'Faster Battles',
+                        description: 'Combine all turn embeds into one message instead of sending them one at a time.',
+                        value: `${pre}battle_faster`,
                     }));
 
     /**
@@ -404,7 +409,8 @@ export async function menu_handler(interaction, init=false) {
         `Zoom Level: **\`${pref_data.zoom.split('_')[0]}x${pref_data.zoom.split('_')[1]}\`**`,
         `Battle Speed: **\`${pref_data.battle_speed === 1250 ? `Fast` : `Normal`}\`**`,
         `Discord Move Buttons: ${pref_data.discord_move_buttons === true ? `✅` : `❌`}`,
-        `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`];
+        `Objective Indicator: ${pref_data.objective === true ? `✅` : `❌`}`,
+        `Faster Battles: **${pref_data.battle_faster === true ? `✅` : `❌`}**`];
 
     ooch_party = profile.get(`${interaction.user.id}`, 'ooch_party');
 
@@ -1828,7 +1834,14 @@ export async function menu_handler(interaction, init=false) {
         await interaction.update({ components: [objectivePrefContainer], flags: MessageFlags.IsComponentsV2 });
     }
 
-
+    // Faster Battles Option
+    if (selected == `${pre}battle_faster`) {
+        await profile.set(interaction.user.id, !(user_profile.settings.battle_faster), 'settings.battle_faster');
+        pref_desc[6] = `Faster Battles: **${profile.get(`${interaction.user.id}`, 'settings.battle_faster') === true ? `✅` : `❌`}**`;
+        user_profile = profile.get(`${interaction.user.id}`);
+        const fasterPrefContainer = buildPreferencesContainer(pref_desc, [pref_sel_menu, back_button]);
+        await interaction.update({ components: [fasterPrefContainer], flags: MessageFlags.IsComponentsV2 });
+    }
 
     //#endregion
     //#region Quit Button (back to playspace)

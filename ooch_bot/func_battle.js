@@ -333,9 +333,10 @@ export async function setup_battle (users, field_effect, oochabux, turn_timer, a
         allow_run : allow_run,
         field_effect : FieldEffect.None,
         oochabux: oochabux,
-        amount_of_teams: 2, // PINES, DON'T YOU DARE CHANGE THIS. DON'T DO IT. IT WILL ALWAYS BE 2 PINES. IT WILL. I DON'T CARE IF YOU WANT A 1V1V1V1, THE BATTLE SYSTEM WILL NOT HANDLE IT, IT WON'T, THE BUTTONS DON'T ACCOUNT FOR IT, IDK IF I BUILT PROPERLY FOR IT, AND ALSO NO
+        amount_of_teams: 2, 
 
         i_transformation_bool : i_quest_do_transformation,
+        battle_faster: users.filter(u => u.is_player).some(u => profile.get(`${u.user_id}`, 'settings.battle_faster') === true),
     }
 
     if (fake_battle) {
@@ -932,6 +933,20 @@ export async function process_battle_actions(battle_id){
 
     let roundHeader = `# ------ Round ${db_battle_data.turn_counter + 1} ------`;
 
+    let fasterEmbeds = [];
+    let fasterFiles = [];
+    let fasterFilePaths = new Set();
+    let fasterContent = null;
+    function addFasterFiles(files) {
+        for (let f of files) {
+            let fpath = (f?.attachment ?? f).toString();
+            if (!fasterFilePaths.has(fpath)) {
+                fasterFilePaths.add(fpath);
+                fasterFiles.push(f);
+            }
+        }
+    }
+
     while(actions.length > 0 && !finish_battle){
         //Sort the actions before we do anything, this needs to be re-sorted to account for speed/status changes
         sort_action_priority(db_battle_data);
@@ -1019,10 +1034,19 @@ export async function process_battle_actions(battle_id){
             db_battle_data.actions = [];
         }
 
-        await distribute_messages(db_battle_data, { content: (first_turn == true ? roundHeader : null), embeds: embedList, files: battle_sprite_files });
+        if (db_battle_data.battle_faster) {
+            if (first_turn) fasterContent = roundHeader;
+            fasterEmbeds.push(...embedList);
+            addFasterFiles(battle_sprite_files);
+        } else {
+            await distribute_messages(db_battle_data, { content: (first_turn == true ? roundHeader : null), embeds: embedList, files: battle_sprite_files });
+            await wait(db_battle_data.battle_speed);
+        }
         first_turn = false;
+    }
 
-        await wait(db_battle_data.battle_speed);
+    if (db_battle_data.battle_faster && fasterEmbeds.length > 0) {
+        await distribute_messages(db_battle_data, { content: fasterContent, embeds: fasterEmbeds, files: fasterFiles });
     }
 
     if (!finish_battle) {
@@ -1156,7 +1180,7 @@ export async function process_battle_actions(battle_id){
         }
 
         if(end_of_round_text.replaceAll("\n","") != ''){
-            await wait(db_battle_data.battle_speed);
+            if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
 
@@ -1193,26 +1217,20 @@ export async function process_battle_actions(battle_id){
 
         //Reset all battle triggers
         reset_this_turn_triggers(db_battle_data);
-        
-        await wait(db_battle_data.battle_speed);
+
+        if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
         await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
         battle_data.set(battle_id, db_battle_data);
-        
-        await wait(db_battle_data.battle_speed);
+
+        if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
         await prompt_battle_actions(db_battle_data.battle_id);
     }
-    else if (finish_battle === true) { 
-        const endButton = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId(`battle_${battle_id}_0_end_battle`)
-                .setLabel('Continue To Playspace')
-                .setStyle(ButtonStyle.Primary),
-        )
+    else if (finish_battle === true) {
         let victoryUser = db_battle_data.users.filter(user => user.defeated !== true)[0];
 
+        let victorEmbed;
         if (faint_check.finish_text != '') {
-            const victorEmbed = new EmbedBuilder()
+            victorEmbed = new EmbedBuilder()
                 .setColor('#ffee00')
                 .setAuthor({ name: '🏆 Victory 🏆' })
                 .setTitle(`${victoryUser.name} has won the battle!`)
@@ -1222,10 +1240,23 @@ export async function process_battle_actions(battle_id){
                 let victoryDiscordUser = await botClient.users.fetch(victoryUser.user_id);
                 victorEmbed.setThumbnail(victoryDiscordUser.avatarURL());
             }
+        }
 
-            await distribute_messages(db_battle_data, { components: [endButton], embeds: [victorEmbed] });
-        } else {
-            await distribute_messages(db_battle_data, { components: [endButton], embeds: [] });
+        // Each player gets a button with their own user_index so the thread check passes
+        db_battle_data.battle_msg_counter += 1;
+        battle_data.math(battle_id, '+', 1, 'turn_msg_counter');
+        for (let user of db_battle_data.users) {
+            if (!user.is_player) continue;
+            let thread = botClient.channels.cache.get(`${user.thread_id}`);
+            let endButton = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`battle_${battle_id}_${user.user_index}_end_battle`)
+                    .setLabel('Continue To Playspace')
+                    .setStyle(ButtonStyle.Primary)
+            );
+            let msg = { components: [endButton] };
+            if (victorEmbed) msg.embeds = [victorEmbed];
+            await thread.send(msg);
         }
         battle_data.set(battle_id, db_battle_data);
     }

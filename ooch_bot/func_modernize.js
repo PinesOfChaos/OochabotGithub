@@ -194,6 +194,7 @@ export function get_blank_profile() {
             battle_speed: 2500,
             discord_move_buttons: true,
             objective: true,
+            battle_faster: false,
         }
     }
 
