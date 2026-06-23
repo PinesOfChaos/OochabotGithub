@@ -1049,6 +1049,9 @@ export async function process_battle_actions(battle_id){
         await distribute_messages(db_battle_data, { content: fasterContent, embeds: fasterEmbeds, files: fasterFiles });
     }
 
+    let switch_needed = false;
+    let has_end_of_round_text = false;
+
     if (!finish_battle) {
 
         //End of round stuff
@@ -1178,8 +1181,11 @@ export async function process_battle_actions(battle_id){
             }
             
         }
+        
+        switch_needed = db_battle_data.users.some(user => !user.party[user.active_slot].alive && !user.defeated);
+        has_end_of_round_text = end_of_round_text.replaceAll("\n","") != '';
 
-        if(end_of_round_text.replaceAll("\n","") != ''){
+        if(has_end_of_round_text && switch_needed){
             if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
@@ -1211,7 +1217,7 @@ export async function process_battle_actions(battle_id){
         db_battle_data.turn_counter++;
         for(let user of db_battle_data.users){ user.action_selected = false; }
     }
-    
+
     //Do stuff depending on whether the battle is finished
     if(!finish_battle) {
 
@@ -1219,7 +1225,12 @@ export async function process_battle_actions(battle_id){
         reset_this_turn_triggers(db_battle_data);
 
         if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
-        await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
+        // Combine end-of-round text with the HP display when no switch prompt interrupted
+        if(has_end_of_round_text && !switch_needed){
+            await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text), generate_round_start_embed(db_battle_data)]});
+        } else {
+            await distribute_messages(db_battle_data, { embeds : [generate_round_start_embed(db_battle_data)]});
+        }
         battle_data.set(battle_id, db_battle_data);
 
         if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
