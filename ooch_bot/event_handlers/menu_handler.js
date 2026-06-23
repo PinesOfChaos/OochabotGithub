@@ -630,9 +630,10 @@ export async function menu_handler(interaction, init=false) {
             for (let [lvl, move_id] of sortedMoves) {
                 let mv = move_data.get(`${move_id}`);
                 if (!mv) continue;
-                moveListText += lvl == -1
-                    ? `- ★ **${mv.name}** ${type_to_emote(mv.type)}\n`
-                    : `- Lv. **${lvl}** - ${mv.name} ${type_to_emote(mv.type)}\n`;
+                let acc = mv.accuracy == -1 ? 100 : mv.accuracy;
+                let stats = `${mv.damage > 0 ? `**${mv.damage} Power / ` : `**`}${acc}% Accuracy**`;
+                let prefix = lvl == -1 ? `★` : `Lv. **${lvl}**`;
+                moveListText += `- ${prefix} ${mv.name} ${type_to_emote(mv.type)} | ${stats}\n`;
             }
         }
 
