@@ -94,13 +94,13 @@ export async function execute(interaction) {
 
     const prevButton = new ButtonBuilder()
         .setCustomId('prev_page')
-        .setLabel('◀️')
+        .setLabel(get_emote_string('arrow_L')s)
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true);
 
     const nextButton = new ButtonBuilder()
         .setCustomId('next_page')
-        .setLabel('▶️')
+        .setLabel(get_emote_string('arrow_R'))
         .setStyle(ButtonStyle.Primary)
 
     switch (selected_db) {

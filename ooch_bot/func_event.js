@@ -19,7 +19,7 @@ export async function dialogueEvent(user_id, thread, obj_content) {
 
     let event_buttons = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId(`${pre}next`).setLabel('▶').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId(`${pre}next`).setLabel(get_emote_string('arrow_R')).setStyle(ButtonStyle.Success),
         );
 
     if (obj_content.description.includes('{')) {
