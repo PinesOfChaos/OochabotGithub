@@ -94,7 +94,7 @@ export async function execute(interaction) {
 
     const prevButton = new ButtonBuilder()
         .setCustomId('prev_page')
-        .setLabel(get_emote_string('arrow_L')s)
+        .setLabel(get_emote_string('arrow_L'))
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true);
 
