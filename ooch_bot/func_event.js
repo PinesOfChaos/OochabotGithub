@@ -2,7 +2,7 @@ import { ButtonBuilder, ButtonStyle, ActionRowBuilder, ContainerBuilder, TextDis
 import { profile, item_data, maps, monster_data, player_positions } from './db.js';
 import { sample } from 'lodash-es';
 import { PlayerState, EventMode, Flags, UserType, Weather } from './types.js';
-import { get_art_file } from './func_other.js';
+import { get_art_file, get_emote_string } from './func_other.js';
 import { generate_battle_user, setup_battle } from './func_battle.js';
 import wait from 'wait';
 import { add_item, get_map_weather, setup_playspace_str } from './func_play.js';
