@@ -890,7 +890,7 @@ export async function setup_playspace_str(user_id) {
         let playerState = profile.get(`${user_id}`, 'player_state');
         if (playerState == PlayerState.Intro) {
             return {
-                components: [],
+                components: [new TextDisplayBuilder().setContent('​')],
                 flags: MessageFlags.IsComponentsV2,
                 mapString: '**Intro**'
             };
