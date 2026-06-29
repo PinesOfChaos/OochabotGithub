@@ -70,7 +70,7 @@ export async function execute(interaction, client) {
     }
 
     let playspace_str = {
-        components: [new ContainerBuilder().addTextDisplayComponents(new TextDisplayBuilder().setContent('​'))],
+        components: [],
         flags: MessageFlags.IsComponentsV2,
         mapString: '**Intro**'
     };
