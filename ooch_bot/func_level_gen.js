@@ -2,7 +2,7 @@ import { sample, round, shuffle, random } from 'lodash-es';
 import { OochType, GenmapTheme, Weather, BattleAi, StanceForms, OochID, OochVariant, Ability, Move, Item } from "./types.js";
 import { create_ooch, setup_playspace_str } from './func_play.js';
 import { maps, profile, monster_data } from "./db.js";
-import { writeFile } from 'fs';
+import { writeFileSync } from 'fs';
 import { TextDisplayBuilder } from 'discord.js';
 
 let whitelist_everchange_wild = [
@@ -21,9 +21,9 @@ let whitelist_everchange_wild = [
 let whitelist_everchange_trainer = [21, 62, 109].push(whitelist_everchange_wild)
 
 //These are known npc ids from existing maps so we can update them upon generating the map with the below function
-let npc_seer_laurel = "643226616382247130"
-let npc_seer_anna = "885717598905588994"
-let npc_seer_aira = "264114595846561119"
+let npc_seer_laurel =   "643226616382247130"
+let npc_seer_anna =     "885717598905588994"
+let npc_seer_aira =     "264114595846561119"
 let npc_updates = [];
 export async function genmap_update_outside_npc_dialog(map_name, npc_id, dialog_pre, dialog_post = ""){
     if(dialog_post == ""){ dialog_post = dialog_pre; }
@@ -93,7 +93,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
         
         console.log(`- Generating: ${level_name}`)
         let new_level = await genmap_new(level_name, size, size, genmap_theme(themes_array[i]), lv_min, lv_max, em, ex, ey);
-        writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
+        writeFileSync(level_filename, JSON.stringify(new_level, null, "\t"));
         maps.set(level_lowername, new_level);
         kickout_list.push(level_lowername);
 
@@ -105,7 +105,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
     let level_lowername = level_name.toLowerCase().replaceAll(' ', '_');
     let level_filename = './Maps/' + level_lowername + '.json';
     let new_level = await genmap_final_room(level_name, genmap_theme(GenmapTheme.ObsidianPath), exit_map, exit_x, exit_y)
-    writeFile(level_filename, JSON.stringify(new_level, null, "\t"), (err) => { if (err) throw err; });
+    writeFileSync(level_filename, JSON.stringify(new_level, null, "\t"));
     maps.set(level_lowername, new_level);
     kickout_list.push(level_lowername);
     console.log(`- Generated: ${level_name}`)

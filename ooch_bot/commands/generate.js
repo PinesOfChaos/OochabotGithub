@@ -5283,6 +5283,7 @@ export async function execute(interaction, client) {
         This accounts for all of the maps that get randomly generated and generates a list of edits to outside npcs to make
     */
     let npc_edits = await genmap_allmaps(client);
+    console.log(npc_edits)
     //#endregion
 
     //#region Create Maps
