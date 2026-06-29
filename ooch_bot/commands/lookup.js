@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { move_data, ability_data, status_data, item_data, profile, monster_data } from '../db.js';
 import { type_to_emote, status_to_emote } from '../func_battle.js';
-import { get_art_file } from '../func_other.js';
+import { get_art_file, get_emote_string } from '../func_other.js';
 import { Status, MoveTarget, Weather, FieldEffect, OochType } from '../types.js';
 
 export const data = new SlashCommandBuilder()
