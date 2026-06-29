@@ -233,7 +233,7 @@ export function check_chance(percent) {
  * @param {String} emote_name Name to get emote from.
  */
 export function get_emote_string(name) {
-    let emojiList = clientEmojis.filter(v => v.name === toLower(name));
+    let emojiList = clientEmojis.filter(v => v.name.toLowerCase() === toLower(name));
     emojiList = Array.from(emojiList.values());
     if (emojiList.length === 0) {
 
