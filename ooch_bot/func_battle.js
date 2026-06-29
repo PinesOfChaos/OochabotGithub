@@ -1868,7 +1868,7 @@ export async function action_process_heal(db_battle_data, action) {
     return_string += extra_text;
 
     if (extra_text.includes('HP')) {
-        return_string += `\n${generate_hp_bar(ooch, user.hp_style, 9, true)}`;
+        return_string += generate_hp_bar(ooch, user.hp_style, 9, true);
     }
 
     return {
@@ -3634,7 +3634,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
         }
     }
 
-    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += `\n${generate_hp_bar(defender, user_defender.hp_style, 9, true)}`;
+    if ((chance_to_hit > Math.random() || move_guarantee_hit) && dmg != 0) defender_field_text += generate_hp_bar(defender, user_defender.hp_style, 9, true);
 
     string_to_send = `${string_to_send}${defender_field_text}` 
     return string_to_send;
