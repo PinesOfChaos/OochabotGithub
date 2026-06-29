@@ -4,7 +4,7 @@ import { PlayerState, UserType, Weather } from '../types.js';
 import wait from 'wait';
 import { buildBoxData } from '../func_other.js';
 import { generate_battle_user, setup_battle, get_stats } from '../func_battle.js';
-import { clamp } from 'lodash-es';
+import { clamp, cloneDeep } from 'lodash-es';
 
 export const data = new SlashCommandBuilder()
     .setName('battle')
@@ -29,6 +29,7 @@ export async function execute(interaction) {
 
     let otherBattleUser = interaction.options.getUser('battle_user');
     if (otherBattleUser.bot == true) return interaction.reply({ content: 'You cannot fight a Discord Bot.', flags: MessageFlags.Ephemeral });
+    if (otherBattleUser.id == interaction.user.id) return interaction.reply({ content: 'You cannot battle yourself.', flags: MessageFlags.Ephemeral });
     let levelScale = interaction.options.getNumber('level_to_scale');
     if (levelScale == null) levelScale = 25;
     levelScale = clamp(Math.round(levelScale), 1, 50);
@@ -98,12 +99,15 @@ export async function execute(interaction) {
         )
     //#endregion
 
+    let intBattleProfile = null;
+    let otherBattleProfile = null;
+
     async function start_battle() {
         profile.set(interaction.user.id, PlayerState.Combat, 'player_state');
         profile.set(otherBattleUser.id, PlayerState.Combat, 'player_state');
 
-        let intBattleDataUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: interaction.channel.id, guild_id: interaction.guild.id });
-        let otherBattleDataUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id });
+        let intBattleDataUser = await generate_battle_user(UserType.Player, { user_id: intBattleUser.id, team_id: 0, thread_id: interaction.channel.id, guild_id: interaction.guild.id, db_profile: intBattleProfile });
+        let otherBattleDataUser = await generate_battle_user(UserType.Player, { user_id: otherBattleUser.id, team_id: 1, thread_id: otherUserThread.id, guild_id: interaction.guild.id, db_profile: otherBattleProfile });
 
         // Apply level scaling if enabled
         if (levelScale !== false) {
@@ -153,8 +157,16 @@ export async function execute(interaction) {
             const intPre = `pvpbx_${intBattleUser.id}_`;
             const otherPre = `pvpbx_${otherBattleUser.id}_`;
 
-            let intBoxData = buildBoxData(intBattleUser.id, profile.get(`${intBattleUser.id}`), 0, intPre);
-            let otherBoxData = buildBoxData(otherBattleUser.id, profile.get(`${otherBattleUser.id}`), 0, otherPre);
+            let intParty = cloneDeep(profile.get(`${intBattleUser.id}`, 'ooch_party'));
+            let intPC = cloneDeep(profile.get(`${intBattleUser.id}`, 'ooch_pc'));
+            let otherParty = cloneDeep(profile.get(`${otherBattleUser.id}`, 'ooch_party'));
+            let otherPC = cloneDeep(profile.get(`${otherBattleUser.id}`, 'ooch_pc'));
+
+            intBattleProfile = { ...profile.get(`${intBattleUser.id}`), ooch_party: intParty, ooch_active_slot: 0 };
+            otherBattleProfile = { ...profile.get(`${otherBattleUser.id}`), ooch_party: otherParty, ooch_active_slot: 0 };
+
+            let intBoxData = buildBoxData(intBattleUser.id, { ooch_party: intParty, ooch_pc: intPC }, 0, intPre);
+            let otherBoxData = buildBoxData(otherBattleUser.id, { ooch_party: otherParty, ooch_pc: otherPC }, 0, otherPre);
 
             await i.update({ content: `**Oochabox:**`, components: [otherBoxData[0], otherBoxData[1], otherBoxData[2], otherBoxData[3], box_battle_buttons] });
             await intUserBattleMsg.edit({ content: `**Oochabox:**`, components: [intBoxData[0], intBoxData[1], intBoxData[2], intBoxData[3], box_battle_buttons] });
@@ -164,6 +176,7 @@ export async function execute(interaction) {
 
             let otherIsReady = false;
             let intIsReady = false;
+            let battleStarting = false;
             let otherPageNum = 0;
             let intPageNum = 0;
             let pages = 9;
@@ -172,7 +185,8 @@ export async function execute(interaction) {
             let intBoxCollector = interaction.channel.createMessageComponentCollector({ time: 600000 });
 
             async function checkReady() {
-                if (otherIsReady && intIsReady) {
+                if (otherIsReady && intIsReady && !battleStarting) {
+                    battleStarting = true;
                     await intBoxCollector.stop();
                     await otherBoxCollector.stop();
                     await confirm_collector.stop();
@@ -182,28 +196,26 @@ export async function execute(interaction) {
             }
 
             function refreshBoxDisplay(userId, pre, pageNum) {
-                return buildBoxData(userId, profile.get(`${userId}`), pageNum, pre);
+                let temp_profile = userId == intBattleUser.id ? { ooch_party: intParty, ooch_pc: intPC } : { ooch_party: otherParty, ooch_pc: otherPC };
+                return buildBoxData(userId, temp_profile, pageNum, pre);
             }
 
             function swapOoch(userId, action) {
                 const slot_data = action.split('_');
                 const slot_num = parseInt(slot_data[3]);
                 const is_party = action.includes('_party');
-                const user_profile_data = profile.get(`${userId}`);
+                const party = userId == intBattleUser.id ? intParty : otherParty;
+                const pc = userId == intBattleUser.id ? intPC : otherPC;
 
                 if (is_party) {
-                    if (user_profile_data.ooch_party.length > 1) {
-                        user_profile_data.ooch_pc.push(user_profile_data.ooch_party[slot_num]);
-                        user_profile_data.ooch_party.splice(slot_num, 1);
-                        profile.set(userId, user_profile_data.ooch_party, 'ooch_party');
-                        profile.set(userId, user_profile_data.ooch_pc, 'ooch_pc');
+                    if (party.length > 1) {
+                        pc.push(party[slot_num]);
+                        party.splice(slot_num, 1);
                     }
                 } else {
-                    if (user_profile_data.ooch_party.length < 4) {
-                        user_profile_data.ooch_party.push(user_profile_data.ooch_pc[slot_num]);
-                        user_profile_data.ooch_pc.splice(slot_num, 1);
-                        profile.set(userId, user_profile_data.ooch_party, 'ooch_party');
-                        profile.set(userId, user_profile_data.ooch_pc, 'ooch_pc');
+                    if (party.length < 4) {
+                        party.push(pc[slot_num]);
+                        pc.splice(slot_num, 1);
                     }
                 }
             }
