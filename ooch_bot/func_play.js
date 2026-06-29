@@ -931,13 +931,11 @@ export async function setup_playspace_str(user_id) {
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('w')
-                .setLabel('‎')
                 .setEmoji(get_emote_string('arrow_U'))
                 .setStyle(ButtonStyle.Primary),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('play_menu_btn')
-                .setLabel('‎')
                 .setEmoji(get_emote_string('menu'))
                 .setStyle(ButtonStyle.Secondary),
         )
@@ -946,19 +944,16 @@ export async function setup_playspace_str(user_id) {
         .addComponents(
             new ButtonBuilder()
                 .setCustomId('a')
-                .setLabel('‎')
                 .setEmoji(get_emote_string('arrow_L'))
                 .setStyle(ButtonStyle.Primary),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('s')
-                .setLabel('‎')
                 .setEmoji(get_emote_string('arrow_D'))
                 .setStyle(ButtonStyle.Primary),
         ).addComponents(
             new ButtonBuilder()
                 .setCustomId('d')
-                .setLabel('‎')
                 .setEmoji(get_emote_string('arrow_R'))
                 .setStyle(ButtonStyle.Primary),
         )

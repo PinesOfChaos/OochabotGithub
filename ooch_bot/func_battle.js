@@ -1184,7 +1184,7 @@ export async function process_battle_actions(battle_id){
         has_end_of_round_text = end_of_round_text.replaceAll("\n","") != '';
 
         if(has_end_of_round_text && switch_needed){
-            if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
+            await wait(db_battle_data.battle_faster ? 1500 : db_battle_data.battle_speed);
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text)]});
         }
 
@@ -1222,7 +1222,7 @@ export async function process_battle_actions(battle_id){
         //Reset all battle triggers
         reset_this_turn_triggers(db_battle_data);
 
-        if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
+        await wait(db_battle_data.battle_faster ? 1500 : db_battle_data.battle_speed);
         // Combine end-of-round text with the HP display when no switch prompt interrupted
         if(has_end_of_round_text && !switch_needed){
             await distribute_messages(db_battle_data, { content: end_of_round_header, embeds: [battle_embed_create(end_of_round_text), generate_round_start_embed(db_battle_data)]});
@@ -1231,7 +1231,7 @@ export async function process_battle_actions(battle_id){
         }
         battle_data.set(battle_id, db_battle_data);
 
-        if (!db_battle_data.battle_faster) await wait(db_battle_data.battle_speed);
+        await wait(db_battle_data.battle_faster ? 1500 : db_battle_data.battle_speed);
         await prompt_battle_actions(db_battle_data.battle_id);
     }
     else if (finish_battle === true) {
