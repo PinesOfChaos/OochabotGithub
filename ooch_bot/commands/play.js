@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags, TextDisplayBuilder } from 'discord.js';
+import { SlashCommandBuilder, ThreadAutoArchiveDuration, ChannelType, MessageFlags, ContainerBuilder } from 'discord.js';
 import { profile, battle_data, events_data } from '../db.js';
 import { setup_playspace_str, move } from '../func_play.js';
 import { EventMode, PlayerState } from '../types.js';
@@ -70,7 +70,7 @@ export async function execute(interaction, client) {
     }
 
     let playspace_str = {
-        components: [new TextDisplayBuilder().setContent('**Intro**')],
+        components: [new ContainerBuilder()],
         flags: MessageFlags.IsComponentsV2,
         mapString: '**Intro**'
     };
