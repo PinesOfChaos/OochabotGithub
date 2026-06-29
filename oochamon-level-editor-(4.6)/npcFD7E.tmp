@@ -1,0 +1,184 @@
+[gd_scene load_steps=4 format=3 uid="uid://367y78a4vefe"]
+
+[ext_resource type="Script" path="res://npc.gd" id="1_k6ast"]
+[ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_61jdu"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jcqjf"]
+
+[node name="npc" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_k6ast")
+
+[node name="npc_object" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 189.0
+offset_right = 584.0
+offset_bottom = 229.0
+focus_mode = 0
+texture_normal = SubResource("CompressedTexture2D_jcqjf")
+
+[node name="npc_tab_container" type="TabContainer" parent="."]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 0
+offset_right = 550.0
+offset_bottom = 573.0
+current_tab = 0
+
+[node name="Basic Info" type="VBoxContainer" parent="npc_tab_container"]
+custom_minimum_size = Vector2(410, 400)
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="general_info" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="npc_sprite" type="OptionButton" parent="npc_tab_container/Basic Info/general_info"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="npc_sprite_combat" type="LineEdit" parent="npc_tab_container/Basic Info/general_info"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 1
+placeholder_text = "Combat Sprite"
+
+[node name="npc_sprite_dialog" type="LineEdit" parent="npc_tab_container/Basic Info/general_info"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 1
+placeholder_text = "Dialog Sprite"
+
+[node name="npc_name" type="LineEdit" parent="npc_tab_container/Basic Info/general_info"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 1
+placeholder_text = "NPC Name"
+
+[node name="flag_required" type="LineEdit" parent="npc_tab_container/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Required"
+
+[node name="flag_given" type="LineEdit" parent="npc_tab_container/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Given"
+
+[node name="flag_kill" type="LineEdit" parent="npc_tab_container/Basic Info"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+focus_mode = 1
+placeholder_text = "Flag Kill"
+
+[node name="remove_on_finish" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="npc_tab_container/Basic Info/remove_on_finish"]
+layout_mode = 2
+text = "Remove On Finish ?"
+
+[node name="check_remove_finish" type="CheckButton" parent="npc_tab_container/Basic Info/remove_on_finish"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="addt_settings" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="aggro_range" type="SpinBox" parent="npc_tab_container/Basic Info/addt_settings"]
+layout_mode = 2
+max_value = 8.0
+value = 3.0
+prefix = "Aggro"
+
+[node name="wild_encounter" type="CheckButton" parent="npc_tab_container/Basic Info/addt_settings"]
+layout_mode = 2
+text = "Is Wild Encounter?"
+
+[node name="items" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="item_select" type="OptionButton" parent="npc_tab_container/Basic Info/items"]
+layout_mode = 2
+
+[node name="item_count" type="SpinBox" parent="npc_tab_container/Basic Info/items"]
+layout_mode = 2
+prefix = "x"
+
+[node name="coin" type="HBoxContainer" parent="npc_tab_container/Basic Info"]
+layout_mode = 2
+
+[node name="coin_count" type="SpinBox" parent="npc_tab_container/Basic Info/coin"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+max_value = 99999.0
+prefix = "Coin: x"
+
+[node name="text_pre_combat" type="TextEdit" parent="npc_tab_container/Basic Info"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+placeholder_text = "Pre-Combat Dialog"
+highlight_all_occurrences = true
+draw_control_chars = true
+draw_tabs = true
+draw_spaces = true
+
+[node name="text_post_combat" type="TextEdit" parent="npc_tab_container/Basic Info"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+placeholder_text = "Post-Combat Dialog"
+highlight_all_occurrences = true
+draw_control_chars = true
+draw_tabs = true
+draw_spaces = true
+
+[node name="Slot 1" parent="npc_tab_container" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Slot 2" parent="npc_tab_container" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="Slot 3" parent="npc_tab_container" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="Slot 4" parent="npc_tab_container" instance=ExtResource("2_61jdu")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[connection signal="button_down" from="npc_object" to="." method="_on_npc_object_button_down"]
+[connection signal="button_up" from="npc_object" to="." method="_on_npc_object_button_up"]
+[connection signal="item_rect_changed" from="npc_object" to="." method="_on_npc_object_item_rect_changed"]
+[connection signal="item_selected" from="npc_tab_container/Basic Info/general_info/npc_sprite" to="." method="_on_npc_sprite_item_selected"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_combat" to="." method="_on_npc_sprite_combat_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_dialog_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_sprite_dialog" to="." method="_on_npc_sprite_combat_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/general_info/npc_name" to="." method="_on_npc_name_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_changed"]
+[connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_required" to="." method="_on_flag_required_text_submitted"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/flag_given" to="." method="_on_flag_given_text_changed"]
+[connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_given" to="." method="_on_flag_given_text_submitted"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_changed"]
+[connection signal="text_submitted" from="npc_tab_container/Basic Info/flag_kill" to="." method="_on_flag_kill_text_submitted"]
+[connection signal="toggled" from="npc_tab_container/Basic Info/remove_on_finish/check_remove_finish" to="." method="_on_check_remove_finish_toggled"]
+[connection signal="value_changed" from="npc_tab_container/Basic Info/addt_settings/aggro_range" to="." method="_on_aggro_range_value_changed"]
+[connection signal="toggled" from="npc_tab_container/Basic Info/addt_settings/wild_encounter" to="." method="_on_wild_encounter_toggled"]
+[connection signal="item_selected" from="npc_tab_container/Basic Info/items/item_select" to="." method="_on_item_select_item_selected"]
+[connection signal="value_changed" from="npc_tab_container/Basic Info/items/item_count" to="." method="_on_item_count_value_changed"]
+[connection signal="value_changed" from="npc_tab_container/Basic Info/coin/coin_count" to="." method="_on_coin_count_value_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/text_pre_combat" to="." method="_on_text_pre_combat_text_changed"]
+[connection signal="text_changed" from="npc_tab_container/Basic Info/text_post_combat" to="." method="_on_text_post_combat_text_changed"]

@@ -1,0 +1,400 @@
+[gd_scene format=3 uid="uid://d4dhr42a1mqo6"]
+
+[ext_resource type="Script" uid="uid://cltqg3t5i1s65" path="res://menu.gd" id="1_ift6h"]
+[ext_resource type="Script" uid="uid://c5kfp4jtre2gt" path="res://GridOoch.gd" id="2_c15v4"]
+[ext_resource type="PackedScene" uid="uid://d2lpf1ry7m5up" path="res://tile_select.tscn" id="4_5duw6"]
+[ext_resource type="Script" uid="uid://d3nsuy2ovm7xl" path="res://label_notification.gd" id="4_5s007"]
+
+[node name="Menu" type="Control" unique_id=1019263905 groups=["MainMenu"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ift6h")
+map_width = 128
+map_height = 128
+
+[node name="FileDialogSave" type="FileDialog" parent="." unique_id=1660631597]
+title = "Save Map File"
+initial_position = 2
+size = Vector2i(500, 400)
+access = 2
+filters = PackedStringArray("*.json")
+
+[node name="FileDialogLoad" type="FileDialog" parent="." unique_id=1148002673]
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 2
+size = Vector2i(515, 400)
+ok_button_text = "Open"
+file_mode = 0
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.json")
+
+[node name="VBoxMenu" type="VBoxContainer" parent="." unique_id=541114386]
+z_index = 3
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxFile" type="HBoxContainer" parent="VBoxMenu" unique_id=985431666]
+layout_mode = 2
+
+[node name="ButtonMainMenu" type="Button" parent="VBoxMenu/HBoxFile" unique_id=1771466604]
+layout_mode = 2
+text = "Main Menu"
+
+[node name="ButtonNew" type="Button" parent="VBoxMenu/HBoxFile" unique_id=600700979]
+layout_mode = 2
+text = "New Level"
+
+[node name="ButtonLoad" type="Button" parent="VBoxMenu/HBoxFile" unique_id=1377463144]
+layout_mode = 2
+text = "Load Level"
+
+[node name="ButtonSave" type="Button" parent="VBoxMenu/HBoxFile" unique_id=636014512]
+layout_mode = 2
+text = "Save Level"
+
+[node name="LineEditMapName" type="LineEdit" parent="VBoxMenu/HBoxFile" unique_id=194540586]
+layout_mode = 2
+focus_mode = 1
+text = "Map Default Name"
+placeholder_text = "Map Name"
+expand_to_text_length = true
+caret_blink = true
+
+[node name="HBoxMapInfo" type="HBoxContainer" parent="VBoxMenu" unique_id=1786150146]
+layout_mode = 2
+
+[node name="LineEditMapBattleBack" type="LineEdit" parent="VBoxMenu/HBoxMapInfo" unique_id=960669855]
+layout_mode = 2
+placeholder_text = "Battle BG Sprite"
+expand_to_text_length = true
+
+[node name="Label" type="Label" parent="VBoxMenu/HBoxMapInfo" unique_id=710480482]
+layout_mode = 2
+text = "Grid Opacity: "
+
+[node name="HSliderGridAlpha" type="HSlider" parent="VBoxMenu/HBoxMapInfo" unique_id=1865971841]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+value = 10.0
+ticks_on_borders = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxMenu" unique_id=854485650]
+layout_mode = 2
+
+[node name="ButtonVisibleTile" type="CheckBox" parent="VBoxMenu/HBoxContainer" unique_id=1189240668]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonMapBrush" type="Button" parent="VBoxMenu/HBoxContainer" unique_id=774150303]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 1"
+text = "Paint Tiles"
+
+[node name="HBoxEvent" type="HBoxContainer" parent="VBoxMenu" unique_id=258011300]
+layout_mode = 2
+
+[node name="ButtonVisibleEvent" type="CheckBox" parent="VBoxMenu/HBoxEvent" unique_id=600853231]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewEvent" type="Button" parent="VBoxMenu/HBoxEvent" unique_id=1945105949]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 2"
+text = "New Event Trigger"
+
+[node name="HBoxSpawnzone" type="HBoxContainer" parent="VBoxMenu" unique_id=514539939]
+layout_mode = 2
+
+[node name="ButtonVisibleSpawnzone" type="CheckBox" parent="VBoxMenu/HBoxSpawnzone" unique_id=199912920]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSpawnRegion" type="Button" parent="VBoxMenu/HBoxSpawnzone" unique_id=381454768]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 3"
+text = "New Spawn Area"
+
+[node name="HBoxTransition" type="HBoxContainer" parent="VBoxMenu" unique_id=930658149]
+layout_mode = 2
+
+[node name="ButtonVisibleTransition" type="CheckBox" parent="VBoxMenu/HBoxTransition" unique_id=1058098899]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewTransition" type="Button" parent="VBoxMenu/HBoxTransition" unique_id=531705791]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 4"
+text = "New Transition"
+
+[node name="HBoxSavePoint" type="HBoxContainer" parent="VBoxMenu" unique_id=571185851]
+layout_mode = 2
+
+[node name="ButtonVisibleSavePoint" type="CheckBox" parent="VBoxMenu/HBoxSavePoint" unique_id=1003157072]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewSavePoint" type="Button" parent="VBoxMenu/HBoxSavePoint" unique_id=1545428704]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 5"
+text = "New Save Point"
+
+[node name="HBoxShop" type="HBoxContainer" parent="VBoxMenu" unique_id=42680075]
+layout_mode = 2
+
+[node name="ButtonVisibleShop" type="CheckBox" parent="VBoxMenu/HBoxShop" unique_id=2019769766]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewShop" type="Button" parent="VBoxMenu/HBoxShop" unique_id=1648917456]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 6"
+text = "New Shop"
+
+[node name="HBoxNPC" type="HBoxContainer" parent="VBoxMenu" unique_id=1094675672]
+layout_mode = 2
+
+[node name="ButtonVisibleNPC" type="CheckBox" parent="VBoxMenu/HBoxNPC" unique_id=636933070]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewNPC" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=1636396015]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New NPC"
+
+[node name="ButtonNewChest" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=578962269]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Chest"
+
+[node name="ButtonNewSign" type="Button" parent="VBoxMenu/HBoxNPC" unique_id=978957439]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Sign"
+
+[node name="HBoxWeather" type="HBoxContainer" parent="VBoxMenu" unique_id=1903893080]
+layout_mode = 2
+
+[node name="ButtonVisibleWeather" type="CheckBox" parent="VBoxMenu/HBoxWeather" unique_id=1283883915]
+layout_mode = 2
+tooltip_text = "Toggle Visible"
+button_pressed = true
+
+[node name="ButtonNewWeather" type="Button" parent="VBoxMenu/HBoxWeather" unique_id=1372065533]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Keybind: 7"
+text = "New Weather Zone"
+
+[node name="MoveMapButtons" type="GridContainer" parent="VBoxMenu" unique_id=745978875]
+layout_mode = 2
+columns = 3
+
+[node name="EmptyNode" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=222445896]
+layout_mode = 2
+
+[node name="ShiftUp" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=359809825]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▲"
+
+[node name="EmptyNode2" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=70322188]
+layout_mode = 2
+
+[node name="ShiftLeft" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=1906612340]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "◀"
+
+[node name="EmptyNode3" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=1263097573]
+layout_mode = 2
+
+[node name="ShiftRight" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=1403432294]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▶"
+
+[node name="EmptyNode4" type="Control" parent="VBoxMenu/MoveMapButtons" unique_id=1439129328]
+layout_mode = 2
+
+[node name="ShiftDown" type="Button" parent="VBoxMenu/MoveMapButtons" unique_id=995683889]
+custom_minimum_size = Vector2(28, 0)
+layout_mode = 2
+text = "▼"
+
+[node name="GridOoch" type="GridContainer" parent="." unique_id=498984524]
+visible = false
+layout_direction = 2
+layout_mode = 0
+offset_left = 40.0
+offset_top = 100.0
+offset_right = 40.0
+offset_bottom = 100.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 16
+script = ExtResource("2_c15v4")
+
+[node name="TileSelect" parent="." unique_id=423445131 instance=ExtResource("4_5duw6")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 421.0
+offset_top = 133.0
+offset_right = 741.0
+offset_bottom = 453.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="TooltipsPaint" type="RichTextLabel" parent="." unique_id=1939568176]
+visible = false
+layout_mode = 0
+offset_right = 298.0
+offset_bottom = 434.0
+text = "Escape			- Return
+
+LMB				- Paint
+LMB + Ctrl		- Fill
+RMB				- Erase
+RMB + Ctrl		- Select Tile
+
+LMB + Alt		- Set Selection Anchor 1
+RMB + Alt		- Set Selection Anchor 2
+Ctrl + C			- Copy Selection Area
+Ctrl + V			- Paste Selection Area"
+
+[node name="MenuChildren" type="Control" parent="." unique_id=1293140352]
+z_index = 2
+z_as_relative = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="npcs" type="Control" parent="MenuChildren" unique_id=57233237]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="shops" type="Control" parent="MenuChildren" unique_id=2129410673]
+z_index = -1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="events" type="Control" parent="MenuChildren" unique_id=1903211876]
+z_index = -2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="transitions" type="Control" parent="MenuChildren" unique_id=181106147]
+z_index = -1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="save_points" type="Control" parent="MenuChildren" unique_id=215119042]
+z_index = -1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="spawn_zones" type="Control" parent="MenuChildren" unique_id=386272157]
+z_index = -2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="weather_zones" type="Control" parent="MenuChildren" unique_id=1490419187]
+z_index = -2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Timer" type="Timer" parent="." unique_id=1874065158]
+wait_time = 60.0
+autostart = true
+
+[node name="LabelNotification" type="Label" parent="." unique_id=1233386383]
+layout_mode = 0
+offset_left = 1074.0
+offset_top = -1.0
+offset_right = 1151.0
+offset_bottom = 22.0
+text = "File Saved"
+script = ExtResource("4_5s007")
+
+[node name="LabelMousePosition" type="Label" parent="." unique_id=1235639381]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0, 0"
+
+[connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
+[connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonMainMenu" to="." method="_on_button_main_menu_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonNew" to="." method="_on_button_new_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonLoad" to="." method="_on_button_load_pressed"]
+[connection signal="pressed" from="VBoxMenu/HBoxFile/ButtonSave" to="." method="_on_button_save_pressed"]
+[connection signal="text_changed" from="VBoxMenu/HBoxFile/LineEditMapName" to="." method="_on_line_edit_map_name_text_changed"]
+[connection signal="text_changed" from="VBoxMenu/HBoxMapInfo/LineEditMapBattleBack" to="." method="_on_line_edit_map_battle_back_text_changed"]
+[connection signal="value_changed" from="VBoxMenu/HBoxMapInfo/HSliderGridAlpha" to="." method="_on_h_slider_grid_alpha_value_changed"]
+[connection signal="toggled" from="VBoxMenu/HBoxContainer/ButtonVisibleTile" to="." method="_on_button_visible_tile_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxContainer/ButtonMapBrush" to="." method="_on_button_map_brush_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxEvent/ButtonVisibleEvent" to="." method="_on_button_visible_event_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxEvent/ButtonNewEvent" to="." method="_on_button_new_event_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxSpawnzone/ButtonVisibleSpawnzone" to="." method="_on_button_visible_spawnzone_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxSpawnzone/ButtonNewSpawnRegion" to="." method="_on_button_new_spawn_region_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxTransition/ButtonVisibleTransition" to="." method="_on_button_visible_transition_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_button_down"]
+[connection signal="pressed" from="VBoxMenu/HBoxTransition/ButtonNewTransition" to="." method="_on_button_new_transition_pressed"]
+[connection signal="toggled" from="VBoxMenu/HBoxSavePoint/ButtonVisibleSavePoint" to="." method="_on_button_visible_save_point_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxSavePoint/ButtonNewSavePoint" to="." method="_on_button_new_save_point_button_down"]
+[connection signal="toggled" from="VBoxMenu/HBoxShop/ButtonVisibleShop" to="." method="_on_button_visible_shop_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxShop/ButtonNewShop" to="." method="_on_button_new_shop_button_down"]
+[connection signal="toggled" from="VBoxMenu/HBoxNPC/ButtonVisibleNPC" to="." method="_on_button_visible_npc_toggled"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_button_down"]
+[connection signal="pressed" from="VBoxMenu/HBoxNPC/ButtonNewNPC" to="." method="_on_button_new_npc_pressed"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewChest" to="." method="_on_button_new_chest_button_down"]
+[connection signal="button_down" from="VBoxMenu/HBoxNPC/ButtonNewSign" to="." method="_on_button_new_sign_button_down"]
+[connection signal="toggled" from="VBoxMenu/HBoxWeather/ButtonVisibleWeather" to="." method="_on_button_visible_weather_toggled"]
+[connection signal="pressed" from="VBoxMenu/HBoxWeather/ButtonNewWeather" to="." method="_on_button_new_weather_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftUp" to="." method="_on_shift_up_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftLeft" to="." method="_on_shift_left_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftRight" to="." method="_on_shift_right_pressed"]
+[connection signal="pressed" from="VBoxMenu/MoveMapButtons/ShiftDown" to="." method="_on_shift_down_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

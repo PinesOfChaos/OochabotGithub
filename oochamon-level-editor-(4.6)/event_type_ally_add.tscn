@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://b07rnu0dha1vc"]
+
+[ext_resource type="Script" uid="uid://dpydc5syv2t5j" path="res://event_type_ally_add.gd" id="1_n1xql"]
+[ext_resource type="PackedScene" uid="uid://ho8u6ajxeik8" path="res://slot_party.tscn" id="2_x3gou"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_n1xql")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Name: "
+
+[node name="LineEditName" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="Label2" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Sprite:"
+
+[node name="OptionButtonSprite" type="OptionButton" parent="HBoxContainer"]
+layout_mode = 2
+expand_icon = true
+
+[node name="Label3" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Battle Sprite:"
+
+[node name="LineEditSpriteSpecial" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+placeholder_text = "Optional"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CheckButtonCatchable" type="CheckButton" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Catchable:"
+
+[node name="Label2" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "User Type:"
+
+[node name="OptionButtonUserType" type="OptionButton" parent="HBoxContainer2"]
+layout_mode = 2
+selected = 2
+item_count = 4
+popup/item_0/text = "Player"
+popup/item_0/id = 0
+popup/item_1/text = "Wild"
+popup/item_1/id = 1
+popup/item_2/text = "NPCTrainer"
+popup/item_2/id = 2
+popup/item_3/text = "NPCTrainerSmart"
+popup/item_3/id = 3
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Battle AI:"
+
+[node name="OptionButtonBattleAI" type="OptionButton" parent="HBoxContainer2"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Basic"
+popup/item_0/id = 0
+popup/item_1/text = "Smart"
+popup/item_1/id = 1
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 2
+current_tab = 0
+
+[node name="Slot0" parent="TabContainer" instance=ExtResource("2_x3gou")]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Slot1" parent="TabContainer" instance=ExtResource("2_x3gou")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Slot2" parent="TabContainer" instance=ExtResource("2_x3gou")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="Slot3" parent="TabContainer" instance=ExtResource("2_x3gou")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[connection signal="text_changed" from="HBoxContainer/LineEditName" to="." method="_on_line_edit_name_text_changed"]
+[connection signal="item_selected" from="HBoxContainer/OptionButtonSprite" to="." method="_on_option_button_sprite_item_selected"]
+[connection signal="toggled" from="HBoxContainer2/CheckButtonCatchable" to="." method="_on_check_button_catchable_toggled"]
+[connection signal="item_selected" from="HBoxContainer2/OptionButtonUserType" to="." method="_on_option_button_user_type_item_selected"]
+[connection signal="item_selected" from="HBoxContainer2/OptionButtonBattleAI" to="." method="_on_option_button_battle_ai_item_selected"]

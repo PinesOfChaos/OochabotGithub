@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://bqcv8gwyak7r0"]
+
+[ext_resource type="Script" uid="uid://wu8k4fqpncei" path="res://slot_item.gd" id="1_tiuqs"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k5r3u"]
+
+[node name="slot_item" type="HBoxContainer" unique_id=1797727517]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tiuqs")
+
+[node name="item_count" type="SpinBox" parent="." unique_id=237338455]
+layout_mode = 2
+tooltip_text = "Item Count"
+theme_override_icons/updown = SubResource("ViewportTexture_k5r3u")
+
+[node name="item_id" type="OptionButton" parent="." unique_id=1272412131]
+layout_mode = 2
+tooltip_text = "Item"
+
+[node name="item_price" type="SpinBox" parent="." unique_id=1125220369]
+layout_mode = 2
+tooltip_text = "Item Price"
+prefix = "$"
+
+[node name="item_remove" type="Button" parent="." unique_id=221907484]
+layout_mode = 2
+tooltip_text = "Remove Slot"
+text = " - "
+
+[connection signal="value_changed" from="item_count" to="." method="_on_item_count_value_changed"]
+[connection signal="item_selected" from="item_id" to="." method="_on_item_id_item_selected"]
+[connection signal="value_changed" from="item_price" to="." method="_on_item_price_value_changed"]
+[connection signal="pressed" from="item_remove" to="." method="_on_item_remove_pressed"]

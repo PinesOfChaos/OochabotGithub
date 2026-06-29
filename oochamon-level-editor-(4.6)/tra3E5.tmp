@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://c61msy07dvdff"]
+
+[ext_resource type="Texture2D" uid="uid://bsnaj41sa17n7" path="res://editor_assets/box_highlight1.png" id="1_nyatq"]
+[ext_resource type="Script" path="res://transition.gd" id="1_plktf"]
+
+[node name="transition" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_plktf")
+
+[node name="transition_object" type="TextureButton" parent="."]
+modulate = Color(1, 1, 0, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture_normal = ExtResource("1_nyatq")
+
+[node name="transition_vbox_container" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="transition_map_to" type="LineEdit" parent="transition_vbox_container"]
+layout_mode = 2
+placeholder_text = "Map To"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="transition_vbox_container"]
+layout_mode = 2
+
+[node name="transition_x" type="LineEdit" parent="transition_vbox_container/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "X To"
+
+[node name="transition_y" type="LineEdit" parent="transition_vbox_container/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "Y To"
+
+[connection signal="button_down" from="transition_object" to="." method="_on_transition_object_button_down"]
+[connection signal="pressed" from="transition_object" to="." method="_on_transition_object_pressed"]
+[connection signal="text_changed" from="transition_vbox_container/transition_map_to" to="." method="_on_transition_map_to_text_changed"]
+[connection signal="text_submitted" from="transition_vbox_container/transition_map_to" to="." method="_on_transition_map_to_text_submitted"]
+[connection signal="text_changed" from="transition_vbox_container/HBoxContainer/transition_x" to="." method="_on_transition_x_text_changed"]
+[connection signal="text_submitted" from="transition_vbox_container/HBoxContainer/transition_x" to="." method="_on_transition_x_text_submitted"]
+[connection signal="text_changed" from="transition_vbox_container/HBoxContainer/transition_y" to="." method="_on_transition_y_text_changed"]
+[connection signal="text_submitted" from="transition_vbox_container/HBoxContainer/transition_y" to="." method="_on_transition_y_text_submitted"]
