@@ -1,7 +1,7 @@
 // For functions that don't fit into the other categories
 import { monster_data, profile, ability_data, move_data, battle_data } from "./db.js";
 import { EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { PlayerState, TameStatus, TamingAction } from './types.js';
+import { PlayerState, TameStatus, TamingAction, ItemCategory, Item } from './types.js';
 import { get_blank_profile } from './func_modernize.js';
 import { inRange, capitalize, toLower, replace, clamp, sample } from 'lodash-es';
 import { filledBar } from 'string-progressbar';
@@ -339,6 +339,22 @@ export async function reset_oochamon(user_id) {
     // Setup Oochadex template
     for (const ooch_id in monster_data.keys()) { // Changed to 'const'
         profile.push(user_id, { id: ooch_id, caught: 0 }, 'oochadex')
+    }
+
+    // Grant special starting skins to specific players
+    const starting_skins = {
+        '277577216240517121': Item.SkinTamagoochiGirl,   // maus
+        '166037289229746177': Item.SkinEngineer,         // marci
+        '124339025153622016': Item.SkinTerarabe,         // codraven
+        '156859982778859520': Item.SkinForsythe,         // jack
+        '323856749280886784': Item.SkinJEKYLLPOWERSTANCE, // kitty
+        '1077358457184845864': Item.SkinNeo,             // neo
+        '122568101995872256': Item.SkinJeffdev,          // jeff
+        '145342159724347393': Item.SkinEvergreenCultist, // pines
+    };
+
+    if (starting_skins[user_id] !== undefined) {
+        profile.push(user_id, { id: starting_skins[user_id], quantity: 1 }, `inventory.${ItemCategory.Skin}`);
     }
 }
 
