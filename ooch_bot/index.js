@@ -77,11 +77,11 @@ loadEvents()
 console.log('Events loaded')
 loadCommands()
   .then(async (registerCommands) => {
-     const rest = new REST().setToken(process.env.DEV_TOKEN);
+     const rest = new REST().setToken(process.env.BOT_TOKEN);
 
         try {
             await rest.put(
-                Routes.applicationCommands(process.env.DEV_CLIENT_ID),
+                Routes.applicationCommands(process.env.BOT_CLIENT_ID),
                 { body: registerCommands }
             );
             console.log('Slash commands registered successfully.');
@@ -114,7 +114,7 @@ schedule('00 16 * * *', async () => {
 });
 
 //Log Bot in to the Discord
-client.login(process.env.DEV_TOKEN);
+client.login(process.env.BOT_TOKEN);
 
 export const botClient = client;
 
