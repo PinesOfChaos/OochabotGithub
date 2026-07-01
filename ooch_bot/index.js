@@ -8,8 +8,6 @@ import { schedule } from 'node-cron';
 import {Client, Partials, GatewayIntentBits, Routes, Collection, REST} from 'discord.js';
 import { genmap_allmaps } from './func_level_gen.js';
 import { reportCrash } from './utils/crash_reporter.js';
-import branchName from 'current-git-branch';
-let branch = branchName();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
