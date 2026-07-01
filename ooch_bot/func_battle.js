@@ -59,7 +59,8 @@ import {
     StanceForms,
     Stats,
     Status,
-    UserType
+    UserType,
+    Item
 } from "./types.js";
 import {
     check_chance,
@@ -1806,6 +1807,7 @@ export async function action_process_prism(db_battle_data, action) {
             ooch_target.stats.spd_mul = 0;
             ooch_target.stats.acc_mul = 0;
             ooch_target.stats.eva_mul = 0;
+            ooch_target.prism_type = action.item_id;
 
             // Have it check here if you want to send the Oochamon to your party or not
             if (user.party.length < 4) {

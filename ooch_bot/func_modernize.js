@@ -1,5 +1,5 @@
 import { profile, battle_data, monster_data } from "./db.js";
-import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType } from './types.js';
+import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType, Item } from './types.js';
 import { merge, random } from 'lodash-es';
 
 
@@ -102,7 +102,9 @@ export async function modernize_mon_data(mon_data) {
     let blank_ooch = get_blank_oochamon();
     merge(blank_ooch, mon_data);
     mon_data = blank_ooch;
-    mon_data.prism_type = ""; //TODO Make this "beta" or something along those lines, REMOVE THIS when releasing 1.0
+    if(mon_data.prism_type == ""){
+        mon_data.prism_type = Item.PrismBeta
+    }
 
     return mon_data;
 }
@@ -204,7 +206,7 @@ export function get_blank_profile() {
 export function get_blank_oochamon(shiny = false) {
     let ooch_obj = { 
         variant : shiny ? "_prismatic" : "",
-        prism_type : "",
+        prism_type : Item.Prism,
         id: 0,
         name: "", 
         nickname: "",
