@@ -2342,7 +2342,7 @@ export async function execute(interaction, client) {
     create_move({
         id: Move.Collections, name: 'Collections', type: OochType.Tech,
         damage: 70, accuracy: 100,
-        effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Enemy }, { status: Status.DamageBoostStatus + Status.Doom, chance: 70, target: MoveTarget.Enemy }],
+        effect: [{ status: Status.Vampire, chance: 50, target: MoveTarget.Enemy }, { status: Status.DamageBoostStatus + '_' + Status.Doom, chance: 70, target: MoveTarget.Enemy }],
         description: 'Collect what you are owed from the target, draining some of their HP. Damage is doubled against DOOMED targets.',
         self_target: false,
     });
@@ -5013,7 +5013,7 @@ export async function execute(interaction, client) {
             [1, Move.Bash], [3, Move.PebbleBlast], [5, Move.DigitalGamble], [8, Move.ClampDown], [11, Move.HypeUp],
             [13, Move.DustStorm], [15, Move.RallyingCry], [19, Move.Torque], [22, Move.ByteBite], [25, Move.TwistedReality],
             [27, Move.AsbestosBomb], [30, Move.SonicBoom], [33, Move.Lagspike], [35, Move.Reset], [38, Move.Engulf],
-            [42, Move.GuidedSpire], [-1, Move.FatedThreads]
+            [42, Move.GuidedSpire], [45, Move.AllIn], [-1, Move.FatedThreads]
         ],
         abilities: [Ability.DoubleOrNothing],
         pre_evo_id: -1, evo_id: OochID.Crabandit, evo_lvl: -1, evo_stage: 2
@@ -5028,7 +5028,10 @@ export async function execute(interaction, client) {
         type: [OochType.Sound, OochType.Martial],
         hp: 15, atk: 15, def: 15, spd: 15, // total 60
         move_list: [
-            [1, Move.Bash], [-1, Move.Lagspike]
+            [1, Move.Bash], [3, Move.Chop], [6, Move.Intimidate], [8, Move.Screech], [12, Move.SonicBoom], 
+            [13, Move.RallyingCry], [16, Move.Beatdown], [18, Move.FlyingKick], [21, Move.Slash], [25, Move.Honk], 
+            [27, Move.EchoChamber], [31, Move.Fog], [34, Move.PressureWave], [37, Move.Pulverize], [40, Move.Haymaker], 
+            [45, Move.SkyClear], [-1, Move.HymnOfDread]
         ],
         abilities: [Ability.SillyGoose],
         pre_evo_id: -1, evo_id: -1, evo_lvl: -1, evo_stage: 0

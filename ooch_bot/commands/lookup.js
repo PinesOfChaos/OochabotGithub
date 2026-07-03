@@ -109,58 +109,88 @@ export async function execute(interaction) {
 
             eff_str = ``;
             for (let eff of info_move.effect) {
-                let eff_line = `\n• ${eff.chance}% `;
+                let eff_line = `\n• ${eff.chance}`;
+                //use "eff_line +=" and "break" if the target matters
+                //use "eff_str +=" and "continue" if the text line should end there
+
+                let eff_target_string = `.`
+                switch (eff.target) {
+                    case MoveTarget.Self:   eff_target_string = `the User`; break;
+                    case MoveTarget.Enemy:  eff_target_string = `the Target`; break;
+                    case MoveTarget.All:    eff_target_string = `all Oochamon`; break;
+                    case MoveTarget.None:   eff_target_string = `.`; break;
+                }
 
                 switch (eff.status) {
-                    case Status.Blind: eff_line += `chance to ${status_to_emote(eff.status)} Blind`; break;
-                    case Status.Burn: eff_line += `chance to ${status_to_emote(eff.status)} Burn`; break;
-                    case Status.Digitize: eff_line += `chance to ${status_to_emote(eff.status)} Digitize`; break;
-                    case Status.Doom: eff_line += `chance to ${status_to_emote(eff.status)} Doom`; break;
-                    case Status.Expose: eff_line += `chance to ${status_to_emote(eff.status)} Expose`; break;
-                    case Status.Focus: eff_line += `chance to ${status_to_emote(eff.status)} Focus`; break;
-                    case Status.Infect: eff_line += `chance to ${status_to_emote(eff.status)} Infect`; break;
-                    case Status.Snare: eff_line += `chance to ${status_to_emote(eff.status)} Snare`; break;
-                    case Status.Vanish: eff_line += `chance to ${status_to_emote(eff.status)} Vanish`; break;
-                    case Status.Sleep: eff_line += `chance to ${status_to_emote(eff.status)} Sleep`; break;
-                    case Status.Petrify: eff_line += `chance to ${status_to_emote(eff.status)} Petrify`; break;
-                    case Status.Weak: eff_line += `chance to ${status_to_emote(eff.status)} Weaken`; break;
-                    case Status.Revealed: eff_line += `chance to ${status_to_emote(eff.status)} Reveal`; break;
+                    case Status.Blind: eff_line += `% chance to ${status_to_emote(eff.status)} BLIND`; break;
+                    case Status.Burn: eff_line += `% chance to ${status_to_emote(eff.status)} BURN`; break;
+                    case Status.Digitize: eff_line += `% chance to ${status_to_emote(eff.status)} DIGITIZE`; break;
+                    case Status.Doom: eff_line += `% chance to ${status_to_emote(eff.status)} DOOM`; break;
+                    case Status.Expose: eff_line += `% chance to ${status_to_emote(eff.status)} EXPOSE`; break;
+                    case Status.Focus: eff_line += `% chance to ${status_to_emote(eff.status)} FOCUS`; break;
+                    case Status.Infect: eff_line += `% chance to ${status_to_emote(eff.status)} INFECT`; break;
+                    case Status.Snare: eff_line += `% chance to ${status_to_emote(eff.status)} SNARE`; break;
+                    case Status.Vanish: eff_line += `% chance to ${status_to_emote(eff.status)} VANISH`; break;
+                    case Status.Sleep: eff_line += `% chance to ${status_to_emote(eff.status)} SLEEP`; break;
+                    case Status.Petrify: eff_line += `% chance to ${status_to_emote(eff.status)} PETRIFY`; break;
+                    case Status.Weak: eff_line += `% chance to ${status_to_emote(eff.status)} WEAKEN`; break;
+                    case Status.Revealed: eff_line += `% chance to ${status_to_emote(eff.status)} REVEAL`; break;
+                    case Status.Drained: eff_line += `% chance to ${status_to_emote(eff.status)} DRAIN`; break;
 
-                    case 'critical': eff_line += `chance to Critically Hit`; break;
-                    case 'random': eff_line += `chance to Select a Random Move`; break;
-                    case 'heal': eff_line += `of Max HP Healing to`; break;
-                    case 'typematch': eff_line += `chance to match types with`; break;
-                    case 'recoil': eff_line += `HP taken as Recoil Damage to`; break;
-                    case 'vampire': eff_line += `of Damage done as Health Stolen`; break;
-                    case 'clear_stat_stages': eff_line += `chance to Remove all Stat Changes from`; break;
-                    case 'clear_status': eff_line += `chance to Remove all Status Effects from`; break;
+                    case Status.CritChance:         eff_line += `% chance to Critically Hit.`; break;
+                    case Status.Heal:               eff_line += `% of Max HP Healing to`; break;
+                    case Status.TrueDamage:         eff_line = `\n• Always deals at least ${eff.chance} true damage`; break;
+                    case Status.GoingFirstBonus:    eff_line = `\n• Increases power by ${eff.chance} if going first`; break;
+                    case Status.GoingLastBonus:     eff_line = `\n• Increases power by ${eff.chance} if going last`; break;
+                    case Status.Vampire:            eff_line += `% of Damage done as Health Stolen`; break;
+                    case Status.ClearStatChanges:   eff_line += `% chance to Remove all Stat Changes from`; break;
+                    case Status.ClearStatus:        eff_line += `% chance to Remove all Status Effects from`; break;
+                    case Status.AlwaysSuperEff:     eff_line += `% chance to at least be Super Effective`; break;
+                    case Status.SweepDamage:        eff_str += `\n• Deals ${eff.chance} damage to the target's entire party.`; continue;
 
-                    case Status.TrueDamage: eff_line = `• Always deals ${eff.chance} true damage.`; continue;
-                    case Status.GoingFirstBonus: eff_line = `• Increases power by ${eff.chance} if going first.`; continue;
-                    case Status.GoingLastBonus: eff_line = `• Increases power by ${eff.chance} if going last.`; continue;
+                    case 'random':
+                        if(eff.chance < 100){   eff_line += `% chance to Select a Random Move.`}
+                        else{                   eff_line = `\n• Uses a Random move.`}
+                        continue;
+                    case 'typematch':           eff_line += `% chance to match types with`; break;
+                    case 'recoil':              eff_line += `% HP taken as Recoil Damage to`; 
+                        if(eff.chance == 99){       eff_str += `\n• The user is left with 1HP.`; continue; }
+                        if(eff.chance == 100){      eff_str += `\n• The user is knocked out.`; continue; }
+                        break;
                     case Status.WeatherDependent:
-                        eff_line = (
-                            `• Changes type and effects depending on the weather: ` +
-                            `\n\`\`Heatwave:     ${type_to_emote(OochType.Flame)} FLAME, 30% chance to ${status_to_emote(Status.Burn)} Burn.\`\`` +
-                            `\n\`\`Thunderstorm: ${type_to_emote(OochType.Sound)} SOUND, 30% chance to ${status_to_emote(Status.Expose)} Expose.\`\``
+                        eff_str += (
+                            `• Changes type and effects depending on the field effect: ` +
+                            `\n\`\`Heatwave: ${type_to_emote(OochType.Flame)} FLAME, 30% chance to ${status_to_emote(Status.Burn)} BURN.\`\`` +
+                            `\n\`\`Thunderstorm: ${type_to_emote(OochType.Magic)} MAGIC, 30% chance to ${status_to_emote(Status.Weak)} WEAKEN.\`\`` +
+                            `\n\`\`Echo Chamber: ${type_to_emote(OochType.Sound)} SOUND, 30% chance to ${status_to_emote(Status.Expose)} EXPOSE.\`\`` +
+                            `\n\`\`Jagged Ground:${type_to_emote(OochType.Stone)} STONE, 30% chance to ${status_to_emote(Status.Petrify)} PETRIFY.\`\`` +
+                            `\n\`\`Twisted Reality: ${type_to_emote(OochType.Crystal)} CRYSTAL, 30% chance to ${status_to_emote(Status.Blind)} BLIND.\`\`` +
+                            `\n\`\`Wetlands: ${type_to_emote(OochType.Ooze)} OOZE, 30% chance to ${status_to_emote(Status.Infect)} INFECT.\`\``
                         );
+                        
                         continue;
 
-                    case 'weather': eff_line = `• Sets the weather to `;
+                    case 'weather': eff_line = `• Sets the field effect to `;
                         switch (eff.chance) {
-                            case Weather.Clear: eff_line += 'None.'; break;
-                            case Weather.Heatwave: eff_line += 'Heatwave.'; break;
-                            case Weather.Thunderstorm: eff_line += 'Thunderstorm.'; break;
+                            case Weather.Clear: eff_line +=             'None.'; break;
+                            case Weather.Heatwave: eff_line +=          'Heatwave.'; break;
+                            case Weather.Thunderstorm: eff_line +=      'Thunderstorm.'; break;
+                            case Weather.EchoChamber: eff_line +=       'Echo Chamber.'; break;
+                            case Weather.JaggedGround: eff_line +=      'Jagged Ground.'; break;
+                            case Weather.TwistedReality: eff_line +=    'Twisted Reality.'; break;
+                            case Weather.Wetlands: eff_line +=          'Wetlands.'; break;
                         }
                         eff_str += eff_line;
                         continue;
                     case 'field': eff_line = `• Sets the field effect to `;
                         switch (eff.chance) {
-                            case FieldEffect.Clear: eff_line += 'None.'; break;
-                            case FieldEffect.EchoChamber: eff_line += 'Echo Chamber.'; break;
-                            case FieldEffect.JaggedGround: eff_line += 'Jagged Ground.'; break;
-                            case FieldEffect.TwistedReality: eff_line += 'Twisted Reality.'; break;
-                            case FieldEffect.Wetlands: eff_line += 'Wetlands.'; break;
+                            case FieldEffect.Clear: eff_line +=             'None.'; break;
+                            case FieldEffect.Heatwave: eff_line +=          'Heatwave.'; break;
+                            case FieldEffect.Thunderstorm: eff_line +=      'Thunderstorm.'; break;
+                            case FieldEffect.EchoChamber: eff_line +=       'Echo Chamber.'; break;
+                            case FieldEffect.JaggedGround: eff_line +=      'Jagged Ground.'; break;
+                            case FieldEffect.TwistedReality: eff_line +=    'Twisted Reality.'; break;
+                            case FieldEffect.Wetlands: eff_line +=          'Wetlands.'; break;
                         }
                         eff_str += eff_line;
                         continue;
@@ -170,26 +200,23 @@ export async function execute(interaction) {
                         switch (eff_split[0]) {
                             case '-':
                             case '+':
-                                eff_line += `${eff_split[0]}${eff_split[2]} ${eff_split[1].toUpperCase()} stages to`;
+                                eff_line += `\n• ${eff_split[0]}${eff_split[2]} ${eff_split[1].toUpperCase()} stages to`;
                                 break;
                             case 'priority':
-                                eff_line = `• ${eff_split[1]} Priority.`;
+                                eff_line = `\n• ${parseInt(eff_split[1]) > 0 ? "+" : ""}${eff_split[1]} Priority.`;
                                 break;
+                            case Status.DamageBoostStatus:
+                                eff_str += `\n• Boosts damage by ${eff.chance} while ${eff_target_string} is ${status_to_emote(eff_split[1])} ${status_data.get(`${eff.status}`, "name")}.`;
+                                continue;
                             default:
-                                eff_line += `${eff.status}`;
+                                eff_line += `\n• ${eff.status}`;
                                 break;
                         }
 
                         break;
                 }
 
-                switch (eff.target) {
-                    case MoveTarget.Self: eff_line += ` the User.`; break;
-                    case MoveTarget.Enemy: eff_line += ` the Target.`; break;
-                    case MoveTarget.All: eff_line += ` all Oochamon.`; break;
-                    case MoveTarget.None: eff_line += `.`; break;
-                }
-
+                eff_line += ` ${eff_target_string}.`
                 eff_str += eff_line;
             }
 

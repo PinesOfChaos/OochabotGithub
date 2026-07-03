@@ -18,7 +18,11 @@ const PlayerState = {
 
 const GenmapTheme = {
     FungalCave : 0,
-    ObsidianPath : 1
+    ObsidianPath : 1,
+    Powerplant : 2,
+    TrainingFacility : 3,
+    CrystalCaves : 4
+
 }
 
 const GraphicsMode = {

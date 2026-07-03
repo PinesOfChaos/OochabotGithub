@@ -47,7 +47,9 @@ export async function genmap_allmaps(client) {
         everchange_cave_themes.push(sample([
             GenmapTheme.ObsidianPath,
             GenmapTheme.FungalCave,
-            GenmapTheme.Powerplant
+            GenmapTheme.Powerplant,
+            GenmapTheme.TrainingFacility,
+            GenmapTheme.CrystalCaves
         ]))
     }
     await genmap_dungeon(client, "Everchange Cave", 48, 64, everchange_cave_themes, 40, 50, 'everchange_cave_entrance', 24, 16)
@@ -156,7 +158,7 @@ export async function genmap_dungeon(client, area_name, start_size, end_size, th
  */
 export function genmap_theme(theme){
     switch(theme){
-        case GenmapTheme.FungalCave: //Fungal Cave
+        case GenmapTheme.FungalCave: 
             return({
                 tile_floor : ["t01_000"],
                 tile_wall : ["t01_006"],
@@ -172,7 +174,7 @@ export function genmap_theme(theme){
                 weather_options : [Weather.None],
                 battle_bg : "battle_bg_fungal_cave"
             })
-        case GenmapTheme.ObsidianPath: //Obsidian Path
+        case GenmapTheme.ObsidianPath: 
             return({
                 tile_floor : ["t04_000"],
                 tile_wall : ["t04_004"],
@@ -188,7 +190,7 @@ export function genmap_theme(theme){
                 weather_options : [Weather.None, Weather.Heatwave],
                 battle_bg : "battle_bg_lava_fields"
             })
-        case GenmapTheme.Powerplant: //Powerplant
+        case GenmapTheme.Powerplant: 
             return({
                 tile_floor : ["t06_000", "t06_000", "t06_000", "t06_000", "t06_000", "t06_008"],
                 tile_wall : ["t00_000"],
@@ -203,6 +205,38 @@ export function genmap_theme(theme){
 
                 weather_options : [Weather.None],
                 battle_bg : "battle_bg_powerstation"
+            })
+        case GenmapTheme.TrainingFacility:
+            return({
+                tile_floor : ["t05_000", "t05_000", "t05_000", "t05_000", "t05_000", "t05_091"],
+                tile_wall : ["t05_002"],
+                tile_edge : ["t05_011"],
+                tile_decor : ["t05_001", "t05_043"],
+                tile_grass : ["t05_010"],
+
+                types_primary : [OochType.Fungal],
+                types_secondary : [OochType.Tech, OochType.Sound],
+
+                map_naturalness : 0.6,
+
+                weather_options : [Weather.None],
+                battle_bg : "battle_bg_training_facility"
+            })
+        case GenmapTheme.CrystalCaves:
+            return({
+                tile_floor : ["t14_000", "t14_000", "t14_000", "t14_000", "t14_000", "t14_000", "t14_000", "t14_000", "t14_092", "t14_094" ],
+                tile_wall : ["t14_020"],
+                tile_edge : ["t14_080"],
+                tile_decor : ["t14_091", "t14_093", "t14_095"],
+                tile_grass : ["t14_090"],
+
+                types_primary : [OochType.Crystal],
+                types_secondary : [OochType.Magic, OochType.Stone],
+
+                map_naturalness : 0.4,
+
+                weather_options : [Weather.None],
+                battle_bg : "battle_bg_crystal_caves"
             })
     }
 }
@@ -910,7 +944,7 @@ async function genmap_npc_reward_ooch(x, y){
 }
 
 async function genmap_npc_boss(x, y, force_id = -1){
-    let npc_id = force_id == -1 ? sample([0, 1, 2, 3, 4]) : force_id; //UPDATE THIS WHENEVER ADDING A NEW CUSTOM NPC
+    let npc_id = force_id == -1 ? sample([0, 1, 2, 3, 4, 5, 6]) : force_id; //UPDATE THIS WHENEVER ADDING A NEW CUSTOM NPC
     let npc = genmap_empty_npc()
     npc.x = x;
     npc.y = y;
@@ -1030,6 +1064,51 @@ async function genmap_npc_boss(x, y, force_id = -1){
                 
             ];
         break;
+        case 5: //Forsythe (Tester)
+            npc.name = "Forsythe";
+            npc.pre_combat_dialogue = "Hello, care for what will assuredly be a quick battle?";
+            npc.post_combat_dialogue = "I bid you adie...*honk*";
+            npc.sprite_id = "c00_056";
+            npc.items.push({count: 1, id : Item.SkinForsythe});
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Decavian, 50, 9, 9, 9, 9, Ability.Sporespray, 
+                    [Move.ThornShot, Move.Overgrowth, Move.CausticOrb, Move.CursedEye], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Kracking, 50, 9, 9, 9, 9, Ability.Withering, 
+                    [Move.AshBlast, Move.AsbestosBomb, Move.Gravitate, Move.EarShatter], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Radient, 50, 9, 9, 9, 9, Ability.Energized, 
+                    [Move.Impale, Move.DebugBomb, Move.MycoBurst, Move.Reset], OochVariant.Prismatic),
+
+                await genmap_ooch_specific(OochID.Bonjhounk, 50, 9, 9, 9, 9, Ability.SillyGoose, 
+                    [Move.PressureWave, Move.Honk, Move.Haymaker, Move.Fog], OochVariant.Default)
+                
+            ];
+        break;
+        case 6: //Researcher NPC
+            npc.name = "Researcher Jett";
+            npc.pre_combat_dialogue = "Get ready for your world to be *rocked*.";
+            npc.post_combat_dialogue = "I may have lost, but it's nothing to *gravel* over.";
+            npc.sprite_id = "c00_005";
+            npc.items.push({count: 1, id : Item.SkinResearcher});
+           
+            npc.team = [
+                await genmap_ooch_specific(OochID.Obstaggard, 50, 9, 9, 9, 9, Ability.Lacerating, 
+                    [Move.GuidedSpire, Move.HealingGems, Move.DustStorm, Move.FireyHorn], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Korkobble, 50, 9, 9, 9, 9, Ability.Flux, 
+                    [Move.Restruct, Move.Boulderdash, Move.CursedEye, Move.SelfDestruct], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Erwrek, 50, 9, 9, 9, 9, Ability.Armored, 
+                    [Move.Entomb, Move.Torque, Move.JaggedGround, Move.Grind], OochVariant.Default),
+
+                await genmap_ooch_specific(OochID.Durubull, 50, 9, 9, 9, 9, Ability.Uncontrolled, 
+                    [Move.LavaLance, Move.HighImpact, Move.Sedimentation, Move.Barrage], OochVariant.Default)
+                
+            ];
+        break;
+        
     }
 
 

@@ -3023,9 +3023,9 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
                 move_effects.push({status : Status.Burn, chance : 30, target : MoveTarget.Enemy})
                 break;
             case FieldEffect.Thunderstorm: 
-                move_type = OochType.Tech; 
-                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Tech])} **Tech**!`
-                move_effects.push({status : Status.Revealed, chance : 30, target : MoveTarget.Enemy})
+                move_type = OochType.Magic; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Magic])} **Magic**!`
+                move_effects.push({status : Status.Weak, chance : 30, target : MoveTarget.Enemy})
                 break;
             case FieldEffect.EchoChamber: 
                 move_type = OochType.Sound; 
@@ -3040,12 +3040,12 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
             case FieldEffect.Wetlands: 
                 move_type = OochType.Ooze; 
                 weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Ooze])} **Ooze**!`
-                move_effects.push({status : Status.Weak, chance : 30, target : MoveTarget.Enemy})
+                move_effects.push({status : Status.Infect, chance : 30, target : MoveTarget.Enemy})
                 break;
             case FieldEffect.TwistedReality: 
-                move_type = OochType.Magic; 
-                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Magic])} **Magic**!`
-                move_effects.push({status : Status.Doom, chance : 30, target : MoveTarget.Enemy})
+                move_type = OochType.Crystal; 
+                weather_type_change_text += `\n--- ${move_name}'s type was changed to ${type_to_emote([OochType.Crystal])} **Crystal**!`
+                move_effects.push({status : Status.Blind, chance : 30, target : MoveTarget.Enemy})
                 break;
             
         }
