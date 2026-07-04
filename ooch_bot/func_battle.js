@@ -2197,7 +2197,7 @@ export async function end_of_round_prompt_switch(db_battle_data){
                         next_slot = parseInt(i.customId.replace('switch_', ''));
 
                         //Submit their next slot for combat
-                        new_battle_action_switch(db_battle_data, user.user_index, next_slot, false);
+                        new_battle_action_switch(db_battle_data, user.user_index, next_slot, true);
                         users_to_wait_for = users_to_wait_for.filter(u => u != user.user_id);
                     });
 
@@ -2206,7 +2206,7 @@ export async function end_of_round_prompt_switch(db_battle_data){
                     for(let [i, ooch] of user.party.entries()){
                         if(ooch.alive){ next_slot = i; break;}
                     }
-                    new_battle_action_switch(db_battle_data, user.user_index, next_slot, false);
+                    new_battle_action_switch(db_battle_data, user.user_index, next_slot, true);
                 break;
             }
         }
@@ -2486,7 +2486,7 @@ export function type_effectiveness(attack_type, target_type) {
     return([multiplier, string])
 }
 
-export async function item_use(user_id, ooch, item_id, in_battle=false, remove=false) {
+export async function item_use(user_id, ooch, item_id, in_battle = false, remove = false) {
     const { remove_item } = await import('./func_play.js');
     let db_item_data = item_data.get(`${item_id}`); 
     if (remove) remove_item(user_id, item_id, 1);
@@ -2501,7 +2501,6 @@ export async function item_use(user_id, ooch, item_id, in_battle=false, remove=f
             return(`\n${ooch.emote} **${ooch.nickname}** recovered ${ooch.current_hp - prev_hp} HP.`);
         } else if (in_battle == false) {
             ooch.alive = true;
-            //let prev_hp = ooch.current_hp;
             ooch.current_hp += db_item_data.potency;
             ooch.current_hp = clamp(ooch.current_hp, 0, ooch.stats.hp);
             return ooch;
@@ -2944,6 +2943,11 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     let defOochName = defender.nickname;
     let string_to_send = ``;
     let moveList;
+    let move_info = await move_data.get(`${atk_id}`);
+
+    if(defender.hp <= 0){
+        return `${attacker_emote} **${atkOochName}** tried to use **${move_info.name}** but ${defender_emote} **${defOochName}** is already knocked out!`;
+    }
 
     //Figure out whether we're going first or last for misc values
     let going_first = true;
@@ -2962,7 +2966,7 @@ export async function attack(db_battle_data, user_index_attacker, user_index_def
     slot_attacker.this_turn_did_attack = true;
     slot_defender.this_turn_was_attacked = true;
 
-    let move_info = await move_data.get(`${atk_id}`);
+    
 
     let move_effects =   move_info.effect;
     let ogMoveId = atk_id;

@@ -615,13 +615,25 @@ export async function menu_handler(interaction, init=false) {
             ooch_abilities = ooch_data.abilities.map(v => ability_data.get(`${v}`, 'name'));
             ooch_img_file = get_ooch_art(ooch_data.name);
 
+            //Next Evolution text
             if (ooch_data.evo_id != -1 && ooch_data.evo_lvl != -1) {
                 if (oochadex_data[ooch_data.evo_id] && oochadex_data[ooch_data.evo_id].caught != 0) {
-                    evoText = `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
+                    evoText += `Evolves into ${monster_data.get(`${ooch_data.evo_id}`, 'name')} at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
                 } else {
-                    evoText = `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
+                    evoText += `Evolves into ??? at level ${ooch_data.evo_lvl}${ooch_data.special_evo ? ' after a special condition is fulfilled' : ''}`;
                 }
             }
+
+            //Prev Evolution text
+            if(ooch_data.pre_evo_id != -1){
+                if(evoText != ''){ evoText += '\n'}
+                if (oochadex_data[ooch_data.pre_evo_id] && oochadex_data[ooch_data.pre_evo_id].caught != 0) {
+                    evoText += `Evolves from ${monster_data.get(`${ooch_data.evo_id}`, 'name')}.}`;
+                } else {
+                    evoText += `Evolves from ???.'}`;
+                }
+            }
+
             is_caught = oochadex_data[ooch_data.id] && oochadex_data[ooch_data.id].caught > 0;
         }
 

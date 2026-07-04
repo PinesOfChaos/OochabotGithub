@@ -8,14 +8,23 @@ import { refresh_global_variables } from '../func_global_data.js';
 import { modernize_all } from '../func_modernize.js';
 import { genmap_allmaps } from '../func_level_gen.js';
 
+
+
+
 export const data = new SlashCommandBuilder()
     .setName('generate')
-    .setDescription('Generates the game data.');
+    .setDescription('Generates the game data.')
+    .addBooleanOption(option => option.setName('modernize')
+        .setDescription('Modernize data? ONLY DO THIS WHEN NEEDED')
+        .setRequired(false));
 export async function execute(interaction, client) {
     await interaction.deferReply();
     if (interaction.user.id != '122568101995872256' && interaction.user.id != '145342159724347393') {
         return interaction.editReply({ content: 'You can\'t use this!', flags: MessageFlags.Ephemeral });
     }
+
+    //Whether to run modernize script, this can take a long time once there are a lot of users/mons stored
+    let do_modernize = interaction.options.getBoolean('modernize');
 
     // Clear out enmaps before
     monster_data.clear();
@@ -5404,7 +5413,9 @@ export async function execute(interaction, client) {
     //Add in any new global variables we've created, this is *not* a hard reset
     await refresh_global_variables(false);
 
-    await modernize_all();
+    if(do_modernize){
+        await modernize_all();
+    }
 
     await interaction.editReply('Generated game data.');
 

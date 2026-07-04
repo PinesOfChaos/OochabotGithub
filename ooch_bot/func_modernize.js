@@ -1,4 +1,5 @@
 import { profile, battle_data, monster_data } from "./db.js";
+import { get_emote_string } from "./func_other.js";
 import { PlayerState, UserType, Weather, FieldEffect, StanceForms, ItemCategory, OochType, Item } from './types.js';
 import { merge, random } from 'lodash-es';
 
@@ -105,6 +106,9 @@ export async function modernize_mon_data(mon_data) {
     if(mon_data.prism_type == ""){
         mon_data.prism_type = Item.PrismBeta
     }
+
+    //Mon emotes are stored as "<:queenect:1403938883657400330>", this ensures we get the name of the mon and re-get its emote string
+    mon_data.emote = get_emote_string(mon_data.emote.split(':')[1]);
 
     return mon_data;
 }
