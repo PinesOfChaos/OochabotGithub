@@ -1557,6 +1557,7 @@ export async function menu_handler(interaction, init=false) {
             case ItemType.Potion:
                 user_profile.ooch_party[selData[0]].current_hp += selItem.potency
                 user_profile.ooch_party[selData[0]].current_hp = clamp(user_profile.ooch_party[selData[0]].current_hp, 0, user_profile.ooch_party[selData[0]].stats.hp);
+                user_profile.ooch_party[selData[0]].alive = true;
                 item_usage_text = `Used a **${selItem.name}**, and healed ${selItem.potency} HP for ${user_profile.ooch_party[selData[0]].emote} **${user_profile.ooch_party[selData[0]].name}**.`;
                 remove_item(interaction.user.id, selItem.id, 1)
             break;
